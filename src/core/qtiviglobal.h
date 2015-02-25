@@ -1,0 +1,5 @@
+#ifndef QTIVIGLOBAL_H
+#define QTIVIGLOBAL_H
+
+#endif // QTIVIGLOBAL_H
+
