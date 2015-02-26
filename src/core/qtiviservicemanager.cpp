@@ -1,6 +1,6 @@
 #include "qtiviservicemanager.h"
 
-#include "qtiviserviceinterface.h"
+#include "qtiviproxyserviceobject_p.h"
 #include "qtiviservicemanager_p.h"
 
 #include <QStringList>
@@ -17,15 +17,15 @@ QtIVIServiceManagerPrivate::QtIVIServiceManagerPrivate(QtIVIServiceManager *pare
 {
 }
 
-QList<QtIVIServiceInterface*> QtIVIServiceManagerPrivate::findServiceByInterface(const QString &interface)
+QList<QtIVIServiceObject *> QtIVIServiceManagerPrivate::findServiceByInterface(const QString &interface)
 {
-    QList<QtIVIServiceInterface*> list;
+    QList<QtIVIServiceObject*> list;
 
     foreach (Backend *backend, m_backends) {
 
         if (backend->metaData["interfaces"].toStringList().contains(interface)) {
             QtIVIServiceInterface *backendInterface = loadServiceBackendInterface(backend);
-            list.append(backendInterface);
+            list.append(new QtIVIProxyServiceObject(backendInterface));
         }
     }
 
@@ -160,7 +160,7 @@ QtIVIServiceManager::~QtIVIServiceManager()
 /*!
  * Returns a List of Backends which implementing the specified \a interface.
  */
-QList<QtIVIServiceInterface *> QtIVIServiceManager::findServiceByInterface(const QString &interface)
+QList<QtIVIServiceObject *> QtIVIServiceManager::findServiceByInterface(const QString &interface)
 {
     Q_D(QtIVIServiceManager);
     return d->findServiceByInterface(interface);

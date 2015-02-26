@@ -8,6 +8,7 @@
 
 class QPluginLoader;
 class QtIVIServiceInterface;
+class QtIVIServiceObject;
 class QtIVIServiceManager;
 
 struct Backend{
@@ -22,7 +23,7 @@ class QtIVIServiceManagerPrivate : public QObject
 public:
     explicit QtIVIServiceManagerPrivate(QtIVIServiceManager *parent);
 
-    QList<QtIVIServiceInterface*> findServiceByInterface(const QString &interface);
+    QList<QtIVIServiceObject*> findServiceByInterface(const QString &interface);
 
     void searchPlugins();
     void registerBackend(const QString fileName, const QJsonObject metaData);

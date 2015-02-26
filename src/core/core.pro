@@ -13,12 +13,14 @@ HEADERS += \
     qtiviserviceobject.h \
     qtiviabstractfeature.h \
     qtivisimplediscoverymodel.h \
-    qtiviglobal.h
+    qtiviglobal.h \
+    qtiviproxyserviceobject_p.h
 
 SOURCES += \
     qtiviservicemanager.cpp \
     qtiviserviceobject.cpp \
     qtiviabstractfeature.cpp \
-    qtivisimplediscoverymodel.cpp
+    qtivisimplediscoverymodel.cpp \
+    qtiviproxyserviceobject_p.cpp
 
 load(qt_module)

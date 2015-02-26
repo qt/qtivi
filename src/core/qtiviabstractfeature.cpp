@@ -56,18 +56,17 @@ void QtIVIAbstractFeature::componentComplete()
 {
     if (m_autoDiscovery) {
         QtIVIServiceManager* serviceManager = QtIVIServiceManager::instance();
-        QList<QtIVIServiceInterface*> serviceObjects = serviceManager->findServiceByInterface(m_interface);
+        QList<QtIVIServiceObject*> serviceObjects = serviceManager->findServiceByInterface(m_interface);
 
         if (serviceObjects.isEmpty()) {
-            qWarning() << "There is no backend implementing";
+            qWarning() << "There is no backend implementing" << m_interface << ".";
             return;
         }
 
         if (serviceObjects.count() > 1)
             qWarning() << "There is more than one backend implementing" << m_interface << ".";
 
-        //ServiceObject != QtIVIServiceInterface
-        //setServiceObject(serviceObjects.at(0));
+        setServiceObject(serviceObjects.at(0));
     }
 }
 

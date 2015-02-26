@@ -3,7 +3,7 @@
 
 #include <QtCore/QAbstractListModel>
 
-class QtIVIServiceInterface;
+class QtIVIServiceObject;
 class QtIVIServiceManagerPrivate;
 
 //TODO Detect simulation plugins
@@ -15,7 +15,7 @@ public:
     static QtIVIServiceManager *instance();
     virtual ~QtIVIServiceManager();
 
-    QList<QtIVIServiceInterface*> findServiceByInterface(const QString &interface);
+    QList<QtIVIServiceObject*> findServiceByInterface(const QString &interface);
     bool hasInterface(const QString &interface) const;
 
     bool registerService(QObject *serviceBackendInterface, const QStringList &interfaces);

@@ -12,7 +12,7 @@ class QtIVIAbstractFeature : public QObject, public QQmlParserStatus
     Q_INTERFACES(QQmlParserStatus)
 
     //This makes only sense if the Object is loaded directly
-    //Maybe use a attached property instead ???
+    //Maybe use a attached property instead ??? Feature.simulation = true; Feature.autoDiscovery = false
     //Q_PROPERTY(bool simulation READ simulation WRITE setSimulation NOTIFY simulationChanged)
     Q_PROPERTY(bool autoDiscovery READ autoDiscovery WRITE setAutoDiscovery NOTIFY autoDiscoveryChanged)
     Q_PROPERTY(QtIVIServiceObject* serviceObject READ serviceObject WRITE setServiceObject NOTIFY serviceObjectChanged)
