@@ -1,3 +1,4 @@
 TEMPLATE = subdirs
-SUBDIRS = core
+SUBDIRS = core \
+          vehiclefunctions
 
