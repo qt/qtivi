@@ -4,9 +4,11 @@
 #include <QObject>
 #include <QQmlParserStatus>
 
+#include <qtiviglobal.h>
+
 class QtIVIServiceObject;
 
-class QtIVIAbstractFeature : public QObject, public QQmlParserStatus
+class Q_QTIVICORE_EXPORT QtIVIAbstractFeature : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)

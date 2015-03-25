@@ -2,9 +2,11 @@
 #define QTIVISERVICEOBJECT_H
 
 #include <QObject>
-#include "qtiviserviceinterface.h"
 
-class QtIVIServiceObject : public QObject, public QtIVIServiceInterface
+#include "qtiviserviceinterface.h"
+#include "qtiviglobal.h"
+
+class Q_QTIVICORE_EXPORT QtIVIServiceObject : public QObject, public QtIVIServiceInterface
 {
     Q_OBJECT
     Q_INTERFACES(QtIVIServiceInterface)

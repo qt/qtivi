@@ -3,12 +3,14 @@
 
 #include <QtCore/QAbstractListModel>
 
+#include <qtiviglobal.h>
+
 class QtIVIServiceObject;
 class QtIVIServiceManagerPrivate;
 
 //TODO Detect simulation plugins
 //TODO make it possible to only search there e.g. by a SearchFlag BitField
-class QtIVIServiceManager : public QAbstractListModel
+class Q_QTIVICORE_EXPORT QtIVIServiceManager : public QAbstractListModel
 {
     Q_OBJECT
 public:
@@ -20,7 +22,7 @@ public:
 
     bool registerService(QObject *serviceBackendInterface, const QStringList &interfaces);
 
-    int rowCount(const QModelIndex &parent) const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role) const;
 signals:
 
