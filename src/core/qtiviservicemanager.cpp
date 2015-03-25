@@ -23,7 +23,7 @@ QList<QtIVIServiceObject *> QtIVIServiceManagerPrivate::findServiceByInterface(c
 
     foreach (Backend *backend, m_backends) {
 
-        if (backend->metaData["interfaces"].toStringList().contains(interface)) {
+        if (backend->metaData[QLatin1String("interfaces")].toStringList().contains(interface)) {
             QtIVIServiceInterface *backendInterface = loadServiceBackendInterface(backend);
             list.append(new QtIVIProxyServiceObject(backendInterface));
         }
@@ -53,7 +53,7 @@ void QtIVIServiceManagerPrivate::searchPlugins()
     }
     if (!found)
     {
-        qWarning() << "No plugins found in search path: " << QCoreApplication::libraryPaths().join(":");
+        qWarning() << "No plugins found in search path: " << QCoreApplication::libraryPaths().join(QLatin1String(":"));
     }
 }
 
@@ -61,14 +61,14 @@ void QtIVIServiceManagerPrivate::registerBackend(const QString fileName, const Q
 {
     QVariantMap backendMetaData = metaData.value(QLatin1String("MetaData")).toVariant().toMap();
 
-    if (backendMetaData["interfaces"].isNull() || backendMetaData["interfaces"].toList().isEmpty()) {
+    if (backendMetaData[QLatin1String("interfaces")].isNull() || backendMetaData[QLatin1String("interfaces")].toList().isEmpty()) {
         qDebug("PluginManager - Malformed metaData in '%s'. MetaData must contain a list of interfaces", qPrintable(fileName));
         return;
     }
 
     //TODO check for other metaData like name etc.
 
-    backendMetaData.insert("fileName", fileName);
+    backendMetaData.insert(QLatin1String("fileName"), fileName);
 
     Backend* backend = new Backend;
     backend->metaData = backendMetaData;
@@ -92,7 +92,7 @@ bool QtIVIServiceManagerPrivate::registerBackend(QObject *serviceBackendInterfac
 
     QVariantMap metaData = QVariantMap();
 
-    metaData.insert("interfaces", interfaces);
+    metaData.insert(QLatin1String("interfaces"), interfaces);
 
     Backend *backend = new Backend;
     backend->metaData = metaData;
@@ -135,7 +135,7 @@ void QtIVIServiceManagerPrivate::addBackend(Backend *backend)
     m_backends.append(backend);
     q->endInsertRows();
 
-    foreach (const QString &interface, backend->metaData["interfaces"].toStringList()) {
+    foreach (const QString &interface, backend->metaData[QLatin1String("interfaces")].toStringList()) {
         m_interfaceNames.insert(interface);
     }
 }
@@ -146,7 +146,7 @@ QtIVIServiceInterface *QtIVIServiceManagerPrivate::loadServiceBackendInterface(s
         return backend->interface;
     }
 
-    QPluginLoader *loader = new QPluginLoader(backend->metaData["fileName"].toString());
+    QPluginLoader *loader = new QPluginLoader(backend->metaData[QLatin1String("fileName")].toString());
     QObject *plugin = loader->instance();
     if (plugin) {
 
