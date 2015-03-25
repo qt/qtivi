@@ -61,11 +61,11 @@ public:
     ServiceManagerTest();
 
 private Q_SLOTS:
-    void init();
     void cleanup();
 
     void testHasInterface();
-    void testFindServiceObjectsReturnValidInstance();
+    void testFindServiceObjectsReturnInValidInstance();
+    void testFindServiceObjects();
     void testRegisterWithNoInterfaces();
     void testRegisterNonServiceBackendInterfaceObject();
     void testManagerListModel();
@@ -76,17 +76,12 @@ private:
 
 ServiceManagerTest::ServiceManagerTest()
 {
-}
-
-void ServiceManagerTest::init()
-{
     manager = QtIVIServiceManager::instance();
 }
 
 void ServiceManagerTest::cleanup()
 {
-    delete manager;
-    manager = 0;
+    manager->unloadAllBackends();
 }
 
 #define COMPARE_SERVICE_OBJECT(_model_, _index_, _serviceObject_) \
@@ -115,14 +110,25 @@ void ServiceManagerTest::testHasInterface()
    QCOMPARE(manager->hasInterface("Bar"), true);
 }
 
-/*
- * Test that the findServiceObjects always return a valid instance,
- * even though no backend has yet been registered with the interface.
- */
-void ServiceManagerTest::testFindServiceObjectsReturnValidInstance()
+void ServiceManagerTest::testFindServiceObjectsReturnInValidInstance()
 {
     QList<QtIVIServiceObject*> list = manager->findServiceByInterface("NonExistingInterface");
+    QVERIFY(list.isEmpty());
+}
+
+void ServiceManagerTest::testFindServiceObjects()
+{
+    MockServiceBackend *backend = new MockServiceBackend(manager);
+    bool regResult = manager->registerService(backend, QStringList() << "TestInterface");
+    QCOMPARE(regResult, true);
+    QObject* testObject = new QObject();
+    backend->addServiceObject("TestInterface", testObject);
+
+    QList<QtIVIServiceObject*> list = manager->findServiceByInterface("TestInterface");
     QVERIFY(!list.isEmpty());
+    QtIVIServiceObject* serviceObject = list.at(0);
+    QVERIFY(serviceObject->interfaces().contains("TestInterface"));
+    QCOMPARE(serviceObject->interfaceInstance("TestInterface"), testObject);
 }
 
 /*
@@ -171,10 +177,10 @@ void ServiceManagerTest::testManagerListModel()
     MockServiceBackend *backend1 = new MockServiceBackend(manager);
     regResult = manager->registerService(backend1, QStringList() << "Interface1" << "Interface2");
     QCOMPARE(regResult, true);
-    QCOMPARE(manager->rowCount(), 3);
+    QCOMPARE(manager->rowCount(), 2);
     //QCOMPARE(manager->data(manager->index(1), ServiceManager::InterfaceRole).toString(), QString("Interface1"));
-    QCOMPARE(manager->data(manager->index(2), Qt::DisplayRole).toString(), QString("Interface2"));
-    QCOMPARE(managerModelSpy.count(), 3);
+    //QCOMPARE(manager->data(manager->index(2), Qt::DisplayRole).toString(), QString("Interface2"));
+    QCOMPARE(managerModelSpy.count(), 2);
 
     // Register backend-2 with 'Interface1' and 'Interface2'. Should not result in any model changes
     MockServiceBackend *backend2 = new MockServiceBackend(manager);
