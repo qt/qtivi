@@ -73,6 +73,8 @@ void QtIVIServiceManagerPrivate::registerBackend(const QString fileName, const Q
     Backend* backend = new Backend;
     backend->metaData = backendMetaData;
     backend->interface = 0;
+    backend->interfaceObject = 0;
+    backend->loader = 0;
     addBackend(backend);
 }
 
@@ -95,9 +97,34 @@ bool QtIVIServiceManagerPrivate::registerBackend(QObject *serviceBackendInterfac
     Backend *backend = new Backend;
     backend->metaData = metaData;
     backend->interface = interface;
+    backend->interfaceObject = serviceBackendInterface;
+    backend->loader = 0;
 
     addBackend(backend);
     return true;
+}
+
+void QtIVIServiceManagerPrivate::unloadAllBackends()
+{
+    Q_Q(QtIVIServiceManager);
+
+    q->beginResetModel();
+    for(int i=0; i<m_backends.count(); i++) {
+        Backend* backend = m_backends.takeAt(i);
+
+        //If the Interface is from a Plugin, the Plugin owns it and it will be deleted when unloading.
+        //Otherwise we own the Interface and delete the Pointer.
+        if (backend->loader) {
+            backend->loader->unload();
+            delete backend->loader;
+        } else if (backend->interfaceObject) {
+            delete backend->interfaceObject;
+        }
+
+        delete backend;
+    }
+    m_backends.clear();
+    q->endResetModel();
 }
 
 void QtIVIServiceManagerPrivate::addBackend(Backend *backend)
@@ -119,21 +146,25 @@ QtIVIServiceInterface *QtIVIServiceManagerPrivate::loadServiceBackendInterface(s
         return backend->interface;
     }
 
-    QPluginLoader loader(backend->metaData["fileName"].toString());
-    QObject *plugin = loader.instance();
+    QPluginLoader *loader = new QPluginLoader(backend->metaData["fileName"].toString());
+    QObject *plugin = loader->instance();
     if (plugin) {
 
         QtIVIServiceInterface *backendInterface = qobject_cast<QtIVIServiceInterface*>(plugin);
         if (backendInterface) {
             backend->interface = backendInterface;
+            backend->loader = loader;
             return backend->interface;
         } else {
-            qDebug("ServiceManager::serviceObjects - failed to cast to interface from '%s'", qPrintable(loader.fileName()));
+            qDebug("ServiceManager::serviceObjects - failed to cast to interface from '%s'", qPrintable(loader->fileName()));
         }
 
     } else {
-        qDebug("ServiceManager::serviceObjects - failed to load '%s'", qPrintable(loader.fileName()));
+        qDebug("ServiceManager::serviceObjects - failed to load '%s'", qPrintable(loader->fileName()));
     }
+
+    //Only delete the Loader right away if we didn't succeeded with loading the interfaces.
+    delete loader;
 
     return 0;
 }
@@ -179,6 +210,12 @@ bool QtIVIServiceManager::registerService(QObject *serviceBackendInterface, cons
 {
     Q_D(QtIVIServiceManager);
     return d->registerBackend(serviceBackendInterface, interfaces);
+}
+
+void QtIVIServiceManager::unloadAllBackends()
+{
+    Q_D(QtIVIServiceManager);
+    return d->unloadAllBackends();
 }
 
 /*!

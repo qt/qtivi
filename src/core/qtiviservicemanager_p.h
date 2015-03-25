@@ -14,6 +14,8 @@ class QtIVIServiceManager;
 struct Backend{
     QVariantMap metaData;
     QtIVIServiceInterface *interface;
+    QObject *interfaceObject;
+    QPluginLoader *loader;
 };
 
 class QtIVIServiceManagerPrivate : public QObject
@@ -29,6 +31,8 @@ public:
     void registerBackend(const QString fileName, const QJsonObject metaData);
     bool registerBackend(QObject *serviceBackendInterface, const QStringList &interfaces);
     void addBackend(struct Backend *backend);
+
+    void unloadAllBackends();
 
     QtIVIServiceInterface *loadServiceBackendInterface(struct Backend *backend);
 

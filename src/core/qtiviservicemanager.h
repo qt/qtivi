@@ -21,6 +21,7 @@ public:
     bool hasInterface(const QString &interface) const;
 
     bool registerService(QObject *serviceBackendInterface, const QStringList &interfaces);
+    void unloadAllBackends();
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role) const;
