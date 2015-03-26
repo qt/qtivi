@@ -8,7 +8,8 @@ CMAKE_MODULE_TESTS = '-'
 
 HEADERS += \
     qtiviclimatecontrol.h \
-    qtiviclimatecontrolbackendinterface.h
+    qtiviclimatecontrolbackendinterface.h \
+    qtivivehiclefunctionsglobal.h
 
 SOURCES += \
     qtiviclimatecontrol.cpp

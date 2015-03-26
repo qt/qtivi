@@ -1,6 +1,8 @@
 #ifndef CLIMATECONTROL_H
 #define CLIMATECONTROL_H
 
+#include <qtivivehiclefunctionsglobal.h>
+
 #include <QtIVIAbstractFeature>
 #include <QObject>
 #include <QMap>
@@ -11,7 +13,7 @@ class QtIVIClimateControlBackendInterface;
 /* Properties based on http://www.w3.org/2014/automotive/data_spec.html#idl-def-ClimateControl
  * This list contains properties per zone.
  */
-class QtIVIClimateZone : public QObject
+class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIClimateZone : public QObject
 {
     Q_OBJECT
 
@@ -92,7 +94,7 @@ private:
 /* Properties based on http://www.w3.org/2014/automotive/data_spec.html#idl-def-ClimateControl
  * This list contains the properties for the whole car.
  */
-class QtIVIClimateControl : public QtIVIAbstractFeature
+class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIClimateControl : public QtIVIAbstractFeature
 {
     Q_OBJECT
 
