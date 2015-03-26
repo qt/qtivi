@@ -72,7 +72,7 @@ void QtIVIClimateZone::setSeatCooler(int t)
     if (m_hasSeatCooler)
         qobject_cast<QtIVIClimateControl*>(parent())->backend()->setSeatCooler(m_zone, t);
     else
-        qWarning() << "Trying to set ClimateZone::seatCooler without a backend.";
+        qWarning() << "Trying to set ClimateZone::seatCooler in an unsupported zone or without a backend.";
 }
 
 bool QtIVIClimateZone::hasSeatHeater() const
