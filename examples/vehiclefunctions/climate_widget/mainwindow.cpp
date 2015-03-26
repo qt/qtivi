@@ -36,8 +36,7 @@ void MainWindow::setupUI()
 {
     //Air Flow Direction
     setupFlowDirectionRadioButtons(m_climateControl->airflowDirection());
-    connect(m_radioButtonGroup, SIGNAL(buttonToggled(QAbstractButton*,bool)), this, SLOT(onFlowDirectionButtonToggled(QAbstractButton*,bool)));
-    //connect(m_radioButtonGroup, &QButtonGroup::buttonToggled, this, &MainWindow::onClimateDirectionButtonToggled);
+    connect(m_radioButtonGroup, static_cast<void (QButtonGroup::*)(QAbstractButton *, bool)>(&QButtonGroup::buttonToggled), this, &MainWindow::onClimateDirectionButtonToggled);
     connect(m_climateControl, &QtIVIClimateControl::airflowDirectionChanged, this, &MainWindow::setupFlowDirectionRadioButtons);
 
     //Air Condition
@@ -63,8 +62,7 @@ void MainWindow::setupUI()
     //Fan Speed
     ui->sb_fanSpeed->setValue(m_climateControl->fanSpeedLevel());
     connect(m_climateControl, &QtIVIClimateControl::fanSpeedLevelChanged, ui->sb_fanSpeed, &QSpinBox::setValue);
-    connect(ui->sb_fanSpeed, SIGNAL(valueChanged(int)), m_climateControl, SLOT(setFanSpeedLevel(int)));
-    //connect(ui->sb_fanSpeed, &QSpinBox::valueChanged, m_climateControl, &QtIVIClimateControl::setFanSpeedLevel);
+    connect(ui->sb_fanSpeed, static_cast<void (QSpinBox::*)(int)>(QSpinBox::valueChanged), m_climateControl, &QtIVIClimateControl::setFanSpeedLevel);
 }
 
 void MainWindow::setupFlowDirectionRadioButtons(QtIVIClimateControl::AirflowDirection direction)
