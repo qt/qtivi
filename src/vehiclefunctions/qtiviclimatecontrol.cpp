@@ -302,9 +302,9 @@ void QtIVIClimateControl::connectToServiceObject(QtIVIServiceObject *so)
     zones << QtIVIClimateZone::FrontLeft << QtIVIClimateZone::FrontCenter << QtIVIClimateZone::FrontRight
           << QtIVIClimateZone::RearLeft << QtIVIClimateZone::RearCenter << QtIVIClimateZone::RearRight;
     foreach(QtIVIClimateZone::Zone z, zones) {
-        connect(backend, SIGNAL(targetTemperatureChanged(QtIVIClimateZone::Zone, int)), m_zones[z], SLOT(onTargetTemperatureChanged(QtIVIClimateZone::Zone,int)));
-        connect(backend, SIGNAL(seatCoolerChanged(QtIVIClimateZone::Zone, int)), m_zones[z], SLOT(onSeatCoolerChanged(QtIVIClimateZone::Zone,int)));
-        connect(backend, SIGNAL(seatHeaterChanged(QtIVIClimateZone::Zone, int)), m_zones[z], SLOT(onSeatHeaterChanged(QtIVIClimateZone::Zone,int)));
+        connect(backend, &QtIVIClimateControlBackendInterface::targetTemperatureChanged, m_zones[z], &QtIVIClimateZone::onTargetTemperatureChanged);
+        connect(backend, &QtIVIClimateControlBackendInterface::seatCoolerChanged, m_zones[z], &QtIVIClimateZone::onSeatCoolerChanged);
+        connect(backend, &QtIVIClimateControlBackendInterface::seatHeaterChanged, m_zones[z], &QtIVIClimateZone::onSeatHeaterChanged);
         m_zones[z]->onTargetTemperatureChanged(z, backend->targetTemperature(z));
         m_zones[z]->onSeatCoolerChanged(z, backend->seatCooler(z));
         m_zones[z]->onSeatHeaterChanged(z, backend->seatHeater(z));
@@ -314,12 +314,12 @@ void QtIVIClimateControl::connectToServiceObject(QtIVIServiceObject *so)
         m_zones[z]->setHasSeatHeater(backend->hasSeatHeater(z));
     }
 
-    connect(backend, SIGNAL(airflowDirectionChanged(QtIVIClimateControl::AirflowDirection)), this, SLOT(onAirflowDirectionChanged(AirflowDirection)));
-    connect(backend, SIGNAL(airConditioningEnabledChanged(bool)), this, SLOT(onAirConditioningEnabledChanged(bool)));
-    connect(backend, SIGNAL(heaterEnabledChanged(bool)), this, SLOT(onHeaterEnabledChanged(bool)));
-    connect(backend, SIGNAL(airRecirculationEnabledChanged(bool)), this, SLOT(onAirRecirculationEnabledChanged(bool)));
-    connect(backend, SIGNAL(steeringWheelHeaterEnabledChanged(bool)), this, SLOT(onSteeringWheelHeaterEnabledChanged(bool)));
-    connect(backend, SIGNAL(fanSpeedLevelChanged(int)), this, SLOT(onFanSpeedLevelChanged(int)));
+    connect(backend, &QtIVIClimateControlBackendInterface::airflowDirectionChanged, this, &QtIVIClimateControl::onAirflowDirectionChanged);
+    connect(backend, &QtIVIClimateControlBackendInterface::airConditioningEnabledChanged, this, &QtIVIClimateControl::onAirConditioningEnabledChanged);
+    connect(backend, &QtIVIClimateControlBackendInterface::heaterEnabledChanged, this, &QtIVIClimateControl::onHeaterEnabledChanged);
+    connect(backend, &QtIVIClimateControlBackendInterface::airRecirculationEnabledChanged, this, &QtIVIClimateControl::onAirRecirculationEnabledChanged);
+    connect(backend, &QtIVIClimateControlBackendInterface::steeringWheelHeaterEnabledChanged, this, &QtIVIClimateControl::onSteeringWheelHeaterEnabledChanged);
+    connect(backend, &QtIVIClimateControlBackendInterface::fanSpeedLevelChanged, this, &QtIVIClimateControl::onFanSpeedLevelChanged);
 
     onAirflowDirectionChanged(backend->airflowDirection());
     onAirConditioningEnabledChanged(backend->airConditioningEnabled());
@@ -337,17 +337,17 @@ void QtIVIClimateControl::disconnectFromServiceObject(QtIVIServiceObject *so)
     zones << QtIVIClimateZone::FrontLeft << QtIVIClimateZone::FrontCenter << QtIVIClimateZone::FrontRight
           << QtIVIClimateZone::RearLeft << QtIVIClimateZone::RearCenter << QtIVIClimateZone::RearRight;
     foreach(QtIVIClimateZone::Zone z, zones) {
-        disconnect(backend, SIGNAL(targetTemperatureChanged(QtIVIClimateZone::Zone, int)), m_zones[z], SLOT(onTargetTemperatureChanged(QtIVIClimateZone::Zone,int)));
-        disconnect(backend, SIGNAL(seatCoolerChanged(QtIVIClimateZone::Zone, int)), m_zones[z], SLOT(onSeatCoolerChanged(QtIVIClimateZone::Zone,int)));
-        disconnect(backend, SIGNAL(seatHeaterChanged(QtIVIClimateZone::Zone, int)), m_zones[z], SLOT(onSeatHeaterChanged(QtIVIClimateZone::Zone,int)));
+        disconnect(backend, &QtIVIClimateControlBackendInterface::targetTemperatureChanged, m_zones[z], &QtIVIClimateZone::onTargetTemperatureChanged);
+        disconnect(backend, &QtIVIClimateControlBackendInterface::seatCoolerChanged, m_zones[z], &QtIVIClimateZone::onSeatCoolerChanged);
+        disconnect(backend, &QtIVIClimateControlBackendInterface::seatHeaterChanged, m_zones[z], &QtIVIClimateZone::onSeatHeaterChanged);
     }
 
-    disconnect(backend, SIGNAL(airflowDirectionChanged(QtIVIClimateControl::AirflowDirection)), this, SLOT(onAirflowDirectionChanged(AirflowDirection)));
-    disconnect(backend, SIGNAL(airConditioningEnabledChanged(bool)), this, SLOT(onAirConditioningEnabledChanged(bool)));
-    disconnect(backend, SIGNAL(heaterEnabledChanged(bool)), this, SLOT(onHeaterEnabledChanged(bool)));
-    disconnect(backend, SIGNAL(airRecirculationEnabledChanged(bool)), this, SLOT(onAirRecirculationEnabledChanged(bool)));
-    disconnect(backend, SIGNAL(steeringWheelHeaterEnabledChanged(bool)), this, SLOT(onSteeringWheelHeaterEnabledChanged(bool)));
-    disconnect(backend, SIGNAL(fanSpeedLevelChanged(int)), this, SLOT(onFanSpeedLevelChanged(int)));
+    disconnect(backend, &QtIVIClimateControlBackendInterface::airflowDirectionChanged, this, &QtIVIClimateControl::onAirflowDirectionChanged);
+    disconnect(backend, &QtIVIClimateControlBackendInterface::airConditioningEnabledChanged, this, &QtIVIClimateControl::onAirConditioningEnabledChanged);
+    disconnect(backend, &QtIVIClimateControlBackendInterface::heaterEnabledChanged, this, &QtIVIClimateControl::onHeaterEnabledChanged);
+    disconnect(backend, &QtIVIClimateControlBackendInterface::airRecirculationEnabledChanged, this, &QtIVIClimateControl::onAirRecirculationEnabledChanged);
+    disconnect(backend, &QtIVIClimateControlBackendInterface::steeringWheelHeaterEnabledChanged, this, &QtIVIClimateControl::onSteeringWheelHeaterEnabledChanged);
+    disconnect(backend, &QtIVIClimateControlBackendInterface::fanSpeedLevelChanged, this, &QtIVIClimateControl::onFanSpeedLevelChanged);
 }
 
 void QtIVIClimateControl::clearServiceObject()
