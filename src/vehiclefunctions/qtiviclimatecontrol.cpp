@@ -4,6 +4,7 @@
 
 
 
+
 QString QtIVIClimateControlBackendInterface::interfaceName = QLatin1String("com.pelagicore.ClimateControl");
 
 
@@ -34,13 +35,18 @@ bool QtIVIClimateZone::hasTargetTemperature() const
 
 int QtIVIClimateZone::targetTemperature() const
 {
-    return m_targetTemperature;
+    if (m_hasTargetTemperature)
+        return m_targetTemperature;
+    else
+        return 0;
 }
 
 void QtIVIClimateZone::setTargetTemperature(int t)
 {
     if (m_hasTargetTemperature)
         qobject_cast<QtIVIClimateControl*>(parent())->backend()->setTargetTemperature(m_zone, t);
+    else
+        qWarning() << "Trying to set ClimateZone::targetTemperature without a backend.";
 }
 
 bool QtIVIClimateZone::hasSeatCooler() const
@@ -50,18 +56,31 @@ bool QtIVIClimateZone::hasSeatCooler() const
 
 int QtIVIClimateZone::seatCooler() const
 {
-    return m_seatCooler;
+    if (m_hasSeatCooler)
+        return m_seatCooler;
+    else
+        return 0;
 }
 
 void QtIVIClimateZone::setSeatCooler(int t)
 {
+    if (t < 0 || t > 10) {
+        qWarning() << "Trying to set ClimateZone::seatCooler to " << t << " which is out of range (0-10).";
+        return;
+    }
+
     if (m_hasSeatCooler)
         qobject_cast<QtIVIClimateControl*>(parent())->backend()->setSeatCooler(m_zone, t);
+    else
+        qWarning() << "Trying to set ClimateZone::seatCooler without a backend.";
 }
 
 bool QtIVIClimateZone::hasSeatHeater() const
 {
-    return m_hasSeatHeater;
+    if (m_hasSeatHeater)
+        return m_hasSeatHeater;
+    else
+        return 0;
 }
 
 int QtIVIClimateZone::seatHeater() const
@@ -71,15 +90,23 @@ int QtIVIClimateZone::seatHeater() const
 
 void QtIVIClimateZone::setSeatHeater(int t)
 {
+    if (t < 0 || t > 10) {
+        qWarning() << "Trying to set ClimateZone::seatHeater to " << t << " which is out of range (0-10).";
+        return;
+    }
+
     if (m_hasSeatHeater)
         qobject_cast<QtIVIClimateControl*>(parent())->backend()->setSeatHeater(m_zone, t);
+    else
+        qWarning() << "Trying to set ClimateZone::seatHeater without a backend.";
 }
 
 void QtIVIClimateZone::onTargetTemperatureChanged(QtIVIClimateZone::Zone z, int t)
 {
     if (z == m_zone) {
         m_targetTemperature = t;
-        emit targetTemperatureChanged(m_seatHeater);
+        if (m_hasTargetTemperature)
+            emit targetTemperatureChanged(m_seatHeater);
     }
 }
 
@@ -87,7 +114,8 @@ void QtIVIClimateZone::onSeatCoolerChanged(QtIVIClimateZone::Zone z, int t)
 {
     if (z == m_zone) {
         m_seatCooler = t;
-        emit seatCoolerChanged(m_seatCooler);
+        if (m_hasSeatCooler)
+            emit seatCoolerChanged(m_seatCooler);
     }
 }
 
@@ -95,7 +123,8 @@ void QtIVIClimateZone::onSeatHeaterChanged(QtIVIClimateZone::Zone z, int t)
 {
     if (z == m_zone) {
         m_seatHeater = t;
-        emit seatHeaterChanged(m_seatHeater);
+        if (m_hasSeatHeater)
+            emit seatHeaterChanged(m_seatHeater);
     }
 }
 
@@ -105,8 +134,7 @@ void QtIVIClimateZone::setHasTargetTemperature(bool e)
         m_hasTargetTemperature = e;
         emit hasTargetTemperatureChanged(m_hasTargetTemperature);
 
-        if (!m_hasTargetTemperature)
-            onTargetTemperatureChanged(m_zone, 0);
+        onTargetTemperatureChanged(m_zone, targetTemperature());
     }
 }
 
@@ -116,8 +144,7 @@ void QtIVIClimateZone::setHasSeatCooler(bool e)
         m_hasSeatCooler = e;
         emit hasSeatCoolerChanged(m_hasSeatCooler);
 
-        if (!m_hasSeatCooler)
-            onSeatCoolerChanged(m_zone, 0);
+        onSeatCoolerChanged(m_zone, seatCooler());
     }
 }
 
@@ -127,8 +154,7 @@ void QtIVIClimateZone::setHasSeatHeater(bool e)
         m_hasSeatHeater = e;
         emit hasSeatHeaterChanged(m_hasSeatHeater);
 
-        if (!m_hasSeatHeater)
-            onSeatHeaterChanged(m_zone, 0);
+        onSeatHeaterChanged(m_zone, seatHeater());
     }
 }
 
@@ -274,12 +300,13 @@ void QtIVIClimateControl::connectToServiceObject(QtIVIServiceObject *so)
         connect(backend, SIGNAL(targetTemperatureChanged(QtIVIClimateZone::Zone, int)), m_zones[z], SLOT(onTargetTemperatureChanged(QtIVIClimateZone::Zone,int)));
         connect(backend, SIGNAL(seatCoolerChanged(QtIVIClimateZone::Zone, int)), m_zones[z], SLOT(onSeatCoolerChanged(QtIVIClimateZone::Zone,int)));
         connect(backend, SIGNAL(seatHeaterChanged(QtIVIClimateZone::Zone, int)), m_zones[z], SLOT(onSeatHeaterChanged(QtIVIClimateZone::Zone,int)));
-        m_zones[z]->setHasTargetTemperature(backend->hasTargetTemperature(z));
         m_zones[z]->onTargetTemperatureChanged(z, backend->targetTemperature(z));
-        m_zones[z]->setHasSeatCooler(backend->hasSeatCooler(z));
         m_zones[z]->onSeatCoolerChanged(z, backend->seatCooler(z));
-        m_zones[z]->setHasSeatHeater(backend->hasSeatHeater(z));
         m_zones[z]->onSeatHeaterChanged(z, backend->seatHeater(z));
+        /* Set the has properties last to ensure that the value is available when signalling */
+        m_zones[z]->setHasTargetTemperature(backend->hasTargetTemperature(z));
+        m_zones[z]->setHasSeatCooler(backend->hasSeatCooler(z));
+        m_zones[z]->setHasSeatHeater(backend->hasSeatHeater(z));
     }
 
     connect(backend, SIGNAL(airflowDirectionChanged(QtIVIClimateControl::AirflowDirection)), this, SLOT(onAirflowDirectionChanged(AirflowDirection)));
