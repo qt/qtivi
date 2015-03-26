@@ -215,7 +215,12 @@ QtIVIClimateZone *QtIVIClimateControl::climateZone(QtIVIClimateZone::Zone z) con
 
 QtIVIClimateZone *QtIVIClimateControl::driver() const
 {
-    return m_zones[backend()?backend()->driverZone():QtIVIClimateZone::FrontLeft];
+    if (backend())
+        return m_zones[backend()->driverZone()];
+    else {
+        qWarning() << "Returning driver zone without a backend, using default driver zone.";
+        return m_zones[QtIVIClimateZone::FrontLeft];
+    }
 }
 
 QtIVIClimateZone *QtIVIClimateControl::frontLeftZone() const
