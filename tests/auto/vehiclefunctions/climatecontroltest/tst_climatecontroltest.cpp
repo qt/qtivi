@@ -282,6 +282,10 @@ private slots:
     void testZoneSeatCooler();
     void testZoneSeatHeater();
 
+    void testZoneWithoutTargetTemperature();
+    void testZoneWithoutSeatCooler();
+    void testZoneWithoutSeatHeater();
+
 private:
     QtIVIServiceManager *manager;
 };
@@ -377,6 +381,32 @@ void ClimateControlTest::testZone##_capitalProp_() { \
     } \
 }
 
+/* For testing unavailable integer properties of the climate zones */
+#define TEST_WITHOUT_INTEGER_ZONE_PROPERTY(_prop_, _capitalProp_) \
+void ClimateControlTest::testZoneWithout##_capitalProp_() { \
+    ClimateControlTestServiceObject *service = new ClimateControlTestServiceObject(); \
+    manager->registerService(service, service->interfaces()); \
+    QList<QtIVIClimateZone::Zone> zones; \
+    zones << QtIVIClimateZone::FrontLeft << QtIVIClimateZone::FrontCenter << QtIVIClimateZone::FrontRight \
+          << QtIVIClimateZone::RearLeft << QtIVIClimateZone::RearCenter << QtIVIClimateZone::RearRight; \
+    foreach(QtIVIClimateZone::Zone z, zones) \
+        service->testBackend()->setHas##_capitalProp_(z, false); \
+    QtIVIClimateControl cc; \
+    cc.startAutoDiscovery(); \
+    foreach(QtIVIClimateZone::Zone z, zones) { \
+        service->testBackend()->set##_capitalProp_(z, 0); \
+        QSignalSpy valueSpy(cc.climateZone(z), SIGNAL(_prop_##Changed(int))); \
+        QCOMPARE(cc.climateZone(z)->_prop_(), 0); \
+        QTest::ignoreMessage(QtWarningMsg, "Trying to set ClimateZone::" #_prop_ " in an unsupported zone or without a backend."); \
+        cc.climateZone(z)->set##_capitalProp_(5); \
+        QCOMPARE(valueSpy.count(), 0); \
+        QCOMPARE(cc.climateZone(z)->_prop_(), 0); \
+        service->testBackend()->set##_capitalProp_(z, 8); \
+        QCOMPARE(valueSpy.count(), 0); \
+        QCOMPARE(cc.climateZone(z)->_prop_(), 0); \
+    } \
+}
+
 TEST_INTEGER_PROPERTY(fanSpeedLevel, FanSpeedLevel)
 TEST_BOOLEAN_PROPERTY(airConditioningEnabled, AirConditioningEnabled)
 TEST_BOOLEAN_PROPERTY(heaterEnabled, HeaterEnabled)
@@ -385,6 +415,9 @@ TEST_BOOLEAN_PROPERTY(steeringWheelHeaterEnabled, SteeringWheelHeaterEnabled)
 TEST_INTEGER_ZONE_PROPERTY(targetTemperature, TargetTemperature)
 TEST_INTEGER_ZONE_PROPERTY(seatCooler, SeatCooler)
 TEST_INTEGER_ZONE_PROPERTY(seatHeater, SeatHeater)
+TEST_WITHOUT_INTEGER_ZONE_PROPERTY(targetTemperature, TargetTemperature)
+TEST_WITHOUT_INTEGER_ZONE_PROPERTY(seatCooler, SeatCooler)
+TEST_WITHOUT_INTEGER_ZONE_PROPERTY(seatHeater, SeatHeater)
 
 QTEST_APPLESS_MAIN(ClimateControlTest)
 

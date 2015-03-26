@@ -46,7 +46,7 @@ void QtIVIClimateZone::setTargetTemperature(int t)
     if (m_hasTargetTemperature)
         qobject_cast<QtIVIClimateControl*>(parent())->backend()->setTargetTemperature(m_zone, t);
     else
-        qWarning() << "Trying to set ClimateZone::targetTemperature without a backend.";
+        qWarning() << "Trying to set ClimateZone::targetTemperature in an unsupported zone or without a backend.";
 }
 
 bool QtIVIClimateZone::hasSeatCooler() const
@@ -77,15 +77,15 @@ void QtIVIClimateZone::setSeatCooler(int t)
 
 bool QtIVIClimateZone::hasSeatHeater() const
 {
-    if (m_hasSeatHeater)
-        return m_hasSeatHeater;
-    else
-        return 0;
+    return m_hasSeatHeater;
 }
 
 int QtIVIClimateZone::seatHeater() const
 {
-    return m_seatHeater;
+    if (m_hasSeatHeater)
+        return m_seatHeater;
+    else
+        return 0;
 }
 
 void QtIVIClimateZone::setSeatHeater(int t)
@@ -98,7 +98,7 @@ void QtIVIClimateZone::setSeatHeater(int t)
     if (m_hasSeatHeater)
         qobject_cast<QtIVIClimateControl*>(parent())->backend()->setSeatHeater(m_zone, t);
     else
-        qWarning() << "Trying to set ClimateZone::seatHeater without a backend.";
+        qWarning() << "Trying to set ClimateZone::seatHeater in an unsupported zone or without a backend.";
 }
 
 void QtIVIClimateZone::onTargetTemperatureChanged(QtIVIClimateZone::Zone z, int t)
