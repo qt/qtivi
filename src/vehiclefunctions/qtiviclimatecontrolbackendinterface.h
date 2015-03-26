@@ -3,7 +3,6 @@
 
 #include <QObject>
 
-/* I'm not sure if we want this one here */
 #include "qtiviclimatecontrol.h"
 
 class QtIVIClimateControlBackendInterface : public QObject
