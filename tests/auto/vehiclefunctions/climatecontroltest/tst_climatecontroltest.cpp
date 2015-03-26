@@ -152,7 +152,7 @@ public:
 
     bool airConditioningEnabled() const
     {
-        return m_airflowDirection;
+        return m_airConditioningEnabled;
     }
 
     bool heaterEnabled() const
@@ -234,6 +234,10 @@ private slots:
 
     void testWithoutBackend();
     void testFanSpeedLevel();
+    void testAirConditioningEnabled();
+    void testHeaterEnabled();
+    void testAirRecirculationEnabled();
+    void testSteeringWheelHeaterEnabled();
 
 private:
     QtIVIServiceManager *manager;
@@ -265,24 +269,45 @@ void ClimateControlTest::testWithoutBackend()
     QCOMPARE(cc.fanSpeedLevel(), fsl);
 }
 
-void ClimateControlTest::testFanSpeedLevel()
-{
-    ClimateControlTestServiceObject *service = new ClimateControlTestServiceObject();
-    manager->registerService(service, service->interfaces());
-
-    QtIVIClimateControl cc;
-    cc.startAutoDiscovery();
-
-    QSignalSpy fanSpeedSpy(&cc, SIGNAL(fanSpeedLevelChanged(int)));
-
-    QCOMPARE(cc.fanSpeedLevel(), 0);
-    cc.setFanSpeedLevel(5);
-    QCOMPARE(fanSpeedSpy.count(), 1);
-    QCOMPARE(cc.fanSpeedLevel(), 5);
-    service->testBackend()->setFanSpeedLevel(8);
-    QCOMPARE(fanSpeedSpy.count(), 2);
-    QCOMPARE(cc.fanSpeedLevel(), 8);
+#define TEST_INTEGER_PROPERTY(_prop_, _capitalProp_) \
+void ClimateControlTest::test##_capitalProp_() { \
+    ClimateControlTestServiceObject *service = new ClimateControlTestServiceObject(); \
+    manager->registerService(service, service->interfaces()); \
+    service->testBackend()->set##_capitalProp_(0); \
+    QtIVIClimateControl cc; \
+    cc.startAutoDiscovery(); \
+    QSignalSpy _prop_##Spy(&cc, SIGNAL(_prop_##Changed(int))); \
+    QCOMPARE(cc._prop_(), 0); \
+    cc.set##_capitalProp_(5); \
+    QCOMPARE(_prop_##Spy.count(), 1); \
+    QCOMPARE(cc._prop_(), 5); \
+    service->testBackend()->set##_capitalProp_(8); \
+    QCOMPARE(_prop_##Spy.count(), 2); \
+    QCOMPARE(cc._prop_(), 8); \
 }
+
+#define TEST_BOOLEAN_PROPERTY(_prop_, _capitalProp_) \
+void ClimateControlTest::test##_capitalProp_() { \
+    ClimateControlTestServiceObject *service = new ClimateControlTestServiceObject(); \
+    manager->registerService(service, service->interfaces()); \
+    service->testBackend()->set##_capitalProp_(false); \
+    QtIVIClimateControl cc; \
+    cc.startAutoDiscovery(); \
+    QSignalSpy _prop_##Spy(&cc, SIGNAL(_prop_##Changed(bool))); \
+    QCOMPARE(cc.is##_capitalProp_(), false); \
+    cc.set##_capitalProp_(true); \
+    QCOMPARE(_prop_##Spy.count(), 1); \
+    QCOMPARE(cc.is##_capitalProp_(), true); \
+    service->testBackend()->set##_capitalProp_(false); \
+    QCOMPARE(_prop_##Spy.count(), 2); \
+    QCOMPARE(cc.is##_capitalProp_(), false); \
+}
+
+TEST_INTEGER_PROPERTY(fanSpeedLevel, FanSpeedLevel)
+TEST_BOOLEAN_PROPERTY(airConditioningEnabled, AirConditioningEnabled)
+TEST_BOOLEAN_PROPERTY(heaterEnabled, HeaterEnabled)
+TEST_BOOLEAN_PROPERTY(airRecirculationEnabled, AirRecirculationEnabled)
+TEST_BOOLEAN_PROPERTY(steeringWheelHeaterEnabled, SteeringWheelHeaterEnabled)
 
 QTEST_APPLESS_MAIN(ClimateControlTest)
 
