@@ -403,5 +403,8 @@ void QtIVIClimateControl::onFanSpeedLevelChanged(int fanSpeedLevel)
 
 QtIVIClimateControlBackendInterface *QtIVIClimateControl::backend() const
 {
-    return qobject_cast<QtIVIClimateControlBackendInterface*>(serviceObject()->interfaceInstance(QtIVIClimateControlBackendInterface::interfaceName));
+    if (serviceObject())
+        return qobject_cast<QtIVIClimateControlBackendInterface*>(serviceObject()->interfaceInstance(QtIVIClimateControlBackendInterface::interfaceName));
+    else
+        return 0;
 }
