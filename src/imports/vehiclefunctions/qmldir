@@ -1,0 +1,3 @@
+module QtIVIVehicleFunctions
+plugin qtivivehiclefunctionsplugin
+classname QtIVIVehicleFunctionsPlugin
