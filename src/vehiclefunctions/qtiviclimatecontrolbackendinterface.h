@@ -5,11 +5,13 @@
 
 #include "qtiviclimatecontrol.h"
 
-class QtIVIClimateControlBackendInterface : public QObject
+class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIClimateControlBackendInterface : public QObject
 {
     Q_OBJECT
 
 public:
+    QtIVIClimateControlBackendInterface(QObject *parent=0) : QObject(parent) {}
+
     static QString interfaceName;
 
     virtual bool hasTargetTemperature(QtIVIClimateZone::Zone) = 0;

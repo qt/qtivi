@@ -151,7 +151,7 @@ public:
     QtIVIClimateZone *rearRightZone() const;
 
 public slots:
-    void setAirflowDirection(AirflowDirection);
+    void setAirflowDirection(QtIVIClimateControl::AirflowDirection);
     void setAirConditioningEnabled(bool);
     void setHeaterEnabled(bool);
     void setAirRecirculationEnabled(bool);
@@ -159,7 +159,7 @@ public slots:
     void setFanSpeedLevel(int);
 
 signals:
-    void airflowDirectionChanged(AirflowDirection airflowDirection);
+    void airflowDirectionChanged(QtIVIClimateControl::AirflowDirection airflowDirection);
     void airConditioningEnabledChanged(bool airConditioning);
     void heaterEnabledChanged(bool heaterEnabled);
     void airRecirculationEnabledChanged(bool airRecirculation);
@@ -173,7 +173,7 @@ protected:
     virtual void clearServiceObject();
 
 private slots:
-    void onAirflowDirectionChanged(AirflowDirection airflowDirection);
+    void onAirflowDirectionChanged(QtIVIClimateControl::AirflowDirection airflowDirection);
     void onAirConditioningEnabledChanged(bool airConditioning);
     void onHeaterEnabledChanged(bool heater);
     void onAirRecirculationEnabledChanged(bool airRecirculation);
