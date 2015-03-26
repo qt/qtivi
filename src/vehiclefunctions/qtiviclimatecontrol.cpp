@@ -106,7 +106,7 @@ void QtIVIClimateZone::onTargetTemperatureChanged(QtIVIClimateZone::Zone z, int 
     if (z == m_zone) {
         m_targetTemperature = t;
         if (m_hasTargetTemperature)
-            emit targetTemperatureChanged(m_seatHeater);
+            emit targetTemperatureChanged(m_targetTemperature);
     }
 }
 
