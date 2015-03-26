@@ -27,6 +27,8 @@ public:
     QtIVIServiceObject *serviceObject() const;
     bool autoDiscovery() const;
 
+    void startAutoDiscovery();
+
 public slots:
     void setServiceObject(QtIVIServiceObject *so);
     void setAutoDiscovery(bool autoDiscovery);

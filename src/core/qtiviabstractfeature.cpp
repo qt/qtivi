@@ -55,18 +55,7 @@ void QtIVIAbstractFeature::classBegin()
 void QtIVIAbstractFeature::componentComplete()
 {
     if (m_autoDiscovery) {
-        QtIVIServiceManager* serviceManager = QtIVIServiceManager::instance();
-        QList<QtIVIServiceObject*> serviceObjects = serviceManager->findServiceByInterface(m_interface);
-
-        if (serviceObjects.isEmpty()) {
-            qWarning() << "There is no backend implementing" << m_interface << ".";
-            return;
-        }
-
-        if (serviceObjects.count() > 1)
-            qWarning() << "There is more than one backend implementing" << m_interface << ".";
-
-        setServiceObject(serviceObjects.at(0));
+        startAutoDiscovery();
     }
 }
 
@@ -78,6 +67,24 @@ QtIVIServiceObject *QtIVIAbstractFeature::serviceObject() const
 bool QtIVIAbstractFeature::autoDiscovery() const
 {
     return m_autoDiscovery;
+}
+
+void QtIVIAbstractFeature::startAutoDiscovery()
+{
+    setAutoDiscovery(true);
+
+    QtIVIServiceManager* serviceManager = QtIVIServiceManager::instance();
+    QList<QtIVIServiceObject*> serviceObjects = serviceManager->findServiceByInterface(m_interface);
+
+    if (serviceObjects.isEmpty()) {
+        qWarning() << "There is no backend implementing" << m_interface << ".";
+        return;
+    }
+
+    if (serviceObjects.count() > 1)
+        qWarning() << "There is more than one backend implementing" << m_interface << ".";
+
+    setServiceObject(serviceObjects.at(0));
 }
 
 void QtIVIAbstractFeature::serviceObjectDestroyed()
