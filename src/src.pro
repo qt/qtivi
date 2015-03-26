@@ -1,4 +1,5 @@
 TEMPLATE = subdirs
 SUBDIRS = core \
-          vehiclefunctions
+          vehiclefunctions \
+          plugins \
 
