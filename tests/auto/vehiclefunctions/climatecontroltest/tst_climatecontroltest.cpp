@@ -336,34 +336,50 @@ void ClimateControlTest::test##_capitalProp_() { \
     cc.startAutoDiscovery(); \
     QSignalSpy valueSpy(&cc, SIGNAL(_prop_##Changed(int))); \
     QCOMPARE(cc._prop_(), 0); \
+    QCOMPARE(cc.property(#_prop_).toInt(), 0); \
     cc.set##_capitalProp_(5); \
     QCOMPARE(valueSpy.count(), 1); \
     QCOMPARE(valueSpy.takeFirst().at(0).toInt(), 5); \
     QCOMPARE(cc._prop_(), 5); \
+    QCOMPARE(cc.property(#_prop_).toInt(), 5); \
     service->testBackend()->set##_capitalProp_(8); \
     QCOMPARE(valueSpy.count(), 1); \
     QCOMPARE(valueSpy.takeFirst().at(0).toInt(), 8); \
     QCOMPARE(cc._prop_(), 8); \
+    QCOMPARE(cc.property(#_prop_).toInt(), 8); \
+    cc.setProperty(#_prop_, 6); \
+    QCOMPARE(valueSpy.count(), 1); \
+    QCOMPARE(valueSpy.takeFirst().at(0).toInt(), 6); \
+    QCOMPARE(cc._prop_(), 6); \
+    QCOMPARE(cc.property(#_prop_).toInt(), 6); \
 }
 
 /* For testing boolean properties of the climate control */
 #define TEST_BOOLEAN_PROPERTY(_prop_, _capitalProp_) \
-void ClimateControlTest::test##_capitalProp_() { \
+void ClimateControlTest::test##_capitalProp_##Enabled() { \
     ClimateControlTestServiceObject *service = new ClimateControlTestServiceObject(); \
     manager->registerService(service, service->interfaces()); \
-    service->testBackend()->set##_capitalProp_(false); \
+    service->testBackend()->set##_capitalProp_##Enabled(false); \
     QtIVIClimateControl cc; \
     cc.startAutoDiscovery(); \
-    QSignalSpy valueSpy(&cc, SIGNAL(_prop_##Changed(bool))); \
-    QCOMPARE(cc.is##_capitalProp_(), false); \
-    cc.set##_capitalProp_(true); \
+    QSignalSpy valueSpy(&cc, SIGNAL(_prop_##EnabledChanged(bool))); \
+    QCOMPARE(cc.is##_capitalProp_##Enabled(), false); \
+    QCOMPARE(cc.property(#_prop_).toBool(), false); \
+    cc.set##_capitalProp_##Enabled(true); \
     QCOMPARE(valueSpy.count(), 1); \
     QCOMPARE(valueSpy.takeFirst().at(0).toBool(), true); \
-    QCOMPARE(cc.is##_capitalProp_(), true); \
-    service->testBackend()->set##_capitalProp_(false); \
+    QCOMPARE(cc.is##_capitalProp_##Enabled(), true); \
+    QCOMPARE(cc.property(#_prop_).toBool(), true); \
+    service->testBackend()->set##_capitalProp_##Enabled(false); \
     QCOMPARE(valueSpy.count(), 1); \
     QCOMPARE(valueSpy.takeFirst().at(0).toBool(), false); \
-    QCOMPARE(cc.is##_capitalProp_(), false); \
+    QCOMPARE(cc.is##_capitalProp_##Enabled(), false); \
+    QCOMPARE(cc.property(#_prop_).toBool(), false); \
+    cc.setProperty(#_prop_, true); \
+    QCOMPARE(valueSpy.count(), 1); \
+    QCOMPARE(valueSpy.takeFirst().at(0).toBool(), true); \
+    QCOMPARE(cc.is##_capitalProp_##Enabled(), true); \
+    QCOMPARE(cc.property(#_prop_).toBool(), true); \
 }
 
 /* For testing integer properties of the climate zones */
@@ -380,14 +396,22 @@ void ClimateControlTest::testZone##_capitalProp_() { \
         service->testBackend()->set##_capitalProp_(z, 0); \
         QSignalSpy valueSpy(cc.climateZone(z), SIGNAL(_prop_##Changed(int))); \
         QCOMPARE(cc.climateZone(z)->_prop_(), 0); \
+        QCOMPARE(cc.climateZone(z)->property(#_prop_).toInt(), 0); \
         cc.climateZone(z)->set##_capitalProp_(5); \
         QCOMPARE(valueSpy.count(), 1); \
         QCOMPARE(valueSpy.takeFirst().at(0).toInt(), 5); \
         QCOMPARE(cc.climateZone(z)->_prop_(), 5); \
+        QCOMPARE(cc.climateZone(z)->property(#_prop_).toInt(), 5); \
         service->testBackend()->set##_capitalProp_(z, 8); \
         QCOMPARE(valueSpy.count(), 1); \
         QCOMPARE(valueSpy.takeFirst().at(0).toInt(), 8); \
         QCOMPARE(cc.climateZone(z)->_prop_(), 8); \
+        QCOMPARE(cc.climateZone(z)->property(#_prop_).toInt(), 8); \
+        cc.climateZone(z)->setProperty(#_prop_, 6); \
+        QCOMPARE(valueSpy.count(), 1); \
+        QCOMPARE(valueSpy.takeFirst().at(0).toInt(), 6); \
+        QCOMPARE(cc.climateZone(z)->_prop_(), 6); \
+        QCOMPARE(cc.climateZone(z)->property(#_prop_).toInt(), 6); \
     } \
 }
 
@@ -407,20 +431,28 @@ void ClimateControlTest::testZoneWithout##_capitalProp_() { \
         service->testBackend()->set##_capitalProp_(z, 0); \
         QSignalSpy valueSpy(cc.climateZone(z), SIGNAL(_prop_##Changed(int))); \
         QCOMPARE(cc.climateZone(z)->_prop_(), 0); \
+        QCOMPARE(cc.climateZone(z)->property(#_prop_).toInt(), 0); \
         QTest::ignoreMessage(QtWarningMsg, "Trying to set ClimateZone::" #_prop_ " in an unsupported zone or without a backend."); \
         cc.climateZone(z)->set##_capitalProp_(5); \
         QCOMPARE(valueSpy.count(), 0); \
         QCOMPARE(cc.climateZone(z)->_prop_(), 0); \
+        QCOMPARE(cc.climateZone(z)->property(#_prop_).toInt(), 0); \
         service->testBackend()->set##_capitalProp_(z, 8); \
         QCOMPARE(valueSpy.count(), 0); \
         QCOMPARE(cc.climateZone(z)->_prop_(), 0); \
+        QCOMPARE(cc.climateZone(z)->property(#_prop_).toInt(), 0); \
+        QTest::ignoreMessage(QtWarningMsg, "Trying to set ClimateZone::" #_prop_ " in an unsupported zone or without a backend."); \
+        cc.climateZone(z)->setProperty(#_prop_, 6); \
+        QCOMPARE(valueSpy.count(), 0); \
+        QCOMPARE(cc.climateZone(z)->_prop_(), 0); \
+        QCOMPARE(cc.climateZone(z)->property(#_prop_).toInt(), 0); \
     } \
 }
 
 TEST_INTEGER_PROPERTY(fanSpeedLevel, FanSpeedLevel)
-TEST_BOOLEAN_PROPERTY(airConditioningEnabled, AirConditioningEnabled)
-TEST_BOOLEAN_PROPERTY(heaterEnabled, HeaterEnabled)
-TEST_BOOLEAN_PROPERTY(airRecirculationEnabled, AirRecirculationEnabled)
+TEST_BOOLEAN_PROPERTY(airConditioning, AirConditioning)
+TEST_BOOLEAN_PROPERTY(heater, Heater)
+TEST_BOOLEAN_PROPERTY(airRecirculation, AirRecirculation)
 TEST_INTEGER_PROPERTY(steeringWheelHeater, SteeringWheelHeater)
 TEST_INTEGER_ZONE_PROPERTY(targetTemperature, TargetTemperature)
 TEST_INTEGER_ZONE_PROPERTY(seatCooler, SeatCooler)
