@@ -10,8 +10,13 @@
 
 
 enable-examples {
-    QTIVICORE_BUILD_PARTS = $$QT_BUILD_PARTS
-    QTIVICORE_BUILD_PARTS *= examples
+    QTIVI_BUILD_PARTS = $$QT_BUILD_PARTS
+    QTIVI_BUILD_PARTS *= examples
+}
+
+enable-tests {
+    QTIVI_BUILD_PARTS = $$QT_BUILD_PARTS
+    QTIVI_BUILD_PARTS *= tests
 }
 
 lessThan(QT_MAJOR_VERSION, 5): error("QtIVI only supports Qt 5.")
