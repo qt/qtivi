@@ -8,7 +8,7 @@ ClimateControlBackend::ClimateControlBackend(QObject *parent) :
     m_airCondition(true),
     m_heater(true),
     m_airRecirculation(false),
-    m_steeringWheelHeater(false),
+    m_steeringWheelHeater(0),
     m_fanSpeed(10)
 {
     ZoneBackend leftZone;
@@ -149,15 +149,15 @@ void ClimateControlBackend::setAirRecirculationEnabled(bool val)
     emit airRecirculationEnabledChanged(val);
 }
 
-void ClimateControlBackend::setSteeringWheelHeaterEnabled(bool val)
+void ClimateControlBackend::setSteeringWheelHeater(int val)
 {
     if (m_steeringWheelHeater == val)
         return;
 
-    qWarning() << "SIMULATION SteeringWheelHeaterEnabled changed to" << val;
+    qWarning() << "SIMULATION SteeringWheelHeater changed to" << val;
 
     m_steeringWheelHeater = val;
-    emit steeringWheelHeaterEnabledChanged(val);
+    emit steeringWheelHeaterChanged(val);
 }
 
 void ClimateControlBackend::setFanSpeedLevel(int speed)
@@ -215,7 +215,7 @@ bool ClimateControlBackend::airRecirculationEnabled() const
     return m_airRecirculation;
 }
 
-bool ClimateControlBackend::steeringWheelHeaterEnabled() const
+int ClimateControlBackend::steeringWheelHeater() const
 {
     return m_steeringWheelHeater;
 }

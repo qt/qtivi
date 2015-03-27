@@ -168,7 +168,7 @@ QtIVIClimateControl::QtIVIClimateControl(QObject *parent)
     , m_airConditioning(false)
     , m_heater(false)
     , m_airRecirculation(false)
-    , m_steeringWheelHeater(false)
+    , m_steeringWheelHeater(0)
     , m_fanSpeedLevel(0)
 {
     QList<QtIVIClimateZone::Zone> zones;
@@ -198,7 +198,7 @@ bool QtIVIClimateControl::isAirRecirculationEnabled() const
     return m_airRecirculation;
 }
 
-bool QtIVIClimateControl::isSteeringWheelHeaterEnabled() const
+int QtIVIClimateControl::steeringWheelHeater() const
 {
     return m_steeringWheelHeater;
 }
@@ -277,10 +277,10 @@ void QtIVIClimateControl::setAirRecirculationEnabled(bool e)
         backend()->setAirRecirculationEnabled(e);
 }
 
-void QtIVIClimateControl::setSteeringWheelHeaterEnabled(bool e)
+void QtIVIClimateControl::setSteeringWheelHeater(int t)
 {
     if(backend())
-        backend()->setSteeringWheelHeaterEnabled(e);
+        backend()->setSteeringWheelHeater(t);
 }
 
 void QtIVIClimateControl::setFanSpeedLevel(int fsl)
@@ -318,14 +318,14 @@ void QtIVIClimateControl::connectToServiceObject(QtIVIServiceObject *so)
     connect(backend, &QtIVIClimateControlBackendInterface::airConditioningEnabledChanged, this, &QtIVIClimateControl::onAirConditioningEnabledChanged);
     connect(backend, &QtIVIClimateControlBackendInterface::heaterEnabledChanged, this, &QtIVIClimateControl::onHeaterEnabledChanged);
     connect(backend, &QtIVIClimateControlBackendInterface::airRecirculationEnabledChanged, this, &QtIVIClimateControl::onAirRecirculationEnabledChanged);
-    connect(backend, &QtIVIClimateControlBackendInterface::steeringWheelHeaterEnabledChanged, this, &QtIVIClimateControl::onSteeringWheelHeaterEnabledChanged);
+    connect(backend, &QtIVIClimateControlBackendInterface::steeringWheelHeaterChanged, this, &QtIVIClimateControl::onSteeringWheelHeaterChanged);
     connect(backend, &QtIVIClimateControlBackendInterface::fanSpeedLevelChanged, this, &QtIVIClimateControl::onFanSpeedLevelChanged);
 
     onAirflowDirectionChanged(backend->airflowDirection());
     onAirConditioningEnabledChanged(backend->airConditioningEnabled());
     onHeaterEnabledChanged(backend->heaterEnabled());
     onAirRecirculationEnabledChanged(backend->airRecirculationEnabled());
-    onSteeringWheelHeaterEnabledChanged(backend->steeringWheelHeaterEnabled());
+    onSteeringWheelHeaterChanged(backend->steeringWheelHeater());
     onFanSpeedLevelChanged(backend->fanSpeedLevel());
 }
 
@@ -346,7 +346,7 @@ void QtIVIClimateControl::disconnectFromServiceObject(QtIVIServiceObject *so)
     disconnect(backend, &QtIVIClimateControlBackendInterface::airConditioningEnabledChanged, this, &QtIVIClimateControl::onAirConditioningEnabledChanged);
     disconnect(backend, &QtIVIClimateControlBackendInterface::heaterEnabledChanged, this, &QtIVIClimateControl::onHeaterEnabledChanged);
     disconnect(backend, &QtIVIClimateControlBackendInterface::airRecirculationEnabledChanged, this, &QtIVIClimateControl::onAirRecirculationEnabledChanged);
-    disconnect(backend, &QtIVIClimateControlBackendInterface::steeringWheelHeaterEnabledChanged, this, &QtIVIClimateControl::onSteeringWheelHeaterEnabledChanged);
+    disconnect(backend, &QtIVIClimateControlBackendInterface::steeringWheelHeaterChanged, this, &QtIVIClimateControl::onSteeringWheelHeaterChanged);
     disconnect(backend, &QtIVIClimateControlBackendInterface::fanSpeedLevelChanged, this, &QtIVIClimateControl::onFanSpeedLevelChanged);
 }
 
@@ -357,7 +357,7 @@ void QtIVIClimateControl::clearServiceObject()
     onAirConditioningEnabledChanged(false);
     onHeaterEnabledChanged(false);
     onAirRecirculationEnabledChanged(false);
-    onSteeringWheelHeaterEnabledChanged(false);
+    onSteeringWheelHeaterChanged(0);
     onFanSpeedLevelChanged(0);
 
     QList<QtIVIClimateZone::Zone> zones;
@@ -394,10 +394,10 @@ void QtIVIClimateControl::onAirRecirculationEnabledChanged(bool airRecirculation
     emit airRecirculationEnabledChanged(m_airRecirculation);
 }
 
-void QtIVIClimateControl::onSteeringWheelHeaterEnabledChanged(bool steeringWheelHeater)
+void QtIVIClimateControl::onSteeringWheelHeaterChanged(int steeringWheelHeater)
 {
     m_steeringWheelHeater = steeringWheelHeater;
-    emit steeringWheelHeaterEnabledChanged(m_steeringWheelHeater);
+    emit steeringWheelHeaterChanged(m_steeringWheelHeater);
 }
 
 void QtIVIClimateControl::onFanSpeedLevelChanged(int fanSpeedLevel)

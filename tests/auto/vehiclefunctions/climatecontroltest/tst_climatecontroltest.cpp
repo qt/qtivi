@@ -13,7 +13,7 @@ public:
         , m_airConditioningEnabled(false)
         , m_heaterEnabled(false)
         , m_airRecirculationEnabled(false)
-        , m_steeringWheelHeaterEnabled(false)
+        , m_steeringWheelHeater(0)
         , m_fanSpeedLevel(0)
     {
         QList<QtIVIClimateZone::Zone> zones;
@@ -133,11 +133,11 @@ public:
         }
     }
 
-    void setSteeringWheelHeaterEnabled(bool e)
+    void setSteeringWheelHeater(int t)
     {
-        if (m_steeringWheelHeaterEnabled != e) {
-            m_steeringWheelHeaterEnabled = e;
-            emit steeringWheelHeaterEnabledChanged(m_steeringWheelHeaterEnabled);
+        if (m_steeringWheelHeater != t) {
+            m_steeringWheelHeater  = t;
+            emit steeringWheelHeaterChanged(m_steeringWheelHeater);
         }
     }
 
@@ -204,9 +204,9 @@ public:
         return m_airRecirculationEnabled;
     }
 
-    bool steeringWheelHeaterEnabled() const
+    int steeringWheelHeater() const
     {
-        return m_steeringWheelHeaterEnabled;
+        return m_steeringWheelHeater;
     }
 
     int fanSpeedLevel() const
@@ -219,7 +219,7 @@ private:
     bool m_airConditioningEnabled;
     bool m_heaterEnabled;
     bool m_airRecirculationEnabled;
-    bool m_steeringWheelHeaterEnabled;
+    int m_steeringWheelHeater;
     int m_fanSpeedLevel;
 
     QMap<QtIVIClimateZone::Zone, int> m_zoneTargetTemperature;
@@ -276,7 +276,7 @@ private slots:
     void testAirConditioningEnabled();
     void testHeaterEnabled();
     void testAirRecirculationEnabled();
-    void testSteeringWheelHeaterEnabled();
+    void testSteeringWheelHeater();
 
     void testZoneTargetTemperature();
     void testZoneSeatCooler();
@@ -411,7 +411,7 @@ TEST_INTEGER_PROPERTY(fanSpeedLevel, FanSpeedLevel)
 TEST_BOOLEAN_PROPERTY(airConditioningEnabled, AirConditioningEnabled)
 TEST_BOOLEAN_PROPERTY(heaterEnabled, HeaterEnabled)
 TEST_BOOLEAN_PROPERTY(airRecirculationEnabled, AirRecirculationEnabled)
-TEST_BOOLEAN_PROPERTY(steeringWheelHeaterEnabled, SteeringWheelHeaterEnabled)
+TEST_INTEGER_PROPERTY(steeringWheelHeater, SteeringWheelHeater)
 TEST_INTEGER_ZONE_PROPERTY(targetTemperature, TargetTemperature)
 TEST_INTEGER_ZONE_PROPERTY(seatCooler, SeatCooler)
 TEST_INTEGER_ZONE_PROPERTY(seatHeater, SeatHeater)

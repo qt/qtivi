@@ -106,7 +106,7 @@ class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIClimateControl : public QtIVIAbstractF
     /* current setting of air recirculation: on (true) or pulling in outside air (false) */
     Q_PROPERTY(bool airRecirculation READ isAirRecirculationEnabled WRITE setAirRecirculationEnabled NOTIFY airRecirculationEnabledChanged)
     /* current status of steering wheel heater ( 0: off, 1: least warm, 10: warmest ) */
-    Q_PROPERTY(bool steeringWheelHeater READ isSteeringWheelHeaterEnabled WRITE setSteeringWheelHeaterEnabled NOTIFY steeringWheelHeaterEnabledChanged)
+    Q_PROPERTY(bool steeringWheelHeater READ steeringWheelHeater WRITE setSteeringWheelHeater NOTIFY steeringWheelHeaterChanged)
     /* current status of the fan speed of the air flowing (0: off, 1: weakest, 10: strongest ) */
     Q_PROPERTY(int fanSpeedLevel READ fanSpeedLevel WRITE setFanSpeedLevel NOTIFY fanSpeedLevelChanged)
 
@@ -137,7 +137,7 @@ public:
     bool isAirConditioningEnabled() const;
     bool isHeaterEnabled() const;
     bool isAirRecirculationEnabled() const;
-    bool isSteeringWheelHeaterEnabled() const;
+    int steeringWheelHeater() const;
     int fanSpeedLevel() const;
 
     QtIVIClimateZone *climateZone(QtIVIClimateZone::Zone) const;
@@ -155,7 +155,7 @@ public slots:
     void setAirConditioningEnabled(bool);
     void setHeaterEnabled(bool);
     void setAirRecirculationEnabled(bool);
-    void setSteeringWheelHeaterEnabled(bool);
+    void setSteeringWheelHeater(int);
     void setFanSpeedLevel(int);
 
 signals:
@@ -163,7 +163,7 @@ signals:
     void airConditioningEnabledChanged(bool airConditioning);
     void heaterEnabledChanged(bool heaterEnabled);
     void airRecirculationEnabledChanged(bool airRecirculation);
-    void steeringWheelHeaterEnabledChanged(bool steeringWheelHeater);
+    void steeringWheelHeaterChanged(int steeringWheelHeater);
     void fanSpeedLevelChanged(int fanSpeedLevel);
 
 protected:
@@ -177,7 +177,7 @@ private slots:
     void onAirConditioningEnabledChanged(bool airConditioning);
     void onHeaterEnabledChanged(bool heater);
     void onAirRecirculationEnabledChanged(bool airRecirculation);
-    void onSteeringWheelHeaterEnabledChanged(bool steeringWheelHeater);
+    void onSteeringWheelHeaterChanged(int steeringWheelHeater);
     void onFanSpeedLevelChanged(int fanSpeedLevel);
 
 private:
@@ -189,7 +189,7 @@ private:
     bool m_airConditioning;
     bool m_heater;
     bool m_airRecirculation;
-    bool m_steeringWheelHeater;
+    int m_steeringWheelHeater;
     int m_fanSpeedLevel;
 
     QMap<QtIVIClimateZone::Zone, QtIVIClimateZone*> m_zones;

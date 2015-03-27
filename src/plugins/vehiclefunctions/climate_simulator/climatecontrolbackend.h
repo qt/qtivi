@@ -23,7 +23,7 @@ public:
     void setAirConditioningEnabled(bool val);
     void setHeaterEnabled(bool val);
     void setAirRecirculationEnabled(bool val);
-    void setSteeringWheelHeaterEnabled(bool val);
+    void setSteeringWheelHeater(int val);
     void setFanSpeedLevel(int);
     int targetTemperature(QtIVIClimateZone::Zone zone) const;
     int seatCooler(QtIVIClimateZone::Zone zone) const;
@@ -32,7 +32,7 @@ public:
     bool airConditioningEnabled() const;
     bool heaterEnabled() const;
     bool airRecirculationEnabled() const;
-    bool steeringWheelHeaterEnabled() const;
+    int steeringWheelHeater() const;
     int fanSpeedLevel() const;
 
 private:
@@ -41,7 +41,7 @@ private:
     bool m_airCondition;
     bool m_heater;
     bool m_airRecirculation;
-    bool m_steeringWheelHeater;
+    int m_steeringWheelHeater;
     int m_fanSpeed;
 
     struct ZoneBackend{

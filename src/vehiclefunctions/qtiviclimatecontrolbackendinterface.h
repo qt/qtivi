@@ -27,7 +27,7 @@ public:
     virtual void setAirConditioningEnabled(bool) = 0;
     virtual void setHeaterEnabled(bool) = 0;
     virtual void setAirRecirculationEnabled(bool) = 0;
-    virtual void setSteeringWheelHeaterEnabled(bool) = 0;
+    virtual void setSteeringWheelHeater(int) = 0;
     virtual void setFanSpeedLevel(int) = 0;
 
     virtual int targetTemperature(QtIVIClimateZone::Zone) const = 0;
@@ -38,7 +38,7 @@ public:
     virtual bool airConditioningEnabled() const = 0;
     virtual bool heaterEnabled() const = 0;
     virtual bool airRecirculationEnabled() const = 0;
-    virtual bool steeringWheelHeaterEnabled() const = 0;
+    virtual int steeringWheelHeater() const = 0;
     virtual int fanSpeedLevel() const = 0;
 
 signals:
@@ -50,7 +50,7 @@ signals:
     void airConditioningEnabledChanged(bool);
     void heaterEnabledChanged(bool);
     void airRecirculationEnabledChanged(bool);
-    void steeringWheelHeaterEnabledChanged(bool);
+    void steeringWheelHeaterChanged(int);
     void fanSpeedLevelChanged(int);
 };
 
