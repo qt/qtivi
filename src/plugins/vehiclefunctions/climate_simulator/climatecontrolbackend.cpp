@@ -161,6 +161,12 @@ void ClimateControlBackend::setAirRecirculationEnabled(bool val)
 
 void ClimateControlBackend::setSteeringWheelHeater(int val)
 {
+    if (val < 0 || val > 10) {
+        qWarning() << "SIMULATION SteeringWheelHeater change out of range (0-10)" << val;
+        emit steeringWheelHeaterChanged(m_steeringWheelHeater);
+        return;
+    }
+
     if (m_steeringWheelHeater == val)
         return;
 
