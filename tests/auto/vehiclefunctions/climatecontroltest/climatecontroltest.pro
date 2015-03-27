@@ -11,8 +11,7 @@
 QT       += testlib QtIVICore QtIVIVehicleFunctions
 
 TARGET = tst_climatecontroltest
-CONFIG   += console
-CONFIG   -= app_bundle
+CONFIG   += testcase
 
 TEMPLATE = app
 

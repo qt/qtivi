@@ -11,8 +11,7 @@
 QT       += testlib QtIVICore
 
 TARGET = tst_servicemanagertest
-CONFIG   += console
-CONFIG   -= app_bundle
+CONFIG   += testcase
 
 TEMPLATE = app
 
