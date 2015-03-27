@@ -179,7 +179,20 @@ QtIVIServiceInterface *QtIVIServiceManagerPrivate::loadServiceBackendInterface(s
     return 0;
 }
 
-
+/*!
+ * \class QtIVIServiceManager
+ * \brief QtIVIServiceManager provides the Backends to QtIVIAbstractFeature
+ *
+ * QtIVIServiceManager is the heart of QtIVI and provides you a easy way to detect what
+ * Backends and interfaces are available.
+ *
+ * By default QtIVIServiceManager reads the metaData of all plugins within the "qtivi" folder
+ * of your plugin path. The plugin itself will be loaded once it's explictly requested by
+ * the developer by using findServiceByInterface()
+ *
+ * The registerService() function can be used to add Backend classes without putting them into
+ * a plugin.
+ */
 QtIVIServiceManager::QtIVIServiceManager()
     : QAbstractListModel(0)
     , d_ptr(new QtIVIServiceManagerPrivate(this))

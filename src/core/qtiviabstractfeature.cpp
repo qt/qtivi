@@ -13,6 +13,45 @@
 #include "qtiviserviceobject.h"
 #include "qtiviservicemanager.h"
 
+/*!
+ * \class QtIVIAbstractFeature
+ * \brief The QtIVIAbstractFeature is the base class for all QtIVI Featues
+ *
+ * QtIVIAbstractFeature is the base class for the front facing API towards the Developer.
+ * The QtIVIAbstractFeature provides you with a way to automatically connect to a Backend implementing
+ * your needed interface. This discovery is started by using the startAutoDiscovery() function.
+ *
+ * Once the auto discovery is done, it can be checked whether a backend has been found by using the
+ * isValid function.
+ *
+ * The auto discovery gives you a easy way to automatically connect to the right backend implementation.
+ * If you don't want to use the auto discovery, it's also possible to use QtIVIServiceManager to retrieve
+ * all Backends and search manually for the right one and connect it to the QtIVIAbstractFeature by calling
+ * setServiceObject()
+ *
+ * QtIVIAbstractFeature is a abstract base class which needs to be subclassed to create a API for your
+ * Feature.
+ *
+ * \chapter Subclassing
+ *
+ * When subclassing QtIVIAbstractFeature you must provide implementations of the following functions:
+ * \list
+ * \li acceptServiceObject()
+ * \li connectToServiceObject()
+ * \li disconnectFromServiceObject()
+ * \li clearServiceObject()
+ * \endlist
+ *
+ * Once a QtIVIServiceObject has be set, either by auto discovery or by manually setting it the acceptServiceObject()
+ * function will be called to make sure the QtIVIServiceObject provides everything which is needed by the Feature.
+ *
+ * If the interface provides signals you need to do all the connect statements in connectToServiceObject() and
+ * disconnect them again in disconnectFromServiceObject().
+ *
+ * clearServiceObject() will be called once the Feature doesn't have a connection to a ServiceObject anymore and should
+ * reset it's state to sane defaults
+ */
+
 QtIVIAbstractFeature::QtIVIAbstractFeature(const QString &interface, bool autoDiscovery, QObject *parent)
     : QObject(parent)
     , m_interface(interface)

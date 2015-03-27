@@ -12,6 +12,19 @@
 
 #include <QUuid>
 
+/*!
+ * \class QtIVIServiceObject
+ * \brief QtIVIServiceObject is the connection point to a Backend Service
+ *
+ * QtIVIServiceObject provides you with a list of interfaces the Backend implements.
+ *
+ * By using interfaceInstance() a QObject implementing this interface will be returned.
+ * The returned interface can contain signals which needs to be connected to by the Feature
+ * implementing this interface.
+ *
+ * \sa QtIVIAbstractFeature
+ */
+
 QtIVIServiceObject::QtIVIServiceObject(QObject *parent)
     : QObject(parent)
 {
