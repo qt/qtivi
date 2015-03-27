@@ -126,7 +126,7 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        if (climateControl.serviceObject === null)
+        if (!climateControl.isValid)
             messageDialog.open()
     }
 }

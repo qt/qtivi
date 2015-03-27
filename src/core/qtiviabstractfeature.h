@@ -18,6 +18,7 @@ class Q_QTIVICORE_EXPORT QtIVIAbstractFeature : public QObject, public QQmlParse
     //Q_PROPERTY(bool simulation READ simulation WRITE setSimulation NOTIFY simulationChanged)
     Q_PROPERTY(bool autoDiscovery READ autoDiscovery WRITE setAutoDiscovery NOTIFY autoDiscoveryChanged)
     Q_PROPERTY(QtIVIServiceObject* serviceObject READ serviceObject WRITE setServiceObject NOTIFY serviceObjectChanged)
+    Q_PROPERTY(bool isValid READ isValid NOTIFY isValidChanged)
 
 public:
 
@@ -26,6 +27,7 @@ public:
 
     QtIVIServiceObject *serviceObject() const;
     bool autoDiscovery() const;
+    bool isValid() const;
 
     void startAutoDiscovery();
 
@@ -36,6 +38,7 @@ public slots:
 signals:
     void serviceObjectChanged();
     void autoDiscoveryChanged(bool autoDiscovery);
+    void isValidChanged(bool arg);
 
 protected:
 

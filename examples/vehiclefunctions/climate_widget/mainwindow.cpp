@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_climateControl = new QtIVIClimateControl(this);
     m_climateControl->startAutoDiscovery();
 
-    if (!m_climateControl->serviceObject())
+    if (!m_climateControl->isValid())
         QMessageBox::critical(this, "Auto Discovery Failed !", "No Climate Backend available");
 
     setupUI();

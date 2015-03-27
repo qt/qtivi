@@ -34,6 +34,7 @@ void QtIVIAbstractFeature::setServiceObject(QtIVIServiceObject *so)
 
     m_serviceObject = so;
     emit serviceObjectChanged();
+    emit isValidChanged(isValid());
     connectToServiceObject(m_serviceObject);
     connect(so, SIGNAL(destroyed()), this, SLOT(serviceObjectDestroyed()));
 }
@@ -85,6 +86,11 @@ void QtIVIAbstractFeature::startAutoDiscovery()
         qWarning() << "There is more than one backend implementing" << m_interface << ".";
 
     setServiceObject(serviceObjects.at(0));
+}
+
+bool QtIVIAbstractFeature::isValid() const
+{
+    return m_serviceObject != 0;
 }
 
 void QtIVIAbstractFeature::serviceObjectDestroyed()
