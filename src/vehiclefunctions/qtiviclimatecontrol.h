@@ -116,7 +116,7 @@ class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIClimateControl : public QtIVIAbstractF
     /* current setting of air recirculation: on (true) or pulling in outside air (false) */
     Q_PROPERTY(bool airRecirculation READ isAirRecirculationEnabled WRITE setAirRecirculationEnabled NOTIFY airRecirculationEnabledChanged)
     /* current status of steering wheel heater ( 0: off, 1: least warm, 10: warmest ) */
-    Q_PROPERTY(bool steeringWheelHeater READ steeringWheelHeater WRITE setSteeringWheelHeater NOTIFY steeringWheelHeaterChanged)
+    Q_PROPERTY(int steeringWheelHeater READ steeringWheelHeater WRITE setSteeringWheelHeater NOTIFY steeringWheelHeaterChanged)
     /* current status of the fan speed of the air flowing (0: off, 1: weakest, 10: strongest ) */
     Q_PROPERTY(int fanSpeedLevel READ fanSpeedLevel WRITE setFanSpeedLevel NOTIFY fanSpeedLevelChanged)
 
