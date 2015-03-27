@@ -101,14 +101,6 @@ ApplicationWindow {
             }
         }
 
-        CheckBox {
-            text: "Steering Wheel Heater"
-            checked: climateControl.steeringWheelHeater
-            onClicked: {
-                    climateControl.steeringWheelHeater = checked
-            }
-        }
-
         RowLayout {
 
             Label {
@@ -119,6 +111,21 @@ ApplicationWindow {
                 value: climateControl.fanSpeedLevel
                 onValueChanged: {
                     climateControl.fanSpeedLevel = value
+                }
+            }
+        }
+
+
+        RowLayout {
+
+            Label {
+                text: "Steering Wheel Heater"
+            }
+
+            SpinBox {
+                value: climateControl.steeringWheelHeater
+                onValueChanged: {
+                    climateControl.steeringWheelHeater = value
                 }
             }
         }

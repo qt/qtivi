@@ -65,9 +65,9 @@ void MainWindow::setupUI()
     connect(ui->cb_heater, &QCheckBox::clicked, m_climateControl, &QtIVIClimateControl::setHeaterEnabled);
 
     //Heater
-    ui->cb_steeringWheelHeater->setChecked(m_climateControl->isSteeringWheelHeaterEnabled());
-    connect(m_climateControl, &QtIVIClimateControl::steeringWheelHeaterEnabledChanged, ui->cb_steeringWheelHeater, &QCheckBox::setChecked);
-    connect(ui->cb_steeringWheelHeater, &QCheckBox::clicked, m_climateControl, &QtIVIClimateControl::setSteeringWheelHeaterEnabled);
+    ui->sb_steeringWheelHeater->setValue(m_climateControl->steeringWheelHeater());
+    connect(m_climateControl, &QtIVIClimateControl::steeringWheelHeaterChanged, ui->sb_steeringWheelHeater, &QSpinBox::setValue);
+    connect(ui->sb_steeringWheelHeater, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), m_climateControl, &QtIVIClimateControl::setSteeringWheelHeater);
 
     //Fan Speed
     ui->sb_fanSpeed->setValue(m_climateControl->fanSpeedLevel());
