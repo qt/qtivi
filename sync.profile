@@ -1,6 +1,6 @@
 %modules = ( # path to module name map
-    "QtIVICore" => "$basedir/src/core",
-    "QtIVIVehicleFunctions" => "$basedir/src/vehiclefunctions",
+    "QtIVICore" => "$basedir/src/ivicore",
+    "QtIVIVehicleFunctions" => "$basedir/src/ivivehiclefunctions",
 );
 %moduleheaders = ( # restrict the module headers to those found in relative path
 );

@@ -9,8 +9,8 @@
 ##################################################################################################
 
 TEMPLATE = subdirs
-SUBDIRS = core \
-          vehiclefunctions \
+SUBDIRS = ivicore \
+          ivivehiclefunctions \
           plugins \
           imports
 

@@ -15,6 +15,6 @@ TARGETPATH = QtIVIVehicleFunctions
 SOURCES += \
     plugin.cpp
 
-QT += QtIVICore QtIVIVehicleFunctions
+QT += ivicore ivivehiclefunctions
 
 load(qml_plugin)

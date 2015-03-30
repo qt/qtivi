@@ -8,11 +8,14 @@
 # written consent of Pelagicore AG.
 ##################################################################################################
 
-MODULE = QtIVICore
-TARGET = $$MODULE
+TARGET = QtIVICore
+
 QT = core qml
 CONFIG += c++11
 VERSION = 1.0.0
+
+QMAKE_DOCS = $$PWD/doc/qtivicore.qdocconf
+OTHER_FILES += $$PWD/doc/*.qdoc
 
 CMAKE_MODULE_TESTS = '-'
 

@@ -8,7 +8,7 @@
 # written consent of Pelagicore AG.
 ##################################################################################################
 
-QT       += core gui QtIVICore QtIVIVehicleFunctions
+QT       += core gui ivicore ivivehiclefunctions
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

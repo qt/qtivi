@@ -8,7 +8,7 @@
 # written consent of Pelagicore AG.
 ##################################################################################################
 
-QT       += testlib QtIVICore QtIVIVehicleFunctions
+QT       += testlib ivicore ivivehiclefunctions
 
 TARGET = tst_climatecontroltest
 CONFIG   += testcase

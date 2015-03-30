@@ -8,7 +8,7 @@
 # written consent of Pelagicore AG.
 ##################################################################################################
 
-QT       += testlib QtIVICore
+QT       += testlib ivicore
 
 TARGET = tst_servicemanagertest
 CONFIG   += testcase

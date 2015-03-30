@@ -8,20 +8,21 @@
 # written consent of Pelagicore AG.
 ##################################################################################################
 
-MODULE = QtIVIVehicleFunctions
-TARGET = $$MODULE
-QT = core qml QtIVICore
-CONFIG += c++11
-VERSION = 1.0.0
+TARGET = climate_simulator
 
-CMAKE_MODULE_TESTS = '-'
+PLUGIN_TYPE = qtivi
+PLUGIN_EXTENDS = qtivi
+PLUGIN_CLASS_NAME = QtIVIClimateControlBackendInterface
 
-HEADERS += \
-    qtiviclimatecontrol.h \
-    qtiviclimatecontrolbackendinterface.h \
-    qtivivehiclefunctionsglobal.h
+QT       += core ivicore ivivehiclefunctions
 
-SOURCES += \
-    qtiviclimatecontrol.cpp
+load(qt_plugin)
 
-load(qt_module)
+
+SOURCES += climateplugin.cpp \
+    climatecontrolbackend.cpp
+
+HEADERS += climateplugin.h \
+    climatecontrolbackend.h
+
+DISTFILES += climate_simulator.json

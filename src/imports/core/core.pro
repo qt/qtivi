@@ -15,6 +15,6 @@ TARGETPATH = QtIVICore
 SOURCES += \
     plugin.cpp
 
-QT += QtIVICore
+QT += ivicore
 
 load(qml_plugin)
