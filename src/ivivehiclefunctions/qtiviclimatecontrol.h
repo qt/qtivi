@@ -51,8 +51,6 @@ public:
         RearRight
     };
 
-    QtIVIClimateZone(Zone zone, QtIVIClimateControl *parent);
-
     Zone zone() const;
 
     bool hasTargetTemperature() const;
@@ -84,6 +82,8 @@ private slots:
 
 private:
     friend class QtIVIClimateControl;
+
+    QtIVIClimateZone(Zone zone, QtIVIClimateControl *parent);
 
     void setHasTargetTemperature(bool);
     void setHasSeatCooler(bool);
