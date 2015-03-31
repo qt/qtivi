@@ -178,6 +178,12 @@ void ClimateControlBackend::setSteeringWheelHeater(int val)
 
 void ClimateControlBackend::setFanSpeedLevel(int speed)
 {
+    if (speed < 0 || speed > 10) {
+        qWarning() << "SIMULATION FanSpeedLevel change out of range (0-10)" << speed;
+        emit fanSpeedLevelChanged(m_fanSpeed);
+        return;
+    }
+
     if (m_fanSpeed == speed)
         return;
 
