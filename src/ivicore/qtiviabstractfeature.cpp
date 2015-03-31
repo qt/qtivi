@@ -52,6 +52,73 @@
  * reset it's state to sane defaults
  */
 
+/*!
+ * \fn bool QtIVIAbstractFeature::acceptServiceObject(QtIVIServiceObject *so)
+ *
+ * This method is expected to be implemented by any class subclassing QtIVIAbstractFeature.
+ *
+ * This method is expected to return \c true if the given service object, \a so, is accepted and
+ * can be used, otherwise \c false.
+ *
+ * If the object is accepted, \l connectToServiceObject is called to actually connect to the
+ * service object.
+ *
+ * \sa connectToServiceObject(), disconnectFromServiceObject(), clearServiceObject()
+ */
+
+/*!
+ * \fn void QtIVIAbstractFeature::connectToServiceObject(QtIVIServiceObject *so)
+ *
+ * This method is expected to be implemented by any class subclassing QtIVIAbstractFeature.
+ *
+ * The implementation is expected to connect to the service object, \a so, and to set all
+ * properties to reflect the state of the service object.
+ *
+ * There is no previous service object connected, as this call always is preceeded by a call to
+ * \l disconnectFromServiceObject or \l clearServiceObject.
+ *
+ * It is safe to assume that the service object, \a so, has always been accepted through the
+ * \l acceptServiceObject method prior to being passed to this method.
+ *
+ * \sa acceptServiceObject(), disconnectFromServiceObject(), clearServiceObject()
+ */
+
+/*!
+ * \fn void QtIVIAbstractFeature::disconnectFromServiceObject(QtIVIServiceObject *so)
+ *
+ * This method is expected to be implemented by any class subclassing QtIVIAbstractFeature.
+ *
+ * The implementation is expected to disconnect from the service object, \a so.
+ *
+ * It is not expected that the implementation goes to safe defaults. A call to this function is
+ * always followed by a call to \l connectToServiceObject or \l clearServiceObject.
+ *
+ * \sa acceptServiceObject(), connectToServiceObject(), clearServiceObject()
+ */
+
+/*!
+ * \fn void QtIVIAbstractFeature::clearServiceObject()
+ *
+ * This method is expected to be implemented by any class subclassing QtIVIAbstractFeature.
+ *
+ * Called when no service object is available. The implementation is expected to set all
+ * properties to safe defaults and forget all links to the previous service object.
+ *
+ * There is no need to disconnect from the service object. If it still exists, it is guaranteed
+ * that \l disconnectFromServiceObject is called first.
+ *
+ * \sa acceptServiceObject(), connectToServiceObject(), disconnectFromServiceObject()
+ */
+
+/*!
+ * Constructs an abstract feature.
+ *
+ * The \a parent argument is passed on to the \l QObject constructor.
+ *
+ * The \a interface argument is used to locate suitable service objects.
+ *
+ * The \a autoDiscovery argument is used to define the default \l autoDiscovery state.
+ */
 QtIVIAbstractFeature::QtIVIAbstractFeature(const QString &interface, bool autoDiscovery, QObject *parent)
     : QObject(parent)
     , m_interface(interface)
@@ -62,11 +129,23 @@ QtIVIAbstractFeature::QtIVIAbstractFeature(const QString &interface, bool autoDi
     //If not call the autoDiscovery
 }
 
+/*!
+ * Destructor.
+ */
 QtIVIAbstractFeature::~QtIVIAbstractFeature()
 {
 
 }
 
+/*!
+ * \property QtIVIAbstractFeature::serviceObject
+ * \brief Sets the service object for the feature.
+ *
+ * As features only expose the front API facing the developer, a service object implementing the
+ * actual function is required. This is usually retrieved through the \l autoDiscovery mechanism.
+ *
+ * \sa autoDiscovery
+ */
 void QtIVIAbstractFeature::setServiceObject(QtIVIServiceObject *so)
 {
     if (m_serviceObject) {
@@ -88,6 +167,15 @@ void QtIVIAbstractFeature::setServiceObject(QtIVIServiceObject *so)
     connect(so, SIGNAL(destroyed()), this, SLOT(serviceObjectDestroyed()));
 }
 
+/*!
+ * \property QtIVIAbstractFeature::autoDiscovery
+ * \brief \c True if service objects are located automatically.
+ *
+ * If auto discovery is enabled the feature will search for a suitable backend when either
+ * \l componentComplete is called from QML or \l startAutoDiscovery is called from C++.
+ *
+ * \sa startAutoDiscovery(), componentComplete
+ */
 void QtIVIAbstractFeature::setAutoDiscovery(bool autoDiscovery)
 {
     if (m_autoDiscovery == autoDiscovery)
@@ -97,11 +185,18 @@ void QtIVIAbstractFeature::setAutoDiscovery(bool autoDiscovery)
     emit autoDiscoveryChanged(autoDiscovery);
 }
 
+/*!
+ * \internal
+ * Overloaded from \l QQmlParserStatus.
+ */
 void QtIVIAbstractFeature::classBegin()
 {
 
 }
 
+/*!
+ * Invoked automatically when used from QML. Calls \l startAutoDiscovery if \l autoDiscovery is \c true.
+ */
 void QtIVIAbstractFeature::componentComplete()
 {
     if (m_autoDiscovery) {
@@ -119,6 +214,18 @@ bool QtIVIAbstractFeature::autoDiscovery() const
     return m_autoDiscovery;
 }
 
+/*!
+ * \brief Performs an auto discovery attempt.
+ *
+ * The feature will try to locate a single service object implementing the required interface.
+ *
+ * If no service object is found, the feature will stay invalid. If more than one service object
+ * is found, the first instance is used.
+ *
+ * This function enabled the \l autoDiscovery property.
+ *
+ * \sa autoDiscovery
+ */
 void QtIVIAbstractFeature::startAutoDiscovery()
 {
     setAutoDiscovery(true);
@@ -137,6 +244,16 @@ void QtIVIAbstractFeature::startAutoDiscovery()
     setServiceObject(serviceObjects.at(0));
 }
 
+/*!
+ * \property QtIVIAbstractFeature::isValid
+ * \brief \c True if the feature is ready to use.
+ *
+ * The valid property is \c true if the feature is ready to be used, otherwise \c false. Not being
+ * ready usually indicates that no suitable service object could be found or that auto discovery
+ * has not been triggered.
+ *
+ * \sa serviceObject, autoDiscovery
+ */
 bool QtIVIAbstractFeature::isValid() const
 {
     return m_serviceObject != 0;

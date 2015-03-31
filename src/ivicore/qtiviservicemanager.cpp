@@ -206,6 +206,9 @@ QtIVIServiceManager *QtIVIServiceManager::instance()
     return instance;
 }
 
+/*!
+ * Destructor.
+ */
 QtIVIServiceManager::~QtIVIServiceManager()
 {
 
