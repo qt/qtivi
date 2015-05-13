@@ -14,7 +14,7 @@
 #include <QObject>
 #include <QQmlParserStatus>
 
-#include <qtiviglobal.h>
+#include "qtiviglobal.h"
 
 class QtIVIServiceObject;
 

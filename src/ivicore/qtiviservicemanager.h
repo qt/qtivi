@@ -13,7 +13,7 @@
 
 #include <QtCore/QAbstractListModel>
 
-#include <qtiviglobal.h>
+#include "qtiviglobal.h"
 
 class QtIVIServiceObject;
 class QtIVIServiceManagerPrivate;
