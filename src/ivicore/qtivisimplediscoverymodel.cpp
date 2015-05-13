@@ -111,6 +111,7 @@ template <class T> QtIVIServiceObject *QtIVISimpleDiscoveryModel<T>::serviceObje
 
 template <class T> void QtIVISimpleDiscoveryModel<T>::updateServiceObjects(QList<QtIVIServiceObject *> objects)
 {
+    Q_UNUSED(objects)
     //Do a logic here to call update for as many buckets as possible
 }
 

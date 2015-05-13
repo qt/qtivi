@@ -11,7 +11,7 @@
 #include <QtQml/qqmlextensionplugin.h>
 #include <qqml.h>
 
-#include <QtIVICore>
+#include <QtIVICore/QtIVICore>
 
 QT_BEGIN_NAMESPACE
 

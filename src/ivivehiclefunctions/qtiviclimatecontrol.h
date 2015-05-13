@@ -11,9 +11,8 @@
 #ifndef CLIMATECONTROL_H
 #define CLIMATECONTROL_H
 
-#include <qtivivehiclefunctionsglobal.h>
-
-#include <QtIVIAbstractFeature>
+#include <QtIVIVehicleFunctions/qtivivehiclefunctionsglobal.h>
+#include <QtIVICore/QtIVIAbstractFeature>
 #include <QObject>
 #include <QMap>
 

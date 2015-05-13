@@ -11,7 +11,7 @@
 #include <QtQml/qqmlextensionplugin.h>
 #include <qqml.h>
 
-#include <QtIVIClimateControl>
+#include <QtIVIVehicleFunctions/QtIVIClimateControl>
 
 QT_BEGIN_NAMESPACE
 

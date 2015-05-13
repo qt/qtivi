@@ -11,7 +11,7 @@
 #include "climateplugin.h"
 #include "climatecontrolbackend.h"
 
-#include <QtIVIClimateControlBackendInterface>
+#include <QtIVIVehicleFunctions/QtIVIClimateControlBackendInterface>
 #include <QStringList>
 
 ClimatePlugin::ClimatePlugin(QObject *parent) :

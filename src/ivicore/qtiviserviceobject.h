@@ -13,8 +13,8 @@
 
 #include <QObject>
 
-#include "qtiviserviceinterface.h"
-#include "qtiviglobal.h"
+#include <QtIVICore/QtIVIServiceInterface>
+#include <QtIVICore/qtiviglobal.h>
 
 class Q_QTIVICORE_EXPORT QtIVIServiceObject : public QObject, public QtIVIServiceInterface
 {
