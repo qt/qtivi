@@ -1,0 +1,14 @@
+Autotests:
+
+* Add autotest for registering multiple apps
+* Add autotest for registering CTXs
+* Add autoetst for registering and App/CTX twice
+
+API:
+
+* The User should be able to select which Socket to be used, or to log to a file
+* Add a way to use the DltRegistration messageHandle only as a proxy and also activate the normal stdout logging
+* React on control messages and control the registered QtLoggingCategories with this information
+* Add API for registering injection messages and provide a signal when the messages arrive
+* Look into reusing QLoggingCategory::defaultCategory instead of the FALLBACK_CATEGORY
+* Extend macro to also support the new Q_LOGGING_CATEGORY macro with msgType
