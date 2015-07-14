@@ -5,6 +5,8 @@
 **
 ** This file is part of QtGeniviExtras.
 **
+** SPDX-License-Identifier: LGPL-2.1 
+**
 ** $QT_BEGIN_LICENSE:LGPL21$
 ** Commercial License Usage
 ** Licensees holding valid commercial QtGeniviExtras licenses may use this file in
