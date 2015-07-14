@@ -1,8 +1,8 @@
-# Qt Genivi Extras: Platform specific components for Genivi
+# Qt Genivi Extras: Platform specific components for GENIVI
 
-This repository is similar to qtwinextras or qtmacextras and contains specific components for Genivi based linux systems.
+This repository is similar to qtwinextras or qtmacextras and contains specific components for GENIVI based Linux systems.
 
-Currently the only component it contains is a Qt Categorized Logging Binding towards Genivi DLT (Diagnostic Log and Trace)
+Currently the only component it contains is a Qt Categorized Logging Binding towards GENIVI DLT (Diagnostic Log and Trace)
 
 ## How to build
 
