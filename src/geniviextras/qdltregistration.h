@@ -3,11 +3,11 @@
 ** Copyright (C) 2015 Pelagicore AG
 ** Contact: http://www.pelagicore.com/
 **
-** This file is part of $FOO$.
+** This file is part of QtGeniviExtras.
 **
 ** $QT_BEGIN_LICENSE:LGPL21$
 ** Commercial License Usage
-** Licensees holding valid commercial $FOO$ licenses may use this file in
+** Licensees holding valid commercial QtGeniviExtras licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Pelagicore. For licensing terms
