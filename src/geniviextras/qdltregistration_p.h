@@ -35,7 +35,7 @@
 #include <QString>
 #include <QMap>
 
-#include <dlt.h>
+#include <dlt/dlt.h>
 
 class QDltRegistrationPrivate {
 public:
