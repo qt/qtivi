@@ -37,7 +37,7 @@
 
 #include <QString>
 #include <QMap>
-#include <qgeniviextrasglobal.h>
+#include <QtGeniviExtras/qgeniviextrasglobal.h>
 
 class QDltRegistrationPrivate;
 
