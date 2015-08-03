@@ -38,6 +38,7 @@
 #include <QString>
 #include <QMap>
 #include <QtGeniviExtras/qgeniviextrasglobal.h>
+#include <stdint.h>
 
 class QDltRegistrationPrivate;
 
@@ -50,13 +51,15 @@ public:
     void registerApplication(const char *dltAppID, const char *dltAppDescription);
     void unregisterApplication();
 
-    void registerCategory(const char* categoryName, const char* dltCtxName, const char* dltCtxDescription);
+    void registerCategory(const QLoggingCategory *category, const char* dltCtxName, const char* dltCtxDescription);
     void setDefaultContext(const char* categoryName);
 
     static void messageHandler(QtMsgType msgTypes, const QMessageLogContext &msgCtx, const QString &msg);
 private:
     QDltRegistrationPrivate* const d_ptr;
     Q_DECLARE_PRIVATE(QDltRegistration)
+
+    friend void qtGeniviLogLevelChangedHandler(char context_id[], uint8_t log_level, uint8_t trace_status);
 };
 
 Q_GENIVIEXTRAS_EXPORT extern QDltRegistration* globalDltRegistration();

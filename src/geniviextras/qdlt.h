@@ -52,7 +52,7 @@ QDLT_REGISTER_LOGGING_CATEGORY(CATEGORY, CATEGORYNAME, DLT_CTX_NAME, DLT_CTX_DES
 
 #define QDLT_REGISTER_LOGGING_CATEGORY(CATEGORY, CATEGORYNAME, DLT_CTX_NAME, DLT_CTX_DESCRIPTION) \
 struct QDlt ## CATEGORY ## Registrator { \
-    QDlt ## CATEGORY ## Registrator() { globalDltRegistration()->registerCategory(CATEGORYNAME , DLT_CTX_NAME, DLT_CTX_DESCRIPTION); } \
+    QDlt ## CATEGORY ## Registrator() { globalDltRegistration()->registerCategory(&CATEGORY() , DLT_CTX_NAME, DLT_CTX_DESCRIPTION); } \
 }; \
 static QDlt ## CATEGORY ## Registrator qdlt ## CATEGORY ## registrator; \
 

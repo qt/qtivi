@@ -33,20 +33,24 @@
 ****************************************************************************/
 
 #include <QString>
-#include <QMap>
+#include <QHash>
 
 #include <dlt/dlt.h>
+
+void qtGeniviLogLevelChangedHandler(char context_id[], uint8_t log_level, uint8_t trace_status);
 
 class QDltRegistrationPrivate {
 public:
     QDltRegistrationPrivate();
 
-    void registerCategory(const char* categoryName, DltContext* dltContext, const char* dltCtxName, const char* dltCtxDescription);
+    void registerCategory(const QLoggingCategory* category, DltContext *dltContext, const char *dltCtxName, const char *dltCtxDescription);
     void setDefaultContext(DltContext* dltContext);
 
     DltContext* context(const char* categoryName);
+    void dltLogLevelChanged(char context_id[], uint8_t log_level, uint8_t trace_status);
 
     QString m_dltAppID;
     DltContext* m_defaultContext;
-    QMap<QString, DltContext*> m_map;
+    QHash<QString, DltContext*> m_categoryName2DltContext;
+    QHash<QString, QLoggingCategory*> m_ctxName2Category;
 };

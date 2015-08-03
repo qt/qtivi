@@ -139,7 +139,7 @@ void QDltTest::testLogging()
 {
     QDltRegistration* registration = globalDltRegistration();
     registration->registerApplication("APP1", "Description for APP");
-    registration->registerCategory(TEST1().categoryName(), "TES1", "Test Category One");
+    registration->registerCategory(&TEST1(), "TES1", "Test Category One");
 
     QString msg = QLatin1Literal("TEST");
     QString expectedMsg = QString("%1: \"%2\"").arg(TEST1().categoryName()).arg(msg);

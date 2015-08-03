@@ -36,6 +36,13 @@
 #include "qdltregistration_p.h"
 
 #include <QDebug>
+#include <QLoggingCategory>
+
+void qtGeniviLogLevelChangedHandler(char context_id[], uint8_t log_level, uint8_t trace_status)
+{
+    globalDltRegistration()->d_ptr->dltLogLevelChanged(context_id, log_level, trace_status);
+}
+
 
 Q_GLOBAL_STATIC(QDltRegistration, dltRegistration)
 
@@ -49,10 +56,13 @@ QDltRegistrationPrivate::QDltRegistrationPrivate()
 {
 }
 
-void QDltRegistrationPrivate::registerCategory(const char *categoryName, DltContext *dltContext, const char *dltCtxName, const char *dltCtxDescription)
+void QDltRegistrationPrivate::registerCategory(const QLoggingCategory* category, DltContext *dltContext, const char *dltCtxName, const char *dltCtxDescription)
 {
     DLT_REGISTER_CONTEXT(*dltContext, dltCtxName, dltCtxDescription);
-    m_map.insert(QString::fromLatin1(categoryName), dltContext);
+    m_categoryName2DltContext.insert(QString::fromLatin1(category->categoryName()), dltContext);
+    m_ctxName2Category.insert(QString::fromLatin1(dltCtxName), const_cast<QLoggingCategory*>(category));
+    //TODO move to lamda once c++11 is ok to be used
+    DLT_REGISTER_LOG_LEVEL_CHANGED_CALLBACK(*dltContext, &qtGeniviLogLevelChangedHandler);
 }
 
 void QDltRegistrationPrivate::setDefaultContext(DltContext *dltContext)
@@ -63,13 +73,58 @@ void QDltRegistrationPrivate::setDefaultContext(DltContext *dltContext)
 DltContext *QDltRegistrationPrivate::context(const char *categoryName)
 {
     const QString category = QString::fromLatin1(categoryName);
-    if (!m_map.contains(category) && m_defaultContext)
+    if (!m_categoryName2DltContext.contains(category) && m_defaultContext)
         return m_defaultContext;
 
-    return m_map.value(category);
+    return m_categoryName2DltContext.value(category);
 }
 
+void QDltRegistrationPrivate::dltLogLevelChanged(char context_id[], uint8_t log_level, uint8_t trace_status)
+{
+    Q_UNUSED(trace_status)
 
+    const QString contextName = QString::fromLatin1(context_id);
+    if (m_ctxName2Category.contains(contextName))
+    {
+        QList<QtMsgType> msgTypes;
+
+        //Enable all QtLoggingCategories with a lower severity than the DLT level
+        switch (log_level) {
+        case DLT_LOG_VERBOSE:
+        case DLT_LOG_DEBUG: msgTypes << QtDebugMsg << QtWarningMsg << QtCriticalMsg << QtFatalMsg;
+#if QT_VERSION >= 0x050500
+            msgTypes << QtInfoMsg;
+#endif
+            break;
+        case DLT_LOG_INFO: msgTypes << QtWarningMsg << QtCriticalMsg << QtFatalMsg;
+#if QT_VERSION >= 0x050500
+            msgTypes << QtInfoMsg;
+#endif
+            break;
+        case DLT_LOG_WARN: msgTypes << QtCriticalMsg << QtFatalMsg;
+#if QT_VERSION >= 0x050500
+            msgTypes << QtInfoMsg;
+#endif
+            break;
+        case DLT_LOG_ERROR: msgTypes << QtCriticalMsg << QtFatalMsg;  break;
+        case DLT_LOG_FATAL: msgTypes << QtFatalMsg; break;
+        case DLT_LOG_OFF: msgTypes = QList<QtMsgType>(); break;
+        }
+
+        QtMsgType end = QtFatalMsg;
+#if QT_VERSION >= 0x050500
+        end = QtInfoMsg;
+#endif
+
+        for(int i = (int)QtDebugMsg; i <= (int)end; i++) {
+            QtMsgType type = (QtMsgType)i;
+            bool enabled = true;
+            if (!msgTypes.contains(type))
+                enabled = !enabled;
+            m_ctxName2Category.value(contextName)->setEnabled(type, enabled);
+        }
+    }
+}
 
 QDltRegistration::QDltRegistration()
     : d_ptr(new QDltRegistrationPrivate())
@@ -88,11 +143,11 @@ void QDltRegistration::registerApplication(const char *dltAppID, const char *dlt
     DLT_REGISTER_APP(dltAppID, dltAppDescription);
 }
 
-void QDltRegistration::registerCategory(const char *categoryName, const char *dltCtxName, const char *dltCtxDescription)
+void QDltRegistration::registerCategory(const QLoggingCategory* category, const char *dltCtxName, const char *dltCtxDescription)
 {
     Q_D(QDltRegistration);
     //TODO memory leak
-    d->registerCategory(categoryName, new DltContext, dltCtxName, dltCtxDescription);
+    d->registerCategory(category, new DltContext, dltCtxName, dltCtxDescription);
 }
 
 void QDltRegistration::setDefaultContext(const char *categoryName)

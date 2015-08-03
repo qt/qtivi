@@ -34,6 +34,8 @@
 #include <QTimer>
 #include <QtGeniviExtras/QtDlt>
 
+#include <iostream>
+
 #include "loggingcategories.h"
 
 int main(int argc, char *argv[])
@@ -46,9 +48,13 @@ int main(int argc, char *argv[])
     timer.connect(&timer, &QTimer::timeout, [] {
         static int counter = 0;
         counter++;
-        qCCritical(FOO) << "FOO CATEGORY";
-        qCWarning(BAR) << "BAR CATEGORY";
-        qCritical() << "FALLBACK";
+        qCCritical(FOO) << "FOO CATEGORY" << counter;
+        qCWarning(BAR) << "BAR CATEGORY" << counter;
+        qCritical() << "FALLBACK" << counter;
+        if (FOO().isDebugEnabled()) {
+            std::cout << "LONG TAKING OPERATION ONLY ENABLED IN DEBUG" << std::endl;
+            qCDebug(FOO) << "Debug Statement" << counter;
+        }
     });
     timer.setInterval(1000);
     timer.start();
