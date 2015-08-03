@@ -120,9 +120,12 @@ void QDltRegistration::messageHandler(QtMsgType msgTypes, const QMessageLogConte
 
     switch (msgTypes) {
     case QtDebugMsg: logLevel = DLT_LOG_DEBUG; break;
-    case QtWarningMsg: logLevel = DLT_LOG_INFO; break;
+    case QtWarningMsg: logLevel = DLT_LOG_WARN; break;
     case QtCriticalMsg: logLevel = DLT_LOG_ERROR; break;
     case QtFatalMsg: logLevel = DLT_LOG_FATAL; break;
+#if QT_VERSION >= 0x050500
+    case QtInfoMsg: logLevel = DLT_LOG_INFO; break;
+#endif
     }
 
     DLT_LOG(*dltCtx, logLevel, DLT_STRING(qPrintable(qFormatLogMessage(msgTypes, msgCtx, msg))));
