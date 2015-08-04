@@ -1,2 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS += dlt
+qtHaveModule(geniviextras) {
+    SUBDIRS += dlt
+}
+

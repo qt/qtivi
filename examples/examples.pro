@@ -1,2 +1,4 @@
 TEMPLATE = subdirs
-SUBDIRS += geniviextras
+qtHaveModule(geniviextras) {
+    SUBDIRS += geniviextras
+}
