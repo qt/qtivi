@@ -37,13 +37,16 @@
 
 #include <QString>
 #include <QMap>
+#include <QObject>
 #include <QtGeniviExtras/qgeniviextrasglobal.h>
 #include <stdint.h>
 
 class QDltRegistrationPrivate;
 
-class Q_GENIVIEXTRAS_EXPORT QDltRegistration
+class Q_GENIVIEXTRAS_EXPORT QDltRegistration : public QObject
 {
+    Q_OBJECT
+
 public:
     QDltRegistration();
     ~QDltRegistration();
@@ -55,6 +58,10 @@ public:
     void setDefaultContext(const char* categoryName);
 
     static void messageHandler(QtMsgType msgTypes, const QMessageLogContext &msgCtx, const QString &msg);
+
+signals:
+    void logLevelChanged(const QLoggingCategory *category);
+
 private:
     QDltRegistrationPrivate* const d_ptr;
     Q_DECLARE_PRIVATE(QDltRegistration)

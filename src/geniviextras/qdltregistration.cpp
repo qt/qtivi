@@ -51,8 +51,9 @@ QDltRegistration *globalDltRegistration()
     return dltRegistration();
 }
 
-QDltRegistrationPrivate::QDltRegistrationPrivate()
-    : m_defaultContext(nullptr)
+QDltRegistrationPrivate::QDltRegistrationPrivate(QDltRegistration *parent)
+    : q_ptr(parent)
+    , m_defaultContext(nullptr)
 {
 }
 
@@ -81,6 +82,7 @@ DltContext *QDltRegistrationPrivate::context(const char *categoryName)
 
 void QDltRegistrationPrivate::dltLogLevelChanged(char context_id[], uint8_t log_level, uint8_t trace_status)
 {
+    Q_Q(QDltRegistration);
     Q_UNUSED(trace_status)
 
     const QString contextName = QString::fromLatin1(context_id);
@@ -121,13 +123,18 @@ void QDltRegistrationPrivate::dltLogLevelChanged(char context_id[], uint8_t log_
             bool enabled = true;
             if (!msgTypes.contains(type))
                 enabled = !enabled;
-            m_ctxName2Category.value(contextName)->setEnabled(type, enabled);
+            QLoggingCategory* category = m_ctxName2Category.value(contextName);
+            if (category->isEnabled(type) != enabled)
+            {
+                category->setEnabled(type, enabled);
+                q->logLevelChanged(category);
+            }
         }
     }
 }
 
 QDltRegistration::QDltRegistration()
-    : d_ptr(new QDltRegistrationPrivate())
+    : d_ptr(new QDltRegistrationPrivate(this))
 {
 }
 
