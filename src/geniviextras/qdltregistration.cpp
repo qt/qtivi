@@ -62,8 +62,11 @@ void QDltRegistrationPrivate::registerCategory(const QLoggingCategory* category,
     DLT_REGISTER_CONTEXT(*dltContext, dltCtxName, dltCtxDescription);
     m_categoryName2DltContext.insert(QString::fromLatin1(category->categoryName()), dltContext);
     m_ctxName2Category.insert(QString::fromLatin1(dltCtxName), const_cast<QLoggingCategory*>(category));
+
+#ifdef DLT_VERSION_2_11
     //TODO move to lamda once c++11 is ok to be used
     DLT_REGISTER_LOG_LEVEL_CHANGED_CALLBACK(*dltContext, &qtGeniviLogLevelChangedHandler);
+#endif
 }
 
 void QDltRegistrationPrivate::setDefaultContext(DltContext *dltContext)
