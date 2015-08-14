@@ -9,7 +9,7 @@ CONFIG += link_pkgconfig
 #QMAKE_DOCS = $$PWD/doc/qtgeniviextras.qdocconf
 OTHER_FILES += $$PWD/doc/*.qdoc
 
-system($$pkgConfigExecutable() --libs \"automotive-dlt >= 2.11.0\"): DEFINES += DLT_VERSION_2_11
+system($$pkgConfigExecutable() --libs \"automotive-dlt >= 2.12.0\"): DEFINES += DLT_VERSION_2_12
 
 !contains(QT_CONFIG, no-pkg-config) {
     PKGCONFIG += automotive-dlt
