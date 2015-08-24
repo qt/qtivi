@@ -13,11 +13,12 @@
 
 #include <QAbstractListModel>
 
-class QtIVIServiceObject;
+#include <QtIVICore/qtiviglobal.h>
+#include <QtIVICore/qtiviserviceobject.h>
 
-template <class T>
-class QtIVISimpleDiscoveryModel : public QAbstractListModel
+class Q_QTIVICORE_EXPORT QtIVISimpleDiscoveryModelBase: public QAbstractListModel
 {
+    Q_OBJECT
     Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
 
 public:
@@ -25,16 +26,15 @@ public:
         ServiceObject = Qt::UserRole + 1
     };
 
-    QtIVISimpleDiscoveryModel(QString interface, QObject* parent = 0);
-    virtual ~QtIVISimpleDiscoveryModel();
+    QtIVISimpleDiscoveryModelBase(QString interface, QObject *parent = 0);
+    ~QtIVISimpleDiscoveryModelBase();
 
     QHash<int, QByteArray> roleNames() const;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role) const;
 
-    Q_INVOKABLE T* at(int index);
-    Q_INVOKABLE QtIVIServiceObject* serviceObjectAt(int index);
+    Q_INVOKABLE QtIVIServiceObject* serviceObjectAt(int index) const;
 
 signals:
     void countChanged();
@@ -44,13 +44,55 @@ protected:
      virtual void addServiceObjects(QList<QtIVIServiceObject*>);
      virtual void removeServiceObjects(QList<QtIVIServiceObject*>);
 
-private:
+    // TODO add set methods and make these private
+    QHash< int, QByteArray > m_roles;
+    QSet< int > m_enumProperties;
 
+private:
     QString m_interface;
     QList<QtIVIServiceObject*> m_serviceObjects;
     QHash< QByteArray, int > m_reverseRoles;
-    QHash< int, QByteArray > m_roles;
-    QSet< int > m_enumProperties;
+};
+
+template <class T>
+class Q_QTIVICORE_EXPORT QtIVISimpleDiscoveryModel : public QtIVISimpleDiscoveryModelBase
+{
+public:
+    QtIVISimpleDiscoveryModel(QString interface, QObject* parent = 0)
+        : QtIVISimpleDiscoveryModelBase(interface, parent)
+    {
+        m_roles.insert(ServiceObject, "serviceObject");
+
+        // Initialize the list of properties this instance of the model knows about
+        for(int propertyIndex = 0; propertyIndex < T::staticMetaObject.propertyCount(); propertyIndex++)
+        {
+            QMetaProperty property = T::staticMetaObject.property(propertyIndex);
+            const int roleNumber = Qt::UserRole + 1 + propertyIndex;
+            if(property.isEnumType())
+            {
+                m_enumProperties.insert(roleNumber);
+            }
+            m_roles.insert(roleNumber, property.name());
+        }
+    }
+    virtual ~QtIVISimpleDiscoveryModel() {}
+
+    Q_INVOKABLE T* at(int index)
+    {
+        QtIVIServiceObject* so = serviceObjectAt(index);
+        if (!so)
+            return 0;
+
+        QObject* instance = so->interfaceInstance(m_interface);
+        if (!instance)
+            return 0;
+
+        T* obj = qobject_cast<T*>(instance);
+        if(!obj)
+            return 0;
+
+        return obj;
+    }
 };
 
 #endif // QTIVISIMPLEDISCOVERYMODEL_H
