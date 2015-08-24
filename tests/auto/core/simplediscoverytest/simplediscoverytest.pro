@@ -8,6 +8,14 @@
 # written consent of Pelagicore AG.
 ##################################################################################################
 
-TEMPLATE = subdirs
+QT       += testlib ivicore
 
-SUBDIRS = servicemanagertest simplediscoverytest
+TARGET = tst_simplediscoverytest
+CONFIG   += testcase
+
+TEMPLATE = app
+
+SOURCES += \
+    tst_simplediscoverytest.cpp
+
+DEFINES += SRCDIR=\\\"$$PWD/\\\"
