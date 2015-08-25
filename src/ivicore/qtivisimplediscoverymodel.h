@@ -12,21 +12,25 @@
 #define QTIVISIMPLEDISCOVERYMODEL_H
 
 #include <QAbstractListModel>
+#include <QQmlParserStatus>
 
 #include <QtIVICore/qtiviglobal.h>
 #include <QtIVICore/qtiviserviceobject.h>
 
-class Q_QTIVICORE_EXPORT QtIVISimpleDiscoveryModelBase: public QAbstractListModel
+class Q_QTIVICORE_EXPORT QtIVISimpleDiscoveryModelBase: public QAbstractListModel, public QQmlParserStatus
 {
     Q_OBJECT
+    Q_INTERFACES(QQmlParserStatus)
+
     Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
+    Q_PROPERTY(bool autoDiscovery READ autoDiscovery WRITE setAutoDiscovery NOTIFY autoDiscoveryChanged)
 
 public:
     enum ModelRoles {
         ServiceObject = Qt::UserRole + 1
     };
 
-    QtIVISimpleDiscoveryModelBase(QString interface, QObject *parent = 0);
+    QtIVISimpleDiscoveryModelBase(QString interface, bool autoDiscovery = true, QObject *parent = 0);
     ~QtIVISimpleDiscoveryModelBase();
 
     QHash<int, QByteArray> roleNames() const;
@@ -36,22 +40,41 @@ public:
 
     Q_INVOKABLE QtIVIServiceObject* serviceObjectAt(int index) const;
 
+    void startAutoDiscovery();
+
+    bool autoDiscovery() const;
+
+public slots:
+    void setAutoDiscovery(bool autoDiscovery);
+
 signals:
     void countChanged();
+    void autoDiscoveryChanged(bool autoDiscovery);
 
 protected:
-     virtual void updateServiceObjects(QList<QtIVIServiceObject*>);
-     virtual void addServiceObjects(QList<QtIVIServiceObject*>);
-     virtual void removeServiceObjects(QList<QtIVIServiceObject*>);
+    virtual void updateServiceObjects(QList<QtIVIServiceObject*>);
+    virtual void addServiceObjects(QList<QtIVIServiceObject*>);
+    virtual void removeServiceObjects(QList<QtIVIServiceObject*>);
 
-    // TODO add set methods and make these private
-    QHash< int, QByteArray > m_roles;
-    QSet< int > m_enumProperties;
+    //TODO This doesn't work for the C++ usecases we should use the constructor there instead
+    // Also this means a qml dependency in the core, do we want that ?
+    virtual void classBegin();
+    virtual void componentComplete();
+
+    void setRoleNames(QHash<int, QByteArray> roles, QSet<int> enumProperties);
+
+private slots:
+    void onModelReset();
+    void onRowsInserted(const QModelIndex &, int, int);
+    void onRowsRemoved(const QModelIndex &, int, int);
 
 private:
     QString m_interface;
+    bool m_autoDiscovery;
     QList<QtIVIServiceObject*> m_serviceObjects;
     QHash< QByteArray, int > m_reverseRoles;
+    QHash< int, QByteArray > m_roles;
+    QSet< int > m_enumProperties;
 };
 
 template <class T>
@@ -61,7 +84,8 @@ public:
     QtIVISimpleDiscoveryModel(QString interface, QObject* parent = 0)
         : QtIVISimpleDiscoveryModelBase(interface, parent)
     {
-        m_roles.insert(ServiceObject, "serviceObject");
+        QHash<int, QByteArray> roles;
+        QSet<int> enumProperties;
 
         // Initialize the list of properties this instance of the model knows about
         for(int propertyIndex = 0; propertyIndex < T::staticMetaObject.propertyCount(); propertyIndex++)
@@ -70,10 +94,12 @@ public:
             const int roleNumber = Qt::UserRole + 1 + propertyIndex;
             if(property.isEnumType())
             {
-                m_enumProperties.insert(roleNumber);
+                enumProperties.insert(roleNumber);
             }
-            m_roles.insert(roleNumber, property.name());
+            roles.insert(roleNumber, property.name());
         }
+
+        setRoleNames(roles, enumProperties);
     }
     virtual ~QtIVISimpleDiscoveryModel() {}
 
