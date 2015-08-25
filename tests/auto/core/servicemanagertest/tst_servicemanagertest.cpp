@@ -14,26 +14,6 @@
 #include <qtiviserviceinterface.h>
 #include <qtiviserviceobject.h>
 
-class MockServiceObject : public QtIVIServiceObject {
-
-public:
-    explicit MockServiceObject(const QString &name, const QString &interface, QObject *parent=0) :
-        QtIVIServiceObject(parent), m_name(name) {
-        m_interfaces << interface;
-    }
-
-    explicit MockServiceObject(const QString &name, const QStringList &interfaces, QObject *parent=0) :
-        QtIVIServiceObject(parent), m_name(name), m_interfaces(interfaces) {
-    }
-
-    QString name() const { return m_name; }
-    QStringList interfaces() const { return m_interfaces; }
-
-private:
-    QString m_name;
-    QStringList m_interfaces;
-};
-
 class MockServiceBackend : public QObject, public QtIVIServiceInterface
 {
     Q_OBJECT
