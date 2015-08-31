@@ -29,6 +29,7 @@ public:
 
     QString name() const { return m_name; }
     QStringList interfaces() const { return m_interfaces; }
+    QObject *interfaceInstance(const QString &) const { return 0; }
 
 private:
     QString m_name;
@@ -91,6 +92,7 @@ void SimpleDiscoveryTest::testNoBackends()
 {
     QtIVISimpleDiscoveryModel<MockServiceObject> model("Interface0");
     QSignalSpy countSpy(&model, SIGNAL(countChanged()));
+    model.startAutoDiscovery();
 
     QCOMPARE(model.rowCount(), 0);
     QCOMPARE(countSpy.count(), 0);
@@ -108,42 +110,48 @@ void SimpleDiscoveryTest::testStaticBackends()
     MockServiceBackend *backend0 = new MockServiceBackend(manager);
     bool regResult = manager->registerService(backend0, QStringList() << "Interface0");
     QCOMPARE(regResult, true);
-    MockServiceBackend *backend1 = new MockServiceBackend(manager);
-    regResult = manager->registerService(backend1, QStringList() << "Interface0");
-    QCOMPARE(regResult, true);
 
     QtIVISimpleDiscoveryModel<MockServiceObject> model("Interface0");
     QSignalSpy countSpy(&model, SIGNAL(countChanged()));
+    model.startAutoDiscovery();
 
-    QCOMPARE(model.rowCount(), 2);
-    QCOMPARE(countSpy.count(), 0);
+    QCOMPARE(model.rowCount(), 1);
+    QCOMPARE(countSpy.count(), 1);
 }
 
 void SimpleDiscoveryTest::testChangingBackends()
 {
     MockServiceBackend *backend0 = new MockServiceBackend(manager);
-    bool regResult = manager->registerService(backend0, QStringList() << "Interface0");
+    bool regResult = manager->registerService(backend0, QStringList() << "Interface1");
     QCOMPARE(regResult, true);
 
-    QtIVISimpleDiscoveryModel<MockServiceObject> model("Interface0");
+    QtIVISimpleDiscoveryModel<MockServiceBackend> model("Interface0");
     QSignalSpy countSpy(&model, SIGNAL(countChanged()));
+    model.startAutoDiscovery();
 
-    QCOMPARE(model.rowCount(), 1);
+    QCOMPARE(model.rowCount(), 0);
     QCOMPARE(countSpy.count(), 0);
 
     MockServiceBackend *backend1 = new MockServiceBackend(manager);
-    regResult = manager->registerService(backend1, QStringList() << "Interface1");
+    regResult = manager->registerService(backend1, QStringList() << "Interface0");
     QCOMPARE(regResult, true);
 
     QCOMPARE(model.rowCount(), 1);
-    QCOMPARE(countSpy.count(), 0);
+    QCOMPARE(countSpy.count(), 1);
 
     MockServiceBackend *backend2 = new MockServiceBackend(manager);
-    regResult = manager->registerService(backend2, QStringList() << "Interface0");
+    regResult = manager->registerService(backend2, QStringList() << "Interface0" << "Interface1");
     QCOMPARE(regResult, true);
 
     QCOMPARE(model.rowCount(), 2);
-    QCOMPARE(countSpy.count(), 1);
+    QCOMPARE(countSpy.count(), 2);
+
+    MockServiceBackend *backend3 = new MockServiceBackend(manager);
+    regResult = manager->registerService(backend3, QStringList() << "Interface0");
+    QCOMPARE(regResult, true);
+
+    QCOMPARE(model.rowCount(), 2);
+    QCOMPARE(countSpy.count(), 2);
 }
 
 /* TODO add test cases testing the property mapping */
