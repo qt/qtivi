@@ -15,25 +15,31 @@ QtIVIZonesAttached::QtIVIZonesAttached(QObject *parent) : QObject(parent)
     m_item = qobject_cast<QtIVIAbstractZoneModelFeature*>(parent);
     if (m_item)
     {
-        // Ensure that the model does not change
-        connect(m_item->model(), &QAbstractItemModel::layoutChanged, this, &QtIVIZonesAttached::onModelChanged);
-        connect(m_item->model(), &QAbstractItemModel::rowsInserted, this, &QtIVIZonesAttached::onModelChanged);
-        connect(m_item->model(), &QAbstractItemModel::rowsRemoved, this, &QtIVIZonesAttached::onModelChanged);
-        connect(m_item->model(), &QAbstractItemModel::dataChanged, this, &QtIVIZonesAttached::onModelChanged);
-
-        for(int i=0; i<m_item->model()->rowCount(); ++i)
+        if (m_item->autoDiscovery())
         {
-            QModelIndex index = m_item->model()->index(i, 0);
-            QString name = index.data().toString();
-            QObject *object = index.data(Qt::UserRole).value<QObject*>();
+            m_item->startAutoDiscovery(); // TODO this is not really good as it is a blocking operation during element instantiation
 
-            // TODO validate name, so that it is a valid property name
+            // Ensure that the model does not change
+            connect(m_item->model(), &QAbstractItemModel::layoutChanged, this, &QtIVIZonesAttached::onModelChanged);
+            connect(m_item->model(), &QAbstractItemModel::rowsInserted, this, &QtIVIZonesAttached::onModelChanged);
+            connect(m_item->model(), &QAbstractItemModel::rowsRemoved, this, &QtIVIZonesAttached::onModelChanged);
+            connect(m_item->model(), &QAbstractItemModel::dataChanged, this, &QtIVIZonesAttached::onModelChanged);
 
-            QMetaPropertyBuilder pbuilder = builder.addProperty(name.toUtf8(), "QObject*", i);
-            pbuilder.setReadable(true);
-            pbuilder.setWritable(false);
-            pbuilder.setConstant(true);
+            for(int i=0; i<m_item->model()->rowCount(); ++i)
+            {
+                QModelIndex index = m_item->model()->index(i, 0);
+                QString name = index.data(Qt::DisplayRole).toString();
+
+                // TODO validate name, so that it is a valid property name
+
+                QMetaPropertyBuilder pbuilder = builder.addProperty(name.toUtf8(), "QObject*", i);
+                pbuilder.setReadable(true);
+                pbuilder.setWritable(false);
+                pbuilder.setConstant(true);
+            }
         }
+        else
+            qWarning() << "Could not attach Zones property to :" << parent << " as autoDiscovery is disabled";
     }
     else
         qWarning() << "Could not attach Zones property to :" << parent << " is not a QtIVIAbstractZoneModelFeature";
@@ -61,7 +67,7 @@ const QMetaObject *QtIVIZonesAttached::metaObject() const { return m_metaObject;
 
 int QtIVIZonesAttached::qt_metacall(QMetaObject::Call c, int _id, void **argv)
 {
-    int id = QObject::qt_metacall(c, id, argv);
+    int id = QObject::qt_metacall(c, _id, argv);
     if (id < 0)
         return id;
 

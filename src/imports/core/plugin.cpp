@@ -25,6 +25,7 @@ public:
         Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIVICore"));
         Q_UNUSED(uri);
 
+        qmlRegisterUncreatableType<QtIVIZonesAttached>(uri, 1, 0, "Zones", "Zones is only accessible as attached properties");
         qmlRegisterUncreatableType<QtIVIServiceObject>(uri, 1, 0, "QtIVIServiceObject", "QtIVIServiceObject is not accessible directly");
     }
 };

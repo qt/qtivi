@@ -3,9 +3,11 @@
 
 #include <QtIVIAbstractFeature>
 
+#include <QtIVICore/qtiviglobal.h>
+
 class QAbstractItemModel;
 
-class QtIVIAbstractZoneModelFeature : public QtIVIAbstractFeature
+class Q_QTIVICORE_EXPORT QtIVIAbstractZoneModelFeature : public QtIVIAbstractFeature
 {
     Q_OBJECT
 
@@ -13,6 +15,9 @@ class QtIVIAbstractZoneModelFeature : public QtIVIAbstractFeature
 
 public:
     QtIVIAbstractZoneModelFeature(const QString &interface, bool autoDiscovery = true, QObject *parent = 0);
+
+    virtual QStringList zones() const = 0;
+    virtual QObject *zoneObject(const QString &z) const = 0;
 
     QAbstractItemModel *model();
 

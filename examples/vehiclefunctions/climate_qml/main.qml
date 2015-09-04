@@ -101,31 +101,37 @@ ApplicationWindow {
             }
         }
 
-        RowLayout {
+        GroupBox {
+            title: "Front Left Zone"
 
-            Label {
-                text: "Fan Speed"
-            }
+            ColumnLayout {
+                RowLayout {
 
-            SpinBox {
-                value: climateControl.fanSpeedLevel
-                onValueChanged: {
-                    climateControl.fanSpeedLevel = value
+                    Label {
+                        text: "Fan Speed"
+                    }
+
+                    SpinBox {
+                        value: climateControl.Zones.frontLeft.fanSpeedLevel
+                        onValueChanged: {
+                            climateControl.Zones.frontLeft.fanSpeedLevel = value
+                        }
+                    }
                 }
-            }
-        }
 
 
-        RowLayout {
+                RowLayout {
 
-            Label {
-                text: "Steering Wheel Heater"
-            }
+                    Label {
+                        text: "Steering Wheel Heater"
+                    }
 
-            SpinBox {
-                value: climateControl.steeringWheelHeater
-                onValueChanged: {
-                    climateControl.steeringWheelHeater = value
+                    SpinBox {
+                        value: climateControl.Zones.frontLeft.steeringWheelHeater
+                        onValueChanged: {
+                            climateControl.Zones.frontLeft.steeringWheelHeater = value
+                        }
+                    }
                 }
             }
         }

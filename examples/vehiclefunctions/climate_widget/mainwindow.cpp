@@ -63,16 +63,6 @@ void MainWindow::setupUI()
     ui->cb_heater->setChecked(m_climateControl->isHeaterEnabled());
     connect(m_climateControl, &QtIVIClimateControl::heaterEnabledChanged, ui->cb_heater, &QCheckBox::setChecked);
     connect(ui->cb_heater, &QCheckBox::clicked, m_climateControl, &QtIVIClimateControl::setHeaterEnabled);
-
-    //Heater
-    ui->sb_steeringWheelHeater->setValue(m_climateControl->steeringWheelHeater());
-    connect(m_climateControl, &QtIVIClimateControl::steeringWheelHeaterChanged, ui->sb_steeringWheelHeater, &QSpinBox::setValue);
-    connect(ui->sb_steeringWheelHeater, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), m_climateControl, &QtIVIClimateControl::setSteeringWheelHeater);
-
-    //Fan Speed
-    ui->sb_fanSpeed->setValue(m_climateControl->fanSpeedLevel());
-    connect(m_climateControl, &QtIVIClimateControl::fanSpeedLevelChanged, ui->sb_fanSpeed, &QSpinBox::setValue);
-    connect(ui->sb_fanSpeed, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), m_climateControl, &QtIVIClimateControl::setFanSpeedLevel);
 }
 
 void MainWindow::setupFlowDirectionRadioButtons(QtIVIClimateControl::AirflowDirection direction)

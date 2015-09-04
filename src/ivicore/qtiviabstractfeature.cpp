@@ -230,6 +230,9 @@ void QtIVIAbstractFeature::startAutoDiscovery()
 {
     setAutoDiscovery(true);
 
+    if (m_serviceObject) // No need to discover a new backend when we already have one
+        return;
+
     QtIVIServiceManager* serviceManager = QtIVIServiceManager::instance();
     QList<QtIVIServiceObject*> serviceObjects = serviceManager->findServiceByInterface(m_interface);
 

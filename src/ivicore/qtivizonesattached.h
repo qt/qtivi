@@ -4,9 +4,11 @@
 #include <QObject>
 #include <QtQml>
 
+#include <QtIVICore/qtiviglobal.h>
+
 class QtIVIAbstractZoneModelFeature;
 
-class QtIVIZonesAttached : public QObject
+class Q_QTIVICORE_EXPORT QtIVIZonesAttached : public QObject
 {
 // Start of Q_OBJECT macro
 public:
