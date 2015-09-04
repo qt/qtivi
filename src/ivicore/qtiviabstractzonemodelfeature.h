@@ -7,6 +7,8 @@
 
 class QAbstractItemModel;
 
+class QtIVIZoneModel;
+
 class Q_QTIVICORE_EXPORT QtIVIAbstractZoneModelFeature : public QtIVIAbstractFeature
 {
     Q_OBJECT
@@ -21,8 +23,11 @@ public:
 
     QAbstractItemModel *model();
 
+protected:
+    void zonesChanged();
+
 private:
-    QAbstractItemModel *m_model;
+    QtIVIZoneModel *m_model;
 };
 
 #endif // QTIVIABSTRACTZONEMODELFEATURE_H

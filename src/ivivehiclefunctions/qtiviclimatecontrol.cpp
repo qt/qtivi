@@ -736,6 +736,8 @@ void QtIVIClimateControl::connectToServiceObject(QtIVIServiceObject *so)
     onAirConditioningEnabledChanged(backend->airConditioningEnabled());
     onHeaterEnabledChanged(backend->heaterEnabled());
     onAirRecirculationEnabledChanged(backend->airRecirculationEnabled());
+
+    zonesChanged();
 }
 
 /*!
@@ -748,7 +750,7 @@ void QtIVIClimateControl::disconnectFromServiceObject(QtIVIServiceObject *so)
     while(m_zones.count() > 0)
         delete m_zones.take(m_zones.firstKey());
 
-    // TODO reset model
+    zonesChanged();
 
     disconnect(backend, &QtIVIClimateControlBackendInterface::airflowDirectionChanged, this, &QtIVIClimateControl::onAirflowDirectionChanged);
     disconnect(backend, &QtIVIClimateControlBackendInterface::airConditioningEnabledChanged, this, &QtIVIClimateControl::onAirConditioningEnabledChanged);
@@ -770,7 +772,7 @@ void QtIVIClimateControl::clearServiceObject()
     while(m_zones.count() > 0)
         delete m_zones.take(m_zones.firstKey());
 
-    // TODO reset model
+    zonesChanged();
 }
 
 void QtIVIClimateControl::onAirflowDirectionChanged(QtIVIClimateControl::AirflowDirection airflowDirection)

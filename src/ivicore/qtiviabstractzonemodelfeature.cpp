@@ -12,6 +12,8 @@ public:
 
     QHash<int, QByteArray> roleNames() const;
 
+    void updateModel();
+
 private:
     QtIVIAbstractZoneModelFeature *m_feature;
 };
@@ -66,6 +68,12 @@ QHash<int, QByteArray> QtIVIZoneModel::roleNames() const
     return res;
 }
 
+void QtIVIZoneModel::updateModel()
+{
+    beginResetModel();
+    endResetModel();
+}
+
 QtIVIAbstractZoneModelFeature::QtIVIAbstractZoneModelFeature(const QString &interface, bool autoDiscovery, QObject *parent)
     : QtIVIAbstractFeature(interface, autoDiscovery, parent)
 {
@@ -75,4 +83,9 @@ QtIVIAbstractZoneModelFeature::QtIVIAbstractZoneModelFeature(const QString &inte
 QAbstractItemModel *QtIVIAbstractZoneModelFeature::model()
 {
     return m_model;
+}
+
+void QtIVIAbstractZoneModelFeature::zonesChanged()
+{
+    m_model->updateModel();
 }

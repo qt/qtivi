@@ -37,6 +37,8 @@ private slots:
     void onModelChanged();
 
 private:
+    QMetaObject *buildMetaObject(QtIVIAbstractZoneModelFeature*);
+
     QtIVIAbstractZoneModelFeature *m_item;
 
     QMetaObject *m_metaObject;
