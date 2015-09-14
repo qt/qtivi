@@ -469,6 +469,7 @@ QtIVIServiceInterface *QtIVIServiceManagerPrivate::loadServiceBackendInterface(s
 
 /*!
  * \class QtIVIServiceManager
+ * \inmodule QtIVICore
  * \brief QtIVIServiceManager provides the Backends to QtIVIAbstractFeature
  *
  * QtIVIServiceManager is the heart of QtIVI and provides you a easy way to detect what
@@ -480,6 +481,8 @@ QtIVIServiceInterface *QtIVIServiceManagerPrivate::loadServiceBackendInterface(s
  *
  * The registerService() function can be used to add Backend classes without putting them into
  * a plugin.
+ *
+ * The service manager is a process wide singleton and can be accessed through the \l instance method.
  */
 QtIVIServiceManager::QtIVIServiceManager()
     : QAbstractListModel(0)
@@ -488,6 +491,9 @@ QtIVIServiceManager::QtIVIServiceManager()
     d_ptr->searchPlugins();
 }
 
+/*!
+ * Returns the global service manager instance.
+ */
 QtIVIServiceManager *QtIVIServiceManager::instance()
 {
     static QtIVIServiceManager* instance = new QtIVIServiceManager();
@@ -512,13 +518,13 @@ QList<QtIVIServiceObject *> QtIVIServiceManager::findServiceByInterface(const QS
 }
 
 /*!
- * Register a backend. The provided \a serviceBackendInterface must implement the ServiceBackendInterface else
- * the registration will fail.
+ * Register a backend. The provided \a serviceBackendInterface must implement the QtIVIServiceInterface else
+ * the registration will fail. \a interfaces is list with interfaces which the backend handles. At least one
+ * interface is required.
  *
- * \param serviceBackendInterface an QObject instance which implements the ServiceBackendInterface
- * \param interfaces a list with interfaces which the backend handles. At least one interface is required
- * \return true if the backend was successfully registered else false
- * \sa ServiceBackendInterface
+ * Returns true if the backend was successfully registered else false.
+ *
+ * \sa QtIVIServiceInterface
  */
 bool QtIVIServiceManager::registerService(QObject *serviceBackendInterface, const QStringList &interfaces)
 {
@@ -526,6 +532,11 @@ bool QtIVIServiceManager::registerService(QObject *serviceBackendInterface, cons
     return d->registerBackend(serviceBackendInterface, interfaces);
 }
 
+/*!
+ * \internal
+ *
+ * Unloads all currently loaded backends. Commonly only used for unit testing.
+ */
 void QtIVIServiceManager::unloadAllBackends()
 {
     Q_D(QtIVIServiceManager);
@@ -534,9 +545,6 @@ void QtIVIServiceManager::unloadAllBackends()
 
 /*!
  * Returns true if the specified \a interface has been registered.
-
- * \param interface the interface
- * \return true if the specified \a interface has been registered else false
  */
 bool QtIVIServiceManager::hasInterface(const QString &interface) const
 {
@@ -545,10 +553,8 @@ bool QtIVIServiceManager::hasInterface(const QString &interface) const
 }
 
 /*!
- * Implements QAbstractListModel::rowCount()
+ * Returns the number of rows for the given \a parent. Typically \a parent is an empty model index.
  *
- * \param parent the model index, typically an empty model index
- * \return the number of interfaces available
  * \sa QAbstractListModel::data()
  */
 int QtIVIServiceManager::rowCount(const QModelIndex &parent) const
@@ -558,11 +564,8 @@ int QtIVIServiceManager::rowCount(const QModelIndex &parent) const
 }
 
 /*!
- * Implements QAbstractListModel::data()
+ * Returns the data for \a index and \a role.
  *
- * \param index the index
- * \param role the role
- * \return the data for the spcified index and role
  * \sa QAbstractListModel::data()
  */
 QVariant QtIVIServiceManager::data(const QModelIndex &index, int role) const

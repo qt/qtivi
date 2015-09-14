@@ -14,6 +14,7 @@
 
 /*!
  * \class QtIVIServiceObject
+ * \inmodule QtIVICore
  * \brief QtIVIServiceObject is the connection point to a Backend Service
  *
  * QtIVIServiceObject provides you with a list of interfaces the Backend implements.
@@ -25,12 +26,28 @@
  * \sa QtIVIAbstractFeature
  */
 
+/*!
+ * \property QtIVIServiceObject::id
+ * \brief A unique ID for the service object instance.
+ *
+ * Each service object has a unique ID. When sub-classing, the \l QtIVIServiceObject::id()
+ * function can be overloaded to control how the ID is generad.
+ */
+
+/*!
+ * Constructor.
+ *
+ * \a parent is passed on to \l QObject.
+ */
 QtIVIServiceObject::QtIVIServiceObject(QObject *parent)
     : QObject(parent)
 {
 
 }
 
+/*!
+ * Destructor.
+ */
 QtIVIServiceObject::~QtIVIServiceObject()
 {
 
@@ -48,4 +65,28 @@ QString QtIVIServiceObject::id() const
     return id.toString();
 }
 
+/*!
+ * \class QtIVIServiceInterface
+ * \inmodule QtIVICore
+ * \brief Interface class for services
+ *
+ * The QtIVIServiceInterface class defines the interface of services registered at the QtIVIServiceManager.
+ *
+ * Commonly, service objects inherit the concrete class QtIVIServiceObject instead of using QtIVIServiceInterface directly.
+ *
+ * \sa QtIVIServiceObject
+ */
 
+/*!
+ * \fn QStringList QtIVIServiceInterface::interfaces() const
+ * \inmodule QtIVICore
+ *
+ * Returns a list of service interface names supported by the service object instance.
+ */
+
+/*!
+ * \fn QObject* QtIVIServiceInterface::interfaceInstance(const QString& interface) const
+ * \inmodule QtIVICore
+ *
+ * Returns an object implementing the service interface requested through \a interface.
+ */

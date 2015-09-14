@@ -15,6 +15,7 @@
 
 /*!
  * \class QtIVIAbstractFeature
+ * \inmodule QtIVICore
  * \brief The QtIVIAbstractFeature is the base class for all QtIVI Featues
  *
  * QtIVIAbstractFeature is the base class for the front facing API towards the Developer.
