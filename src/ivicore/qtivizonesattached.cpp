@@ -75,7 +75,7 @@ QMetaObject *QtIVIZonesAttached::buildMetaObject(QtIVIAbstractZoneModelFeature *
     builder.setClassName("QtIVIZonesAttached");
     builder.setFlags(QMetaObjectBuilder::DynamicMetaObject);
 
-    QRegExp reProperty("^[a-z_][A-Za-z0-9_]*$");
+    QRegExp reProperty(QStringLiteral("^[a-z_][A-Za-z0-9_]*$"));
 
     if (zoneModel && zoneModel->model()) {
         int j = 0;
