@@ -15,7 +15,6 @@ HEADERS += \
     qtiviservicemanager_p.h \
     qtiviserviceobject.h \
     qtiviabstractfeature.h \
-    qtivisimplediscoverymodel.h \
     qtiviglobal.h \
     qtiviproxyserviceobject_p.h \
     qtivizonesattached.h \
@@ -25,7 +24,6 @@ SOURCES += \
     qtiviservicemanager.cpp \
     qtiviserviceobject.cpp \
     qtiviabstractfeature.cpp \
-    qtivisimplediscoverymodel.cpp \
     qtiviproxyserviceobject_p.cpp \
     qtivizonesattached.cpp \
     qtiviabstractzonemodelfeature.cpp
