@@ -48,19 +48,27 @@ QMetaObject *QtIVIZonesAttached::buildMetaObject(QtIVIAbstractZoneModelFeature *
     builder.setClassName("QtIVIZonesAttached");
     builder.setFlags(QMetaObjectBuilder::DynamicMetaObject);
 
+    QRegExp reProperty("^[a-z_][A-Za-z0-9_]*$");
 
     if (zoneModel && zoneModel->model()) {
+        int j = 0;
+        QStringList names;
         for(int i=0; i<zoneModel->model()->rowCount(); ++i)
         {
             QModelIndex index = zoneModel->model()->index(i, 0);
             QString name = index.data(Qt::DisplayRole).toString();
 
-            // TODO validate name, so that it is a valid property name
+            // Ensure that name is a valid, unique property name
+            if (reProperty.indexIn(name) == -1 || names.contains(name))
+                while (names.contains(name))
+                    name = QStringLiteral("zone%1").arg(j++);
 
             QMetaPropertyBuilder pbuilder = builder.addProperty(name.toUtf8(), "QObject*", i);
             pbuilder.setReadable(true);
             pbuilder.setWritable(false);
             pbuilder.setConstant(true);
+
+            names << name;
         }
     }
 
