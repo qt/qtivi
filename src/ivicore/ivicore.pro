@@ -1,6 +1,6 @@
 TARGET = QtIVICore
 
-QT = core qml
+QT = core core-private qml
 CONFIG += c++11
 VERSION = 1.0.0
 

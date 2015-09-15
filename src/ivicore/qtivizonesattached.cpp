@@ -27,7 +27,7 @@
 
 #include "qtivizonesattached.h"
 
-#include <5.5.0/QtCore/private/qmetaobjectbuilder_p.h>
+#include <QtCore/private/qmetaobjectbuilder_p.h>
 
 #include <qtiviabstractzonemodelfeature.h>
 

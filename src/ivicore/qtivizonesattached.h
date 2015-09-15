@@ -40,13 +40,10 @@ class Q_QTIVICORE_EXPORT QtIVIZonesAttached : public QObject
 // Start of Q_OBJECT macro
 public:
     Q_OBJECT_CHECK
-    QT_WARNING_PUSH
-    Q_OBJECT_NO_OVERRIDE_WARNING
     static const QMetaObject staticMetaObject;
     virtual const QMetaObject *metaObject() const;
     virtual void *qt_metacast(const char *);
     virtual int qt_metacall(QMetaObject::Call, int, void **);
-    QT_WARNING_POP
     QT_TR_FUNCTIONS
 private: \
     Q_DECL_HIDDEN_STATIC_METACALL static void qt_static_metacall(QObject *, QMetaObject::Call, int, void **);
