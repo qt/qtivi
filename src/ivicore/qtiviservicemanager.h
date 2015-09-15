@@ -1,12 +1,29 @@
-/************************************************************************************************
- * Copyright (c) 2012-2015 Pelagicore AG. All rights reserved.
- *
- * This software, including documentation, is protected by copyright controlled by Pelagicore AG.
- * All rights reserved. Copying, including reproducing, storing, adapting or translating, any or
- * all of this material requires prior written consent of Pelagicore AG Corporation. This material
- * also contains confidential information which may not be disclosed to others without the prior
- * written consent of Pelagicore AG.
- ************************************************************************************************/
+/****************************************************************************
+**
+** Copyright (C) 2015 Pelagicore AG
+** Contact: http://www.pelagicore.com/
+**
+** This file is part of Qt IVI.
+**
+** $QT_BEGIN_LICENSE:LGPL3$
+** Commercial License Usage
+** Licensees holding valid commercial Qt IVI licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Pelagicore. For licensing terms
+** and conditions see http://www.pelagicore.com.
+**
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 3 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPLv3 included in the
+** packaging of this file. Please review the following information to
+** ensure the GNU Lesser General Public License version 3 requirements
+** will be met: https://www.gnu.org/licenses/lgpl-3.0.html.
+**
+** $QT_END_LICENSE$
+**
+****************************************************************************/
 
 #ifndef QTIVISERVICEMANAGER_H
 #define QTIVISERVICEMANAGER_H
