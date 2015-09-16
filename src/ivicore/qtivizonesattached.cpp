@@ -213,6 +213,7 @@ void *QtIVIZonesAttached::qt_metacast(const char *_clname)
     return QObject::qt_metacast(_clname);
 }
 
+// This method name has been extended with the postfix "_generated" to allow us to reimplement it
 int QtIVIZonesAttached::qt_metacall_generated(QMetaObject::Call _c, int _id, void **_a)
 {
     _id = QObject::qt_metacall(_c, _id, _a);
@@ -230,3 +231,5 @@ int QtIVIZonesAttached::qt_metacall_generated(QMetaObject::Call _c, int _id, voi
     return _id;
 }
 QT_END_MOC_NAMESPACE
+
+// End of moc-generated code

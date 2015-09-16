@@ -98,6 +98,9 @@ QHash<int, QByteArray> QtIVIZoneModel::roleNames() const
 void QtIVIZoneModel::updateModel()
 {
     beginResetModel();
+    // TODO this needs to be fixed. Right now the model is based on the contents of the backend
+    // and if the backend changes, we really do not know anything of the previous state, so the
+    // about-signal is misleading.
     endResetModel();
 }
 
