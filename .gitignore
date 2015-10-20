@@ -1,2 +1,10 @@
-*.pro.user*
-Makefile*
+*Makefile
+*.pro.user
+*.moc
+moc_*
+ui_*
+.build
+*.app
+.DS_STORE
+*.so*
+*.o
