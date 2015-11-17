@@ -1,6 +1,9 @@
 #include "qtiviclimatecontrol.h"
 
 #include "qtiviclimatecontrolbackendinterface.h"
+#include "qtiviserviceobject.h"
+
+#include <QDebug>
 
 /*!
  * \class QtIVIClimateControlBackendInterface

@@ -30,6 +30,8 @@
 #include "qtiviserviceobject.h"
 #include "qtiviservicemanager.h"
 
+#include <QDebug>
+
 /*!
  * \class QtIVIAbstractFeature
  * \inmodule QtIVICore

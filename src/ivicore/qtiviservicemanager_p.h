@@ -32,6 +32,7 @@
 #include <QVariantMap>
 #include <QStringList>
 #include <QMap>
+#include <QSet>
 
 class QPluginLoader;
 class QtIVIServiceInterface;
