@@ -39,32 +39,30 @@ public:
     ClimateControlBackend(QObject* parent = 0);
     ~ClimateControlBackend();
 
-    // QtIVIClimateControlBackendInterface interface
 public:
-    QStringList zones() const;
-    QtIVIClimateControl::OptionalFeatures climateFeatures() const;
-    QtIVIClimateZone::OptionalFeatures zoneFeatures(const QString &zone) const;
+    QStringList availableZones() const;
+
+    void initializeAttributes();
 
     int targetTemperature(const QString &zone) const;
     int seatCooler(const QString &zone) const;
     int seatHeater(const QString &zone) const;
     int steeringWheelHeater(const QString &zone) const;
     int fanSpeedLevel(const QString &zone) const;
+    QtIVIClimateControl::AirflowDirection airflowDirection(const QString &zone) const;
+    bool airConditioningEnabled(const QString &zone) const;
+    bool heaterEnabled(const QString &zone) const;
+    bool airRecirculationEnabled(const QString &zone) const;
 
-    void setTargetTemperature(const QString &zone, int val);
-    void setSeatCooler(const QString &zone, int val);
-    void setSeatHeater(const QString &zone, int val);
-    void setSteeringWheelHeater(const QString &zone, int val);
-    void setFanSpeedLevel(const QString &zone, int);
-
-    QtIVIClimateControl::AirflowDirection airflowDirection() const;
-    void setAirflowDirection(QtIVIClimateControl::AirflowDirection direction);
-    void setAirConditioningEnabled(bool val);
-    void setHeaterEnabled(bool val);
-    void setAirRecirculationEnabled(bool val);
-    bool airConditioningEnabled() const;
-    bool heaterEnabled() const;
-    bool airRecirculationEnabled() const;
+    void setTargetTemperature(int val, const QString &zone);
+    void setSeatCooler(int val, const QString &zone);
+    void setSeatHeater(int val, const QString &zone);
+    void setSteeringWheelHeater(int val, const QString &zone);
+    void setFanSpeedLevel(int, const QString &zone);
+    void setAirflowDirection(QtIVIClimateControl::AirflowDirection direction, const QString &zone);
+    void setAirConditioningEnabled(bool val, const QString &zone);
+    void setHeaterEnabled(bool val, const QString &zone);
+    void setAirRecirculationEnabled(bool val, const QString &zone);
 
 private:
 
@@ -74,8 +72,6 @@ private:
     bool m_airRecirculation;
 
     struct ZoneBackend {
-        QtIVIClimateZone::OptionalFeatures features;
-
         int targetTemperature;
         int seatCooler;
         int seatHeater;

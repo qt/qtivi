@@ -45,7 +45,6 @@ public:
         Q_UNUSED(uri);
 
         qmlRegisterType<QtIVIClimateControl>(uri, 1, 0, "ClimateControl");
-        qmlRegisterUncreatableType<QtIVIClimateZone>(uri, 1, 0, "ClimateZone", "ClimateZone only accessible from ClimateControl");
     }
 };
 

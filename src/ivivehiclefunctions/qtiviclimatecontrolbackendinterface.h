@@ -32,32 +32,26 @@
 
 #include <QObject>
 
+#include "qtivivehiclebackendinterface.h"
 #include "qtiviclimatecontrol.h"
 
-class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIClimateControlBackendInterface : public QObject
+class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIClimateControlBackendInterface : public QtIVIVehicleBackendInterface
 {
     Q_OBJECT
 
 public:
-    QtIVIClimateControlBackendInterface(QObject *parent=0) : QObject(parent) {}
+    QtIVIClimateControlBackendInterface(QObject *parent=0) : QtIVIVehicleBackendInterface(parent) {}
 
-    static QString interfaceName;
+    virtual void setTargetTemperature(int value, const QString &zone) = 0;
+    virtual void setSeatCooler(int value, const QString &zone) = 0;
+    virtual void setSeatHeater(int value, const QString &zone) = 0;
+    virtual void setSteeringWheelHeater(int value, const QString &zone) = 0;
+    virtual void setFanSpeedLevel(int value, const QString &zone) = 0;
 
-    virtual QStringList zones() const = 0;
-
-    virtual QtIVIClimateControl::OptionalFeatures climateFeatures() const = 0;
-    virtual QtIVIClimateZone::OptionalFeatures zoneFeatures(const QString &zone) const = 0;
-
-    virtual void setTargetTemperature(const QString &zone, int) = 0;
-    virtual void setSeatCooler(const QString &zone, int) = 0;
-    virtual void setSeatHeater(const QString &zone, int) = 0;
-    virtual void setSteeringWheelHeater(const QString &zone, int) = 0;
-    virtual void setFanSpeedLevel(const QString &zone, int) = 0;
-
-    virtual void setAirflowDirection(QtIVIClimateControl::AirflowDirection) = 0;
-    virtual void setAirConditioningEnabled(bool) = 0;
-    virtual void setHeaterEnabled(bool) = 0;
-    virtual void setAirRecirculationEnabled(bool) = 0;
+    virtual void setAirflowDirection(QtIVIClimateControl::AirflowDirection airflowDirection, const QString &zone) = 0;
+    virtual void setAirConditioningEnabled(bool enabled, const QString &zone) = 0;
+    virtual void setHeaterEnabled(bool enabled, const QString &zone) = 0;
+    virtual void setAirRecirculationEnabled(bool enabled, const QString &zone) = 0;
 
     virtual int targetTemperature(const QString &zone) const = 0;
     virtual int seatCooler(const QString &zone) const = 0;
@@ -65,22 +59,21 @@ public:
     virtual int steeringWheelHeater(const QString &zone) const = 0;
     virtual int fanSpeedLevel(const QString &zone) const = 0;
 
-    virtual QtIVIClimateControl::AirflowDirection airflowDirection() const = 0;
-    virtual bool airConditioningEnabled() const = 0;
-    virtual bool heaterEnabled() const = 0;
-    virtual bool airRecirculationEnabled() const = 0;
+    virtual QtIVIClimateControl::AirflowDirection airflowDirection(const QString &zone) const = 0;
+    virtual bool airConditioningEnabled(const QString &zone) const = 0;
+    virtual bool heaterEnabled(const QString &zone) const = 0;
+    virtual bool airRecirculationEnabled(const QString &zone) const = 0;
 
 signals:
-    void targetTemperatureChanged(const QString &zone, int);
-    void seatCoolerChanged(const QString &zone, int);
-    void seatHeaterChanged(const QString &zone, int);
-    void steeringWheelHeaterChanged(const QString &zone, int);
-    void fanSpeedLevelChanged(const QString &zone, int);
-
-    void airflowDirectionChanged(QtIVIClimateControl::AirflowDirection);
-    void airConditioningEnabledChanged(bool);
-    void heaterEnabledChanged(bool);
-    void airRecirculationEnabledChanged(bool);
+    void targetTemperatureChanged(int value, const QString &zone = QString());
+    void seatCoolerChanged(int value, const QString &zone = QString());
+    void seatHeaterChanged(int value, const QString &zone = QString());
+    void steeringWheelHeaterChanged(int value, const QString &zone = QString());
+    void fanSpeedLevelChanged(int value, const QString &zone = QString());
+    void airflowDirectionChanged(QtIVIClimateControl::AirflowDirection value, const QString &zone = QString());
+    void airConditioningEnabledChanged(bool value, const QString &zone = QString());
+    void heaterEnabledChanged(bool value, const QString &zone = QString());
+    void airRecirculationEnabledChanged(bool value, const QString &zone = QString());
 };
 
 #endif // QTIVICLIMATECONTROLBACKENDINTERFACE_H

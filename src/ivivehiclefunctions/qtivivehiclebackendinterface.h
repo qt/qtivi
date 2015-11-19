@@ -27,29 +27,25 @@
 **
 ****************************************************************************/
 
-#include "climateplugin.h"
-#include "climatecontrolbackend.h"
+#ifndef QtIVIVEHICLEBACKENDINTERFACE_H
+#define QtIVIVEHICLEBACKENDINTERFACE_H
 
-#include <QtIVIVehicleFunctions/QtIVIClimateControlBackendInterface>
-#include <QStringList>
+#include <QtIVIAbstractZonedFeature>
 
-ClimatePlugin::ClimatePlugin(QObject *parent) :
-    QObject(parent),
-    m_climate(new ClimateControlBackend(this))
+class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIVehicleBackendInterface : public QObject
 {
-}
+    Q_OBJECT
 
-QStringList ClimatePlugin::interfaces() const
-{
-    QStringList list;
-    list << QtIVIStringClimateControlInterfaceName;
-    return list;
-}
+public:
+    QtIVIVehicleBackendInterface(QObject* parent = 0) : QObject(parent) {}
 
-QObject *ClimatePlugin::interfaceInstance(const QString &interface) const
-{
-    if (interface != QtIVIStringClimateControlInterfaceName)
-        return 0;
+    virtual QStringList availableZones() const = 0;
 
-    return m_climate;
-}
+    virtual void initializeAttributes() = 0;
+
+signals:
+    void errorChanged(QtIVIAbstractZonedFeature::Error error, const QString &message = QString());
+};
+
+#endif // QtIVIVEHICLEBACKENDINTERFACE_H
+

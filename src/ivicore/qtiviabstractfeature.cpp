@@ -226,6 +226,14 @@ void QtIVIAbstractFeature::componentComplete()
     }
 }
 
+/*!
+ * Returns interface name
+ */
+QString QtIVIAbstractFeature::interfaceName() const
+{
+    return m_interface;
+}
+
 QtIVIServiceObject *QtIVIAbstractFeature::serviceObject() const
 {
     return m_serviceObject;

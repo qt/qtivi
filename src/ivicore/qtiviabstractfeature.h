@@ -82,6 +82,8 @@ protected:
     virtual void classBegin();
     virtual void componentComplete();
 
+    QString interfaceName() const;
+
 private slots:
     void serviceObjectDestroyed();
 

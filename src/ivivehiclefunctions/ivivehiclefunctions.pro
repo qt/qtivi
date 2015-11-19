@@ -8,11 +8,14 @@ QMAKE_DOCS = $$PWD/doc/qtivivehiclefunctions.qdocconf
 CMAKE_MODULE_TESTS = '-'
 
 HEADERS += \
+    qtivivehiclebackendinterface.h \
     qtiviclimatecontrol.h \
     qtiviclimatecontrolbackendinterface.h \
-    qtivivehiclefunctionsglobal.h
+    qtivivehiclefunctionsglobal.h \
+    qtiviabstractzonedfeature.h
 
 SOURCES += \
-    qtiviclimatecontrol.cpp
+    qtiviclimatecontrol.cpp \
+    qtiviabstractzonedfeature.cpp
 
 load(qt_module)

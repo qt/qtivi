@@ -42,7 +42,6 @@ ApplicationWindow {
     height: 324
     visible: true
 
-
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 10
@@ -130,9 +129,9 @@ ApplicationWindow {
                     }
 
                     SpinBox {
-                        value: climateControl.Zones.frontLeft.fanSpeedLevel
+                        value: climateControl.zoneAt.FrontLeft.fanSpeedLevel
                         onValueChanged: {
-                            climateControl.Zones.frontLeft.fanSpeedLevel = value
+                            climateControl.zoneAt.FrontLeft.fanSpeedLevel = value
                         }
                     }
                 }
@@ -145,9 +144,9 @@ ApplicationWindow {
                     }
 
                     SpinBox {
-                        value: climateControl.Zones.frontLeft.steeringWheelHeater
+                        value: climateControl.zoneAt.FrontLeft.steeringWheelHeater
                         onValueChanged: {
-                            climateControl.Zones.frontLeft.steeringWheelHeater = value
+                            climateControl.zoneAt.FrontLeft.steeringWheelHeater = value
                         }
                     }
                 }
