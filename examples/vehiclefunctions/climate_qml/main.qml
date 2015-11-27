@@ -33,7 +33,6 @@ import QtQuick.Window 2.2
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
 
-import QtIVICore 1.0
 import QtIVIVehicleFunctions 1.0
 
 ApplicationWindow {
@@ -42,10 +41,18 @@ ApplicationWindow {
     height: 324
     visible: true
 
+//![1]
+    ClimateControl {
+        id: climateControl
+        autoDiscovery: true
+    }
+//![1]
+
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 10
 
+//![2]
         GroupBox {
             title: "Air Flow Direction"
 
@@ -117,7 +124,9 @@ ApplicationWindow {
                     climateControl.airRecirculation = checked
             }
         }
+//![2]
 
+//![3]
         GroupBox {
             title: "Front Left Zone"
 
@@ -153,11 +162,7 @@ ApplicationWindow {
             }
         }
     }
-
-    ClimateControl {
-        id: climateControl
-        autoDiscovery: true
-    }
+//![3]
 
     MessageDialog {
         id: messageDialog
@@ -166,8 +171,10 @@ ApplicationWindow {
         icon: StandardIcon.Critical
     }
 
+//![4]
     Component.onCompleted: {
         if (!climateControl.isValid)
             messageDialog.open()
     }
+//![4]
 }

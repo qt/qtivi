@@ -32,12 +32,11 @@
 
 /*!
  * \class QtIVIClimateControlBackendInterface
- *
+ * \inmodule QtIVIVehicleFunctions
+ * \ingroup backends
+ * \inherits QtIVIVehicleBackendInterface
  * \brief The QtIVIClimateControlBackendInterface defines the interface for backends to the
  * QtIVIClimateControl feature class.
- *
- * \ingroup backends
- * \inmodule QtIVIVehicleFunctions
  *
  * The QtIVIClimateControlBackendInterface is the interface used by \l QtIVIClimateControl
  *
@@ -382,7 +381,7 @@
 
 /*!
  * \class QtIVIClimateControl
- * \inmodule QtIVIClimateControl
+ * \inmodule QtIVIVehicleFunctions
  * \brief Provides an interface to the climate control.
  *
  * The QtIVIClimateControl provides an interface to the climate control of the vehicle.
@@ -395,6 +394,14 @@
  * with \l {QtIVIAbstractFeature::autoDiscovery} {autoDiscovery} enabled.
  *
  */
+
+/*!
+    \qmltype ClimateControl
+    \instantiates QtIVIClimateControl
+    \inqmlmodule QtIVIVehicleFunctions 1.0
+    \inherits AbstractZonedFeature
+    \brief The ClimateControl provides a QML interface to the climate control of the vehicle
+*/
 
 /*!
  * \enum QtIVIClimateControl::AirflowDirection
@@ -590,8 +597,9 @@ QtIVIAbstractZonedFeature *QtIVIClimateControl::createZoneFeature(const QString 
 }
 
 /*!
+ * \qmlproperty bool ClimateControl::airConditioning
  * \property QtIVIClimateControl::airConditioning
- * \brief \c True if the air conditioning is enabled.
+ * \brief True if the air conditioning is enabled.
  */
 bool QtIVIClimateControl::isAirConditioningEnabled() const
 {
@@ -599,6 +607,7 @@ bool QtIVIClimateControl::isAirConditioningEnabled() const
 }
 
 /*!
+ * \qmlproperty QtIVIClimateControl::AirflowDirection ClimateControl::airflowDirection
  * \property QtIVIClimateControl::airflowDirection
  * \brief The airflow direction.
  *
@@ -610,8 +619,9 @@ QtIVIClimateControl::AirflowDirection QtIVIClimateControl::airflowDirection() co
 }
 
 /*!
+ * \qmlproperty bool ClimateControl::heater
  * \property QtIVIClimateControl::heater
- * \brief \c True if the heater is enabled.
+ * \brief True if the heater is enabled.
  */
 bool QtIVIClimateControl::isHeaterEnabled() const
 {
@@ -619,8 +629,9 @@ bool QtIVIClimateControl::isHeaterEnabled() const
 }
 
 /*!
+ * \qmlproperty bool ClimateControl::airRecirculation
  * \property QtIVIClimateControl::airRecirculation
- * \brief \c True if the air recirculation is enabled.
+ * \brief True if the air recirculation is enabled.
  */
 bool QtIVIClimateControl::isAirRecirculationEnabled() const
 {
@@ -628,7 +639,8 @@ bool QtIVIClimateControl::isAirRecirculationEnabled() const
 }
 
 /*!
- * \property QtIVIClimateZone::steeringWheelHeater
+ * \qmlproperty int ClimateZone::steeringWheelHeater
+ * \property QtIVIClimateControl::steeringWheelHeater
  * \brief The steering wheel heater level.
  *
  * The steering wheel heater level, where the level can be \c 0 (off) or between \c 1 (least warm)
@@ -640,7 +652,8 @@ int QtIVIClimateControl::steeringWheelHeater() const
 }
 
 /*!
- * \property QtIVIClimateZone::fanSpeedLevel
+ * \qmlproperty int ClimateControl::fanSpeedLevel
+ * \property QtIVIClimateControl::fanSpeedLevel
  * \brief The fan speed level.
  *
  * The fan speed level, where the level can be \c 0 (off) or between \c 1 (weakest) to \c 10
@@ -652,7 +665,8 @@ int QtIVIClimateControl::fanSpeedLevel() const
 }
 
 /*!
- * \property QtIVIClimateZone::targetTemperature
+ * \qmlproperty int ClimateControl::targetTemperature
+ * \property QtIVIClimateControl::targetTemperature
  * \brief The target temperature of the zone.
  *
  * The target temperature of the zone expressed in centigrades.
@@ -663,7 +677,8 @@ int QtIVIClimateControl::targetTemperature() const
 }
 
 /*!
- * \property QtIVIClimateZone::seatCooler
+ * \qmlproperty int ClimateControl::seatCooler
+ * \property QtIVIClimateControl::seatCooler
  * \brief The seat cooler level of the zone.
  *
  * The seat cooler level of the zone, where the level can be \c 0 (off) or between \c 1 (least
@@ -675,7 +690,8 @@ int QtIVIClimateControl::seatCooler() const
 }
 
 /*!
- * \property QtIVIClimateZone::seatHeater
+ * \qmlproperty int ClimateControl::seatHeater
+ * \property QtIVIClimateControl::seatHeater
  * \brief The seat heater level of the zone.
  *
  * The seat heater level of the zone, where the level can be \c 0 (off) or between \c 1 (least

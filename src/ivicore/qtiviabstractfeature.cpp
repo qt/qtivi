@@ -37,7 +37,7 @@
 /*!
  * \class QtIVIAbstractFeature
  * \inmodule QtIVICore
- * \brief The QtIVIAbstractFeature is the base class for all QtIVI Featues
+ * \brief The QtIVIAbstractFeature is the base class for all QtIVI Features
  *
  * QtIVIAbstractFeature is the base class for the front facing API towards the Developer.
  * The QtIVIAbstractFeature provides you with a way to automatically connect to a Backend implementing
@@ -73,6 +73,15 @@
  * clearServiceObject() will be called once the Feature doesn't have a connection to a ServiceObject anymore and should
  * reset it's state to sane defaults
  */
+
+/*!
+    \qmltype AbstractFeature
+    \instantiates QtIVIAbstractFeature
+    \inqmlmodule QtIVICore
+
+    \brief The AbstractFeature is not directly accessible. QML type provides
+    base QML properties for the feature, like autoDiscovery and isValid.
+*/
 
 /*!
  * \fn bool QtIVIAbstractFeature::acceptServiceObject(QtIVIServiceObject *so)
@@ -190,8 +199,9 @@ void QtIVIAbstractFeature::setServiceObject(QtIVIServiceObject *so)
 }
 
 /*!
+ * \qmlproperty bool AbstractFeature::autoDiscovery
  * \property QtIVIAbstractFeature::autoDiscovery
- * \brief \c True if service objects are located automatically.
+ * \brief True if service objects are located automatically.
  *
  * If auto discovery is enabled the feature will search for a suitable backend when either
  * \l componentComplete is called from QML or \l startAutoDiscovery is called from C++.
@@ -278,8 +288,9 @@ void QtIVIAbstractFeature::startAutoDiscovery()
 }
 
 /*!
+ * \qmlproperty bool AbstractFeature::isValid
  * \property QtIVIAbstractFeature::isValid
- * \brief \c True if the feature is ready to use.
+ * \brief True if the feature is ready to use.
  *
  * The valid property is \c true if the feature is ready to be used, otherwise \c false. Not being
  * ready usually indicates that no suitable service object could be found or that auto discovery

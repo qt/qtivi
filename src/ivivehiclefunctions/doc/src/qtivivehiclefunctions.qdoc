@@ -1,0 +1,177 @@
+/****************************************************************************
+**
+** Copyright (C) 2015 Pelagicore AG
+** Contact: http://www.qt.io/ or http://www.pelagicore.com/
+**
+** This file is part of the QtIVI module of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:LGPL3-PELAGICORE$
+** Commercial License Usage
+** Licensees holding valid commercial Qt IVI licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Pelagicore. For licensing terms
+** and conditions, contact us at http://www.pelagicore.com.
+**
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 3 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPLv3 included in the
+** packaging of this file. Please review the following information to
+** ensure the GNU Lesser General Public License version 3 requirements
+** will be met: https://www.gnu.org/licenses/lgpl-3.0.html.
+**
+** $QT_END_LICENSE$
+**
+** SPDX-License-Identifier: LGPL-3.0
+**
+****************************************************************************/
+
+/*!
+    \module QtIVIVehicleFunctions
+    \title Qt IVI Vehicle Functions C++ Classes
+    \ingroup modules
+    \qtvariable ivivehiclefunctions
+
+    \brief C++ classes for the Qt IVI Vehicle Functions API.
+
+    Qt IVI Vehicle Functions provides C++ API.
+
+    When creating a C++ application using Qt IVI, you will have to link to the relevant modules.
+    This is controlled in the pro-file of your application, e.g:
+
+   \code
+   QT += ivivehiclefunctions
+   \endcode
+
+   To use feature elements, simply include the header file and instantiate the element.
+
+   \code
+   #include <QtIVIVehicleFunctions/QtIVIClimateControl>
+        …
+   QtIVIClimateControl* m_climateControl;
+   m_climateControl = new QtIVIClimateControl(this);
+   \endcode
+
+   In order to trigger the auto discovery mechanism, call the startAutoDiscovery method. This will
+   load the appropriate backend and set a service object for the feature element. Please notice
+   that calling this method sets the autoDiscovery property to true. To use dynamic services,
+   simply do not call this method.
+
+   \code
+   m_climateControl->startAutoDiscovery();
+   \endcode
+
+   After the startAutoDiscovery method has been called, the isValid property can be used to
+   determine if a backend was found or not.
+
+   \code
+   if (!m_climateControl->isValid())
+       QMessageBox::critical( … ); // Take action here
+   \endcode
+
+   Climate general values can be get and set directly by the feature instance:
+   \code
+   if (!m_climateControl->airConditioningEnabled());
+       m_climateControl->setAirConditioningEnabled(true);
+   \endcode
+
+   Some features, like climate control is also divided into several climate zones. The names
+   of the available zones can be checked by QtIVIAbstractZonedFeature::availableZones() method
+   \code
+   QStringList zones = m_climateControl->availableZones();
+   \endcode
+
+   Accessing to zone functions, you can use QtIVIAbstractZonedFeature::zoneAt() method
+   \code
+   m_climateControl->zoneAt("FrontSeat")->setSeatHeater(false);
+   \endcode
+
+   Looping zones can done by QtIVIAbstractZonedFeature::zones() method
+   \code
+    foreach (QClimateControl* z, m_climateControl->zones())
+        if (z->zone() == "FrontSeat")
+            z->setSeatHeater(true);
+   \endcode
+*/
+
+/*!
+    \qmlmodule QtIVIVehicleFunctions 1.0
+    \title Qt IVI Vehicle Functions QML Types
+    \ingroup qmlmodules
+
+    \brief QML types for the Qt IVI Vehicle Functions API.
+
+    The Qt IVI Vehicle Functions QML API provides simple way to use vehicle
+    features in QML applications.
+
+    The QML application relies on the QML plugin loading capabilities of the Qt QML runtime.
+    This means that an installed Qt IVI module is found automatically.
+
+    In the QML code, import the relevant feature modules, e.g:
+
+   \code
+   import QtIVIVehicleFunctions 1.0
+   \endcode
+
+   Then instantiate the feature element. For most elements, autoDiscovery is set to true when
+   applicable, but in this example we set it explicitly.
+
+   \code
+   ClimateControl {
+       id: climateControl
+       autoDiscovery: true
+   }
+   \endcode
+
+   When the top-level component has been completed, the isValid property of the feature elements
+   can be used to determine if any backend is missing. In some situations this is expected
+   behavior, then the isValid property can be used to enable or disable parts of the user
+   interface.
+
+   \code
+   Component.onCompleted: {
+       if (!climateControl.isValid)
+           ; // Take action here
+   }
+   \endcode
+
+   Some features, like climate control is divided into zones. The names of the available zones
+   can be fetched from the AbstractZonedFeature::availableZones. Zones are available only
+   when feature is valid.
+   \code
+   ComboBox {
+       model: climateControl.availableZones
+   }
+   \endcode
+
+   With AbstractZonedFeature::zoneAt property you can access to the climate control zone specific functions.
+   \code
+   climateControl.zoneAt.FrontSeat.seatheater = true
+   \endcode
+
+   Zones can used in model by AbstractZonedFeature::zones property.
+   \code
+   Repeater {
+       model: climateControl.zones
+       Text { text: modelData.zone + " seat heater level: " + modelData.seatHeater}
+   }
+   \endcode
+
+   Interactions with the feature element is described in the feature documentation. It is possible
+   to bind properties, call methods and listen to signals.
+
+    \section1 QML Types
+*/
+
+/*!
+    \group qtivivehiclefunctions_examples
+    \ingroup all-examples
+    \title Qt IVI Vehicle Functions Examples
+
+    \brief Examples for the Qt IVI Vehicle Functions.
+
+    For code examples, see the Qt IVI Vehicle Functions examples:
+
+    \section1 Examples
+*/

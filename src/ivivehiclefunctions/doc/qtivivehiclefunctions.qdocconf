@@ -43,9 +43,13 @@ headerdirs  += .. \
 sourcedirs  += .. \
                 ../../imports/vehiclefunctions \
 
+
+exampledirs += ../../../examples/vehiclefunctions \
+               snippets
+
 examplesinstallpath = qtivivehiclefunctions
 
-#imagedirs   += images
+imagedirs += images
 
 navigation.landingpage = "Qt IVI Vehicle Functions"
 navigation.cppclassespage = "Qt IVI Vehicle Functions C++ Classes"

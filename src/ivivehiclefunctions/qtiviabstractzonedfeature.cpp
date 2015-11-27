@@ -32,16 +32,15 @@
 
 /*!
  * \class QtIVIVehicleBackendInterface
- *
+ * \inmodule QtIVIVehicleFunctions
+ * \ingroup backends
+
  * \brief The QtIVIVehicleBackendInterface defines the base interface for the feature
  * backends classes
  *
- * \ingroup backends
- * \inmodule QtIVIVehicleFunctions
- *
  * The QtIVIVehicleBackendInterface is the interface used by QtIVIAbstractZonedFeature and
  * it subclasses.
- **
+ *
  * \sa QtIVIAbstractZonedFeature
  */
 
@@ -62,7 +61,7 @@
  */
 
 /*!
- * \fn QString QtIVIVehicleBackendInterface::availableZones() const
+ * \fn QStringList QtIVIVehicleBackendInterface::availableZones() const
  *
  * Returns a list of supported zone names.
  *
@@ -86,12 +85,22 @@
 
 /*!
     \class QtIVIAbstractZonedFeature
-    \inmodule QtIVI
+    \inmodule QtIVIVehicleFunctions
+    \inherits QtIVIAbstractFeature
     \since 5.6
 
     \brief The QtIVIAbstractZonedFeature is base class for all QtIVI vehicle features.
 
     QtIVIAbstractZonedFeature contains all feature attributes and zone handling.
+*/
+
+/*!
+    \qmltype AbstractZonedFeature
+    \instantiates QtIVIAbstractZonedFeature
+    \inqmlmodule QtIVIVehicleFunctions 1.0
+
+    \brief The AbstractZonedFeature is not directly accessible. QML type provides
+    base QML properties for each QML Vehicle feature like zone and error access.
 */
 
 /*!
@@ -187,8 +196,22 @@ QtIVIVehicleBackendInterface *QtIVIAbstractZonedFeature::backend() const
 */
 
 /*!
-   Returns zone
-*/
+   \qmlproperty QString AbstractZonedFeature::zone
+   \property QtIVIAbstractZonedFeature::zone
+   \brief Zoned feature zone name. Zone can be given in the feature initialization.
+   With the property it's possible to handle only one specific feature zone functions.
+
+   Zone is writable only before the backend is connected. When the backend is discovered
+   and component is verified to be valid, zone is not writable anymore. It's not
+   recommended to change the zone after the initialization.
+
+   \code
+   ClimateControl {
+        zone: "FrontLeft"
+        onAirConditioningChanged: // Take action on front left A/C changes.
+   }
+   \endcode
+ */
 QString QtIVIAbstractZonedFeature::zone() const
 {
     return m_zone;
@@ -234,9 +257,12 @@ void QtIVIAbstractZonedFeature::onErrorChanged(QtIVIAbstractZonedFeature::Error 
     setError(error, message);
 }
 
+
 /*!
-   Returns list of available zones
-*/
+ * \qmlproperty QStringList AbstractZonedFeature::availableZones
+ * \property QtIVIAbstractZonedFeature::availableZones
+ * \brief List of the available zones
+ */
 QStringList QtIVIAbstractZonedFeature::availableZones() const
 {
     if (backend()) {
@@ -265,11 +291,27 @@ QList<QtIVIAbstractZonedFeature*> QtIVIAbstractZonedFeature::zones() const
     return m_zoneFeatures;
 }
 
+/*!
+ * \qmlproperty QVariantMap AbstractZonedFeature::zoneAt
+ * \property QtIVIAbstractZonedFeature::zoneAt
+ * \brief Direct feature access to the given zone.
+ * \code
+ * feature.zoneAt.FrontLeft
+ * \endcode
+ */
 QVariantMap QtIVIAbstractZonedFeature::zoneFeatureMap() const
 {
     return m_zoneFeatureMap;
 }
 
+/*!
+ * \qmlproperty QVariantList AbstractZonedFeature::zones
+ * \property QtIVIAbstractZonedFeature::zones
+ * \brief Access to the feature zones model
+ * \code
+ * model: feature.zones
+ * \endcode
+ */
 QVariantList QtIVIAbstractZonedFeature::zoneFeatureList() const
 {
     return m_zoneFeatureList;
@@ -285,8 +327,11 @@ void QtIVIAbstractZonedFeature::setError(QtIVIAbstractZonedFeature::Error error,
 }
 
 /*!
-   Returns last error
-*/
+ * \qmlproperty QString AbstractZonedFeature::error
+ * \property QtIVIClimateControl::error
+ * \brief Last error message of the feature
+ */
+
 QtIVIAbstractZonedFeature::Error QtIVIAbstractZonedFeature::error() const
 {
     return m_error;

@@ -47,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_radioButtonGroup->addButton(ui->rb_FloorDuct);
     m_radioButtonGroup->addButton(ui->rb_FloorPanel);
 
+//![1]
     m_climateControl = new QtIVIClimateControl(this);
     m_climateControl->startAutoDiscovery();
 
@@ -54,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
         QMessageBox::critical(this, "Auto Discovery Failed !", "No Climate Backend available");
 
     setupUI();
+//![1]
 }
 
 MainWindow::~MainWindow()
@@ -61,6 +63,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+//![2]
 void MainWindow::setupUI()
 {
     //Air Flow Direction
@@ -83,7 +86,9 @@ void MainWindow::setupUI()
     connect(m_climateControl, &QtIVIClimateControl::heaterEnabledChanged, ui->cb_heater, &QCheckBox::setChecked);
     connect(ui->cb_heater, &QCheckBox::clicked, m_climateControl, &QtIVIClimateControl::setHeaterEnabled);
 }
+//![2]
 
+//![3]
 void MainWindow::setupFlowDirectionRadioButtons(QtIVIClimateControl::AirflowDirection direction)
 {
     QAbstractButton* button = ui->rb_BiLevel;
@@ -118,3 +123,4 @@ void MainWindow::onFlowDirectionButtonToggled(QAbstractButton *button, bool chec
 
     m_climateControl->setAirflowDirection(direction);
 }
+//![3]
