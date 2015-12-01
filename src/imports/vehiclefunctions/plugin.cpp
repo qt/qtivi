@@ -44,6 +44,7 @@ public:
         Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIVIVehicleFunctions"));
         Q_UNUSED(uri);
 
+        qmlRegisterUncreatableType<QtIVIAbstractZonedFeature>(uri, 1, 0, "AbstractZonedFeature", "AbstractZonedFeature is not accessible directly");
         qmlRegisterType<QtIVIClimateControl>(uri, 1, 0, "ClimateControl");
     }
 };
