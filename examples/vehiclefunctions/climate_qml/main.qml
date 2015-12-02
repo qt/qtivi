@@ -124,6 +124,37 @@ ApplicationWindow {
                     climateControl.airRecirculation = checked
             }
         }
+
+        ColumnLayout {
+            RowLayout {
+
+                Label {
+                    text: "Fan Speed"
+                }
+
+                SpinBox {
+                    value: climateControl.fanSpeedLevel
+                    onValueChanged: {
+                        climateControl.fanSpeedLevel = value
+                    }
+                }
+            }
+
+
+            RowLayout {
+
+                Label {
+                    text: "Steering Wheel Heater"
+                }
+
+                SpinBox {
+                    value: climateControl.steeringWheelHeater
+                    onValueChanged: {
+                        climateControl.steeringWheelHeater = value
+                    }
+                }
+            }
+        }
 //![2]
 
 //![3]
@@ -134,13 +165,13 @@ ApplicationWindow {
                 RowLayout {
 
                     Label {
-                        text: "Fan Speed"
+                        text: "Temperature"
                     }
 
                     SpinBox {
-                        value: climateControl.zoneAt.FrontLeft.fanSpeedLevel
+                        value: climateControl.zoneAt.FrontLeft.targetTemperature
                         onValueChanged: {
-                            climateControl.zoneAt.FrontLeft.fanSpeedLevel = value
+                            climateControl.zoneAt.FrontLeft.targetTemperature = value
                         }
                     }
                 }
@@ -149,13 +180,13 @@ ApplicationWindow {
                 RowLayout {
 
                     Label {
-                        text: "Steering Wheel Heater"
+                        text: "Seat Heater"
                     }
 
                     SpinBox {
-                        value: climateControl.zoneAt.FrontLeft.steeringWheelHeater
+                        value: climateControl.zoneAt.FrontLeft.seatHeater
                         onValueChanged: {
-                            climateControl.zoneAt.FrontLeft.steeringWheelHeater = value
+                            climateControl.zoneAt.FrontLeft.seatHeater = value
                         }
                     }
                 }

@@ -36,33 +36,27 @@ ClimateControlBackend::ClimateControlBackend(QObject *parent) :
     m_flowDirection(QtIVIClimateControl::BiLevel),
     m_airCondition(true),
     m_heater(true),
-    m_airRecirculation(false)
+    m_airRecirculation(false),
+    m_steeringWheelHeater(0),
+    m_fanSpeed(2)
 {
 
     ZoneBackend leftZone;
     leftZone.seatCooler = 10;
     leftZone.seatHeater = 10;
     leftZone.targetTemperature = 20;
-    leftZone.steeringWheelHeater = 0;
-    leftZone.fanSpeed = 10;
     m_zoneMap.insert("FrontLeft",leftZone);
 
     ZoneBackend rightZone;
     rightZone.seatCooler = 5;
     rightZone.seatHeater = 0;
-    rightZone.targetTemperature = 10;
-    rightZone.steeringWheelHeater = 0;
-    rightZone.fanSpeed = 10;
-
+    rightZone.targetTemperature = 20;
     m_zoneMap.insert("FrontRight",rightZone);
 
     ZoneBackend rearZone;
     rearZone.seatCooler = 5;
     rearZone.seatHeater = 0;
     rearZone.targetTemperature = 10;
-    rearZone.steeringWheelHeater = 0;
-    rearZone.fanSpeed = 10;
-
     m_zoneMap.insert("Rear",rearZone);
 }
 
@@ -81,13 +75,13 @@ void ClimateControlBackend::initializeAttributes()
     emit airConditioningEnabledChanged(m_airCondition);
     emit heaterEnabledChanged(m_heater);
     emit airRecirculationEnabledChanged(m_airRecirculation);
+    emit steeringWheelHeaterChanged(m_steeringWheelHeater);
+    emit fanSpeedLevelChanged(m_fanSpeed);
 
     foreach (QString zone, availableZones()) {
         emit targetTemperatureChanged(m_zoneMap[zone].targetTemperature, zone);
         emit seatCoolerChanged(m_zoneMap[zone].seatCooler, zone);
         emit seatHeaterChanged(m_zoneMap[zone].seatHeater, zone);
-        emit steeringWheelHeaterChanged(m_zoneMap[zone].steeringWheelHeater, zone);
-        emit fanSpeedLevelChanged(m_zoneMap[zone].fanSpeed, zone);
     }
 }
 
@@ -135,41 +129,35 @@ void ClimateControlBackend::setSeatHeater(int val, const QString &zone)
 
 void ClimateControlBackend::setSteeringWheelHeater(int val, const QString &zone)
 {
-    if (!m_zoneMap.contains(zone))
+    if (!zone.isEmpty() || m_steeringWheelHeater == val)
         return;
 
     if (val < 0 || val > 10) {
-        qWarning() << "SIMULATION SteeringWheelHeater for Zone" << zone << "change out of range (0-10)" << val;
-        emit steeringWheelHeaterChanged(m_zoneMap[zone].steeringWheelHeater, zone);
+        qWarning() << "SIMULATION SteeringWheelHeater change out of range (0-10)" << val;
+        emit steeringWheelHeaterChanged(m_steeringWheelHeater);
         return;
     }
 
-    if (m_zoneMap[zone].steeringWheelHeater == val)
-        return;
+    qWarning() << "SIMULATION SteeringWheelHeater changed to" << val;
 
-    qWarning() << "SIMULATION SteeringWheelHeater for" << zone << "changed to" << val;
-
-    m_zoneMap[zone].steeringWheelHeater = val;
-    emit steeringWheelHeaterChanged(val, zone);
+    m_steeringWheelHeater = val;
+    emit steeringWheelHeaterChanged(val);
 }
 
 void ClimateControlBackend::setFanSpeedLevel(int speed, const QString &zone)
 {
-    if (!m_zoneMap.contains(zone))
+    if (!zone.isEmpty() || m_fanSpeed == speed)
         return;
 
     if (speed < 0 || speed > 10) {
         qWarning() << "SIMULATION FanSpeedLevel change out of range (0-10)" << speed;
-        emit fanSpeedLevelChanged(m_zoneMap[zone].fanSpeed, zone);
+        emit fanSpeedLevelChanged(m_fanSpeed);
         return;
     }
 
-    if (m_zoneMap[zone].fanSpeed == speed)
-        return;
+    qWarning() << "SIMULATION FanSpeedLevel changed to" << speed;
 
-    qWarning() << "SIMULATION FanSpeedLevel for Zone" << zone << "changed to" << speed;
-
-    m_zoneMap[zone].fanSpeed = speed;
+    m_fanSpeed = speed;
     emit fanSpeedLevelChanged(speed, zone);
 }
 
@@ -208,12 +196,12 @@ void ClimateControlBackend::setHeaterEnabled(bool val, const QString &zone)
 
 void ClimateControlBackend::setAirRecirculationEnabled(bool val, const QString &zone)
 {
-    if (!zone.isEmpty() || m_heater == val)
+    if (!zone.isEmpty() || m_airRecirculation == val)
         return;
 
     qWarning() << "SIMULATION AirRecirculationEnabled changed to" << val;
 
-    m_heater = val;
+    m_airRecirculation = val;
     emit airRecirculationEnabledChanged(val);
 }
 
@@ -243,18 +231,17 @@ int ClimateControlBackend::seatHeater(const QString &zone) const
 
 int ClimateControlBackend::steeringWheelHeater(const QString &zone) const
 {
-    if (!m_zoneMap.contains(zone))
+    if (!zone.isEmpty())
         return -1;
-
-    return m_zoneMap[zone].steeringWheelHeater;
+    return m_steeringWheelHeater;
 }
 
 int ClimateControlBackend::fanSpeedLevel(const QString &zone) const
 {
-    if (!m_zoneMap.contains(zone))
+    if (!zone.isEmpty())
         return -1;
 
-    return m_zoneMap[zone].fanSpeed;
+    return m_fanSpeed;
 }
 
 QtIVIClimateControl::AirflowDirection ClimateControlBackend::airflowDirection(const QString &zone) const

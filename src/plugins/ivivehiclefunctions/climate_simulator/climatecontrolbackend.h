@@ -70,13 +70,13 @@ private:
     bool m_airCondition;
     bool m_heater;
     bool m_airRecirculation;
+    int m_steeringWheelHeater;
+    int m_fanSpeed;
 
     struct ZoneBackend {
         int targetTemperature;
         int seatCooler;
         int seatHeater;
-        int steeringWheelHeater;
-        int fanSpeed;
     };
 
     QMap<QString,ZoneBackend> m_zoneMap;
