@@ -59,7 +59,7 @@ public:
 
     static QtIVIZonesAttached *qmlAttachedProperties(QObject*);
 
-private slots:
+private Q_SLOTS:
     void onModelChanged();
 
 private:

@@ -43,7 +43,7 @@ public:
 
     virtual void initializeAttributes() = 0;
 
-signals:
+Q_SIGNALS:
     void errorChanged(QtIVIAbstractZonedFeature::Error error, const QString &message = QString());
 };
 

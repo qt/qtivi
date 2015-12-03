@@ -72,7 +72,7 @@ public:
     QtIVIAbstractZonedFeature::Error error() const;
     QString errorMessage() const;
 
-signals:
+Q_SIGNALS:
     void availableZonesChanged(QStringList zones);
     void zoneChanged();
     void zonesChanged();
@@ -87,10 +87,10 @@ protected:
     virtual void disconnectFromServiceObject(QtIVIServiceObject *serviceObject);
     virtual void clearServiceObject();
 
-protected slots:
+protected Q_SLOTS:
     virtual void onErrorChanged(QtIVIAbstractZonedFeature::Error error, const QString &message = QString());
 
-private slots:
+private Q_SLOTS:
     void setZone(const QString &zone);
 
 private:

@@ -35,6 +35,7 @@
 class QtIVIServiceInterface {
 
 public:
+    virtual ~QtIVIServiceInterface() {}
 
     virtual QStringList interfaces() const = 0;
     virtual QObject* interfaceInstance(const QString& interface) const = 0;

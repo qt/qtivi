@@ -322,7 +322,7 @@ void QtIVIAbstractZonedFeature::setError(QtIVIAbstractZonedFeature::Error error,
     m_error = error;
     if (m_error == QtIVIAbstractZonedFeature::NoError)
         m_errorMessage.clear();
-    m_errorMessage = errorText() + " " + message;
+    m_errorMessage = errorText() + QStringLiteral(" ") + message;
     emit errorChanged(m_error, m_errorMessage);
 }
 

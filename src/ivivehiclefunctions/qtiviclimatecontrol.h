@@ -64,8 +64,8 @@ public:
 
     QtIVIClimateControl(const QString &zone, bool autoDiscovery = true, QObject* parent=0);
 
-    virtual void connectToServiceObject(QtIVIServiceObject *serviceObject);
-    virtual void clearServiceObject();
+    virtual void connectToServiceObject(QtIVIServiceObject *serviceObject) Q_DECL_OVERRIDE;
+    virtual void clearServiceObject() Q_DECL_OVERRIDE;
 
     bool isAirConditioningEnabled() const;
     QtIVIClimateControl::AirflowDirection airflowDirection() const;
@@ -77,7 +77,7 @@ public:
     int seatCooler() const;
     int seatHeater() const;
 
-public slots:
+public Q_SLOTS:
     void setAirConditioningEnabled(bool enabled);
     void setAirflowDirection(QtIVIClimateControl::AirflowDirection value);
     void setHeaterEnabled(bool enabled);
@@ -88,7 +88,7 @@ public slots:
     void setSeatCooler(int seatCooler);
     void setSeatHeater(int seatHeater);
 
-signals:
+Q_SIGNALS:
     void airflowDirectionChanged(QtIVIClimateControl::AirflowDirection value);
     void airConditioningEnabledChanged(bool enabled);
     void heaterEnabledChanged(bool enabled);
@@ -99,7 +99,7 @@ signals:
     void seatCoolerChanged(int value);
     void seatHeaterChanged(int value);
 
-private slots:
+private Q_SLOTS:
     void onAirflowDirectionChanged(QtIVIClimateControl::AirflowDirection value, const QString &zone);
     void onAirConditioningEnabledChanged(bool enabled, const QString &zone);
     void onHeaterEnabledChanged(bool enabled, const QString &zone);

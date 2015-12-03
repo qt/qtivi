@@ -73,7 +73,7 @@ public:
     QtIVIServiceManager * const q_ptr;
     Q_DECLARE_PUBLIC(QtIVIServiceManager)
 
-signals:
+Q_SIGNALS:
     void beginInsertRows(const QModelIndex &index, int start, int end);
     void endInsertRows();
 

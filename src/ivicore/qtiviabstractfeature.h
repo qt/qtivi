@@ -60,11 +60,11 @@ public:
 
     void startAutoDiscovery();
 
-public slots:
+public Q_SLOTS:
     void setServiceObject(QtIVIServiceObject *so);
     void setAutoDiscovery(bool autoDiscovery);
 
-signals:
+Q_SIGNALS:
     void serviceObjectChanged();
     void autoDiscoveryChanged(bool autoDiscovery);
     void isValidChanged(bool arg);
@@ -84,7 +84,7 @@ protected:
 
     QString interfaceName() const;
 
-private slots:
+private Q_SLOTS:
     void serviceObjectDestroyed();
 
 private:

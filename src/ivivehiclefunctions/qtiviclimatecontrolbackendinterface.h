@@ -64,7 +64,7 @@ public:
     virtual bool heaterEnabled(const QString &zone) const = 0;
     virtual bool airRecirculationEnabled(const QString &zone) const = 0;
 
-signals:
+Q_SIGNALS:
     void targetTemperatureChanged(int value, const QString &zone = QString());
     void seatCoolerChanged(int value, const QString &zone = QString());
     void seatHeaterChanged(int value, const QString &zone = QString());
