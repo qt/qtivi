@@ -34,59 +34,6 @@
 #include "qtivivehiclebackendinterface.h"
 
 /*!
- * \class QtIVIVehicleBackendInterface
- * \inmodule QtIVIVehicleFunctions
- * \ingroup backends
-
- * \brief The QtIVIVehicleBackendInterface defines the base interface for the feature
- * backends classes
- *
- * The QtIVIVehicleBackendInterface is the interface used by QtIVIAbstractZonedFeature and
- * it subclasses.
- *
- * \sa QtIVIAbstractZonedFeature
- */
-
-/*!
- * \fn QtIVIVehicleBackendInterface::QtIVIVehicleBackendInterface(QObject *parent=0)
- *
- * Constructs a backend base interface.
- *
- * The \a parent is sent to the QObject constructor.
- */
-
-/*!
- * \fn QString QtIVIVehicleBackendInterface::interfaceName() const
- *
- * Returns a name of the interface that backend implements
- *
- * \sa QtIVIAbstractZonedFeature::interfaceName()
- */
-
-/*!
- * \fn QStringList QtIVIVehicleBackendInterface::availableZones() const
- *
- * Returns a list of supported zone names.
- *
- * The returned names must be valid QML property names, i.e. \c {[a-z_][A-Za-z0-9_]*}.
- */
-
-/*!
- * \fn void QtIVIVehicleBackendInterface::initializeAttributes() const
- *
- * Called from the client to initialize attributes right after it's connected
- *
- * In this function all supported attributes for each zone need to be emitted with
- * the initialized value.
- */
-
-/*!
- * \fn void errorChanged(QtIVIAbstractZonedFeature::Error error, const QString &message = QString())
- *
- * The signal is emitted when \a error occurs in the backend. Error \a message is optional.
- */
-
-/*!
     \class QtIVIAbstractZonedFeature
     \inmodule QtIVIVehicleFunctions
     \inherits QtIVIAbstractFeature
