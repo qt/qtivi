@@ -27,17 +27,19 @@
 **
 ****************************************************************************/
 
-#ifndef QtIVIVEHICLEBACKENDINTERFACE_H
-#define QtIVIVEHICLEBACKENDINTERFACE_H
+#ifndef QTIVIVEHICLEBACKENDINTERFACE_H
+#define QTIVIVEHICLEBACKENDINTERFACE_H
 
 #include <QtIVIAbstractZonedFeature>
+
+QT_BEGIN_NAMESPACE
 
 class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIVehicleBackendInterface : public QObject
 {
     Q_OBJECT
 
 public:
-    QtIVIVehicleBackendInterface(QObject* parent = 0) : QObject(parent) {}
+    QtIVIVehicleBackendInterface(QObject *parent = 0);
 
     virtual QStringList availableZones() const = 0;
 
@@ -47,5 +49,7 @@ Q_SIGNALS:
     void errorChanged(QtIVIAbstractZonedFeature::Error error, const QString &message = QString());
 };
 
-#endif // QtIVIVEHICLEBACKENDINTERFACE_H
+QT_END_NAMESPACE
+
+#endif // QTIVIVEHICLEBACKENDINTERFACE_H
 

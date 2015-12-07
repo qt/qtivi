@@ -35,6 +35,8 @@
 #include <QVariant>
 #include <QMap>
 
+QT_BEGIN_NAMESPACE
+
 class QtIVIVehicleBackendInterface;
 
 class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIAbstractZonedFeature : public QtIVIAbstractFeature
@@ -115,5 +117,7 @@ private:
     QString m_errorMessage;
     QtIVIAbstractZonedFeature::Error m_error;
 };
+
+QT_END_NAMESPACE
 
 #endif // QTIVIABSTRACTZONEDFEATURE_H

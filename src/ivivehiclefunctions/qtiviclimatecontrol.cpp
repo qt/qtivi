@@ -782,4 +782,3 @@ void QtIVIClimateControl::setSeatHeater(int value)
     if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())
         backend->setSeatHeater(value, zone());
 }
-

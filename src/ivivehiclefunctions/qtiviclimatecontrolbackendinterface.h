@@ -35,12 +35,14 @@
 #include "qtivivehiclebackendinterface.h"
 #include "qtiviclimatecontrol.h"
 
+QT_BEGIN_NAMESPACE
+
 class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIClimateControlBackendInterface : public QtIVIVehicleBackendInterface
 {
     Q_OBJECT
 
 public:
-    QtIVIClimateControlBackendInterface(QObject *parent=0) : QtIVIVehicleBackendInterface(parent) {}
+    QtIVIClimateControlBackendInterface(QObject *parent = 0);
 
     virtual void setTargetTemperature(int value, const QString &zone) = 0;
     virtual void setSeatCooler(int value, const QString &zone) = 0;
@@ -75,6 +77,8 @@ Q_SIGNALS:
     void heaterEnabledChanged(bool value, const QString &zone = QString());
     void airRecirculationEnabledChanged(bool value, const QString &zone = QString());
 };
+
+QT_END_NAMESPACE
 
 #endif // QTIVICLIMATECONTROLBACKENDINTERFACE_H
 

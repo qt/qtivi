@@ -32,6 +32,8 @@
 
 #include "qtiviserviceobject.h"
 
+QT_BEGIN_NAMESPACE
+
 class QtIVIProxyServiceObject : public QtIVIServiceObject
 {
 public:
@@ -45,5 +47,7 @@ private:
 
     QtIVIServiceInterface* m_interface;
 };
+
+QT_END_NAMESPACE
 
 #endif // QTIVIPROXYSERVICEOBJECT_H

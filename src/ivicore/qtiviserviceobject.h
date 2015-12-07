@@ -31,9 +31,10 @@
 #define QTIVISERVICEOBJECT_H
 
 #include <QObject>
-
 #include <QtIVICore/QtIVIServiceInterface>
 #include <QtIVICore/qtiviglobal.h>
+
+QT_BEGIN_NAMESPACE
 
 class Q_QTIVICORE_EXPORT QtIVIServiceObject : public QObject, public QtIVIServiceInterface
 {
@@ -50,5 +51,7 @@ public:
 
 private:
 };
+
+QT_END_NAMESPACE
 
 #endif // QTIVISERVICEOBJECT_H

@@ -32,6 +32,8 @@
 
 #include <QtIVIVehicleFunctions/qtiviabstractzonedfeature.h>
 
+QT_BEGIN_NAMESPACE
+
 class QtIVIClimateControlBackendInterface;
 
 static const QLatin1String QtIVIStringClimateControlInterfaceName("com.qt-project.ClimateControl");
@@ -127,5 +129,7 @@ private:
     int m_steeringWheelHeater;
     int m_fanSpeedLevel;
 };
+
+QT_END_NAMESPACE
 
 #endif // CLIMATECONTROL_H

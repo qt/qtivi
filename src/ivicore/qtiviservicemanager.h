@@ -31,8 +31,9 @@
 #define QTIVISERVICEMANAGER_H
 
 #include <QtCore/QAbstractListModel>
-
 #include <QtIVICore/qtiviglobal.h>
+
+QT_BEGIN_NAMESPACE
 
 class QtIVIServiceObject;
 class QtIVIServiceManagerPrivate;
@@ -61,5 +62,7 @@ private:
     QtIVIServiceManagerPrivate * const d_ptr;
     Q_DECLARE_PRIVATE(QtIVIServiceManager)
 };
+
+QT_END_NAMESPACE
 
 #endif // QTIVISERVICEMANAGER_H

@@ -35,6 +35,8 @@
 
 #include <QtIVICore/qtiviglobal.h>
 
+QT_BEGIN_NAMESPACE
+
 class QtIVIServiceObject;
 
 class Q_QTIVICORE_EXPORT QtIVIAbstractFeature : public QObject, public QQmlParserStatus
@@ -93,5 +95,7 @@ private:
     QtIVIServiceObject* m_serviceObject;
     bool m_autoDiscovery;
 };
+
+QT_END_NAMESPACE
 
 #endif // QTIVIABSTRACTFEATURE_H

@@ -16,6 +16,8 @@ HEADERS += \
 
 SOURCES += \
     qtiviclimatecontrol.cpp \
-    qtiviabstractzonedfeature.cpp
+    qtiviabstractzonedfeature.cpp \
+    qtivivehiclebackendinterface.cpp \
+    qtiviclimatecontrolbackendinterface.cpp
 
 load(qt_module)

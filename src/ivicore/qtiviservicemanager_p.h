@@ -36,6 +36,8 @@
 #include <QMap>
 #include <QSet>
 
+QT_BEGIN_NAMESPACE
+
 class QPluginLoader;
 class QtIVIServiceInterface;
 class QtIVIServiceObject;
@@ -78,6 +80,8 @@ Q_SIGNALS:
     void endInsertRows();
 
 };
+
+QT_END_NAMESPACE
 
 #endif // QTIVISERVICEMANAGER_P_H
 
