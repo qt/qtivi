@@ -4,6 +4,10 @@ SUBDIRS = ivicore \
           plugins \
           imports
 
+ivivehiclefunctions.depends = ivicore
+plugins.depends = ivivehiclefunctions
+imports.depends = ivivehiclefunctions
+
 config_dlt {
     SUBDIRS += geniviextras
 } else {
