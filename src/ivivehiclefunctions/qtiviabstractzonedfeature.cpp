@@ -27,6 +27,9 @@
 **
 ****************************************************************************/
 
+#include <QtCore/qmetaobject.h>
+#include <QtIVICore/qtiviserviceobject.h>
+
 #include "qtiviabstractzonedfeature.h"
 #include "qtivivehiclebackendinterface.h"
 
