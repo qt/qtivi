@@ -70,7 +70,15 @@
     Constructs climate control feature by General zone
 */
 QtIVIClimateControl::QtIVIClimateControl(QObject* parent)
-    : QtIVIClimateControl(QString(), parent)
+    : QtIVIAbstractZonedFeature(QtIVIStringClimateControlInterfaceName, QString(), false, parent)
+    , m_airConditioning(false)
+    , m_heater(false)
+    , m_airRecirculation(false)
+    , m_targetTemperature(0)
+    , m_seatCooler(0)
+    , m_seatHeater(0)
+    , m_steeringWheelHeater(0)
+    , m_fanSpeedLevel(0)
 {
 }
 
