@@ -17,7 +17,7 @@ qhp.QtIVICore.indexRoot           =
 qhp.QtIVICore.filterAttributes    = qtivicore $QT_VERSION qtrefdoc
 qhp.QtIVICore.customFilters.Qt.name = QtIVICore $QT_VERSION
 qhp.QtIVICore.customFilters.Qt.filterAttributes = qtIVICore $QT_VERSION
-qhp.QtIVICore.subprojects         = overviews classes qml examples
+qhp.QtIVICore.subprojects         = classes qml
 qhp.QtIVICore.subprojects.classes.title = C++ Classes
 qhp.QtIVICore.subprojects.classes.indexTitle = Qt IVI Core C++ Classes
 qhp.QtIVICore.subprojects.classes.selectors = class fake:headerfile
@@ -26,12 +26,6 @@ qhp.QtIVICore.subprojects.qml.title = QML Types
 qhp.QtIVICore.subprojects.qml.indexTitle = Qt IVI Core QML Types
 qhp.QtIVICore.subprojects.qml.selectors = fake:headerfile
 qhp.QtIVICore.subprojects.qml.sortPages = true
-qhp.QtIVICore.subprojects.overviews.title = Overviews
-qhp.QtIVICore.subprojects.overviews.indexTitle = Qt IVI Core Overview
-qhp.QtIVICore.subprojects.overviews.selectors = fake:page,group,module
-qhp.QtIVICore.subprojects.examples.title = Qt IVI Core Examples
-qhp.QtIVICore.subprojects.examples.indexTitle = Qt IVI Core Examples
-qhp.QtIVICore.subprojects.examples.selectors = fake:example
 
 tagfile                 = ../../../doc/qtivicore/qtivicore.tags
 
@@ -42,10 +36,6 @@ headerdirs  += .. \
 
 sourcedirs  += .. \
                 ../../imports/core \
-
-examplesinstallpath = qtivicore
-
-#imagedirs   += images
 
 navigation.landingpage = "Qt IVI Core"
 navigation.cppclassespage = "Qt IVI Core C++ Classes"
