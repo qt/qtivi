@@ -40,18 +40,26 @@
 
     \section1 Getting Started
 
-    When creating a C++ application using Qt IVI, you will have to link to the relevant modules.
-    This is controlled in the pro-file of your application, e.g:
+    To link against the Qt IVI Vehicle Feature module, add this line to your
+    \c qmake project file:
 
-   \code
-   QT += ivivehiclefunctions
-   \endcode
+    \snippet doc_src_ivivehiclefunctions.pro 0
 
-   To use feature elements, simply include the header file and instantiate the element.
+    To use Qt IVI Vehicle Functions C++ classes in your application, use the
+    following include statement:
+
+    \snippet doc_src_qtivivehiclefunctions.cpp 0
+
+    \note If you are only using a few classes from this module, it's
+    recommended to include only those specific classes instead of the
+    whole module.
+
+    To use feature elements, simply include the header file and instantiate
+    the element:
 
    \code
    #include <QtIVIVehicleFunctions/QtIVIClimateControl>
-        …
+   ...
    QtIVIClimateControl* m_climateControl;
    m_climateControl = new QtIVIClimateControl(this);
    \endcode
@@ -70,7 +78,7 @@
 
    \code
    if (!m_climateControl->isValid())
-       QMessageBox::critical( … ); // Take action here
+       QMessageBox::critical( ... ); // Take action here
    \endcode
 
    Climate general values can be get and set directly by the feature instance:
@@ -80,17 +88,20 @@
    \endcode
 
    Some features, like climate control is also divided into several climate zones. The names
-   of the available zones can be checked by QtIVIAbstractZonedFeature::availableZones() method
+   of the available zones can be checked using QtIVIAbstractZonedFeature::availableZones():
+
    \code
    QStringList zones = m_climateControl->availableZones();
    \endcode
 
-   Accessing to zone functions, you can use QtIVIAbstractZonedFeature::zoneAt() method
+   Accessing to zone functions, you can use QtIVIAbstractZonedFeature::zoneAt():
+
    \code
    m_climateControl->zoneAt("FrontSeat")->setSeatHeater(false);
    \endcode
 
-   Looping zones can done by QtIVIAbstractZonedFeature::zones() method
+   Looping zones is done with QtIVIAbstractZonedFeature::zones():
+
    \code
     foreach (QClimateControl* z, m_climateControl->zones())
         if (z->zone() == "FrontSeat")
@@ -114,11 +125,10 @@
     The QML application relies on the QML plugin loading capabilities of the Qt QML runtime.
     This means that an installed Qt IVI module is found automatically.
 
-    In the QML code, import the relevant feature modules, e.g:
+    To import Qt IVI Vehicle Functions QML types, add the following import
+    statement to your \c .qml file:
 
-   \code
-   import QtIVIVehicleFunctions 1.0
-   \endcode
+    \snippet doc_src_qmlivivehiclefunctions.cpp 0
 
    Then instantiate the feature element. For most elements, autoDiscovery is set to true when
    applicable, but in this example we set it explicitly.
@@ -131,8 +141,8 @@
    \endcode
 
    When the top-level component has been completed, the isValid property of the feature elements
-   can be used to determine if any backend is missing. In some situations this is expected
-   behavior, then the isValid property can be used to enable or disable parts of the user
+   can be used to determine if any of the backends are missing. In some situations this is expected
+   behavior; the isValid property can be used to enable or disable parts of the user
    interface.
 
    \code
@@ -144,7 +154,7 @@
 
    Some features, like climate control is divided into zones. The names of the available zones
    can be fetched from the AbstractZonedFeature::availableZones. Zones are available only
-   when feature is valid.
+   when the feature is valid.
    \code
    ComboBox {
        model: climateControl.availableZones

@@ -60,6 +60,6 @@
     \section2 Qt IVI Core QML Types
     \generatelist qmltypesbymodule QtIVICore
 
-    \section2 Qt IVI VehicleFUnctions QML Types
+    \section2 Qt IVI VehicleFunctions QML Types
     \generatelist qmltypesbymodule QtIVIVehicleFunctions
 */

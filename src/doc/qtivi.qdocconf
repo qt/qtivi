@@ -44,7 +44,7 @@ tagfile                 = qtivi.tags
 
 depends += qtcore qtdoc qtquick qtqml
 
-examplesinstallpath     = ivifunctions
+examplesinstallpath     = vehiclefunctions
 
 navigation.landingpage = "Qt IVI"
 navigation.cppclassespage = "Qt IVI C++ Classes"

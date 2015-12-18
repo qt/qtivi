@@ -45,7 +45,7 @@
 
     \brief QML types for the Qt IVI Core API.
 
-    The Qt IVI Core QML API provides core functions for in-vehicle infotainment QML components.
+    The Qt IVI Core QML API provides core functions for in-vehicle infotainment QML types.
 
     \section1 QML Types
 */
