@@ -31,11 +31,14 @@
     \module QtIVIVehicleFunctions
     \title Qt IVI Vehicle Functions C++ Classes
     \ingroup modules
+    \ingroup qtivi_modules
     \qtvariable ivivehiclefunctions
 
     \brief C++ classes for the Qt IVI Vehicle Functions API.
 
     Qt IVI Vehicle Functions provides C++ API.
+
+    \section1 Getting Started
 
     When creating a C++ application using Qt IVI, you will have to link to the relevant modules.
     This is controlled in the pro-file of your application, e.g:
@@ -99,11 +102,14 @@
     \qmlmodule QtIVIVehicleFunctions 1.0
     \title Qt IVI Vehicle Functions QML Types
     \ingroup qmlmodules
+    \ingroup qtivi_qmlmodules
 
     \brief QML types for the Qt IVI Vehicle Functions API.
 
     The Qt IVI Vehicle Functions QML API provides simple way to use vehicle
     features in QML applications.
+
+    \section1 Getting Started
 
     The QML application relies on the QML plugin loading capabilities of the Qt QML runtime.
     This means that an installed Qt IVI module is found automatically.
@@ -159,19 +165,17 @@
    \endcode
 
    Interactions with the feature element is described in the feature documentation. It is possible
-   to bind properties, call methods and listen to signals.
+   to bind properties, call methods, and listen to signals.
 
-    \section1 QML Types
+   \section1 QML Types
 */
 
 /*!
     \group qtivivehiclefunctions_examples
     \ingroup all-examples
-    \title Qt IVI Vehicle Functions Examples
+    \title Qt IVI Examples
 
     \brief Examples for the Qt IVI Vehicle Functions.
-
-    For code examples, see the Qt IVI Vehicle Functions examples:
 
     \section1 Examples
 */

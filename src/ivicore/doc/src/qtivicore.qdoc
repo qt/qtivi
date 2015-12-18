@@ -31,6 +31,7 @@
     \module QtIVICore
     \title Qt IVI Core C++ Classes
     \ingroup modules
+    \ingroup qtivi_modules
     \qtvariable ivicore
 
     \brief C++ classes for the Qt IVI Core API.
@@ -40,6 +41,7 @@
     \qmlmodule QtIVICore 1.0
     \title Qt IVI Core QML Types
     \ingroup qmlmodules
+    \ingroup qtivi_qmlmodules
 
     \brief QML types for the Qt IVI Core API.
 

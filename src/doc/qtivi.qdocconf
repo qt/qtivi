@@ -1,0 +1,51 @@
+include($QT_INSTALL_DOCS/global/qt-module-defaults.qdocconf)
+
+project                       = QtIVI
+description                   = Qt IVI Reference Documentation
+version                       = $QT_VERSION
+
+sourcedirs                   += .
+headerdirs                   += .
+
+# include sub-modules' sources and headers
+include(../ivicore/doc/qtivicore.qdocconf)
+include(../ivivehiclefunctions/doc/qtivivehiclefunctions.qdocconf)
+
+qhp.projects                  = QtIVI
+
+qhp.QtIVI.file                = qtivi.qhp
+qhp.QtIVI.namespace           = org.qt-project.qtivi.$QT_VERSION_TAG
+qhp.QtIVI.virtualFolder       = qtivi
+qhp.QtIVI.indexTitle          = Qt IVI
+qhp.QtIVI.indexRoot           =
+
+qhp.QtIVI.filterAttributes    = qtivi $QT_VERSION qtrefdoc
+qhp.QtIVI.customFilters.Qt.name = QtIVI $QT_VERSION
+qhp.QtIVI.customFilters.Qt.filterAttributes = qtivi $QT_VERSION
+
+qhp.QtIVI.subprojects         = classes qml examples
+
+qhp.QtIVI.subprojects.classes.title = C++ Classes
+qhp.QtIVI.subprojects.classes.indexTitle = Qt IVI C++ Classes
+qhp.QtIVI.subprojects.classes.selectors = class fake:headerfile
+qhp.QtIVI.subprojects.classes.sortPages = true
+
+qhp.QtIVI.subprojects.qml.title = QML Types
+qhp.QtIVI.subprojects.qml.indexTitle = Qt IVI QML Types
+qhp.QtIVI.subprojects.qml.selectors = qmlclass
+qhp.QtIVI.subprojects.qml.sortPages = true
+
+qhp.QtIVI.subprojects.examples.title = Examples
+qhp.QtIVI.subprojects.examples.indexTitle = Qt IVI Examples
+qhp.QtIVI.subprojects.examples.selectors = fake:example
+qhp.QtIVI.subprojects.examples.sortPages = true
+
+tagfile                 = qtivi.tags
+
+depends += qtcore qtdoc qtquick qtqml
+
+examplesinstallpath     = ivifunctions
+
+navigation.landingpage = "Qt IVI"
+navigation.cppclassespage = "Qt IVI C++ Classes"
+navigation.qmltypespage = "Qt IVI QML Types"

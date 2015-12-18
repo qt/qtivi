@@ -1,53 +1,11 @@
-include($QT_INSTALL_DOCS/global/qt-module-defaults.qdocconf)
-
-project           = QtIVIVehicleFunctions
-description    = Qt IVI Vehicle Functions Reference Documentation
-version          = $QT_VERSION
-
-
-
-qhp.projects            = QtIVIVehicleFunctions
-
-qhp.QtIVIVehicleFunctions.file                = qtivivehiclefunctions.qhp
-qhp.QtIVIVehicleFunctions.namespace           = org.qt-project.qtivivehiclefunctions.$QT_VERSION_TAG
-qhp.QtIVIVehicleFunctions.virtualFolder       = qtivivehiclefunctions
-qhp.QtIVIVehicleFunctions.indexTitle          = Qt IVI Vehicle Functions
-qhp.QtIVIVehicleFunctions.indexRoot           =
-
-qhp.QtIVIVehicleFunctions.filterAttributes    = qtivivehiclefunctions $QT_VERSION qtrefdoc
-qhp.QtIVIVehicleFunctions.customFilters.Qt.name = QtIVIVehicleFunctions $QT_VERSION
-qhp.QtIVIVehicleFunctions.customFilters.Qt.filterAttributes = qtIVIVehicleFunctions $QT_VERSION
-qhp.QtIVIVehicleFunctions.subprojects         = classes qml examples
-qhp.QtIVIVehicleFunctions.subprojects.classes.title = C++ Classes
-qhp.QtIVIVehicleFunctions.subprojects.classes.indexTitle = Qt IVI Vehicle Functions C++ Classes
-qhp.QtIVIVehicleFunctions.subprojects.classes.selectors = class fake:headerfile
-qhp.QtIVIVehicleFunctions.subprojects.classes.sortPages = true
-qhp.QtIVIVehicleFunctions.subprojects.qml.title = QML Types
-qhp.QtIVIVehicleFunctions.subprojects.qml.indexTitle = Qt IVI Vehicle Functions QML Types
-qhp.QtIVIVehicleFunctions.subprojects.qml.selectors = fake:headerfile
-qhp.QtIVIVehicleFunctions.subprojects.qml.sortPages = true
-qhp.QtIVIVehicleFunctions.subprojects.examples.title = Qt IVI Vehicle Functions Examples
-qhp.QtIVIVehicleFunctions.subprojects.examples.indexTitle = Qt IVI Vehicle Functions Examples
-qhp.QtIVIVehicleFunctions.subprojects.examples.selectors = fake:example
-
-tagfile                 = ../../../doc/qtivivehiclefunctions/qtivivehiclefunctions.tags
-
-depends += qtcore qtdoc qtquick qtqml qtivicore
-
 headerdirs  += .. \
-                ../../imports/vehiclefunctions
+               ../../imports/vehiclefunctions
 
 sourcedirs  += .. \
-                ../../imports/vehiclefunctions \
+               ../../imports/vehiclefunctions
 
 
 exampledirs += ../../../examples/vehiclefunctions \
                snippets
 
-examplesinstallpath = vehiclefunctions
-
-imagedirs += images
-
-navigation.landingpage = "Qt IVI Vehicle Functions"
-navigation.cppclassespage = "Qt IVI Vehicle Functions C++ Classes"
-navigation.qmltypespage = "Qt IVI Vehicle Functions QML Types"
+imagedirs   += images

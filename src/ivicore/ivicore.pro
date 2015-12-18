@@ -4,8 +4,9 @@ QT = core core-private qml
 CONFIG += c++11
 VERSION = 1.0.0
 
-QMAKE_DOCS = $$PWD/doc/qtivicore.qdocconf
-OTHER_FILES += $$PWD/doc/*.qdoc
+OTHER_FILES += \
+    $$PWD/doc/*.qdocconf \
+    $$PWD/doc/src/*.qdoc
 
 CMAKE_MODULE_TESTS = '-'
 

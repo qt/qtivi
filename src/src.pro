@@ -2,7 +2,8 @@ TEMPLATE = subdirs
 SUBDIRS = ivicore \
           ivivehiclefunctions \
           plugins \
-          imports
+          imports \
+          doc
 
 ivivehiclefunctions.depends = ivicore
 plugins.depends = ivivehiclefunctions

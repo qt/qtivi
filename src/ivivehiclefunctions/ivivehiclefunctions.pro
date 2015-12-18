@@ -3,7 +3,11 @@ QT = core qml ivicore
 CONFIG += c++11
 VERSION = 1.0.0
 
-QMAKE_DOCS = $$PWD/doc/qtivivehiclefunctions.qdocconf
+OTHER_FILES = \
+    $$PWD/doc/*.qdocconf \
+    $$PWD/doc/src/*.qdoc \
+    $$PWD/doc/snippets/* \
+    $$PWD/doc/images/*
 
 CMAKE_MODULE_TESTS = '-'
 
