@@ -36,7 +36,7 @@
 /*!
     \class QtIVIAbstractZonedFeature
     \inmodule QtIVIVehicleFunctions
-    \inherits QtIVIAbstractFeature
+
     \since 5.6
 
     \brief The QtIVIAbstractZonedFeature is base class for all QtIVI vehicle features.
@@ -48,18 +48,37 @@
     \qmltype AbstractZonedFeature
     \instantiates QtIVIAbstractZonedFeature
     \inqmlmodule QtIVIVehicleFunctions 1.0
-
+    \inherits AbstractFeature
     \brief The AbstractZonedFeature is not directly accessible. QML type provides
     base QML properties for each QML Vehicle feature like zone and error access.
 */
 
 /*!
-    Constructs vehicle feature by \a interface and \a zone
+   \enum QtIVIAbstractZonedFeature::Error
 
-    If parent is QtIVIAbstractZonedFeature type then created instance
-    uses parent backend connection. Parent is connected to the
-    backend and will forward updates between children features
-    and backend.
+   \value NoError
+          No error
+   \value PermissionDenied
+          Permission for the operation is denied
+   \value InvalidOperation
+          Operation is invalid
+   \value Timeout
+          Operation timeout
+   \value InvalidZone
+          Zone is not available for the operation
+   \value Unknown
+          Unknown error
+ */
+
+/*!
+    Constructs a vehicle feature with a specific \a interface and \a zone.
+
+    If \a parent is of type QtIVIAbstractZonedFeature, then the created instance
+    uses parent for the backend connection. Parent is connected to the
+    backend and will forward updates between child features and the backend.
+    \a autoDiscovery sets the \l autoDiscovery state.
+
+    \sa QtIVIAbstractFeature
 */
 QtIVIAbstractZonedFeature::QtIVIAbstractZonedFeature(const QString &interface, const QString &zone, bool autoDiscovery, QObject *parent)
     : QtIVIAbstractFeature(interface, autoDiscovery, parent)
@@ -75,7 +94,7 @@ QtIVIAbstractZonedFeature::~QtIVIAbstractZonedFeature()
 }
 
 /*!
-   Accept service object
+    \reimp
 */
 bool QtIVIAbstractZonedFeature::acceptServiceObject(QtIVIServiceObject *serviceObject)
 {
@@ -86,7 +105,7 @@ bool QtIVIAbstractZonedFeature::acceptServiceObject(QtIVIServiceObject *serviceO
 }
 
 /*!
-   Connect to service object backend
+    \reimp
 */
 void QtIVIAbstractZonedFeature::connectToServiceObject(QtIVIServiceObject *serviceObject)
 {
@@ -103,7 +122,7 @@ void QtIVIAbstractZonedFeature::connectToServiceObject(QtIVIServiceObject *servi
 }
 
 /*!
-   Disconnect from service object backend
+    \reimp
 */
 void QtIVIAbstractZonedFeature::disconnectFromServiceObject(QtIVIServiceObject* so)
 {
@@ -114,7 +133,7 @@ void QtIVIAbstractZonedFeature::disconnectFromServiceObject(QtIVIServiceObject* 
 }
 
 /*!
-   Clear service object
+    \reimp
 */
 void QtIVIAbstractZonedFeature::clearServiceObject()
 {
@@ -138,28 +157,52 @@ QtIVIVehicleBackendInterface *QtIVIAbstractZonedFeature::backend() const
 
 
 /*!
-  /fn QtIVIAbstractZonedFeature *QtIVIAbstractZonedFeature::createZoneFeature(const QString &zone)
+   \fn virtual QtIVIAbstractZonedFeature *QtIVIAbstractZonedFeature::createZoneFeature(const QString &zone) = 0
 
-  Create new \a child feature to the given \a zone.
+   Create new child feature to the given \a zone.
 
    Returns zero if feature can't be created for the given feature and zone.
 */
 
 /*!
    \qmlproperty QString AbstractZonedFeature::zone
-   \property QtIVIAbstractZonedFeature::zone
-   \brief Zoned feature zone name. Zone can be given in the feature initialization.
-   With the property it's possible to handle only one specific feature zone functions.
 
-   Zone is writable only before the backend is connected. When the backend is discovered
-   and component is verified to be valid, zone is not writable anymore. It's not
-   recommended to change the zone after the initialization.
+   \brief Name of the zone of this zoned feature.
 
-   \code
+   The zone can be given in the feature initialization. With this property it's
+   possible to control only a single specific feature zone.
+
+   This property is writable only before the backend is connected. When the backend is
+   discovered and the component is verified to be valid, zone is not writable anymore.
+   It's not recommended to change the zone after the initialization.
+
+   \qml
    ClimateControl {
         zone: "FrontLeft"
-        onAirConditioningChanged: // Take action on front left A/C changes.
+        onAirConditioningChanged: {
+            // Take action on front left A/C changes.
+        }
    }
+   \endqml
+ */
+/*!
+   \property QtIVIAbstractZonedFeature::zone
+
+   \brief Name of the zone of this zoned feature.
+
+   The zone can be given in the feature initialization. With this property it's
+   possible to control only a single specific feature zone.
+
+   This property is writable only before the backend is connected. When the backend is
+   discovered and the component is verified to be valid, zone is not writable anymore.
+   It's not recommended to change the zone after the initialization.
+
+   It's recommended to initialize the zone in the feature constructor:
+
+   \code
+   QtIVIClimateControl* climateControl = new QtIVIClimateControl("FrontLeft", this);
+   climateControl->startAutoDiscovery();
+   QString zone = climateControl->zone();
    \endcode
  */
 QString QtIVIAbstractZonedFeature::zone() const
@@ -200,7 +243,7 @@ void QtIVIAbstractZonedFeature::initializeZones()
 
 
 /*!
-   Update error from backend
+   Updates \a error and \a message from the backend.
 */
 void QtIVIAbstractZonedFeature::onErrorChanged(QtIVIAbstractZonedFeature::Error error, const QString &message)
 {
@@ -209,9 +252,14 @@ void QtIVIAbstractZonedFeature::onErrorChanged(QtIVIAbstractZonedFeature::Error 
 
 
 /*!
- * \qmlproperty QStringList AbstractZonedFeature::availableZones
- * \property QtIVIAbstractZonedFeature::availableZones
- * \brief List of the available zones
+   \qmlproperty QStringList AbstractZonedFeature::availableZones
+
+   List of the available zones.
+ */
+/*!
+   \property QtIVIAbstractZonedFeature::availableZones
+
+   List of the available zones.
  */
 QStringList QtIVIAbstractZonedFeature::availableZones() const
 {
@@ -223,7 +271,7 @@ QStringList QtIVIAbstractZonedFeature::availableZones() const
 
 
 /*!
-   Returns given \a zone instance of the feature
+   Returns the given \a zone instance of the feature.
 */
 QtIVIAbstractZonedFeature *QtIVIAbstractZonedFeature::zoneAt(const QString &zone) const
 {
@@ -234,7 +282,7 @@ QtIVIAbstractZonedFeature *QtIVIAbstractZonedFeature::zoneAt(const QString &zone
 }
 
 /*!
-   Returns all zone instances of the feature
+   Returns all zone instances of the feature.
 */
 QList<QtIVIAbstractZonedFeature*> QtIVIAbstractZonedFeature::zones() const
 {
@@ -242,12 +290,18 @@ QList<QtIVIAbstractZonedFeature*> QtIVIAbstractZonedFeature::zones() const
 }
 
 /*!
- * \qmlproperty QVariantMap AbstractZonedFeature::zoneAt
- * \property QtIVIAbstractZonedFeature::zoneAt
- * \brief Direct feature access to the given zone.
- * \code
- * feature.zoneAt.FrontLeft
- * \endcode
+   \qmlproperty QVariantMap AbstractZonedFeature::zoneAt
+
+   Direct feature access to the given zone.
+
+   \code
+   feature.zoneAt.FrontLeft
+   \endcode
+ */
+/*!
+   \property QtIVIAbstractZonedFeature::zoneAt
+
+   Direct feature access to the given zone.
  */
 QVariantMap QtIVIAbstractZonedFeature::zoneFeatureMap() const
 {
@@ -255,18 +309,32 @@ QVariantMap QtIVIAbstractZonedFeature::zoneFeatureMap() const
 }
 
 /*!
- * \qmlproperty QVariantList AbstractZonedFeature::zones
- * \property QtIVIAbstractZonedFeature::zones
- * \brief Access to the feature zones model
- * \code
- * model: feature.zones
- * \endcode
+   \qmlproperty QVariantList AbstractZonedFeature::zones
+
+   Access to the feature zones model.
+
+   \code
+   model: feature.zones
+   \endcode
+ */
+/*!
+   \property QtIVIAbstractZonedFeature::zones
+
+   Access to the feature zones model.
  */
 QVariantList QtIVIAbstractZonedFeature::zoneFeatureList() const
 {
     return m_zoneFeatureList;
 }
 
+
+/*!
+   Sets \a error with the \a message.
+
+   Emits errorChanged() signal.
+
+   \sa QtIVIAbstractZonedFeature::Error
+ */
 void QtIVIAbstractZonedFeature::setError(QtIVIAbstractZonedFeature::Error error, const QString &message)
 {
     m_error = error;
@@ -277,30 +345,35 @@ void QtIVIAbstractZonedFeature::setError(QtIVIAbstractZonedFeature::Error error,
 }
 
 /*!
- * \qmlproperty QString AbstractZonedFeature::error
- * \property QtIVIClimateControl::error
- * \brief Last error message of the feature
- */
+   Returns the last error code.
 
+   \sa QtIVIAbstractZonedFeature::Error
+ */
 QtIVIAbstractZonedFeature::Error QtIVIAbstractZonedFeature::error() const
 {
     return m_error;
 }
 
-/*!
-   Returns last error with the message
 
-   Empty if no error
-*/
+/*!
+   \qmlproperty QString AbstractZonedFeature::error
+
+   Last error message of the feature. Empty if no error.
+ */
+/*!
+   \property QtIVIAbstractZonedFeature::error
+
+   Last error message of the feature. Empty if no error.
+ */
 QString QtIVIAbstractZonedFeature::errorMessage() const
 {
     return m_errorMessage;
 }
 
 /*!
-   Returns attribute error in text
+   Returns a string containing the error code.
 
-   Empty if no error
+   Empty if no error.
 */
 QString QtIVIAbstractZonedFeature::errorText() const
 {

@@ -200,13 +200,21 @@ void QtIVIAbstractFeature::setServiceObject(QtIVIServiceObject *so)
 
 /*!
  * \qmlproperty bool AbstractFeature::autoDiscovery
+ * \brief True if service objects are located automatically.
+ *
+ * If automatic discovery is enabled, the feature will search for a suitable backend when
+ * \l {QQmlParserStatus::}{componentComplete} is invoked from QML.
+ *
+ */
+
+/*!
  * \property QtIVIAbstractFeature::autoDiscovery
  * \brief True if service objects are located automatically.
  *
- * If auto discovery is enabled the feature will search for a suitable backend when either
- * \l componentComplete is called from QML or \l startAutoDiscovery is called from C++.
+ * If automatic discovery is enabled, the feature will search for a suitable backend when
+ * \l startAutoDiscovery is called from C++.
  *
- * \sa startAutoDiscovery(), componentComplete
+ * \sa startAutoDiscovery()
  */
 void QtIVIAbstractFeature::setAutoDiscovery(bool autoDiscovery)
 {
@@ -219,15 +227,14 @@ void QtIVIAbstractFeature::setAutoDiscovery(bool autoDiscovery)
 
 /*!
  * \internal
- * Overloaded from \l QQmlParserStatus.
+ * \overload
  */
 void QtIVIAbstractFeature::classBegin()
 {
-
 }
 
 /*!
- * Invoked automatically when used from QML. Calls \l startAutoDiscovery if \l autoDiscovery is \c true.
+ * Invoked automatically when used from QML. Calls \l startAutoDiscovery() if \l autoDiscovery is \c true.
  */
 void QtIVIAbstractFeature::componentComplete()
 {
@@ -237,7 +244,7 @@ void QtIVIAbstractFeature::componentComplete()
 }
 
 /*!
- * Returns interface name
+ * Returns the interface name.
  */
 QString QtIVIAbstractFeature::interfaceName() const
 {
@@ -255,16 +262,16 @@ bool QtIVIAbstractFeature::autoDiscovery() const
 }
 
 /*!
- * \brief Performs an auto discovery attempt.
+ * \brief Performs an automatic discovery attempt.
  *
  * The feature will try to locate a single service object implementing the required interface.
  *
  * If no service object is found, the feature will stay invalid. If more than one service object
  * is found, the first instance is used.
  *
- * This function enabled the \l autoDiscovery property.
+ * This function sets the \l autoDiscovery property to \c true.
  *
- * \sa autoDiscovery
+ * \sa autoDiscovery()
  */
 void QtIVIAbstractFeature::startAutoDiscovery()
 {
@@ -289,14 +296,23 @@ void QtIVIAbstractFeature::startAutoDiscovery()
 
 /*!
  * \qmlproperty bool AbstractFeature::isValid
+ * \brief Holds whether the feature is ready to use.
+ *
+ * The property holds \c true if the feature is ready to be used, otherwise \c false. Not being
+ * ready usually indicates that no suitable service object could be found, or that automatic
+ * discovery has not been triggered.
+ *
+ * \sa QtIVIServiceObject, autoDiscovery
+ */
+/*!
  * \property QtIVIAbstractFeature::isValid
- * \brief True if the feature is ready to use.
+ * \brief Holds whether the feature is ready to use.
  *
- * The valid property is \c true if the feature is ready to be used, otherwise \c false. Not being
- * ready usually indicates that no suitable service object could be found or that auto discovery
- * has not been triggered.
+ * The property holds \c true if the feature is ready to be used, otherwise \c false. Not being
+ * ready usually indicates that no suitable service object could be found, or that automatic
+ * discovery has not been triggered.
  *
- * \sa serviceObject, autoDiscovery
+ * \sa QtIVIServiceObject, autoDiscovery()
  */
 bool QtIVIAbstractFeature::isValid() const
 {

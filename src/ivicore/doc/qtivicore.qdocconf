@@ -1,5 +1,5 @@
 headerdirs  += .. \
-                ../../imports/core
+               ../../imports/core
 
 sourcedirs  += .. \
-                ../../imports/core
+               ../../imports/core

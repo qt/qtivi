@@ -45,13 +45,6 @@
  * \sa QtIVIAbstractFeature
  */
 
-/*!
- * \property QtIVIServiceObject::id
- * \brief A unique ID for the service object instance.
- *
- * Each service object has a unique ID. When sub-classing, the \l QtIVIServiceObject::id()
- * function can be overloaded to control how the ID is generad.
- */
 
 /*!
  * Constructor.
@@ -73,10 +66,18 @@ QtIVIServiceObject::~QtIVIServiceObject()
 }
 
 /*!
- * The id() function can be overloaded to control the generation of
- * the unique ID used by this Object.
+ * \property QtIVIServiceObject::id
+ * \brief A unique ID for the service object instance.
  *
- * By default QUuid::createUuid() is used.
+ * Each service object has a unique ID. When subclassing, the id()
+ * function can be overloaded to control the generation of the ID.
+ */
+
+/*!
+ * The id() function can be overloaded to control the generation of
+ * the unique ID used by this service object.
+ *
+ * By default, QUuid::createUuid() is used.
  */
 QString QtIVIServiceObject::id() const
 {
@@ -87,9 +88,9 @@ QString QtIVIServiceObject::id() const
 /*!
  * \class QtIVIServiceInterface
  * \inmodule QtIVICore
- * \brief Interface class for services
+ * \brief Interface class for services.
  *
- * The QtIVIServiceInterface class defines the interface of services registered at the QtIVIServiceManager.
+ * The QtIVIServiceInterface class defines the interface of services registered with QtIVIServiceManager.
  *
  * Commonly, service objects inherit the concrete class QtIVIServiceObject instead of using QtIVIServiceInterface directly.
  *
@@ -97,15 +98,19 @@ QString QtIVIServiceObject::id() const
  */
 
 /*!
+ * \fn QtIVIServiceInterface::~QtIVIServiceInterface()
+ *
+ * Destructs the QtIVIServiceInterface instance.
+ */
+
+/*!
  * \fn QStringList QtIVIServiceInterface::interfaces() const
- * \inmodule QtIVICore
  *
  * Returns a list of service interface names supported by the service object instance.
  */
 
 /*!
  * \fn QObject* QtIVIServiceInterface::interfaceInstance(const QString& interface) const
- * \inmodule QtIVICore
  *
  * Returns an object implementing the service interface requested through \a interface.
  */

@@ -50,9 +50,7 @@ class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIClimateControl : public QtIVIAbstractZ
     Q_PROPERTY(int targetTemperature READ targetTemperature WRITE setTargetTemperature NOTIFY targetTemperatureChanged)
     Q_PROPERTY(int seatCooler READ seatCooler WRITE setSeatCooler NOTIFY seatCoolerChanged)
     Q_PROPERTY(int seatHeater READ seatHeater WRITE setSeatHeater NOTIFY seatHeaterChanged)
-
     Q_ENUMS(AirflowDirection)
-
 public:
     enum AirflowDirection {
         None,

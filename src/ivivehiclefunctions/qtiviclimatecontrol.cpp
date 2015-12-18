@@ -31,43 +31,46 @@
 #include "qtiviclimatecontrolbackendinterface.h"
 
 /*!
- * \class QtIVIClimateControl
- * \inmodule QtIVIVehicleFunctions
- * \brief Provides an interface to the climate control.
- *
- * The QtIVIClimateControl provides an interface to the climate control of the vehicle.
- *
- * The climate control properties are divided into two categories: central or zoned. The central
- * properties are exposed directly through the QtIVIClimateControl and the zoned properties are
- * exposed through zone objects. The zones are retrieved using the \l zoneAt method.
- *
- * The QtIVIClimateControl expects a single backend to be available. It is recommended to use it
- * with \l {QtIVIAbstractFeature::autoDiscovery} {autoDiscovery} enabled.
- *
- */
+   \class QtIVIClimateControl
+   \inmodule QtIVIVehicleFunctions
+   \brief Provides an interface to the climate control.
+
+   The QtIVIClimateControl provides an interface to the climate control of the vehicle.
+
+   The climate control properties are divided into two categories: central or zoned. The central
+   properties are exposed directly through the QtIVIClimateControl and the zoned properties are
+   exposed through zone objects. The zones are retrieved using the \l zoneAt method.
+
+   The QtIVIClimateControl expects a single backend to be available. It is recommended to use it
+   with \l {QtIVIAbstractFeature::}{autoDiscovery} enabled.
+*/
 
 /*!
     \qmltype ClimateControl
     \instantiates QtIVIClimateControl
-    \inqmlmodule QtIVIVehicleFunctions 1.0
+    \inqmlmodule QtIVIVehicleFunctions
     \inherits AbstractZonedFeature
-    \brief The ClimateControl provides a QML interface to the climate control of the vehicle
+    \brief The ClimateControl provides a QML interface to the climate control of the vehicle.
 */
 
 /*!
- * \enum QtIVIClimateControl::AirflowDirection
- * \value FloorPanel
- *        Direct airflow along the floor panel.
- * \value FloorDuct
- *        Direct airflow through the floor duct.
- * \value BiLevel
- *        Direct airflow at both levels.
- * \value DefrostFloor
- *        Direct airflow to defrost.
- */
+   \enum QtIVIClimateControl::AirflowDirection
+   \value None
+          AirflowDirection is not initialized
+   \value FloorPanel
+          Direct airflow along the floor panel.
+   \value FloorDuct
+          Direct airflow through the floor duct.
+   \value BiLevel
+          Direct airflow at both levels.
+   \value DefrostFloor
+          Direct airflow to defrost.
+*/
 
 /*!
-    Constructs climate control feature by General zone
+    Constructs a climate control feature by General zone.
+
+    The \a parent argument is passed on to the \l QtIVIAbstractZonedFeature base class.
 */
 QtIVIClimateControl::QtIVIClimateControl(QObject* parent)
     : QtIVIAbstractZonedFeature(QtIVIStringClimateControlInterfaceName, QString(), false, parent)
@@ -83,11 +86,11 @@ QtIVIClimateControl::QtIVIClimateControl(QObject* parent)
 }
 
 /*!
- * \brief QtIVIClimateControl::QtIVIClimateControl
- * Constructs a climate control object.
- *
- * The \a parent argument is passed on to the \l QtIVIAbstractZonedFeature base class.
- */
+   Constructs a climate control object to the given \a zone.
+
+   \a autoDiscovery and \a parent arguments are passed on to the
+   \l QtIVIAbstractZonedFeature base class.
+*/
 QtIVIClimateControl::QtIVIClimateControl(const QString &zone, bool autoDiscovery, QObject* parent)
     : QtIVIAbstractZonedFeature(QtIVIStringClimateControlInterfaceName, zone, autoDiscovery, parent)
     , m_airConditioning(false)
@@ -106,6 +109,9 @@ QtIVIClimateControlBackendInterface *QtIVIClimateControl::climateControlBackend(
     return qobject_cast<QtIVIClimateControlBackendInterface*>(backend());
 }
 
+/*!
+   \reimp
+*/
 void QtIVIClimateControl::connectToServiceObject(QtIVIServiceObject *serviceObject)
 {
     QtIVIAbstractZonedFeature::connectToServiceObject(serviceObject);
@@ -136,6 +142,9 @@ void QtIVIClimateControl::connectToServiceObject(QtIVIServiceObject *serviceObje
     backend->initializeAttributes();
 }
 
+/*!
+   \reimp
+*/
 void QtIVIClimateControl::clearServiceObject()
 {
     m_airConditioning = false;
@@ -248,7 +257,7 @@ void QtIVIClimateControl::onSeatHeaterChanged(int value, const QString &zone)
 }
 
 /*!
-    Create new climate control feature instance for the \a zone
+   \reimp
 */
 QtIVIAbstractZonedFeature *QtIVIClimateControl::createZoneFeature(const QString &zone)
 {
@@ -256,9 +265,12 @@ QtIVIAbstractZonedFeature *QtIVIClimateControl::createZoneFeature(const QString 
 }
 
 /*!
- * \qmlproperty bool ClimateControl::airConditioning
- * \property QtIVIClimateControl::airConditioning
- * \brief True if the air conditioning is enabled.
+   \qmlproperty bool ClimateControl::airConditioning
+   True if the air conditioning is enabled.
+ */
+/*!
+   \property QtIVIClimateControl::airConditioning
+   True if the air conditioning is enabled.
  */
 bool QtIVIClimateControl::isAirConditioningEnabled() const
 {
@@ -266,21 +278,25 @@ bool QtIVIClimateControl::isAirConditioningEnabled() const
 }
 
 /*!
- * \qmlproperty QtIVIClimateControl::AirflowDirection ClimateControl::airflowDirection
- * \property QtIVIClimateControl::airflowDirection
- * \brief The airflow direction.
- *
- * \sa QtIVIClimateControl::AirflowDirection
+   \qmlproperty AirflowDirection ClimateControl::airflowDirection
+   The airflow direction.
  */
+/*!
+   \property QtIVIClimateControl::airflowDirection
+   The airflow direction.
+*/
 QtIVIClimateControl::AirflowDirection QtIVIClimateControl::airflowDirection() const
 {
     return m_airflowDirection;
 }
 
 /*!
- * \qmlproperty bool ClimateControl::heater
- * \property QtIVIClimateControl::heater
- * \brief True if the heater is enabled.
+   \qmlproperty bool ClimateControl::heater
+   True if the heater is enabled.
+ */
+/*!
+   \property QtIVIClimateControl::heater
+   True if the heater is enabled.
  */
 bool QtIVIClimateControl::isHeaterEnabled() const
 {
@@ -288,9 +304,12 @@ bool QtIVIClimateControl::isHeaterEnabled() const
 }
 
 /*!
- * \qmlproperty bool ClimateControl::airRecirculation
- * \property QtIVIClimateControl::airRecirculation
- * \brief True if the air recirculation is enabled.
+   \qmlproperty bool ClimateControl::airRecirculation
+   True if the air recirculation is enabled.
+ */
+/*!
+   \property QtIVIClimateControl::airRecirculation
+   True if the air recirculation is enabled.
  */
 bool QtIVIClimateControl::isAirRecirculationEnabled() const
 {
@@ -298,12 +317,14 @@ bool QtIVIClimateControl::isAirRecirculationEnabled() const
 }
 
 /*!
- * \qmlproperty int ClimateZone::steeringWheelHeater
- * \property QtIVIClimateControl::steeringWheelHeater
- * \brief The steering wheel heater level.
- *
- * The steering wheel heater level, where the level can be \c 0 (off) or between \c 1 (least warm)
- * to \c 10 (warmest).
+   \qmlproperty int ClimateZone::steeringWheelHeater
+   The steering wheel heater level, where the level can be \c 0 (off) or between \c 1 (least warm)
+   to \c 10 (warmest).
+ */
+/*!
+   \property QtIVIClimateControl::steeringWheelHeater
+   The steering wheel heater level, where the level can be \c 0 (off) or between \c 1 (least warm)
+   to \c 10 (warmest).
  */
 int QtIVIClimateControl::steeringWheelHeater() const
 {
@@ -311,12 +332,14 @@ int QtIVIClimateControl::steeringWheelHeater() const
 }
 
 /*!
- * \qmlproperty int ClimateControl::fanSpeedLevel
- * \property QtIVIClimateControl::fanSpeedLevel
- * \brief The fan speed level.
- *
- * The fan speed level, where the level can be \c 0 (off) or between \c 1 (weakest) to \c 10
- * (strongest).
+   \qmlproperty int ClimateControl::fanSpeedLevel
+   The fan speed level, where the level can be \c 0 (off) or between \c 1 (weakest) to \c 10
+   (strongest).
+ */
+/*!
+   \property QtIVIClimateControl::fanSpeedLevel
+   The fan speed level, where the level can be \c 0 (off) or between \c 1 (weakest) to \c 10
+   (strongest).
  */
 int QtIVIClimateControl::fanSpeedLevel() const
 {
@@ -324,11 +347,12 @@ int QtIVIClimateControl::fanSpeedLevel() const
 }
 
 /*!
- * \qmlproperty int ClimateControl::targetTemperature
- * \property QtIVIClimateControl::targetTemperature
- * \brief The target temperature of the zone.
- *
- * The target temperature of the zone expressed in centigrades.
+   \qmlproperty int ClimateControl::targetTemperature
+   The target temperature of the zone expressed in centigrades.
+ */
+/*!
+   \property QtIVIClimateControl::targetTemperature
+   The target temperature of the zone expressed in centigrades.
  */
 int QtIVIClimateControl::targetTemperature() const
 {
@@ -336,12 +360,14 @@ int QtIVIClimateControl::targetTemperature() const
 }
 
 /*!
- * \qmlproperty int ClimateControl::seatCooler
- * \property QtIVIClimateControl::seatCooler
- * \brief The seat cooler level of the zone.
- *
- * The seat cooler level of the zone, where the level can be \c 0 (off) or between \c 1 (least
- * cool) to \c 10 (coolest).
+   \qmlproperty int ClimateControl::seatCooler
+   The seat cooler level of the zone, where the level can be \c 0 (off) or between \c 1 (least
+   cool) to \c 10 (coolest).
+ */
+/*!
+   \property QtIVIClimateControl::seatCooler
+   The seat cooler level of the zone, where the level can be \c 0 (off) or between \c 1 (least
+   cool) to \c 10 (coolest).
  */
 int QtIVIClimateControl::seatCooler() const
 {
@@ -349,93 +375,68 @@ int QtIVIClimateControl::seatCooler() const
 }
 
 /*!
- * \qmlproperty int ClimateControl::seatHeater
- * \property QtIVIClimateControl::seatHeater
- * \brief The seat heater level of the zone.
- *
- * The seat heater level of the zone, where the level can be \c 0 (off) or between \c 1 (least
- * warm) to \c 10 (warmest).
+   \qmlproperty int ClimateControl::seatHeater
+   The seat heater level of the zone, where the level can be \c 0 (off) or between \c 1 (least
+   warm) to \c 10 (warmest).
+ */
+/*!
+   \property QtIVIClimateControl::seatHeater
+   The seat heater level of the zone, where the level can be \c 0 (off) or between \c 1 (least
+   warm) to \c 10 (warmest).
  */
 int QtIVIClimateControl::seatHeater() const
 {
     return m_seatHeater;
 }
 
-/*!
-    Set air condition \a enabled
-*/
 void QtIVIClimateControl::setAirConditioningEnabled(bool enabled)
 {
     if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())
         backend->setAirConditioningEnabled(enabled, zone());
 }
 
-/*!
-    Set air flow \a direction
-*/
 void QtIVIClimateControl::setAirflowDirection(QtIVIClimateControl::AirflowDirection direction)
 {
     if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())
         backend->setAirflowDirection(direction, zone());
 }
 
-/*!
-    Set heater \a enabled
-*/
 void QtIVIClimateControl::setHeaterEnabled(bool enabled)
 {
     if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())
         backend->setHeaterEnabled(enabled, zone());
 }
 
-/*!
-    Set air recirculation \a enabled
-*/
 void QtIVIClimateControl::setAirRecirculationEnabled(bool enabled)
 {
     if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())
         backend->setAirRecirculationEnabled(enabled, zone());
 }
 
-/*!
-    Set steering wheel heater level \a value
-*/
 void QtIVIClimateControl::setSteeringWheelHeater(int value)
 {
     if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())
         backend->setSteeringWheelHeater(value, zone());
 }
 
-/*!
-    Set fan speed level \a value
-*/
 void QtIVIClimateControl::setFanSpeedLevel(int value)
 {
     if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())
         backend->setFanSpeedLevel(value, zone());
 }
 
-/*!
-    Set target \a temperature
-*/
 void QtIVIClimateControl::setTargetTemperature(int temperature)
 {
     if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())
         backend->setTargetTemperature(temperature, zone());
 }
 
-/*!
-    Set seat cooler \a value level
-*/
 void QtIVIClimateControl::setSeatCooler(int value)
 {
     if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())
         backend->setSeatCooler(value, zone());
 }
 
-/*!
-    Set seat heater \a value level
-*/
 void QtIVIClimateControl::setSeatHeater(int value)
 {
     if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())

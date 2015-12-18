@@ -4,7 +4,6 @@ headerdirs  += .. \
 sourcedirs  += .. \
                ../../imports/vehiclefunctions
 
-
 exampledirs += ../../../examples/vehiclefunctions \
                snippets
 
