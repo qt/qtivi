@@ -118,6 +118,7 @@ public:
 
     void setAirflowDirection(QtIVIClimateControl::AirflowDirection ad, const QString &z)
     {
+        Q_UNUSED(z)
         if (m_airflowDirection != ad) {
             m_airflowDirection = ad;
             emit airflowDirectionChanged(m_airflowDirection);
@@ -126,6 +127,7 @@ public:
 
     void setAirConditioningEnabled(bool e, const QString &z)
     {
+        Q_UNUSED(z)
         if (m_airConditioningEnabled != e) {
             m_airConditioningEnabled = e;
             emit airConditioningEnabledChanged(m_airConditioningEnabled);
@@ -134,6 +136,7 @@ public:
 
     void setHeaterEnabled(bool e, const QString &z)
     {
+        Q_UNUSED(z)
         if (m_heaterEnabled != e) {
             m_heaterEnabled = e;
             emit heaterEnabledChanged(m_heaterEnabled);
@@ -142,6 +145,7 @@ public:
 
     void setAirRecirculationEnabled(bool e, const QString &z)
     {
+        Q_UNUSED(z)
         if (m_airRecirculationEnabled != e) {
             m_airRecirculationEnabled = e;
             emit airRecirculationEnabledChanged(m_airRecirculationEnabled);
@@ -207,21 +211,25 @@ public:
 
     QtIVIClimateControl::AirflowDirection airflowDirection(const QString &z) const
     {
+        Q_UNUSED(z)
         return m_airflowDirection;
     }
 
     bool airConditioningEnabled(const QString &z) const
     {
+        Q_UNUSED(z)
         return m_airConditioningEnabled;
     }
 
     bool heaterEnabled(const QString &z) const
     {
+        Q_UNUSED(z)
         return m_heaterEnabled;
     }
 
     bool airRecirculationEnabled(const QString &z) const
     {
+        Q_UNUSED(z)
         return m_airRecirculationEnabled;
     }
 
@@ -334,7 +342,7 @@ void ClimateControlTest::testWithoutBackend()
     QSignalSpy heaterEnabledSpy(&cc, SIGNAL(heaterEnabledChanged(bool)));
 
     bool e = cc.isHeaterEnabled();
-    QCOMPARE(e, false);
+    QVERIFY(!e);
     cc.setHeaterEnabled(true);
     QCOMPARE(heaterEnabledSpy.count(), 0);
     QCOMPARE(cc.isHeaterEnabled(), e);
