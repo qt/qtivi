@@ -50,8 +50,19 @@ class Q_QTIVICORE_EXPORT QtIVIAbstractFeature : public QObject, public QQmlParse
     Q_PROPERTY(bool autoDiscovery READ autoDiscovery WRITE setAutoDiscovery NOTIFY autoDiscoveryChanged)
     Q_PROPERTY(QtIVIServiceObject* serviceObject READ serviceObject WRITE setServiceObject NOTIFY serviceObjectChanged)
     Q_PROPERTY(bool isValid READ isValid NOTIFY isValidChanged)
+    Q_PROPERTY(QString error READ errorMessage NOTIFY errorChanged)
 
 public:
+
+    enum Error {
+        NoError,
+        PermissionDenied,
+        InvalidOperation,
+        Timeout,
+        InvalidZone,
+        Unknown
+    };
+    Q_ENUM(Error)
 
     explicit QtIVIAbstractFeature(const QString &interface, QObject *parent = 0);
     virtual ~QtIVIAbstractFeature();
@@ -59,6 +70,8 @@ public:
     QtIVIServiceObject *serviceObject() const;
     bool autoDiscovery() const;
     bool isValid() const;
+    QtIVIAbstractFeature::Error error() const;
+    QString errorMessage() const;
 
     void startAutoDiscovery();
 
@@ -70,6 +83,7 @@ Q_SIGNALS:
     void serviceObjectChanged();
     void autoDiscoveryChanged(bool autoDiscovery);
     void isValidChanged(bool arg);
+    void errorChanged(QtIVIAbstractFeature::Error error, const QString &message);
 
 protected:
 
@@ -85,6 +99,11 @@ protected:
     virtual void componentComplete();
 
     QString interfaceName() const;
+    QString errorText() const;
+    void setError(QtIVIAbstractFeature::Error error, const QString &message = QString());
+
+protected Q_SLOTS:
+    virtual void onErrorChanged(QtIVIAbstractFeature::Error error, const QString &message = QString());
 
 private Q_SLOTS:
     void serviceObjectDestroyed();
@@ -94,6 +113,8 @@ private:
     QString m_interface;
     QtIVIServiceObject* m_serviceObject;
     bool m_autoDiscovery;
+    QString m_errorMessage;
+    QtIVIAbstractFeature::Error m_error;
 };
 
 QT_END_NAMESPACE

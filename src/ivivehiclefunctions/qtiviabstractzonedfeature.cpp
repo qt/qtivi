@@ -54,23 +54,6 @@
 */
 
 /*!
-   \enum QtIVIAbstractZonedFeature::Error
-
-   \value NoError
-          No error
-   \value PermissionDenied
-          Permission for the operation is denied
-   \value InvalidOperation
-          Operation is invalid
-   \value Timeout
-          Operation timeout
-   \value InvalidZone
-          Zone is not available for the operation
-   \value Unknown
-          Unknown error
- */
-
-/*!
     Constructs a vehicle feature with a specific \a interface and \a zone.
 
     If \a parent is of type QtIVIAbstractZonedFeature, then the created instance
@@ -240,16 +223,6 @@ void QtIVIAbstractZonedFeature::initializeZones()
     }
 }
 
-
-/*!
-   Updates \a error and \a message from the backend.
-*/
-void QtIVIAbstractZonedFeature::onErrorChanged(QtIVIAbstractZonedFeature::Error error, const QString &message)
-{
-    setError(error, message);
-}
-
-
 /*!
    \qmlproperty QStringList AbstractZonedFeature::availableZones
 
@@ -324,60 +297,4 @@ QVariantMap QtIVIAbstractZonedFeature::zoneFeatureMap() const
 QVariantList QtIVIAbstractZonedFeature::zoneFeatureList() const
 {
     return m_zoneFeatureList;
-}
-
-
-/*!
-   Sets \a error with the \a message.
-
-   Emits errorChanged() signal.
-
-   \sa QtIVIAbstractZonedFeature::Error
- */
-void QtIVIAbstractZonedFeature::setError(QtIVIAbstractZonedFeature::Error error, const QString &message)
-{
-    m_error = error;
-    if (m_error == QtIVIAbstractZonedFeature::NoError)
-        m_errorMessage.clear();
-    m_errorMessage = errorText() + QStringLiteral(" ") + message;
-    emit errorChanged(m_error, m_errorMessage);
-}
-
-/*!
-   Returns the last error code.
-
-   \sa QtIVIAbstractZonedFeature::Error
- */
-QtIVIAbstractZonedFeature::Error QtIVIAbstractZonedFeature::error() const
-{
-    return m_error;
-}
-
-
-/*!
-   \qmlproperty QString AbstractZonedFeature::error
-
-   Last error message of the feature. Empty if no error.
- */
-/*!
-   \property QtIVIAbstractZonedFeature::error
-
-   Last error message of the feature. Empty if no error.
- */
-QString QtIVIAbstractZonedFeature::errorMessage() const
-{
-    return m_errorMessage;
-}
-
-/*!
-   Returns a string containing the error code.
-
-   Empty if no error.
-*/
-QString QtIVIAbstractZonedFeature::errorText() const
-{
-    if (m_error == QtIVIAbstractZonedFeature::NoError)
-        return QString();
-    QMetaEnum metaEnum = this->metaObject()->enumerator(0);
-    return QLatin1String(metaEnum.valueToKey(m_error));
 }

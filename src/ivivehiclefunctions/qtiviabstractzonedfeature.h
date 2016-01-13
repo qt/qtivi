@@ -47,19 +47,8 @@ class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIAbstractZonedFeature : public QtIVIAbs
     Q_PROPERTY(QStringList availableZones READ availableZones NOTIFY availableZonesChanged)
     Q_PROPERTY(QVariantList zones READ zoneFeatureList NOTIFY zonesChanged)
     Q_PROPERTY(QVariantMap zoneAt READ zoneFeatureMap  NOTIFY zonesChanged)
-    Q_PROPERTY(QString error READ errorMessage NOTIFY errorChanged)
-    Q_ENUMS(Error)
 
 public:
-
-    enum Error {
-        NoError,
-        PermissionDenied,
-        InvalidOperation,
-        Timeout,
-        InvalidZone,
-        Unknown
-    };
 
     explicit QtIVIAbstractZonedFeature(const QString &interface, const QString &zone = QString(), QObject *parent = 0);
     virtual ~QtIVIAbstractZonedFeature();
@@ -71,26 +60,18 @@ public:
     QtIVIAbstractZonedFeature *zoneAt(const QString &zone) const;
     QList<QtIVIAbstractZonedFeature*> zones() const;
 
-    QtIVIAbstractZonedFeature::Error error() const;
-    QString errorMessage() const;
-
 Q_SIGNALS:
     void availableZonesChanged(QStringList zones);
     void zoneChanged();
     void zonesChanged();
-    void errorChanged(QtIVIAbstractZonedFeature::Error error, const QString &message);
 
 protected:
     virtual QtIVIAbstractZonedFeature *createZoneFeature(const QString &zone) = 0;
-    void setError(QtIVIAbstractZonedFeature::Error error, const QString &message = QString());
     QtIVIVehicleBackendInterface *backend() const;
 
     virtual void connectToServiceObject(QtIVIServiceObject *serviceObject);
     virtual void disconnectFromServiceObject(QtIVIServiceObject *serviceObject);
     virtual void clearServiceObject();
-
-protected Q_SLOTS:
-    virtual void onErrorChanged(QtIVIAbstractZonedFeature::Error error, const QString &message = QString());
 
 private Q_SLOTS:
     void setZone(const QString &zone);
@@ -107,15 +88,11 @@ private:
 
     void resetAttributes();
 
-    QString errorText() const;
-
 private:
     QString m_zone;
     QList<QtIVIAbstractZonedFeature*> m_zoneFeatures;
     QVariantMap m_zoneFeatureMap;
     QVariantList m_zoneFeatureList;
-    QString m_errorMessage;
-    QtIVIAbstractZonedFeature::Error m_error;
 };
 
 QT_END_NAMESPACE

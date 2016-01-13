@@ -32,6 +32,7 @@
 #include "qtiviserviceobject.h"
 #include "qtiviservicemanager.h"
 
+#include <QMetaEnum>
 #include <QDebug>
 
 /*!
@@ -72,6 +73,23 @@
  *
  * clearServiceObject() will be called once the Feature doesn't have a connection to a ServiceObject anymore and should
  * reset it's state to sane defaults
+ */
+
+/*!
+   \enum QtIVIAbstractFeature::Error
+
+   \value NoError
+          No error
+   \value PermissionDenied
+          Permission for the operation is denied
+   \value InvalidOperation
+          Operation is invalid
+   \value Timeout
+          Operation timeout
+   \value InvalidZone
+          Zone is not available for the operation
+   \value Unknown
+          Unknown error
  */
 
 /*!
@@ -258,6 +276,62 @@ bool QtIVIAbstractFeature::autoDiscovery() const
 }
 
 /*!
+   Sets \a error with the \a message.
+
+   Emits errorChanged() signal.
+
+   \sa QtIVIAbstractZonedFeature::Error
+ */
+void QtIVIAbstractFeature::setError(QtIVIAbstractFeature::Error error, const QString &message)
+{
+    m_error = error;
+    if (m_error == QtIVIAbstractFeature::NoError)
+        m_errorMessage.clear();
+    m_errorMessage = errorText() + QStringLiteral(" ") + message;
+    emit errorChanged(m_error, m_errorMessage);
+}
+
+/*!
+   Returns the last error code.
+
+   \sa QtIVIAbstractFeature::Error
+ */
+QtIVIAbstractFeature::Error QtIVIAbstractFeature::error() const
+{
+    return m_error;
+}
+
+
+/*!
+   \qmlproperty QString QtIVIAbstractFeature::error
+
+   Last error message of the feature. Empty if no error.
+ */
+/*!
+   \property QtIVIAbstractFeature::error
+
+   Last error message of the feature. Empty if no error.
+ */
+QString QtIVIAbstractFeature::errorMessage() const
+{
+    return m_errorMessage;
+}
+
+/*!
+   Returns a string containing the error code.
+
+   Empty if no error.
+*/
+QString QtIVIAbstractFeature::errorText() const
+{
+    if (m_error == QtIVIAbstractFeature::NoError)
+        return QString();
+    QMetaEnum metaEnum = QMetaEnum::fromType<QtIVIAbstractFeature::Error>();
+    return QLatin1String(metaEnum.valueToKey(m_error));
+}
+
+
+/*!
  * \brief Performs an automatic discovery attempt.
  *
  * The feature will try to locate a single service object implementing the required interface.
@@ -313,6 +387,16 @@ void QtIVIAbstractFeature::startAutoDiscovery()
 bool QtIVIAbstractFeature::isValid() const
 {
     return m_serviceObject != 0;
+}
+
+/*!
+   Updates \a error and \a message from the backend.
+
+   This slot can be used when implementing a new Feature to report generic errors.
+*/
+void QtIVIAbstractFeature::onErrorChanged(QtIVIAbstractFeature::Error error, const QString &message)
+{
+    setError(error, message);
 }
 
 void QtIVIAbstractFeature::serviceObjectDestroyed()

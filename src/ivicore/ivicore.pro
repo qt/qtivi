@@ -17,7 +17,7 @@ HEADERS += \
     qtiviserviceobject.h \
     qtiviabstractfeature.h \
     qtiviglobal.h \
-    qtiviproxyserviceobject_p.h \
+    qtiviproxyserviceobject_p.h
 
 SOURCES += \
     qtiviservicemanager.cpp \
