@@ -55,17 +55,6 @@ public:
     virtual void setHeaterEnabled(bool enabled, const QString &zone) = 0;
     virtual void setAirRecirculationEnabled(bool enabled, const QString &zone) = 0;
 
-    virtual int targetTemperature(const QString &zone) const = 0;
-    virtual int seatCooler(const QString &zone) const = 0;
-    virtual int seatHeater(const QString &zone) const = 0;
-    virtual int steeringWheelHeater(const QString &zone) const = 0;
-    virtual int fanSpeedLevel(const QString &zone) const = 0;
-
-    virtual QtIVIClimateControl::AirflowDirection airflowDirection(const QString &zone) const = 0;
-    virtual bool airConditioningEnabled(const QString &zone) const = 0;
-    virtual bool heaterEnabled(const QString &zone) const = 0;
-    virtual bool airRecirculationEnabled(const QString &zone) const = 0;
-
 Q_SIGNALS:
     void targetTemperatureChanged(int value, const QString &zone = QString());
     void seatCoolerChanged(int value, const QString &zone = QString());

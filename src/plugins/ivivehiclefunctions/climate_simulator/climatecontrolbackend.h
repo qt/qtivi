@@ -44,16 +44,6 @@ public:
 
     void initializeAttributes();
 
-    int targetTemperature(const QString &zone) const;
-    int seatCooler(const QString &zone) const;
-    int seatHeater(const QString &zone) const;
-    int steeringWheelHeater(const QString &zone) const;
-    int fanSpeedLevel(const QString &zone) const;
-    QtIVIClimateControl::AirflowDirection airflowDirection(const QString &zone) const;
-    bool airConditioningEnabled(const QString &zone) const;
-    bool heaterEnabled(const QString &zone) const;
-    bool airRecirculationEnabled(const QString &zone) const;
-
     void setTargetTemperature(int val, const QString &zone);
     void setSeatCooler(int val, const QString &zone);
     void setSeatHeater(int val, const QString &zone);

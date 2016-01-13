@@ -209,43 +209,6 @@ public:
         return m_zoneSeatHeater[z];
     }
 
-    QtIVIClimateControl::AirflowDirection airflowDirection(const QString &z) const
-    {
-        Q_UNUSED(z)
-        return m_airflowDirection;
-    }
-
-    bool airConditioningEnabled(const QString &z) const
-    {
-        Q_UNUSED(z)
-        return m_airConditioningEnabled;
-    }
-
-    bool heaterEnabled(const QString &z) const
-    {
-        Q_UNUSED(z)
-        return m_heaterEnabled;
-    }
-
-    bool airRecirculationEnabled(const QString &z) const
-    {
-        Q_UNUSED(z)
-        return m_airRecirculationEnabled;
-    }
-
-    int steeringWheelHeater(const QString &z) const
-    {
-        if (!m_zoneSteeringWheelHeater.contains(z))
-            return -1;
-
-        return m_zoneSteeringWheelHeater[z];
-    }
-
-    int fanSpeedLevel(const QString &z) const
-    {
-        return m_zoneFanSpeedLevel[z];
-    }
-
 private:
     QtIVIClimateControl::AirflowDirection m_airflowDirection;
     bool m_airConditioningEnabled;
