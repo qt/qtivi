@@ -53,7 +53,7 @@ class Q_QTIVICORE_EXPORT QtIVIAbstractFeature : public QObject, public QQmlParse
 
 public:
 
-    explicit QtIVIAbstractFeature(const QString &interface, bool autoDiscovery = true, QObject *parent = 0);
+    explicit QtIVIAbstractFeature(const QString &interface, QObject *parent = 0);
     virtual ~QtIVIAbstractFeature();
 
     QtIVIServiceObject *serviceObject() const;

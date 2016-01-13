@@ -67,32 +67,17 @@
           Direct airflow to defrost.
 */
 
-/*!
-    Constructs a climate control feature by General zone.
-
-    The \a parent argument is passed on to the \l QtIVIAbstractZonedFeature base class.
-*/
-QtIVIClimateControl::QtIVIClimateControl(QObject* parent)
-    : QtIVIAbstractZonedFeature(QtIVIStringClimateControlInterfaceName, QString(), false, parent)
-    , m_airConditioning(false)
-    , m_heater(false)
-    , m_airRecirculation(false)
-    , m_targetTemperature(0)
-    , m_seatCooler(0)
-    , m_seatHeater(0)
-    , m_steeringWheelHeater(0)
-    , m_fanSpeedLevel(0)
-{
-}
 
 /*!
    Constructs a climate control object to the given \a zone.
 
+   If \a zone is not provided the General zone will be created.
+
    \a autoDiscovery and \a parent arguments are passed on to the
    \l QtIVIAbstractZonedFeature base class.
 */
-QtIVIClimateControl::QtIVIClimateControl(const QString &zone, bool autoDiscovery, QObject* parent)
-    : QtIVIAbstractZonedFeature(QtIVIStringClimateControlInterfaceName, zone, autoDiscovery, parent)
+QtIVIClimateControl::QtIVIClimateControl(const QString &zone, QObject* parent)
+    : QtIVIAbstractZonedFeature(QtIVIStringClimateControlInterfaceName, zone, parent)
     , m_airConditioning(false)
     , m_heater(false)
     , m_airRecirculation(false)
@@ -261,7 +246,7 @@ void QtIVIClimateControl::onSeatHeaterChanged(int value, const QString &zone)
 */
 QtIVIAbstractZonedFeature *QtIVIClimateControl::createZoneFeature(const QString &zone)
 {
-    return new QtIVIClimateControl(zone, false, this);
+    return new QtIVIClimateControl(zone, this);
 }
 
 /*!

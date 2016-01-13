@@ -61,7 +61,7 @@ public:
         Unknown
     };
 
-    explicit QtIVIAbstractZonedFeature(const QString &interface, const QString &zone = QString(), bool autoDiscovery = true, QObject *parent = 0);
+    explicit QtIVIAbstractZonedFeature(const QString &interface, const QString &zone = QString(), QObject *parent = 0);
     virtual ~QtIVIAbstractZonedFeature();
 
     QString zone() const;

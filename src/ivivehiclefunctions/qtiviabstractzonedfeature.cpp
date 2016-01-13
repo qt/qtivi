@@ -76,12 +76,11 @@
     If \a parent is of type QtIVIAbstractZonedFeature, then the created instance
     uses parent for the backend connection. Parent is connected to the
     backend and will forward updates between child features and the backend.
-    \a autoDiscovery sets the \l autoDiscovery state.
 
     \sa QtIVIAbstractFeature
 */
-QtIVIAbstractZonedFeature::QtIVIAbstractZonedFeature(const QString &interface, const QString &zone, bool autoDiscovery, QObject *parent)
-    : QtIVIAbstractFeature(interface, autoDiscovery, parent)
+QtIVIAbstractZonedFeature::QtIVIAbstractZonedFeature(const QString &interface, const QString &zone, QObject *parent)
+    : QtIVIAbstractFeature(interface, parent)
     , m_zone(zone)
 {
 }

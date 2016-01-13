@@ -51,6 +51,7 @@ class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIClimateControl : public QtIVIAbstractZ
     Q_PROPERTY(int seatCooler READ seatCooler WRITE setSeatCooler NOTIFY seatCoolerChanged)
     Q_PROPERTY(int seatHeater READ seatHeater WRITE setSeatHeater NOTIFY seatHeaterChanged)
     Q_ENUMS(AirflowDirection)
+
 public:
     enum AirflowDirection {
         None,
@@ -60,9 +61,7 @@ public:
         DefrostFloor
     };
 
-    QtIVIClimateControl(QObject *parent=0);
-
-    QtIVIClimateControl(const QString &zone, bool autoDiscovery = true, QObject* parent=0);
+    QtIVIClimateControl(const QString &zone=QString(), QObject* parent=0);
 
     virtual void connectToServiceObject(QtIVIServiceObject *serviceObject) Q_DECL_OVERRIDE;
     virtual void clearServiceObject() Q_DECL_OVERRIDE;

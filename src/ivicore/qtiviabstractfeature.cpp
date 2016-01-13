@@ -147,17 +147,13 @@
  * The \a parent argument is passed on to the \l QObject constructor.
  *
  * The \a interface argument is used to locate suitable service objects.
- *
- * The \a autoDiscovery argument is used to define the default \l autoDiscovery state.
  */
-QtIVIAbstractFeature::QtIVIAbstractFeature(const QString &interface, bool autoDiscovery, QObject *parent)
+QtIVIAbstractFeature::QtIVIAbstractFeature(const QString &interface, QObject *parent)
     : QObject(parent)
     , m_interface(interface)
     , m_serviceObject(0)
-    , m_autoDiscovery(autoDiscovery)
+    , m_autoDiscovery(true)
 {
-    //Detect whether we got created from within QML
-    //If not call the autoDiscovery
 }
 
 /*!

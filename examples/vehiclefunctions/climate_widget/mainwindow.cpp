@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_radioButtonGroup->addButton(ui->rb_FloorPanel);
 
 //![1]
-    m_climateControl = new QtIVIClimateControl(this);
+    m_climateControl = new QtIVIClimateControl(QString(), this);
     m_climateControl->startAutoDiscovery();
 
     if (!m_climateControl->isValid())
