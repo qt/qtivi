@@ -31,15 +31,15 @@
 #define QTIVIABSTRACTZONEDFEATURE_H
 
 #include <QtIVICore/QtIVIAbstractFeature>
-#include <QtIVIVehicleFunctions/qtivivehiclefunctionsglobal.h>
+#include <QtIVICore/qtiviglobal.h>
 #include <QVariant>
 #include <QMap>
 
 QT_BEGIN_NAMESPACE
 
-class QtIVIVehicleBackendInterface;
+class QtIVIZonedFeatureInterface;
 
-class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIAbstractZonedFeature : public QtIVIAbstractFeature
+class Q_QTIVICORE_EXPORT QtIVIAbstractZonedFeature : public QtIVIAbstractFeature
 {
     Q_OBJECT
 
@@ -67,7 +67,7 @@ Q_SIGNALS:
 
 protected:
     virtual QtIVIAbstractZonedFeature *createZoneFeature(const QString &zone) = 0;
-    QtIVIVehicleBackendInterface *backend() const;
+    QtIVIZonedFeatureInterface *backend() const;
 
     virtual void connectToServiceObject(QtIVIServiceObject *serviceObject);
     virtual void disconnectFromServiceObject(QtIVIServiceObject *serviceObject);

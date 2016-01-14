@@ -31,11 +31,11 @@
 #include <QtIVICore/qtiviserviceobject.h>
 
 #include "qtiviabstractzonedfeature.h"
-#include "qtivivehiclebackendinterface.h"
+#include "qtivizonedfeatureinterface.h"
 
 /*!
     \class QtIVIAbstractZonedFeature
-    \inmodule QtIVIVehicleFunctions
+    \inmodule QtIVICore
 
     \since 5.6
 
@@ -47,7 +47,7 @@
 /*!
     \qmltype AbstractZonedFeature
     \instantiates QtIVIAbstractZonedFeature
-    \inqmlmodule QtIVIVehicleFunctions 1.0
+    \inqmlmodule QtIVICore 1.0
     \inherits AbstractFeature
     \brief The AbstractZonedFeature is not directly accessible. QML type provides
     base QML properties for each QML Vehicle feature like zone and error access.
@@ -91,14 +91,14 @@ bool QtIVIAbstractZonedFeature::acceptServiceObject(QtIVIServiceObject *serviceO
 */
 void QtIVIAbstractZonedFeature::connectToServiceObject(QtIVIServiceObject *serviceObject)
 {
-    QtIVIVehicleBackendInterface *backend(0);
+    QtIVIZonedFeatureInterface *backend(0);
     if (QtIVIAbstractZonedFeature* parentFeature = qobject_cast<QtIVIAbstractZonedFeature*>(parent()))
         backend = parentFeature->backend();
     else
-        backend = qobject_cast<QtIVIVehicleBackendInterface*>(serviceObject->interfaceInstance(interfaceName()));
+        backend = qobject_cast<QtIVIZonedFeatureInterface*>(serviceObject->interfaceInstance(interfaceName()));
 
     if (backend) {
-        connect(backend, &QtIVIVehicleBackendInterface::errorChanged, this, &QtIVIAbstractZonedFeature::onErrorChanged);
+        connect(backend, &QtIVIZonedFeatureInterface::errorChanged, this, &QtIVIAbstractZonedFeature::onErrorChanged);
         initializeZones();
     }
 }
@@ -108,7 +108,7 @@ void QtIVIAbstractZonedFeature::connectToServiceObject(QtIVIServiceObject *servi
 */
 void QtIVIAbstractZonedFeature::disconnectFromServiceObject(QtIVIServiceObject* so)
 {
-    QtIVIVehicleBackendInterface *backend = qobject_cast<QtIVIVehicleBackendInterface*>(so->interfaceInstance(interfaceName()));
+    QtIVIZonedFeatureInterface *backend = qobject_cast<QtIVIZonedFeatureInterface*>(so->interfaceInstance(interfaceName()));
 
     if (backend)
         disconnect(backend, 0, this, 0);
@@ -127,12 +127,12 @@ void QtIVIAbstractZonedFeature::clearServiceObject()
    Returns parent backend if parent is QtIVIAbstractZonedFeature type.
    Returns zero if no backend connected.
 */
-QtIVIVehicleBackendInterface *QtIVIAbstractZonedFeature::backend() const
+QtIVIZonedFeatureInterface *QtIVIAbstractZonedFeature::backend() const
 {
     if (QtIVIAbstractZonedFeature* parentFeature = qobject_cast<QtIVIAbstractZonedFeature*>(parent())) {
         return parentFeature->backend();
     } else if (QtIVIServiceObject* so = serviceObject()) {
-        return qobject_cast<QtIVIVehicleBackendInterface*>(so->interfaceInstance(interfaceName()));
+        return qobject_cast<QtIVIZonedFeatureInterface*>(so->interfaceInstance(interfaceName()));
     }
     return 0;
 }

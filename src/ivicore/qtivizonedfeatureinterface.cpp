@@ -27,14 +27,14 @@
 **
 ****************************************************************************/
 
-#include "qtivivehiclebackendinterface.h"
+#include "qtivizonedfeatureinterface.h"
 
 /*!
-   \class QtIVIVehicleBackendInterface
-   \inmodule QtIVIVehicleFunctions
+   \class QtIVIZonedFeatureInterface
+   \inmodule QtIVICore
    \ingroup backends
 
-   \brief QtIVIVehicleBackendInterface defines the base interface for the
+   \brief QtIVIZonedFeatureInterface defines the base interface for the
    feature backend classes.
 
    Vehicle feature can be zoned or be just generic depending of the vehicle.
@@ -56,7 +56,7 @@
    and "Rear".
 
    The backend must return all available zones via
-   \l {QtIVIVehicleBackendInterface::}{availableZones}:
+   \l {QtIVIZonedFeatureInterface::}{availableZones}:
    \code
    QStringList backend::availableZones() const {
         QStringList zones;
@@ -73,7 +73,7 @@
    zone as a parameter. Zone is not needed if attribute is generic.
 
    Initialization signals are emitted in the
-   \l {QtIVIVehicleBackendInterface::}{initializeAttributes}:
+   \l {QtIVIZonedFeatureInterface::}{initializeAttributes}:
    \code
    void backend::initializeAttributes() {
         emit fanSpeedLevelChanged(2, "Front");
@@ -90,7 +90,7 @@
    \code
    void backend::setFanSpeedLevel(int value, const QString &zone) {
         if (!m_fanSpeedZones.contains(zone)) {
-            emit errorChanged(QtIVIAbstractZonedFeature::InvalidZone);
+            emit errorChanged(QtIVIAbstractFeature::InvalidZone);
         } else {
             // Set specified zone fan to value
             ...
@@ -100,7 +100,7 @@
 
    int backend::fanSpeedLevel(const QString &zone) {
         if (!m_fanSpeedZones.contains(zone)) {
-            emit errorChanged(QtIVIAbstractZonedFeature::InvalidZone);
+            emit errorChanged(QtIVIAbstractFeature::InvalidZone);
             return -1;
         } else {
             int value = ... // Get vehicle's zone fan Speed
@@ -116,7 +116,7 @@
    \code
    void backend::setSteeringWheelHeater(int value, const QString &zone) {
         if (!zone.isEmpty()) {  // zone must be empty for a generic attribute
-            emit errorChanged(QtIVIAbstractZonedFeature::InvalidZone);
+            emit errorChanged(QtIVIAbstractFeature::InvalidZone);
             return;
         } else {
             // Set vehicle's steering wheel heater value
@@ -127,7 +127,7 @@
 
    int backend::steeringWheelHeater(const QString &zone) {
         if (!zone.isEmpty()) {  // zone must be empty for a generic attribute
-            emit errorChanged(QtIVIAbstractZonedFeature::InvalidZone);
+            emit errorChanged(QtIVIAbstractFeature::InvalidZone);
             return -1;
         } else {
             int value = ... // Get vehicle's steering wheel heater value
@@ -143,19 +143,19 @@
  */
 
 /*!
- * \fn QtIVIVehicleBackendInterface::QtIVIVehicleBackendInterface(QObject *parent=0)
+ * \fn QtIVIZonedFeatureInterface::QtIVIZonedFeatureInterface(QObject *parent=0)
  *
  * Constructs a backend base interface.
  *
  * The \a parent is sent to the QObject constructor.
  */
-QtIVIVehicleBackendInterface::QtIVIVehicleBackendInterface(QObject *parent)
+QtIVIZonedFeatureInterface::QtIVIZonedFeatureInterface(QObject *parent)
     : QObject(parent)
 {
 }
 
 /*!
- * \fn QStringList QtIVIVehicleBackendInterface::availableZones() const
+ * \fn QStringList QtIVIZonedFeatureInterface::availableZones() const
  *
  * Returns a list of supported zone names. This is called from the client
  * right after it's connected.
@@ -166,7 +166,7 @@ QtIVIVehicleBackendInterface::QtIVIVehicleBackendInterface(QObject *parent)
  */
 
 /*!
- * \fn void QtIVIVehicleBackendInterface::initializeAttributes()
+ * \fn void QtIVIZonedFeatureInterface::initializeAttributes()
  *
  * Called from the client to initialize attributes. This is called after
  * client is connected and available zones are fetched.
@@ -178,7 +178,7 @@ QtIVIVehicleBackendInterface::QtIVIVehicleBackendInterface(QObject *parent)
  */
 
 /*!
- * \fn void errorChanged(QtIVIAbstractZonedFeature::Error error, const QString &message = QString())
+ * \fn void errorChanged(QtIVIAbstractFeature::Error error, const QString &message = QString())
  *
  * The signal is emitted when \a error occurs in the backend.
  * Error \a message is optional.

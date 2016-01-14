@@ -33,7 +33,7 @@
  * \class QtIVIClimateControlBackendInterface
  * \inmodule QtIVIVehicleFunctions
  * \ingroup backends
- * \inherits QtIVIVehicleBackendInterface
+ * \inherits QtIVIZonedFeatureInterface
  * \brief The QtIVIClimateControlBackendInterface defines the interface for backends to the
  * QtIVIClimateControl feature class.
  *
@@ -53,7 +53,7 @@
  * The \a parent is sent to the QObject constructor.
  */
 QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject *parent)
-    : QtIVIVehicleBackendInterface(parent)
+    : QtIVIZonedFeatureInterface(parent)
 {
 }
 

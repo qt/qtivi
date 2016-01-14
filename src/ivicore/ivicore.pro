@@ -16,13 +16,17 @@ HEADERS += \
     qtiviservicemanager_p.h \
     qtiviserviceobject.h \
     qtiviabstractfeature.h \
+    qtiviabstractzonedfeature.h \
     qtiviglobal.h \
-    qtiviproxyserviceobject_p.h
+    qtiviproxyserviceobject_p.h \
+    qtivizonedfeatureinterface.h \
 
 SOURCES += \
     qtiviservicemanager.cpp \
     qtiviserviceobject.cpp \
     qtiviabstractfeature.cpp \
+    qtiviabstractzonedfeature.cpp \
     qtiviproxyserviceobject_p.cpp \
+    qtivizonedfeatureinterface.cpp \
 
 load(qt_module)

@@ -30,7 +30,8 @@
 #ifndef CLIMATECONTROL_H
 #define CLIMATECONTROL_H
 
-#include <QtIVIVehicleFunctions/qtiviabstractzonedfeature.h>
+#include <QtIVICore/QtIVIAbstractZonedFeature>
+#include <QtIVIVehicleFunctions/qtivivehiclefunctionsglobal.h>
 
 QT_BEGIN_NAMESPACE
 

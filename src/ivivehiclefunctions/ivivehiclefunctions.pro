@@ -12,16 +12,12 @@ OTHER_FILES = \
 CMAKE_MODULE_TESTS = '-'
 
 HEADERS += \
-    qtivivehiclebackendinterface.h \
     qtiviclimatecontrol.h \
     qtiviclimatecontrolbackendinterface.h \
-    qtivivehiclefunctionsglobal.h \
-    qtiviabstractzonedfeature.h
+    qtivivehiclefunctionsglobal.h
 
 SOURCES += \
     qtiviclimatecontrol.cpp \
-    qtiviabstractzonedfeature.cpp \
-    qtivivehiclebackendinterface.cpp \
     qtiviclimatecontrolbackendinterface.cpp
 
 load(qt_module)

@@ -32,12 +32,12 @@
 
 #include <QObject>
 
-#include "qtivivehiclebackendinterface.h"
-#include "qtiviclimatecontrol.h"
+#include <QtIVICore/qtivizonedfeatureinterface.h>
+#include <QtIVIVehicleFunctions/qtiviclimatecontrol.h>
 
 QT_BEGIN_NAMESPACE
 
-class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIClimateControlBackendInterface : public QtIVIVehicleBackendInterface
+class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIClimateControlBackendInterface : public QtIVIZonedFeatureInterface
 {
     Q_OBJECT
 

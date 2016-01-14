@@ -44,6 +44,7 @@ public:
         Q_UNUSED(uri);
 
         qmlRegisterUncreatableType<QtIVIAbstractFeature>(uri, 1, 0, "AbstractFeature", "AbstractFeature is not accessible directly");
+        qmlRegisterUncreatableType<QtIVIAbstractZonedFeature>(uri, 1, 0, "AbstractZonedFeature", "AbstractZonedFeature is not accessible directly");
     }
 };
 
