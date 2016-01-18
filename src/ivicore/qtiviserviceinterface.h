@@ -30,7 +30,7 @@
 #ifndef QTIVISERVICEINTERFACE_H
 #define QTIVISERVICEINTERFACE_H
 
-#include <QtPlugin>
+#include <QtCore/QtPlugin>
 
 QT_BEGIN_NAMESPACE
 

@@ -41,7 +41,7 @@
 // We mean it.
 //
 
-#include "qtiviserviceobject.h"
+#include <QtIVICore/QtIVIServiceObject>
 
 QT_BEGIN_NAMESPACE
 

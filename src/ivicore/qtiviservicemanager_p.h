@@ -41,11 +41,11 @@
 // We mean it.
 //
 
-#include <QAbstractListModel>
-#include <QVariantMap>
-#include <QStringList>
-#include <QMap>
-#include <QSet>
+#include <QtCore/QAbstractListModel>
+#include <QtCore/QVariantMap>
+#include <QtCore/QStringList>
+#include <QtCore/QMap>
+#include <QtCore/QSet>
 
 QT_BEGIN_NAMESPACE
 

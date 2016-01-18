@@ -30,7 +30,7 @@
 #ifndef QTIVISERVICEOBJECT_H
 #define QTIVISERVICEOBJECT_H
 
-#include <QObject>
+#include <QtCore/QObject>
 #include <QtIVICore/QtIVIServiceInterface>
 #include <QtIVICore/qtiviglobal.h>
 

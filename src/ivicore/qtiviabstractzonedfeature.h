@@ -30,10 +30,10 @@
 #ifndef QTIVIABSTRACTZONEDFEATURE_H
 #define QTIVIABSTRACTZONEDFEATURE_H
 
+#include <QtCore/QVariant>
+#include <QtCore/QMap>
 #include <QtIVICore/QtIVIAbstractFeature>
 #include <QtIVICore/qtiviglobal.h>
-#include <QVariant>
-#include <QMap>
 
 QT_BEGIN_NAMESPACE
 

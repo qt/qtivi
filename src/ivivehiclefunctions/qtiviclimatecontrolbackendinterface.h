@@ -30,7 +30,7 @@
 #ifndef QTIVICLIMATECONTROLBACKENDINTERFACE_H
 #define QTIVICLIMATECONTROLBACKENDINTERFACE_H
 
-#include <QObject>
+#include <QtCore/QObject>
 
 #include <QtIVICore/qtivizonedfeatureinterface.h>
 #include <QtIVIVehicleFunctions/qtiviclimatecontrol.h>

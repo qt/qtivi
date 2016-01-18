@@ -30,8 +30,8 @@
 #ifndef QTIVIABSTRACTFEATURE_H
 #define QTIVIABSTRACTFEATURE_H
 
-#include <QObject>
-#include <QQmlParserStatus>
+#include <QtCore/QObject>
+#include <QtQml/QQmlParserStatus>
 
 #include <QtIVICore/qtiviglobal.h>
 
