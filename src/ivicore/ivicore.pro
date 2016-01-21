@@ -1,6 +1,6 @@
 TARGET = QtIVICore
 
-QT = core core-private qml
+QT = core core-private qml qml-private
 CONFIG += c++11
 VERSION = 1.0.0
 
@@ -20,6 +20,10 @@ HEADERS += \
     qtiviglobal.h \
     qtiviproxyserviceobject_p.h \
     qtivizonedfeatureinterface.h \
+    qtivipropertyattribute.h \
+    qtiviproperty.h \
+    qtivipropertyfactory.h \
+    qtiviproperty_p.h
 
 SOURCES += \
     qtiviservicemanager.cpp \
@@ -28,5 +32,8 @@ SOURCES += \
     qtiviabstractzonedfeature.cpp \
     qtiviproxyserviceobject_p.cpp \
     qtivizonedfeatureinterface.cpp \
+    qtivipropertyattribute.cpp \
+    qtiviproperty.cpp \
+    qtivipropertyfactory.cpp
 
 load(qt_module)

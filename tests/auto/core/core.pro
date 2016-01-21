@@ -1,3 +1,5 @@
 TEMPLATE = subdirs
 
-SUBDIRS = servicemanagertest
+SUBDIRS = servicemanagertest \
+          qtivipropertyattribute \
+          qtiviproperty \
