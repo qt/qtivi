@@ -43,20 +43,29 @@ ClimateControlBackend::ClimateControlBackend(QObject *parent) :
 
     ZoneBackend leftZone;
     leftZone.seatCooler = 10;
+    leftZone.seatCoolerAttribute = QtIVIPropertyAttribute<int>(0, 10);
     leftZone.seatHeater = 10;
+    leftZone.seatHeaterAttribute = QtIVIPropertyAttribute<int>(0, 10);
     leftZone.targetTemperature = 20;
+    leftZone.targetTemperatureAttribute = QtIVIPropertyAttribute<int>(0, 10);
     m_zoneMap.insert("FrontLeft",leftZone);
 
     ZoneBackend rightZone;
     rightZone.seatCooler = 5;
+    rightZone.seatCoolerAttribute = QtIVIPropertyAttribute<int>(0, 10);
     rightZone.seatHeater = 0;
+    rightZone.seatHeaterAttribute = QtIVIPropertyAttribute<int>(0, 10);
     rightZone.targetTemperature = 20;
+    rightZone.targetTemperatureAttribute = QtIVIPropertyAttribute<int>(0, 10);
     m_zoneMap.insert("FrontRight",rightZone);
 
     ZoneBackend rearZone;
-    rearZone.seatCooler = 5;
+    rearZone.seatCooler = 0;
+    rearZone.seatCoolerAttribute = QtIVIPropertyAttribute<int>();
     rearZone.seatHeater = 0;
+    rearZone.seatHeaterAttribute = QtIVIPropertyAttribute<int>();
     rearZone.targetTemperature = 10;
+    rearZone.targetTemperatureAttribute = QtIVIPropertyAttribute<int>(0, 10);
     m_zoneMap.insert("Rear",rearZone);
 }
 
@@ -71,16 +80,27 @@ QStringList ClimateControlBackend::availableZones() const
 
 void ClimateControlBackend::initializeAttributes()
 {
+    QVector<QtIVIClimateControl::AirflowDirection> list;
+    list << QtIVIClimateControl::BiLevel, QtIVIClimateControl::DefrostFloor;
+    emit airflowDirectionAttributeChanged(QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection>(list));
     emit airflowDirectionChanged(m_flowDirection);
+    emit airConditioningAttributeChanged(QtIVIPropertyAttribute<bool>(true));
     emit airConditioningEnabledChanged(m_airCondition);
+    emit heaterAttributeChanged(QtIVIPropertyAttribute<bool>(true));
     emit heaterEnabledChanged(m_heater);
+    emit airRecirculationAttributeChanged(QtIVIPropertyAttribute<bool>(true));
     emit airRecirculationEnabledChanged(m_airRecirculation);
+    emit steeringWheelHeaterAttributeChanged(QtIVIPropertyAttribute<int>(false));
     emit steeringWheelHeaterChanged(m_steeringWheelHeater);
+    emit fanSpeedLevelAttributeChanged(QtIVIPropertyAttribute<int>(0, 10));
     emit fanSpeedLevelChanged(m_fanSpeed);
 
     foreach (QString zone, availableZones()) {
+        emit targetTemperatureAttributeChanged(m_zoneMap[zone].targetTemperatureAttribute, zone);
         emit targetTemperatureChanged(m_zoneMap[zone].targetTemperature, zone);
+        emit seatCoolerAttributeChanged(m_zoneMap[zone].seatCoolerAttribute, zone);
         emit seatCoolerChanged(m_zoneMap[zone].seatCooler, zone);
+        emit seatHeaterAttributeChanged(m_zoneMap[zone].seatHeaterAttribute, zone);
         emit seatHeaterChanged(m_zoneMap[zone].seatHeater, zone);
     }
 }

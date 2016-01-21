@@ -34,6 +34,7 @@
 
 #include <QtIVICore/qtivizonedfeatureinterface.h>
 #include <QtIVIVehicleFunctions/qtiviclimatecontrol.h>
+#include "qtivipropertyattribute.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -57,14 +58,23 @@ public:
 
 Q_SIGNALS:
     void targetTemperatureChanged(int value, const QString &zone = QString());
+    void targetTemperatureAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
     void seatCoolerChanged(int value, const QString &zone = QString());
+    void seatCoolerAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
     void seatHeaterChanged(int value, const QString &zone = QString());
+    void seatHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
     void steeringWheelHeaterChanged(int value, const QString &zone = QString());
+    void steeringWheelHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
     void fanSpeedLevelChanged(int value, const QString &zone = QString());
+    void fanSpeedLevelAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
     void airflowDirectionChanged(QtIVIClimateControl::AirflowDirection value, const QString &zone = QString());
+    void airflowDirectionAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> &attribute, const QString &zone = QString());
     void airConditioningEnabledChanged(bool value, const QString &zone = QString());
+    void airConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone = QString());
     void heaterEnabledChanged(bool value, const QString &zone = QString());
+    void heaterAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone = QString());
     void airRecirculationEnabledChanged(bool value, const QString &zone = QString());
+    void airRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone = QString());
 };
 
 QT_END_NAMESPACE

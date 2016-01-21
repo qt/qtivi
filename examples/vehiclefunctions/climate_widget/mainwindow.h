@@ -51,9 +51,12 @@ public:
     void setupUI();
 
 private slots:
+    void onAirRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
+    void onHeaterAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
+    void onAirConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
     void setupFlowDirectionRadioButtons(QtIVIClimateControl::AirflowDirection direction);
+    void setupFlowDirectionAttribute(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> &attribute);
     void onFlowDirectionButtonToggled(QAbstractButton * button, bool checked);
-
 private:
 
     Ui::MainWindow *ui;

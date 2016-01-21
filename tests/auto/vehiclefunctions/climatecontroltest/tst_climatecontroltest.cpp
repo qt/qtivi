@@ -40,46 +40,66 @@ public:
         : QtIVIClimateControlBackendInterface()
         , m_airflowDirection(QtIVIClimateControl::DefrostFloor)
         , m_airConditioningEnabled(false)
+        , m_airConditioningAttribute(QtIVIPropertyAttribute<bool>(true))
         , m_heaterEnabled(false)
+        , m_heaterAttribute(QtIVIPropertyAttribute<bool>(true))
         , m_airRecirculationEnabled(false)
+        , m_airRecirculationAttribute(QtIVIPropertyAttribute<bool>(true))
     {
+        QVector<QtIVIClimateControl::AirflowDirection> list;
+        list << QtIVIClimateControl::DefrostFloor << QtIVIClimateControl::BiLevel;
+        m_airflowDirectionAttribute = list;
         m_zones << "FrontLeft" << "Upper" << "Lower";
         foreach (const QString &z, m_zones) {
             m_zoneTargetTemperature[z] = 0;
+            m_zoneTargetTemperatureAttribute[z] = QtIVIPropertyAttribute<int>(0, 10);
             m_zoneSeatCooler[z] = 0;
+            m_zoneSeatCoolerAttribute[z] = QtIVIPropertyAttribute<int>(0, 10);
             m_zoneSeatHeater[z] = 0;
+            m_zoneSeatHeaterAttribute[z] = QtIVIPropertyAttribute<int>(0, 10);
             m_zoneSteeringWheelHeater[z] = 0;
+            m_zoneSteeringWheelHeaterAttribute[z] = QtIVIPropertyAttribute<int>(0, 10);
             m_zoneFanSpeedLevel[z] = 0;
+            m_zoneFanSpeedLevelAttribute[z] = QtIVIPropertyAttribute<int>(0, 10);
         }
          m_zones << "Dummy"; // to test unavailable attributes
     }
 
-    QStringList availableZones() const
+    QStringList availableZones() const Q_DECL_OVERRIDE
     {
         return m_zones;
     }
 
-    void initializeAttributes()
+    void initializeAttributes() Q_DECL_OVERRIDE
     {
         emit airflowDirectionChanged(m_airflowDirection);
+        emit airflowDirectionAttributeChanged(m_airflowDirectionAttribute);
         emit airConditioningEnabledChanged(m_airConditioningEnabled);
+        emit airConditioningAttributeChanged(m_airConditioningAttribute);
         emit heaterEnabledChanged(m_heaterEnabled);
+        emit heaterAttributeChanged(m_heaterAttribute);
         emit airRecirculationEnabledChanged(m_airRecirculationEnabled);
+        emit airRecirculationAttributeChanged(m_airRecirculationAttribute);
 
         QStringList zones = availableZones();
         zones.removeLast(); // Do not init zone "Dummy"
         foreach (QString zone, zones) {
             emit targetTemperatureChanged(m_zoneTargetTemperature[zone], zone);
+            emit targetTemperatureAttributeChanged(m_zoneTargetTemperatureAttribute[zone], zone);
             emit seatCoolerChanged(m_zoneSeatCooler[zone], zone);
+            emit seatCoolerAttributeChanged(m_zoneSeatCoolerAttribute[zone], zone);
             emit seatHeaterChanged(m_zoneSeatHeater[zone], zone);
+            emit seatHeaterAttributeChanged(m_zoneSeatHeaterAttribute[zone], zone);
             emit steeringWheelHeaterChanged(m_zoneSteeringWheelHeater[zone], zone);
+            emit steeringWheelHeaterAttributeChanged(m_zoneSteeringWheelHeaterAttribute[zone], zone);
             emit fanSpeedLevelChanged(m_zoneFanSpeedLevel[zone], zone);
+            emit fanSpeedLevelAttributeChanged(m_zoneFanSpeedLevelAttribute[zone], zone);
         }
     }
 
-    void setTargetTemperature(int t, const QString &z)
+    void setTargetTemperature(int t, const QString &z) Q_DECL_OVERRIDE
     {
-        if (!m_zoneSeatHeater.contains(z)) {
+        if (!m_zoneTargetTemperature.contains(z)) {
             qWarning() << "Trying to set ClimateControl::targetTemperature in an unsupported zone.";
             return;
         }
@@ -90,9 +110,20 @@ public:
         }
     }
 
-    void setSeatCooler(int t, const QString &z)
+    void setTargetTemperatureAttribute(QtIVIPropertyAttribute<int> attribute, const QString &z)
     {
-        if (!m_zoneSeatHeater.contains(z)) {
+        if (!m_zoneTargetTemperatureAttribute.contains(z))
+            return;
+
+        if (m_zoneTargetTemperatureAttribute[z] != attribute) {
+            m_zoneTargetTemperatureAttribute[z] = attribute;
+            emit targetTemperatureAttributeChanged(m_zoneTargetTemperatureAttribute[z], z);
+        }
+    }
+
+    void setSeatCooler(int t, const QString &z) Q_DECL_OVERRIDE
+    {
+        if (!m_zoneSeatCooler.contains(z)) {
             qWarning() << "Trying to set ClimateControl::seatCooler in an unsupported zone.";
             return;
         }
@@ -103,7 +134,18 @@ public:
         }
     }
 
-    void setSeatHeater(int t, const QString &z)
+    void setSeatCoolerAttribute(QtIVIPropertyAttribute<int> attribute, const QString &z)
+    {
+        if (!m_zoneSeatCoolerAttribute.contains(z))
+            return;
+
+        if (m_zoneSeatCoolerAttribute[z] != attribute) {
+            m_zoneSeatCoolerAttribute[z] = attribute;
+            emit seatCoolerAttributeChanged(m_zoneSeatCoolerAttribute[z], z);
+        }
+    }
+
+    void setSeatHeater(int t, const QString &z) Q_DECL_OVERRIDE
     {
         if (!m_zoneSeatHeater.contains(z)) {
             qWarning() << "Trying to set ClimateControl::seatHeater in an unsupported zone.";
@@ -116,7 +158,18 @@ public:
         }
     }
 
-    void setAirflowDirection(QtIVIClimateControl::AirflowDirection ad, const QString &z)
+    void setSeatHeaterAttribute(QtIVIPropertyAttribute<int> attribute, const QString &z)
+    {
+        if (!m_zoneSeatHeaterAttribute.contains(z))
+            return;
+
+        if (m_zoneSeatHeaterAttribute[z] != attribute) {
+            m_zoneSeatHeaterAttribute[z] = attribute;
+            emit seatHeaterAttributeChanged(m_zoneSeatHeaterAttribute[z], z);
+        }
+    }
+
+    void setAirflowDirection(QtIVIClimateControl::AirflowDirection ad, const QString &z) Q_DECL_OVERRIDE
     {
         Q_UNUSED(z)
         if (m_airflowDirection != ad) {
@@ -125,7 +178,16 @@ public:
         }
     }
 
-    void setAirConditioningEnabled(bool e, const QString &z)
+    void setAirflowDirectionAttribute(QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> attribute, const QString &z)
+    {
+        Q_UNUSED(z)
+        if (m_airflowDirectionAttribute != attribute) {
+            m_airflowDirectionAttribute = attribute;
+            emit airflowDirectionAttributeChanged(m_airflowDirectionAttribute, z);
+        }
+    }
+
+    void setAirConditioningEnabled(bool e, const QString &z) Q_DECL_OVERRIDE
     {
         Q_UNUSED(z)
         if (m_airConditioningEnabled != e) {
@@ -134,7 +196,16 @@ public:
         }
     }
 
-    void setHeaterEnabled(bool e, const QString &z)
+    void setAirConditioningAttribute(QtIVIPropertyAttribute<bool> attribute, const QString &z)
+    {
+        Q_UNUSED(z)
+        if (m_airConditioningAttribute != attribute) {
+            m_airConditioningAttribute = attribute;
+            emit airConditioningAttributeChanged(m_airConditioningAttribute, z);
+        }
+    }
+
+    void setHeaterEnabled(bool e, const QString &z) Q_DECL_OVERRIDE
     {
         Q_UNUSED(z)
         if (m_heaterEnabled != e) {
@@ -143,7 +214,16 @@ public:
         }
     }
 
-    void setAirRecirculationEnabled(bool e, const QString &z)
+    void setHeaterAttribute(QtIVIPropertyAttribute<bool> attribute, const QString &z)
+    {
+        Q_UNUSED(z)
+        if (m_heaterAttribute != attribute) {
+            m_heaterAttribute = attribute;
+            emit heaterAttributeChanged(m_heaterAttribute, z);
+        }
+    }
+
+    void setAirRecirculationEnabled(bool e, const QString &z) Q_DECL_OVERRIDE
     {
         Q_UNUSED(z)
         if (m_airRecirculationEnabled != e) {
@@ -152,7 +232,17 @@ public:
         }
     }
 
-    void setSteeringWheelHeater(int t, const QString &z)
+
+    void setAirRecirculationAttribute(QtIVIPropertyAttribute<bool> attribute, const QString &z)
+    {
+        Q_UNUSED(z)
+        if (m_airRecirculationAttribute != attribute) {
+            m_airRecirculationAttribute = attribute;
+            emit airRecirculationAttributeChanged(m_airRecirculationAttribute, z);
+        }
+    }
+
+    void setSteeringWheelHeater(int t, const QString &z) Q_DECL_OVERRIDE
     {
         if (!m_zoneSteeringWheelHeater.contains(z))
             return;
@@ -163,7 +253,18 @@ public:
         }
     }
 
-    void setFanSpeedLevel(int fsl, const QString &z)
+    void setSteeringWheelHeaterAttribute(QtIVIPropertyAttribute<int> attribute, const QString &z)
+    {
+        if (!m_zoneSteeringWheelHeaterAttribute.contains(z))
+            return;
+
+        if (m_zoneSteeringWheelHeaterAttribute[z] != attribute) {
+            m_zoneSteeringWheelHeaterAttribute[z] = attribute;
+            emit steeringWheelHeaterAttributeChanged(m_zoneSteeringWheelHeaterAttribute[z], z);
+        }
+    }
+
+    void setFanSpeedLevel(int fsl, const QString &z) Q_DECL_OVERRIDE
     {
         if (!m_zoneFanSpeedLevel.contains(z))
             return;
@@ -179,47 +280,37 @@ public:
         }
     }
 
-    int targetTemperature(const QString &z) const
+    void setFanSpeedLevelAttribute(QtIVIPropertyAttribute<int> attribute, const QString &z)
     {
-        if (!m_zoneTargetTemperature.contains(z)) {
-            qWarning() << "Trying to get ClimateControl::targetTemperature from unsupported zone.";
-            return -1;
+        if (!m_zoneFanSpeedLevelAttribute.contains(z))
+            return;
+
+        if (m_zoneFanSpeedLevelAttribute[z] != attribute) {
+            m_zoneFanSpeedLevelAttribute[z] = attribute;
+            emit fanSpeedLevelAttributeChanged(m_zoneFanSpeedLevelAttribute[z], z);
         }
-
-        return m_zoneTargetTemperature[z];
-    }
-
-    int seatCooler(const QString &z) const
-    {
-        if (!m_zoneSeatHeater.contains(z)) {
-            qWarning() << "Trying to get ClimateControl::seatCooler from unsupported zone.";
-            return -1;
-        }
-
-        return m_zoneSeatCooler[z];
-    }
-
-    int seatHeater(const QString &z) const
-    {
-        if (!m_zoneSeatHeater.contains(z)) {
-            qWarning() << "Trying toget ClimateControl::seatHeater from unsupported zone.";
-            return -1;
-        }
-
-        return m_zoneSeatHeater[z];
     }
 
 private:
     QtIVIClimateControl::AirflowDirection m_airflowDirection;
+    QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> m_airflowDirectionAttribute;
     bool m_airConditioningEnabled;
+    QtIVIPropertyAttribute<bool> m_airConditioningAttribute;
     bool m_heaterEnabled;
+    QtIVIPropertyAttribute<bool> m_heaterAttribute;
     bool m_airRecirculationEnabled;
+    QtIVIPropertyAttribute<bool> m_airRecirculationAttribute;
 
     QMap<QString, int> m_zoneTargetTemperature;
     QMap<QString, int> m_zoneSeatCooler;
     QMap<QString, int> m_zoneSeatHeater;
     QMap<QString, int> m_zoneSteeringWheelHeater;
     QMap<QString, int> m_zoneFanSpeedLevel;
+    QMap<QString, QtIVIPropertyAttribute<int>> m_zoneTargetTemperatureAttribute;
+    QMap<QString, QtIVIPropertyAttribute<int>> m_zoneSeatCoolerAttribute;
+    QMap<QString, QtIVIPropertyAttribute<int>> m_zoneSeatHeaterAttribute;
+    QMap<QString, QtIVIPropertyAttribute<int>> m_zoneSteeringWheelHeaterAttribute;
+    QMap<QString, QtIVIPropertyAttribute<int>> m_zoneFanSpeedLevelAttribute;
 
     QStringList m_zones;
 };
@@ -266,7 +357,7 @@ private slots:
     void cleanup();
 
     void testWithoutBackend();
-// TODO    void testAirConditioningEnabled();
+    void testAirConditioningEnabled();
     void testHeaterEnabled();
     void testAirRecirculationEnabled();
 
@@ -314,31 +405,44 @@ void ClimateControlTest::testWithoutBackend()
 }
 
 /* For testing integer properties of the climate control */
-#define TEST_INTEGER_PROPERTY(_prop_, _capitalProp_) \
+#define TEST_INTEGER_PROPERTY(_prop_, _capitalProp_, _attribute_,  _capitalAttribute_) \
 void ClimateControlTest::test##_capitalProp_() { \
     ClimateControlTestServiceObject *service = new ClimateControlTestServiceObject(); \
     manager->registerService(service, service->interfaces()); \
     service->testBackend()->set##_capitalProp_(0); \
     QtIVIClimateControl cc; \
     cc.startAutoDiscovery(); \
+    QtIVIProperty* property = cc.property(#_prop_).value<QtIVIProperty*>(); \
+    QVERIFY(property); \
     QSignalSpy valueSpy(&cc, SIGNAL(_prop_##Changed(int))); \
+    QSignalSpy attributeSpy(&cc, SIGNAL(_prop_##AttributeChanged(QtIVIPropertyAttribute<int>))); \
     QCOMPARE(cc._prop_(), 0); \
-    QCOMPARE(cc.property(#_prop_).toInt(), 0); \
+    QCOMPARE(property->property("value").toInt(), 0); \
     cc.set##_capitalProp_(5); \
     QCOMPARE(valueSpy.count(), 1); \
     QCOMPARE(valueSpy.takeFirst().at(0).toInt(), 5); \
     QCOMPARE(cc._prop_(), 5); \
-    QCOMPARE(cc.property(#_prop_).toInt(), 5); \
+    QCOMPARE(property->property("value").toInt(), 5); \
     service->testBackend()->set##_capitalProp_(8); \
     QCOMPARE(valueSpy.count(), 1); \
     QCOMPARE(valueSpy.takeFirst().at(0).toInt(), 8); \
     QCOMPARE(cc._prop_(), 8); \
-    QCOMPARE(cc.property(#_prop_).toInt(), 8); \
-    cc.setProperty(#_prop_, 6); \
+    QCOMPARE(property->property("value").toInt(), 8); \
+    property.setProperty("value", 6); \
     QCOMPARE(valueSpy.count(), 1); \
     QCOMPARE(valueSpy.takeFirst().at(0).toInt(), 6); \
     QCOMPARE(cc._prop_(), 6); \
-    QCOMPARE(cc.property(#_prop_).toInt(), 6); \
+    QCOMPARE(property->property("value").toInt(), 6); \
+    \
+    QCOMPARE(cc._prop_##Attribute(), QtIVIPropertyAttribute<int>(0, 10)); \
+    QCOMPARE(property->property("minimumValue").toInt(), 0); \
+    QCOMPARE(property->property("maximumValue").toInt(), 10); \
+    service->testBackend()->set##_capitalProp_##Attribute(QtIVIPropertyAttribute<int>(5, 15), ""); \
+    QCOMPARE(attributeSpy.count(), 1); \
+    QCOMPARE(attributeSpy.takeFirst().at(0).value<QtIVIPropertyAttribute<int>>(), QtIVIPropertyAttribute<int>(5, 15)); \
+    QCOMPARE(cc._prop_##Attribute(), QtIVIPropertyAttribute<int>(5, 15)); \
+    QCOMPARE(property->property("minimumValue").toInt(), 5); \
+    QCOMPARE(property->property("maximumValue").toInt(), 15); \
 }
 
 /* For testing boolean properties of the climate control */
@@ -349,24 +453,35 @@ void ClimateControlTest::test##_capitalProp_##Enabled() { \
     service->testBackend()->set##_capitalProp_##Enabled(false, ""); \
     QtIVIClimateControl cc; \
     cc.startAutoDiscovery(); \
+    QtIVIProperty* property = cc.property(#_prop_).value<QtIVIProperty*>(); \
+    QVERIFY(property); \
     QSignalSpy valueSpy(&cc, SIGNAL(_prop_##EnabledChanged(bool))); \
+    QSignalSpy attributeSpy(&cc, SIGNAL(_prop_##AttributeChanged(QtIVIPropertyAttribute<bool>))); \
     QCOMPARE(cc.is##_capitalProp_##Enabled(), false); \
-    QCOMPARE(cc.property(#_prop_).toBool(), false); \
+    QCOMPARE(property->property("value").toBool(), false); \
     cc.set##_capitalProp_##Enabled(true); \
     QCOMPARE(valueSpy.count(), 1); \
     QCOMPARE(valueSpy.takeFirst().at(0).toBool(), true); \
     QCOMPARE(cc.is##_capitalProp_##Enabled(), true); \
-    QCOMPARE(cc.property(#_prop_).toBool(), true); \
+    QCOMPARE(property->property("value").toBool(), true); \
     service->testBackend()->set##_capitalProp_##Enabled(false, ""); \
     QCOMPARE(valueSpy.count(), 1); \
     QCOMPARE(valueSpy.takeFirst().at(0).toBool(), false); \
     QCOMPARE(cc.is##_capitalProp_##Enabled(), false); \
-    QCOMPARE(cc.property(#_prop_).toBool(), false); \
-    cc.setProperty(#_prop_, true); \
+    QCOMPARE(property->property("value").toBool(), false); \
+    property->setProperty("value", true); \
     QCOMPARE(valueSpy.count(), 1); \
     QCOMPARE(valueSpy.takeFirst().at(0).toBool(), true); \
     QCOMPARE(cc.is##_capitalProp_##Enabled(), true); \
-    QCOMPARE(cc.property(#_prop_).toBool(), true); \
+    QCOMPARE(property->property("value").toBool(), true); \
+    \
+    QCOMPARE(cc._prop_##Attribute(), QtIVIPropertyAttribute<bool>(true)); \
+    QCOMPARE(property->property("available").toBool(), true); \
+    service->testBackend()->set##_capitalProp_##Attribute(QtIVIPropertyAttribute<bool>(false), ""); \
+    QCOMPARE(attributeSpy.count(), 1); \
+    QCOMPARE(attributeSpy.takeFirst().at(0).value<QtIVIPropertyAttribute<bool>>(), QtIVIPropertyAttribute<bool>(false)); \
+    QCOMPARE(cc._prop_##Attribute(), QtIVIPropertyAttribute<bool>(false)); \
+    QCOMPARE(property->property("available").toBool(), false); \
 }
 
 /* For testing integer properties of the climate zones */
@@ -381,24 +496,37 @@ void ClimateControlTest::testZone##_capitalProp_() { \
     foreach (QString z, zones) { \
         QtIVIClimateControl* climateZone = qobject_cast<QtIVIClimateControl*>(cc.zoneAt(z)); \
         service->testBackend()->set##_capitalProp_(0, climateZone->zone()); \
+        QtIVIProperty* property = climateZone->property(#_prop_).value<QtIVIProperty*>(); \
+        QVERIFY(property); \
         QSignalSpy valueSpy(climateZone, SIGNAL(_prop_##Changed(int))); \
+        QSignalSpy attributeSpy(climateZone, SIGNAL(_prop_##AttributeChanged(QtIVIPropertyAttribute<int>))); \
         QCOMPARE(climateZone->_prop_(), 0); \
-        QCOMPARE(climateZone->property(#_prop_).toInt(), 0); \
+        QCOMPARE(property->property("value").toInt(), 0); \
         qobject_cast<QtIVIClimateControl*>(climateZone)->set##_capitalProp_(5); \
         QCOMPARE(valueSpy.count(), 1); \
         QCOMPARE(valueSpy.takeFirst().at(0).toInt(), 5); \
         QCOMPARE(climateZone->_prop_(), 5); \
-        QCOMPARE(climateZone->property(#_prop_).toInt(), 5); \
+        QCOMPARE(property->property("value").toInt(), 5); \
         service->testBackend()->set##_capitalProp_(8, climateZone->zone()); \
         QCOMPARE(valueSpy.count(), 1); \
         QCOMPARE(valueSpy.takeFirst().at(0).toInt(), 8); \
         QCOMPARE(climateZone->_prop_(), 8); \
-        QCOMPARE(climateZone->property(#_prop_).toInt(), 8); \
-        climateZone->setProperty(#_prop_, 6); \
+        QCOMPARE(property->property("value").toInt(), 8); \
+        property->setProperty("value", 6); \
         QCOMPARE(valueSpy.count(), 1); \
         QCOMPARE(valueSpy.takeFirst().at(0).toInt(), 6); \
         QCOMPARE(climateZone->_prop_(), 6); \
-        QCOMPARE(climateZone->property(#_prop_).toInt(), 6); \
+        QCOMPARE(property->property("value").toInt(), 6); \
+    \
+        QCOMPARE(climateZone->_prop_##Attribute(), QtIVIPropertyAttribute<int>(0, 10)); \
+        QCOMPARE(property->property("minimumValue").toInt(), 0); \
+        QCOMPARE(property->property("maximumValue").toInt(), 10); \
+        service->testBackend()->set##_capitalProp_##Attribute(QtIVIPropertyAttribute<int>(5, 15), climateZone->zone()); \
+        QCOMPARE(attributeSpy.count(), 1); \
+        QCOMPARE(attributeSpy.takeFirst().at(0).value<QtIVIPropertyAttribute<int>>(), QtIVIPropertyAttribute<int>(5, 15)); \
+        QCOMPARE(climateZone->_prop_##Attribute(), QtIVIPropertyAttribute<int>(5, 15)); \
+        QCOMPARE(property->property("minimumValue").toInt(), 5); \
+        QCOMPARE(property->property("maximumValue").toInt(), 15); \
     } \
 }
 
@@ -413,30 +541,51 @@ void ClimateControlTest::testZoneWithout##_capitalProp_() { \
     zones << "Dummy"; \
     foreach (QString z, zones) { \
         QtIVIClimateControl* climateZone = qobject_cast<QtIVIClimateControl*>(cc.zoneAt(z)); \
+        QtIVIProperty* property = climateZone->property(#_prop_).value<QtIVIProperty*>(); \
+        QVERIFY(property); \
         QTest::ignoreMessage(QtWarningMsg, "Trying to set ClimateControl::" #_prop_ " in an unsupported zone."); \
         service->testBackend()->set##_capitalProp_(0, climateZone->zone()); \
         QSignalSpy valueSpy(climateZone, SIGNAL(_prop_##Changed(int))); \
         QCOMPARE(climateZone->_prop_(), 0); \
-        QCOMPARE(climateZone->property(#_prop_).toInt(), 0); \
+        QCOMPARE(property->property("value").toInt(), 0); \
+        QCOMPARE(climateZone->_prop_##Attribute(), QtIVIPropertyAttribute<int>()); \
+        QCOMPARE(property->property("value").toInt(), 0); \
+        QCOMPARE(property->property("available").toBool(), false); \
+        QCOMPARE(property->property("minimumValue").toInt(), int()); \
+        QCOMPARE(property->property("maximumValue").toInt(), int()); \
         QTest::ignoreMessage(QtWarningMsg, "Trying to set ClimateControl::" #_prop_ " in an unsupported zone."); \
         qobject_cast<QtIVIClimateControl*>(climateZone)->set##_capitalProp_(5); \
         QCOMPARE(valueSpy.count(), 0); \
         QCOMPARE(climateZone->_prop_(), 0); \
-        QCOMPARE(climateZone->property(#_prop_).toInt(), 0); \
+        QCOMPARE(property->property("value").toInt(), 0); \
+        QCOMPARE(climateZone->_prop_##Attribute(), QtIVIPropertyAttribute<int>()); \
+        QCOMPARE(property->property("value").toInt(), 0); \
+        QCOMPARE(property->property("available").toBool(), false); \
+        QCOMPARE(property->property("minimumValue").toInt(), int()); \
+        QCOMPARE(property->property("maximumValue").toInt(), int()); \
         QTest::ignoreMessage(QtWarningMsg, "Trying to set ClimateControl::" #_prop_ " in an unsupported zone."); \
         service->testBackend()->set##_capitalProp_(8, climateZone->zone()); \
         QCOMPARE(valueSpy.count(), 0); \
         QCOMPARE(climateZone->_prop_(), 0); \
-        QCOMPARE(climateZone->property(#_prop_).toInt(), 0); \
+        QCOMPARE(property->property("value").toInt(), 0); \
+        QCOMPARE(climateZone->_prop_##Attribute(), QtIVIPropertyAttribute<int>()); \
+        QCOMPARE(property->property("value").toInt(), 0); \
+        QCOMPARE(property->property("available").toBool(), false); \
+        QCOMPARE(property->property("minimumValue").toInt(), int()); \
+        QCOMPARE(property->property("maximumValue").toInt(), int()); \
         QTest::ignoreMessage(QtWarningMsg, "Trying to set ClimateControl::" #_prop_ " in an unsupported zone."); \
-        climateZone->setProperty(#_prop_, 6); \
+        property->setProperty("value", 6); \
         QCOMPARE(valueSpy.count(), 0); \
         QCOMPARE(climateZone->_prop_(), 0); \
-        QCOMPARE(climateZone->property(#_prop_).toInt(), 0); \
+        QCOMPARE(climateZone->_prop_##Attribute(), QtIVIPropertyAttribute<int>()); \
+        QCOMPARE(property->property("value").toInt(), 0); \
+        QCOMPARE(property->property("available").toBool(), false); \
+        QCOMPARE(property->property("minimumValue").toInt(), int()); \
+        QCOMPARE(property->property("maximumValue").toInt(), int()); \
     } \
 }
 
-// TODO TEST_BOOLEAN_PROPERTY(airConditioning, AirConditioning)
+TEST_BOOLEAN_PROPERTY(airConditioning, AirConditioning)
 TEST_BOOLEAN_PROPERTY(heater, Heater)
 TEST_BOOLEAN_PROPERTY(airRecirculation, AirRecirculation)
 TEST_INTEGER_ZONE_PROPERTY(fanSpeedLevel, FanSpeedLevel)

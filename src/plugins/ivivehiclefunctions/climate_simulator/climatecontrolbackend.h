@@ -44,6 +44,7 @@ public:
 
     void initializeAttributes();
 
+    QtIVIPropertyAttribute<int> targetTemperatureAttribute(const QString &zone) const;
     void setTargetTemperature(int val, const QString &zone);
     void setSeatCooler(int val, const QString &zone);
     void setSeatHeater(int val, const QString &zone);
@@ -65,8 +66,11 @@ private:
 
     struct ZoneBackend {
         int targetTemperature;
+        QtIVIPropertyAttribute<int> targetTemperatureAttribute;
         int seatCooler;
+        QtIVIPropertyAttribute<int> seatCoolerAttribute;
         int seatHeater;
+        QtIVIPropertyAttribute<int> seatHeaterAttribute;
     };
 
     QMap<QString,ZoneBackend> m_zoneMap;

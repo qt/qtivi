@@ -176,12 +176,24 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  */
 
 /*!
+ * \fn void QtIVIClimateControlBackendInterface::targetTemperatureAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
+ *
+ * The signal is emitted when the target temperature attribute for \a zone is changed to \a attribute.
+ */
+
+/*!
  * \fn virtual void QtIVIClimateControlBackendInterface::seatCoolerChanged(int value, const QString &zone = QString()) = 0
  *
  * The signal is emitted when the seat cooler level is changed for \a zone to \a value, where the
  * \a value can be \c 0 (off) or between \c 1 (least cool) to \c 10 (coolest).
  *
  * \sa setSeatCooler()
+ */
+
+/*!
+ * \fn void QtIVIClimateControlBackendInterface::seatCoolerAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
+ *
+ * The signal is emitted when the seat cooler level attribute for \a zone is changed to \a attribute.
  */
 
 /*!
@@ -194,11 +206,23 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  */
 
 /*!
+ * \fn void QtIVIClimateControlBackendInterface::seatHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
+ *
+ * The signal is emitted when the seat heater attribute for \a zone is changed to \a attribute.
+ */
+
+/*!
  * \fn virtual void QtIVIClimateControlBackendInterface::airflowDirectionChanged(QtIVIClimateControl::AirflowDirection airflowDirection, const QString &zone = QString()) = 0
  *
  * The signal is emitted when the \a zone airflow direction is changed to \a airflowDirection.
  *
  * \sa setAirflowDirection()
+ */
+
+/*!
+ * \fn void QtIVIClimateControlBackendInterface::airflowDirectionAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> &attribute, const QString &zone = QString());
+ *
+ * The signal is emitted when the zone airflow direction attribute for \a zone is changed to \a attribute.
  */
 
 /*!
@@ -210,6 +234,12 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  */
 
 /*!
+ * \fn void QtIVIClimateControlBackendInterface::airConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone = QString());
+ *
+ * The signal is emitted when the air conditioning state attribute for \a zone is changed to \a attribute.
+ */
+
+/*!
  * \fn virtual void QtIVIClimateControlBackendInterface::heaterEnabledChanged(bool enabled, const QString &zone = QString()) = 0
  *
  * The signal is emitted when the \a zone heater state is changed to \a enabled.
@@ -218,11 +248,23 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  */
 
 /*!
+ * \fn void QtIVIClimateControlBackendInterface::heaterAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone = QString());
+ *
+ * The signal is emitted when the heater state attribute for \a zone is changed to \a attribute.
+ */
+
+/*!
  * \fn virtual void QtIVIClimateControlBackendInterface::airRecirculationEnabledChanged(bool enabled, const QString &zone = QString()) = 0
  *
  * The signal is emitted when the \a zone air recirculation state is changed to \a enabled.
  *
  * \sa setAirRecirculationEnabled()
+ */
+
+/*!
+ * \fn void QtIVIClimateControlBackendInterface::airRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone = QString());
+ *
+ * The signal is emitted when the air recirculation state attribute for \a zone is changed to \a attribute.
  */
 
 /*!
@@ -235,10 +277,22 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  */
 
 /*!
+ * \fn void QtIVIClimateControlBackendInterface::steeringWheelHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
+ *
+ * The signal is emitted when the steering wheel heater level attribute for \a zone is changed to \a attribute.
+ */
+
+/*!
  * \fn virtual void QtIVIClimateControlBackendInterface::fanSpeedLevelChanged(int level, const QString &zone = QString()) = 0
  *
  * The signals ie emitted when the fan speel level of \a zone is changed to \a level, where the \a level
  * can be \c 0 (off) or between \c 1 (weakest) to \c 10 (strongest).
  *
  * \sa setFanSpeedLevel()
+ */
+
+/*!
+ * \fn void QtIVIClimateControlBackendInterface::fanSpeedLevelAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
+ *
+ * The signal is emitted when the fan speed level attribute for \a zone is changed to \a attribute.
  */

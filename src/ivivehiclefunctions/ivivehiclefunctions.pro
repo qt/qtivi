@@ -1,5 +1,5 @@
 TARGET = QtIVIVehicleFunctions
-QT = core qml ivicore
+QT = core core-private ivicore
 CONFIG += c++11
 VERSION = 1.0.0
 
@@ -14,10 +14,10 @@ CMAKE_MODULE_TESTS = '-'
 HEADERS += \
     qtiviclimatecontrol.h \
     qtiviclimatecontrolbackendinterface.h \
-    qtivivehiclefunctionsglobal.h
+    qtivivehiclefunctionsglobal.h \
 
 SOURCES += \
     qtiviclimatecontrol.cpp \
-    qtiviclimatecontrolbackendinterface.cpp
+    qtiviclimatecontrolbackendinterface.cpp \
 
 load(qt_module)
