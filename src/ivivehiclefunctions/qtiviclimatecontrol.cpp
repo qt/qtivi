@@ -73,8 +73,7 @@
 
    If \a zone is not provided the General zone will be created.
 
-   \a autoDiscovery and \a parent arguments are passed on to the
-   \l QtIVIAbstractZonedFeature base class.
+   The \a parent argument is passed on to the \l QtIVIAbstractZonedFeature base class.
 */
 QtIVIClimateControl::QtIVIClimateControl(const QString &zone, QObject* parent)
     : QtIVIAbstractZonedFeature(QtIVIStringClimateControlInterfaceName, zone, parent)

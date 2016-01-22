@@ -67,7 +67,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  * \a value. The signal is expected to be emitted if the given \a value is out of range and no
  * actual change takes place.
  *
- * \sa targetTemperature(), targetTemperatureChanged()
+ * \sa targetTemperatureChanged()
  */
 
 /*!
@@ -80,7 +80,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  * \a value. The signal is expected to be emitted if the given \a value is out of range and no
  * actual change takes place.
  *
- * \sa seatCooler(), seatCoolerChanged()
+ * \sa seatCoolerChanged()
  */
 
 /*!
@@ -93,7 +93,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  * \a value. The signal is expected to be emitted if the given \a value is out of range and no
  * actual change takes place.
  *
- * \sa seatHeater(), seatHeaterChanged()
+ * \sa seatHeaterChanged()
  */
 
 /*!
@@ -104,7 +104,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  * This method is expected to emit the \l airflowDirectionChanged() signal when receiving a
  * new \a airflowDirection.
  *
- * \sa airflowDirection(), airflowDirectionChanged()
+ * \sa airflowDirectionChanged()
  */
 
 /*!
@@ -115,7 +115,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  * This method is expected to emit the \l airConditioningEnabledChanged() signal when receiving a
  * new \a enabled.
  *
- * \sa airConditioningEnabled(), airConditioningEnabledChanged()
+ * \sa airConditioningEnabledChanged()
  */
 
 /*!
@@ -126,7 +126,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  * This method is expected to emit the \l heaterEnabledChanged() signal when receiving a
  * new \a enabled.
  *
- * \sa heaterEnabled(), heaterEnabledChanged()
+ * \sa heaterEnabledChanged()
  */
 
 /*!
@@ -137,7 +137,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  * This method is expected to emit the \l airRecirculationEnabledChanged() signal when receiving a
  * new \a enabled.
  *
- * \sa airRecirculationEnabled(), airRecirculationEnabledChanged()
+ * \sa airRecirculationEnabledChanged()
  */
 
 /*!
@@ -150,7 +150,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  * \a value. The signal is expected to be emitted if the given \a value is out of range and no
  * actual change takes place.
  *
- * \sa steeringWheelHeater(), steeringWheelHeaterChanged()
+ * \sa steeringWheelHeaterChanged()
  */
 
 /*!
@@ -163,83 +163,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  * \a value. The signal is expected to be emitted if the given \a value is out of range and no
  * actual change takes place.
  *
- * \sa fanSpeedLevel(), fanSpeedLevelChanged()
- */
-
-/*!
- * \fn virtual int QtIVIClimateControlBackendInterface::targetTemperature(const QString &zone) const = 0;
- *
- * Returns the target temperature in centigrades for \a zone.
- *
- * \sa setTargetTemperature(), targetTemperatureChanged()
- */
-
-/*!
- * \fn virtual int QtIVIClimateControlBackendInterface::seatCooler(const QString &zone) const = 0
- *
- * Returns the seat ventilation level for \a zone, where the level can be \c 0 (off) or
- * between \c 1 (least cool) to \c 10 (coolest).
- *
- * \sa setSeatCooler(), seatCoolerChanged()
- */
-
-/*!
- * \fn virtual int QtIVIClimateControlBackendInterface::seatHeater(const QString &zone) const = 0
- *
- * Returns the seat heater level for \a zone, where the level can be \c 0 (off) or between
- * \c 1 (least warm) to \c 10 (warmest).
- *
- * \sa setSeatHeater(), seatHeaterChanged()
- */
-
-/*!
- * \fn virtual QtIVIClimateControl::AirflowDirection QtIVIClimateControlBackendInterface::airflowDirection(const QString &zone) const = 0
- *
- * Returns the \a zone airflow direction.
- *
- * \sa setAirflowDirection(), airflowDirectionChanged()
- */
-
-/*!
- * \fn virtual bool QtIVIClimateControlBackendInterface::airConditioningEnabled(const QString &zone) const = 0
- *
- * Returns \c true if the air conditioning is enabled in the \a zone, otherwise \c false.
- *
- * \sa setAirConditioningEnabled(), airConditioningEnabledChanged()
- */
-
-/*!
- * \fn virtual bool QtIVIClimateControlBackendInterface::heaterEnabled(const QString &zone) const = 0
- *
- * Returns \c true if the air conditioning is enabled in the \a zone, otherwise \c false.
- *
- * \sa setHeaterEnabled(), heaterEnabledChanged()
- */
-
-/*!
- * \fn virtual bool QtIVIClimateControlBackendInterface::airRecirculationEnabled(const QString &zone) const = 0
- *
- * Returns \c true if the air conditioning is enabled in the \a zone, otherwise \c false.
- *
- * \sa setAirRecirculationEnabled(), airRecirculationEnabledChanged()
- */
-
-/*!
- * \fn virtual int QtIVIClimateControlBackendInterface::steeringWheelHeater(const QString &zone) const = 0
- *
- * Returns the steering wheel heater level of \a zone, where the level can be \c 0 (off) or between
- * \c 1 (least warm) to \c 10 (warmest).
- *
- * \sa setSteeringWheelHeater(), steeringWheelHeaterChanged()
- */
-
-/*!
- * \fn virtual int QtIVIClimateControlBackendInterface::fanSpeedLevel(const QString &zone) const = 0
- *
- * Returns the fan speed level of \a zone, where the level can be \c 0 (off) or between
- * \c 1 (weakest) to \c 10 (strongest).
- *
- * \sa setFanSpeedLevel(), fanSpeedLevelChanged()
+ * \sa fanSpeedLevelChanged()
  */
 
 /*!
@@ -248,7 +172,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  * The signal is emitted when the target temperature for \a zone is changed to \a value, where
  * value is expressed in centigrades.
  *
- * \sa targetTemperature(), setTargetTemperature()
+ * \sa setTargetTemperature()
  */
 
 /*!
@@ -257,16 +181,16 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  * The signal is emitted when the seat cooler level is changed for \a zone to \a value, where the
  * \a value can be \c 0 (off) or between \c 1 (least cool) to \c 10 (coolest).
  *
- * \sa seatCooler(), setSeatCooler()
+ * \sa setSeatCooler()
  */
 
 /*!
  * \fn virtual void QtIVIClimateControlBackendInterface::seatHeaterChanged(int value, const QString &zone = QString()) = 0
  *
- * The signal is emitted when the seat cooler level is changed for \a zone to \a value, where the
+ * The signal is emitted when the seat heater level is changed for \a zone to \a value, where the
  * \a value can be \c 0 (off) or between \c 1 (least warm) to \c 10 (warmest).
  *
- * \sa seatHeater(), setSeatHeater()
+ * \sa setSeatHeater()
  */
 
 /*!
@@ -274,7 +198,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  *
  * The signal is emitted when the \a zone airflow direction is changed to \a airflowDirection.
  *
- * \sa airflowDirection(), setAirflowDirection()
+ * \sa setAirflowDirection()
  */
 
 /*!
@@ -282,7 +206,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  *
  * The signal is emitted when the \a zone air conditioning state is changed to \a enabled.
  *
- * \sa airConditioningEnabled(), setAirConditioningEnabled()
+ * \sa setAirConditioningEnabled()
  */
 
 /*!
@@ -290,7 +214,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  *
  * The signal is emitted when the \a zone heater state is changed to \a enabled.
  *
- * \sa heaterEnabled(), setHeaterEnabled()
+ * \sa setHeaterEnabled()
  */
 
 /*!
@@ -298,7 +222,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  *
  * The signal is emitted when the \a zone air recirculation state is changed to \a enabled.
  *
- * \sa airRecirculationEnabled(), setAirRecirculationEnabled()
+ * \sa setAirRecirculationEnabled()
  */
 
 /*!
@@ -307,7 +231,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  * The signals ie emitted when the steering wheel heater level of \a zone is changed to \a level, where the
  * \a level can be \c 0 (off) or between \c 1 (least warm) to \c 10 (warmest).
  *
- * \sa steeringWheelHeater(), setSteeringWheelHeater()
+ * \sa setSteeringWheelHeater()
  */
 
 /*!
@@ -316,5 +240,5 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  * The signals ie emitted when the fan speel level of \a zone is changed to \a level, where the \a level
  * can be \c 0 (off) or between \c 1 (weakest) to \c 10 (strongest).
  *
- * \sa fanSpeedLevel(), setFanSpeedLevel()
+ * \sa setFanSpeedLevel()
  */
