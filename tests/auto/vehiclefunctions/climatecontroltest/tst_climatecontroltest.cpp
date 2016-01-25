@@ -346,6 +346,25 @@ private:
     ClimateControlTestBackend* m_backend;
 };
 
+class ClimateControlInvalidServiceObject : public QtIVIServiceObject {
+
+public:
+    explicit ClimateControlInvalidServiceObject(QObject *parent=0) :
+        QtIVIServiceObject(parent), m_name(QLatin1String("")), m_dummyBackend(new QObject(this))
+    {
+        m_interfaces << QtIVIStringClimateControlInterfaceName;
+    }
+
+    QString name() const { return m_name; }
+    QStringList interfaces() const { return m_interfaces; }
+    QObject* interfaceInstance(const QString& ) const { return m_dummyBackend; }
+
+private:
+    QString m_name;
+    QStringList m_interfaces;
+    QObject* m_dummyBackend;
+};
+
 class ClimateControlTest : public QObject
 {
     Q_OBJECT
@@ -357,6 +376,9 @@ private slots:
     void cleanup();
 
     void testWithoutBackend();
+    void testInvalidBackend();
+    void testClearServiceObject();
+
     void testAirConditioningEnabled();
     void testHeaterEnabled();
     void testAirRecirculationEnabled();
@@ -402,6 +424,38 @@ void ClimateControlTest::testWithoutBackend()
     QCOMPARE(cc.isHeaterEnabled(), e);
 
     QCOMPARE(cc.zones().count(), 0);
+}
+
+void ClimateControlTest::testInvalidBackend()
+{
+    ClimateControlInvalidServiceObject *service = new ClimateControlInvalidServiceObject(); \
+    manager->registerService(service, service->interfaces()); \
+    QtIVIClimateControl cc;
+    cc.startAutoDiscovery();
+
+    // Running without a backend means that changes do not propagate
+    // We check this on a single property in this case
+    QSignalSpy heaterEnabledSpy(&cc, SIGNAL(heaterEnabledChanged(bool)));
+
+    bool e = cc.isHeaterEnabled();
+    QVERIFY(!e);
+    cc.setHeaterEnabled(true);
+    QCOMPARE(heaterEnabledSpy.count(), 0);
+    QCOMPARE(cc.isHeaterEnabled(), e);
+
+    QCOMPARE(cc.zones().count(), 0);
+}
+
+void ClimateControlTest::testClearServiceObject()
+{
+    ClimateControlTestServiceObject *service = new ClimateControlTestServiceObject();
+    manager->registerService(service, service->interfaces());
+    service->testBackend()->setAirConditioningEnabled(true, QString());
+    QtIVIClimateControl cc;
+    cc.startAutoDiscovery();
+    QCOMPARE(cc.isAirConditioningEnabled(), true);
+    cc.setServiceObject(0);
+    QCOMPARE(cc.isAirConditioningEnabled(), false);
 }
 
 /* For testing integer properties of the climate control */

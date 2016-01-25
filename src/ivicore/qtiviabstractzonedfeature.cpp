@@ -88,8 +88,9 @@ bool QtIVIAbstractZonedFeature::acceptServiceObject(QtIVIServiceObject *serviceO
 {
     if (QtIVIAbstractZonedFeature* parentFeature = qobject_cast<QtIVIAbstractZonedFeature*>(parent()))
         return parentFeature->acceptServiceObject(serviceObject);
-    else
+    else if (serviceObject)
         return serviceObject->interfaces().contains(interfaceName());
+    return false;
 }
 
 /*!
@@ -100,7 +101,7 @@ void QtIVIAbstractZonedFeature::connectToServiceObject(QtIVIServiceObject *servi
     QtIVIZonedFeatureInterface *backend(0);
     if (QtIVIAbstractZonedFeature* parentFeature = qobject_cast<QtIVIAbstractZonedFeature*>(parent()))
         backend = parentFeature->backend();
-    else
+    else if (serviceObject)
         backend = qobject_cast<QtIVIZonedFeatureInterface*>(serviceObject->interfaceInstance(interfaceName()));
 
     if (backend) {
