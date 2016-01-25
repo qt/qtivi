@@ -38,6 +38,7 @@
 QT_BEGIN_NAMESPACE
 
 class QtIVIZonedFeatureInterface;
+class QtIVIAbstractZonedFeaturePrivate;
 
 class Q_QTIVICORE_EXPORT QtIVIAbstractZonedFeature : public QtIVIAbstractFeature
 {
@@ -89,10 +90,8 @@ private:
     void resetAttributes();
 
 private:
-    QString m_zone;
-    QList<QtIVIAbstractZonedFeature*> m_zoneFeatures;
-    QVariantMap m_zoneFeatureMap;
-    QVariantList m_zoneFeatureList;
+    QtIVIAbstractZonedFeaturePrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(QtIVIAbstractZonedFeature)
 };
 
 QT_END_NAMESPACE

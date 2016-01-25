@@ -31,7 +31,13 @@
 #include <QtIVICore/qtiviserviceobject.h>
 
 #include "qtiviabstractzonedfeature.h"
+#include "qtiviabstractzonedfeature_p.h"
 #include "qtivizonedfeatureinterface.h"
+
+QtIVIAbstractZonedFeaturePrivate::QtIVIAbstractZonedFeaturePrivate(const QString &zone, QObject *parent)
+    : QObject(parent)
+    , m_zone(zone)
+{}
 
 /*!
     \class QtIVIAbstractZonedFeature
@@ -64,7 +70,7 @@
 */
 QtIVIAbstractZonedFeature::QtIVIAbstractZonedFeature(const QString &interface, const QString &zone, QObject *parent)
     : QtIVIAbstractFeature(interface, parent)
-    , m_zone(zone)
+    , d_ptr(new QtIVIAbstractZonedFeaturePrivate(zone, this))
 {
 }
 
@@ -189,14 +195,16 @@ QtIVIZonedFeatureInterface *QtIVIAbstractZonedFeature::backend() const
  */
 QString QtIVIAbstractZonedFeature::zone() const
 {
-    return m_zone;
+    Q_D(const QtIVIAbstractZonedFeature);
+    return d->m_zone;
 }
 
 void QtIVIAbstractZonedFeature::setZone(const QString &zone)
 {
-    if (backend() || m_zone == zone)
+    Q_D(QtIVIAbstractZonedFeature);
+    if (backend() || d->m_zone == zone)
         return;
-    m_zone = zone;
+    d->m_zone = zone;
     emit zoneChanged();
 }
 
@@ -205,6 +213,7 @@ void QtIVIAbstractZonedFeature::initializeZones()
     if (!backend() || !zone().isEmpty())
         return;
 
+    Q_D(QtIVIAbstractZonedFeature);
     foreach (const QString &zone, backend()->availableZones()) {
         QtIVIAbstractZonedFeature* f = zoneAt(zone);
         if (!f) {
@@ -213,10 +222,10 @@ void QtIVIAbstractZonedFeature::initializeZones()
             else
                 f = createZoneFeature(zone);
             if (f) {
-                m_zoneFeatures.append(f);
-                m_zoneFeatureList.append(QVariant::fromValue(f));
-                m_zoneFeatureMap.insert(f->zone(), QVariant::fromValue(f));
-                emit availableZonesChanged(m_zoneFeatureMap.keys());
+                d->m_zoneFeatures.append(f);
+                d->m_zoneFeatureList.append(QVariant::fromValue(f));
+                d->m_zoneFeatureMap.insert(f->zone(), QVariant::fromValue(f));
+                emit availableZonesChanged(d->m_zoneFeatureMap.keys());
                 emit zonesChanged();
             }
         }
@@ -247,7 +256,8 @@ QStringList QtIVIAbstractZonedFeature::availableZones() const
 */
 QtIVIAbstractZonedFeature *QtIVIAbstractZonedFeature::zoneAt(const QString &zone) const
 {
-    foreach (QtIVIAbstractZonedFeature *f, m_zoneFeatures)
+    Q_D(const QtIVIAbstractZonedFeature);
+    foreach (QtIVIAbstractZonedFeature *f, d->m_zoneFeatures)
         if (f->zone() == zone)
             return f;
     return 0;
@@ -258,7 +268,8 @@ QtIVIAbstractZonedFeature *QtIVIAbstractZonedFeature::zoneAt(const QString &zone
 */
 QList<QtIVIAbstractZonedFeature*> QtIVIAbstractZonedFeature::zones() const
 {
-    return m_zoneFeatures;
+    Q_D(const QtIVIAbstractZonedFeature);
+    return d->m_zoneFeatures;
 }
 
 /*!
@@ -277,7 +288,8 @@ QList<QtIVIAbstractZonedFeature*> QtIVIAbstractZonedFeature::zones() const
  */
 QVariantMap QtIVIAbstractZonedFeature::zoneFeatureMap() const
 {
-    return m_zoneFeatureMap;
+    Q_D(const QtIVIAbstractZonedFeature);
+    return d->m_zoneFeatureMap;
 }
 
 /*!
@@ -296,5 +308,6 @@ QVariantMap QtIVIAbstractZonedFeature::zoneFeatureMap() const
  */
 QVariantList QtIVIAbstractZonedFeature::zoneFeatureList() const
 {
-    return m_zoneFeatureList;
+    Q_D(const QtIVIAbstractZonedFeature);
+    return d->m_zoneFeatureList;
 }

@@ -38,6 +38,7 @@
 QT_BEGIN_NAMESPACE
 
 class QtIVIServiceObject;
+class QtIVIAbstractFeaturePrivate;
 
 class Q_QTIVICORE_EXPORT QtIVIAbstractFeature : public QObject, public QQmlParserStatus
 {
@@ -109,12 +110,8 @@ private Q_SLOTS:
     void serviceObjectDestroyed();
 
 private:
-
-    QString m_interface;
-    QtIVIServiceObject* m_serviceObject;
-    bool m_autoDiscovery;
-    QString m_errorMessage;
-    QtIVIAbstractFeature::Error m_error;
+    QtIVIAbstractFeaturePrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(QtIVIAbstractFeature)
 };
 
 QT_END_NAMESPACE

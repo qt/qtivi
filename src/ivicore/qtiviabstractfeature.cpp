@@ -28,12 +28,21 @@
 ****************************************************************************/
 
 #include "qtiviabstractfeature.h"
+#include "qtiviabstractfeature_p.h"
 
 #include "qtiviserviceobject.h"
 #include "qtiviservicemanager.h"
 
 #include <QMetaEnum>
 #include <QDebug>
+
+QtIVIAbstractFeaturePrivate::QtIVIAbstractFeaturePrivate(const QString &interface, QObject *parent)
+    : QObject(parent)
+    , m_interface(interface)
+    , m_serviceObject(0)
+    , m_autoDiscovery(true)
+{
+}
 
 /*!
  * \class QtIVIAbstractFeature
@@ -168,9 +177,7 @@
  */
 QtIVIAbstractFeature::QtIVIAbstractFeature(const QString &interface, QObject *parent)
     : QObject(parent)
-    , m_interface(interface)
-    , m_serviceObject(0)
-    , m_autoDiscovery(true)
+    , d_ptr(new QtIVIAbstractFeaturePrivate(interface, this))
 {
 }
 
@@ -193,22 +200,23 @@ QtIVIAbstractFeature::~QtIVIAbstractFeature()
  */
 void QtIVIAbstractFeature::setServiceObject(QtIVIServiceObject *so)
 {
-    if (m_serviceObject) {
-        disconnectFromServiceObject(m_serviceObject);
+    Q_D(QtIVIAbstractFeature);
+    if (d->m_serviceObject) {
+        disconnectFromServiceObject(d->m_serviceObject);
         disconnect(so, SIGNAL(destroyed()), this, SLOT(serviceObjectDestroyed()));
     }
 
-    m_serviceObject = 0;
+    d->m_serviceObject = 0;
 
     if (!acceptServiceObject(so)) {
         clearServiceObject();
         qWarning("ServiceObject is not accepted");
     }
 
-    m_serviceObject = so;
+    d->m_serviceObject = so;
     emit serviceObjectChanged();
     emit isValidChanged(isValid());
-    connectToServiceObject(m_serviceObject);
+    connectToServiceObject(d->m_serviceObject);
     connect(so, SIGNAL(destroyed()), this, SLOT(serviceObjectDestroyed()));
 }
 
@@ -232,10 +240,11 @@ void QtIVIAbstractFeature::setServiceObject(QtIVIServiceObject *so)
  */
 void QtIVIAbstractFeature::setAutoDiscovery(bool autoDiscovery)
 {
-    if (m_autoDiscovery == autoDiscovery)
+    Q_D(QtIVIAbstractFeature);
+    if (d->m_autoDiscovery == autoDiscovery)
         return;
 
-    m_autoDiscovery = autoDiscovery;
+    d->m_autoDiscovery = autoDiscovery;
     emit autoDiscoveryChanged(autoDiscovery);
 }
 
@@ -252,7 +261,8 @@ void QtIVIAbstractFeature::classBegin()
  */
 void QtIVIAbstractFeature::componentComplete()
 {
-    if (m_autoDiscovery) {
+    Q_D(QtIVIAbstractFeature);
+    if (d->m_autoDiscovery) {
         startAutoDiscovery();
     }
 }
@@ -262,17 +272,20 @@ void QtIVIAbstractFeature::componentComplete()
  */
 QString QtIVIAbstractFeature::interfaceName() const
 {
-    return m_interface;
+    Q_D(const QtIVIAbstractFeature);
+    return d->m_interface;
 }
 
 QtIVIServiceObject *QtIVIAbstractFeature::serviceObject() const
 {
-    return m_serviceObject;
+    Q_D(const QtIVIAbstractFeature);
+    return d->m_serviceObject;
 }
 
 bool QtIVIAbstractFeature::autoDiscovery() const
 {
-    return m_autoDiscovery;
+    Q_D(const QtIVIAbstractFeature);
+    return d->m_autoDiscovery;
 }
 
 /*!
@@ -284,11 +297,12 @@ bool QtIVIAbstractFeature::autoDiscovery() const
  */
 void QtIVIAbstractFeature::setError(QtIVIAbstractFeature::Error error, const QString &message)
 {
-    m_error = error;
-    if (m_error == QtIVIAbstractFeature::NoError)
-        m_errorMessage.clear();
-    m_errorMessage = errorText() + QStringLiteral(" ") + message;
-    emit errorChanged(m_error, m_errorMessage);
+    Q_D(QtIVIAbstractFeature);
+    d->m_error = error;
+    if (d->m_error == QtIVIAbstractFeature::NoError)
+        d->m_errorMessage.clear();
+    d->m_errorMessage = errorText() + QStringLiteral(" ") + message;
+    emit errorChanged(d->m_error, d->m_errorMessage);
 }
 
 /*!
@@ -298,7 +312,8 @@ void QtIVIAbstractFeature::setError(QtIVIAbstractFeature::Error error, const QSt
  */
 QtIVIAbstractFeature::Error QtIVIAbstractFeature::error() const
 {
-    return m_error;
+    Q_D(const QtIVIAbstractFeature);
+    return d->m_error;
 }
 
 
@@ -314,7 +329,8 @@ QtIVIAbstractFeature::Error QtIVIAbstractFeature::error() const
  */
 QString QtIVIAbstractFeature::errorMessage() const
 {
-    return m_errorMessage;
+    Q_D(const QtIVIAbstractFeature);
+    return d->m_errorMessage;
 }
 
 /*!
@@ -324,10 +340,11 @@ QString QtIVIAbstractFeature::errorMessage() const
 */
 QString QtIVIAbstractFeature::errorText() const
 {
-    if (m_error == QtIVIAbstractFeature::NoError)
+    Q_D(const QtIVIAbstractFeature);
+    if (d->m_error == QtIVIAbstractFeature::NoError)
         return QString();
     QMetaEnum metaEnum = QMetaEnum::fromType<QtIVIAbstractFeature::Error>();
-    return QLatin1String(metaEnum.valueToKey(m_error));
+    return QLatin1String(metaEnum.valueToKey(d->m_error));
 }
 
 
@@ -345,21 +362,22 @@ QString QtIVIAbstractFeature::errorText() const
  */
 void QtIVIAbstractFeature::startAutoDiscovery()
 {
+    Q_D(QtIVIAbstractFeature);
     setAutoDiscovery(true);
 
-    if (m_serviceObject) // No need to discover a new backend when we already have one
+    if (d->m_serviceObject) // No need to discover a new backend when we already have one
         return;
 
     QtIVIServiceManager* serviceManager = QtIVIServiceManager::instance();
-    QList<QtIVIServiceObject*> serviceObjects = serviceManager->findServiceByInterface(m_interface);
+    QList<QtIVIServiceObject*> serviceObjects = serviceManager->findServiceByInterface(d->m_interface);
 
     if (serviceObjects.isEmpty()) {
-        qWarning() << "There is no backend implementing" << m_interface << ".";
+        qWarning() << "There is no backend implementing" << d->m_interface << ".";
         return;
     }
 
     if (serviceObjects.count() > 1)
-        qWarning() << "There is more than one backend implementing" << m_interface << ".";
+        qWarning() << "There is more than one backend implementing" << d->m_interface << ".";
 
     setServiceObject(serviceObjects.at(0));
 }
@@ -386,7 +404,8 @@ void QtIVIAbstractFeature::startAutoDiscovery()
  */
 bool QtIVIAbstractFeature::isValid() const
 {
-    return m_serviceObject != 0;
+    Q_D(const QtIVIAbstractFeature);
+    return d->m_serviceObject != 0;
 }
 
 /*!
@@ -401,7 +420,8 @@ void QtIVIAbstractFeature::onErrorChanged(QtIVIAbstractFeature::Error error, con
 
 void QtIVIAbstractFeature::serviceObjectDestroyed()
 {
-    m_serviceObject = 0;
+    Q_D(QtIVIAbstractFeature);
+    d->m_serviceObject = 0;
     clearServiceObject();
     emit serviceObjectChanged();
 }
