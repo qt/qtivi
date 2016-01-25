@@ -15,6 +15,7 @@ HEADERS += \
     qtiviclimatecontrol.h \
     qtiviclimatecontrolbackendinterface.h \
     qtivivehiclefunctionsglobal.h \
+    qtiviclimatecontrol_p.h
 
 SOURCES += \
     qtiviclimatecontrol.cpp \

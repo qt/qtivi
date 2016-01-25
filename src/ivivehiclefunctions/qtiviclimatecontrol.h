@@ -37,21 +37,22 @@
 QT_BEGIN_NAMESPACE
 
 class QtIVIClimateControlBackendInterface;
+class QtIVIClimateControlPrivate;
 
 static const QLatin1String QtIVIStringClimateControlInterfaceName("com.qt-project.ClimateControl");
 
 class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIClimateControl : public QtIVIAbstractZonedFeature
 {
     Q_OBJECT
-    Q_PROPERTY(QtIVIProperty* airConditioning MEMBER m_qmlAirConditioning CONSTANT)
-    Q_PROPERTY(QtIVIProperty* airflowDirection MEMBER m_qmlAirFlowDirection CONSTANT)
-    Q_PROPERTY(QtIVIProperty* heater MEMBER m_qmlHeater CONSTANT)
-    Q_PROPERTY(QtIVIProperty* airRecirculation MEMBER m_qmlAirRecirculation CONSTANT)
-    Q_PROPERTY(QtIVIProperty* fanSpeedLevel MEMBER m_qmlFanSpeedLevel CONSTANT)
-    Q_PROPERTY(QtIVIProperty* steeringWheelHeater MEMBER m_qmlSteeringWheelHeater CONSTANT)
-    Q_PROPERTY(QtIVIProperty* targetTemperature MEMBER m_qmlTargetTemperature CONSTANT)
-    Q_PROPERTY(QtIVIProperty* seatCooler MEMBER m_qmlSeatCooler CONSTANT)
-    Q_PROPERTY(QtIVIProperty* seatHeater MEMBER m_qmlSeatHeater CONSTANT)
+    Q_PROPERTY(QtIVIProperty* airConditioning READ airConditioningProperty CONSTANT)
+    Q_PROPERTY(QtIVIProperty* airflowDirection READ airflowDirectionProperty CONSTANT)
+    Q_PROPERTY(QtIVIProperty* heater READ heaterProperty CONSTANT)
+    Q_PROPERTY(QtIVIProperty* airRecirculation READ airRecirculationProperty CONSTANT)
+    Q_PROPERTY(QtIVIProperty* fanSpeedLevel READ fanSpeedLevelProperty CONSTANT)
+    Q_PROPERTY(QtIVIProperty* steeringWheelHeater READ steeringWheelHeaterProperty CONSTANT)
+    Q_PROPERTY(QtIVIProperty* targetTemperature READ targetTemperatureProperty CONSTANT)
+    Q_PROPERTY(QtIVIProperty* seatCooler READ seatCoolerProperty CONSTANT)
+    Q_PROPERTY(QtIVIProperty* seatHeater READ seatHeaterProperty CONSTANT)
 
 public:
     enum AirflowDirection {
@@ -70,22 +71,31 @@ public:
 
     bool isAirConditioningEnabled() const;
     QtIVIPropertyAttribute<bool> airConditioningAttribute() const;
+    QtIVIProperty* airConditioningProperty() const;
     QtIVIClimateControl::AirflowDirection airflowDirection() const;
     QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> airflowDirectionAttribute() const;
+    QtIVIProperty* airflowDirectionProperty() const;
     bool isHeaterEnabled() const;
     QtIVIPropertyAttribute<bool> heaterAttribute() const;
+    QtIVIProperty* heaterProperty() const;
     bool isAirRecirculationEnabled() const;
     QtIVIPropertyAttribute<bool> airRecirculationAttribute() const;
+    QtIVIProperty* airRecirculationProperty() const;
     int steeringWheelHeater() const;
     QtIVIPropertyAttribute<int> steeringWheelHeaterAttribute() const;
+    QtIVIProperty* steeringWheelHeaterProperty() const;
     int fanSpeedLevel() const;
     QtIVIPropertyAttribute<int> fanSpeedLevelAttribute() const;
+    QtIVIProperty* fanSpeedLevelProperty() const;
     int targetTemperature() const;
     QtIVIPropertyAttribute<int> targetTemperatureAttribute() const;
+    QtIVIProperty* targetTemperatureProperty() const;
     int seatCooler() const;
     QtIVIPropertyAttribute<int> seatCoolerAttribute() const;
+    QtIVIProperty* seatCoolerProperty() const;
     int seatHeater() const;
     QtIVIPropertyAttribute<int> seatHeaterAttribute() const;
+    QtIVIProperty* seatHeaterProperty() const;
 
 public Q_SLOTS:
     void setAirConditioningEnabled(bool enabled);
@@ -145,33 +155,8 @@ private:
     QtIVIClimateControlBackendInterface* climateControlBackend();
 
 private:
-    AirflowDirection m_airflowDirection;
-    QtIVIPropertyAttribute<AirflowDirection> m_airflowDirectionAttribute;
-    QtIVIProperty* m_qmlAirFlowDirection;
-    bool m_airConditioning;
-    QtIVIPropertyAttribute<bool> m_airConditioningAttribute;
-    QtIVIProperty* m_qmlAirConditioning;
-    bool m_heater;
-    QtIVIPropertyAttribute<bool> m_heaterAttribute;
-    QtIVIProperty* m_qmlHeater;
-    bool m_airRecirculation;
-    QtIVIPropertyAttribute<bool> m_airRecirculationAttribute;
-    QtIVIProperty* m_qmlAirRecirculation;
-    int m_targetTemperature;
-    QtIVIPropertyAttribute<int> m_targetTemperatureAttribute;
-    QtIVIProperty* m_qmlTargetTemperature;
-    int m_seatCooler;
-    QtIVIPropertyAttribute<int> m_seatCoolerAttribute;
-    QtIVIProperty* m_qmlSeatCooler;
-    int m_seatHeater;
-    QtIVIPropertyAttribute<int> m_seatHeaterAttribute;
-    QtIVIProperty* m_qmlSeatHeater;
-    int m_steeringWheelHeater;
-    QtIVIPropertyAttribute<int> m_steeringWheelHeaterAttribute;
-    QtIVIProperty* m_qmlSteeringWheelHeater;
-    int m_fanSpeedLevel;
-    QtIVIPropertyAttribute<int> m_fanSpeedLevelAttribute;
-    QtIVIProperty* m_qmlFanSpeedLevel;
+    QtIVIClimateControlPrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(QtIVIClimateControl)
 };
 
 QT_END_NAMESPACE
