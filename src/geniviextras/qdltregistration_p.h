@@ -37,6 +37,19 @@
 
 #include <dlt/dlt.h>
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail. This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+QT_BEGIN_NAMESPACE
+
 void qtGeniviLogLevelChangedHandler(char context_id[], uint8_t log_level, uint8_t trace_status);
 
 class QDltRegistration;
@@ -60,3 +73,5 @@ private:
     QHash<QString, DltContext*> m_categoryName2DltContext;
     QHash<QString, QLoggingCategory*> m_ctxName2Category;
 };
+
+QT_END_NAMESPACE

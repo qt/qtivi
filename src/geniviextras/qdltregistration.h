@@ -41,6 +41,8 @@
 #include <QtGeniviExtras/qgeniviextrasglobal.h>
 #include <stdint.h>
 
+QT_BEGIN_NAMESPACE
+
 class QDltRegistrationPrivate;
 
 class Q_GENIVIEXTRAS_EXPORT QDltRegistration : public QObject
@@ -59,7 +61,7 @@ public:
 
     static void messageHandler(QtMsgType msgTypes, const QMessageLogContext &msgCtx, const QString &msg);
 
-signals:
+Q_SIGNALS:
     void logLevelChanged(const QLoggingCategory *category);
 
 private:
@@ -70,5 +72,7 @@ private:
 };
 
 Q_GENIVIEXTRAS_EXPORT extern QDltRegistration* globalDltRegistration();
+
+QT_END_NAMESPACE
 
 #endif // QDLTREGISTRATION_H

@@ -11,7 +11,13 @@
 QT       += testlib geniviextras
 
 TARGET = tst_dlt
-CONFIG   += testcase
+CONFIG   += testcase link_pkgconfig
+
+!contains(QT_CONFIG, no-pkg-config) {
+    PKGCONFIG += automotive-dlt
+} else {
+    LIBS += -ldlt
+}
 
 TEMPLATE = app
 

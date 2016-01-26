@@ -77,9 +77,9 @@ public:
 
     QString readPayload(DltMessage* msg)
     {
-        QByteArray payload(1024, '\0');
-        dlt_message_payload(msg,payload.data(),1024,DLT_OUTPUT_ASCII,false);
-        return QString(payload);
+        QByteArray payload(msg->datasize, '\0');
+        dlt_message_payload(msg,payload.data(),msg->datasize,DLT_OUTPUT_ASCII,false);
+        return QString::fromLocal8Bit(payload);
     }
 
     QList<QDltMessage> readNextMessages()
