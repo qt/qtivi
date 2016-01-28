@@ -33,8 +33,8 @@
 #include <QtCore/QObject>
 
 #include <QtIVICore/qtivizonedfeatureinterface.h>
+#include <QtIVICore/qtivipropertyattribute.h>
 #include <QtIVIVehicleFunctions/qtiviclimatecontrol.h>
-#include "qtivipropertyattribute.h"
 
 QT_BEGIN_NAMESPACE
 

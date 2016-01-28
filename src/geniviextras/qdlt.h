@@ -37,13 +37,17 @@
 
 #include <QGlobalStatic>
 #include <QtGlobal>
-#include "qdltregistration.h"
+#include <QtGeniviExtras/qdltregistration.h>
+
+QT_BEGIN_NAMESPACE
 
 #define QDLT_REGISTER_APPLICATION(APP, DESCRIPTION) \
+QT_BEGIN_NAMESPACE \
 struct QDltAppRegistrator { \
     QDltAppRegistrator() { globalDltRegistration()->registerApplication(APP, DESCRIPTION); } \
 }; \
 static QDltAppRegistrator qdltAppRegistrator; \
+QT_END_NAMESPACE \
 
 
 #define QDLT_LOGGING_CATEGORY(CATEGORY, CATEGORYNAME, DLT_CTX_NAME, DLT_CTX_DESCRIPTION) \
@@ -51,17 +55,22 @@ Q_LOGGING_CATEGORY(CATEGORY, CATEGORYNAME) \
 QDLT_REGISTER_LOGGING_CATEGORY(CATEGORY, CATEGORYNAME, DLT_CTX_NAME, DLT_CTX_DESCRIPTION) \
 
 #define QDLT_REGISTER_LOGGING_CATEGORY(CATEGORY, CATEGORYNAME, DLT_CTX_NAME, DLT_CTX_DESCRIPTION) \
+QT_BEGIN_NAMESPACE \
 struct QDlt ## CATEGORY ## Registrator { \
     QDlt ## CATEGORY ## Registrator() { globalDltRegistration()->registerCategory(&CATEGORY() , DLT_CTX_NAME, DLT_CTX_DESCRIPTION); } \
 }; \
 static QDlt ## CATEGORY ## Registrator qdlt ## CATEGORY ## registrator; \
+QT_END_NAMESPACE \
 
 #define QDLT_FALLBACK_CATEGORY(CATEGORY) \
+QT_BEGIN_NAMESPACE \
 struct QDltDefaultRegistrator { \
     QDltDefaultRegistrator() { globalDltRegistration()->setDefaultContext(CATEGORY().categoryName()); } \
 }; \
 static QDltDefaultRegistrator qdltDefaultRegistrator; \
+QT_END_NAMESPACE \
 
+QT_END_NAMESPACE
 
 #endif // QDLT_H
 

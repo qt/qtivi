@@ -81,7 +81,7 @@ QStringList ClimateControlBackend::availableZones() const
 void ClimateControlBackend::initializeAttributes()
 {
     QVector<QtIVIClimateControl::AirflowDirection> list;
-    list << QtIVIClimateControl::BiLevel, QtIVIClimateControl::DefrostFloor;
+    list << QtIVIClimateControl::BiLevel << QtIVIClimateControl::DefrostFloor;
     emit airflowDirectionAttributeChanged(QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection>(list));
     emit airflowDirectionChanged(m_flowDirection);
     emit airConditioningAttributeChanged(QtIVIPropertyAttribute<bool>(true));
