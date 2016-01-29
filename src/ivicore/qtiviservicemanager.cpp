@@ -39,11 +39,18 @@
 #include <QDir>
 #include <QModelIndex>
 #include <QDebug>
+#include <QLibrary>
 
 #define QTIVI_PLUGIN_DIRECTORY "qtivi"
 
 QtIVIServiceManagerPrivate::QtIVIServiceManagerPrivate(QtIVIServiceManager *parent) : QObject(parent), q_ptr(parent)
 {
+}
+
+QtIVIServiceManagerPrivate *QtIVIServiceManagerPrivate::get(QtIVIServiceManager *serviceManager)
+{
+    Q_ASSERT(serviceManager);
+    return serviceManager->d_ptr;
 }
 
 QList<QtIVIServiceObject *> QtIVIServiceManagerPrivate::findServiceByInterface(const QString &interface)
@@ -54,7 +61,8 @@ QList<QtIVIServiceObject *> QtIVIServiceManagerPrivate::findServiceByInterface(c
 
         if (backend->metaData[QLatin1String("interfaces")].toStringList().contains(interface)) {
             QtIVIServiceInterface *backendInterface = loadServiceBackendInterface(backend);
-            list.append(new QtIVIProxyServiceObject(backendInterface));
+            if (backendInterface)
+                list.append(new QtIVIProxyServiceObject(backendInterface));
         }
     }
 
@@ -74,6 +82,8 @@ void QtIVIServiceManagerPrivate::searchPlugins()
 
         QStringList plugins = QDir(path).entryList(QDir::Files);
         foreach (const QString &pluginPath, plugins) {
+            if (!QLibrary::isLibrary(pluginPath))
+                continue;
             QString fileName = QDir::cleanPath(path + QLatin1Char('/') + pluginPath);
             QPluginLoader loader(dir.absoluteFilePath(fileName));
             registerBackend(loader.fileName(), loader.metaData());
@@ -91,7 +101,7 @@ void QtIVIServiceManagerPrivate::registerBackend(const QString fileName, const Q
     QVariantMap backendMetaData = metaData.value(QLatin1String("MetaData")).toVariant().toMap();
 
     if (backendMetaData[QLatin1String("interfaces")].isNull() || backendMetaData[QLatin1String("interfaces")].toList().isEmpty()) {
-        qDebug("PluginManager - Malformed metaData in '%s'. MetaData must contain a list of interfaces", qPrintable(fileName));
+        qWarning("PluginManager - Malformed metaData in '%s'. MetaData must contain a list of interfaces", qPrintable(fileName));
         return;
     }
 
@@ -138,8 +148,9 @@ void QtIVIServiceManagerPrivate::unloadAllBackends()
     Q_Q(QtIVIServiceManager);
 
     q->beginResetModel();
-    for(int i=0; i<m_backends.count(); i++) {
-        Backend* backend = m_backends.takeAt(i);
+    QMutableListIterator<Backend*> i(m_backends);
+    while (i.hasNext()) {
+        Backend* backend = i.next();
 
         //If the Interface is from a Plugin, the Plugin owns it and it will be deleted when unloading.
         //Otherwise we own the Interface and delete the Pointer.
@@ -150,10 +161,13 @@ void QtIVIServiceManagerPrivate::unloadAllBackends()
             delete backend->interfaceObject;
         }
 
+        i.remove();
         delete backend;
     }
     m_backends.clear();
     q->endResetModel();
+
+    m_interfaceNames.clear();
 }
 
 void QtIVIServiceManagerPrivate::addBackend(Backend *backend)
@@ -185,11 +199,11 @@ QtIVIServiceInterface *QtIVIServiceManagerPrivate::loadServiceBackendInterface(s
             backend->loader = loader;
             return backend->interface;
         } else {
-            qDebug("ServiceManager::serviceObjects - failed to cast to interface from '%s'", qPrintable(loader->fileName()));
+            qWarning("ServiceManager::serviceObjects - failed to cast to interface from '%s'", qPrintable(loader->fileName()));
         }
 
     } else {
-        qDebug("ServiceManager::serviceObjects - failed to load '%s'", qPrintable(loader->fileName()));
+        qWarning("ServiceManager::serviceObjects - failed to load '%s'", qPrintable(loader->fileName()));
     }
 
     //Only delete the Loader right away if we didn't succeeded with loading the interfaces.

@@ -30,6 +30,7 @@
 #include <QString>
 #include <QtTest>
 #include <qtiviservicemanager.h>
+#include <QtIVICore/private/qtiviservicemanager_p.h>
 #include <qtiviserviceinterface.h>
 #include <qtiviserviceobject.h>
 
@@ -70,6 +71,7 @@ public:
     ServiceManagerTest();
 
 private Q_SLOTS:
+    void initTestCase();
     void cleanup();
 
     void testHasInterface();
@@ -78,14 +80,37 @@ private Q_SLOTS:
     void testRegisterWithNoInterfaces();
     void testRegisterNonServiceBackendInterfaceObject();
     void testManagerListModel();
+    void pluginLoaderTest();
 
 private:
     QtIVIServiceManager *manager;
+    QString m_simplePluginID;
 };
 
 ServiceManagerTest::ServiceManagerTest()
 {
+}
+
+void ServiceManagerTest::initTestCase()
+{
+    QStringList origList = QCoreApplication::libraryPaths();
+    QCoreApplication::setLibraryPaths(QStringList());
+    QTest::ignoreMessage(QtWarningMsg, "No plugins found in search path:  \"\"");
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in '.*'. MetaData must contain a list of interfaces"));
     manager = QtIVIServiceManager::instance();
+
+    QList<QtIVIServiceObject *> services = manager->findServiceByInterface("simple_plugin");
+    QCOMPARE(services.count(), 0);
+
+    //Reset original setting + this folder for finding our test plugins
+    origList.append(QDir::currentPath());
+    QCoreApplication::setLibraryPaths(origList);
+    QtIVIServiceManagerPrivate::get(manager)->searchPlugins();
+
+    //Save the id of the service object. This needed in the pluginLoaderTest
+    services = manager->findServiceByInterface("simple_plugin");
+    QCOMPARE(services.count(), 1);
+    m_simplePluginID = services.at(0)->id();
 }
 
 void ServiceManagerTest::cleanup()
@@ -173,22 +198,25 @@ void ServiceManagerTest::testManagerListModel()
     // Sanity check
     QCOMPARE(manager->rowCount(), 0);
     QCOMPARE(managerModelSpy.count(), 0);
+    QCOMPARE(manager->data(QModelIndex(), Qt::DisplayRole), QVariant());
 
     // Register backend-0 with 'Interface0'
     MockServiceBackend *backend0 = new MockServiceBackend(manager);
     bool regResult = manager->registerService(backend0, QStringList() << "Interface0");
     QCOMPARE(regResult, true);
     QCOMPARE(manager->rowCount(), 1);
-    //QCOMPARE(manager->data(manager->index(0), Qt::DisplayRole).value<QtIVIServiceInterface*>, QString("Interface0"));
+    QCOMPARE(manager->data(manager->index(0), Qt::DisplayRole).value<QtIVIServiceInterface*>(), backend0);
     QCOMPARE(managerModelSpy.count(), 1);
+    // Extendend sanity check
+    QCOMPARE(manager->data(manager->index(0,0), Qt::UserRole + 200), QVariant());
 
     // Register backend-1 with 'Interface1' and 'Interface2'. Should change the model
     MockServiceBackend *backend1 = new MockServiceBackend(manager);
     regResult = manager->registerService(backend1, QStringList() << "Interface1" << "Interface2");
     QCOMPARE(regResult, true);
     QCOMPARE(manager->rowCount(), 2);
-    //QCOMPARE(manager->data(manager->index(1), ServiceManager::InterfaceRole).toString(), QString("Interface1"));
-    //QCOMPARE(manager->data(manager->index(2), Qt::DisplayRole).toString(), QString("Interface2"));
+    QCOMPARE(manager->data(manager->index(0), Qt::DisplayRole).value<QtIVIServiceInterface*>(), backend0);
+    QCOMPARE(manager->data(manager->index(1), Qt::DisplayRole).value<QtIVIServiceInterface*>(), backend1);
     QCOMPARE(managerModelSpy.count(), 2);
 
     // Register backend-2 with 'Interface1' and 'Interface2'. Should not result in any model changes
@@ -197,6 +225,28 @@ void ServiceManagerTest::testManagerListModel()
     QCOMPARE(regResult, true);
     QCOMPARE(manager->rowCount(), 3);
     QCOMPARE(managerModelSpy.count(), 3);
+}
+
+void ServiceManagerTest::pluginLoaderTest()
+{
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in '.*'. MetaData must contain a list of interfaces"));
+    QtIVIServiceManagerPrivate::get(manager)->searchPlugins();
+    QVERIFY(manager->hasInterface("simple_plugin"));
+    QList<QtIVIServiceObject *> services = manager->findServiceByInterface("simple_plugin");
+    QCOMPARE(services.count(), 1);
+    //Because we unloaded the backend and created a new instance of it we expect to get a different id for the ServiceObject as in initTestCase()
+    QCOMPARE(m_simplePluginID, services.at(0)->id());
+
+
+    QVERIFY(manager->hasInterface("wrong_plugin"));
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("ServiceManager::serviceObjects - failed to cast to interface from '.*wrong_plugin.*'"));
+    QList<QtIVIServiceObject *> wServices = manager->findServiceByInterface("wrong_plugin");
+    QCOMPARE(wServices.count(), 0);
+
+    //Test that the plugin is unloaded (or at least removed from the registry)
+    manager->unloadAllBackends();
+    services = manager->findServiceByInterface("simple_plugin");
+    QCOMPARE(services.count(), 0);
 }
 
 QTEST_APPLESS_MAIN(ServiceManagerTest)

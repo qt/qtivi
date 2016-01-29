@@ -47,6 +47,8 @@
 #include <QtCore/QMap>
 #include <QtCore/QSet>
 
+#include <QtIVICore/qtiviglobal.h>
+
 QT_BEGIN_NAMESPACE
 
 class QPluginLoader;
@@ -61,12 +63,14 @@ struct Backend{
     QPluginLoader *loader;
 };
 
-class QtIVIServiceManagerPrivate : public QObject
+class Q_QTIVICORE_EXPORT QtIVIServiceManagerPrivate : public QObject
 {
     Q_OBJECT
 
 public:
     explicit QtIVIServiceManagerPrivate(QtIVIServiceManager *parent);
+
+    static QtIVIServiceManagerPrivate* get(QtIVIServiceManager *serviceManager);
 
     QList<QtIVIServiceObject*> findServiceByInterface(const QString &interface);
 
@@ -81,7 +85,6 @@ public:
 
     QList<Backend*> m_backends;
     QSet<QString> m_interfaceNames;
-
 
     QtIVIServiceManager * const q_ptr;
     Q_DECLARE_PUBLIC(QtIVIServiceManager)
