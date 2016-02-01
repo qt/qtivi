@@ -152,6 +152,7 @@ private Q_SLOTS:
     void cleanup();
 
     void testAutoDiscoveryFailure();
+    void testAutoDiscovery_data();
     void testAutoDiscovery();
     void testAutoDiscovery_qml();
     void testErrors_data();
@@ -171,33 +172,80 @@ void tst_QtIVIAbstractFeature::cleanup()
 void tst_QtIVIAbstractFeature::testAutoDiscoveryFailure()
 {
     TestFeature f;
-    QTest::ignoreMessage(QtWarningMsg, "There is no backend implementing \"testFeature\" .");
-    f.startAutoDiscovery();
+    QTest::ignoreMessage(QtWarningMsg, "There is no production backend implementing \"testFeature\" .");
+    QTest::ignoreMessage(QtWarningMsg, "There is no simulation backend implementing \"testFeature\" .");
+    QtIVIAbstractFeature::DiscoveryResult result = f.startAutoDiscovery();
     QVERIFY(!f.serviceObject());
     QVERIFY(!f.isValid());
+    QCOMPARE(result, QtIVIAbstractFeature::ErrorWhileLoading);
+
+    QTest::ignoreMessage(QtWarningMsg, "There is no production backend implementing \"testFeature\" .");
+    f.setDiscoveryMode(QtIVIAbstractFeature::LoadOnlyProductionBackends);
+    result = f.startAutoDiscovery();
+    QVERIFY(!f.serviceObject());
+    QVERIFY(!f.isValid());
+    QCOMPARE(result, QtIVIAbstractFeature::ErrorWhileLoading);
 
     TestBackend* backend1 = new TestBackend();
     m_manager->registerService(backend1, backend1->interfaces());
+
+    auto list = m_manager->findServiceByInterface("testFeature");
+    f.setServiceObject(list.at(0));
+    result = f.startAutoDiscovery();
+    QCOMPARE(result, QtIVIAbstractFeature::NoResult);
+    f.setServiceObject(0);
+
     TestBackend* backend2 = new TestBackend();
     m_manager->registerService(backend2, backend2->interfaces());
 
     QTest::ignoreMessage(QtWarningMsg, "There is more than one backend implementing \"testFeature\" .");
-    f.startAutoDiscovery();
+    result = f.startAutoDiscovery();
     QVERIFY(f.serviceObject());
+    QCOMPARE(result, QtIVIAbstractFeature::ProductionBackendLoaded);
+}
+
+void tst_QtIVIAbstractFeature::testAutoDiscovery_data()
+{
+    QTest::addColumn<QtIVIAbstractFeature::DiscoveryMode>("mode");
+    QTest::addColumn<QtIVIAbstractFeature::DiscoveryResult>("result");
+    QTest::addColumn<bool>("registerProduction");
+    QTest::newRow("Production") << QtIVIAbstractFeature::LoadOnlyProductionBackends << QtIVIAbstractFeature::ProductionBackendLoaded << true;
+    QTest::newRow("Simulation") << QtIVIAbstractFeature::LoadOnlySimulationBackends << QtIVIAbstractFeature::SimulationBackendLoaded << true;
+    QTest::newRow("Auto") << QtIVIAbstractFeature::AutoDiscovery << QtIVIAbstractFeature::ProductionBackendLoaded << true;
+    QTest::newRow("Auto fallback") << QtIVIAbstractFeature::AutoDiscovery << QtIVIAbstractFeature::SimulationBackendLoaded << false;
 }
 
 void tst_QtIVIAbstractFeature::testAutoDiscovery()
 {
-    TestBackend* backend = new TestBackend();
-    m_manager->registerService(backend, backend->interfaces());
+    QFETCH(QtIVIAbstractFeature::DiscoveryMode, mode);
+    QFETCH(QtIVIAbstractFeature::DiscoveryResult, result);
+    QFETCH(bool, registerProduction);
 
+    TestBackend* backend = new TestBackend();
+    if (mode == QtIVIAbstractFeature::LoadOnlySimulationBackends || !registerProduction) {
+        m_manager->registerService(backend, backend->interfaces(), QtIVIServiceManager::SimulationBackend);
+    } else if (mode == QtIVIAbstractFeature::LoadOnlyProductionBackends) {
+        m_manager->registerService(backend, backend->interfaces());
+    } else {
+        m_manager->registerService(backend, backend->interfaces());
+        TestBackend* backend2 = new TestBackend();
+        m_manager->registerService(backend2, backend2->interfaces(), QtIVIServiceManager::SimulationBackend);
+    }
     TestFeature f;
+    QVERIFY(!f.serviceObject());
+    QVERIFY(!f.isValid());
+    f.setDiscoveryMode(mode);
     QSignalSpy validSpy(&f, &QtIVIAbstractFeature::isValidChanged);
-    f.startAutoDiscovery();
+    if (!registerProduction)
+        QTest::ignoreMessage(QtWarningMsg, "There is no production backend implementing \"testFeature\" .");
+    QtIVIAbstractFeature::DiscoveryResult res = f.startAutoDiscovery();
     QVERIFY(f.serviceObject());
     QVERIFY(f.isValid());
+    QCOMPARE(f.discoveryMode(), mode);
     QCOMPARE(validSpy.count(), 1);
     QCOMPARE(validSpy.at(0).at(0).toBool(), true);
+    QCOMPARE(res, result);
+    QCOMPARE(f.discoveryResult(), result);
 }
 
 void tst_QtIVIAbstractFeature::testAutoDiscovery_qml()
@@ -213,18 +261,22 @@ void tst_QtIVIAbstractFeature::testAutoDiscovery_qml()
     QVERIFY2(obj, qPrintable(component.errorString()));
     TestFeature* defaultItem = obj->findChild<TestFeature*>("default");
     QVERIFY(defaultItem);
-    QVERIFY(defaultItem->autoDiscovery());
+    QCOMPARE(defaultItem->discoveryMode(), QtIVIAbstractFeature::AutoDiscovery);
     QVERIFY(defaultItem->serviceObject());
+    QCOMPARE(defaultItem->discoveryResult(), QtIVIAbstractFeature::ProductionBackendLoaded);
 
     TestFeature* autoDiscoveryDisabledItem = obj->findChild<TestFeature*>("autoDiscoveryDisabled");
     QVERIFY(autoDiscoveryDisabledItem);
-    QSignalSpy autoDiscoveryChanged(autoDiscoveryDisabledItem, &QtIVIAbstractFeature::autoDiscoveryChanged);
+    QSignalSpy autoDiscoveryChanged(autoDiscoveryDisabledItem, &QtIVIAbstractFeature::discoveryModeChanged);
     QSignalSpy serviceObjectChangedSpy(autoDiscoveryDisabledItem, &QtIVIAbstractFeature::serviceObjectChanged);
-    QVERIFY(!autoDiscoveryDisabledItem->autoDiscovery());
+    QCOMPARE(autoDiscoveryDisabledItem->discoveryMode(), QtIVIAbstractFeature::NoAutoDiscovery);
     QVERIFY(!autoDiscoveryDisabledItem->serviceObject());
-    autoDiscoveryDisabledItem->setAutoDiscovery(true);
+    QCOMPARE(autoDiscoveryDisabledItem->discoveryResult(), QtIVIAbstractFeature::NoResult);
+
+    QVERIFY(QMetaObject::invokeMethod(autoDiscoveryDisabledItem, "discover"));
     QCOMPARE(autoDiscoveryChanged.count(), 1);
     QCOMPARE(serviceObjectChangedSpy.count(), 1);
+    QCOMPARE(defaultItem->discoveryResult(), QtIVIAbstractFeature::ProductionBackendLoaded);
 }
 
 void tst_QtIVIAbstractFeature::testErrors_data()

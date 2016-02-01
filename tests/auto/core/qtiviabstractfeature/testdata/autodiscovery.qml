@@ -9,6 +9,10 @@ Item {
 
     TestFeature {
         objectName: "autoDiscoveryDisabled"
-        autoDiscovery: false
+        discoveryMode: TestFeature.NoAutoDiscovery
+        function discover() {
+            discoveryMode = TestFeature.LoadOnlyProductionBackends
+            startAutoDiscovery()
+        }
     }
 }

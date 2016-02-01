@@ -48,13 +48,13 @@
 #include <QtCore/QSet>
 
 #include <QtIVICore/qtiviglobal.h>
+#include <QtIVICore/qtiviservicemanager.h>
 
 QT_BEGIN_NAMESPACE
 
 class QPluginLoader;
 class QtIVIServiceInterface;
 class QtIVIServiceObject;
-class QtIVIServiceManager;
 class QtIVIProxyServiceObject;
 
 struct Backend{
@@ -74,11 +74,11 @@ public:
 
     static QtIVIServiceManagerPrivate* get(QtIVIServiceManager *serviceManager);
 
-    QList<QtIVIServiceObject*> findServiceByInterface(const QString &interface);
+    QList<QtIVIServiceObject*> findServiceByInterface(const QString &interface, QtIVIServiceManager::SearchFlags searchFlags);
 
     void searchPlugins();
     void registerBackend(const QString &fileName, const QJsonObject &metaData);
-    bool registerBackend(QObject *serviceBackendInterface, const QStringList &interfaces);
+    bool registerBackend(QObject *serviceBackendInterface, const QStringList &interfaces, QtIVIServiceManager::BackendType backendType);
     void addBackend(struct Backend *backend);
 
     void unloadAllBackends();

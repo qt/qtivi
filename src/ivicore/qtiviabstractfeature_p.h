@@ -50,11 +50,17 @@ QT_BEGIN_NAMESPACE
 class QtIVIAbstractFeaturePrivate : public QObject
 {
 public:
-    QtIVIAbstractFeaturePrivate(const QString &interface, QObject *parent);
+    QtIVIAbstractFeaturePrivate(const QString &interface, QtIVIAbstractFeature *parent);
+
+    void setDiscoveryResult(QtIVIAbstractFeature::DiscoveryResult discoveryResult);
+
+    QtIVIAbstractFeature * const q_ptr;
+    Q_DECLARE_PUBLIC(QtIVIAbstractFeature)
 
     QString m_interface;
     QtIVIServiceObject* m_serviceObject;
-    bool m_autoDiscovery;
+    QtIVIAbstractFeature::DiscoveryMode m_discoveryMode;
+    QtIVIAbstractFeature::DiscoveryResult m_discoveryResult;
     QString m_errorMessage;
     QtIVIAbstractFeature::Error m_error;
     bool m_qmlCreation;

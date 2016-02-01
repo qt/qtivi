@@ -36,13 +36,26 @@
 #include <QMetaEnum>
 #include <QDebug>
 
-QtIVIAbstractFeaturePrivate::QtIVIAbstractFeaturePrivate(const QString &interface, QObject *parent)
+QtIVIAbstractFeaturePrivate::QtIVIAbstractFeaturePrivate(const QString &interface, QtIVIAbstractFeature *parent)
     : QObject(parent)
+    , q_ptr(parent)
     , m_interface(interface)
     , m_serviceObject(0)
-    , m_autoDiscovery(true)
+    , m_discoveryMode(QtIVIAbstractFeature::AutoDiscovery)
+    , m_discoveryResult(QtIVIAbstractFeature::NoResult)
+    , m_error(QtIVIAbstractFeature::NoError)
     , m_qmlCreation(false)
 {
+}
+
+void QtIVIAbstractFeaturePrivate::setDiscoveryResult(QtIVIAbstractFeature::DiscoveryResult discoveryResult)
+{
+    if (m_discoveryResult == discoveryResult)
+        return;
+
+    m_discoveryResult = discoveryResult;
+    Q_Q(QtIVIAbstractFeature);
+    emit q->discoveryResultChanged(discoveryResult);
 }
 
 /*!
@@ -60,7 +73,10 @@ QtIVIAbstractFeaturePrivate::QtIVIAbstractFeaturePrivate(const QString &interfac
  * The auto discovery gives you a easy way to automatically connect to the right backend implementation.
  * If you don't want to use the auto discovery, it's also possible to use QtIVIServiceManager to retrieve
  * all Backends and search manually for the right one and connect it to the QtIVIAbstractFeature by calling
- * setServiceObject()
+ * setServiceObject().
+ *
+ * The type of backend to be loaded can be controlled by setting the auto discovery mode. By default,
+ * it is set to AutoDiscovery, which indicates that a production backend will be preferred over a simulation backend.
  *
  * QtIVIAbstractFeature is a abstract base class which needs to be subclassed to create a API for your
  * Feature.
@@ -103,12 +119,41 @@ QtIVIAbstractFeaturePrivate::QtIVIAbstractFeaturePrivate(const QString &interfac
  */
 
 /*!
+   \enum QtIVIAbstractFeature::DiscoveryMode
+
+   \value NoAutoDiscovery
+          No Auto Discovery is done and the ServiceObject needs to be set manually
+   \value AutoDiscovery
+          Tries to first find a production backend with a matching interface and falls back to a simulation backend if not found
+   \value LoadOnlyProductionBackends
+          Only tries to load a production backend with a matching interface
+   \value LoadOnlySimulationBackends
+          Only tries to load a simulation backend with a matching interface
+ */
+
+/*!
+   \enum QtIVIAbstractFeature::DiscoveryResult
+
+   \value NoResult
+          Indicates that no auto discovery was started because the feature has already assigned a valid ServiceObject
+   \value ErrorWhileLoading
+          An error has happened while searching for a backend with a matching interface
+   \value ProductionBackendLoaded
+          As a result of the auto discovery a production backend was loaded
+   \value SimulationBackendLoaded
+          As a result of the auto discovery a simulation backend was loaded
+ */
+
+/*!
     \qmltype AbstractFeature
     \instantiates QtIVIAbstractFeature
     \inqmlmodule QtIVICore
 
     \brief The AbstractFeature is not directly accessible. QML type provides
     base QML properties for the feature, like autoDiscovery and isValid.
+
+    Once the AbstracteFeature is instantiated by QML the autoDiscovery will be started automatically.
+    To disable this behavior the discoveryMode needs to be set to \c NoDiscovery;
 */
 
 /*!
@@ -181,6 +226,8 @@ QtIVIAbstractFeature::QtIVIAbstractFeature(const QString &interface, QObject *pa
     , d_ptr(new QtIVIAbstractFeaturePrivate(interface, this))
 {
     qRegisterMetaType<QtIVIAbstractFeature::Error>();
+    qRegisterMetaType<QtIVIAbstractFeature::DiscoveryMode>();
+    qRegisterMetaType<QtIVIAbstractFeature::DiscoveryResult>();
 }
 
 /*!
@@ -196,9 +243,9 @@ QtIVIAbstractFeature::~QtIVIAbstractFeature()
  * \brief Sets the service object for the feature.
  *
  * As features only expose the front API facing the developer, a service object implementing the
- * actual function is required. This is usually retrieved through the \l autoDiscovery mechanism.
+ * actual function is required. This is usually retrieved through the auto discovery mechanism.
  *
- * \sa autoDiscovery
+ * \sa discoveryMode
  */
 void QtIVIAbstractFeature::setServiceObject(QtIVIServiceObject *so)
 {
@@ -232,34 +279,39 @@ void QtIVIAbstractFeature::setServiceObject(QtIVIServiceObject *so)
 }
 
 /*!
- * \qmlproperty bool AbstractFeature::autoDiscovery
- * \brief True if service objects are located automatically.
+ * \qmlproperty enumeration AbstractFeature::discoveryMode
+ * \brief Holds the mode which is used for the autodiscovery
  *
- * If automatic discovery is enabled, the feature will search for a suitable backend when
- * \l {QQmlParserStatus::}{componentComplete} is invoked from QML.
+ *  Available values are:
+ *  \value NoAutoDiscovery
+ *         No Auto Discovery is done and the ServiceObject needs to be set manually
+ *  \value AutoDiscovery
+ *         Tries to first find a production backend with a matching interface and falls back to a simulation backend if not found
+ *  \value LoadOnlyProductionBackends
+ *         Only tries to load a production backend with a matching interface
+ *  \value LoadOnlySimulationBackends
+ *         Only tries to load a simulation backend with a matching interface
  *
- * After component creation the property can be used to start the automatic discsovery later.
+ *  If needed the auto discovery will be started once the Item is created.
+ *
+ *  \note If you change this property after the Item is instantiated you need to call startAutoDiscovery() to search for
+ *  a new Service Object
  */
 
 /*!
- * \property QtIVIAbstractFeature::autoDiscovery
- * \brief True if service objects are located automatically.
- *
- * If automatic discovery is enabled, the feature will search for a suitable backend.
+ * \property QtIVIAbstractFeature::discoveryMode
+ * \brief Holds the mode which is used for the autodiscovery
  *
  * \sa startAutoDiscovery()
  */
-void QtIVIAbstractFeature::setAutoDiscovery(bool autoDiscovery)
+void QtIVIAbstractFeature::setDiscoveryMode(QtIVIAbstractFeature::DiscoveryMode discoveryMode)
 {
     Q_D(QtIVIAbstractFeature);
-    if (d->m_autoDiscovery == autoDiscovery)
+    if (d->m_discoveryMode == discoveryMode)
         return;
 
-    d->m_autoDiscovery = autoDiscovery;
-    emit autoDiscoveryChanged(autoDiscovery);
-
-    if (!d->m_qmlCreation && autoDiscovery)
-        startAutoDiscovery();
+    d->m_discoveryMode = discoveryMode;
+    emit discoveryModeChanged(discoveryMode);
 }
 
 /*!
@@ -273,15 +325,13 @@ void QtIVIAbstractFeature::classBegin()
 }
 
 /*!
- * Invoked automatically when used from QML. Calls \l startAutoDiscovery() if \l autoDiscovery is \c true.
+ * Invoked automatically when used from QML. Calls \l startAutoDiscovery().
  */
 void QtIVIAbstractFeature::componentComplete()
 {
     Q_D(QtIVIAbstractFeature);
     d->m_qmlCreation = false;
-    if (d->m_autoDiscovery) {
-        startAutoDiscovery();
-    }
+    startAutoDiscovery();
 }
 
 /*!
@@ -299,10 +349,37 @@ QtIVIServiceObject *QtIVIAbstractFeature::serviceObject() const
     return d->m_serviceObject;
 }
 
-bool QtIVIAbstractFeature::autoDiscovery() const
+QtIVIAbstractFeature::DiscoveryMode QtIVIAbstractFeature::discoveryMode() const
 {
     Q_D(const QtIVIAbstractFeature);
-    return d->m_autoDiscovery;
+    return d->m_discoveryMode;
+}
+
+/*!
+ *  \qmlproperty enumeration AbstractFeature::autoDiscoveryResult
+ *  \brief Holds the result of the last run of the auto discovery
+ *
+ *  Available values are:
+ *  \value NoResult
+ *         Indicates that no auto discovery was started because the feature has already assigned a valid ServiceObject
+ *  \value ErrorWhileLoading
+ *         An error has happened while searching for a backend with a matching interface
+ *  \value ProductionBackendLoaded
+ *         As a result of the auto discovery a production backend was loaded
+ *  \value SimulationBackendLoaded
+ *         As a result of the auto discovery a simulation backend was loaded
+ */
+
+/*!
+ *  \property QtIVIAbstractFeature::discoveryResult
+ *  \brief Holds the result of the last run of the auto discovery
+ *
+ *  \sa startAutoDiscovery()
+ */
+QtIVIAbstractFeature::DiscoveryResult QtIVIAbstractFeature::discoveryResult() const
+{
+    Q_D(const QtIVIAbstractFeature);
+    return d->m_discoveryResult;
 }
 
 /*!
@@ -366,6 +443,32 @@ QString QtIVIAbstractFeature::errorText() const
 
 
 /*!
+ *  \qmlmethod enumeration AbstractFeature::startAutoDiscovery()
+ *
+ * Performs an automatic discovery attempt.
+ *
+ * The feature will try to locate a single service object implementing the required interface.
+ *
+ * If no service object is found, the feature will stay invalid. If more than one service object
+ * is found, the first instance is used.
+ *
+ * Either the type of the backend which was loaded or an error is returned.
+ *
+ * If the discoveryMode is set to QtIVIAbstractFeature::NoAutoDiscovery this function will
+ * do nothing and return QtIVIAbstractFeature::NoResult.
+ *
+ *  Return values are:
+ *  \value NoResult
+ *         Indicates that no auto discovery was started because the feature has already assigned a valid ServiceObject
+ *  \value ErrorWhileLoading
+ *         An error has happened while searching for a backend with a matching interface
+ *  \value ProductionBackendLoaded
+ *         As a result of the auto discovery a production backend was loaded
+ *  \value SimulationBackendLoaded
+ *         As a result of the auto discovery a simulation backend was loaded
+ */
+
+/*!
  * \brief Performs an automatic discovery attempt.
  *
  * The feature will try to locate a single service object implementing the required interface.
@@ -373,33 +476,57 @@ QString QtIVIAbstractFeature::errorText() const
  * If no service object is found, the feature will stay invalid. If more than one service object
  * is found, the first instance is used.
  *
- * This function sets the \l autoDiscovery property to \c true.
+ * Either the type of the backend which was loaded or an error is returned.
  *
- * \sa autoDiscovery()
+ * If the discoveryMode is set to QtIVIAbstractFeature::NoAutoDiscovery this function will
+ * do nothing and return QtIVIAbstractFeature::NoResult.
+ *
+ * \sa discoveryMode()
  */
-void QtIVIAbstractFeature::startAutoDiscovery()
+QtIVIAbstractFeature::DiscoveryResult QtIVIAbstractFeature::startAutoDiscovery()
 {
     Q_D(QtIVIAbstractFeature);
-    if (!d->m_autoDiscovery) {
-        d->m_autoDiscovery = true;
-        emit autoDiscoveryChanged(true);
-    }
 
-    if (d->m_serviceObject) // No need to discover a new backend when we already have one
-        return;
+     // No need to discover a new backend when we already have one
+    if (d->m_serviceObject || d->m_discoveryMode == QtIVIAbstractFeature::NoAutoDiscovery) {
+        d->setDiscoveryResult(NoResult);
+        return NoResult;
+    }
 
     QtIVIServiceManager* serviceManager = QtIVIServiceManager::instance();
-    QList<QtIVIServiceObject*> serviceObjects = serviceManager->findServiceByInterface(d->m_interface);
-
-    if (serviceObjects.isEmpty()) {
-        qWarning() << "There is no backend implementing" << d->m_interface << ".";
-        return;
+    QList<QtIVIServiceObject*> serviceObjects;
+    DiscoveryResult result = NoResult;
+    if (d->m_discoveryMode == AutoDiscovery || d->m_discoveryMode == LoadOnlyProductionBackends) {
+        serviceObjects = serviceManager->findServiceByInterface(d->m_interface, QtIVIServiceManager::IncludeProductionBackends);
+        result = ProductionBackendLoaded;
     }
 
-    if (serviceObjects.count() > 1)
+    if (serviceObjects.isEmpty()) {
+
+        if (Q_UNLIKELY(d->m_discoveryMode == AutoDiscovery || d->m_discoveryMode == LoadOnlyProductionBackends))
+            qWarning() << "There is no production backend implementing" << d->m_interface << ".";
+
+        if (d->m_discoveryMode == AutoDiscovery || d->m_discoveryMode == LoadOnlySimulationBackends) {
+            serviceObjects = serviceManager->findServiceByInterface(d->m_interface, QtIVIServiceManager::IncludeSimulationBackends);
+            result = SimulationBackendLoaded;
+            if (Q_UNLIKELY(serviceObjects.isEmpty())) {
+                qWarning() << "There is no simulation backend implementing" << d->m_interface << ".";
+                d->setDiscoveryResult(ErrorWhileLoading);
+                return ErrorWhileLoading;
+            }
+        } else {
+            d->setDiscoveryResult(ErrorWhileLoading);
+            return ErrorWhileLoading;
+        }
+    }
+
+    if (Q_UNLIKELY(serviceObjects.count() > 1))
         qWarning() << "There is more than one backend implementing" << d->m_interface << ".";
 
     setServiceObject(serviceObjects.at(0));
+
+    d->setDiscoveryResult(result);
+    return result;
 }
 
 /*!
@@ -410,7 +537,7 @@ void QtIVIAbstractFeature::startAutoDiscovery()
  * ready usually indicates that no suitable service object could be found, or that automatic
  * discovery has not been triggered.
  *
- * \sa QtIVIServiceObject, autoDiscovery
+ * \sa QtIVIServiceObject, discoveryMode
  */
 /*!
  * \property QtIVIAbstractFeature::isValid
@@ -420,7 +547,7 @@ void QtIVIAbstractFeature::startAutoDiscovery()
  * ready usually indicates that no suitable service object could be found, or that automatic
  * discovery has not been triggered.
  *
- * \sa QtIVIServiceObject, autoDiscovery()
+ * \sa QtIVIServiceObject, discoveryMode
  */
 bool QtIVIAbstractFeature::isValid() const
 {

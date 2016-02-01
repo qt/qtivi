@@ -45,10 +45,8 @@ class Q_QTIVICORE_EXPORT QtIVIAbstractFeature : public QObject, public QQmlParse
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
 
-    //This makes only sense if the Object is loaded directly
-    //Maybe use a attached property instead ??? Feature.simulation = true; Feature.autoDiscovery = false
-    //Q_PROPERTY(bool simulation READ simulation WRITE setSimulation NOTIFY simulationChanged)
-    Q_PROPERTY(bool autoDiscovery READ autoDiscovery WRITE setAutoDiscovery NOTIFY autoDiscoveryChanged)
+    Q_PROPERTY(DiscoveryMode discoveryMode READ discoveryMode WRITE setDiscoveryMode NOTIFY discoveryModeChanged)
+    Q_PROPERTY(DiscoveryResult discoveryResult READ discoveryResult NOTIFY discoveryResultChanged)
     Q_PROPERTY(QtIVIServiceObject* serviceObject READ serviceObject WRITE setServiceObject NOTIFY serviceObjectChanged)
     Q_PROPERTY(bool isValid READ isValid NOTIFY isValidChanged)
     Q_PROPERTY(QString error READ errorMessage NOTIFY errorChanged)
@@ -65,24 +63,41 @@ public:
     };
     Q_ENUM(Error)
 
+    enum DiscoveryMode {
+        NoAutoDiscovery,
+        AutoDiscovery,
+        LoadOnlyProductionBackends,
+        LoadOnlySimulationBackends
+    };
+    Q_ENUM(DiscoveryMode)
+
+    enum DiscoveryResult {
+        NoResult,
+        ErrorWhileLoading,
+        ProductionBackendLoaded,
+        SimulationBackendLoaded
+    };
+    Q_ENUM(DiscoveryResult)
+
     explicit QtIVIAbstractFeature(const QString &interface, QObject *parent = 0);
     virtual ~QtIVIAbstractFeature();
 
     QtIVIServiceObject *serviceObject() const;
-    bool autoDiscovery() const;
+    QtIVIAbstractFeature::DiscoveryMode discoveryMode() const;
+    QtIVIAbstractFeature::DiscoveryResult discoveryResult() const;
     bool isValid() const;
     QtIVIAbstractFeature::Error error() const;
     QString errorMessage() const;
 
-    void startAutoDiscovery();
-
 public Q_SLOTS:
     void setServiceObject(QtIVIServiceObject *so);
-    void setAutoDiscovery(bool autoDiscovery);
+    void setDiscoveryMode(QtIVIAbstractFeature::DiscoveryMode discoveryMode);
+    QtIVIAbstractFeature::DiscoveryResult startAutoDiscovery();
 
 Q_SIGNALS:
     void serviceObjectChanged();
-    void autoDiscoveryChanged(bool autoDiscovery);
+    void discoveryModeChanged(QtIVIAbstractFeature::DiscoveryMode discoveryMode);
+    void discoveryResultChanged(QtIVIAbstractFeature::DiscoveryResult discoveryResult);
     void isValidChanged(bool arg);
     void errorChanged(QtIVIAbstractFeature::Error error, const QString &message);
 

@@ -38,19 +38,31 @@ QT_BEGIN_NAMESPACE
 class QtIVIServiceObject;
 class QtIVIServiceManagerPrivate;
 
-//TODO Detect simulation plugins
-//TODO make it possible to only search there e.g. by a SearchFlag BitField
 class Q_QTIVICORE_EXPORT QtIVIServiceManager : public QAbstractListModel
 {
     Q_OBJECT
 public:
+    enum SearchFlag {
+        IncludeProductionBackends = 0x01,
+        IncludeSimulationBackends = 0x02,
+        IncludeAll = IncludeProductionBackends | IncludeSimulationBackends,
+    };
+    Q_DECLARE_FLAGS(SearchFlags, SearchFlag)
+    Q_FLAG(SearchFlags)
+
+    enum BackendType {
+        ProductionBackend,
+        SimulationBackend
+    };
+    Q_ENUM(BackendType)
+
     static QtIVIServiceManager *instance();
     virtual ~QtIVIServiceManager();
 
-    QList<QtIVIServiceObject*> findServiceByInterface(const QString &interface);
+    QList<QtIVIServiceObject*> findServiceByInterface(const QString &interface, SearchFlags searchFlags = IncludeAll);
     bool hasInterface(const QString &interface) const;
 
-    bool registerService(QObject *serviceBackendInterface, const QStringList &interfaces);
+    bool registerService(QObject *serviceBackendInterface, const QStringList &interfaces, BackendType backendType = ProductionBackend);
     void unloadAllBackends();
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;

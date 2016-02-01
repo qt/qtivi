@@ -123,7 +123,7 @@ void QtIVIClimateControlPrivate::clearToDefaults()
    exposed through zone objects. The zones are retrieved using the \l zoneAt method.
 
    The QtIVIClimateControl expects a single backend to be available. It is recommended to use it
-   with \l {QtIVIAbstractFeature::}{autoDiscovery} enabled.
+   with \l {QtIVIAbstractFeature::}{discoveryMode} set to \l AutoDiscovery.
 */
 
 /*!

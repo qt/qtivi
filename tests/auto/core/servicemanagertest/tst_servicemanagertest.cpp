@@ -76,6 +76,7 @@ private Q_SLOTS:
 
     void testHasInterface();
     void testFindServiceObjectsReturnInValidInstance();
+    void testFindServiceObjects_data();
     void testFindServiceObjects();
     void testRegisterWithNoInterfaces();
     void testRegisterNonServiceBackendInterfaceObject();
@@ -150,15 +151,27 @@ void ServiceManagerTest::testFindServiceObjectsReturnInValidInstance()
     QVERIFY(list.isEmpty());
 }
 
+void ServiceManagerTest::testFindServiceObjects_data()
+{
+    QTest::addColumn<QtIVIServiceManager::SearchFlags>("searchFlags");
+    QTest::newRow("AllBackends") << QtIVIServiceManager::SearchFlags(QtIVIServiceManager::IncludeAll);
+    QTest::newRow("OnlyProductionBackends") << QtIVIServiceManager::SearchFlags(QtIVIServiceManager::IncludeProductionBackends);
+    QTest::newRow("OnlySimulationBackends") << QtIVIServiceManager::SearchFlags(QtIVIServiceManager::IncludeSimulationBackends);
+}
+
 void ServiceManagerTest::testFindServiceObjects()
 {
+    QFETCH(QtIVIServiceManager::SearchFlags, searchFlags);
     MockServiceBackend *backend = new MockServiceBackend(manager);
-    bool regResult = manager->registerService(backend, QStringList() << "TestInterface");
+    QtIVIServiceManager::BackendType type = QtIVIServiceManager::ProductionBackend;
+    if (searchFlags & QtIVIServiceManager::IncludeSimulationBackends)
+        type = QtIVIServiceManager::SimulationBackend;
+    bool regResult = manager->registerService(backend, QStringList() << "TestInterface", type);
     QCOMPARE(regResult, true);
     QObject* testObject = new QObject();
     backend->addServiceObject("TestInterface", testObject);
 
-    QList<QtIVIServiceObject*> list = manager->findServiceByInterface("TestInterface");
+    QList<QtIVIServiceObject*> list = manager->findServiceByInterface("TestInterface", searchFlags);
     QVERIFY(!list.isEmpty());
     QtIVIServiceObject* serviceObject = list.at(0);
     QVERIFY(serviceObject->interfaces().contains("TestInterface"));

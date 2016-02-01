@@ -44,7 +44,7 @@ ApplicationWindow {
 //![1]
     ClimateControl {
         id: climateControl
-        autoDiscovery: true
+        discoveryMode: ClimateControl.AutoDiscovery
     }
 //![1]
 
