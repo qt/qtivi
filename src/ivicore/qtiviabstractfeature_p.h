@@ -57,6 +57,7 @@ public:
     bool m_autoDiscovery;
     QString m_errorMessage;
     QtIVIAbstractFeature::Error m_error;
+    bool m_qmlCreation;
 };
 
 QT_END_NAMESPACE

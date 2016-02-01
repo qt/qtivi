@@ -41,6 +41,7 @@ QtIVIAbstractFeaturePrivate::QtIVIAbstractFeaturePrivate(const QString &interfac
     , m_interface(interface)
     , m_serviceObject(0)
     , m_autoDiscovery(true)
+    , m_qmlCreation(false)
 {
 }
 
@@ -179,6 +180,7 @@ QtIVIAbstractFeature::QtIVIAbstractFeature(const QString &interface, QObject *pa
     : QObject(parent)
     , d_ptr(new QtIVIAbstractFeaturePrivate(interface, this))
 {
+    qRegisterMetaType<QtIVIAbstractFeature::Error>();
 }
 
 /*!
@@ -201,23 +203,32 @@ QtIVIAbstractFeature::~QtIVIAbstractFeature()
 void QtIVIAbstractFeature::setServiceObject(QtIVIServiceObject *so)
 {
     Q_D(QtIVIAbstractFeature);
+    if (d->m_serviceObject == so)
+        return;
+
     if (d->m_serviceObject) {
         disconnectFromServiceObject(d->m_serviceObject);
-        disconnect(so, SIGNAL(destroyed()), this, SLOT(serviceObjectDestroyed()));
+        disconnect(d->m_serviceObject, SIGNAL(destroyed()), this, SLOT(serviceObjectDestroyed()));
     }
 
     d->m_serviceObject = 0;
 
-    if (!acceptServiceObject(so)) {
+    //We only want to call clearServiceObject if we are sure that the serviceObject changes
+    if (!so) {
         clearServiceObject();
+    } if (so && !acceptServiceObject(so)) {
         qWarning("ServiceObject is not accepted");
+        clearServiceObject();
     }
 
     d->m_serviceObject = so;
     emit serviceObjectChanged();
     emit isValidChanged(isValid());
-    connectToServiceObject(d->m_serviceObject);
-    connect(so, SIGNAL(destroyed()), this, SLOT(serviceObjectDestroyed()));
+
+    if (so) {
+        connectToServiceObject(d->m_serviceObject);
+        connect(so, SIGNAL(destroyed()), this, SLOT(serviceObjectDestroyed()));
+    }
 }
 
 /*!
@@ -227,14 +238,14 @@ void QtIVIAbstractFeature::setServiceObject(QtIVIServiceObject *so)
  * If automatic discovery is enabled, the feature will search for a suitable backend when
  * \l {QQmlParserStatus::}{componentComplete} is invoked from QML.
  *
+ * After component creation the property can be used to start the automatic discsovery later.
  */
 
 /*!
  * \property QtIVIAbstractFeature::autoDiscovery
  * \brief True if service objects are located automatically.
  *
- * If automatic discovery is enabled, the feature will search for a suitable backend when
- * \l startAutoDiscovery is called from C++.
+ * If automatic discovery is enabled, the feature will search for a suitable backend.
  *
  * \sa startAutoDiscovery()
  */
@@ -246,6 +257,9 @@ void QtIVIAbstractFeature::setAutoDiscovery(bool autoDiscovery)
 
     d->m_autoDiscovery = autoDiscovery;
     emit autoDiscoveryChanged(autoDiscovery);
+
+    if (!d->m_qmlCreation && autoDiscovery)
+        startAutoDiscovery();
 }
 
 /*!
@@ -254,6 +268,8 @@ void QtIVIAbstractFeature::setAutoDiscovery(bool autoDiscovery)
  */
 void QtIVIAbstractFeature::classBegin()
 {
+    Q_D(QtIVIAbstractFeature);
+    d->m_qmlCreation = true;
 }
 
 /*!
@@ -262,6 +278,7 @@ void QtIVIAbstractFeature::classBegin()
 void QtIVIAbstractFeature::componentComplete()
 {
     Q_D(QtIVIAbstractFeature);
+    d->m_qmlCreation = false;
     if (d->m_autoDiscovery) {
         startAutoDiscovery();
     }
@@ -299,9 +316,9 @@ void QtIVIAbstractFeature::setError(QtIVIAbstractFeature::Error error, const QSt
 {
     Q_D(QtIVIAbstractFeature);
     d->m_error = error;
+    d->m_errorMessage = errorText() + QStringLiteral(" ") + message;
     if (d->m_error == QtIVIAbstractFeature::NoError)
         d->m_errorMessage.clear();
-    d->m_errorMessage = errorText() + QStringLiteral(" ") + message;
     emit errorChanged(d->m_error, d->m_errorMessage);
 }
 
@@ -363,7 +380,10 @@ QString QtIVIAbstractFeature::errorText() const
 void QtIVIAbstractFeature::startAutoDiscovery()
 {
     Q_D(QtIVIAbstractFeature);
-    setAutoDiscovery(true);
+    if (!d->m_autoDiscovery) {
+        d->m_autoDiscovery = true;
+        emit autoDiscoveryChanged(true);
+    }
 
     if (d->m_serviceObject) // No need to discover a new backend when we already have one
         return;

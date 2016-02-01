@@ -87,15 +87,11 @@ Q_SIGNALS:
     void errorChanged(QtIVIAbstractFeature::Error error, const QString &message);
 
 protected:
-
-    //USE acceptService instead of the interface constructor, also in the simplediscoverymodel
     virtual bool acceptServiceObject(QtIVIServiceObject*) = 0;
     virtual void connectToServiceObject(QtIVIServiceObject*) = 0;
     virtual void disconnectFromServiceObject(QtIVIServiceObject*) = 0;
     virtual void clearServiceObject() = 0;
 
-    //TODO This doesn't work for the C++ usecases we should use the constructor there instead
-    // Also this means a qml dependency in the core, do we want that ?
     virtual void classBegin();
     virtual void componentComplete();
 
