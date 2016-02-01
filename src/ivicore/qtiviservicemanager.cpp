@@ -60,9 +60,13 @@ QList<QtIVIServiceObject *> QtIVIServiceManagerPrivate::findServiceByInterface(c
     foreach (Backend *backend, m_backends) {
 
         if (backend->metaData[QLatin1String("interfaces")].toStringList().contains(interface)) {
-            QtIVIServiceInterface *backendInterface = loadServiceBackendInterface(backend);
-            if (backendInterface)
-                list.append(new QtIVIProxyServiceObject(backendInterface));
+            if (!backend->proxyServiceObject) {
+                QtIVIServiceInterface *backendInterface = loadServiceBackendInterface(backend);
+                if (backendInterface)
+                    backend->proxyServiceObject = new QtIVIProxyServiceObject(backendInterface);
+            }
+            if (backend->proxyServiceObject)
+                list.append(backend->proxyServiceObject);
         }
     }
 
@@ -114,6 +118,7 @@ void QtIVIServiceManagerPrivate::registerBackend(const QString fileName, const Q
     backend->interface = 0;
     backend->interfaceObject = 0;
     backend->loader = 0;
+    backend->proxyServiceObject = 0;
     addBackend(backend);
 }
 
@@ -138,6 +143,7 @@ bool QtIVIServiceManagerPrivate::registerBackend(QObject *serviceBackendInterfac
     backend->interface = interface;
     backend->interfaceObject = serviceBackendInterface;
     backend->loader = 0;
+    backend->proxyServiceObject = 0;
 
     addBackend(backend);
     return true;
@@ -160,6 +166,7 @@ void QtIVIServiceManagerPrivate::unloadAllBackends()
         } else if (backend->interfaceObject) {
             delete backend->interfaceObject;
         }
+        delete backend->proxyServiceObject;
 
         i.remove();
         delete backend;

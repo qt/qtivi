@@ -55,11 +55,13 @@ class QPluginLoader;
 class QtIVIServiceInterface;
 class QtIVIServiceObject;
 class QtIVIServiceManager;
+class QtIVIProxyServiceObject;
 
 struct Backend{
     QVariantMap metaData;
     QtIVIServiceInterface *interface;
     QObject *interfaceObject;
+    QtIVIProxyServiceObject *proxyServiceObject;
     QPluginLoader *loader;
 };
 
