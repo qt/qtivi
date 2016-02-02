@@ -706,10 +706,6 @@ QtIVIProperty *QtIVIClimateControl::fanSpeedLevelProperty() const
  */
 /*!
    \property QtIVIClimateControl::targetTemperature
-   The target temperature of the zone expressed in centigrades.
- */
-/*!
-   \property QtIVIClimateControl::targetTemperature
 
    Holds a QtIVIProperty of type \e int where the QtIVIProperty::value() function returns the current target temperature.
 

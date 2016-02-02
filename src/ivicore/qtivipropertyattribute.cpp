@@ -122,6 +122,12 @@
  */
 
 /*!
+ * \fn QString QtIVIPropertyAttribute::toString() const
+ *
+ * Returns a QString with a string representation of the attribute.
+ */
+
+/*!
  * \fn bool QtIVIPropertyAttribute::operator==(const QtIVIPropertyAttribute& other) const
  *
  * Returns \c true if this QtIVIPropertyAttribute is equal to the \a other QtIVIPropertyAttribute; otherwise returns \c false.

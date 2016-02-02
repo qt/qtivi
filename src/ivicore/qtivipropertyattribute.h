@@ -111,11 +111,13 @@ public:
         return !operator==(other);
     }
 
+#ifndef Q_QDOC
     bool operator<(const QtIVIPropertyAttribute &other) const
     {
         Q_UNUSED(other)
         return false;
     }
+#endif
 
     QString toString() const
     {
