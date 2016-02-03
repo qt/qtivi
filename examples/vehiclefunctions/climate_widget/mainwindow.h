@@ -33,12 +33,14 @@
 #include <QMainWindow>
 #include <QtIVIVehicleFunctions/QtIVIClimateControl>
 
+QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
 }
 
 class QButtonGroup;
 class QAbstractButton;
+QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
