@@ -38,6 +38,8 @@
 #include <QDebug>
 #include <QLoggingCategory>
 
+QT_BEGIN_NAMESPACE
+
 void qtGeniviLogLevelChangedHandler(char context_id[], uint8_t log_level, uint8_t trace_status)
 {
     globalDltRegistration()->d_ptr->dltLogLevelChanged(context_id, log_level, trace_status);
@@ -50,6 +52,8 @@ QDltRegistration *globalDltRegistration()
 {
     return dltRegistration();
 }
+
+QT_END_NAMESPACE
 
 QDltRegistrationPrivate::QDltRegistrationPrivate(QDltRegistration *parent)
     : q_ptr(parent)
