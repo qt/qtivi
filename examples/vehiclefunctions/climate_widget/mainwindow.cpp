@@ -53,19 +53,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     if (!m_climateControl->isValid())
         QMessageBox::critical(this, tr("Auto Discovery Failed !"), tr("No Climate Backend available"));
-
-    setupUI();
 //![1]
-}
-
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
 
 //![2]
-void MainWindow::setupUI()
-{
     //Air Flow Direction
     setupFlowDirectionRadioButtons(m_climateControl->airflowDirection());
     setupFlowDirectionAttribute(m_climateControl->airflowDirectionAttribute());
@@ -107,6 +97,11 @@ void MainWindow::setupUI()
             m_climateControl, &QtIVIClimateControl::setHeaterEnabled);
 }
 //![2]
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
 
 void MainWindow::onAirRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> & attribute)
 {

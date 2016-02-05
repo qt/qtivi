@@ -50,8 +50,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void setupUI();
-
 private slots:
     void onAirRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
     void onHeaterAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);

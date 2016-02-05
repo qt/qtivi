@@ -47,8 +47,8 @@
      autodiscovery found a backend:
      \snippet climate_widget/mainwindow.cpp 1
 
-     The \e setupUI() function contains code to connect the climate control
-     attribute change signals to the UI components.
+     The constructor then continues to connect the climate control
+     attribute change signals to the UI components:
      \snippet climate_widget/mainwindow.cpp 2
 
      Airflow direction is controlled using these functions:
