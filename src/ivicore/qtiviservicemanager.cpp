@@ -100,7 +100,7 @@ void QtIVIServiceManagerPrivate::searchPlugins()
     }
 }
 
-void QtIVIServiceManagerPrivate::registerBackend(const QString fileName, const QJsonObject metaData)
+void QtIVIServiceManagerPrivate::registerBackend(const QString &fileName, const QJsonObject &metaData)
 {
     QVariantMap backendMetaData = metaData.value(QLatin1String("MetaData")).toVariant().toMap();
 

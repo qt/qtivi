@@ -77,7 +77,7 @@ public:
     QList<QtIVIServiceObject*> findServiceByInterface(const QString &interface);
 
     void searchPlugins();
-    void registerBackend(const QString fileName, const QJsonObject metaData);
+    void registerBackend(const QString &fileName, const QJsonObject &metaData);
     bool registerBackend(QObject *serviceBackendInterface, const QStringList &interfaces);
     void addBackend(struct Backend *backend);
 
