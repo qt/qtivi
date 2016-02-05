@@ -277,7 +277,7 @@ bool QIviAbstractFeature::setServiceObject(QIviServiceObject *so)
     //We only want to call clearServiceObject if we are sure that the serviceObject changes
     if (!so) {
         clearServiceObject();
-    } else if (so && !acceptServiceObject(so)) {
+    } else if (Q_UNLIKELY(so && !acceptServiceObject(so))) {
         qWarning("ServiceObject is not accepted");
         clearServiceObject();
 

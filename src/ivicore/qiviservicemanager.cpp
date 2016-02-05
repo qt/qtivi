@@ -110,17 +110,16 @@ void QIviServiceManagerPrivate::searchPlugins()
             found = true;
         }
     }
-    if (!found)
-    {
+    if (Q_UNLIKELY(!found))
         qWarning() << "No plugins found in search path: " << QCoreApplication::libraryPaths().join(QLatin1String(":"));
-    }
 }
 
 void QIviServiceManagerPrivate::registerBackend(const QString &fileName, const QJsonObject &metaData)
 {
     QVariantMap backendMetaData = metaData.value(QLatin1String("MetaData")).toVariant().toMap();
 
-    if (backendMetaData[QLatin1String("interfaces")].isNull() || backendMetaData[QLatin1String("interfaces")].toList().isEmpty()) {
+    if (Q_UNLIKELY(backendMetaData[QLatin1String("interfaces")].isNull() ||
+                   backendMetaData[QLatin1String("interfaces")].toList().isEmpty())) {
         qWarning("PluginManager - Malformed metaData in '%s'. MetaData must contain a list of interfaces", qPrintable(fileName));
         return;
     }
@@ -208,6 +207,17 @@ void QIviServiceManagerPrivate::addBackend(Backend *backend)
     }
 }
 
+namespace {
+Q_NEVER_INLINE
+static QIviServiceInterface *warn(const char *what, const QPluginLoader *loader)
+{
+    qWarning("ServiceManager::serviceObjects - failed to %s '%s'",
+             what, qPrintable(loader->fileName()));
+    delete loader;
+    return Q_NULLPTR;
+}
+} // unnamed namespace
+
 QIviServiceInterface *QIviServiceManagerPrivate::loadServiceBackendInterface(struct Backend *backend)
 {
     if (backend->interface) {
@@ -216,25 +226,16 @@ QIviServiceInterface *QIviServiceManagerPrivate::loadServiceBackendInterface(str
 
     QPluginLoader *loader = new QPluginLoader(backend->metaData[QLatin1String("fileName")].toString());
     QObject *plugin = loader->instance();
-    if (plugin) {
+    if (Q_UNLIKELY(!plugin))
+        return warn("load", loader);
 
-        QIviServiceInterface *backendInterface = qobject_cast<QIviServiceInterface*>(plugin);
-        if (backendInterface) {
-            backend->interface = backendInterface;
-            backend->loader = loader;
-            return backend->interface;
-        } else {
-            qWarning("ServiceManager::serviceObjects - failed to cast to interface from '%s'", qPrintable(loader->fileName()));
-        }
+    QIviServiceInterface *backendInterface = qobject_cast<QIviServiceInterface*>(plugin);
+    if (Q_UNLIKELY(!backendInterface))
+        return warn("cast to interface from", loader);
 
-    } else {
-        qWarning("ServiceManager::serviceObjects - failed to load '%s'", qPrintable(loader->fileName()));
-    }
-
-    //Only delete the Loader right away if we didn't succeeded with loading the interfaces.
-    delete loader;
-
-    return 0;
+    backend->interface = backendInterface;
+    backend->loader = loader;
+    return backend->interface;
 }
 
 /*!
