@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_climateControl->startAutoDiscovery();
 
     if (!m_climateControl->isValid())
-        QMessageBox::critical(this, "Auto Discovery Failed !", "No Climate Backend available");
+        QMessageBox::critical(this, tr("Auto Discovery Failed !"), tr("No Climate Backend available"));
 
     setupUI();
 //![1]
