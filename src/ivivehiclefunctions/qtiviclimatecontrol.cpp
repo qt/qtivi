@@ -33,8 +33,7 @@
 #include <QtIVICore/QtIVIPropertyFactory>
 
 QtIVIClimateControlPrivate::QtIVIClimateControlPrivate(QtIVIClimateControl *parent)
-    : QObject(parent)
-    , m_airflowDirection(QtIVIClimateControl::None)
+    : m_airflowDirection(QtIVIClimateControl::None)
     , m_airFlowDirectionProperty(QtIVIPropertyFactory<QtIVIClimateControl::AirflowDirection>::create(parent,
                                                                                                 &QtIVIClimateControl::airflowDirectionAttribute,
                                                                                                 &QtIVIClimateControl::airflowDirectionAttributeChanged,
@@ -163,6 +162,11 @@ QtIVIClimateControl::QtIVIClimateControl(const QString &zone, QObject* parent)
     qRegisterMetaType<QtIVIPropertyAttribute<int>>();
     qRegisterMetaType<QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection>>();
     qRegisterMetaType<QtIVIPropertyAttribute<bool>>();
+}
+
+QtIVIClimateControl::~QtIVIClimateControl()
+{
+    delete d_ptr;
 }
 
 QtIVIClimateControlBackendInterface *QtIVIClimateControl::climateControlBackend()

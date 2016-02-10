@@ -41,14 +41,13 @@
 // We mean it.
 //
 
-#include <QtCore/QObject>
 #include <QtIVICore/QtIVIProperty>
 
 #include "qtiviclimatecontrol.h"
 
 QT_BEGIN_NAMESPACE
 
-class QtIVIClimateControlPrivate : public QObject
+class QtIVIClimateControlPrivate
 {
 public:
     QtIVIClimateControlPrivate(QtIVIClimateControl *parent);

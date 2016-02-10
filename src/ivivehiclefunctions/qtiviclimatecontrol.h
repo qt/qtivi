@@ -65,6 +65,7 @@ public:
     Q_ENUM(AirflowDirection)
 
     QtIVIClimateControl(const QString &zone=QString(), QObject* parent=0);
+    ~QtIVIClimateControl();
 
     virtual void connectToServiceObject(QtIVIServiceObject *serviceObject) Q_DECL_OVERRIDE;
     virtual void clearServiceObject() Q_DECL_OVERRIDE;
