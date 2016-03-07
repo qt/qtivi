@@ -60,7 +60,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
 /*!
  * \fn virtual void QtIVIClimateControlBackendInterface::setTargetTemperature(int value, const QString &zone) = 0
  *
- * Sets the target temperature of \a zone to \a value, wheret he \a value is expressed in
+ * Sets the target temperature of \a zone to \a value, where the \a value is expressed in
  * centigrades and may be range limited by the backend.
  *
  * This method is expected to emit a \l targetTemperatureChanged() signal when receiving a new

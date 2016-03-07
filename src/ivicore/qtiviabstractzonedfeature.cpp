@@ -45,7 +45,7 @@ QtIVIAbstractZonedFeaturePrivate::QtIVIAbstractZonedFeaturePrivate(const QString
 
     \since 5.6
 
-    \brief The QtIVIAbstractZonedFeature is base class for all QtIVI vehicle features.
+    \brief The QtIVIAbstractZonedFeature is the base class for all QtIVI vehicle features.
 
     QtIVIAbstractZonedFeature contains all feature attributes and zone handling.
 */

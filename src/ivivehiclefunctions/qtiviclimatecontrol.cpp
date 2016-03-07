@@ -464,7 +464,7 @@ bool QtIVIClimateControl::isAirConditioningEnabled() const
 }
 
 /*!
- * Returns the attribute defining the boundaries and availability of the air conditioning property
+ * Returns the attribute defining the boundaries and availability of the air conditioning property.
  *
  * \sa setAirConditioningEnabled() isAirConditioningEnabled() airConditioningEnabledChanged()
  */
@@ -486,7 +486,7 @@ QtIVIProperty *QtIVIClimateControl::airConditioningProperty() const
    \e value holds the airflow direction.
    Available values are:
    \value None
-          AirflowDirection is not initialized
+          AirflowDirection is not initialized.
    \value FloorPanel
           Direct airflow along the floor panel.
    \value FloorDuct
@@ -558,7 +558,7 @@ bool QtIVIClimateControl::isHeaterEnabled() const
 }
 
 /*!
- * Returns the attribute defining the boundaries and availability of the heater property
+ * Returns the attribute defining the boundaries and availability of the heater property.
  *
  * \sa setHeaterEnabled() isHeaterEnabled() heaterEnabledChanged()
  */
@@ -599,7 +599,7 @@ bool QtIVIClimateControl::isAirRecirculationEnabled() const
 }
 
 /*!
- * Returns the attribute defining the boundaries and availability of the air recirculation property
+ * Returns the attribute defining the boundaries and availability of the air recirculation property.
  *
  * \sa setAirRecirculationEnabled() isAirRecirculationEnabled() airRecirculationEnabledChanged()
  */
@@ -644,7 +644,7 @@ int QtIVIClimateControl::steeringWheelHeater() const
 }
 
 /*!
- * Returns the attribute defining the boundaries and availability of the steering wheel heater property
+ * Returns the attribute defining the boundaries and availability of the steering wheel heater property.
  *
  * \sa setSteeringWheelHeater() steeringWheelHeater() steeringWheelHeaterChanged()
  */
@@ -705,8 +705,8 @@ QtIVIProperty *QtIVIClimateControl::fanSpeedLevelProperty() const
 /*!
    \qmlqtiviproperty {int} {QtIVIVehicleFunctions::ClimateControl::targetTemperature}
 
-    \e value holds the target temperature of the zone expressed in centigrades, where the temperature can be between \c minimumValue(off)
-    to \c maximumValue (strongest).
+   \e value holds the target temperature of the zone expressed in centigrades, where the temperature can be between \c minimumValue(off)
+   to \c maximumValue (strongest).
  */
 /*!
    \property QtIVIClimateControl::targetTemperature
@@ -728,7 +728,7 @@ int QtIVIClimateControl::targetTemperature() const
 }
 
 /*!
- * Returns the attribute defining the boundaries and availability of the target temperature property
+ * Returns the attribute defining the boundaries and availability of the target temperature property.
  *
  * \sa setTargetTemperature() targetTemperature() targetTemperatureChanged()
  */
@@ -770,7 +770,7 @@ int QtIVIClimateControl::seatCooler() const
 }
 
 /*!
- * Returns the attribute defining the boundaries and availability of the seat cooler property
+ * Returns the attribute defining the boundaries and availability of the seat cooler property.
  *
  * \sa setSeatCooler() seatCooler() seatCoolerChanged()
  */
@@ -812,7 +812,7 @@ int QtIVIClimateControl::seatHeater() const
 }
 
 /*!
- * Returns the attribute defining the boundaries and availability of the seat heater property
+ * Returns the attribute defining the boundaries and availability of the seat heater property.
  *
  * \sa setSeatHeater() seatHeater() seatHeaterChanged()
  */

@@ -32,7 +32,7 @@
 /*!
  * \class QtIVIPropertyFactory
  * \inmodule QtIVICore
- * \brief The QtIVIPropertyFactory ist used as a factory class for creating instances of QtIVIProperty
+ * \brief The QtIVIPropertyFactory is used as a factory class for creating instances of QtIVIProperty
  *
  * QtIVIPropertyFactory will preserve the type information about the template type in QtIVIProperty and
  * does a compile time check whether all provided functions and signals match this type and each other.
@@ -58,7 +58,7 @@
  *  The \a sender argument needs to be a pointer to the QObject* instance which implements all functions and signals provided next.
  *  The arguments \a attributeGetter and \a attributeSignal need to be functions pointers to your attribute getter function and the attribute signal function.
  *  These arguments need to be of QtIVIPropertyAttribute<T>.
- *  \a valueGetter, \a valueSignal and \a valueSlot need to be function pointers to the getter, signal and setter for the value which should be stored in this QtIVIQmlProperty instance.
+ *  \a valueGetter, \a valueSignal, and \a valueSlot need to be function pointers to the getter, signal, and setter for the value that should be stored in this QtIVIQmlProperty instance.
  *  The value functions need to have arguments and return values of type T.
  *
  * \sa QtIVIPropertyFactory::create(const QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal)
@@ -67,7 +67,7 @@
 /*!
  * \fn QtIVIPropertyFactory::create(const QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal)
  *
- *  Returns an new QtIVIProperty instance for a attribute and value of type T.
+ *  Returns a new QtIVIProperty instance for an attribute and value of type T.
  *
  *  The \a sender argument needs to be a pointer to the QObject* instance which implements all functions and signals provided next.
  *  The arguments \a attributeGetter and \a attributeSignal need to be functions pointers to your attribute getter function and the attribute signal function.

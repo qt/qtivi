@@ -32,19 +32,19 @@
      \title Climate Control Widget Example
      \ingroup qtivivehiclefunctions_examples
 
-     \brief The Example shows how to access the climate control from C++.
+     \brief This example shows how to access the climate control from C++.
      \image examples_climate_widget.png
 
-     The example shows how to access the climate control from the C++.
+     This example shows how to access the climate control from the C++.
 
      The first thing to do is to create a QtIVIClimateControl instance in our
      MainWindow constructor. As we only have one Climate backend and don't want
-     to choose which to use, we call \l {QtIVIAbstractFeature::}{startAutoDiscovery()}
+     to choose which one to use, we call \l {QtIVIAbstractFeature::}{startAutoDiscovery()}
      to start searching for a suitable backend right away and pick the first one
      that matches.
 
      \l {QtIVIClimateControl::}{isValid()} is used for verifying that the
-     autodiscovery found a backend:
+     autoDiscovery found a backend:
      \snippet climate_widget/mainwindow.cpp 1
 
      The constructor then continues to connect the climate control

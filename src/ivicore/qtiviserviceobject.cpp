@@ -34,12 +34,12 @@
 /*!
  * \class QtIVIServiceObject
  * \inmodule QtIVICore
- * \brief QtIVIServiceObject is the connection point to a Backend Service
+ * \brief QtIVIServiceObject is the connection point to a Backend Service.
  *
  * QtIVIServiceObject provides you with a list of interfaces the Backend implements.
  *
  * By using interfaceInstance() a QObject implementing this interface will be returned.
- * The returned interface can contain signals which needs to be connected to by the Feature
+ * The returned interface can contain signals that need to be connected to by the Feature
  * implementing this interface.
  *
  * \sa QtIVIAbstractFeature

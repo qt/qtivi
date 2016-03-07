@@ -34,29 +34,30 @@
  * \inmodule QtIVICore
  * \brief The QtIVIPropertyAttribute encapsulates the attributes of a property
  *
- * QtIVIPropertyAttribute sets the boundaries for a property in QtIVI. In a
- * QtIVI backend interface the QtIVIPropertyAttributes are used to control
+ * QtIVIPropertyAttribute sets the boundaries for a property in Qt IVI. In a
+ * Qt IVI backend interface, the QtIVIPropertyAttributes are used to control
  * which properties are implemented by a backend and to set the boundaries like
  * the minimum or the maximum value of a property.
  *
- * By default a QtIVIPropertyAttribute is initialized with the type: Invalid
- * and indicates that this property is not available. This could be the case
+ * By default a QtIVIPropertyAttribute is initialized with the "Invalid" type,
+ * which indicates that this property is not available. This could be the case
  * when the backend doesn't support this property or the property is not available
- * because the current backend configuration does not supported it.
- * (e.g. a property can be supported by a specific car configuration, but is not part of another).
+ * because the current backend configuration does not support it.
+ * For example, a property can be supported by a specific car configuration,
+ * but is not part of another.
  */
 
 /*!
  * \enum QtIVIPropertyAttributeBase::AttributeType
  *
  * \value Invalid
- *        The Attribute is invalid and is not available
+ *        The attribute is invalid and is not available.
  * \value NoAttributes
- *        No additional attributes for the property are provided
+ *        No additional attributes for the property are provided.
  * \value MinimumMaximum
- *        The Attribute defines the minimum and the maximum Value of the property
+ *        The attribute defines the minimum and the maximum value of the property.
  * \value AvailableValues
- *        The Attribute defines a list of values which are available for the property
+ *        The attribute defines a list of values that are available for the property.
  */
 
 /*!
@@ -64,14 +65,14 @@
  * Constructs an invalid QtIVIPropertyAttribute.
  *
  * This constructor can be used to indicate that the property is not available.
- * For example because the backend doesn't support this property.
+ * For example, because the backend doesn't support this property.
  */
 
 /*!
  * \fn QtIVIPropertyAttribute::QtIVIPropertyAttribute(bool available)
  * Constructs an QtIVIPropertyAttribute of type NoAttributes.
  *
- * The argument \a available defines whether the property is supported by the backend
+ * The argument \a available defines whether the property is supported by the backend.
  */
 
 /*!
@@ -104,14 +105,14 @@
  * \fn T QtIVIPropertyAttribute::minimumValue() const
  *
  * Returns the minimum value of the property.
- * If the attributeType is not MinimumMaximum a default constructed value is returned.
+ * If the attributeType is not MinimumMaximum, a default constructed value is returned.
  */
 
 /*!
  * \fn T QtIVIPropertyAttribute::maximumValue() const
  *
  * Returns the maximum value of the property.
- * If the attributeType is not MinimumMaximum a default constructed value is returned.
+ * If the attributeType is not MinimumMaximum, a default constructed value is returned.
  */
 
 /*!

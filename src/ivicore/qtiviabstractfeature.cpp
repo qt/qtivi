@@ -63,14 +63,14 @@ void QtIVIAbstractFeaturePrivate::setDiscoveryResult(QtIVIAbstractFeature::Disco
  * \inmodule QtIVICore
  * \brief The QtIVIAbstractFeature is the base class for all QtIVI Features
  *
- * QtIVIAbstractFeature is the base class for the front facing API towards the Developer.
- * The QtIVIAbstractFeature provides you with a way to automatically connect to a Backend implementing
- * your needed interface. This discovery is started by using the startAutoDiscovery() function.
+ * QtIVIAbstractFeature is the base class for the front facing API towards the developer.
+ * The QtIVIAbstractFeature provides you with a way to automatically connect to a backend implementing
+ * the interface needed. This discovery is started by using the startAutoDiscovery() function.
  *
  * Once the auto discovery is done, it can be checked whether a backend has been found by using the
  * isValid function.
  *
- * The auto discovery gives you a easy way to automatically connect to the right backend implementation.
+ * The auto discovery gives you an easy way to automatically connect to the right backend implementation.
  * If you don't want to use the auto discovery, it's also possible to use QtIVIServiceManager to retrieve
  * all Backends and search manually for the right one and connect it to the QtIVIAbstractFeature by calling
  * setServiceObject().
@@ -78,12 +78,12 @@ void QtIVIAbstractFeaturePrivate::setDiscoveryResult(QtIVIAbstractFeature::Disco
  * The type of backend to be loaded can be controlled by setting the auto discovery mode. By default,
  * it is set to AutoDiscovery, which indicates that a production backend will be preferred over a simulation backend.
  *
- * QtIVIAbstractFeature is a abstract base class which needs to be subclassed to create a API for your
+ * QtIVIAbstractFeature is an abstract base class that needs to be subclassed to create an API for your
  * Feature.
  *
  * \chapter Subclassing
  *
- * When subclassing QtIVIAbstractFeature you must provide implementations of the following functions:
+ * When subclassing QtIVIAbstractFeature, you must provide implementations of the following functions:
  * \list
  * \li acceptServiceObject()
  * \li connectToServiceObject()
@@ -91,14 +91,14 @@ void QtIVIAbstractFeaturePrivate::setDiscoveryResult(QtIVIAbstractFeature::Disco
  * \li clearServiceObject()
  * \endlist
  *
- * Once a QtIVIServiceObject has be set, either by auto discovery or by manually setting it the acceptServiceObject()
- * function will be called to make sure the QtIVIServiceObject provides everything which is needed by the Feature.
+ * Once a QtIVIServiceObject has been set, either by auto discovery or by manually setting it, the acceptServiceObject()
+ * function will be called to make sure the QtIVIServiceObject provides everything needed by the Feature.
  *
- * If the interface provides signals you need to do all the connect statements in connectToServiceObject() and
+ * If the interface provides signals, you need to do all the connect statements in connectToServiceObject() and
  * disconnect them again in disconnectFromServiceObject().
  *
  * clearServiceObject() will be called once the Feature doesn't have a connection to a ServiceObject anymore and should
- * reset it's state to sane defaults
+ * reset its state to sane defaults.
  */
 
 /*!
@@ -178,7 +178,7 @@ void QtIVIAbstractFeaturePrivate::setDiscoveryResult(QtIVIAbstractFeature::Disco
  * The implementation is expected to connect to the service object, \a so, and to set all
  * properties to reflect the state of the service object.
  *
- * There is no previous service object connected, as this call always is preceeded by a call to
+ * There is no previous service object connected, as this function call is always preceded by a call to
  * \l disconnectFromServiceObject or \l clearServiceObject.
  *
  * It is safe to assume that the service object, \a so, has always been accepted through the
@@ -280,17 +280,17 @@ void QtIVIAbstractFeature::setServiceObject(QtIVIServiceObject *so)
 
 /*!
  * \qmlproperty enumeration AbstractFeature::discoveryMode
- * \brief Holds the mode which is used for the autodiscovery
+ * \brief Holds the mode that is used for the autoDiscovery
  *
  *  Available values are:
  *  \value NoAutoDiscovery
- *         No Auto Discovery is done and the ServiceObject needs to be set manually
+ *         No Auto Discovery is done and the ServiceObject needs to be set manually.
  *  \value AutoDiscovery
- *         Tries to first find a production backend with a matching interface and falls back to a simulation backend if not found
+ *         Tries to find a production backend with a matching interface and falls back to a simulation backend if not found.
  *  \value LoadOnlyProductionBackends
- *         Only tries to load a production backend with a matching interface
+ *         Only tries to load a production backend with a matching interface.
  *  \value LoadOnlySimulationBackends
- *         Only tries to load a simulation backend with a matching interface
+ *         Only tries to load a simulation backend with a matching interface.
  *
  *  If needed the auto discovery will be started once the Item is created.
  *
@@ -300,7 +300,7 @@ void QtIVIAbstractFeature::setServiceObject(QtIVIServiceObject *so)
 
 /*!
  * \property QtIVIAbstractFeature::discoveryMode
- * \brief Holds the mode which is used for the autodiscovery
+ * \brief Holds the mode that is used for the autoDiscovery
  *
  * \sa startAutoDiscovery()
  */
@@ -357,22 +357,22 @@ QtIVIAbstractFeature::DiscoveryMode QtIVIAbstractFeature::discoveryMode() const
 
 /*!
  *  \qmlproperty enumeration AbstractFeature::autoDiscoveryResult
- *  \brief Holds the result of the last run of the auto discovery
+ *  \brief Holds the result of the last autoDiscovery
  *
  *  Available values are:
  *  \value NoResult
- *         Indicates that no auto discovery was started because the feature has already assigned a valid ServiceObject
+ *         Indicates that no auto discovery was started because the feature has already assigned a valid ServiceObject.
  *  \value ErrorWhileLoading
- *         An error has happened while searching for a backend with a matching interface
+ *         An error has happened while searching for a backend with a matching interface.
  *  \value ProductionBackendLoaded
- *         As a result of the auto discovery a production backend was loaded
+ *         As a result of the auto discovery a production backend was loaded.
  *  \value SimulationBackendLoaded
- *         As a result of the auto discovery a simulation backend was loaded
+ *         As a result of the auto discovery a simulation backend was loaded.
  */
 
 /*!
  *  \property QtIVIAbstractFeature::discoveryResult
- *  \brief Holds the result of the last run of the auto discovery
+ *  \brief Holds the result of the last autoDiscovery
  *
  *  \sa startAutoDiscovery()
  */
@@ -459,13 +459,13 @@ QString QtIVIAbstractFeature::errorText() const
  *
  *  Return values are:
  *  \value NoResult
- *         Indicates that no auto discovery was started because the feature has already assigned a valid ServiceObject
+ *         Indicates that no auto discovery was started because the feature has already assigned a valid ServiceObject.
  *  \value ErrorWhileLoading
- *         An error has happened while searching for a backend with a matching interface
+ *         An error has happened while searching for a backend with a matching interface.
  *  \value ProductionBackendLoaded
- *         As a result of the auto discovery a production backend was loaded
+ *         As a result of the auto discovery a production backend was loaded.
  *  \value SimulationBackendLoaded
- *         As a result of the auto discovery a simulation backend was loaded
+ *         As a result of the auto discovery a simulation backend was loaded.
  */
 
 /*!
@@ -531,7 +531,7 @@ QtIVIAbstractFeature::DiscoveryResult QtIVIAbstractFeature::startAutoDiscovery()
 
 /*!
  * \qmlproperty bool AbstractFeature::isValid
- * \brief Holds whether the feature is ready to use.
+ * \brief Holds whether the feature is ready for use.
  *
  * The property holds \c true if the feature is ready to be used, otherwise \c false. Not being
  * ready usually indicates that no suitable service object could be found, or that automatic

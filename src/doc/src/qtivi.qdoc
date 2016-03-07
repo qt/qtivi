@@ -29,7 +29,7 @@
     \title Qt IVI
     \keyword QtIVI
 
-    The Qt IVI (In-Vehicle Infotainment) provides C++ classes and QML types
+    The Qt IVI (In-Vehicle Infotainment) module provides C++ classes and QML types
     for accessing vehicle features, as well as a core API for implementing
     new IVI features.
 

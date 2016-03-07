@@ -63,7 +63,7 @@ void QtIVIPropertyPrivate::throwError(QObject *object, const QString &error)
  * QtIVIPropertyAttribute in an easy way. It's designed for QML (but is not limited to)
  * and acts as a Grouped Property.
  *
- * Although the QtIVIProperty only contains QVariant properties its still also stores
+ * Although the QtIVIProperty only contains QVariant properties, it still stores
  * the real type of the value and checks that only values of the correct type can be
  * stored in it.
  * The QtIVIProperty doesn't store a copy of the values, instead it just acts as a

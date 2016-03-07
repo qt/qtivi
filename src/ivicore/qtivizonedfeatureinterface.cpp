@@ -158,7 +158,7 @@ QtIVIZonedFeatureInterface::QtIVIZonedFeatureInterface(QObject *parent)
  * \fn QStringList QtIVIZonedFeatureInterface::availableZones() const
  *
  * Returns a list of supported zone names. This is called from the client
- * right after it's connected.
+ * after having connected.
  *
  * The returned names must be valid QML property names, i.e. \c {[a-z_][A-Za-z0-9_]*}.
  *

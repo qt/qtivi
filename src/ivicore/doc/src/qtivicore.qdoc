@@ -40,9 +40,9 @@
     demonstrator APIs that can be used as a starting point or off-the-shelf in your projects.
 
     The pattern is based around separation of the API facing the application developer, the so
-    called \e {Feature}, and the code implementing the said API, the \e {Backend}. There can be
-    multiple backends per feature and the Core module provides support for finding the corresponding
-    backend in an easy to use way.
+    called \e {Feature}, and the code implementing it, the \e {Backend}. There can be multiple
+    backends per feature and the Core module provides support for finding the corresponding
+    backend in an easy-to-use way.
 
     Common use cases driving this separation are:
 
@@ -51,7 +51,7 @@
         implementation.
     \li \e {Testing / Simulation}, where the backends can be tested separately from the app and the
         app can be tested using a specialized testing backend.
-    \li \e {Targets with different hardware configurations}, where parts of the system is
+    \li \e {Targets with different hardware configurations}, where certain parts of the system are
         represented by simulated backends while others use a real hardware integration.
     \li \e {Dynamically appearing services}, when services are available sometimes, but not always,
         meaning that backends come and go over time.
@@ -115,7 +115,7 @@
     finding the right service object for each feature instance.
 
     QtIVIServiceManager can be used in this case to manually search for plugins with a specific
-    BackendInterface. All the discovery and loading of the backends takes place in this class.
+    BackendInterface. The discovery and loading of the backends takes place in this class.
 
     The QtIVIServiceManager class can also be used to register backends which are part of the same
     application and shouldn’t go into a plugin. This is especially useful for autotest as you need
@@ -124,33 +124,32 @@
     \section1 Extending Qt IVI
 
     For easy deployment, Qt IVI extensions should be built as Qt modules. This makes it easy to
-    install and find headers, shared libraries as well as plugin modules from app projects.
+    install and find headers, shared libraries, and plugin modules from app projects.
 
-    By using the module system the developer benefits from easily enable the inclusion of your
-    module by using
+    By using the module system the developer can easily enable the inclusion of his
+    module in the following way:
 
     \code
     QT += <module>
     \endcode
 
-    In addition your module is properly setup to also work with cmake and the qdoc environment is
-    already setup, not to speak about the automatic test execution when using
+    In addition, your module is properly set up to work with cmake, qdoc, and auto test."
 
     \code
     make tests
     \endcode
 
     When creating a new Qt IVI module, it is recommended that you pick a name such as
-    \e {OemFeatureName}, where \e {Oem} is the name of the car-maker or platform owner, and
+    \e {OemFeatureName}, where \e {Oem} is the name of the car maker or platform owner, and
     \e {FeatureName} is the name of the feature(s) of the module. In addition to the name, a reverse
-    domain name prefix is needed for prefixing backend interface names, e.g. \e {com.example}.
+    domain name prefix is needed for prefixing backend interface names, for example \e {com.example}.
 
     Notice that it is possible to have multiple feature element classes in a single module. For
-    instance, the media module of Qt IVI contains both source discovery, media search and media
+    instance, the media module of Qt IVI contains both source discovery, media search, and media
     browse APIs.
 
     Having decided on a name and a backend interface name prefix, the template module can be checked
-    out from git. Then the renamer script is used to create the module, e.g:
+    out from git. Then the renamer script is used to create the module, for example:
 
     \code
     ./renamer.sh Oem MyFeature com.pelagicore

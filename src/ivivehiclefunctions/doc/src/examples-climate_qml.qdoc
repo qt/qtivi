@@ -35,7 +35,7 @@
      \brief The Example shows how to access the climate control from QML.
      \image examples_climate_qml.png
 
-     The example shows how to access the climate control from the QML.
+     The example shows how to access the climate control from QML.
 
      In the example, ClimateControl is created and autoDiscovery enabled.
      When autoDiscovery is enabled, the module starts searching for the presence

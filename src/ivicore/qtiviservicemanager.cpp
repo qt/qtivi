@@ -230,12 +230,12 @@ QtIVIServiceInterface *QtIVIServiceManagerPrivate::loadServiceBackendInterface(s
  * \inmodule QtIVICore
  * \brief QtIVIServiceManager provides the Backends to QtIVIAbstractFeature
  *
- * QtIVIServiceManager is the heart of QtIVI and provides you a easy way to detect what
- * Backends and interfaces are available.
+ * QtIVIServiceManager is the heart of QtIVI and provides you with an easy way to detect which
+ * backends and interfaces are available.
  *
  * By default QtIVIServiceManager reads the metaData of all plugins within the "qtivi" folder
  * of your plugin path. The plugin itself will be loaded once it's explictly requested by
- * the developer by using findServiceByInterface()
+ * the developer by using findServiceByInterface().
  *
  * The registerService() function can be used to add Backend classes without putting them into
  * a plugin.
@@ -288,7 +288,7 @@ QtIVIServiceManager::~QtIVIServiceManager()
 }
 
 /*!
- * Returns a List of Backends which implementing the specified \a interface.
+ * Returns a list of backends implementing the specified \a interface.
  *
  * The \a searchFlags argument can be used to control which type of backends are included in the search result.
  */
@@ -299,10 +299,11 @@ QList<QtIVIServiceObject *> QtIVIServiceManager::findServiceByInterface(const QS
 }
 
 /*!
- * Register a backend. The provided \a serviceBackendInterface must implement the QtIVIServiceInterface else
- * the registration will fail. \a interfaces is list with interfaces which the backend handles. At least one
- * interface is required. The \a backendType indicates the type of the backend and has influence on whether the
- * backend is found by the auto discovery of the Feature.
+ * Register a backend. The provided \a serviceBackendInterface must implement the
+ * QtIVIServiceInterface else the registration will fail. \a interfaces is a list
+ * with interfaces (at least one) supported by the backend. The \a backendType
+ * indicates the type of the backend and has influence on whether the backend is
+ * found by the auto discovery of the Feature.
  *
  * Returns true if the backend was successfully registered else false.
  *
