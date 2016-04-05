@@ -42,5 +42,3 @@ As DLT works for the whole system it needs to know also a little bit more about 
 DLT is using 4 character based idenifiers, this identifier needs to be assigned to your application, as well as to every category you define.
 
 By using QDLT_FALLBACK_CATEGORY() you can define which DLT category is used when no Qt Category was set for loogging a message e.g. when qWarning(), qDebug() or qCritical() was used
-
-Copyright (C) 2015 Pelagicore Group
