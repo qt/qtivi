@@ -1,17 +1,18 @@
 /****************************************************************************
 **
 ** Copyright (C) 2016 Pelagicore AG
-** Contact: http://www.qt.io/ or http://www.pelagicore.com/
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the QtIVI module of the Qt Toolkit.
 **
-** $QT_BEGIN_LICENSE:BSD-PELAGICORE$
+** $QT_BEGIN_LICENSE:BSD-QTAS$
 ** Commercial License Usage
-** Licensees holding valid commercial Qt IVI licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Pelagicore. For licensing terms
-** and conditions, contact us at http://www.pelagicore.com.
+** Licensees holding valid commercial Qt Automotive Suite licenses may use
+** this file in accordance with the commercial license agreement provided
+** with the Software or, alternatively, in accordance with the terms
+** contained in a written agreement between you and The Qt Company.  For
+** licensing terms and conditions see https://www.qt.io/terms-conditions.
+** For further information use the contact form at https://www.qt.io/contact-us.
 **
 ** BSD License Usage
 ** Alternatively, you may use this file under the terms of the BSD license
@@ -26,7 +27,7 @@
 **     notice, this list of conditions and the following disclaimer in
 **     the documentation and/or other materials provided with the
 **     distribution.
-**   * Neither the name of Pelagicore AG nor the names of its
+**   * Neither the name of The Qt Company Ltd nor the names of its
 **     contributors may be used to endorse or promote products derived
 **     from this software without specific prior written permission.
 **
@@ -48,7 +49,6 @@
 ** SPDX-License-Identifier: BSD-3-Clause
 **
 ****************************************************************************/
-
 
 #include <QCoreApplication>
 #include <QTimer>
