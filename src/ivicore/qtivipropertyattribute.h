@@ -206,4 +206,14 @@ operator<<(QDebug debug, const QtIVIPropertyAttribute<T> &ptr)
 
 QT_END_NAMESPACE
 
+
+Q_DECLARE_METATYPE(QtIVIPropertyAttribute<int>)
+Q_DECLARE_METATYPE(QtIVIPropertyAttribute<bool>)
+Q_DECLARE_METATYPE(QtIVIPropertyAttribute<double>)
+#if defined(QT_COORD_TYPE)
+Q_DECLARE_METATYPE(QtIVIPropertyAttribute<qreal>)
+#endif
+Q_DECLARE_METATYPE(QtIVIPropertyAttribute<QString>)
+
+
 #endif // QTIVIPROPERTYATTRIBUTE_H

@@ -170,8 +170,6 @@ private:
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QtIVIClimateControl::AirflowDirection)
-Q_DECLARE_METATYPE(QtIVIPropertyAttribute<int>)
-Q_DECLARE_METATYPE(QtIVIPropertyAttribute<bool>)
 Q_DECLARE_METATYPE(QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection>)
 
 #endif // CLIMATECONTROL_H

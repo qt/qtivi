@@ -47,7 +47,6 @@ struct ComplexType
     QString m_string;
 };
 Q_DECLARE_METATYPE(ComplexType)
-Q_DECLARE_METATYPE(QtIVIPropertyAttribute<int>)
 Q_DECLARE_METATYPE(QtIVIPropertyAttribute<ComplexType>)
 
 class tst_QtIVIPropertyAttribute : public QObject

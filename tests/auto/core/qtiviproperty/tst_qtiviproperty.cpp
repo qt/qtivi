@@ -103,8 +103,6 @@ public:
 
 };
 
-Q_DECLARE_METATYPE(QtIVIPropertyAttribute<int>)
-Q_DECLARE_METATYPE(QtIVIPropertyAttribute<QString>)
 Q_DECLARE_METATYPE(TestObject::TestEnum)
 Q_DECLARE_METATYPE(QtIVIPropertyAttribute<TestObject::TestEnum>)
 Q_DECLARE_METATYPE(QList<QQmlError>)
