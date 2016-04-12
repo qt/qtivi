@@ -257,7 +257,7 @@ void QtIVIClimateControl::onAirflowDirectionChanged(QtIVIClimateControl::Airflow
     emit f->airflowDirectionChanged(value);
 }
 
-void QtIVIClimateControl::onAirflowDirectionAttributeChanged(QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> airflowDirectionAttribute, const QString &zone)
+void QtIVIClimateControl::onAirflowDirectionAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> &airflowDirectionAttribute, const QString &zone)
 {
     QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
     if (!f)
@@ -279,7 +279,7 @@ void QtIVIClimateControl::onAirConditioningEnabledChanged(bool enabled, const QS
     emit f->airConditioningEnabledChanged(enabled);
 }
 
-void QtIVIClimateControl::onAirConditioningAttributeChanged(QtIVIPropertyAttribute<bool> airConditioningEnabledAttribute, const QString &zone)
+void QtIVIClimateControl::onAirConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &airConditioningEnabledAttribute, const QString &zone)
 {
     QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
     if (!f)
@@ -301,7 +301,7 @@ void QtIVIClimateControl::onHeaterEnabledChanged(bool enabled, const QString &zo
     emit f->heaterEnabledChanged(enabled);
 }
 
-void QtIVIClimateControl::onHeaterAttributeChanged(QtIVIPropertyAttribute<bool> heaterEnabledAttribute, const QString &zone)
+void QtIVIClimateControl::onHeaterAttributeChanged(const QtIVIPropertyAttribute<bool> &heaterEnabledAttribute, const QString &zone)
 {
     QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
     if (!f)
@@ -323,7 +323,7 @@ void QtIVIClimateControl::onAirRecirculationEnabledChanged(bool enabled, const Q
     emit f->airRecirculationEnabledChanged(enabled);
 }
 
-void QtIVIClimateControl::onAirRecirculationAttributeChanged(QtIVIPropertyAttribute<bool> airRecirculationEnabledAttribute, const QString &zone)
+void QtIVIClimateControl::onAirRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &airRecirculationEnabledAttribute, const QString &zone)
 {
     QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
     if (!f)
@@ -345,7 +345,7 @@ void QtIVIClimateControl::onSteeringWheelHeaterChanged(int value, const QString 
     emit f->steeringWheelHeaterChanged(value);
 }
 
-void QtIVIClimateControl::onSteeringWheelHeaterAttributeChanged(QtIVIPropertyAttribute<int> steeringWheelHeaterAttribute, const QString &zone)
+void QtIVIClimateControl::onSteeringWheelHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &steeringWheelHeaterAttribute, const QString &zone)
 {
     QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
     if (!f)
@@ -367,7 +367,7 @@ void QtIVIClimateControl::onFanSpeedLevelChanged(int value, const QString &zone)
     emit f->fanSpeedLevelChanged(value);
 }
 
-void QtIVIClimateControl::onFanSpeedLevelAttributeChanged(QtIVIPropertyAttribute<int> fanSpeedAttribute, const QString &zone)
+void QtIVIClimateControl::onFanSpeedLevelAttributeChanged(const QtIVIPropertyAttribute<int> &fanSpeedAttribute, const QString &zone)
 {
     QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
     if (!f)
@@ -389,7 +389,7 @@ void QtIVIClimateControl::onTargetTemperatureChanged(int temperature, const QStr
     emit f->targetTemperatureChanged(temperature);
 }
 
-void QtIVIClimateControl::onTargetTemperatureAttributeChanged(QtIVIPropertyAttribute<int> temperatureAttribute, const QString &zone)
+void QtIVIClimateControl::onTargetTemperatureAttributeChanged(const QtIVIPropertyAttribute<int> &temperatureAttribute, const QString &zone)
 {
     QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
     if (!f)
@@ -411,7 +411,7 @@ void QtIVIClimateControl::onSeatCoolerChanged(int value, const QString &zone)
     emit f->seatCoolerChanged(value);
 }
 
-void QtIVIClimateControl::onSeatCoolerAttributeChanged(QtIVIPropertyAttribute<int> seatCoolerAttribute, const QString &zone)
+void QtIVIClimateControl::onSeatCoolerAttributeChanged(const QtIVIPropertyAttribute<int> &seatCoolerAttribute, const QString &zone)
 {
     QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
     if (!f)
@@ -433,7 +433,7 @@ void QtIVIClimateControl::onSeatHeaterChanged(int value, const QString &zone)
     emit f->seatHeaterChanged(value);
 }
 
-void QtIVIClimateControl::onSeatHeaterAttributeChanged(QtIVIPropertyAttribute<int> seatHeaterAttribute, const QString &zone)
+void QtIVIClimateControl::onSeatHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &seatHeaterAttribute, const QString &zone)
 {
     QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
     if (!f)
