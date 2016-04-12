@@ -53,13 +53,13 @@
 // We mean it.
 //
 
-#include <QtCore/QObject>
+#include <private/qobject_p.h>
 
 #include "qtiviabstractfeature.h"
 
 QT_BEGIN_NAMESPACE
 
-class QtIVIAbstractFeaturePrivate : public QObject
+class Q_QTIVICORE_EXPORT QtIVIAbstractFeaturePrivate : public QObjectPrivate
 {
 public:
     QtIVIAbstractFeaturePrivate(const QString &interface, QtIVIAbstractFeature *parent);

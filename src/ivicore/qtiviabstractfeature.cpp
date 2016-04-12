@@ -49,7 +49,7 @@
 #include <QDebug>
 
 QtIVIAbstractFeaturePrivate::QtIVIAbstractFeaturePrivate(const QString &interface, QtIVIAbstractFeature *parent)
-    : QObject(parent)
+    : QObjectPrivate()
     , q_ptr(parent)
     , m_interface(interface)
     , m_serviceObject(0)
@@ -234,8 +234,7 @@ void QtIVIAbstractFeaturePrivate::setDiscoveryResult(QtIVIAbstractFeature::Disco
  * The \a interface argument is used to locate suitable service objects.
  */
 QtIVIAbstractFeature::QtIVIAbstractFeature(const QString &interface, QObject *parent)
-    : QObject(parent)
-    , d_ptr(new QtIVIAbstractFeaturePrivate(interface, this))
+    : QObject(*new QtIVIAbstractFeaturePrivate(interface, this), parent)
 {
     qRegisterMetaType<QtIVIAbstractFeature::Error>();
     qRegisterMetaType<QtIVIAbstractFeature::DiscoveryMode>();
@@ -539,6 +538,11 @@ QtIVIAbstractFeature::DiscoveryResult QtIVIAbstractFeature::startAutoDiscovery()
 
     d->setDiscoveryResult(result);
     return result;
+}
+
+QtIVIAbstractFeature::QtIVIAbstractFeature(QtIVIAbstractFeaturePrivate &dd, QObject *parent)
+    : QObject(dd, parent)
+{
 }
 
 /*!

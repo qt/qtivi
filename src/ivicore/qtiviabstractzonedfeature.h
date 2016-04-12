@@ -79,6 +79,8 @@ Q_SIGNALS:
     void zonesChanged();
 
 protected:
+    QtIVIAbstractZonedFeature(QtIVIAbstractZonedFeaturePrivate &dd, QObject *parent = Q_NULLPTR);
+
     virtual QtIVIAbstractZonedFeature *createZoneFeature(const QString &zone) = 0;
     QtIVIZonedFeatureInterface *backend() const;
 
@@ -102,7 +104,6 @@ private:
     void resetAttributes();
 
 private:
-    QtIVIAbstractZonedFeaturePrivate * const d_ptr;
     Q_DECLARE_PRIVATE(QtIVIAbstractZonedFeature)
 };
 

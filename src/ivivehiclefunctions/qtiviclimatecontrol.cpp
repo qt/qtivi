@@ -44,71 +44,78 @@
 #include "qtiviclimatecontrolbackendinterface.h"
 #include <QtIVICore/QtIVIPropertyFactory>
 
-QtIVIClimateControlPrivate::QtIVIClimateControlPrivate(QtIVIClimateControl *parent)
-    : m_airflowDirection(QtIVIClimateControl::None)
-    , m_airFlowDirectionProperty(QtIVIPropertyFactory<QtIVIClimateControl::AirflowDirection>::create(parent,
-                                                                                                &QtIVIClimateControl::airflowDirectionAttribute,
-                                                                                                &QtIVIClimateControl::airflowDirectionAttributeChanged,
-                                                                                                &QtIVIClimateControl::airflowDirection,
-                                                                                                &QtIVIClimateControl::airflowDirectionChanged,
-                                                                                                &QtIVIClimateControl::setAirflowDirection))
+QtIVIClimateControlPrivate::QtIVIClimateControlPrivate(const QString &interface, const QString &zone, QtIVIClimateControl *parent)
+    : QtIVIAbstractZonedFeaturePrivate(interface, zone, parent)
+    , m_airflowDirection(QtIVIClimateControl::None)
     , m_airConditioning(false)
-    , m_airConditioningProperty(QtIVIPropertyFactory<bool>::create(parent,
-                                                              &QtIVIClimateControl::airConditioningAttribute,
-                                                              &QtIVIClimateControl::airConditioningAttributeChanged,
-                                                              &QtIVIClimateControl::isAirConditioningEnabled,
-                                                              &QtIVIClimateControl::airConditioningEnabledChanged,
-                                                              &QtIVIClimateControl::setAirConditioningEnabled))
     , m_heater(false)
-    , m_heaterProperty(QtIVIPropertyFactory<bool>::create(parent,
-                                                     &QtIVIClimateControl::heaterAttribute,
-                                                     &QtIVIClimateControl::heaterAttributeChanged,
-                                                     &QtIVIClimateControl::isHeaterEnabled,
-                                                     &QtIVIClimateControl::heaterEnabledChanged,
-                                                     &QtIVIClimateControl::setHeaterEnabled))
     , m_airRecirculation(false)
-    , m_airRecirculationProperty(QtIVIPropertyFactory<bool>::create(parent,
-                                                               &QtIVIClimateControl::airRecirculationAttribute,
-                                                               &QtIVIClimateControl::airRecirculationAttributeChanged,
-                                                               &QtIVIClimateControl::isAirRecirculationEnabled,
-                                                               &QtIVIClimateControl::airRecirculationEnabledChanged,
-                                                               &QtIVIClimateControl::setAirRecirculationEnabled))
     , m_targetTemperature(0)
-    , m_targetTemperatureProperty(QtIVIPropertyFactory<int>::create(parent,
-                                                               &QtIVIClimateControl::targetTemperatureAttribute,
-                                                               &QtIVIClimateControl::targetTemperatureAttributeChanged,
-                                                               &QtIVIClimateControl::targetTemperature,
-                                                               &QtIVIClimateControl::targetTemperatureChanged,
-                                                               &QtIVIClimateControl::setTargetTemperature))
     , m_seatCooler(0)
-    , m_seatCoolerProperty(QtIVIPropertyFactory<int>::create(parent,
-                                                        &QtIVIClimateControl::seatCoolerAttribute,
-                                                        &QtIVIClimateControl::seatCoolerAttributeChanged,
-                                                        &QtIVIClimateControl::seatCooler,
-                                                        &QtIVIClimateControl::seatCoolerChanged,
-                                                        &QtIVIClimateControl::setSeatCooler))
     , m_seatHeater(0)
-    , m_seatHeaterProperty(QtIVIPropertyFactory<int>::create(parent,
-                                                        &QtIVIClimateControl::seatHeaterAttribute,
-                                                        &QtIVIClimateControl::seatHeaterAttributeChanged,
-                                                        &QtIVIClimateControl::seatHeater,
-                                                        &QtIVIClimateControl::seatHeaterChanged,
-                                                        &QtIVIClimateControl::setSeatHeater))
     , m_steeringWheelHeater(0)
-    , m_steeringWheelHeaterProperty(QtIVIPropertyFactory<int>::create(parent,
-                                                                 &QtIVIClimateControl::steeringWheelHeaterAttribute,
-                                                                 &QtIVIClimateControl::steeringWheelHeaterAttributeChanged,
-                                                                 &QtIVIClimateControl::steeringWheelHeater,
-                                                                 &QtIVIClimateControl::steeringWheelHeaterChanged,
-                                                                 &QtIVIClimateControl::setSteeringWheelHeater))
     , m_fanSpeedLevel(0)
-    , m_fanSpeedLevelProperty(QtIVIPropertyFactory<int>::create(parent,
-                                                           &QtIVIClimateControl::fanSpeedLevelAttribute,
-                                                           &QtIVIClimateControl::fanSpeedLevelAttributeChanged,
-                                                           &QtIVIClimateControl::fanSpeedLevel,
-                                                           &QtIVIClimateControl::fanSpeedLevelChanged,
-                                                           &QtIVIClimateControl::setFanSpeedLevel))
+    , q_ptr(parent)
 {
+}
+
+void QtIVIClimateControlPrivate::init()
+{
+    Q_Q(QtIVIClimateControl);
+    m_airFlowDirectionProperty = QtIVIPropertyFactory<QtIVIClimateControl::AirflowDirection>::create(q,
+                                                                                                     &QtIVIClimateControl::airflowDirectionAttribute,
+                                                                                                     &QtIVIClimateControl::airflowDirectionAttributeChanged,
+                                                                                                     &QtIVIClimateControl::airflowDirection,
+                                                                                                     &QtIVIClimateControl::airflowDirectionChanged,
+                                                                                                     &QtIVIClimateControl::setAirflowDirection);
+    m_airConditioningProperty = QtIVIPropertyFactory<bool>::create(q,
+                                                                   &QtIVIClimateControl::airConditioningAttribute,
+                                                                   &QtIVIClimateControl::airConditioningAttributeChanged,
+                                                                   &QtIVIClimateControl::isAirConditioningEnabled,
+                                                                   &QtIVIClimateControl::airConditioningEnabledChanged,
+                                                                   &QtIVIClimateControl::setAirConditioningEnabled);
+    m_heaterProperty = QtIVIPropertyFactory<bool>::create(q,
+                                                          &QtIVIClimateControl::heaterAttribute,
+                                                          &QtIVIClimateControl::heaterAttributeChanged,
+                                                          &QtIVIClimateControl::isHeaterEnabled,
+                                                          &QtIVIClimateControl::heaterEnabledChanged,
+                                                          &QtIVIClimateControl::setHeaterEnabled);
+    m_airRecirculationProperty = QtIVIPropertyFactory<bool>::create(q,
+                                                                    &QtIVIClimateControl::airRecirculationAttribute,
+                                                                    &QtIVIClimateControl::airRecirculationAttributeChanged,
+                                                                    &QtIVIClimateControl::isAirRecirculationEnabled,
+                                                                    &QtIVIClimateControl::airRecirculationEnabledChanged,
+                                                                    &QtIVIClimateControl::setAirRecirculationEnabled);
+    m_targetTemperatureProperty = QtIVIPropertyFactory<int>::create(q,
+                                                                    &QtIVIClimateControl::targetTemperatureAttribute,
+                                                                    &QtIVIClimateControl::targetTemperatureAttributeChanged,
+                                                                    &QtIVIClimateControl::targetTemperature,
+                                                                    &QtIVIClimateControl::targetTemperatureChanged,
+                                                                    &QtIVIClimateControl::setTargetTemperature);
+    m_seatCoolerProperty = QtIVIPropertyFactory<int>::create(q,
+                                                             &QtIVIClimateControl::seatCoolerAttribute,
+                                                             &QtIVIClimateControl::seatCoolerAttributeChanged,
+                                                             &QtIVIClimateControl::seatCooler,
+                                                             &QtIVIClimateControl::seatCoolerChanged,
+                                                             &QtIVIClimateControl::setSeatCooler);
+    m_seatHeaterProperty = QtIVIPropertyFactory<int>::create(q,
+                                                             &QtIVIClimateControl::seatHeaterAttribute,
+                                                             &QtIVIClimateControl::seatHeaterAttributeChanged,
+                                                             &QtIVIClimateControl::seatHeater,
+                                                             &QtIVIClimateControl::seatHeaterChanged,
+                                                             &QtIVIClimateControl::setSeatHeater);
+    m_steeringWheelHeaterProperty = QtIVIPropertyFactory<int>::create(q,
+                                                                      &QtIVIClimateControl::steeringWheelHeaterAttribute,
+                                                                      &QtIVIClimateControl::steeringWheelHeaterAttributeChanged,
+                                                                      &QtIVIClimateControl::steeringWheelHeater,
+                                                                      &QtIVIClimateControl::steeringWheelHeaterChanged,
+                                                                      &QtIVIClimateControl::setSteeringWheelHeater);
+    m_fanSpeedLevelProperty = QtIVIPropertyFactory<int>::create(q,
+                                                                &QtIVIClimateControl::fanSpeedLevelAttribute,
+                                                                &QtIVIClimateControl::fanSpeedLevelAttributeChanged,
+                                                                &QtIVIClimateControl::fanSpeedLevel,
+                                                                &QtIVIClimateControl::fanSpeedLevelChanged,
+                                                                &QtIVIClimateControl::setFanSpeedLevel);
 }
 
 void QtIVIClimateControlPrivate::clearToDefaults()
@@ -121,6 +128,228 @@ void QtIVIClimateControlPrivate::clearToDefaults()
     m_seatHeater = 0;
     m_steeringWheelHeater = 0;
     m_fanSpeedLevel = 0;
+}
+
+void QtIVIClimateControlPrivate::onAirflowDirectionChanged(QtIVIClimateControl::AirflowDirection value, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_airflowDirection = value;
+    emit f->airflowDirectionChanged(value);
+}
+
+void QtIVIClimateControlPrivate::onAirflowDirectionAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> &airflowDirectionAttribute, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_airflowDirectionAttribute = airflowDirectionAttribute;
+    emit f->airflowDirectionAttributeChanged(airflowDirectionAttribute);
+}
+
+void QtIVIClimateControlPrivate::onAirConditioningEnabledChanged(bool enabled, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_airConditioning = enabled;
+    emit f->airConditioningEnabledChanged(enabled);
+}
+
+void QtIVIClimateControlPrivate::onAirConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &airConditioningEnabledAttribute, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_airConditioningAttribute = airConditioningEnabledAttribute;
+    emit f->airConditioningAttributeChanged(airConditioningEnabledAttribute);
+}
+
+void QtIVIClimateControlPrivate::onHeaterEnabledChanged(bool enabled, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_heater = enabled;
+    emit f->heaterEnabledChanged(enabled);
+}
+
+void QtIVIClimateControlPrivate::onHeaterAttributeChanged(const QtIVIPropertyAttribute<bool> &heaterEnabledAttribute, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_heaterAttribute = heaterEnabledAttribute;
+    emit f->heaterAttributeChanged(heaterEnabledAttribute);
+}
+
+void QtIVIClimateControlPrivate::onAirRecirculationEnabledChanged(bool enabled, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_airRecirculation = enabled;
+    emit f->airRecirculationEnabledChanged(enabled);
+}
+
+void QtIVIClimateControlPrivate::onAirRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &airRecirculationEnabledAttribute, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_airRecirculationAttribute = airRecirculationEnabledAttribute;
+    emit f->airRecirculationAttributeChanged(airRecirculationEnabledAttribute);
+}
+
+void QtIVIClimateControlPrivate::onSteeringWheelHeaterChanged(int value, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_steeringWheelHeater = value;
+    emit f->steeringWheelHeaterChanged(value);
+}
+
+void QtIVIClimateControlPrivate::onSteeringWheelHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &steeringWheelHeaterAttribute, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_steeringWheelHeaterAttribute = steeringWheelHeaterAttribute;
+    emit f->steeringWheelHeaterAttributeChanged(steeringWheelHeaterAttribute);
+}
+
+void QtIVIClimateControlPrivate::onFanSpeedLevelChanged(int value, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_fanSpeedLevel = value;
+    emit f->fanSpeedLevelChanged(value);
+}
+
+void QtIVIClimateControlPrivate::onFanSpeedLevelAttributeChanged(const QtIVIPropertyAttribute<int> &fanSpeedAttribute, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_fanSpeedLevelAttribute = fanSpeedAttribute;
+    emit f->fanSpeedLevelAttributeChanged(fanSpeedAttribute);
+}
+
+void QtIVIClimateControlPrivate::onTargetTemperatureChanged(int temperature, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_targetTemperature = temperature;
+    emit f->targetTemperatureChanged(temperature);
+}
+
+void QtIVIClimateControlPrivate::onTargetTemperatureAttributeChanged(const QtIVIPropertyAttribute<int> &temperatureAttribute, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_targetTemperatureAttribute = temperatureAttribute;
+    emit f->targetTemperatureAttributeChanged(temperatureAttribute);
+}
+
+void QtIVIClimateControlPrivate::onSeatCoolerChanged(int value, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_seatCooler = value;
+    emit f->seatCoolerChanged(value);
+}
+
+void QtIVIClimateControlPrivate::onSeatCoolerAttributeChanged(const QtIVIPropertyAttribute<int> &seatCoolerAttribute, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_seatCoolerAttribute = seatCoolerAttribute;
+    emit f->seatCoolerAttributeChanged(seatCoolerAttribute);
+}
+
+void QtIVIClimateControlPrivate::onSeatHeaterChanged(int value, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_seatHeater = value;
+    emit f->seatHeaterChanged(value);
+}
+
+void QtIVIClimateControlPrivate::onSeatHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &seatHeaterAttribute, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_seatHeaterAttribute = seatHeaterAttribute;
+    emit f->seatHeaterAttributeChanged(seatHeaterAttribute);
+}
+
+QtIVIClimateControlBackendInterface *QtIVIClimateControlPrivate::climateControlBackend()
+{
+    Q_Q(QtIVIClimateControl);
+    return qobject_cast<QtIVIClimateControlBackendInterface*>(q->backend());
 }
 
 /*!
@@ -168,9 +397,10 @@ void QtIVIClimateControlPrivate::clearToDefaults()
    The \a parent argument is passed on to the \l QtIVIAbstractZonedFeature base class.
 */
 QtIVIClimateControl::QtIVIClimateControl(const QString &zone, QObject* parent)
-    : QtIVIAbstractZonedFeature(QtIVIStringClimateControlInterfaceName, zone, parent)
-    , d_ptr(new QtIVIClimateControlPrivate(this))
+    : QtIVIAbstractZonedFeature(*new QtIVIClimateControlPrivate(QtIVIStringClimateControlInterfaceName, zone, this), parent)
 {
+    Q_D(QtIVIClimateControl);
+    d->init();
     qRegisterMetaType<QtIVIPropertyAttribute<int>>();
     qRegisterMetaType<QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection>>();
     qRegisterMetaType<QtIVIPropertyAttribute<bool>>();
@@ -178,12 +408,6 @@ QtIVIClimateControl::QtIVIClimateControl(const QString &zone, QObject* parent)
 
 QtIVIClimateControl::~QtIVIClimateControl()
 {
-    delete d_ptr;
-}
-
-QtIVIClimateControlBackendInterface *QtIVIClimateControl::climateControlBackend()
-{
-    return qobject_cast<QtIVIClimateControlBackendInterface*>(backend());
 }
 
 /*!
@@ -191,48 +415,49 @@ QtIVIClimateControlBackendInterface *QtIVIClimateControl::climateControlBackend(
 */
 void QtIVIClimateControl::connectToServiceObject(QtIVIServiceObject *serviceObject)
 {
+    Q_D(QtIVIClimateControl);
     QtIVIAbstractZonedFeature::connectToServiceObject(serviceObject);
 
-    QtIVIClimateControlBackendInterface* backend = climateControlBackend();
+    QtIVIClimateControlBackendInterface* backend = d->climateControlBackend();
     if (!backend)
         return;
 
-    connect(backend, &QtIVIClimateControlBackendInterface::targetTemperatureChanged,
-            this, &QtIVIClimateControl::onTargetTemperatureChanged);
-    connect(backend, &QtIVIClimateControlBackendInterface::targetTemperatureAttributeChanged,
-            this, &QtIVIClimateControl::onTargetTemperatureAttributeChanged);
-    connect(backend, &QtIVIClimateControlBackendInterface::seatCoolerChanged,
-            this, &QtIVIClimateControl::onSeatCoolerChanged);
-    connect(backend, &QtIVIClimateControlBackendInterface::seatCoolerAttributeChanged,
-            this, &QtIVIClimateControl::onSeatCoolerAttributeChanged);
-    connect(backend, &QtIVIClimateControlBackendInterface::seatHeaterChanged,
-            this, &QtIVIClimateControl::onSeatHeaterChanged);
-    connect(backend, &QtIVIClimateControlBackendInterface::seatHeaterAttributeChanged,
-            this, &QtIVIClimateControl::onSeatHeaterAttributeChanged);
-    connect(backend, &QtIVIClimateControlBackendInterface::steeringWheelHeaterChanged,
-            this, &QtIVIClimateControl::onSteeringWheelHeaterChanged);
-    connect(backend, &QtIVIClimateControlBackendInterface::steeringWheelHeaterAttributeChanged,
-            this, &QtIVIClimateControl::onSteeringWheelHeaterAttributeChanged);
-    connect(backend, &QtIVIClimateControlBackendInterface::fanSpeedLevelChanged,
-            this, &QtIVIClimateControl::onFanSpeedLevelChanged);
-    connect(backend, &QtIVIClimateControlBackendInterface::fanSpeedLevelAttributeChanged,
-            this, &QtIVIClimateControl::onFanSpeedLevelAttributeChanged);
-    connect(backend, &QtIVIClimateControlBackendInterface::airflowDirectionChanged,
-            this, &QtIVIClimateControl::onAirflowDirectionChanged);
-    connect(backend, &QtIVIClimateControlBackendInterface::airflowDirectionAttributeChanged,
-            this, &QtIVIClimateControl::onAirflowDirectionAttributeChanged);
-    connect(backend, &QtIVIClimateControlBackendInterface::airConditioningEnabledChanged,
-            this, &QtIVIClimateControl::onAirConditioningEnabledChanged);
-    connect(backend, &QtIVIClimateControlBackendInterface::airConditioningAttributeChanged,
-            this, &QtIVIClimateControl::onAirConditioningAttributeChanged);
-    connect(backend, &QtIVIClimateControlBackendInterface::heaterEnabledChanged,
-            this, &QtIVIClimateControl::onHeaterEnabledChanged);
-    connect(backend, &QtIVIClimateControlBackendInterface::heaterAttributeChanged,
-            this, &QtIVIClimateControl::onHeaterAttributeChanged);
-    connect(backend, &QtIVIClimateControlBackendInterface::airRecirculationEnabledChanged,
-            this, &QtIVIClimateControl::onAirRecirculationEnabledChanged);
-    connect(backend, &QtIVIClimateControlBackendInterface::airRecirculationAttributeChanged,
-            this, &QtIVIClimateControl::onAirRecirculationAttributeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::targetTemperatureChanged,
+            d, &QtIVIClimateControlPrivate::onTargetTemperatureChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::targetTemperatureAttributeChanged,
+            d, &QtIVIClimateControlPrivate::onTargetTemperatureAttributeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::seatCoolerChanged,
+            d, &QtIVIClimateControlPrivate::onSeatCoolerChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::seatCoolerAttributeChanged,
+            d, &QtIVIClimateControlPrivate::onSeatCoolerAttributeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::seatHeaterChanged,
+            d, &QtIVIClimateControlPrivate::onSeatHeaterChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::seatHeaterAttributeChanged,
+            d, &QtIVIClimateControlPrivate::onSeatHeaterAttributeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::steeringWheelHeaterChanged,
+            d, &QtIVIClimateControlPrivate::onSteeringWheelHeaterChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::steeringWheelHeaterAttributeChanged,
+            d, &QtIVIClimateControlPrivate::onSteeringWheelHeaterAttributeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::fanSpeedLevelChanged,
+            d, &QtIVIClimateControlPrivate::onFanSpeedLevelChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::fanSpeedLevelAttributeChanged,
+            d, &QtIVIClimateControlPrivate::onFanSpeedLevelAttributeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::airflowDirectionChanged,
+            d, &QtIVIClimateControlPrivate::onAirflowDirectionChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::airflowDirectionAttributeChanged,
+            d, &QtIVIClimateControlPrivate::onAirflowDirectionAttributeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::airConditioningEnabledChanged,
+            d, &QtIVIClimateControlPrivate::onAirConditioningEnabledChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::airConditioningAttributeChanged,
+            d, &QtIVIClimateControlPrivate::onAirConditioningAttributeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::heaterEnabledChanged,
+            d, &QtIVIClimateControlPrivate::onHeaterEnabledChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::heaterAttributeChanged,
+            d, &QtIVIClimateControlPrivate::onHeaterAttributeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::airRecirculationEnabledChanged,
+            d, &QtIVIClimateControlPrivate::onAirRecirculationEnabledChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::airRecirculationAttributeChanged,
+            d, &QtIVIClimateControlPrivate::onAirRecirculationAttributeChanged);
 
     backend->initializeAttributes();
 }
@@ -246,202 +471,11 @@ void QtIVIClimateControl::clearServiceObject()
     d->clearToDefaults();
 }
 
-void QtIVIClimateControl::onAirflowDirectionChanged(QtIVIClimateControl::AirflowDirection value, const QString &zone)
+QtIVIClimateControl::QtIVIClimateControl(QtIVIClimateControlPrivate &dd, QObject *parent)
+    : QtIVIAbstractZonedFeature(dd, parent)
 {
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
-    if (!f)
-        f = this;
-    if (f->zone() != zone)
-        return;
-    f->d_ptr->m_airflowDirection = value;
-    emit f->airflowDirectionChanged(value);
-}
-
-void QtIVIClimateControl::onAirflowDirectionAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> &airflowDirectionAttribute, const QString &zone)
-{
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
-    if (!f)
-        f = this;
-    if (f->zone() != zone)
-        return;
-    f->d_ptr->m_airflowDirectionAttribute = airflowDirectionAttribute;
-    emit f->airflowDirectionAttributeChanged(airflowDirectionAttribute);
-}
-
-void QtIVIClimateControl::onAirConditioningEnabledChanged(bool enabled, const QString &zone)
-{
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
-    if (!f)
-        f = this;
-    if (f->zone() != zone)
-        return;
-    f->d_ptr->m_airConditioning = enabled;
-    emit f->airConditioningEnabledChanged(enabled);
-}
-
-void QtIVIClimateControl::onAirConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &airConditioningEnabledAttribute, const QString &zone)
-{
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
-    if (!f)
-        f = this;
-    if (f->zone() != zone)
-        return;
-    f->d_ptr->m_airConditioningAttribute = airConditioningEnabledAttribute;
-    emit f->airConditioningAttributeChanged(airConditioningEnabledAttribute);
-}
-
-void QtIVIClimateControl::onHeaterEnabledChanged(bool enabled, const QString &zone)
-{
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
-    if (!f)
-        f = this;
-    if (f->zone() != zone)
-        return;
-    f->d_ptr->m_heater = enabled;
-    emit f->heaterEnabledChanged(enabled);
-}
-
-void QtIVIClimateControl::onHeaterAttributeChanged(const QtIVIPropertyAttribute<bool> &heaterEnabledAttribute, const QString &zone)
-{
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
-    if (!f)
-        f = this;
-    if (f->zone() != zone)
-        return;
-    f->d_ptr->m_heaterAttribute = heaterEnabledAttribute;
-    emit f->heaterAttributeChanged(heaterEnabledAttribute);
-}
-
-void QtIVIClimateControl::onAirRecirculationEnabledChanged(bool enabled, const QString &zone)
-{
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
-    if (!f)
-        f = this;
-    if (f->zone() != zone)
-        return;
-    f->d_ptr->m_airRecirculation = enabled;
-    emit f->airRecirculationEnabledChanged(enabled);
-}
-
-void QtIVIClimateControl::onAirRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &airRecirculationEnabledAttribute, const QString &zone)
-{
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
-    if (!f)
-        f = this;
-    if (f->zone() != zone)
-        return;
-    f->d_ptr->m_airRecirculationAttribute = airRecirculationEnabledAttribute;
-    emit f->airRecirculationAttributeChanged(airRecirculationEnabledAttribute);
-}
-
-void QtIVIClimateControl::onSteeringWheelHeaterChanged(int value, const QString &zone)
-{
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
-    if (!f)
-        f = this;
-    if (f->zone() != zone)
-        return;
-    f->d_ptr->m_steeringWheelHeater = value;
-    emit f->steeringWheelHeaterChanged(value);
-}
-
-void QtIVIClimateControl::onSteeringWheelHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &steeringWheelHeaterAttribute, const QString &zone)
-{
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
-    if (!f)
-        f = this;
-    if (f->zone() != zone)
-        return;
-    f->d_ptr->m_steeringWheelHeaterAttribute = steeringWheelHeaterAttribute;
-    emit f->steeringWheelHeaterAttributeChanged(steeringWheelHeaterAttribute);
-}
-
-void QtIVIClimateControl::onFanSpeedLevelChanged(int value, const QString &zone)
-{
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
-    if (!f)
-        f = this;
-    if (f->zone() != zone)
-        return;
-    f->d_ptr->m_fanSpeedLevel = value;
-    emit f->fanSpeedLevelChanged(value);
-}
-
-void QtIVIClimateControl::onFanSpeedLevelAttributeChanged(const QtIVIPropertyAttribute<int> &fanSpeedAttribute, const QString &zone)
-{
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
-    if (!f)
-        f = this;
-    if (f->zone() != zone)
-        return;
-    f->d_ptr->m_fanSpeedLevelAttribute = fanSpeedAttribute;
-    emit f->fanSpeedLevelAttributeChanged(fanSpeedAttribute);
-}
-
-void QtIVIClimateControl::onTargetTemperatureChanged(int temperature, const QString &zone)
-{
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
-    if (!f)
-        f = this;
-    if (f->zone() != zone)
-        return;
-    f->d_ptr->m_targetTemperature = temperature;
-    emit f->targetTemperatureChanged(temperature);
-}
-
-void QtIVIClimateControl::onTargetTemperatureAttributeChanged(const QtIVIPropertyAttribute<int> &temperatureAttribute, const QString &zone)
-{
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
-    if (!f)
-        f = this;
-    if (f->zone() != zone)
-        return;
-    f->d_ptr->m_targetTemperatureAttribute = temperatureAttribute;
-    emit f->targetTemperatureAttributeChanged(temperatureAttribute);
-}
-
-void QtIVIClimateControl::onSeatCoolerChanged(int value, const QString &zone)
-{
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
-    if (!f)
-        f = this;
-    if (f->zone() != zone)
-        return;
-    f->d_ptr->m_seatCooler = value;
-    emit f->seatCoolerChanged(value);
-}
-
-void QtIVIClimateControl::onSeatCoolerAttributeChanged(const QtIVIPropertyAttribute<int> &seatCoolerAttribute, const QString &zone)
-{
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
-    if (!f)
-        f = this;
-    if (f->zone() != zone)
-        return;
-    f->d_ptr->m_seatCoolerAttribute = seatCoolerAttribute;
-    emit f->seatCoolerAttributeChanged(seatCoolerAttribute);
-}
-
-void QtIVIClimateControl::onSeatHeaterChanged(int value, const QString &zone)
-{
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
-    if (!f)
-        f = this;
-    if (f->zone() != zone)
-        return;
-    f->d_ptr->m_seatHeater = value;
-    emit f->seatHeaterChanged(value);
-}
-
-void QtIVIClimateControl::onSeatHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &seatHeaterAttribute, const QString &zone)
-{
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(zoneAt(zone));
-    if (!f)
-        f = this;
-    if (f->zone() != zone)
-        return;
-    f->d_ptr->m_seatHeaterAttribute = seatHeaterAttribute;
-    emit f->seatHeaterAttributeChanged(seatHeaterAttribute);
+    Q_D(QtIVIClimateControl);
+    d->init();
 }
 
 /*!
@@ -847,7 +881,8 @@ QtIVIProperty *QtIVIClimateControl::seatHeaterProperty() const
  */
 void QtIVIClimateControl::setAirConditioningEnabled(bool enabled)
 {
-    if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())
+    Q_D(QtIVIClimateControl);
+    if (QtIVIClimateControlBackendInterface* backend = d->climateControlBackend())
         backend->setAirConditioningEnabled(enabled, zone());
 }
 
@@ -858,7 +893,8 @@ void QtIVIClimateControl::setAirConditioningEnabled(bool enabled)
  */
 void QtIVIClimateControl::setAirflowDirection(QtIVIClimateControl::AirflowDirection direction)
 {
-    if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())
+    Q_D(QtIVIClimateControl);
+    if (QtIVIClimateControlBackendInterface* backend = d->climateControlBackend())
         backend->setAirflowDirection(direction, zone());
 }
 
@@ -869,7 +905,8 @@ void QtIVIClimateControl::setAirflowDirection(QtIVIClimateControl::AirflowDirect
  */
 void QtIVIClimateControl::setHeaterEnabled(bool enabled)
 {
-    if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())
+    Q_D(QtIVIClimateControl);
+    if (QtIVIClimateControlBackendInterface* backend = d->climateControlBackend())
         backend->setHeaterEnabled(enabled, zone());
 }
 
@@ -880,7 +917,8 @@ void QtIVIClimateControl::setHeaterEnabled(bool enabled)
  */
 void QtIVIClimateControl::setAirRecirculationEnabled(bool enabled)
 {
-    if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())
+    Q_D(QtIVIClimateControl);
+    if (QtIVIClimateControlBackendInterface* backend = d->climateControlBackend())
         backend->setAirRecirculationEnabled(enabled, zone());
 }
 
@@ -891,7 +929,8 @@ void QtIVIClimateControl::setAirRecirculationEnabled(bool enabled)
  */
 void QtIVIClimateControl::setSteeringWheelHeater(int value)
 {
-    if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())
+    Q_D(QtIVIClimateControl);
+    if (QtIVIClimateControlBackendInterface* backend = d->climateControlBackend())
         backend->setSteeringWheelHeater(value, zone());
 }
 
@@ -902,7 +941,8 @@ void QtIVIClimateControl::setSteeringWheelHeater(int value)
  */
 void QtIVIClimateControl::setFanSpeedLevel(int value)
 {
-    if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())
+    Q_D(QtIVIClimateControl);
+    if (QtIVIClimateControlBackendInterface* backend = d->climateControlBackend())
         backend->setFanSpeedLevel(value, zone());
 }
 
@@ -913,7 +953,8 @@ void QtIVIClimateControl::setFanSpeedLevel(int value)
  */
 void QtIVIClimateControl::setTargetTemperature(int temperature)
 {
-    if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())
+    Q_D(QtIVIClimateControl);
+    if (QtIVIClimateControlBackendInterface* backend = d->climateControlBackend())
         backend->setTargetTemperature(temperature, zone());
 }
 
@@ -924,7 +965,8 @@ void QtIVIClimateControl::setTargetTemperature(int temperature)
  */
 void QtIVIClimateControl::setSeatCooler(int value)
 {
-    if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())
+    Q_D(QtIVIClimateControl);
+    if (QtIVIClimateControlBackendInterface* backend = d->climateControlBackend())
         backend->setSeatCooler(value, zone());
 }
 
@@ -935,7 +977,8 @@ void QtIVIClimateControl::setSeatCooler(int value)
  */
 void QtIVIClimateControl::setSeatHeater(int value)
 {
-    if (QtIVIClimateControlBackendInterface* backend = climateControlBackend())
+    Q_D(QtIVIClimateControl);
+    if (QtIVIClimateControlBackendInterface* backend = d->climateControlBackend())
         backend->setSeatHeater(value, zone());
 }
 
@@ -1065,3 +1108,5 @@ void QtIVIClimateControl::setSeatHeater(int value)
  *
  * \sa heaterAttribute() isHeaterEnabled()
  */
+
+ #include "moc_qtiviclimatecontrol.cpp"

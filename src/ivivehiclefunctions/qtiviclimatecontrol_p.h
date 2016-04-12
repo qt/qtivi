@@ -54,17 +54,40 @@
 //
 
 #include <QtIVICore/QtIVIProperty>
+#include "private/qtiviabstractzonedfeature_p.h"
 
 #include "qtiviclimatecontrol.h"
 
 QT_BEGIN_NAMESPACE
 
-class QtIVIClimateControlPrivate
+class QtIVIClimateControlPrivate : public QtIVIAbstractZonedFeaturePrivate
 {
 public:
-    QtIVIClimateControlPrivate(QtIVIClimateControl *parent);
+    QtIVIClimateControlPrivate(const QString &interface, const QString &zone, QtIVIClimateControl *parent);
 
+    void init();
     void clearToDefaults();
+
+    void onAirflowDirectionChanged(QtIVIClimateControl::AirflowDirection value, const QString &zone);
+    void onAirflowDirectionAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> &airflowDirectionAttribute, const QString &zone);
+    void onAirConditioningEnabledChanged(bool enabled, const QString &zone);
+    void onAirConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &airConditioningEnabledAttribute, const QString &zone);
+    void onHeaterEnabledChanged(bool enabled, const QString &zone);
+    void onHeaterAttributeChanged(const QtIVIPropertyAttribute<bool> &heaterEnabledAttribute, const QString &zone);
+    void onAirRecirculationEnabledChanged(bool enabled, const QString &zone);
+    void onAirRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &airRecirculationEnabledAttribute, const QString &zone);
+    void onSteeringWheelHeaterChanged(int value, const QString &zone);
+    void onSteeringWheelHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &steeringWheelHeaterAttribute, const QString &zone);
+    void onFanSpeedLevelChanged(int value, const QString &zone);
+    void onFanSpeedLevelAttributeChanged(const QtIVIPropertyAttribute<int> &fanSpeedAttribute, const QString &zone);
+    void onTargetTemperatureChanged(int temperature, const QString &zone);
+    void onTargetTemperatureAttributeChanged(const QtIVIPropertyAttribute<int> &temperatureAttribute, const QString &zone);
+    void onSeatCoolerChanged(int value, const QString &zone);
+    void onSeatCoolerAttributeChanged(const QtIVIPropertyAttribute<int> &seatCoolerAttribute, const QString &zone);
+    void onSeatHeaterChanged(int value, const QString &zone);
+    void onSeatHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &seatHeaterAttribute, const QString &zone);
+
+    QtIVIClimateControlBackendInterface* climateControlBackend();
 
     QtIVIClimateControl::AirflowDirection m_airflowDirection;
     QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> m_airflowDirectionAttribute;
@@ -93,6 +116,9 @@ public:
     int m_fanSpeedLevel;
     QtIVIPropertyAttribute<int> m_fanSpeedLevelAttribute;
     QtIVIProperty *m_fanSpeedLevelProperty;
+
+    QtIVIClimateControl * const q_ptr;
+    Q_DECLARE_PUBLIC(QtIVIClimateControl)
 };
 
 QT_END_NAMESPACE

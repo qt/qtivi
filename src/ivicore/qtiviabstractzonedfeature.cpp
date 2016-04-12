@@ -46,8 +46,8 @@
 #include "qtiviabstractzonedfeature_p.h"
 #include "qtivizonedfeatureinterface.h"
 
-QtIVIAbstractZonedFeaturePrivate::QtIVIAbstractZonedFeaturePrivate(const QString &zone, QObject *parent)
-    : QObject(parent)
+QtIVIAbstractZonedFeaturePrivate::QtIVIAbstractZonedFeaturePrivate(const QString &interface, const QString &zone, QtIVIAbstractFeature *parent)
+    : QtIVIAbstractFeaturePrivate(interface, parent)
     , m_zone(zone)
 {}
 
@@ -81,8 +81,7 @@ QtIVIAbstractZonedFeaturePrivate::QtIVIAbstractZonedFeaturePrivate(const QString
     \sa QtIVIAbstractFeature
 */
 QtIVIAbstractZonedFeature::QtIVIAbstractZonedFeature(const QString &interface, const QString &zone, QObject *parent)
-    : QtIVIAbstractFeature(interface, parent)
-    , d_ptr(new QtIVIAbstractZonedFeaturePrivate(zone, this))
+    : QtIVIAbstractFeature(*new QtIVIAbstractZonedFeaturePrivate(interface, zone, this), parent)
 {
 }
 
@@ -283,6 +282,11 @@ QList<QtIVIAbstractZonedFeature*> QtIVIAbstractZonedFeature::zones() const
 {
     Q_D(const QtIVIAbstractZonedFeature);
     return d->m_zoneFeatures;
+}
+
+QtIVIAbstractZonedFeature::QtIVIAbstractZonedFeature(QtIVIAbstractZonedFeaturePrivate &dd, QObject *parent)
+    : QtIVIAbstractFeature(dd, parent)
+{
 }
 
 /*!

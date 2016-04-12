@@ -114,6 +114,8 @@ Q_SIGNALS:
     void errorChanged(QtIVIAbstractFeature::Error error, const QString &message);
 
 protected:
+    QtIVIAbstractFeature(QtIVIAbstractFeaturePrivate &dd, QObject *parent = Q_NULLPTR);
+
     virtual bool acceptServiceObject(QtIVIServiceObject*) = 0;
     virtual void connectToServiceObject(QtIVIServiceObject*) = 0;
     virtual void disconnectFromServiceObject(QtIVIServiceObject*) = 0;
@@ -133,7 +135,6 @@ private Q_SLOTS:
     void serviceObjectDestroyed();
 
 private:
-    QtIVIAbstractFeaturePrivate * const d_ptr;
     Q_DECLARE_PRIVATE(QtIVIAbstractFeature)
 };
 

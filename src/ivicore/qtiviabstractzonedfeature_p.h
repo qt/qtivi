@@ -53,16 +53,15 @@
 // We mean it.
 //
 
-#include <QtCore/QObject>
-
+#include "qtiviabstractfeature_p.h"
 #include "qtiviabstractzonedfeature.h"
 
 QT_BEGIN_NAMESPACE
 
-class QtIVIAbstractZonedFeaturePrivate : public QObject
+class Q_QTIVICORE_EXPORT QtIVIAbstractZonedFeaturePrivate : public QtIVIAbstractFeaturePrivate
 {
 public:
-    QtIVIAbstractZonedFeaturePrivate(const QString &zone, QObject *parent);
+    QtIVIAbstractZonedFeaturePrivate(const QString &interface, const QString &zone, QtIVIAbstractFeature *parent);
 
     QString m_zone;
     QList<QtIVIAbstractZonedFeature*> m_zoneFeatures;

@@ -141,35 +141,30 @@ Q_SIGNALS:
     void seatHeaterChanged(int value);
     void seatHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &attribute);
 
-private Q_SLOTS:
-    void onAirflowDirectionChanged(QtIVIClimateControl::AirflowDirection value, const QString &zone);
-    void onAirflowDirectionAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> &airflowDirectionAttribute, const QString &zone);
-    void onAirConditioningEnabledChanged(bool enabled, const QString &zone);
-    void onAirConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &airConditioningEnabledAttribute, const QString &zone);
-    void onHeaterEnabledChanged(bool enabled, const QString &zone);
-    void onHeaterAttributeChanged(const QtIVIPropertyAttribute<bool> &heaterEnabledAttribute, const QString &zone);
-    void onAirRecirculationEnabledChanged(bool enabled, const QString &zone);
-    void onAirRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &airRecirculationEnabledAttribute, const QString &zone);
-    void onSteeringWheelHeaterChanged(int value, const QString &zone);
-    void onSteeringWheelHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &steeringWheelHeaterAttribute, const QString &zone);
-    void onFanSpeedLevelChanged(int value, const QString &zone);
-    void onFanSpeedLevelAttributeChanged(const QtIVIPropertyAttribute<int> &fanSpeedAttribute, const QString &zone);
-    void onTargetTemperatureChanged(int temperature, const QString &zone);
-    void onTargetTemperatureAttributeChanged(const QtIVIPropertyAttribute<int> &temperatureAttribute, const QString &zone);
-    void onSeatCoolerChanged(int value, const QString &zone);
-    void onSeatCoolerAttributeChanged(const QtIVIPropertyAttribute<int> &seatCoolerAttribute, const QString &zone);
-    void onSeatHeaterChanged(int value, const QString &zone);
-    void onSeatHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &seatHeaterAttribute, const QString &zone);
-
 protected:
+    QtIVIClimateControl(QtIVIClimateControlPrivate &dd, QObject *parent = Q_NULLPTR);
     virtual QtIVIAbstractZonedFeature* createZoneFeature(const QString &zone) Q_DECL_OVERRIDE;
 
 private:
-    QtIVIClimateControlBackendInterface* climateControlBackend();
-
-private:
-    QtIVIClimateControlPrivate * const d_ptr;
     Q_DECLARE_PRIVATE(QtIVIClimateControl)
+    Q_PRIVATE_SLOT(d_func(), void onAirflowDirectionChanged(QtIVIClimateControl::AirflowDirection value, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onAirflowDirectionAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> &airflowDirectionAttribute, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onAirConditioningEnabledChanged(bool enabled, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onAirConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &airConditioningEnabledAttribute, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onHeaterEnabledChanged(bool enabled, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onHeaterAttributeChanged(const QtIVIPropertyAttribute<bool> &heaterEnabledAttribute, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onAirRecirculationEnabledChanged(bool enabled, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onAirRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &airRecirculationEnabledAttribute, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onSteeringWheelHeaterChanged(int value, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onSteeringWheelHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &steeringWheelHeaterAttribute, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onFanSpeedLevelChanged(int value, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onFanSpeedLevelAttributeChanged(const QtIVIPropertyAttribute<int> &fanSpeedAttribute, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onTargetTemperatureChanged(int temperature, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onTargetTemperatureAttributeChanged(const QtIVIPropertyAttribute<int> &temperatureAttribute, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onSeatCoolerChanged(int value, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onSeatCoolerAttributeChanged(const QtIVIPropertyAttribute<int> &seatCoolerAttribute, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onSeatHeaterChanged(int value, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onSeatHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &seatHeaterAttribute, const QString &zone))
 };
 
 QT_END_NAMESPACE
