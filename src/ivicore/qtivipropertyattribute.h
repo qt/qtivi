@@ -144,10 +144,10 @@ private:
     //The converters are needed to get meaningfull output if QCOMPARE failed to compare to variants containing a QtIVIPropertyAttribute
     void registerConverter()
     {
-        static bool enabled = QMetaType::registerConverter<QtIVIPropertyAttribute<T>, QString>(&QtIVIPropertyAttribute<T>::toString);
-        static bool compEnabled = QMetaType::registerComparators<QtIVIPropertyAttribute<T>>();
-        Q_UNUSED(enabled)
-        Q_UNUSED(compEnabled)
+        if (!QMetaType::hasRegisteredConverterFunction<QtIVIPropertyAttribute<T>, QString>())
+            QMetaType::registerConverter<QtIVIPropertyAttribute<T>, QString>(&QtIVIPropertyAttribute<T>::toString);
+        if (!QMetaType::hasRegisteredComparators<QtIVIPropertyAttribute<T>>())
+            QMetaType::registerComparators<QtIVIPropertyAttribute<T>>();
     }
 
     bool m_available;
