@@ -154,7 +154,7 @@ bool QtIVIServiceManagerPrivate::registerBackend(QObject *serviceBackendInterfac
 
     metaData.insert(QLatin1String("interfaces"), interfaces);
     if (backendType == QtIVIServiceManager::SimulationBackend) //fake a simulation filename
-        metaData.insert(QLatin1String("fileName"), "_simulation.");
+        metaData.insert(QLatin1String("fileName"), QLatin1String("_simulation."));
 
     Backend *backend = new Backend;
     backend->metaData = metaData;
