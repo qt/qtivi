@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>384</width>
-    <height>236</height>
+    <height>238</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,30 +22,23 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QRadioButton" name="rb_FloorPanel">
+        <widget class="QCheckBox" name="cb_windshield">
          <property name="text">
-          <string>Floor Panel</string>
+          <string>Windshield</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QRadioButton" name="rb_FloorDuct">
+        <widget class="QCheckBox" name="cb_dashboard">
          <property name="text">
-          <string>Floor Duct</string>
+          <string>Dashboard</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QRadioButton" name="rb_BiLevel">
+        <widget class="QCheckBox" name="cb_floor">
          <property name="text">
-          <string>Bi &amp;Level</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="rb_DefrostFloor">
-         <property name="text">
-          <string>Defrost Floor</string>
+          <string>Floor</string>
          </property>
         </widget>
        </item>

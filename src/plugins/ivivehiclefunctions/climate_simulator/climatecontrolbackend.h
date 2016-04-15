@@ -62,14 +62,14 @@ public:
     void setSeatHeater(int val, const QString &zone);
     void setSteeringWheelHeater(int val, const QString &zone);
     void setFanSpeedLevel(int, const QString &zone);
-    void setAirflowDirection(QtIVIClimateControl::AirflowDirection direction, const QString &zone);
+    void setAirflowDirections(QtIVIClimateControl::AirflowDirections direction, const QString &zone);
     void setAirConditioningEnabled(bool val, const QString &zone);
     void setHeaterEnabled(bool val, const QString &zone);
     void setAirRecirculationEnabled(bool val, const QString &zone);
 
 private:
 
-    QtIVIClimateControl::AirflowDirection m_flowDirection;
+    QtIVIClimateControl::AirflowDirections m_flowDirection;
     bool m_airCondition;
     bool m_heater;
     bool m_airRecirculation;

@@ -45,7 +45,7 @@
 
 ClimateControlBackend::ClimateControlBackend(QObject *parent) :
     QtIVIClimateControlBackendInterface(parent),
-    m_flowDirection(QtIVIClimateControl::BiLevel),
+    m_flowDirection(QtIVIClimateControl::Floor | QtIVIClimateControl::Dashboard),
     m_airCondition(true),
     m_heater(true),
     m_airRecirculation(false),
@@ -92,10 +92,10 @@ QStringList ClimateControlBackend::availableZones() const
 
 void ClimateControlBackend::initializeAttributes()
 {
-    QVector<QtIVIClimateControl::AirflowDirection> list;
-    list << QtIVIClimateControl::BiLevel << QtIVIClimateControl::DefrostFloor;
-    emit airflowDirectionAttributeChanged(QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection>(list));
-    emit airflowDirectionChanged(m_flowDirection);
+    QVector<QtIVIClimateControl::AirflowDirections> list;
+    list << (QtIVIClimateControl::Floor | QtIVIClimateControl::Dashboard) << QtIVIClimateControl::Floor << QtIVIClimateControl::Dashboard;
+    emit airflowDirectionsAttributeChanged(QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections>(list));
+    emit airflowDirectionsChanged(m_flowDirection);
     emit airConditioningAttributeChanged(QtIVIPropertyAttribute<bool>(true));
     emit airConditioningEnabledChanged(m_airCondition);
     emit heaterAttributeChanged(QtIVIPropertyAttribute<bool>(true));
@@ -193,15 +193,15 @@ void ClimateControlBackend::setFanSpeedLevel(int speed, const QString &zone)
     emit fanSpeedLevelChanged(speed, zone);
 }
 
-void ClimateControlBackend::setAirflowDirection(QtIVIClimateControl::AirflowDirection direction, const QString &zone)
+void ClimateControlBackend::setAirflowDirections(QtIVIClimateControl::AirflowDirections direction, const QString &zone)
 {
     if (!zone.isEmpty() || m_flowDirection == direction)
         return;
 
-    qWarning() << "SIMULATION AirflowDirection changed to" << direction;
+    qWarning() << "SIMULATION AirflowDirections changed to" << direction;
 
     m_flowDirection = direction;
-    emit airflowDirectionChanged(direction);
+    emit airflowDirectionsChanged(direction);
 }
 
 void ClimateControlBackend::setAirConditioningEnabled(bool val, const QString &zone)

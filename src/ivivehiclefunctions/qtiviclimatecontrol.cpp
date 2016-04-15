@@ -46,7 +46,7 @@
 
 QtIVIClimateControlPrivate::QtIVIClimateControlPrivate(const QString &interface, const QString &zone, QtIVIClimateControl *parent)
     : QtIVIAbstractZonedFeaturePrivate(interface, zone, parent)
-    , m_airflowDirection(QtIVIClimateControl::None)
+    , m_airflowDirections(0)
     , m_airConditioning(false)
     , m_heater(false)
     , m_airRecirculation(false)
@@ -62,12 +62,12 @@ QtIVIClimateControlPrivate::QtIVIClimateControlPrivate(const QString &interface,
 void QtIVIClimateControlPrivate::init()
 {
     Q_Q(QtIVIClimateControl);
-    m_airFlowDirectionProperty = QtIVIPropertyFactory<QtIVIClimateControl::AirflowDirection>::create(q,
-                                                                                                     &QtIVIClimateControl::airflowDirectionAttribute,
-                                                                                                     &QtIVIClimateControl::airflowDirectionAttributeChanged,
-                                                                                                     &QtIVIClimateControl::airflowDirection,
-                                                                                                     &QtIVIClimateControl::airflowDirectionChanged,
-                                                                                                     &QtIVIClimateControl::setAirflowDirection);
+    m_airFlowDirectionProperty = QtIVIPropertyFactory<QtIVIClimateControl::AirflowDirections>::create(q,
+                                                                                                     &QtIVIClimateControl::airflowDirectionsAttribute,
+                                                                                                     &QtIVIClimateControl::airflowDirectionsAttributeChanged,
+                                                                                                     &QtIVIClimateControl::airflowDirections,
+                                                                                                     &QtIVIClimateControl::airflowDirectionsChanged,
+                                                                                                     &QtIVIClimateControl::setAirflowDirections);
     m_airConditioningProperty = QtIVIPropertyFactory<bool>::create(q,
                                                                    &QtIVIClimateControl::airConditioningAttribute,
                                                                    &QtIVIClimateControl::airConditioningAttributeChanged,
@@ -130,7 +130,7 @@ void QtIVIClimateControlPrivate::clearToDefaults()
     m_fanSpeedLevel = 0;
 }
 
-void QtIVIClimateControlPrivate::onAirflowDirectionChanged(QtIVIClimateControl::AirflowDirection value, const QString &zone)
+void QtIVIClimateControlPrivate::onAirflowDirectionsChanged(QtIVIClimateControl::AirflowDirections value, const QString &zone)
 {
     Q_Q(QtIVIClimateControl);
     QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
@@ -138,11 +138,11 @@ void QtIVIClimateControlPrivate::onAirflowDirectionChanged(QtIVIClimateControl::
         f = q;
     if (f->zone() != zone)
         return;
-    f->d_func()->m_airflowDirection = value;
-    emit f->airflowDirectionChanged(value);
+    f->d_func()->m_airflowDirections = value;
+    emit f->airflowDirectionsChanged(value);
 }
 
-void QtIVIClimateControlPrivate::onAirflowDirectionAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> &airflowDirectionAttribute, const QString &zone)
+void QtIVIClimateControlPrivate::onAirflowDirectionsAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections> &airflowDirectionsAttribute, const QString &zone)
 {
     Q_Q(QtIVIClimateControl);
     QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
@@ -150,8 +150,8 @@ void QtIVIClimateControlPrivate::onAirflowDirectionAttributeChanged(const QtIVIP
         f = q;
     if (f->zone() != zone)
         return;
-    f->d_func()->m_airflowDirectionAttribute = airflowDirectionAttribute;
-    emit f->airflowDirectionAttributeChanged(airflowDirectionAttribute);
+    f->d_func()->m_airflowDirectionsAttribute = airflowDirectionsAttribute;
+    emit f->airflowDirectionsAttributeChanged(airflowDirectionsAttribute);
 }
 
 void QtIVIClimateControlPrivate::onAirConditioningEnabledChanged(bool enabled, const QString &zone)
@@ -376,17 +376,13 @@ QtIVIClimateControlBackendInterface *QtIVIClimateControlPrivate::climateControlB
 */
 
 /*!
-   \enum QtIVIClimateControl::AirflowDirection
-   \value None
-          AirflowDirection is not initialized
-   \value FloorPanel
-          Direct airflow along the floor panel.
-   \value FloorDuct
-          Direct airflow through the floor duct.
-   \value BiLevel
-          Direct airflow at both levels.
-   \value DefrostFloor
-          Direct airflow to defrost.
+   \enum QtIVIClimateControl::AirflowDirections
+   \value Windshield
+          Direct airflow along the windshield.
+   \value Dashboard
+          Direct airflow through the dashboard.
+   \value Floor
+          Direct airflow to the floor.
 */
 
 /*!
@@ -402,7 +398,7 @@ QtIVIClimateControl::QtIVIClimateControl(const QString &zone, QObject* parent)
     Q_D(QtIVIClimateControl);
     d->init();
     qRegisterMetaType<QtIVIPropertyAttribute<int>>();
-    qRegisterMetaType<QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection>>();
+    qRegisterMetaType<QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections>>();
     qRegisterMetaType<QtIVIPropertyAttribute<bool>>();
 }
 
@@ -442,10 +438,10 @@ void QtIVIClimateControl::connectToServiceObject(QtIVIServiceObject *serviceObje
             d, &QtIVIClimateControlPrivate::onFanSpeedLevelChanged);
     QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::fanSpeedLevelAttributeChanged,
             d, &QtIVIClimateControlPrivate::onFanSpeedLevelAttributeChanged);
-    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::airflowDirectionChanged,
-            d, &QtIVIClimateControlPrivate::onAirflowDirectionChanged);
-    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::airflowDirectionAttributeChanged,
-            d, &QtIVIClimateControlPrivate::onAirflowDirectionAttributeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::airflowDirectionsChanged,
+            d, &QtIVIClimateControlPrivate::onAirflowDirectionsChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::airflowDirectionsAttributeChanged,
+            d, &QtIVIClimateControlPrivate::onAirflowDirectionsAttributeChanged);
     QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::airConditioningEnabledChanged,
             d, &QtIVIClimateControlPrivate::onAirConditioningEnabledChanged);
     QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::airConditioningAttributeChanged,
@@ -527,52 +523,48 @@ QtIVIProperty *QtIVIClimateControl::airConditioningProperty() const
 }
 
 /*!
-   \qmlqtivipropertyEnum {QtIVIVehicleFunctions::ClimateControl::airflowDirection}
+   \qmlqtivipropertyEnum {QtIVIVehicleFunctions::ClimateControl::airflowDirections}
 
-   \e value holds the airflow direction.
+   \e value holds the airflow directions.
    Available values are:
-   \value None
-          AirflowDirection is not initialized.
-   \value FloorPanel
-          Direct airflow along the floor panel.
-   \value FloorDuct
-          Direct airflow through the floor duct.
-   \value BiLevel
-          Direct airflow at both levels.
-   \value DefrostFloor
-          Direct airflow to defrost.
+   \value Windshield
+          Direct airflow along the windshield.
+   \value Dashboard
+          Direct airflow through the dashboard.
+   \value Floor
+          Direct airflow to the floor.
  */
 /*!
-   \property QtIVIClimateControl::airflowDirection
+   \property QtIVIClimateControl::airflowDirections
 
-   Holds a QtIVIProperty of type \e QtIVIClimateControl::AirflowDirection where the QtIVIProperty::value() function returns the current air flow direction.
+   Holds a QtIVIProperty of type \e QtIVIClimateControl::AirflowDirections where the QtIVIProperty::value() function returns the current air flow directions.
 
    \sa AttributeSystem
-   \sa airflowDirection() setAirflowDirection() airflowDirectionAttribute()
+   \sa airflowDirections() setAirflowDirections() airflowDirectionsAttribute()
  */
 /*!
  * Returns the current air flow direction.
  *
- * \sa setAirflowDirection() airflowDirectionChanged() airflowDirectionAttribute()
+ * \sa setAirflowDirections() airflowDirectionsChanged() airflowDirectionsAttribute()
  */
-QtIVIClimateControl::AirflowDirection QtIVIClimateControl::airflowDirection() const
+QtIVIClimateControl::AirflowDirections QtIVIClimateControl::airflowDirections() const
 {
     Q_D(const QtIVIClimateControl);
-    return d->m_airflowDirection;
+    return d->m_airflowDirections;
 }
 
 /*!
  * Returns the attribute defining the boundaries and availability of the air flow property
  *
- * \sa setAirflowDirection() airflowDirection() airflowDirectionChanged()
+ * \sa setAirflowDirections() airflowDirections() airflowDirectionsChanged()
  */
-QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> QtIVIClimateControl::airflowDirectionAttribute() const
+QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections> QtIVIClimateControl::airflowDirectionsAttribute() const
 {
     Q_D(const QtIVIClimateControl);
-    return d->m_airflowDirectionAttribute;
+    return d->m_airflowDirectionsAttribute;
 }
 
-QtIVIProperty *QtIVIClimateControl::airflowDirectionProperty() const
+QtIVIProperty *QtIVIClimateControl::airflowDirectionsProperty() const
 {
     Q_D(const QtIVIClimateControl);
     return d->m_airFlowDirectionProperty;
@@ -889,13 +881,13 @@ void QtIVIClimateControl::setAirConditioningEnabled(bool enabled)
 /*!
  * Sets the air flow direction to \a direction.
  *
- * \sa airflowDirection() airflowDirectionChanged() airflowDirectionAttribute()
+ * \sa airflowDirections() airflowDirectionsChanged() airflowDirectionsAttribute()
  */
-void QtIVIClimateControl::setAirflowDirection(QtIVIClimateControl::AirflowDirection direction)
+void QtIVIClimateControl::setAirflowDirections(QtIVIClimateControl::AirflowDirections direction)
 {
     Q_D(QtIVIClimateControl);
     if (QtIVIClimateControlBackendInterface* backend = d->climateControlBackend())
-        backend->setAirflowDirection(direction, zone());
+        backend->setAirflowDirections(direction, zone());
 }
 
 /*!
@@ -983,18 +975,18 @@ void QtIVIClimateControl::setSeatHeater(int value)
 }
 
 /*!
- * \fn void QtIVIClimateControl::airflowDirectionChanged(QtIVIClimateControl::AirflowDirection value)
+ * \fn void QtIVIClimateControl::airflowDirectionsChanged(QtIVIClimateControl::AirflowDirections value)
  *
- * This signal is emitted whenever the air flow direction changes. The new flow direction is passed as \a value.
+ * This signal is emitted whenever the air flow directions change. The new flow directions are passed as \a value.
  *
- * \sa airflowDirection() setAirflowDirection() airflowDirectionAttribute()
+ * \sa airflowDirections() setAirflowDirections() airflowDirectionsAttribute()
  */
 /*!
- * \fn void QtIVIClimateControl::airflowDirectionAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> &attribute);
+ * \fn void QtIVIClimateControl::airflowDirectionsAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections> &attribute);
  *
- * This signal is emitted whenever the attribute for the airflowDirection property changes. The new attribute is passed as \a attribute.
+ * This signal is emitted whenever the attribute for the airflowDirections property changes. The new attribute is passed as \a attribute.
  *
- * \sa airflowDirectionAttribute() airflowDirection()
+ * \sa airflowDirectionsAttribute() airflowDirections()
  */
 /*!
  * \fn void QtIVIClimateControl::airConditioningEnabledChanged(bool enabled);

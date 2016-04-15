@@ -38,7 +38,7 @@ class ClimateControlTestBackend : public QtIVIClimateControlBackendInterface
 public:
     ClimateControlTestBackend()
         : QtIVIClimateControlBackendInterface()
-        , m_airflowDirection(QtIVIClimateControl::DefrostFloor)
+        , m_airflowDirections(QtIVIClimateControl::Floor | QtIVIClimateControl::Dashboard)
         , m_airConditioningEnabled(false)
         , m_airConditioningAttribute(QtIVIPropertyAttribute<bool>(true))
         , m_heaterEnabled(false)
@@ -46,9 +46,9 @@ public:
         , m_airRecirculationEnabled(false)
         , m_airRecirculationAttribute(QtIVIPropertyAttribute<bool>(true))
     {
-        QVector<QtIVIClimateControl::AirflowDirection> list;
-        list << QtIVIClimateControl::DefrostFloor << QtIVIClimateControl::BiLevel;
-        m_airflowDirectionAttribute = list;
+        QVector<QtIVIClimateControl::AirflowDirections> list;
+        list << (QtIVIClimateControl::Floor | QtIVIClimateControl::Dashboard) << QtIVIClimateControl::Floor << QtIVIClimateControl::Dashboard;
+        m_airflowDirectionsAttribute = list;
         m_zones << "FrontLeft" << "Upper" << "Lower";
         foreach (const QString &z, m_zones) {
             m_zoneTargetTemperature[z] = 0;
@@ -72,8 +72,8 @@ public:
 
     void initializeAttributes() Q_DECL_OVERRIDE
     {
-        emit airflowDirectionChanged(m_airflowDirection);
-        emit airflowDirectionAttributeChanged(m_airflowDirectionAttribute);
+        emit airflowDirectionsChanged(m_airflowDirections);
+        emit airflowDirectionsAttributeChanged(m_airflowDirectionsAttribute);
         emit airConditioningEnabledChanged(m_airConditioningEnabled);
         emit airConditioningAttributeChanged(m_airConditioningAttribute);
         emit heaterEnabledChanged(m_heaterEnabled);
@@ -169,21 +169,21 @@ public:
         }
     }
 
-    void setAirflowDirection(QtIVIClimateControl::AirflowDirection ad, const QString &z) Q_DECL_OVERRIDE
+    void setAirflowDirections(QtIVIClimateControl::AirflowDirections ad, const QString &z) Q_DECL_OVERRIDE
     {
         Q_UNUSED(z)
-        if (m_airflowDirection != ad) {
-            m_airflowDirection = ad;
-            emit airflowDirectionChanged(m_airflowDirection);
+        if (m_airflowDirections != ad) {
+            m_airflowDirections = ad;
+            emit airflowDirectionsChanged(m_airflowDirections);
         }
     }
 
-    void setAirflowDirectionAttribute(QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> attribute, const QString &z)
+    void setAirflowDirectionsAttribute(QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections> attribute, const QString &z)
     {
         Q_UNUSED(z)
-        if (m_airflowDirectionAttribute != attribute) {
-            m_airflowDirectionAttribute = attribute;
-            emit airflowDirectionAttributeChanged(m_airflowDirectionAttribute, z);
+        if (m_airflowDirectionsAttribute != attribute) {
+            m_airflowDirectionsAttribute = attribute;
+            emit airflowDirectionsAttributeChanged(m_airflowDirectionsAttribute, z);
         }
     }
 
@@ -292,8 +292,8 @@ public:
     }
 
 private:
-    QtIVIClimateControl::AirflowDirection m_airflowDirection;
-    QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> m_airflowDirectionAttribute;
+    QtIVIClimateControl::AirflowDirections m_airflowDirections;
+    QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections> m_airflowDirectionsAttribute;
     bool m_airConditioningEnabled;
     QtIVIPropertyAttribute<bool> m_airConditioningAttribute;
     bool m_heaterEnabled;

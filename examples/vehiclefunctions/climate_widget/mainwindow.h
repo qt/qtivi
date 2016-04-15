@@ -77,13 +77,13 @@ private slots:
     void onAirRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
     void onHeaterAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
     void onAirConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
-    void setupFlowDirectionRadioButtons(QtIVIClimateControl::AirflowDirection direction);
-    void setupFlowDirectionAttribute(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> &attribute);
+    void setupFlowDirectionRadioButtons(QtIVIClimateControl::AirflowDirections direction);
+    void setupFlowDirectionAttribute(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections> &attribute);
     void onFlowDirectionButtonToggled(QAbstractButton * button, bool checked);
 private:
 
     Ui::MainWindow *ui;
-    QButtonGroup *m_radioButtonGroup;
+    QButtonGroup *m_buttonGroup;
     QtIVIClimateControl* m_climateControl;
 };
 

@@ -109,14 +109,14 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  */
 
 /*!
- * \fn virtual void QtIVIClimateControlBackendInterface::setAirflowDirection(QtIVIClimateControl::AirflowDirection, const QString &zone) = 0;
+ * \fn virtual void QtIVIClimateControlBackendInterface::setAirflowDirections(QtIVIClimateControl::AirflowDirections, const QString &zone) = 0;
  *
- * Sets the \a zone air flow direction to \a airflowDirection.
+ * Sets the \a zone air flow directions to \a airflowDirections.
  *
- * This method is expected to emit the \l airflowDirectionChanged() signal when receiving a
- * new \a airflowDirection.
+ * This method is expected to emit the \l airflowDirectionsChanged() signal when receiving a
+ * new \a airflowDirections.
  *
- * \sa airflowDirectionChanged()
+ * \sa airflowDirectionsChanged()
  */
 
 /*!
@@ -224,15 +224,15 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  */
 
 /*!
- * \fn virtual void QtIVIClimateControlBackendInterface::airflowDirectionChanged(QtIVIClimateControl::AirflowDirection airflowDirection, const QString &zone = QString()) = 0
+ * \fn virtual void QtIVIClimateControlBackendInterface::airflowDirectionsChanged(QtIVIClimateControl::AirflowDirections airflowDirections, const QString &zone = QString()) = 0
  *
- * The signal is emitted when the \a zone airflow direction is changed to \a airflowDirection.
+ * The signal is emitted when the \a zone airflow directions changed to \a airflowDirections.
  *
- * \sa setAirflowDirection()
+ * \sa setAirflowDirections()
  */
 
 /*!
- * \fn void QtIVIClimateControlBackendInterface::airflowDirectionAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> &attribute, const QString &zone = QString());
+ * \fn void QtIVIClimateControlBackendInterface::airflowDirectionsAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections> &attribute, const QString &zone = QString());
  *
  * The signal is emitted when the zone airflow direction attribute for \a zone is changed to \a attribute.
  */

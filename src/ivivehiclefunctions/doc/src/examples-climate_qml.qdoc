@@ -72,8 +72,7 @@
      differentiate between the zones. A \e {general zone} can be used for settings
      that are applied to all zones.
 
-     General ClimateControl attribute values are handled in radio buttons and
-     check boxes as follows:
+     General ClimateControl attribute values are handled in check boxes as follows:
      \snippet climate_qml/main.qml 2
 
      For the zoned ClimateControl, the \l [QML] {AbstractZonedFeature::}{zoneAt}

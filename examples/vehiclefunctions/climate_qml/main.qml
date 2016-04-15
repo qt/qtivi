@@ -81,48 +81,39 @@ ApplicationWindow {
 
             ColumnLayout {
                 anchors.fill: parent
-                ExclusiveGroup { id: group }
-                RadioButton {
-                    text: "Floor Panel"
-                    exclusiveGroup: group
-                    checked: climateControl.airflowDirection.value === ClimateControl.FloorPanel
-                    enabled: climateControl.airflowDirection.availableValues.indexOf(ClimateControl.FloorPanel) !== -1
+                CheckBox {
+                    text: "Windshield"
+                    checked: climateControl.airflowDirections.value & ClimateControl.Windshield
+                    enabled: climateControl.airflowDirections.availableValues.indexOf(ClimateControl.Windshield) !== -1
                     onClicked: {
                         if (checked)
-                            climateControl.airflowDirection.value = ClimateControl.FloorPanel
+                            climateControl.airflowDirections.value |= ClimateControl.Windshield
+                        else
+                            climateControl.airflowDirections.value &= ~ClimateControl.Windshield
                     }
                 }
 
-                RadioButton {
-                    text: "Floor Duct"
-                    exclusiveGroup: group
-                    checked: climateControl.airflowDirection.value === ClimateControl.FloorDuct
-                    enabled: climateControl.airflowDirection.availableValues.indexOf(ClimateControl.FloorDuct) !== -1
+                CheckBox {
+                    text: "Dashboard"
+                    checked: climateControl.airflowDirections.value & ClimateControl.Dashboard
+                    enabled: climateControl.airflowDirections.availableValues.indexOf(ClimateControl.Dashboard) !== -1
                     onClicked: {
                         if (checked)
-                            climateControl.airflowDirection.value = ClimateControl.FloorDuct
+                            climateControl.airflowDirections.value |= ClimateControl.Dashboard
+                        else
+                            climateControl.airflowDirections.value &= ~ClimateControl.Dashboard
                     }
                 }
 
-                RadioButton {
-                    text: "Bi Level"
-                    exclusiveGroup: group
-                    checked: climateControl.airflowDirection.value === ClimateControl.BiLevel
-                    enabled: climateControl.airflowDirection.availableValues.indexOf(ClimateControl.BiLevel) !== -1
+                CheckBox {
+                    text: "Floor"
+                    checked: climateControl.airflowDirections.value & ClimateControl.Floor
+                    enabled: climateControl.airflowDirections.availableValues.indexOf(ClimateControl.Floor) !== -1
                     onClicked: {
                         if (checked)
-                            climateControl.airflowDirection.value = ClimateControl.BiLevel
-                    }
-                }
-
-                RadioButton {
-                    text: "Defrost Floor"
-                    exclusiveGroup: group
-                    checked: climateControl.airflowDirection.value === ClimateControl.DefrostFloor
-                    enabled: climateControl.airflowDirection.availableValues.indexOf(ClimateControl.DefrostFloor) !== -1
-                    onClicked: {
-                        if (checked)
-                            climateControl.airflowDirection.value = ClimateControl.DefrostFloor
+                            climateControl.airflowDirections.value |= ClimateControl.Floor
+                        else
+                            climateControl.airflowDirections.value &= ~ClimateControl.Floor
                     }
                 }
             }

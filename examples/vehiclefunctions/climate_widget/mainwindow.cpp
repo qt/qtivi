@@ -60,15 +60,15 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_radioButtonGroup(new QButtonGroup(this)),
+    m_buttonGroup(new QButtonGroup(this)),
     m_climateControl(0)
 {
     ui->setupUi(this);
 
-    m_radioButtonGroup->addButton(ui->rb_BiLevel);
-    m_radioButtonGroup->addButton(ui->rb_DefrostFloor);
-    m_radioButtonGroup->addButton(ui->rb_FloorDuct);
-    m_radioButtonGroup->addButton(ui->rb_FloorPanel);
+    m_buttonGroup->setExclusive(false);
+    m_buttonGroup->addButton(ui->cb_windshield);
+    m_buttonGroup->addButton(ui->cb_dashboard);
+    m_buttonGroup->addButton(ui->cb_floor);
 
 //![1]
     m_climateControl = new QtIVIClimateControl(QString(), this);
@@ -80,13 +80,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
 //![2]
     //Air Flow Direction
-    setupFlowDirectionRadioButtons(m_climateControl->airflowDirection());
-    setupFlowDirectionAttribute(m_climateControl->airflowDirectionAttribute());
-    connect(m_radioButtonGroup, static_cast<void (QButtonGroup::*)(QAbstractButton *, bool)>(&QButtonGroup::buttonToggled),
+    setupFlowDirectionRadioButtons(m_climateControl->airflowDirections());
+    setupFlowDirectionAttribute(m_climateControl->airflowDirectionsAttribute());
+    connect(m_buttonGroup, static_cast<void (QButtonGroup::*)(QAbstractButton *, bool)>(&QButtonGroup::buttonToggled),
             this, &MainWindow::onFlowDirectionButtonToggled);
-    connect(m_climateControl, &QtIVIClimateControl::airflowDirectionChanged,
+
+    connect(m_climateControl, &QtIVIClimateControl::airflowDirectionsChanged,
             this, &MainWindow::setupFlowDirectionRadioButtons);
-    connect(m_climateControl, &QtIVIClimateControl::airflowDirectionAttributeChanged,
+    connect(m_climateControl, &QtIVIClimateControl::airflowDirectionsAttributeChanged,
             this, &MainWindow::setupFlowDirectionAttribute);
 
     //Air Condition
@@ -142,46 +143,34 @@ void MainWindow::onAirConditioningAttributeChanged(const QtIVIPropertyAttribute<
 }
 
 //![3]
-void MainWindow::setupFlowDirectionRadioButtons(QtIVIClimateControl::AirflowDirection direction)
+void MainWindow::setupFlowDirectionRadioButtons(QtIVIClimateControl::AirflowDirections direction)
 {
-    QAbstractButton* button = ui->rb_BiLevel;
-
-    if (direction == QtIVIClimateControl::BiLevel)
-        button = ui->rb_BiLevel;
-    else if (direction == QtIVIClimateControl::DefrostFloor)
-        button = ui->rb_DefrostFloor;
-    else if (direction == QtIVIClimateControl::FloorDuct)
-        button = ui->rb_FloorDuct;
-    else if (direction == QtIVIClimateControl::FloorPanel)
-        button = ui->rb_FloorPanel;
-
-    button->setChecked(true);
+    ui->cb_windshield->setChecked(direction.testFlag(QtIVIClimateControl::Windshield));
+    ui->cb_dashboard->setChecked(direction.testFlag(QtIVIClimateControl::Dashboard));
+    ui->cb_floor->setChecked(direction.testFlag(QtIVIClimateControl::Floor));
 }
 
-void MainWindow::setupFlowDirectionAttribute(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> & attribute)
+void MainWindow::setupFlowDirectionAttribute(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections> & attribute)
 {
-    ui->rb_BiLevel->setEnabled(attribute.availableValues().contains(QtIVIClimateControl::BiLevel));
-    ui->rb_DefrostFloor->setEnabled(attribute.availableValues().contains(QtIVIClimateControl::DefrostFloor));
-    ui->rb_FloorDuct->setEnabled(attribute.availableValues().contains(QtIVIClimateControl::FloorDuct));
-    ui->rb_FloorPanel->setEnabled(attribute.availableValues().contains(QtIVIClimateControl::FloorPanel));
+    ui->cb_windshield->setEnabled(attribute.availableValues().contains(QtIVIClimateControl::Windshield));
+    ui->cb_dashboard->setEnabled(attribute.availableValues().contains(QtIVIClimateControl::Dashboard));
+    ui->cb_floor->setEnabled(attribute.availableValues().contains(QtIVIClimateControl::Floor));
 }
 
 void MainWindow::onFlowDirectionButtonToggled(QAbstractButton *button, bool checked)
 {
-    if (!checked)
-        return;
+    Q_UNUSED(button)
+    Q_UNUSED(checked)
 
-    QtIVIClimateControl::AirflowDirection direction = QtIVIClimateControl::BiLevel;
+    QtIVIClimateControl::AirflowDirections direction;
 
-    if (button == ui->rb_BiLevel)
-        direction = QtIVIClimateControl::BiLevel;
-    else if (button == ui->rb_DefrostFloor)
-        direction = QtIVIClimateControl::DefrostFloor;
-    else if (button == ui->rb_FloorDuct)
-        direction = QtIVIClimateControl::FloorDuct;
-    else if (button == ui->rb_FloorPanel)
-        direction = QtIVIClimateControl::FloorPanel;
+    if (ui->cb_windshield->isChecked())
+        direction |= QtIVIClimateControl::Windshield;
+    if (ui->cb_dashboard->isChecked())
+        direction |= QtIVIClimateControl::Dashboard;
+    if (ui->cb_floor->isChecked())
+        direction |= QtIVIClimateControl::Floor;
 
-    m_climateControl->setAirflowDirection(direction);
+    m_climateControl->setAirflowDirections(direction);
 }
 //![3]

@@ -63,7 +63,7 @@ public:
     virtual void setSteeringWheelHeater(int value, const QString &zone) = 0;
     virtual void setFanSpeedLevel(int value, const QString &zone) = 0;
 
-    virtual void setAirflowDirection(QtIVIClimateControl::AirflowDirection airflowDirection, const QString &zone) = 0;
+    virtual void setAirflowDirections(QtIVIClimateControl::AirflowDirections airflowDirections, const QString &zone) = 0;
     virtual void setAirConditioningEnabled(bool enabled, const QString &zone) = 0;
     virtual void setHeaterEnabled(bool enabled, const QString &zone) = 0;
     virtual void setAirRecirculationEnabled(bool enabled, const QString &zone) = 0;
@@ -79,8 +79,8 @@ Q_SIGNALS:
     void steeringWheelHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
     void fanSpeedLevelChanged(int value, const QString &zone = QString());
     void fanSpeedLevelAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
-    void airflowDirectionChanged(QtIVIClimateControl::AirflowDirection value, const QString &zone = QString());
-    void airflowDirectionAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> &attribute, const QString &zone = QString());
+    void airflowDirectionsChanged(QtIVIClimateControl::AirflowDirections value, const QString &zone = QString());
+    void airflowDirectionsAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections> &attribute, const QString &zone = QString());
     void airConditioningEnabledChanged(bool value, const QString &zone = QString());
     void airConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone = QString());
     void heaterEnabledChanged(bool value, const QString &zone = QString());

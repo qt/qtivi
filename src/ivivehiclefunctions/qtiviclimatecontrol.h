@@ -57,7 +57,7 @@ class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIClimateControl : public QtIVIAbstractZ
 {
     Q_OBJECT
     Q_PROPERTY(QtIVIProperty* airConditioning READ airConditioningProperty CONSTANT)
-    Q_PROPERTY(QtIVIProperty* airflowDirection READ airflowDirectionProperty CONSTANT)
+    Q_PROPERTY(QtIVIProperty* airflowDirections READ airflowDirectionsProperty CONSTANT)
     Q_PROPERTY(QtIVIProperty* heater READ heaterProperty CONSTANT)
     Q_PROPERTY(QtIVIProperty* airRecirculation READ airRecirculationProperty CONSTANT)
     Q_PROPERTY(QtIVIProperty* fanSpeedLevel READ fanSpeedLevelProperty CONSTANT)
@@ -68,13 +68,12 @@ class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIClimateControl : public QtIVIAbstractZ
 
 public:
     enum AirflowDirection {
-        None,
-        FloorPanel,
-        FloorDuct,
-        BiLevel,
-        DefrostFloor
+        Windshield = 0x1,
+        Dashboard = 0x2,
+        Floor = 0x4
     };
-    Q_ENUM(AirflowDirection)
+    Q_DECLARE_FLAGS(AirflowDirections, AirflowDirection)
+    Q_FLAG(AirflowDirections)
 
     QtIVIClimateControl(const QString &zone=QString(), QObject* parent=0);
     ~QtIVIClimateControl();
@@ -85,9 +84,9 @@ public:
     bool isAirConditioningEnabled() const;
     QtIVIPropertyAttribute<bool> airConditioningAttribute() const;
     QtIVIProperty* airConditioningProperty() const;
-    QtIVIClimateControl::AirflowDirection airflowDirection() const;
-    QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> airflowDirectionAttribute() const;
-    QtIVIProperty* airflowDirectionProperty() const;
+    QtIVIClimateControl::AirflowDirections airflowDirections() const;
+    QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections> airflowDirectionsAttribute() const;
+    QtIVIProperty* airflowDirectionsProperty() const;
     bool isHeaterEnabled() const;
     QtIVIPropertyAttribute<bool> heaterAttribute() const;
     QtIVIProperty* heaterProperty() const;
@@ -112,7 +111,7 @@ public:
 
 public Q_SLOTS:
     void setAirConditioningEnabled(bool enabled);
-    void setAirflowDirection(QtIVIClimateControl::AirflowDirection value);
+    void setAirflowDirections(QtIVIClimateControl::AirflowDirections value);
     void setHeaterEnabled(bool enabled);
     void setAirRecirculationEnabled(bool enabled);
     void setSteeringWheelHeater(int value);
@@ -122,8 +121,8 @@ public Q_SLOTS:
     void setSeatHeater(int seatHeater);
 
 Q_SIGNALS:
-    void airflowDirectionChanged(QtIVIClimateControl::AirflowDirection value);
-    void airflowDirectionAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> &attribute);
+    void airflowDirectionsChanged(QtIVIClimateControl::AirflowDirections value);
+    void airflowDirectionsAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections> &attribute);
     void airConditioningEnabledChanged(bool enabled);
     void airConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
     void heaterEnabledChanged(bool enabled);
@@ -147,8 +146,8 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QtIVIClimateControl)
-    Q_PRIVATE_SLOT(d_func(), void onAirflowDirectionChanged(QtIVIClimateControl::AirflowDirection value, const QString &zone))
-    Q_PRIVATE_SLOT(d_func(), void onAirflowDirectionAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> &airflowDirectionAttribute, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onAirflowDirectionsChanged(QtIVIClimateControl::AirflowDirections value, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onAirflowDirectionsAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections> &airflowDirectionsAttribute, const QString &zone))
     Q_PRIVATE_SLOT(d_func(), void onAirConditioningEnabledChanged(bool enabled, const QString &zone))
     Q_PRIVATE_SLOT(d_func(), void onAirConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &airConditioningEnabledAttribute, const QString &zone))
     Q_PRIVATE_SLOT(d_func(), void onHeaterEnabledChanged(bool enabled, const QString &zone))
@@ -169,7 +168,7 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(QtIVIClimateControl::AirflowDirection)
-Q_DECLARE_METATYPE(QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection>)
+Q_DECLARE_METATYPE(QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections>)
+Q_DECLARE_OPERATORS_FOR_FLAGS(QtIVIClimateControl::AirflowDirections)
 
 #endif // CLIMATECONTROL_H

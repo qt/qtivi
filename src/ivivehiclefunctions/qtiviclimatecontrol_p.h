@@ -68,8 +68,8 @@ public:
     void init();
     void clearToDefaults();
 
-    void onAirflowDirectionChanged(QtIVIClimateControl::AirflowDirection value, const QString &zone);
-    void onAirflowDirectionAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> &airflowDirectionAttribute, const QString &zone);
+    void onAirflowDirectionsChanged(QtIVIClimateControl::AirflowDirections value, const QString &zone);
+    void onAirflowDirectionsAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections> &airflowDirectionsAttribute, const QString &zone);
     void onAirConditioningEnabledChanged(bool enabled, const QString &zone);
     void onAirConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &airConditioningEnabledAttribute, const QString &zone);
     void onHeaterEnabledChanged(bool enabled, const QString &zone);
@@ -89,8 +89,8 @@ public:
 
     QtIVIClimateControlBackendInterface* climateControlBackend();
 
-    QtIVIClimateControl::AirflowDirection m_airflowDirection;
-    QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirection> m_airflowDirectionAttribute;
+    QtIVIClimateControl::AirflowDirections m_airflowDirections;
+    QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections> m_airflowDirectionsAttribute;
     QtIVIProperty *m_airFlowDirectionProperty;
     bool m_airConditioning;
     QtIVIPropertyAttribute<bool> m_airConditioningAttribute;
