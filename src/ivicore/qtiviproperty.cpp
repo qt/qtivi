@@ -138,17 +138,23 @@ void QtIVIProperty::setValue(const QVariant &value)
 
     //We need a special conversion for enums from QML as they are saved as int
     QMetaType metaType(d->m_type);
-    if (metaType.flags() & QMetaType::IsEnumeration) {
-        const QMetaObject* mo = metaType.metaObject();
-        QString enumName = QString::fromLocal8Bit(QMetaType::typeName(d->m_type)).split(QStringLiteral("::")).last();
-        if (mo) {
-            QMetaEnum mEnum = mo->enumerator(mo->indexOfEnumerator(enumName.toLocal8Bit().constData()));
-            if (!mEnum.valueToKey(var.toInt())) {
+    bool isEnumOrFlag = false;
+
+    const QMetaObject* mo = metaType.metaObject();
+    QString enumName = QString::fromLocal8Bit(QMetaType::typeName(d->m_type)).split(QStringLiteral("::")).last();
+    if (mo) {
+        QMetaEnum mEnum = mo->enumerator(mo->indexOfEnumerator(enumName.toLocal8Bit().constData()));
+        if (mEnum.isValid()) {
+            isEnumOrFlag = true;
+            if (!mEnum.isFlag() && !mEnum.valueToKey(var.toInt())) {
                 d->throwError(this, QLatin1String("Enum value out of range"));
                 return;
             }
         }
-    } else if (var.typeName() != QVariant::typeToName(d->m_type)) {
+    }
+
+    //Check that the type names match only if it's not a enum, as it will be converted automatically in this case.
+    if (!isEnumOrFlag && var.typeName() != QVariant::typeToName(d->m_type)) {
         d->throwError(this, QStringLiteral("Expected: %1 but got %2").arg(QLatin1String(QVariant::typeToName(d->m_type)), QLatin1String(QVariant::typeToName(value.userType()))));
         return;
     }

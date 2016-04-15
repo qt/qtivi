@@ -65,6 +65,14 @@ public:
     };
     Q_ENUM(TestEnum)
 
+    enum TestFlag {
+        TestFlag_1 = 0x1,
+        TestFlag_2 = 0x2,
+        TestFlag_3 = 0x4,
+    };
+    Q_DECLARE_FLAGS(TestFlags, TestFlag)
+    Q_FLAG(TestFlags)
+
     enum InvalidEnum {
         InvalidValue_1 = 1,
         InvalidValue_2,
@@ -75,6 +83,7 @@ public:
     QTIVIPROPERTY(int, intAttribute)
     QTIVIPROPERTY(QString, readOnlyAttribute)
     QTIVIPROPERTY(TestObject::TestEnum, enumAttribute)
+    QTIVIPROPERTY(TestObject::TestFlags, flagsAttribute)
 
 public:
     TestObject(QObject *parent = Q_NULLPTR)
@@ -98,13 +107,21 @@ public:
                                                                                    &TestObject::enumAttributeValueChanged,
                                                                                    &TestObject::setenumAttributeValue))
       , m_enumAttributeValue(TestObject::TestEnum())
+      , m_flagsAttributeProperty(QtIVIPropertyFactory<TestObject::TestFlags>::create(this,
+                                                                                   &TestObject::flagsAttribute,
+                                                                                   &TestObject::flagsAttributeChanged,
+                                                                                   &TestObject::flagsAttributeValue,
+                                                                                   &TestObject::flagsAttributeValueChanged,
+                                                                                   &TestObject::setflagsAttributeValue))
+      , m_flagsAttributeValue(TestObject::TestFlags())
     {}
-
-
 };
 
 Q_DECLARE_METATYPE(TestObject::TestEnum)
 Q_DECLARE_METATYPE(QtIVIPropertyAttribute<TestObject::TestEnum>)
+Q_DECLARE_METATYPE(TestObject::TestFlags)
+Q_DECLARE_METATYPE(QtIVIPropertyAttribute<TestObject::TestFlags>)
+Q_DECLARE_OPERATORS_FOR_FLAGS(TestObject::TestFlags)
 Q_DECLARE_METATYPE(QList<QQmlError>)
 
 class tst_QtIVIProperty : public QObject
@@ -119,6 +136,7 @@ private Q_SLOTS:
     void attribute_data();
     void attribute();
     void setGetValue();
+    void setGetValue_flags();
     void setGetValue_qml();
     void setValueError_qml();
     void readOnly();
@@ -137,6 +155,20 @@ private:
         QCOMPARE(propertyValueChangedSpy.at(0).at(0), QVariant::fromValue<TestObject::TestEnum>(TestObject::TestValue_3));
         QCOMPARE(valueChangedSpy.count(), 1);
         QCOMPARE(valueChangedSpy.at(0).at(0), QVariant::fromValue<TestObject::TestEnum>(TestObject::TestValue_3));
+    }
+
+    void initializeFlagsAttribute(TestObject *testObject)
+    {
+        QSignalSpy propertyValueChangedSpy(testObject->flagsAttributeProperty(), &QtIVIProperty::valueChanged);
+        QSignalSpy valueChangedSpy(testObject, &TestObject::flagsAttributeValueChanged);
+
+        //Initialize
+        testObject->setflagsAttributeValue(TestObject::TestFlag_3);
+
+        QCOMPARE(propertyValueChangedSpy.count(), 1);
+        QCOMPARE(propertyValueChangedSpy.at(0).at(0), QVariant::fromValue<TestObject::TestFlags>(TestObject::TestFlag_3));
+        QCOMPARE(valueChangedSpy.count(), 1);
+        QCOMPARE(valueChangedSpy.at(0).at(0), QVariant::fromValue<TestObject::TestFlags>(TestObject::TestFlag_3));
     }
 
     void initializeIntAttribute(TestObject *testObject)
@@ -160,6 +192,8 @@ tst_QtIVIProperty::tst_QtIVIProperty()
     qRegisterMetaType<QtIVIPropertyAttribute<QString>>();
     qRegisterMetaType<TestObject::TestEnum>();
     qRegisterMetaType<QtIVIPropertyAttribute<TestObject::TestEnum>>();
+    qRegisterMetaType<TestObject::TestFlags>();
+    qRegisterMetaType<QtIVIPropertyAttribute<TestObject::TestFlags>>();
     qRegisterMetaType<QList<QQmlError>>();
 }
 
@@ -178,6 +212,10 @@ void tst_QtIVIProperty::selfTest()
     QCOMPARE(testObject->enumAttributeValue(), TestObject::TestEnum());
     QCOMPARE(testObject->enumAttribute().type(), QtIVIPropertyAttributeBase::Invalid);
     QVERIFY(testObject->enumAttributeProperty());
+
+    QCOMPARE(testObject->flagsAttributeValue(), TestObject::TestFlags());
+    QCOMPARE(testObject->flagsAttribute().type(), QtIVIPropertyAttributeBase::Invalid);
+    QVERIFY(testObject->flagsAttributeProperty());
 }
 
 void tst_QtIVIProperty::attribute_data()
@@ -261,14 +299,51 @@ void tst_QtIVIProperty::setGetValue()
     QCOMPARE(testObject->enumAttributeProperty()->value(), newValueVariant);
 }
 
+void tst_QtIVIProperty::setGetValue_flags()
+{
+    TestObject *testObject = new TestObject();
+    QSignalSpy propertyValueChangedSpy(testObject->flagsAttributeProperty(), &QtIVIProperty::valueChanged);
+    QSignalSpy valueChangedSpy(testObject, &TestObject::flagsAttributeValueChanged);
+
+    //Initialize
+    testObject->setflagsAttributeValue(TestObject::TestFlag_3);
+
+    QCOMPARE(propertyValueChangedSpy.count(), 1);
+    QCOMPARE(propertyValueChangedSpy.at(0).at(0), QVariant::fromValue<TestObject::TestFlags>(TestObject::TestFlag_3));
+    QCOMPARE(valueChangedSpy.count(), 1);
+    QCOMPARE(valueChangedSpy.at(0).at(0), QVariant::fromValue<TestObject::TestFlags>(TestObject::TestFlag_3));
+
+    //Read value
+    QCOMPARE(testObject->flagsAttributeValue(), TestObject::TestFlag_3);
+    QCOMPARE(testObject->flagsAttributeProperty()->value(), QVariant::fromValue<TestObject::TestFlags>(TestObject::TestFlag_3));
+
+    propertyValueChangedSpy.clear();
+    valueChangedSpy.clear();
+
+    //Set value
+    QVariant newValueVariant = QVariant::fromValue(TestObject::TestFlags(TestObject::TestFlag_1 | TestObject::TestFlag_2));
+    testObject->flagsAttributeProperty()->setValue(newValueVariant);
+
+    QCOMPARE(propertyValueChangedSpy.count(), 1);
+    QCOMPARE(propertyValueChangedSpy.at(0).at(0), newValueVariant);
+    QCOMPARE(valueChangedSpy.count(), 1);
+    QCOMPARE(valueChangedSpy.at(0).at(0), newValueVariant);
+
+    //Read value
+    QCOMPARE(testObject->flagsAttributeValue(), TestObject::TestFlag_1 | TestObject::TestFlag_2);
+    QCOMPARE(testObject->flagsAttributeProperty()->value(), newValueVariant);
+}
+
 void tst_QtIVIProperty::setGetValue_qml()
 {
     TestObject *testObject = new TestObject();
 
     initializeEnumAttribute(testObject);
+    initializeFlagsAttribute(testObject);
     initializeIntAttribute(testObject);
 
     QQmlEngine engine;
+    qmlRegisterType<TestObject>("TestObject", 1, 0, "TestObject");
     engine.rootContext()->setContextProperty(QStringLiteral("testObject"), testObject);
     QQmlComponent component(&engine, QUrl::fromLocalFile(QFINDTESTDATA("testdata/readWrite.qml")));
     QObject *obj = component.create();
@@ -276,10 +351,18 @@ void tst_QtIVIProperty::setGetValue_qml()
     QVERIFY(obj);
     QCOMPARE(obj->property("intProperty").toInt(), 1);
     QCOMPARE(obj->property("enumProperty").toInt(), 3);
+    QCOMPARE(obj->property("flagsProperty").toInt(), 0x4);
+    QCOMPARE(obj->property("extendFlag").toInt(), 0x4);
+    QVERIFY(!obj->property("isFlag2Set").toBool());
+    QVERIFY(obj->property("isFlag3Set").toBool());
 
     QVERIFY(QMetaObject::invokeMethod(obj, "updateValues"));
     QCOMPARE(obj->property("intProperty").toInt(), 2);
     QCOMPARE(obj->property("enumProperty").toInt(), 2);
+    QCOMPARE(obj->property("flagsProperty").toInt(), int(TestObject::TestFlags(TestObject::TestFlag_1 | TestObject::TestFlag_2)));
+    QCOMPARE(obj->property("extendFlag").toInt(), int(TestObject::TestFlags(TestObject::TestFlag_1 | TestObject::TestFlag_2 | TestObject::TestFlag_3)));
+    QVERIFY(obj->property("isFlag2Set").toBool());
+    QVERIFY(!obj->property("isFlag3Set").toBool());
 }
 
 void tst_QtIVIProperty::setValueError_qml()

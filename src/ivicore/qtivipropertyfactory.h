@@ -44,6 +44,8 @@
 
 #include <QtIVICore/qtiviglobal.h>
 #include <QtIVICore/QtIVIProperty>
+#include <QtIVICore/qtivitypetraits.h>
+#include <QMetaEnum>
 
 QT_BEGIN_NAMESPACE
 
@@ -122,7 +124,7 @@ public:
                                                       new QtPrivate::QSlotObject<valueGetterFunc, typename ValueGetterType::Arguments, typename ValueGetterType::ReturnType>(valueGetter));
 
         connect(sender, attributeSignal, prop, [prop](const QtIVIPropertyAttribute<T> &attribute) {prop->updateAttribute(attribute);});
-        connect(sender, valueSignal, prop, &QtIVIPropertyFactory::valueChanged);
+        connect(sender, valueSignal, prop, [prop](const T &value) {prop->valueChanged(QVariant::fromValue(value));});
 
         return prop;
     }
@@ -150,13 +152,15 @@ public:
         T val;
         void *args[] = { reinterpret_cast<void*>(&val), QVariant().data() };
         valueGetter()->call(parent(), args);
-        return val;
+        return convertValue(val);
     }
 
 private:
     QtIVIPropertyFactory(int userType, const QObject *receiver, QtPrivate::QSlotObjectBase *attGetter, QtPrivate::QSlotObjectBase *valGetter)
         : QtIVIProperty(userType, receiver, attGetter, valGetter)
-    {}
+    {
+        registerConverters();
+    }
 
     //We need to know the exact type here to allocate it before calling the getter.
     //The call function will just use the operator=() function to assign it to our local instance,
@@ -182,21 +186,47 @@ private:
         Q_FOREACH (const T &val, aValues) {
             //As QML doesn't support Enums in Lists we need to convert it to int
             //TODO Do we really want to do this ?
-            int userType = qMetaTypeId<T>();
-            QMetaType metaType(userType);
-            QVariant var = QVariant::fromValue<T>(val);
-            if (metaType.flags() & QMetaType::IsEnumeration)
-                var = var.toInt();
-            list.append(var);
+            list.append(convertValue(val));
         }
         return list;
     }
 
+    QVariant convertValue(const T &val) const
+    {
+        QVariant var;
+        int userType = qMetaTypeId<T>();
+        QMetaType metaType(userType);
+        const QMetaObject* mo = metaType.metaObject();
+        QString enumName = QString::fromLocal8Bit(QMetaType::typeName(userType)).split(QStringLiteral("::")).last();
+        if (mo) {
+            QMetaEnum mEnum = mo->enumerator(mo->indexOfEnumerator(enumName.toLocal8Bit().constData()));
+            if (mEnum.isValid()) {
+                var = QVariant::fromValue<T>(val).toInt();
+            }
+        }
+
+        if (!var.isValid())
+            var = QVariant::fromValue<T>(val);
+
+        return var;
+    }
 
     //Just needed as we can't call the protected function directly in the create() functions
     void setValueSetterHelper(QtPrivate::QSlotObjectBase *valueSetter)
     {
         setValueSetter(valueSetter);
+    }
+
+    //If T is NOT convertible into a int e.g. QFlag
+    template <typename F=T> Q_INLINE_TEMPLATE typename QtPrivate::QEnableIf<!QtPrivate::is_flag<F>::value, void>::Type registerConverters()
+    {
+    }
+
+    //If T is convertible into a int e.g. QFlag
+    template <typename F=T> Q_INLINE_TEMPLATE typename QtPrivate::QEnableIf<QtPrivate::is_flag<F>::value, void>::Type registerConverters()
+    {
+        if (!QMetaType::hasRegisteredConverterFunction<F, int>())
+            QMetaType::registerConverter<F, int>(&F::operator int);
     }
 };
 

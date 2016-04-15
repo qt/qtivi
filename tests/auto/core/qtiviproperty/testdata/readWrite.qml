@@ -27,14 +27,21 @@
 ****************************************************************************/
 
 import QtQuick 2.0
+import TestObject 1.0
 
 Item {
 
     property int intProperty: testObject.intAttributeProperty.value
     property int enumProperty: testObject.enumAttributeProperty.value
+    property var flagsProperty: testObject.flagsAttributeProperty.value
+    property var extendFlag: testObject.flagsAttributeProperty.value
+    property bool isFlag2Set: testObject.flagsAttributeProperty.value & TestObject.TestFlag_2
+    property bool isFlag3Set: testObject.flagsAttributeProperty.value & TestObject.TestFlag_3
 
     function updateValues() {
         testObject.intAttributeProperty.value = 2.4
-        testObject.enumAttributeProperty.value = 2
+        testObject.enumAttributeProperty.value = TestObject.TestValue_2
+        testObject.flagsAttributeProperty.value = TestObject.TestFlag_1 | TestObject.TestFlag_2
+        extendFlag = testObject.flagsAttributeProperty.value | TestObject.TestFlag_3
     }
 }

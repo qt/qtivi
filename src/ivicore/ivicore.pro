@@ -25,7 +25,8 @@ HEADERS += \
     qtivipropertyfactory.h \
     qtiviproperty_p.h \
     qtiviabstractfeature_p.h \
-    qtiviabstractzonedfeature_p.h
+    qtiviabstractzonedfeature_p.h \
+    qtivitypetraits.h
 
 SOURCES += \
     qtiviservicemanager.cpp \
