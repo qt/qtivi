@@ -56,7 +56,6 @@ public:
 
     void initializeAttributes();
 
-    QtIVIPropertyAttribute<int> targetTemperatureAttribute(const QString &zone) const;
     void setTargetTemperature(int val, const QString &zone);
     void setSeatCooler(int val, const QString &zone);
     void setSeatHeater(int val, const QString &zone);
@@ -65,7 +64,12 @@ public:
     void setAirflowDirections(QtIVIClimateControl::AirflowDirections direction, const QString &zone);
     void setAirConditioningEnabled(bool val, const QString &zone);
     void setHeaterEnabled(bool val, const QString &zone);
-    void setAirRecirculationEnabled(bool val, const QString &zone);
+    void setZoneSynchronizationEnabled(bool zoneSynchronization, const QString &zone);
+    void setDefrostEnabled(bool defrost, const QString &zone);
+    void setRecirculationMode(QtIVIClimateControl::RecirculationMode recirculationMode, const QString &zone);
+    void setRecirculationSensitivityLevel(int recirculationSensitivityLevel, const QString &zone);
+    void setClimateMode(QtIVIClimateControl::ClimateMode climateMode, const QString &zone);
+    void setAutomaticClimateFanIntensityLevel(int automaticClimateFanIntensityLevel, const QString &zone);
 
 private:
 
@@ -73,8 +77,14 @@ private:
     bool m_airCondition;
     bool m_heater;
     bool m_airRecirculation;
+    bool m_zoneSynchronization;
+    bool m_defrost;
     int m_steeringWheelHeater;
     int m_fanSpeed;
+    QtIVIClimateControl::RecirculationMode m_recirculationMode;
+    int m_recirculationSensitivityLevel;
+    QtIVIClimateControl::ClimateMode m_climateMode;
+    int m_automaticClimateFanIntensityLevel;
 
     struct ZoneBackend {
         int targetTemperature;

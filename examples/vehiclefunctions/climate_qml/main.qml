@@ -139,10 +139,13 @@ ApplicationWindow {
 
         CheckBox {
             text: "Air Recirculation"
-            checked: climateControl.airRecirculation.value
+            checked: climateControl.recirculationMode.value === ClimateControl.RecirculationOn
             enabled: climateControl.airRecirculation.available
             onClicked: {
-                    climateControl.airRecirculation.value = checked
+                if (checked)
+                    climateControl.recirculationMode.value = ClimateControl.RecirculationOn
+                else
+                    climateControl.recirculationMode.value = ClimateControl.RecirculationOff
             }
         }
 

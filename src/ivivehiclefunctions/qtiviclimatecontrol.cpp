@@ -49,12 +49,19 @@ QtIVIClimateControlPrivate::QtIVIClimateControlPrivate(const QString &interface,
     , m_airflowDirections(0)
     , m_airConditioning(false)
     , m_heater(false)
-    , m_airRecirculation(false)
     , m_targetTemperature(0)
     , m_seatCooler(0)
     , m_seatHeater(0)
     , m_steeringWheelHeater(0)
     , m_fanSpeedLevel(0)
+    , m_outsideTemperature(0)
+    , m_zoneSynchronization(false)
+    , m_defrost(false)
+    , m_recirculationMode(QtIVIClimateControl::RecirculationOff)
+    , m_recirculation(false)
+    , m_recirculationSensitivityLevel(-1)
+    , m_climateMode(QtIVIClimateControl::ClimateOff)
+    , m_automaticClimateFanIntensityLevel(0)
     , q_ptr(parent)
 {
 }
@@ -80,12 +87,6 @@ void QtIVIClimateControlPrivate::init()
                                                           &QtIVIClimateControl::isHeaterEnabled,
                                                           &QtIVIClimateControl::heaterEnabledChanged,
                                                           &QtIVIClimateControl::setHeaterEnabled);
-    m_airRecirculationProperty = QtIVIPropertyFactory<bool>::create(q,
-                                                                    &QtIVIClimateControl::airRecirculationAttribute,
-                                                                    &QtIVIClimateControl::airRecirculationAttributeChanged,
-                                                                    &QtIVIClimateControl::isAirRecirculationEnabled,
-                                                                    &QtIVIClimateControl::airRecirculationEnabledChanged,
-                                                                    &QtIVIClimateControl::setAirRecirculationEnabled);
     m_targetTemperatureProperty = QtIVIPropertyFactory<int>::create(q,
                                                                     &QtIVIClimateControl::targetTemperatureAttribute,
                                                                     &QtIVIClimateControl::targetTemperatureAttributeChanged,
@@ -116,18 +117,78 @@ void QtIVIClimateControlPrivate::init()
                                                                 &QtIVIClimateControl::fanSpeedLevel,
                                                                 &QtIVIClimateControl::fanSpeedLevelChanged,
                                                                 &QtIVIClimateControl::setFanSpeedLevel);
+    m_outsideTemperatureProperty = QtIVIPropertyFactory<int>::create(q,
+                                                                     &QtIVIClimateControl::outsideTemperatureAttribute,
+                                                                     &QtIVIClimateControl::outsideTemperatureAttributeChanged,
+                                                                     &QtIVIClimateControl::outsideTemperature,
+                                                                     &QtIVIClimateControl::outsideTemperatureChanged);
+
+    m_zoneSynchronizationProperty = QtIVIPropertyFactory<bool>::create(q,
+                                                                       &QtIVIClimateControl::zoneSynchronizationAttribute,
+                                                                       &QtIVIClimateControl::zoneSynchronizationAttributeChanged,
+                                                                       &QtIVIClimateControl::isZoneSynchronizationEnabled,
+                                                                       &QtIVIClimateControl::zoneSynchronizationEnabledChanged,
+                                                                       &QtIVIClimateControl::setZoneSynchronizationEnabled);
+
+    m_defrostProperty = QtIVIPropertyFactory<bool>::create(q,
+                                                           &QtIVIClimateControl::defrostAttribute,
+                                                           &QtIVIClimateControl::defrostAttributeChanged,
+                                                           &QtIVIClimateControl::isDefrostEnabled,
+                                                           &QtIVIClimateControl::defrostEnabledChanged,
+                                                           &QtIVIClimateControl::setDefrostEnabled);
+
+    m_recirculationModeProperty = QtIVIPropertyFactory<QtIVIClimateControl::RecirculationMode>::create(q,
+                                                                                                       &QtIVIClimateControl::recirculationModeAttribute,
+                                                                                                       &QtIVIClimateControl::recirculationModeAttributeChanged,
+                                                                                                       &QtIVIClimateControl::recirculationMode,
+                                                                                                       &QtIVIClimateControl::recirculationModeChanged,
+                                                                                                       &QtIVIClimateControl::setRecirculationMode);
+
+    m_recirculationProperty = QtIVIPropertyFactory<bool>::create(q,
+                                                                 &QtIVIClimateControl::recirculationAttribute,
+                                                                 &QtIVIClimateControl::recirculationAttributeChanged,
+                                                                 &QtIVIClimateControl::isRecirculationEnabled,
+                                                                 &QtIVIClimateControl::recirculationEnabledChanged);
+
+    m_recirculationSensitivityLevelProperty = QtIVIPropertyFactory<int>::create(q,
+                                                                                &QtIVIClimateControl::recirculationSensitivityLevelAttribute,
+                                                                                &QtIVIClimateControl::recirculationSensitivityLevelAttributeChanged,
+                                                                                &QtIVIClimateControl::recirculationSensitivityLevel,
+                                                                                &QtIVIClimateControl::recirculationSensitivityLevelChanged,
+                                                                                &QtIVIClimateControl::setRecirculationSensitivityLevel);
+
+    m_climateModeProperty = QtIVIPropertyFactory<QtIVIClimateControl::ClimateMode>::create(q,
+                                                                                           &QtIVIClimateControl::climateModeAttribute,
+                                                                                           &QtIVIClimateControl::climateModeAttributeChanged,
+                                                                                           &QtIVIClimateControl::climateMode,
+                                                                                           &QtIVIClimateControl::climateModeChanged,
+                                                                                           &QtIVIClimateControl::setClimateMode);
+
+    m_automaticClimateFanIntensityLevelProperty = QtIVIPropertyFactory<int>::create(q,
+                                                                                    &QtIVIClimateControl::automaticClimateFanIntensityLevelAttribute,
+                                                                                    &QtIVIClimateControl::automaticClimateFanIntensityLevelAttributeChanged,
+                                                                                    &QtIVIClimateControl::automaticClimateFanIntensityLevel,
+                                                                                    &QtIVIClimateControl::automaticClimateFanIntensityLevelChanged,
+                                                                                    &QtIVIClimateControl::setAutomaticClimateFanIntensityLevel);
 }
 
 void QtIVIClimateControlPrivate::clearToDefaults()
 {
     m_airConditioning = false;
     m_heater = false;
-    m_airRecirculation = false;
     m_targetTemperature = 0;
     m_seatCooler = 0;
     m_seatHeater = 0;
     m_steeringWheelHeater = 0;
     m_fanSpeedLevel = 0;
+    m_outsideTemperature = 0;
+    m_zoneSynchronization = false;
+    m_defrost = false;
+    m_recirculationMode = QtIVIClimateControl::RecirculationOff;
+    m_recirculation = false;
+    m_recirculationSensitivityLevel = -1;
+    m_climateMode = QtIVIClimateControl::ClimateOff;
+    m_automaticClimateFanIntensityLevel = 0;
 }
 
 void QtIVIClimateControlPrivate::onAirflowDirectionsChanged(QtIVIClimateControl::AirflowDirections value, const QString &zone)
@@ -200,30 +261,6 @@ void QtIVIClimateControlPrivate::onHeaterAttributeChanged(const QtIVIPropertyAtt
         return;
     f->d_func()->m_heaterAttribute = heaterEnabledAttribute;
     emit f->heaterAttributeChanged(heaterEnabledAttribute);
-}
-
-void QtIVIClimateControlPrivate::onAirRecirculationEnabledChanged(bool enabled, const QString &zone)
-{
-    Q_Q(QtIVIClimateControl);
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
-    if (!f)
-        f = q;
-    if (f->zone() != zone)
-        return;
-    f->d_func()->m_airRecirculation = enabled;
-    emit f->airRecirculationEnabledChanged(enabled);
-}
-
-void QtIVIClimateControlPrivate::onAirRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &airRecirculationEnabledAttribute, const QString &zone)
-{
-    Q_Q(QtIVIClimateControl);
-    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
-    if (!f)
-        f = q;
-    if (f->zone() != zone)
-        return;
-    f->d_func()->m_airRecirculationAttribute = airRecirculationEnabledAttribute;
-    emit f->airRecirculationAttributeChanged(airRecirculationEnabledAttribute);
 }
 
 void QtIVIClimateControlPrivate::onSteeringWheelHeaterChanged(int value, const QString &zone)
@@ -346,6 +383,198 @@ void QtIVIClimateControlPrivate::onSeatHeaterAttributeChanged(const QtIVIPropert
     emit f->seatHeaterAttributeChanged(seatHeaterAttribute);
 }
 
+void QtIVIClimateControlPrivate::onOutsideTemperatureChanged(int outsideTemperature, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_outsideTemperature = outsideTemperature;
+    emit f->outsideTemperatureChanged(outsideTemperature);
+}
+
+void QtIVIClimateControlPrivate::onOutsideTemperatureAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_outsideTemperatureAttribute = attribute;
+    emit f->outsideTemperatureAttributeChanged(attribute);
+}
+
+void QtIVIClimateControlPrivate::onZoneSynchronizationChanged(bool zoneSynchronization, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_zoneSynchronization = zoneSynchronization;
+    emit f->zoneSynchronizationEnabledChanged(zoneSynchronization);
+}
+
+void QtIVIClimateControlPrivate::onZoneSynchronizationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_zoneSynchronizationAttribute = attribute;
+    emit f->zoneSynchronizationAttributeChanged(attribute);
+}
+
+void QtIVIClimateControlPrivate::onDefrostChanged(bool defrost, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_defrost = defrost;
+    emit f->defrostEnabledChanged(defrost);
+}
+
+void QtIVIClimateControlPrivate::onDefrostAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_defrostAttribute = attribute;
+    emit f->defrostAttributeChanged(attribute);
+}
+
+void QtIVIClimateControlPrivate::onRecirculationModeChanged(QtIVIClimateControl::RecirculationMode recirculationMode, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_recirculationMode = recirculationMode;
+    emit f->recirculationModeChanged(recirculationMode);
+}
+
+void QtIVIClimateControlPrivate::onRecirculationModeAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::RecirculationMode> &attribute, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_recirculationModeAttribute = attribute;
+    emit f->recirculationModeAttributeChanged(attribute);
+}
+
+void QtIVIClimateControlPrivate::onRecirculationChanged(bool recirculation, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_recirculation = recirculation;
+    emit f->recirculationEnabledChanged(recirculation);
+}
+
+void QtIVIClimateControlPrivate::onRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_recirculationAttribute = attribute;
+    emit f->recirculationAttributeChanged(attribute);
+}
+
+void QtIVIClimateControlPrivate::onRecirculationSensitivityLevelChanged(int recirculationSensitivityLevel, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_recirculationSensitivityLevel = recirculationSensitivityLevel;
+    emit f->recirculationSensitivityLevelChanged(recirculationSensitivityLevel);
+}
+
+void QtIVIClimateControlPrivate::onRecirculationSensitivityLevelAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_recirculationSensitivityLevelAttribute = attribute;
+    emit f->recirculationSensitivityLevelAttributeChanged(attribute);
+}
+
+void QtIVIClimateControlPrivate::onClimateModeChanged(QtIVIClimateControl::ClimateMode climateMode, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_climateMode = climateMode;
+    emit f->climateModeChanged(climateMode);
+}
+
+void QtIVIClimateControlPrivate::onClimateModeAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::ClimateMode> &attribute, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_climateModeAttribute = attribute;
+    emit f->climateModeAttributeChanged(attribute);
+}
+
+void QtIVIClimateControlPrivate::onAutomaticClimateFanIntensityLevelChanged(int automaticClimateFanIntensityLevel, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_automaticClimateFanIntensityLevel = automaticClimateFanIntensityLevel;
+    emit f->automaticClimateFanIntensityLevelChanged(automaticClimateFanIntensityLevel);
+}
+
+void QtIVIClimateControlPrivate::onAutomaticClimateFanIntensityLevelAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone)
+{
+    Q_Q(QtIVIClimateControl);
+    QtIVIClimateControl *f = qobject_cast<QtIVIClimateControl*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    f->d_func()->m_automaticClimateFanIntensityLevelAttribute = attribute;
+    emit f->automaticClimateFanIntensityLevelAttributeChanged(attribute);
+}
+
 QtIVIClimateControlBackendInterface *QtIVIClimateControlPrivate::climateControlBackend()
 {
     Q_Q(QtIVIClimateControl);
@@ -376,13 +605,33 @@ QtIVIClimateControlBackendInterface *QtIVIClimateControlPrivate::climateControlB
 */
 
 /*!
-   \enum QtIVIClimateControl::AirflowDirections
+   \enum QtIVIClimateControl::AirflowDirection
    \value Windshield
           Direct airflow along the windshield.
    \value Dashboard
           Direct airflow through the dashboard.
    \value Floor
           Direct airflow to the floor.
+*/
+
+/*!
+   \enum QtIVIClimateControl::RecirculationMode
+   \value RecirculationOff
+          The recirculation is turned off.
+   \value RecirculationOn
+          The recirculation is turned on.
+   \value AutoRecirculation
+          The recirculation is turning off and on automatically depending on the air quality.
+*/
+
+/*!
+   \enum QtIVIClimateControl::ClimateMode
+   \value ClimateOff
+          The climate system is turned off.
+   \value ClimateOn
+          The climate system is turned on.
+   \value AutoClimate
+          The climate system is in automatic mode and is adjusting some parts of the system automatically. E.g. lower the fan speed when the targetTemperature is reached.
 */
 
 /*!
@@ -400,6 +649,8 @@ QtIVIClimateControl::QtIVIClimateControl(const QString &zone, QObject* parent)
     qRegisterMetaType<QtIVIPropertyAttribute<int>>();
     qRegisterMetaType<QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections>>();
     qRegisterMetaType<QtIVIPropertyAttribute<bool>>();
+    qRegisterMetaType<QtIVIPropertyAttribute<QtIVIClimateControl::RecirculationMode>>();
+    qRegisterMetaType<QtIVIPropertyAttribute<QtIVIClimateControl::ClimateMode>>();
 }
 
 QtIVIClimateControl::~QtIVIClimateControl()
@@ -450,10 +701,38 @@ void QtIVIClimateControl::connectToServiceObject(QtIVIServiceObject *serviceObje
             d, &QtIVIClimateControlPrivate::onHeaterEnabledChanged);
     QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::heaterAttributeChanged,
             d, &QtIVIClimateControlPrivate::onHeaterAttributeChanged);
-    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::airRecirculationEnabledChanged,
-            d, &QtIVIClimateControlPrivate::onAirRecirculationEnabledChanged);
-    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::airRecirculationAttributeChanged,
-            d, &QtIVIClimateControlPrivate::onAirRecirculationAttributeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::outsideTemperatureChanged,
+            d, &QtIVIClimateControlPrivate::onOutsideTemperatureChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::outsideTemperatureAttributeChanged,
+            d, &QtIVIClimateControlPrivate::onOutsideTemperatureAttributeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::zoneSynchronizationEnabledChanged,
+            d, &QtIVIClimateControlPrivate::onZoneSynchronizationChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::zoneSynchronizationAttributeChanged,
+            d, &QtIVIClimateControlPrivate::onZoneSynchronizationAttributeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::defrostEnabledChanged,
+            d, &QtIVIClimateControlPrivate::onDefrostChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::defrostAttributeChanged,
+            d, &QtIVIClimateControlPrivate::onDefrostAttributeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::recirculationModeChanged,
+            d, &QtIVIClimateControlPrivate::onRecirculationModeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::recirculationModeAttributeChanged,
+            d, &QtIVIClimateControlPrivate::onRecirculationModeAttributeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::recirculationEnabledChanged,
+            d, &QtIVIClimateControlPrivate::onRecirculationChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::recirculationAttributeChanged,
+            d, &QtIVIClimateControlPrivate::onRecirculationAttributeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::recirculationSensitivityLevelChanged,
+            d, &QtIVIClimateControlPrivate::onRecirculationSensitivityLevelChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::recirculationSensitivityLevelAttributeChanged,
+            d, &QtIVIClimateControlPrivate::onRecirculationSensitivityLevelAttributeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::climateModeChanged,
+            d, &QtIVIClimateControlPrivate::onClimateModeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::climateModeAttributeChanged,
+            d, &QtIVIClimateControlPrivate::onClimateModeAttributeChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::automaticClimateFanIntensityLevelChanged,
+            d, &QtIVIClimateControlPrivate::onAutomaticClimateFanIntensityLevelChanged);
+    QObjectPrivate::connect(backend, &QtIVIClimateControlBackendInterface::automaticClimateFanIntensityLevelAttributeChanged,
+            d, &QtIVIClimateControlPrivate::onAutomaticClimateFanIntensityLevelAttributeChanged);
 
     backend->initializeAttributes();
 }
@@ -613,50 +892,6 @@ QtIVIProperty *QtIVIClimateControl::heaterProperty() const
 }
 
 /*!
-   \qmlqtivipropertyBool {QtIVIVehicleFunctions::ClimateControl::airRecirculation}
-
-   \e value is true if the air recirculation is enabled.
-*/
-/*!
-   \property QtIVIClimateControl::airRecirculation
-
-   Holds a QtIVIProperty of type \e bool where the QtIVIProperty::value() function indicates if air recirculation is enabled.
-
-   \sa AttributeSystem
-   \sa isAirRecirculationEnabled() setAirRecirculationEnabled() airRecirculationAttribute()
- */
-/*!
- * Returns true if air recirculation is enabled.
- *
- * \sa setAirRecirculationEnabled() airRecirculationEnabledChanged() airRecirculationAttribute()
- */
-bool QtIVIClimateControl::isAirRecirculationEnabled() const
-{
-    Q_D(const QtIVIClimateControl);
-    return d->m_airRecirculation;
-}
-
-/*!
- * Returns the attribute defining the boundaries and availability of the air recirculation property.
- *
- * \sa setAirRecirculationEnabled() isAirRecirculationEnabled() airRecirculationEnabledChanged()
- */
-QtIVIPropertyAttribute<bool> QtIVIClimateControl::airRecirculationAttribute() const
-{
-    Q_D(const QtIVIClimateControl);
-    return d->m_airRecirculationAttribute;
-}
-
-QtIVIProperty *QtIVIClimateControl::airRecirculationProperty() const
-{
-    Q_D(const QtIVIClimateControl);
-    return d->m_airRecirculationProperty;
-}
-
-/*!
-   \qmlproperty int ClimateZone::steeringWheelHeater
- */
-/*!
    \qmlqtiviproperty {int} {QtIVIVehicleFunctions::ClimateControl::steeringWheelHeater}
 
     \e value holds the steering wheel heater level, where the level can be between \c minimumValue(off)
@@ -671,7 +906,7 @@ QtIVIProperty *QtIVIClimateControl::airRecirculationProperty() const
    \sa steeringWheelHeater() setSteeringWheelHeater() steeringWheelHeaterAttribute()
  */
 /*!
- * Returns the current steering wheel heater level, where the level can be between \c 0 (off) and \c 10 (warmest).
+ * Returns the current steering wheel heater level, where the level can be between \c minimumValue(off) and \c maximumValue (warmest).
  *
  * \sa setSteeringWheelHeater() steeringWheelHeaterChanged() steeringWheelHeaterAttribute()
  */
@@ -713,7 +948,7 @@ QtIVIProperty *QtIVIClimateControl::steeringWheelHeaterProperty() const
    \sa fanSpeedLevel() setFanSpeedLevel() fanSpeedLevelAttribute()
  */
 /*!
- * Returns the current fan speed level, where the level can be between \c 0 (off) and \c 10 (strongest).
+ * Returns the current fan speed level, where the level can be between \c miniumValue(off) and \c maximumValue(strongest).
  *
  * \sa setFanSpeedLevel() fanSpeedLevelChanged() fanSpeedLevelAttribute()
  */
@@ -743,8 +978,8 @@ QtIVIProperty *QtIVIClimateControl::fanSpeedLevelProperty() const
 /*!
    \qmlqtiviproperty {int} {QtIVIVehicleFunctions::ClimateControl::targetTemperature}
 
-   \e value holds the target temperature of the zone expressed in centigrades, where the temperature can be between \c minimumValue(off)
-   to \c maximumValue (strongest).
+   \e value holds the target temperature of the zone expressed in centigrades, where the temperature can be between \c minimumValue(coolest)
+   to \c maximumValue (warmest).
  */
 /*!
    \property QtIVIClimateControl::targetTemperature
@@ -797,7 +1032,7 @@ QtIVIProperty *QtIVIClimateControl::targetTemperatureProperty() const
    \sa seatCooler() setSeatCooler() seatCoolerAttribute()
  */
 /*!
- * Returns the current seat cooler level, where the level can be between \c 0 (off) and \c 10 (coolest).
+ * Returns the current seat cooler level, where the level can be between \c minimumValue(off) and \c maximumValue(coolest).
  *
  * \sa seatCooler() seatCoolerChanged() seatCoolerAttribute()
  */
@@ -839,7 +1074,7 @@ QtIVIProperty *QtIVIClimateControl::seatCoolerProperty() const
    \sa seatHeater() setSeatHeater() seatHeaterAttribute()
  */
 /*!
- * Returns the current seat heater level, where the level can be between \c 0 (off) and \c 10 (warmest).
+ * Returns the current seat heater level, where the level can be between \c minimumValue(off) and \c maximumValue(warmest).
  *
  * \sa seatHeater() seatHeaterChanged() seatHeaterAttribute()
  */
@@ -864,6 +1099,355 @@ QtIVIProperty *QtIVIClimateControl::seatHeaterProperty() const
 {
     Q_D(const QtIVIClimateControl);
     return d->m_seatHeaterProperty;
+}
+
+/*!
+   \qmlqtiviproperty {int} {QtIVIVehicleFunctions::ClimateControl::outsideTemperature}
+
+   \e value holds the outside temperature of the zone expressed in centigrades, where the temperature can be between \c minimumValue(coolest)
+   to \c maximumValue (warmest).
+ */
+/*!
+   \property QtIVIClimateControl::outsideTemperature
+
+   Holds a QtIVIProperty of type \e int where the QtIVIProperty::value() function returns the current outside temperature.
+
+   \sa AttributeSystem
+   \sa outsideTemperature() outsideTemperatureAttribute()
+ */
+/*!
+ * Returns the current outside temperature expressed in centigrates.
+ *
+ * \sa outsideTemperatureChanged() outsideTemperatureAttribute()
+ */
+int QtIVIClimateControl::outsideTemperature() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_outsideTemperature;
+}
+
+/*!
+ * Returns the attribute defining the boundaries and availability of the outside temperature property.
+ *
+ * \sa outsideTemperature() outsideTemperatureChanged()
+ */
+QtIVIPropertyAttribute<int> QtIVIClimateControl::outsideTemperatureAttribute() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_outsideTemperatureAttribute;
+}
+
+QtIVIProperty *QtIVIClimateControl::outsideTemperatureProperty() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_outsideTemperatureProperty;
+}
+
+/*!
+   \qmlqtivipropertyBool {QtIVIVehicleFunctions::ClimateControl::zoneSynchronization}
+
+   \e value is true if the zone synchronization is enabled.
+
+   Which zones and properties are synchronized is controlled by the backend implementing it.
+*/
+/*!
+   \property QtIVIClimateControl::zoneSynchronization
+
+   Holds a QtIVIProperty of type \e bool where the QtIVIProperty::value() function indicates if zone synchronization is enabled.
+
+   Which zones and properties are synchronized is controlled by the backend implementing it.
+
+   \sa AttributeSystem
+   \sa isZoneSynchronizationEnabled() setZoneSynchronizationEnabled() zoneSynchronizationAttribute()
+ */
+/*!
+ * Returns true if zone synchronization is enabled.
+ *
+ * \sa setZoneSynchronizationEnabled() zoneSynchronizationEnabledChanged() zoneSynchronizationAttribute()
+ */
+bool QtIVIClimateControl::isZoneSynchronizationEnabled() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_zoneSynchronization;
+}
+
+/*!
+ * Returns the attribute defining the boundaries and availability of the zone synchronization property.
+ *
+ * \sa setZoneSynchronizationEnabled() isZoneSynchronizationEnabled() zoneSynchronizationEnabledChanged()
+ */
+QtIVIPropertyAttribute<bool> QtIVIClimateControl::zoneSynchronizationAttribute() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_zoneSynchronizationAttribute;
+}
+
+QtIVIProperty *QtIVIClimateControl::zoneSynchronizationProperty() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_zoneSynchronizationProperty;
+}
+
+/*!
+   \qmlqtivipropertyBool {QtIVIVehicleFunctions::ClimateControl::defrost}
+
+   \e value is true if defrost is enabled. Usually that means that the fans are on the highest level to remove ice from the windshield.
+*/
+/*!
+   \property QtIVIClimateControl::defrost
+
+   Holds a QtIVIProperty of type \e bool where the QtIVIProperty::value() function indicates if defrost is enabled.
+
+   \sa AttributeSystem
+   \sa isDefrostEnabled() setDefrostEnabled() defrostAttribute()
+ */
+/*!
+ * Returns true if defrost is enabled.
+ *
+ * \sa setDefrostEnabled() defrostEnabledChanged() defrostAttribute()
+ */
+bool QtIVIClimateControl::isDefrostEnabled() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_defrost;
+}
+
+/*!
+ * Returns the attribute defining the boundaries and availability of the defrost property.
+ *
+ * \sa setDefrostEnabled() isDefrostEnabled() defrostEnabledChanged()
+ */
+QtIVIPropertyAttribute<bool> QtIVIClimateControl::defrostAttribute() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_defrostAttribute;
+}
+
+QtIVIProperty *QtIVIClimateControl::defrostProperty() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_defrostProperty;
+}
+
+/*!
+   \qmlqtivipropertyEnum {QtIVIVehicleFunctions::ClimateControl::recirculationMode}
+
+   \e value holds the recirculation mode.
+   Available values are:
+   \value RecirculationOff
+          The recirculation is turned off.
+   \value RecirculationOn
+          The recirculation is turned on.
+   \value AutoRecirculation
+          The recirculation is turning off and on automatically depending on the air quality.
+ */
+/*!
+   \property QtIVIClimateControl::recirculationMode
+
+   Holds a QtIVIProperty of type \e QtIVIClimateControl::RecirculationMode where the QtIVIProperty::value() function returns the current recirculation mode.
+
+   \sa AttributeSystem
+   \sa recirculationMode() setRecirculationMode() recirculationModeAttribute()
+ */
+/*!
+ * Returns the current recirculation mode.
+ *
+ * \sa setRecirculationMode() recirculationModeChanged() recirculationModeAttribute()
+ */
+QtIVIClimateControl::RecirculationMode QtIVIClimateControl::recirculationMode() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_recirculationMode;
+}
+
+/*!
+ * Returns the attribute defining the boundaries and availability of the recirculationMode property.
+ *
+ * \sa setRecirculationMode() recirculationMode() recirculationModeChanged()
+ */
+QtIVIPropertyAttribute<QtIVIClimateControl::RecirculationMode> QtIVIClimateControl::recirculationModeAttribute() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_recirculationModeAttribute;
+}
+
+QtIVIProperty *QtIVIClimateControl::recirculationModeProperty() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_recirculationModeProperty;
+}
+
+/*!
+   \qmlqtivipropertyBool {QtIVIVehicleFunctions::ClimateControl::recirculation}
+
+   \e value is true if the recirculation is currently running.
+*/
+/*!
+   \property QtIVIClimateControl::recirculation
+
+   Holds a QtIVIProperty of type \e bool where the QtIVIProperty::value() function indicates if recirculation is running.
+
+   \sa AttributeSystem
+   \sa isRecirculationEnabled() recirculationAttribute()
+ */
+/*!
+ * Returns true if defrost is enabled.
+ *
+ * \sa recirculationEnabledChanged() recirculationAttribute()
+ */
+bool QtIVIClimateControl::isRecirculationEnabled() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_recirculation;
+}
+
+/*!
+ * Returns the attribute defining the boundaries and availability of the recirculation property.
+ *
+ * \sa isRecirculationEnabled() recirculationEnabledChanged()
+ */
+QtIVIPropertyAttribute<bool> QtIVIClimateControl::recirculationAttribute() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_recirculationAttribute;
+}
+
+QtIVIProperty *QtIVIClimateControl::recirculationProperty() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_recirculationProperty;
+}
+
+/*!
+   \qmlqtiviproperty {int} {QtIVIVehicleFunctions::ClimateControl::recirculationSensitivityLevel}
+
+    \e value holds the sensitivity level of the recirculation system when the recirculationMode is set to AutoRecirculation, where the level can be between \c minimumValue(least sensitive)
+    to \c maximumValue(most sensitive).
+ */
+/*!
+   \property QtIVIClimateControl::recirculationSensitivityLevel
+
+   Holds a QtIVIProperty of type \e int where the QtIVIProperty::value() function returns the current sensitivity level of the recicurlcation system when the recirculationMode is set to AutoRecirculation.
+
+   \sa AttributeSystem
+   \sa recirculationSensitivityLevel() setRecirculationSensitivityLevel() recirculationSensitivityLevelAttribute()
+ */
+/*!
+ * Returns the current sensitivity level of recicurlcation system when the recirculationMode is set to AutoRecirculation, where the level can be between \c minimumValue(least sensitive) and \c maximumValue(most sensitive).
+ *
+ * \sa setRecirculationSensitivityLevel() recirculationSensitivityLevelChanged() recirculationSensitivityLevelAttribute()
+ */
+int QtIVIClimateControl::recirculationSensitivityLevel() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_recirculationSensitivityLevel;
+}
+
+/*!
+ * Returns the attribute defining the boundaries and availability of the recirculationSensitivityLevel property.
+ *
+ * \sa setRecirculationSensitivityLevel() recirculationSensitivityLevel() recirculationSensitivityLevelChanged()
+ */
+QtIVIPropertyAttribute<int> QtIVIClimateControl::recirculationSensitivityLevelAttribute() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_recirculationSensitivityLevelAttribute;
+}
+
+QtIVIProperty *QtIVIClimateControl::recirculationSensitivityLevelProperty() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_recirculationSensitivityLevelProperty;
+}
+
+/*!
+   \qmlqtivipropertyEnum {QtIVIVehicleFunctions::ClimateControl::climateMode}
+
+   \e value holds the climate mode.
+   Available values are:
+   \value ClimateOff
+          The climate system is turned off.
+   \value ClimateOn
+          The climate system is turned on.
+   \value AutoClimate
+          The climate system is in automatic mode and is adjusting some parts of the system automatically. e.g. lower the fan speed when the targetTemperature is reached.
+ */
+/*!
+   \property QtIVIClimateControl::climateMode
+
+   Holds a QtIVIProperty of type \e QtIVIClimateControl::ClimateMode where the QtIVIProperty::value() function returns the current climate mode.
+
+   \sa AttributeSystem
+   \sa climateMode() setClimateMode() climateModeAttribute()
+ */
+/*!
+ * Returns the current climate mode.
+ *
+ * \sa setClimateMode() climateModeChanged() climateModeAttribute()
+ */
+QtIVIClimateControl::ClimateMode QtIVIClimateControl::climateMode() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_climateMode;
+}
+
+/*!
+ * Returns the attribute defining the boundaries and availability of the climateMode property.
+ *
+ * \sa isRecirculationEnabled() recirculationEnabledChanged()
+ */
+QtIVIPropertyAttribute<QtIVIClimateControl::ClimateMode> QtIVIClimateControl::climateModeAttribute() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_climateModeAttribute;
+}
+
+QtIVIProperty *QtIVIClimateControl::climateModeProperty() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_climateModeProperty;
+}
+
+/*!
+   \qmlqtiviproperty {int} {QtIVIVehicleFunctions::ClimateControl::automaticClimateFanIntensityLevel}
+
+    \e value holds the intensity level of the fan when the climateMode is set to AutoClimate, where the level can be between \c minimumValue(least intensity)
+    to \c maximumValue(most intensity).
+ */
+/*!
+   \property QtIVIClimateControl::automaticClimateFanIntensityLevel
+
+   Holds a QtIVIProperty of type \e int where the QtIVIProperty::value() function returns the current intensity level of the fan when the climateMode is set to AutoClimate.
+
+   \sa AttributeSystem
+   \sa automaticClimateFanIntensityLevel() setAutomaticClimateFanIntensityLevel() automaticClimateFanIntensityLevelAttribute()
+ */
+/*!
+ * Returns the current intensity level of the fan when the climateMode is set to AutoClimate, where the level can be between \c minimumValue(least intensity) and \c maximumValue(most intensity).
+ *
+ * \sa setAutomaticClimateFanIntensityLevel() automaticClimateFanIntensityLevelChanged() automaticClimateFanIntensityLevelAttribute()
+ */
+int QtIVIClimateControl::automaticClimateFanIntensityLevel() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_automaticClimateFanIntensityLevel;
+}
+
+/*!
+ * Returns the attribute defining the boundaries and availability of the climateMode property.
+ *
+ * \sa setAutomaticClimateFanIntensityLevel() automaticClimateFanIntensityLevel() automaticClimateFanIntensityLevelChanged()
+ */
+QtIVIPropertyAttribute<int> QtIVIClimateControl::automaticClimateFanIntensityLevelAttribute() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_automaticClimateFanIntensityLevelAttribute;
+}
+
+QtIVIProperty *QtIVIClimateControl::automaticClimateFanIntensityLevelProperty() const
+{
+    Q_D(const QtIVIClimateControl);
+    return d->m_automaticClimateFanIntensityLevelProperty;
 }
 
 /*!
@@ -903,19 +1487,7 @@ void QtIVIClimateControl::setHeaterEnabled(bool enabled)
 }
 
 /*!
- * Sets the air recirculation system enabled, if \a enabled is true, otherwise it will be disabled.
- *
- * \sa isAirRecirculationEnabled() steeringWheelHeaterChanged() steeringWheelHeaterAttribute()
- */
-void QtIVIClimateControl::setAirRecirculationEnabled(bool enabled)
-{
-    Q_D(QtIVIClimateControl);
-    if (QtIVIClimateControlBackendInterface* backend = d->climateControlBackend())
-        backend->setAirRecirculationEnabled(enabled, zone());
-}
-
-/*!
- * Sets the current steering wheel heater level to \a value, where the level can be between \c 0 (off) and \c 10 (warmest).
+ * Sets the current steering wheel heater level to \a value, where the level can be between \c minimumValue(off) and \c maximumValue(warmest).
  *
  * \sa steeringWheelHeater() steeringWheelHeaterChanged() steeringWheelHeaterAttribute()
  */
@@ -927,7 +1499,7 @@ void QtIVIClimateControl::setSteeringWheelHeater(int value)
 }
 
 /*!
- * Sets the current fan speed level to \a value, where the level can be between \c 0 (off) and \c 10 (strongest).
+ * Sets the current fan speed level to \a value, where the level can be between \c minimumValue(off) and \c maximumValue(strongest).
  *
  * \sa fanSpeedLevel() fanSpeedLevelChanged() fanSpeedLevelAttribute()
  */
@@ -951,7 +1523,7 @@ void QtIVIClimateControl::setTargetTemperature(int temperature)
 }
 
 /*!
- * Sets the current seat cooler level to \a value, where the level can be between \c 0 (off) and \c 10 (coolest).
+ * Sets the current seat cooler level to \a value, where the level can be between \c minimumValue(off) and \c maximumValue(coolest).
  *
  * \sa seatCooler() seatCoolerChanged() seatCoolerAttribute()
  */
@@ -963,7 +1535,7 @@ void QtIVIClimateControl::setSeatCooler(int value)
 }
 
 /*!
- * Sets the current seat heater level to \a value, where the level can be between \c 0 (off) and \c 10 (warmest).
+ * Sets the current seat heater level to \a value, where the level can be between \c minimumValue(off) and \c maximumValue(warmest).
  *
  * \sa seatHeater() seatHeaterChanged() seatHeaterAttribute()
  */
@@ -972,6 +1544,78 @@ void QtIVIClimateControl::setSeatHeater(int value)
     Q_D(QtIVIClimateControl);
     if (QtIVIClimateControlBackendInterface* backend = d->climateControlBackend())
         backend->setSeatHeater(value, zone());
+}
+
+/*!
+ * Enables the zone synchronization, if \a enabled is true, otherwise it will be disabled.
+ *
+ * \sa isZoneSynchronizationEnabled() zoneSynchronizationEnabledChanged() zoneSynchronizationAttribute()
+ */
+void QtIVIClimateControl::setZoneSynchronizationEnabled(bool enabled)
+{
+    Q_D(QtIVIClimateControl);
+    if (QtIVIClimateControlBackendInterface* backend = d->climateControlBackend())
+        backend->setZoneSynchronizationEnabled(enabled, zone());
+}
+
+/*!
+ * Enables defrosting of the windshield, if \a enabled is true, otherwise it will be disabled.
+ *
+ * \sa isDefrostEnabled() defrostEnabledChanged() defrostAttribute()
+ */
+void QtIVIClimateControl::setDefrostEnabled(bool enabled)
+{
+    Q_D(QtIVIClimateControl);
+    if (QtIVIClimateControlBackendInterface* backend = d->climateControlBackend())
+        backend->setDefrostEnabled(enabled, zone());
+}
+
+/*!
+ * Sets the recirculation mode to \a recirculationMode.
+ *
+ * \sa recirculationMode() recirculationModeChanged() recirculationModeAttribute()
+ */
+void QtIVIClimateControl::setRecirculationMode(QtIVIClimateControl::RecirculationMode recirculationMode)
+{
+    Q_D(QtIVIClimateControl);
+    if (QtIVIClimateControlBackendInterface* backend = d->climateControlBackend())
+        backend->setRecirculationMode(recirculationMode, zone());
+}
+
+/*!
+ * Sets the current sensitivity level for the AutomaticRecirculation mode to \a value, where the level can be between \c minimumValue(least sensitive) and \c maximumValue(most sensitive).
+ *
+ * \sa recirculationSensitivityLevel() recirculationSensitivityLevelChanged() recirculationSensitivityLevelAttribute()
+ */
+void QtIVIClimateControl::setRecirculationSensitivityLevel(int value)
+{
+    Q_D(QtIVIClimateControl);
+    if (QtIVIClimateControlBackendInterface* backend = d->climateControlBackend())
+        backend->setRecirculationSensitivityLevel(value, zone());
+}
+
+/*!
+ * Sets the climate mode to \a climateMode.
+ *
+ * \sa climateMode() climateModeChanged() climateModeAttribute()
+ */
+void QtIVIClimateControl::setClimateMode(QtIVIClimateControl::ClimateMode climateMode)
+{
+    Q_D(QtIVIClimateControl);
+    if (QtIVIClimateControlBackendInterface* backend = d->climateControlBackend())
+        backend->setClimateMode(climateMode, zone());
+}
+
+/*!
+ * Sets the current fan intensity level for the AutomaticClimate mode to \a value, where the level can be between \c minimumValue(least intensity) and \c maximumValue(most intensity).
+ *
+ * \sa automaticClimateFanIntensityLevel() automaticClimateFanIntensityLevelChanged() automaticClimateFanIntensityLevelAttribute()
+ */
+void QtIVIClimateControl::setAutomaticClimateFanIntensityLevel(int value)
+{
+    Q_D(QtIVIClimateControl);
+    if (QtIVIClimateControlBackendInterface* backend = d->climateControlBackend())
+        backend->setAutomaticClimateFanIntensityLevel(value, zone());
 }
 
 /*!
@@ -1015,20 +1659,6 @@ void QtIVIClimateControl::setSeatHeater(int value)
  * This signal is emitted whenever the attribute for the heater property changes. The new attribute is passed as \a attribute.
  *
  * \sa heaterAttribute() isHeaterEnabled()
- */
-/*!
- * \fn void QtIVIClimateControl::airRecirculationEnabledChanged(bool enabled);
- *
- * This signal is emitted whenever the air recirculation system is turned \e on or \e off. The new value is passed as \a enabled.
- *
- * \sa isAirRecirculationEnabled() setAirRecirculationEnabled() airRecirculationAttribute()
- */
-/*!
- * \fn void QtIVIClimateControl::airRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
- *
- * This signal is emitted whenever the attribute for the airRecirculation property changes. The new attribute is passed as \a attribute.
- *
- * \sa airRecirculationAttribute() isAirRecirculationEnabled()
  */
 /*!
  * \fn void QtIVIClimateControl::steeringWheelHeaterChanged(int value);
@@ -1099,6 +1729,118 @@ void QtIVIClimateControl::setSeatHeater(int value)
  * This signal is emitted whenever the attribute for the heater property changes. The new attribute is passed as \a attribute.
  *
  * \sa heaterAttribute() isHeaterEnabled()
+ */
+/*!
+ * \fn void QtIVIClimateControl::outsideTemperatureChanged(int value);
+ *
+ * This signal is emitted whenever the outside temperature changes. The new temperature is passed as \a value.
+ *
+ * \sa outsideTemperature() outsideTemperatureAttribute()
+ */
+/*!
+ * \fn void QtIVIClimateControl::outsideTemperatureAttributeChanged(const QtIVIPropertyAttribute<int> &attribute);
+ *
+ * This signal is emitted whenever the attribute for the outsideTemperature property changes. The new attribute is passed as \a attribute.
+ *
+ * \sa outsideTemperatureAttribute() outsideTemperature()
+ */
+/*!
+ * \fn void QtIVIClimateControl::zoneSynchronizationEnabledChanged(bool enabled);
+ *
+ * This signal is emitted whenever the zone synchronization is turned \e on or \e off. The new value is passed as \a enabled.
+ *
+ * \sa isZoneSynchronizationEnabled() setZoneSynchronizationEnabled() zoneSynchronizationAttribute()
+ */
+/*!
+ * \fn void QtIVIClimateControl::zoneSynchronizationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
+ *
+ * This signal is emitted whenever the attribute for the zoneSynchronization property changes. The new attribute is passed as \a attribute.
+ *
+ * \sa zoneSynchronizationAttribute() isZoneSynchronizationEnabled()
+ */
+/*!
+ * \fn void QtIVIClimateControl::defrostEnabledChanged(bool enabled);
+ *
+ * This signal is emitted whenever the defrost is turned \e on or \e off. The new value is passed as \a enabled.
+ *
+ * \sa isDefrostEnabled() setDefrostEnabled() defrostAttribute()
+ */
+/*!
+ * \fn void QtIVIClimateControl::defrostAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
+ *
+ * This signal is emitted whenever the attribute for the defrost property changes. The new attribute is passed as \a attribute.
+ *
+ * \sa defrostAttribute() isDefrostEnabled()
+ */
+/*!
+ * \fn void QtIVIClimateControl::recirculationEnabledChanged(bool enabled);
+ *
+ * This signal is emitted whenever the recirculation is turned \e on or \e off. The new value is passed as \a enabled.
+ *
+ * \sa isRecirculationEnabled() recirculationAttribute()
+ */
+/*!
+ * \fn void QtIVIClimateControl::recirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
+ *
+ * This signal is emitted whenever the attribute for the heater property changes. The new attribute is passed as \a attribute.
+ *
+ * \sa recirculationAttribute() isRecirculationEnabled()
+ */
+/*!
+ * \fn void QtIVIClimateControl::recirculationModeChanged(QtIVIClimateControl::RecirculationMode value)
+ *
+ * This signal is emitted whenever the recirculation mode changes. The new recirculation mode is passed as \a value.
+ *
+ * \sa recirculationMode() setRecirculationMode() recirculationModeAttribute()
+ */
+/*!
+ * \fn void QtIVIClimateControl::recirculationModeAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::RecirculationMode> &attribute);
+ *
+ * This signal is emitted whenever the attribute for the recirculationMode property changes. The new attribute is passed as \a attribute.
+ *
+ * \sa recirculationModeAttribute() recirculationMode()
+ */
+/*!
+ * \fn void QtIVIClimateControl::recirculationSensitivityLevelChanged(int value);
+ *
+ * This signal is emitted whenever the recirculation sensitivity level level changes. The new level is passed as \a value.
+ *
+ * \sa recirculationSensitivityLevel() setRecirculationSensitivityLevel() recirculationSensitivityLevelAttribute()
+ */
+/*!
+ * \fn void QtIVIClimateControl::recirculationSensitivityLevelAttributeChanged(const QtIVIPropertyAttribute<int> &attribute);
+ *
+ * This signal is emitted whenever the attribute for the recirculationSensitivityLevel property changes. The new attribute is passed as \a attribute.
+ *
+ * \sa recirculationSensitivityLevelAttribute() recirculationSensitivityLevel()
+ */
+/*!
+ * \fn void QtIVIClimateControl::climateModeChanged(QtIVIClimateControl::ClimateMode value)
+ *
+ * This signal is emitted whenever the climate mode changes. The new climate mode is passed as \a value.
+ *
+ * \sa climateMode() setClimateMode() climateModeAttribute()
+ */
+/*!
+ * \fn void QtIVIClimateControl::climateModeAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::ClimateMode> &attribute);
+ *
+ * This signal is emitted whenever the attribute for the climateMode property changes. The new attribute is passed as \a attribute.
+ *
+ * \sa climateModeAttribute() climateMode()
+ */
+/*!
+ * \fn void QtIVIClimateControl::automaticClimateFanIntensityLevelChanged(int value);
+ *
+ * This signal is emitted whenever the fan intensity level changes. The new level is passed as \a value.
+ *
+ * \sa automaticClimateFanIntensityLevel() setAutomaticClimateFanIntensityLevel() automaticClimateFanIntensityLevelAttribute()
+ */
+/*!
+ * \fn void QtIVIClimateControl::automaticClimateFanIntensityLevelAttributeChanged(const QtIVIPropertyAttribute<int> &attribute);
+ *
+ * This signal is emitted whenever the attribute for the automaticClimateFanIntensityLevel property changes. The new attribute is passed as \a attribute.
+ *
+ * \sa automaticClimateFanIntensityLevelAttribute() automaticClimateFanIntensityLevel()
  */
 
  #include "moc_qtiviclimatecontrol.cpp"

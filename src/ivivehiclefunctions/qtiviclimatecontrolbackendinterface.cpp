@@ -75,8 +75,8 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  * Sets the target temperature of \a zone to \a value, where the \a value is expressed in
  * centigrades and may be range limited by the backend.
  *
- * This method is expected to emit a \l targetTemperatureChanged() signal when receiving a new
- * \a value. The signal is expected to be emitted if the given \a value is out of range and no
+ * This method is expected to emit a \l targetTemperatureChanged() signal when the internal state changes
+ * due to this function call. The signal is even expected to be emitted if the given \a value is out of range and no
  * actual change takes place.
  *
  * \sa targetTemperatureChanged()
@@ -85,11 +85,10 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
 /*!
  * \fn virtual void QtIVIClimateControlBackendInterface::setSeatCooler(int value, const QString &zone) = 0
  *
- * Sets the seat ventilation level of \a zone to \a value, where \a value can be \c 0 (off) or
- * between \c 1 (least cool) to \c 10 (coolest).
+ * Sets the seat ventilation level of \a zone to \a value. The range can be defined using the attribute system.
  *
- * This method is expected to emit a \l seatCoolerChanged() signal when receiving a new
- * \a value. The signal is expected to be emitted if the given \a value is out of range and no
+ * This method is expected to emit a \l seatCoolerChanged() signal when the internal state changes
+ * due to this function call. The signal is even expected to be emitted if the given \a value is out of range and no
  * actual change takes place.
  *
  * \sa seatCoolerChanged()
@@ -98,11 +97,10 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
 /*!
  * \fn virtual void QtIVIClimateControlBackendInterface::setSeatHeater(int value, const QString &zone) = 0;
  *
- * Sets the seat heater level of \a zone to \a value, where \a value can be \c 0 (off) or between
- * \c 1 (least warm) to \c 10 (warmest).
+ * Sets the seat heater level of \a zone to \a value. The range can be defined using the attribute system.
  *
- * This method is expected to emit a \l seatHeaterChanged() signal when receiving a new
- * \a value. The signal is expected to be emitted if the given \a value is out of range and no
+ * This method is expected to emit a \l seatHeaterChanged() signal when the internal state changes
+ * due to this function call. The signal is even expected to be emitted if the given \a value is out of range and no
  * actual change takes place.
  *
  * \sa seatHeaterChanged()
@@ -113,8 +111,8 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  *
  * Sets the \a zone air flow directions to \a airflowDirections.
  *
- * This method is expected to emit the \l airflowDirectionsChanged() signal when receiving a
- * new \a airflowDirections.
+ * This method is expected to emit the \l airflowDirectionsChanged() signal when the internal state changes
+ * due to this function call.
  *
  * \sa airflowDirectionsChanged()
  */
@@ -124,8 +122,8 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  *
  * Enables or disables the \a zone air conditioning based on \a enabled.
  *
- * This method is expected to emit the \l airConditioningEnabledChanged() signal when receiving a
- * new \a enabled.
+ * This method is expected to emit the \l airConditioningEnabledChanged() signal when the internal state changes
+ * due to this function call.
  *
  * \sa airConditioningEnabledChanged()
  */
@@ -135,8 +133,8 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  *
  * Enables or disables the \a zone heater based on \a enabled.
  *
- * This method is expected to emit the \l heaterEnabledChanged() signal when receiving a
- * new \a enabled.
+ * This method is expected to emit the \l heaterEnabledChanged() signal when the internal state changes
+ * due to this function call.
  *
  * \sa heaterEnabledChanged()
  */
@@ -146,8 +144,8 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  *
  * Enables or disables the \a zone air recirculation based on \a enabled.
  *
- * This method is expected to emit the \l airRecirculationEnabledChanged() signal when receiving a
- * new \a enabled.
+ * This method is expected to emit the \l airRecirculationEnabledChanged() signal when the internal state changes
+ * due to this function call.
  *
  * \sa airRecirculationEnabledChanged()
  */
@@ -155,11 +153,10 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
 /*!
  * \fn virtual void QtIVIClimateControlBackendInterface::setSteeringWheelHeater(int value, const QString &zone) = 0
  *
- * Sets the steering wheel heater level of \a zone to \a value, where \a value can be \c 0 (off)
- * or between \c 1 (least warm) to \c 10 (warmest).
+ * Sets the steering wheel heater level of \a zone to \a value. The range can be defined using the attribute system.
  *
- * This method is expected to emit a \l steeringWheelHeaterChanged() signal when receiving a new
- * \a value. The signal is expected to be emitted if the given \a value is out of range and no
+ * This method is expected to emit a \l steeringWheelHeaterChanged() signal when the internal state changes
+ * due to this function call. The signal is even expected to be emitted if the given \a value is out of range and no
  * actual change takes place.
  *
  * \sa steeringWheelHeaterChanged()
@@ -168,14 +165,81 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
 /*!
  * \fn virtual void QtIVIClimateControlBackendInterface::setFanSpeedLevel(int value, const QString &zone) = 0
  *
- * Sets the fan speed level of \a zone to \a value, where \a value can be \c 0 (off) or between
- * \c 1 (weakest) to \c 10 (strongest).
+ * Sets the fan speed level of \a zone to \a value. The range can be defined using the attribute system.
  *
- * This method is expected to emit a \l fanSpeedLevelChanged() signal when receiving a new
- * \a value. The signal is expected to be emitted if the given \a value is out of range and no
+ * This method is expected to emit a \l fanSpeedLevelChanged() signal when the internal state changes
+ * due to this function call. The signal is even expected to be emitted if the given \a value is out of range and no
  * actual change takes place.
  *
  * \sa fanSpeedLevelChanged()
+ */
+
+/*!
+ * \fn virtual void QtIVIClimateControlBackendInterface::setZoneSynchronizationEnabled(bool enabled, const QString &zone) = 0
+ *
+ * Enables or disables the \a zone synchronization based on \a enabled.
+ *
+ * This method is expected to emit the \l zoneSynchronizationEnabledChanged() signal when the internal state changes
+ * due to this function call.
+ *
+ * \sa zoneSynchronizationEnabledChanged()
+ */
+
+/*!
+ * \fn virtual void QtIVIClimateControlBackendInterface::setDefrostEnabled(bool enabled, const QString &zone) = 0
+ *
+ * Enables or disables the \a zone defrost mode based on \a enabled.
+ *
+ * This method is expected to emit the \l defrostEnabledChanged() signal when the internal state changes
+ * due to this function call.
+ *
+ * \sa defrostEnabledChanged()
+ */
+
+/*!
+ * \fn virtual void QtIVIClimateControlBackendInterface::setRecirculationMode(QtIVIClimateControl::RecirculationMode, const QString &zone) = 0;
+ *
+ * Sets the \a zone recirculation mode to \a recirculationMode.
+ *
+ * This method is expected to emit the \l recirculationModeChanged() signal when the internal state changes
+ * due to this function call.
+ *
+ * \sa recirculationModeChanged()
+ */
+
+/*!
+ * \fn virtual void QtIVIClimateControlBackendInterface::setRecirculationSensitivityLevel(int value, const QString &zone) = 0
+ *
+ * Sets the recirculation sensitivity level of \a zone to \a value. The range can be defined using the attribute system.
+ *
+ * This method is expected to emit a \l recirculationSensitivityLevelChanged() signal when the internal state changes
+ * due to this function call. The signal is even expected to be emitted if the given \a value is out of range and no
+ * actual change takes place.
+ *
+ * \sa recirculationSensitivityLevelChanged()
+ */
+
+/*!
+ * \fn virtual void QtIVIClimateControlBackendInterface::setClimateMode(QtIVIClimateControl::ClimateMode, const QString &zone) = 0;
+ *
+ * Sets the \a zone climate mode to \a climateMode.
+ *
+ * This method is expected to emit the \l climateModeChanged() signal when the internal state changes
+ * due to this function call.
+ *
+ * \sa climateModeChanged()
+ */
+
+/*!
+ * \fn virtual void QtIVIClimateControlBackendInterface::setAutomaticClimateFanIntensityLevel(int value, const QString &zone) = 0
+ *
+ * Sets the fan intensity level for the AutomaticClimate mode of \a zone to \a value. The range can be defined using the attribute system.
+ *
+ * This method is expected to emit a \l automaticClimateFanIntensityLevelChanged() signal when the internal state changes
+ * due to this function call. The signal is even expected to be emitted if the given \a value is out of range and no
+ * actual change takes place.
+ *
+ * \sa automaticClimateFanIntensityLevelChanged()
  */
 
 /*!
@@ -196,8 +260,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
 /*!
  * \fn virtual void QtIVIClimateControlBackendInterface::seatCoolerChanged(int value, const QString &zone = QString()) = 0
  *
- * The signal is emitted when the seat cooler level is changed for \a zone to \a value, where the
- * \a value can be \c 0 (off) or between \c 1 (least cool) to \c 10 (coolest).
+ * The signal is emitted when the seat cooler level is changed for \a zone to \a value. The range can be defined using the attribute system.
  *
  * \sa setSeatCooler()
  */
@@ -211,8 +274,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
 /*!
  * \fn virtual void QtIVIClimateControlBackendInterface::seatHeaterChanged(int value, const QString &zone = QString()) = 0
  *
- * The signal is emitted when the seat heater level is changed for \a zone to \a value, where the
- * \a value can be \c 0 (off) or between \c 1 (least warm) to \c 10 (warmest).
+ * The signal is emitted when the seat heater level is changed for \a zone to \a value. The range can be defined using the attribute system.
  *
  * \sa setSeatHeater()
  */
@@ -266,24 +328,9 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
  */
 
 /*!
- * \fn virtual void QtIVIClimateControlBackendInterface::airRecirculationEnabledChanged(bool enabled, const QString &zone = QString()) = 0
- *
- * The signal is emitted when the \a zone air recirculation state is changed to \a enabled.
- *
- * \sa setAirRecirculationEnabled()
- */
-
-/*!
- * \fn void QtIVIClimateControlBackendInterface::airRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone = QString());
- *
- * The signal is emitted when the air recirculation state attribute for \a zone is changed to \a attribute.
- */
-
-/*!
  * \fn virtual void QtIVIClimateControlBackendInterface::steeringWheelHeaterChanged(int level, const QString &zone = QString()) = 0
  *
- * The signals ie emitted when the steering wheel heater level of \a zone is changed to \a level, where the
- * \a level can be \c 0 (off) or between \c 1 (least warm) to \c 10 (warmest).
+ * The signals is emitted when the steering wheel heater level of \a zone is changed to \a level. The range can be defined using the attribute system.
  *
  * \sa setSteeringWheelHeater()
  */
@@ -297,8 +344,7 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
 /*!
  * \fn virtual void QtIVIClimateControlBackendInterface::fanSpeedLevelChanged(int level, const QString &zone = QString()) = 0
  *
- * The signals ie emitted when the fan speel level of \a zone is changed to \a level, where the \a level
- * can be \c 0 (off) or between \c 1 (weakest) to \c 10 (strongest).
+ * The signals is emitted when the fan speel level of \a zone is changed to \a level. The range can be defined using the attribute system.
  *
  * \sa setFanSpeedLevel()
  */
@@ -306,5 +352,116 @@ QtIVIClimateControlBackendInterface::QtIVIClimateControlBackendInterface(QObject
 /*!
  * \fn void QtIVIClimateControlBackendInterface::fanSpeedLevelAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
  *
- * The signal is emitted when the fan speed level attribute for \a zone is changed to \a attribute.
+ * The signal is emitted when the recirculation sensitivity level for \a zone is changed to \a attribute.
+ */
+
+/*!
+ * \fn virtual void QtIVIClimateControlBackendInterface::outsideTemperatureChanged(int value, const QString &zone = QString()) = 0
+ *
+ * The signal is emitted when the outside temperature for \a zone is changed to \a value, where
+ * value is expressed in centigrades.
+ */
+
+/*!
+ * \fn void QtIVIClimateControlBackendInterface::outsideTemperatureAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
+ *
+ * The signal is emitted when the outside temperature attribute for \a zone is changed to \a attribute.
+ */
+
+/*!
+ * \fn virtual void QtIVIClimateControlBackendInterface::zoneSynchronizationEnabledChanged(bool enabled, const QString &zone = QString()) = 0
+ *
+ * The signal is emitted when the \a zone synchronization state is changed to \a enabled.
+ *
+ * \sa setZoneSynchronizationEnabled()
+ */
+
+/*!
+ * \fn void QtIVIClimateControlBackendInterface::zoneSynchronizationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone = QString());
+ *
+ * The signal is emitted when the zone synchronization state attribute for \a zone is changed to \a attribute.
+ */
+
+
+/*!
+ * \fn virtual void QtIVIClimateControlBackendInterface::defrostEnabledChanged(bool enabled, const QString &zone = QString()) = 0
+ *
+ * The signal is emitted when the \a zone defrost state is changed to \a enabled.
+ *
+ * \sa setDefrostEnabled()
+ */
+
+/*!
+ * \fn void QtIVIClimateControlBackendInterface::defrostAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone = QString());
+ *
+ * The signal is emitted when the defrost state attribute for \a zone is changed to \a attribute.
+ */
+
+
+/*!
+ * \fn virtual void QtIVIClimateControlBackendInterface::recirculationModeChanged(QtIVIClimateControl::RecirculationMode recirculationMode, const QString &zone = QString()) = 0
+ *
+ * The signal is emitted when the \a zone recirculation mode changed to \a recirculationMode.
+ *
+ * \sa setRecirculationMode()
+ */
+
+/*!
+ * \fn void QtIVIClimateControlBackendInterface::recirculationModeAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::RecirculationMode> &attribute, const QString &zone = QString());
+ *
+ * The signal is emitted when the recirculation mode attribute for \a zone is changed to \a attribute.
+ */
+
+/*!
+ * \fn virtual void QtIVIClimateControlBackendInterface::recirculationEnabledChanged(bool enabled, const QString &zone = QString()) = 0
+ *
+ * The signal is emitted when the \a zone recirculation state is changed to \a enabled.
+ */
+
+/*!
+ * \fn void QtIVIClimateControlBackendInterface::recirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone = QString());
+ *
+ * The signal is emitted when the recirculation state attribute for \a zone is changed to \a attribute.
+ */
+
+/*!
+ * \fn virtual void QtIVIClimateControlBackendInterface::recirculationSensitivityLevelChanged(int level, const QString &zone = QString()) = 0
+ *
+ * The signals is emitted when the recirculation sensitivity level for \a zone is changed to \a level. The range can be defined using the attribute system.
+ *
+ * \sa setRecirculationSensitivityLevel()
+ */
+
+/*!
+ * \fn void QtIVIClimateControlBackendInterface::recirculationSensitivityLevelAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
+ *
+ * The signal is emitted when the fan intensity level for the AutomaticClimate mode for \a zone is changed to \a attribute.
+ */
+
+/*!
+ * \fn virtual void QtIVIClimateControlBackendInterface::climateModeChanged(QtIVIClimateControl::ClimateMode climateMode, const QString &zone = QString()) = 0
+ *
+ * The signal is emitted when the \a zone climate mode changed to \a climateMode.
+ *
+ * \sa setAirflowDirections()
+ */
+
+/*!
+ * \fn void QtIVIClimateControlBackendInterface::climateModeAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::ClimateMode> &attribute, const QString &zone = QString());
+ *
+ * The signal is emitted when the climate mode attribute for \a zone is changed to \a attribute.
+ */
+
+/*!
+ * \fn virtual void QtIVIClimateControlBackendInterface::automaticClimateFanIntensityLevelChanged(int level, const QString &zone = QString()) = 0
+ *
+ * The signals is emitted when the fan intensity level for the AutomaticClimate mode for \a zone is changed to \a level. The range can be defined using the attribute system.
+ *
+ * \sa setAutomaticClimateFanIntensityLevel()
+ */
+
+/*!
+ * \fn void QtIVIClimateControlBackendInterface::automaticClimateFanIntensityLevelAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
+ *
+ * The signal is emitted when the fan intensity level for the AutomaticClimate mode for \a zone is changed to \a attribute.
  */

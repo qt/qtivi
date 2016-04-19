@@ -43,12 +43,30 @@ public:
         , m_airConditioningAttribute(QtIVIPropertyAttribute<bool>(true))
         , m_heaterEnabled(false)
         , m_heaterAttribute(QtIVIPropertyAttribute<bool>(true))
-        , m_airRecirculationEnabled(false)
-        , m_airRecirculationAttribute(QtIVIPropertyAttribute<bool>(true))
+        , m_zoneSynchronizationEnabled(false)
+        , m_zoneSynchronizationAttribute(QtIVIPropertyAttribute<bool>(true))
+        , m_defrostEnabled(false)
+        , m_defrostAttribute(QtIVIPropertyAttribute<bool>(true))
+        , m_recirculationMode(QtIVIClimateControl::RecirculationOff)
+        , m_recirculationSensitivityLevel(0)
+        , m_recirculationSensitivityLevelAttribute(QtIVIPropertyAttribute<int>(0, 10))
+        , m_climateMode(QtIVIClimateControl::ClimateOff)
+        , m_automaticClimateFanIntensityLevel(0)
+        , m_automaticClimateFanIntensityLevelAttribute(QtIVIPropertyAttribute<int>(0, 10))
+        , m_outsideTemperature(0)
+        , m_outsideTemperatureAttribute(QtIVIPropertyAttribute<int>(0, 10))
+        , m_recirculationEnabled(false)
+        , m_recirculationAttribute(true)
     {
         QVector<QtIVIClimateControl::AirflowDirections> list;
         list << (QtIVIClimateControl::Floor | QtIVIClimateControl::Dashboard) << QtIVIClimateControl::Floor << QtIVIClimateControl::Dashboard;
         m_airflowDirectionsAttribute = list;
+        QVector<QtIVIClimateControl::RecirculationMode> recirculation;
+        recirculation << QtIVIClimateControl::RecirculationOff << QtIVIClimateControl::RecirculationOn;
+        m_recirculationModeAttribute = recirculation;
+        QVector<QtIVIClimateControl::ClimateMode> climate;
+        climate << QtIVIClimateControl::ClimateOff << QtIVIClimateControl::ClimateOn;
+        m_climateModeAttribute = climate;
         m_zones << "FrontLeft" << "Upper" << "Lower";
         foreach (const QString &z, m_zones) {
             m_zoneTargetTemperature[z] = 0;
@@ -78,8 +96,22 @@ public:
         emit airConditioningAttributeChanged(m_airConditioningAttribute);
         emit heaterEnabledChanged(m_heaterEnabled);
         emit heaterAttributeChanged(m_heaterAttribute);
-        emit airRecirculationEnabledChanged(m_airRecirculationEnabled);
-        emit airRecirculationAttributeChanged(m_airRecirculationAttribute);
+        emit zoneSynchronizationEnabledChanged(m_zoneSynchronizationEnabled);
+        emit zoneSynchronizationAttributeChanged(m_zoneSynchronizationAttribute);
+        emit defrostEnabledChanged(m_defrostEnabled);
+        emit defrostAttributeChanged(m_defrostAttribute);
+        emit outsideTemperatureChanged(m_outsideTemperature);
+        emit recirculationModeChanged(m_recirculationMode);
+        emit recirculationModeAttributeChanged(m_recirculationModeAttribute);
+        emit recirculationSensitivityLevelChanged(m_recirculationSensitivityLevel);
+        emit recirculationSensitivityLevelAttributeChanged(m_recirculationSensitivityLevelAttribute);
+        emit climateModeChanged(m_climateMode);
+        emit climateModeAttributeChanged(m_climateModeAttribute);
+        emit automaticClimateFanIntensityLevelChanged(m_automaticClimateFanIntensityLevel);
+        emit automaticClimateFanIntensityLevelAttributeChanged(m_automaticClimateFanIntensityLevelAttribute);
+        emit outsideTemperatureAttributeChanged(m_outsideTemperatureAttribute);
+        emit recirculationEnabledChanged(m_recirculationEnabled);
+        emit recirculationAttributeChanged(m_recirculationAttribute);
 
         QStringList zones = availableZones();
         zones.removeLast(); // Do not init zone "Dummy"
@@ -223,25 +255,6 @@ public:
         }
     }
 
-    void setAirRecirculationEnabled(bool e, const QString &z) Q_DECL_OVERRIDE
-    {
-        Q_UNUSED(z)
-        if (m_airRecirculationEnabled != e) {
-            m_airRecirculationEnabled = e;
-            emit airRecirculationEnabledChanged(m_airRecirculationEnabled);
-        }
-    }
-
-
-    void setAirRecirculationAttribute(QtIVIPropertyAttribute<bool> attribute, const QString &z)
-    {
-        Q_UNUSED(z)
-        if (m_airRecirculationAttribute != attribute) {
-            m_airRecirculationAttribute = attribute;
-            emit airRecirculationAttributeChanged(m_airRecirculationAttribute, z);
-        }
-    }
-
     void setSteeringWheelHeater(int t, const QString &z) Q_DECL_OVERRIDE
     {
         if (!m_zoneSteeringWheelHeater.contains(z))
@@ -291,6 +304,126 @@ public:
         }
     }
 
+    void setZoneSynchronizationEnabled(bool zoneSynchronization, const QString &z) Q_DECL_OVERRIDE
+    {
+        Q_UNUSED(z)
+        if (m_zoneSynchronizationEnabled != zoneSynchronization) {
+            m_zoneSynchronizationEnabled = zoneSynchronization;
+            emit zoneSynchronizationEnabledChanged(zoneSynchronization);
+        }
+    }
+
+    void setZoneSynchronizationAttribute(QtIVIPropertyAttribute<bool> attribute, const QString &z)
+    {
+        Q_UNUSED(z)
+        if (m_zoneSynchronizationAttribute != attribute) {
+            m_zoneSynchronizationAttribute = attribute;
+            emit zoneSynchronizationAttributeChanged(attribute, z);
+        }
+    }
+
+    void setDefrostEnabled(bool defrost, const QString &z) Q_DECL_OVERRIDE
+    {
+        Q_UNUSED(z)
+        if (m_defrostEnabled != defrost) {
+            m_defrostEnabled = defrost;
+            emit defrostEnabledChanged(defrost);
+        }
+    }
+
+    void setDefrostAttribute(QtIVIPropertyAttribute<bool> attribute, const QString &z)
+    {
+        Q_UNUSED(z)
+        if (m_defrostAttribute != attribute) {
+            m_defrostAttribute = attribute;
+            emit defrostAttributeChanged(attribute, z);
+        }
+    }
+
+    void setRecirculationMode(QtIVIClimateControl::RecirculationMode recirculationMode, const QString &z) Q_DECL_OVERRIDE
+    {
+        Q_UNUSED(z)
+        if (m_recirculationMode != recirculationMode) {
+            m_recirculationMode = recirculationMode;
+            emit recirculationModeChanged(recirculationMode);
+        }
+    }
+
+    void setRecirculationModeAttribute(QtIVIPropertyAttribute<QtIVIClimateControl::RecirculationMode> attribute, const QString &z)
+    {
+        Q_UNUSED(z)
+        if (m_recirculationModeAttribute != attribute) {
+            m_recirculationModeAttribute = attribute;
+            emit recirculationModeAttributeChanged(attribute, z);
+        }
+    }
+
+    void setRecirculationSensitivityLevel(int recirculationSensitivityLevel, const QString &z) Q_DECL_OVERRIDE
+    {
+        Q_UNUSED(z)
+
+        if (recirculationSensitivityLevel < 0 || recirculationSensitivityLevel > 10) {
+            qWarning() << "Attempted to set recirculationSensitivityLevel to" << recirculationSensitivityLevel << " which is out of range (0-10).";
+            return;
+        }
+
+        if (m_recirculationSensitivityLevel != recirculationSensitivityLevel) {
+            m_recirculationSensitivityLevel = recirculationSensitivityLevel;
+            emit recirculationSensitivityLevelChanged(recirculationSensitivityLevel);
+        }
+    }
+
+    void setRecirculationSensitivityLevelAttribute(QtIVIPropertyAttribute<int> attribute, const QString &z)
+    {
+        Q_UNUSED(z)
+        if (m_recirculationSensitivityLevelAttribute != attribute) {
+            m_recirculationSensitivityLevelAttribute = attribute;
+            emit recirculationSensitivityLevelAttributeChanged(attribute, z);
+        }
+    }
+
+    void setClimateMode(QtIVIClimateControl::ClimateMode climateMode, const QString &z) Q_DECL_OVERRIDE
+    {
+        Q_UNUSED(z)
+        if (m_climateMode != climateMode) {
+            m_climateMode = climateMode;
+            emit climateModeChanged(climateMode);
+        }
+    }
+
+    void setClimateModeAttribute(QtIVIPropertyAttribute<QtIVIClimateControl::ClimateMode> attribute, const QString &z)
+    {
+        Q_UNUSED(z)
+        if (m_climateModeAttribute != attribute) {
+            m_climateModeAttribute = attribute;
+            emit climateModeAttributeChanged(attribute, z);
+        }
+    }
+
+    void setAutomaticClimateFanIntensityLevel(int automaticClimateFanIntensityLevel, const QString &z) Q_DECL_OVERRIDE
+    {
+        Q_UNUSED(z)
+
+        if (automaticClimateFanIntensityLevel < 0 || automaticClimateFanIntensityLevel > 10) {
+            qWarning() << "Attempted to set automaticClimateFanIntensityLevel to" << automaticClimateFanIntensityLevel << " which is out of range (0-10).";
+            return;
+        }
+
+        if (m_automaticClimateFanIntensityLevel != automaticClimateFanIntensityLevel) {
+            m_automaticClimateFanIntensityLevel = automaticClimateFanIntensityLevel;
+            emit automaticClimateFanIntensityLevelChanged(automaticClimateFanIntensityLevel);
+        }
+    }
+
+    void setAutomaticClimateFanIntensityLevelAttribute(QtIVIPropertyAttribute<int> attribute, const QString &z)
+    {
+        Q_UNUSED(z)
+        if (m_automaticClimateFanIntensityLevelAttribute != attribute) {
+            m_automaticClimateFanIntensityLevelAttribute = attribute;
+            emit automaticClimateFanIntensityLevelAttributeChanged(attribute, z);
+        }
+    }
+
 private:
     QtIVIClimateControl::AirflowDirections m_airflowDirections;
     QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections> m_airflowDirectionsAttribute;
@@ -298,8 +431,22 @@ private:
     QtIVIPropertyAttribute<bool> m_airConditioningAttribute;
     bool m_heaterEnabled;
     QtIVIPropertyAttribute<bool> m_heaterAttribute;
-    bool m_airRecirculationEnabled;
-    QtIVIPropertyAttribute<bool> m_airRecirculationAttribute;
+    bool m_zoneSynchronizationEnabled;
+    QtIVIPropertyAttribute<bool> m_zoneSynchronizationAttribute;
+    bool m_defrostEnabled;
+    QtIVIPropertyAttribute<bool> m_defrostAttribute;
+    QtIVIClimateControl::RecirculationMode m_recirculationMode;
+    QtIVIPropertyAttribute<QtIVIClimateControl::RecirculationMode> m_recirculationModeAttribute;
+    int m_recirculationSensitivityLevel;
+    QtIVIPropertyAttribute<int> m_recirculationSensitivityLevelAttribute;
+    QtIVIClimateControl::ClimateMode m_climateMode;
+    QtIVIPropertyAttribute<QtIVIClimateControl::ClimateMode> m_climateModeAttribute;
+    int m_automaticClimateFanIntensityLevel;
+    QtIVIPropertyAttribute<int> m_automaticClimateFanIntensityLevelAttribute;
+    int m_outsideTemperature;
+    QtIVIPropertyAttribute<int> m_outsideTemperatureAttribute;
+    bool m_recirculationEnabled;
+    QtIVIPropertyAttribute<bool>  m_recirculationAttribute;
 
     QMap<QString, int> m_zoneTargetTemperature;
     QMap<QString, int> m_zoneSeatCooler;
@@ -381,11 +528,14 @@ private slots:
 
     void testAirConditioningEnabled();
     void testHeaterEnabled();
-    void testAirRecirculationEnabled();
+    void testZoneSynchronizationEnabled();
+    void testDefrostEnabled();
+
+    void testRecirculationSensitivityLevel();
+    void testAutomaticClimateFanIntensityLevel();
 
     void testZoneFanSpeedLevel();
     void testZoneSteeringWheelHeater();
-
     void testZoneTargetTemperature();
     void testZoneSeatCooler();
     void testZoneSeatHeater();
@@ -459,11 +609,11 @@ void ClimateControlTest::testClearServiceObject()
 }
 
 /* For testing integer properties of the climate control */
-#define TEST_INTEGER_PROPERTY(_prop_, _capitalProp_, _attribute_,  _capitalAttribute_) \
+#define TEST_INTEGER_PROPERTY(_prop_, _capitalProp_) \
 void ClimateControlTest::test##_capitalProp_() { \
     ClimateControlTestServiceObject *service = new ClimateControlTestServiceObject(); \
     manager->registerService(service, service->interfaces()); \
-    service->testBackend()->set##_capitalProp_(0); \
+    service->testBackend()->set##_capitalProp_(0, ""); \
     QtIVIClimateControl cc; \
     cc.startAutoDiscovery(); \
     QtIVIProperty* property = cc.property(#_prop_).value<QtIVIProperty*>(); \
@@ -477,12 +627,12 @@ void ClimateControlTest::test##_capitalProp_() { \
     QCOMPARE(valueSpy.takeFirst().at(0).toInt(), 5); \
     QCOMPARE(cc._prop_(), 5); \
     QCOMPARE(property->property("value").toInt(), 5); \
-    service->testBackend()->set##_capitalProp_(8); \
+    service->testBackend()->set##_capitalProp_(8, ""); \
     QCOMPARE(valueSpy.count(), 1); \
     QCOMPARE(valueSpy.takeFirst().at(0).toInt(), 8); \
     QCOMPARE(cc._prop_(), 8); \
     QCOMPARE(property->property("value").toInt(), 8); \
-    property.setProperty("value", 6); \
+    property->setProperty("value", 6); \
     QCOMPARE(valueSpy.count(), 1); \
     QCOMPARE(valueSpy.takeFirst().at(0).toInt(), 6); \
     QCOMPARE(cc._prop_(), 6); \
@@ -641,7 +791,10 @@ void ClimateControlTest::testZoneWithout##_capitalProp_() { \
 
 TEST_BOOLEAN_PROPERTY(airConditioning, AirConditioning)
 TEST_BOOLEAN_PROPERTY(heater, Heater)
-TEST_BOOLEAN_PROPERTY(airRecirculation, AirRecirculation)
+TEST_BOOLEAN_PROPERTY(zoneSynchronization, ZoneSynchronization)
+TEST_BOOLEAN_PROPERTY(defrost, Defrost)
+TEST_INTEGER_PROPERTY(recirculationSensitivityLevel, RecirculationSensitivityLevel)
+TEST_INTEGER_PROPERTY(automaticClimateFanIntensityLevel, AutomaticClimateFanIntensityLevel)
 TEST_INTEGER_ZONE_PROPERTY(fanSpeedLevel, FanSpeedLevel)
 TEST_INTEGER_ZONE_PROPERTY(steeringWheelHeater, SteeringWheelHeater)
 TEST_INTEGER_ZONE_PROPERTY(targetTemperature, TargetTemperature)

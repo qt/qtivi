@@ -59,12 +59,19 @@ class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIClimateControl : public QtIVIAbstractZ
     Q_PROPERTY(QtIVIProperty* airConditioning READ airConditioningProperty CONSTANT)
     Q_PROPERTY(QtIVIProperty* airflowDirections READ airflowDirectionsProperty CONSTANT)
     Q_PROPERTY(QtIVIProperty* heater READ heaterProperty CONSTANT)
-    Q_PROPERTY(QtIVIProperty* airRecirculation READ airRecirculationProperty CONSTANT)
     Q_PROPERTY(QtIVIProperty* fanSpeedLevel READ fanSpeedLevelProperty CONSTANT)
     Q_PROPERTY(QtIVIProperty* steeringWheelHeater READ steeringWheelHeaterProperty CONSTANT)
     Q_PROPERTY(QtIVIProperty* targetTemperature READ targetTemperatureProperty CONSTANT)
     Q_PROPERTY(QtIVIProperty* seatCooler READ seatCoolerProperty CONSTANT)
     Q_PROPERTY(QtIVIProperty* seatHeater READ seatHeaterProperty CONSTANT)
+    Q_PROPERTY(QtIVIProperty* outsideTemperature READ outsideTemperatureProperty CONSTANT)
+    Q_PROPERTY(QtIVIProperty* zoneSynchronization READ zoneSynchronizationProperty CONSTANT)
+    Q_PROPERTY(QtIVIProperty* defrost READ defrostProperty CONSTANT)
+    Q_PROPERTY(QtIVIProperty* recirculationMode READ recirculationModeProperty CONSTANT)
+    Q_PROPERTY(QtIVIProperty* recirculation READ recirculationProperty CONSTANT)
+    Q_PROPERTY(QtIVIProperty* recirculationSensitivityLevel READ recirculationSensitivityLevelProperty CONSTANT)
+    Q_PROPERTY(QtIVIProperty* climateMode READ climateModeProperty CONSTANT)
+    Q_PROPERTY(QtIVIProperty* automaticClimateFanIntensityLevel READ automaticClimateFanIntensityLevelProperty CONSTANT)
 
 public:
     enum AirflowDirection {
@@ -74,6 +81,20 @@ public:
     };
     Q_DECLARE_FLAGS(AirflowDirections, AirflowDirection)
     Q_FLAG(AirflowDirections)
+
+    enum RecirculationMode {
+        RecirculationOff,
+        RecirculationOn,
+        AutoRecirculation
+    };
+    Q_ENUM(RecirculationMode)
+
+    enum ClimateMode {
+        ClimateOff,
+        ClimateOn,
+        AutoClimate
+    };
+    Q_ENUM(ClimateMode)
 
     QtIVIClimateControl(const QString &zone=QString(), QObject* parent=0);
     ~QtIVIClimateControl();
@@ -90,9 +111,6 @@ public:
     bool isHeaterEnabled() const;
     QtIVIPropertyAttribute<bool> heaterAttribute() const;
     QtIVIProperty* heaterProperty() const;
-    bool isAirRecirculationEnabled() const;
-    QtIVIPropertyAttribute<bool> airRecirculationAttribute() const;
-    QtIVIProperty* airRecirculationProperty() const;
     int steeringWheelHeater() const;
     QtIVIPropertyAttribute<int> steeringWheelHeaterAttribute() const;
     QtIVIProperty* steeringWheelHeaterProperty() const;
@@ -108,17 +126,46 @@ public:
     int seatHeater() const;
     QtIVIPropertyAttribute<int> seatHeaterAttribute() const;
     QtIVIProperty* seatHeaterProperty() const;
+    int outsideTemperature() const;
+    QtIVIPropertyAttribute<int> outsideTemperatureAttribute() const;
+    QtIVIProperty* outsideTemperatureProperty() const;
+    bool isZoneSynchronizationEnabled() const;
+    QtIVIPropertyAttribute<bool> zoneSynchronizationAttribute() const;
+    QtIVIProperty* zoneSynchronizationProperty() const;
+    bool isDefrostEnabled() const;
+    QtIVIPropertyAttribute<bool> defrostAttribute() const;
+    QtIVIProperty* defrostProperty() const;
+    QtIVIClimateControl::RecirculationMode recirculationMode() const;
+    QtIVIPropertyAttribute<QtIVIClimateControl::RecirculationMode> recirculationModeAttribute() const;
+    QtIVIProperty* recirculationModeProperty() const;
+    bool isRecirculationEnabled() const;
+    QtIVIPropertyAttribute<bool> recirculationAttribute() const;
+    QtIVIProperty* recirculationProperty() const;
+    int recirculationSensitivityLevel() const;
+    QtIVIPropertyAttribute<int> recirculationSensitivityLevelAttribute() const;
+    QtIVIProperty* recirculationSensitivityLevelProperty() const;
+    QtIVIClimateControl::ClimateMode climateMode() const;
+    QtIVIPropertyAttribute<QtIVIClimateControl::ClimateMode> climateModeAttribute() const;
+    QtIVIProperty* climateModeProperty() const;
+    int automaticClimateFanIntensityLevel() const;
+    QtIVIPropertyAttribute<int> automaticClimateFanIntensityLevelAttribute() const;
+    QtIVIProperty* automaticClimateFanIntensityLevelProperty() const;
 
 public Q_SLOTS:
     void setAirConditioningEnabled(bool enabled);
     void setAirflowDirections(QtIVIClimateControl::AirflowDirections value);
     void setHeaterEnabled(bool enabled);
-    void setAirRecirculationEnabled(bool enabled);
     void setSteeringWheelHeater(int value);
     void setFanSpeedLevel(int value);
     void setTargetTemperature(int targetTemperature);
     void setSeatCooler(int seatCooler);
     void setSeatHeater(int seatHeater);
+    void setZoneSynchronizationEnabled(bool enabled);
+    void setDefrostEnabled(bool enabled);
+    void setRecirculationMode(QtIVIClimateControl::RecirculationMode recirculationMode);
+    void setRecirculationSensitivityLevel(int value);
+    void setClimateMode(QtIVIClimateControl::ClimateMode climateMode);
+    void setAutomaticClimateFanIntensityLevel(int value);
 
 Q_SIGNALS:
     void airflowDirectionsChanged(QtIVIClimateControl::AirflowDirections value);
@@ -127,8 +174,6 @@ Q_SIGNALS:
     void airConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
     void heaterEnabledChanged(bool enabled);
     void heaterAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
-    void airRecirculationEnabledChanged(bool enabled);
-    void airRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
     void steeringWheelHeaterChanged(int value);
     void steeringWheelHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &attribute);
     void fanSpeedLevelChanged(int value);
@@ -139,6 +184,22 @@ Q_SIGNALS:
     void seatCoolerAttributeChanged(const QtIVIPropertyAttribute<int> &attribute);
     void seatHeaterChanged(int value);
     void seatHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &attribute);
+    void outsideTemperatureChanged(int value);
+    void outsideTemperatureAttributeChanged(const QtIVIPropertyAttribute<int> &attribute);
+    void zoneSynchronizationEnabledChanged(bool enabled);
+    void zoneSynchronizationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
+    void defrostEnabledChanged(bool enabled);
+    void defrostAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
+    void recirculationModeChanged(QtIVIClimateControl::RecirculationMode value);
+    void recirculationModeAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::RecirculationMode> &attribute);
+    void recirculationEnabledChanged(bool enabled);
+    void recirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
+    void recirculationSensitivityLevelChanged(int value);
+    void recirculationSensitivityLevelAttributeChanged(const QtIVIPropertyAttribute<int> &attribute);
+    void climateModeChanged(QtIVIClimateControl::ClimateMode value);
+    void climateModeAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::ClimateMode> &attribute);
+    void automaticClimateFanIntensityLevelChanged(int value);
+    void automaticClimateFanIntensityLevelAttributeChanged(const QtIVIPropertyAttribute<int> &attribute);
 
 protected:
     QtIVIClimateControl(QtIVIClimateControlPrivate &dd, QObject *parent = Q_NULLPTR);
@@ -152,8 +213,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onAirConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &airConditioningEnabledAttribute, const QString &zone))
     Q_PRIVATE_SLOT(d_func(), void onHeaterEnabledChanged(bool enabled, const QString &zone))
     Q_PRIVATE_SLOT(d_func(), void onHeaterAttributeChanged(const QtIVIPropertyAttribute<bool> &heaterEnabledAttribute, const QString &zone))
-    Q_PRIVATE_SLOT(d_func(), void onAirRecirculationEnabledChanged(bool enabled, const QString &zone))
-    Q_PRIVATE_SLOT(d_func(), void onAirRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &airRecirculationEnabledAttribute, const QString &zone))
     Q_PRIVATE_SLOT(d_func(), void onSteeringWheelHeaterChanged(int value, const QString &zone))
     Q_PRIVATE_SLOT(d_func(), void onSteeringWheelHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &steeringWheelHeaterAttribute, const QString &zone))
     Q_PRIVATE_SLOT(d_func(), void onFanSpeedLevelChanged(int value, const QString &zone))
@@ -164,11 +223,29 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onSeatCoolerAttributeChanged(const QtIVIPropertyAttribute<int> &seatCoolerAttribute, const QString &zone))
     Q_PRIVATE_SLOT(d_func(), void onSeatHeaterChanged(int value, const QString &zone))
     Q_PRIVATE_SLOT(d_func(), void onSeatHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &seatHeaterAttribute, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onOutsideTemperatureChanged(int outsideTemperature, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onOutsideTemperatureAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onZoneSynchronizationChanged(bool isZoneSynchronizationEnabled, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onZoneSynchronizationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onDefrostChanged(bool isDefrostEnabled, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onDefrostAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onRecirculationModeChanged(QtIVIClimateControl::RecirculationMode recirculationMode, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onRecirculationModeAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::RecirculationMode> &attribute, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onRecirculationChanged(bool isRecirculationEnabled, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onRecirculationSensitivityLevelChanged(int recirculationSensitivityLevel, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onRecirculationSensitivityLevelAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onClimateModeChanged(QtIVIClimateControl::ClimateMode climateMode, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onClimateModeAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::ClimateMode> &attribute, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onAutomaticClimateFanIntensityLevelChanged(int automaticClimateFanIntensityLevel, const QString &zone))
+    Q_PRIVATE_SLOT(d_func(), void onAutomaticClimateFanIntensityLevelAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone))
 };
 
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections>)
+Q_DECLARE_METATYPE(QtIVIPropertyAttribute<QtIVIClimateControl::RecirculationMode>)
+Q_DECLARE_METATYPE(QtIVIPropertyAttribute<QtIVIClimateControl::ClimateMode>)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QtIVIClimateControl::AirflowDirections)
 
 #endif // CLIMATECONTROL_H

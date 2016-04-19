@@ -74,7 +74,9 @@ public:
     ~MainWindow();
 
 private slots:
-    void onAirRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
+    void setAirRecirculationEnabled(bool enabled);
+    void onAirRecirculationModeChanged(QtIVIClimateControl::RecirculationMode mode);
+    void onAirRecirculationAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::RecirculationMode> &attribute);
     void onHeaterAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
     void onAirConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
     void setupFlowDirectionRadioButtons(QtIVIClimateControl::AirflowDirections direction);

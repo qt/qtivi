@@ -101,14 +101,14 @@ MainWindow::MainWindow(QWidget *parent) :
             m_climateControl, &QtIVIClimateControl::setAirConditioningEnabled);
 
     //Air Recirculation
-    ui->cb_airRecirculation->setChecked(m_climateControl->isAirRecirculationEnabled());
-    ui->cb_airRecirculation->setEnabled(m_climateControl->airRecirculationAttribute().isAvailable());
-    connect(m_climateControl, &QtIVIClimateControl::airRecirculationEnabledChanged,
-            ui->cb_airRecirculation, &QCheckBox::setChecked);
-    connect(m_climateControl, &QtIVIClimateControl::airRecirculationAttributeChanged,
+    ui->cb_airRecirculation->setChecked(m_climateControl->recirculationMode() == QtIVIClimateControl::RecirculationOn);
+    ui->cb_airRecirculation->setEnabled(m_climateControl->recirculationModeAttribute().isAvailable());
+    connect(m_climateControl, &QtIVIClimateControl::recirculationModeChanged,
+            this, &MainWindow::onAirRecirculationModeChanged);
+    connect(m_climateControl, &QtIVIClimateControl::recirculationModeAttributeChanged,
             this, &MainWindow::onAirRecirculationAttributeChanged);
     connect(ui->cb_airRecirculation, &QCheckBox::clicked,
-            m_climateControl, &QtIVIClimateControl::setAirRecirculationEnabled);
+            this, &MainWindow::setAirRecirculationEnabled);
 
     //Heater
     ui->cb_heater->setChecked(m_climateControl->isHeaterEnabled());
@@ -127,7 +127,20 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::onAirRecirculationAttributeChanged(const QtIVIPropertyAttribute<bool> & attribute)
+void MainWindow::setAirRecirculationEnabled(bool enabled)
+{
+    if (enabled)
+        m_climateControl->setRecirculationMode(QtIVIClimateControl::RecirculationOn);
+    else
+        m_climateControl->setRecirculationMode(QtIVIClimateControl::RecirculationOff);
+}
+
+void MainWindow::onAirRecirculationModeChanged(QtIVIClimateControl::RecirculationMode mode)
+{
+    ui->cb_airRecirculation->setChecked(mode == QtIVIClimateControl::RecirculationOn);
+}
+
+void MainWindow::onAirRecirculationAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::RecirculationMode> & attribute)
 {
     ui->cb_airRecirculation->setEnabled(attribute.isAvailable());
 }
