@@ -256,14 +256,17 @@ QtIVIAbstractFeature::~QtIVIAbstractFeature()
  * As features only expose the front API facing the developer, a service object implementing the
  * actual function is required. This is usually retrieved through the auto discovery mechanism.
  *
+ * Returns false if so is already set or the so doesn't get accepted by the feature.
+ *
  * \sa discoveryMode
  */
-void QtIVIAbstractFeature::setServiceObject(QtIVIServiceObject *so)
+bool QtIVIAbstractFeature::setServiceObject(QtIVIServiceObject *so)
 {
     Q_D(QtIVIAbstractFeature);
     if (d->m_serviceObject == so)
-        return;
+        return false;
 
+    bool serviceObjectIsSet = d->m_serviceObject;
     if (d->m_serviceObject) {
         disconnectFromServiceObject(d->m_serviceObject);
         disconnect(d->m_serviceObject, SIGNAL(destroyed()), this, SLOT(serviceObjectDestroyed()));
@@ -274,9 +277,15 @@ void QtIVIAbstractFeature::setServiceObject(QtIVIServiceObject *so)
     //We only want to call clearServiceObject if we are sure that the serviceObject changes
     if (!so) {
         clearServiceObject();
-    } if (so && !acceptServiceObject(so)) {
+    } else if (so && !acceptServiceObject(so)) {
         qWarning("ServiceObject is not accepted");
         clearServiceObject();
+
+        if (serviceObjectIsSet) {
+            emit serviceObjectChanged();
+            emit isValidChanged(isValid());
+        }
+        return false;
     }
 
     d->m_serviceObject = so;
@@ -287,6 +296,8 @@ void QtIVIAbstractFeature::setServiceObject(QtIVIServiceObject *so)
         connectToServiceObject(d->m_serviceObject);
         connect(so, SIGNAL(destroyed()), this, SLOT(serviceObjectDestroyed()));
     }
+
+    return true;
 }
 
 /*!
@@ -534,7 +545,19 @@ QtIVIAbstractFeature::DiscoveryResult QtIVIAbstractFeature::startAutoDiscovery()
     if (Q_UNLIKELY(serviceObjects.count() > 1))
         qWarning() << "There is more than one backend implementing" << d->m_interface << ".";
 
-    setServiceObject(serviceObjects.at(0));
+    bool serviceObjectSet = false;
+    foreach (QtIVIServiceObject* object, serviceObjects) {
+        if (setServiceObject(object)) {
+            serviceObjectSet = true;
+            break;
+        }
+    }
+
+    if (Q_UNLIKELY(!serviceObjectSet)) {
+        qWarning() << "No ServiceObject got accepted.";
+        d->setDiscoveryResult(ErrorWhileLoading);
+        return ErrorWhileLoading;
+    }
 
     d->setDiscoveryResult(result);
     return result;

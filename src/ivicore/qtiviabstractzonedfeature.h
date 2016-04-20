@@ -84,9 +84,9 @@ protected:
     virtual QtIVIAbstractZonedFeature *createZoneFeature(const QString &zone) = 0;
     QtIVIZonedFeatureInterface *backend(const QString &interface = QString()) const;
 
-    virtual bool acceptServiceObject(QtIVIServiceObject *serviceObject);
-    virtual void connectToServiceObject(QtIVIServiceObject *serviceObject);
-    virtual void clearServiceObject();
+    virtual bool acceptServiceObject(QtIVIServiceObject *serviceObject) Q_DECL_OVERRIDE;
+    virtual void connectToServiceObject(QtIVIServiceObject *serviceObject) Q_DECL_OVERRIDE;
+    virtual void clearServiceObject() Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void setZone(const QString &zone);

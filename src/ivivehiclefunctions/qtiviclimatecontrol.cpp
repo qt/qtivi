@@ -738,6 +738,9 @@ void QtIVIClimateControl::connectToServiceObject(QtIVIServiceObject *serviceObje
     backend->initializeAttributes();
 }
 
+/*!
+   \reimp
+*/
 void QtIVIClimateControl::disconnectFromServiceObject(QtIVIServiceObject *serviceObject)
 {
     QtIVIClimateControlBackendInterface *backend = qobject_cast<QtIVIClimateControlBackendInterface*>(serviceObject->interfaceInstance(QtIVIStringClimateControlInterfaceName));

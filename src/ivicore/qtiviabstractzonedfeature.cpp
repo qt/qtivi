@@ -129,7 +129,7 @@ void QtIVIAbstractZonedFeature::clearServiceObject()
 }
 
 /*!
-   Returns pointer to the backend interface
+   Returns pointer to the backend \a interface
 
    Returns parent backend if parent is QtIVIAbstractZonedFeature type.
    Returns zero if no backend connected.

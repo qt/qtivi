@@ -1,4 +1,4 @@
-QT       += testlib ivicore qml
+QT       += testlib ivicore ivicore-private qml
 
 TARGET = tst_qtiviabstractfeature
 CONFIG   += testcase

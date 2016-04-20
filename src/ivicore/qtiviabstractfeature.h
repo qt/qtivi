@@ -102,7 +102,7 @@ public:
     QString errorMessage() const;
 
 public Q_SLOTS:
-    void setServiceObject(QtIVIServiceObject *so);
+    bool setServiceObject(QtIVIServiceObject *so);
     void setDiscoveryMode(QtIVIAbstractFeature::DiscoveryMode discoveryMode);
     QtIVIAbstractFeature::DiscoveryResult startAutoDiscovery();
 

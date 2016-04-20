@@ -58,6 +58,7 @@ class TestFeature : public QtIVIAbstractFeature
 public:
     TestFeature(QObject *parent = 0)
         : QtIVIAbstractFeature("testFeature", parent)
+        , m_acceptCounter(100)
     {}
 
     QString errorText() const
@@ -67,8 +68,9 @@ public:
 
     virtual bool acceptServiceObject(QtIVIServiceObject *serviceObject)
     {
-        if (serviceObject)
+        if (serviceObject && m_acceptCounter > 0)
             return serviceObject->interfaces().contains(interfaceName());
+        m_acceptCounter++;
         return false;
     }
 
@@ -88,6 +90,8 @@ public:
     virtual void clearServiceObject()
     {
     }
+
+    int m_acceptCounter;
 };
 
 class TestFeatureBackend : public TestFeatureInterface
@@ -154,6 +158,7 @@ private Q_SLOTS:
     void testAutoDiscoveryFailure();
     void testAutoDiscovery_data();
     void testAutoDiscovery();
+    void testAutoDiscoveryWithMultipleBackends();
     void testAutoDiscovery_qml();
     void testErrors_data();
     void testErrors();
@@ -189,6 +194,14 @@ void tst_QtIVIAbstractFeature::testAutoDiscoveryFailure()
     TestBackend* backend1 = new TestBackend();
     m_manager->registerService(backend1, backend1->interfaces());
 
+    f.m_acceptCounter = 0;
+    QTest::ignoreMessage(QtWarningMsg, "ServiceObject is not accepted");
+    QTest::ignoreMessage(QtWarningMsg, "No ServiceObject got accepted.");
+    result = f.startAutoDiscovery();
+    QVERIFY(!f.serviceObject());
+    QCOMPARE(result, QtIVIAbstractFeature::ErrorWhileLoading);
+    f.m_acceptCounter = 100;
+
     auto list = m_manager->findServiceByInterface("testFeature");
     f.setServiceObject(list.at(0));
     result = f.startAutoDiscovery();
@@ -213,6 +226,23 @@ void tst_QtIVIAbstractFeature::testAutoDiscovery_data()
     QTest::newRow("Simulation") << QtIVIAbstractFeature::LoadOnlySimulationBackends << QtIVIAbstractFeature::SimulationBackendLoaded << true;
     QTest::newRow("Auto") << QtIVIAbstractFeature::AutoDiscovery << QtIVIAbstractFeature::ProductionBackendLoaded << true;
     QTest::newRow("Auto fallback") << QtIVIAbstractFeature::AutoDiscovery << QtIVIAbstractFeature::SimulationBackendLoaded << false;
+}
+
+void tst_QtIVIAbstractFeature::testAutoDiscoveryWithMultipleBackends()
+{
+    TestBackend* backend1 = new TestBackend();
+    m_manager->registerService(backend1, backend1->interfaces());
+    TestBackend* backend2 = new TestBackend();
+    m_manager->registerService(backend2, backend2->interfaces());
+
+    //The first backend is not accepted, test that the second backend is tested as well and accepted now.
+    TestFeature f;
+    f.m_acceptCounter = 0;
+    QTest::ignoreMessage(QtWarningMsg, "There is more than one backend implementing \"testFeature\" .");
+    QTest::ignoreMessage(QtWarningMsg, "ServiceObject is not accepted");
+    f.startAutoDiscovery();
+    QVERIFY(f.serviceObject());
+    QVERIFY(f.isValid());
 }
 
 void tst_QtIVIAbstractFeature::testAutoDiscovery()
