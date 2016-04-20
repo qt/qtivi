@@ -99,9 +99,6 @@ public:
     QtIVIClimateControl(const QString &zone=QString(), QObject* parent=0);
     ~QtIVIClimateControl();
 
-    virtual void connectToServiceObject(QtIVIServiceObject *serviceObject) Q_DECL_OVERRIDE;
-    virtual void clearServiceObject() Q_DECL_OVERRIDE;
-
     bool isAirConditioningEnabled() const;
     QtIVIPropertyAttribute<bool> airConditioningAttribute() const;
     QtIVIProperty* airConditioningProperty() const;
@@ -204,6 +201,10 @@ Q_SIGNALS:
 protected:
     QtIVIClimateControl(QtIVIClimateControlPrivate &dd, QObject *parent = Q_NULLPTR);
     virtual QtIVIAbstractZonedFeature* createZoneFeature(const QString &zone) Q_DECL_OVERRIDE;
+
+    virtual void connectToServiceObject(QtIVIServiceObject *serviceObject) Q_DECL_OVERRIDE;
+    virtual void disconnectFromServiceObject(QtIVIServiceObject *serviceObject) Q_DECL_OVERRIDE;
+    virtual void clearServiceObject() Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QtIVIClimateControl)

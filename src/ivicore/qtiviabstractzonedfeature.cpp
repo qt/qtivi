@@ -124,17 +124,6 @@ void QtIVIAbstractZonedFeature::connectToServiceObject(QtIVIServiceObject *servi
 /*!
     \reimp
 */
-void QtIVIAbstractZonedFeature::disconnectFromServiceObject(QtIVIServiceObject* so)
-{
-    QtIVIZonedFeatureInterface *backend = qobject_cast<QtIVIZonedFeatureInterface*>(so->interfaceInstance(interfaceName()));
-
-    if (backend)
-        disconnect(backend, 0, this, 0);
-}
-
-/*!
-    \reimp
-*/
 void QtIVIAbstractZonedFeature::clearServiceObject()
 {
 }
@@ -145,12 +134,16 @@ void QtIVIAbstractZonedFeature::clearServiceObject()
    Returns parent backend if parent is QtIVIAbstractZonedFeature type.
    Returns zero if no backend connected.
 */
-QtIVIZonedFeatureInterface *QtIVIAbstractZonedFeature::backend() const
+QtIVIZonedFeatureInterface *QtIVIAbstractZonedFeature::backend(const QString &interface) const
 {
+    QString iface = interface;
+    if (iface.isEmpty())
+        iface = interfaceName();
+
     if (QtIVIAbstractZonedFeature* parentFeature = qobject_cast<QtIVIAbstractZonedFeature*>(parent())) {
         return parentFeature->backend();
     } else if (QtIVIServiceObject* so = serviceObject()) {
-        return qobject_cast<QtIVIZonedFeatureInterface*>(so->interfaceInstance(interfaceName()));
+        return qobject_cast<QtIVIZonedFeatureInterface*>(so->interfaceInstance(iface));
     }
     return 0;
 }

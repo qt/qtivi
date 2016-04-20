@@ -82,18 +82,16 @@ protected:
     QtIVIAbstractZonedFeature(QtIVIAbstractZonedFeaturePrivate &dd, QObject *parent = Q_NULLPTR);
 
     virtual QtIVIAbstractZonedFeature *createZoneFeature(const QString &zone) = 0;
-    QtIVIZonedFeatureInterface *backend() const;
+    QtIVIZonedFeatureInterface *backend(const QString &interface = QString()) const;
 
+    virtual bool acceptServiceObject(QtIVIServiceObject *serviceObject);
     virtual void connectToServiceObject(QtIVIServiceObject *serviceObject);
-    virtual void disconnectFromServiceObject(QtIVIServiceObject *serviceObject);
     virtual void clearServiceObject();
 
 private Q_SLOTS:
     void setZone(const QString &zone);
 
 private:
-    virtual bool acceptServiceObject(QtIVIServiceObject *serviceObject);
-
     void initializeZones();
 
     QVariantList attributeList() const;

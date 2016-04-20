@@ -42,6 +42,7 @@
 #include "qtiviclimatecontrol.h"
 #include "qtiviclimatecontrol_p.h"
 #include "qtiviclimatecontrolbackendinterface.h"
+#include <QtIVICore/QtIVIServiceObject>
 #include <QtIVICore/QtIVIPropertyFactory>
 
 QtIVIClimateControlPrivate::QtIVIClimateControlPrivate(const QString &interface, const QString &zone, QtIVIClimateControl *parent)
@@ -735,6 +736,14 @@ void QtIVIClimateControl::connectToServiceObject(QtIVIServiceObject *serviceObje
             d, &QtIVIClimateControlPrivate::onAutomaticClimateFanIntensityLevelAttributeChanged);
 
     backend->initializeAttributes();
+}
+
+void QtIVIClimateControl::disconnectFromServiceObject(QtIVIServiceObject *serviceObject)
+{
+    QtIVIClimateControlBackendInterface *backend = qobject_cast<QtIVIClimateControlBackendInterface*>(serviceObject->interfaceInstance(QtIVIStringClimateControlInterfaceName));
+
+    if (backend)
+        disconnect(backend, 0, this, 0);
 }
 
 /*!
