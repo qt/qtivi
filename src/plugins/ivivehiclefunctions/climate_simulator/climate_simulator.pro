@@ -1,4 +1,4 @@
-TARGET = climate_simulator
+TARGET = climate_simulation
 
 PLUGIN_TYPE = qtivi
 PLUGIN_EXTENDS = qtivi
