@@ -45,6 +45,7 @@
 #include <QtIVICore/qtiviglobal.h>
 #include <QtIVICore/QtIVIProperty>
 #include <QtIVICore/qtivitypetraits.h>
+#include <QtIVICore/qtiviqmlconversion_helper.h>
 #include <QMetaEnum>
 
 QT_BEGIN_NAMESPACE
@@ -144,7 +145,7 @@ public:
     }
     QVariantList availableValues() const Q_DECL_OVERRIDE
     {
-        return convertAvailableValues(callAttributeGetter().availableValues());
+        return qtivi_convertAvailableValues(callAttributeGetter().availableValues());
     }
 
     QVariant value() const Q_DECL_OVERRIDE
@@ -152,7 +153,7 @@ public:
         T val;
         void *args[] = { reinterpret_cast<void*>(&val), QVariant().data() };
         valueGetter()->call(parent(), args);
-        return convertValue(val);
+        return qtivi_convertValue(val);
     }
 
 private:
@@ -177,38 +178,7 @@ private:
         Q_EMIT availableChanged(attribute.isAvailable());
         Q_EMIT minimumValueChanged(QVariant::fromValue<T>(attribute.minimumValue()));
         Q_EMIT maximumValueChanged(QVariant::fromValue<T>(attribute.maximumValue()));
-        Q_EMIT availableValuesChanged(convertAvailableValues(attribute.availableValues()));
-    }
-
-    QVariantList convertAvailableValues(const QVector<T> &aValues) const
-    {
-        QVariantList list;
-        Q_FOREACH (const T &val, aValues) {
-            //As QML doesn't support Enums in Lists we need to convert it to int
-            //TODO Do we really want to do this ?
-            list.append(convertValue(val));
-        }
-        return list;
-    }
-
-    QVariant convertValue(const T &val) const
-    {
-        QVariant var;
-        int userType = qMetaTypeId<T>();
-        QMetaType metaType(userType);
-        const QMetaObject* mo = metaType.metaObject();
-        QString enumName = QString::fromLocal8Bit(QMetaType::typeName(userType)).split(QStringLiteral("::")).last();
-        if (mo) {
-            QMetaEnum mEnum = mo->enumerator(mo->indexOfEnumerator(enumName.toLocal8Bit().constData()));
-            if (mEnum.isValid()) {
-                var = QVariant::fromValue<T>(val).toInt();
-            }
-        }
-
-        if (!var.isValid())
-            var = QVariant::fromValue<T>(val);
-
-        return var;
+        Q_EMIT availableValuesChanged(qtivi_convertAvailableValues(attribute.availableValues()));
     }
 
     //Just needed as we can't call the protected function directly in the create() functions
@@ -228,6 +198,8 @@ private:
         if (!QMetaType::hasRegisteredConverterFunction<F, int>())
             QMetaType::registerConverter<F, int>(&F::operator int);
     }
+
+    friend struct PropertyTestData;
 };
 
 QT_END_NAMESPACE
