@@ -1,4 +1,4 @@
-QT       += testlib ivicore ivivehiclefunctions
+QT       += testlib ivicore ivicore-private ivivehiclefunctions
 
 TARGET = tst_climatecontroltest
 CONFIG   += testcase
