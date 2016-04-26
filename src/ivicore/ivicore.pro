@@ -27,6 +27,7 @@ HEADERS += \
     qtiviabstractfeature_p.h \
     qtiviabstractzonedfeature_p.h \
     qtiviqmlconversion_helper.h \
+    qtivipropertytester_p.h \
     qtivitypetraits.h
 
 SOURCES += \
