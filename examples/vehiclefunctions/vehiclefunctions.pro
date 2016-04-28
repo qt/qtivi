@@ -2,4 +2,5 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     climate_widget \
-    climate_qml
+    climate_qml \
+    window_qml

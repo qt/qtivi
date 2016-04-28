@@ -15,10 +15,15 @@ HEADERS += \
     qtiviclimatecontrol.h \
     qtiviclimatecontrolbackendinterface.h \
     qtivivehiclefunctionsglobal.h \
-    qtiviclimatecontrol_p.h
+    qtiviclimatecontrol_p.h \
+    qtiviwindowcontrol.h \
+    qtiviwindowcontrol_p.h \
+    qtiviwindowcontrolbackendinterface.h
 
 SOURCES += \
     qtiviclimatecontrol.cpp \
     qtiviclimatecontrolbackendinterface.cpp \
+    qtiviwindowcontrol.cpp \
+    qtiviwindowcontrolbackendinterface.cpp
 
 load(qt_module)

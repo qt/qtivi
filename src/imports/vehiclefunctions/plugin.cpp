@@ -43,6 +43,7 @@
 #include <qqml.h>
 
 #include <QtIVIVehicleFunctions/QtIVIClimateControl>
+#include <QtIVIVehicleFunctions/QtIVIWindowControl>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,6 +58,7 @@ public:
         Q_UNUSED(uri);
 
         qmlRegisterType<QtIVIClimateControl>(uri, 1, 0, "ClimateControl");
+        qmlRegisterType<QtIVIWindowControl>(uri, 1, 0, "WindowControl");
     }
 };
 

@@ -39,34 +39,71 @@
 **
 ****************************************************************************/
 
-#include "climateplugin.h"
-#include "climatecontrolbackend.h"
-#include "windowcontrolbackend.h"
+#ifndef WINDOWCONTROLBACKEND_H
+#define WINDOWCONTROLBACKEND_H
 
-#include <QtIVIVehicleFunctions/QtIVIClimateControlBackendInterface>
-#include <QStringList>
+#include <QObject>
+#include <QTimer>
+#include <QtIVIVehicleFunctions/QtIVIWindowControlBackendInterface>
 
-ClimatePlugin::ClimatePlugin(QObject *parent) :
-    QObject(parent),
-    m_climate(new ClimateControlBackend(this)),
-    m_window(new WindowControlBackend(this))
+class WindowControlBackend;
+class WindowTimer : public QObject
 {
-}
+    Q_OBJECT
 
-QStringList ClimatePlugin::interfaces() const
+public:
+    WindowTimer(const QString &zone, bool isBlind, WindowControlBackend* backend);
+
+    void setOpeningTime(int intervalInSeconds);
+    void open();
+    void close();
+
+public slots:
+    void checkValue();
+
+private:
+    QTimer *m_timer;
+    bool m_opening;
+    int m_currentValue;
+    int m_interval;
+    QString m_zone;
+    bool m_blind;
+    WindowControlBackend* m_backend;
+};
+
+class WindowControlBackend : public QtIVIWindowControlBackendInterface
 {
-    QStringList list;
-    list << QtIVIStringClimateControlInterfaceName;
-    list << QtIVIStringWindowControlInterfaceName;
-    return list;
-}
+public:
+    WindowControlBackend(QObject* parent = 0);
+    ~WindowControlBackend();
 
-QObject *ClimatePlugin::interfaceInstance(const QString &interface) const
-{
-    if (interface == QtIVIStringClimateControlInterfaceName)
-        return m_climate;
-    else if (interface == QtIVIStringWindowControlInterfaceName)
-        return m_window;
+    QStringList availableZones() const;
+    void initializeAttributes();
 
-    return 0;
-}
+    void setHeaterMode(QtIVIWindowControl::HeaterMode value, const QString &zone);
+    void setBlindMode(QtIVIWindowControl::BlindMode value, const QString &zone);
+    void open(const QString &zone);
+    void close(const QString &zone);
+
+private:
+
+    struct ZoneBackend {
+        QtIVIWindowControl::HeaterMode heaterMode;
+        QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode> heaterModeAttribute;
+        bool heaterEnabled;
+        QtIVIPropertyAttribute<bool> heaterAttribute;
+        QtIVIWindowControl::BlindMode blindMode;
+        QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode> blindModeAttribute;
+        QtIVIWindowControl::State blindState;
+        QtIVIPropertyAttribute<QtIVIWindowControl::State> blindStateAttribute;
+        WindowTimer *blindTimer;
+        QtIVIWindowControl::State state;
+        QtIVIPropertyAttribute<QtIVIWindowControl::State> stateAttribute;
+        WindowTimer *stateTimer;
+    };
+
+    QMap<QString,ZoneBackend> m_zoneMap;
+    friend class WindowTimer;
+};
+
+#endif // WINDOWCONTROLBACKEND_H

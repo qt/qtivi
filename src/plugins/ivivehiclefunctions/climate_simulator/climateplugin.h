@@ -45,6 +45,7 @@
 #include <QtIVICore/QtIVIServiceInterface>
 
 class ClimateControlBackend;
+class WindowControlBackend;
 
 class ClimatePlugin : public QObject, QtIVIServiceInterface
 {
@@ -60,6 +61,7 @@ public:
 
 private:
     ClimateControlBackend* m_climate;
+    WindowControlBackend* m_window;
 };
 
 #endif // CLIMATEPLUGIN_H

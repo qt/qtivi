@@ -1,3 +1,4 @@
 TEMPLATE = subdirs
 
-SUBDIRS = climatecontroltest
+SUBDIRS = climatecontroltest \
+          windowcontroltest

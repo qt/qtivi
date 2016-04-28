@@ -1,3 +1,3 @@
 {
-    "interfaces" : [ "com.qt-project.ClimateControl" ]
+    "interfaces" : [ "com.qt-project.ClimateControl", "com.qt-project.WindowControl" ]
 }

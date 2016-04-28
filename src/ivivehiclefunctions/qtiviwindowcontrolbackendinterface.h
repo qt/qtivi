@@ -39,34 +39,42 @@
 **
 ****************************************************************************/
 
-#include "climateplugin.h"
-#include "climatecontrolbackend.h"
-#include "windowcontrolbackend.h"
+#ifndef QTIVIWINDOWCONTROLBACKENDINTERFACE_H
+#define QTIVIWINDOWCONTROLBACKENDINTERFACE_H
 
-#include <QtIVIVehicleFunctions/QtIVIClimateControlBackendInterface>
-#include <QStringList>
+#include <QtCore/QObject>
 
-ClimatePlugin::ClimatePlugin(QObject *parent) :
-    QObject(parent),
-    m_climate(new ClimateControlBackend(this)),
-    m_window(new WindowControlBackend(this))
+#include <QtIVICore/qtivizonedfeatureinterface.h>
+#include <QtIVICore/qtivipropertyattribute.h>
+#include <QtIVIVehicleFunctions/qtiviwindowcontrol.h>
+
+QT_BEGIN_NAMESPACE
+
+class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIWindowControlBackendInterface : public QtIVIZonedFeatureInterface
 {
-}
+    Q_OBJECT
 
-QStringList ClimatePlugin::interfaces() const
-{
-    QStringList list;
-    list << QtIVIStringClimateControlInterfaceName;
-    list << QtIVIStringWindowControlInterfaceName;
-    return list;
-}
+public:
+    QtIVIWindowControlBackendInterface(QObject *parent = 0);
 
-QObject *ClimatePlugin::interfaceInstance(const QString &interface) const
-{
-    if (interface == QtIVIStringClimateControlInterfaceName)
-        return m_climate;
-    else if (interface == QtIVIStringWindowControlInterfaceName)
-        return m_window;
+    virtual void setHeaterMode(QtIVIWindowControl::HeaterMode value, const QString &zone) = 0;
+    virtual void setBlindMode(QtIVIWindowControl::BlindMode value, const QString &zone) = 0;
+    virtual void open(const QString &zone) = 0;
+    virtual void close(const QString &zone) = 0;
 
-    return 0;
-}
+Q_SIGNALS:
+    void heaterModeChanged(QtIVIWindowControl::HeaterMode value, const QString &zone = QString());
+    void heaterModeAttributeChanged(const QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode> &heaterMode, const QString &zone = QString());
+    void heaterEnabledChanged(bool enabled, const QString &zone = QString());
+    void heaterAttributeChanged(const QtIVIPropertyAttribute<bool> &heater, const QString &zone = QString());
+    void blindModeChanged(QtIVIWindowControl::BlindMode value, const QString &zone = QString());
+    void blindModeAttributeChanged(const QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode> &blindMode, const QString &zone = QString());
+    void blindStateChanged(QtIVIWindowControl::State value, const QString &zone = QString());
+    void blindStateAttributeChanged(const QtIVIPropertyAttribute<QtIVIWindowControl::State> &blindState, const QString &zone = QString());
+    void stateChanged(QtIVIWindowControl::State value, const QString &zone = QString());
+    void stateAttributeChanged(const QtIVIPropertyAttribute<QtIVIWindowControl::State> &state, const QString &zone = QString());
+};
+
+QT_END_NAMESPACE
+
+#endif // QTIVIWINDOWCONTROLBACKENDINTERFACE_H

@@ -10,9 +10,11 @@ load(qt_plugin)
 
 
 SOURCES += climateplugin.cpp \
-    climatecontrolbackend.cpp
+    climatecontrolbackend.cpp \
+    windowcontrolbackend.cpp
 
 HEADERS += climateplugin.h \
-    climatecontrolbackend.h
+    climatecontrolbackend.h \
+    windowcontrolbackend.h
 
 DISTFILES += climate_simulator.json
