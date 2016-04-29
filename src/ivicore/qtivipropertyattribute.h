@@ -75,7 +75,7 @@ public:
         registerConverter();
     }
 
-    QtIVIPropertyAttribute(bool available)
+    explicit QtIVIPropertyAttribute(bool available)
         : m_available(available)
         , m_type(QtIVIPropertyAttributeBase::NoAttributes)
         , m_minimumValue(T())
@@ -84,7 +84,7 @@ public:
         registerConverter();
     }
 
-    QtIVIPropertyAttribute(const T &minValue, const T &maxValue)
+    explicit QtIVIPropertyAttribute(const T &minValue, const T &maxValue)
         : m_available(true)
         , m_type(QtIVIPropertyAttributeBase::MinimumMaximum)
         , m_minimumValue(minValue)
