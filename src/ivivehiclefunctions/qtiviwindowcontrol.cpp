@@ -363,6 +363,7 @@ void QtIVIWindowControl::clearServiceObject()
 {
     Q_D(QtIVIWindowControl);
     d->clearToDefaults();
+    QtIVIAbstractZonedFeature::clearServiceObject();
 }
 
 QtIVIWindowControl::QtIVIWindowControl(QtIVIWindowControlPrivate &dd, QObject *parent)

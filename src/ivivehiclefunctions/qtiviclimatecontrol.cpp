@@ -756,6 +756,7 @@ void QtIVIClimateControl::clearServiceObject()
 {
     Q_D(QtIVIClimateControl);
     d->clearToDefaults();
+    QtIVIAbstractZonedFeature::clearServiceObject();
 }
 
 QtIVIClimateControl::QtIVIClimateControl(QtIVIClimateControlPrivate &dd, QObject *parent)

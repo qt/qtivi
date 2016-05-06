@@ -126,6 +126,11 @@ void QtIVIAbstractZonedFeature::connectToServiceObject(QtIVIServiceObject *servi
 */
 void QtIVIAbstractZonedFeature::clearServiceObject()
 {
+    Q_D(QtIVIAbstractZonedFeature);
+    qDeleteAll(d->m_zoneFeatures);
+    d->m_zoneFeatures.clear();
+    d->m_zoneFeatureList.clear();
+    d->m_zoneFeatureMap.clear();
 }
 
 /*!

@@ -349,20 +349,19 @@ void WindowControlTest::testInvalidBackend()
     QCOMPARE(wc.zones().count(), 0);
 }
 
-//FIXME
 void WindowControlTest::testClearServiceObject()
 {
-//    WindowControlTestServiceObject *service = new WindowControlTestServiceObject();
-//    manager->registerService(service, service->interfaces());
-//    service->testBackend()->setHeaterMode(QtIVIWindowControl::HeaterOn, "FrontLeft");
-//    QtIVIWindowControl wc;
-//    wc.startAutoDiscovery();
-//    QVERIFY(wc.availableZones().contains("FrontLeft"));
-//    QtIVIWindowControl* zone = qobject_cast<QtIVIWindowControl*>(wc.zoneAt("FrontLeft"));
-//    QVERIFY(zone);
-//    QCOMPARE(zone->heaterMode(), QtIVIWindowControl::HeaterOn);
-//    wc.setServiceObject(0);
-//    QCOMPARE(zone->heaterMode(), QtIVIWindowControl::HeaterOff);
+    WindowControlTestServiceObject *service = new WindowControlTestServiceObject();
+    manager->registerService(service, service->interfaces());
+    service->testBackend()->setHeaterMode(QtIVIWindowControl::HeaterOn, "FrontLeft");
+    QtIVIWindowControl wc;
+    wc.startAutoDiscovery();
+    QVERIFY(wc.availableZones().contains("FrontLeft"));
+    QtIVIWindowControl* zone = qobject_cast<QtIVIWindowControl*>(wc.zoneAt("FrontLeft"));
+    QVERIFY(zone);
+    QCOMPARE(zone->heaterMode(), QtIVIWindowControl::HeaterOn);
+    wc.setServiceObject(0);
+    QVERIFY(!wc.zoneAt("FrontLeft"));
 }
 
 void WindowControlTest::testHeaterMode()
