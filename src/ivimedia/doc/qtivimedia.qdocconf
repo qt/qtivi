@@ -1,0 +1,5 @@
+headerdirs  += .. \
+               ../../imports/media
+
+sourcedirs  += .. \
+               ../../imports/media

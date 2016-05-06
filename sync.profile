@@ -1,6 +1,7 @@
 %modules = ( # path to module name map
     "QtIviCore" => "$basedir/src/ivicore",
     "QtIviVehicleFunctions" => "$basedir/src/ivivehiclefunctions",
+    "QtIviMedia" => "$basedir/src/ivimedia",
     "QtGeniviExtras" => "$basedir/src/geniviextras",
 );
 %moduleheaders = ( # restrict the module headers to those found in relative path
@@ -19,6 +20,7 @@
 #
 %dependencies = (
     "qtbase" => "",
-    "qtdeclarative" => ""
+    "qtdeclarative" => "",
+    "qtmultimedia" => ""
 );
 

@@ -24,48 +24,27 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+
 /*!
-    \page qtivi-modules.html
-    \title Qt IVI C++ Classes
+    \module QtIviMedia
+    \title Qt IVI Media C++ Classes
+    \ingroup modules
+    \ingroup qtivi_modules
+    \qtvariable ivimedia
 
-    \brief C++ classes for Qt IVI.
-
-    \section1 Modules
-
-    Qt IVI contains the following modules:
-    \annotatedlist qtivi_modules
-
-    \section1 Classes
-
-    \section2 Qt IVI Core C++ Classes
-    \generatelist classesbymodule QtIviCore
-
-    \section2 Qt IVI Vehicle Functions C++ Classes
-    \generatelist classesbymodule QtIviVehicleFunctions
-
-    \section2 Qt IVI Media C++ Classes
-    \generatelist classesbymodule QtIviMedia
+    \brief C++ classes for the Qt IVI Media API.
 */
 
 /*!
-    \page qtivi-qmlmodules.html
-    \title Qt IVI QML Types
+    \qmlmodule QtIvi.Media 1.0
+    \title Qt IVI Media QML Types
+    \ingroup qmlmodules
+    \ingroup qtivi_qmlmodules
 
-    \brief QML types for Qt IVI.
+    \brief QML types for the Qt IVI Media API.
 
-    \section1 QML Modules
-
-    Qt IVI contains the following QML modules:
-    \annotatedlist qtivi_qmlmodules
+    The Qt IVI Media QML API provides media functions for in-vehicle infotainment systems.
 
     \section1 QML Types
-
-    \section2 Qt IVI Core QML Types
-    \generatelist qmltypesbymodule QtIvi
-
-    \section2 Qt IVI VehicleFunctions QML Types
-    \generatelist qmltypesbymodule QtIvi.VehicleFunctions
-
-    \section2 Qt IVI Media QML Types
-    \generatelist qmltypesbymodule QtIvi.Media
 */
+

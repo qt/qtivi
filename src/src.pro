@@ -1,13 +1,15 @@
 TEMPLATE = subdirs
 SUBDIRS = ivicore \
           ivivehiclefunctions \
+          ivimedia \
           plugins \
           imports \
           doc
 
 ivivehiclefunctions.depends = ivicore
-plugins.depends = ivivehiclefunctions
-imports.depends = ivivehiclefunctions
+ivimedia.depends = ivicore
+plugins.depends = ivivehiclefunctions ivimedia
+imports.depends = ivivehiclefunctions ivimedia
 
 config_dlt {
     SUBDIRS += geniviextras

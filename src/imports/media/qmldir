@@ -1,0 +1,3 @@
+module QtIvi.Media
+plugin qtivimediaplugin
+classname QIviMediaPlugin
