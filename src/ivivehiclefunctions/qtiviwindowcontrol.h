@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
 class QtIVIWindowControlBackendInterface;
 class QtIVIWindowControlPrivate;
 
-static const QLatin1String QtIVIStringWindowControlInterfaceName("com.qt-project.WindowControl");
+static const QLatin1String QtIVIStringWindowControlInterfaceName("com.qt-project.qtivi.WindowControl");
 
 class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIWindowControl : public QtIVIAbstractZonedFeature
 {
