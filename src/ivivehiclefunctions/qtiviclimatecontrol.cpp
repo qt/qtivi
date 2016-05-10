@@ -647,9 +647,7 @@ QtIVIClimateControl::QtIVIClimateControl(const QString &zone, QObject* parent)
 {
     Q_D(QtIVIClimateControl);
     d->init();
-    qRegisterMetaType<QtIVIPropertyAttribute<int>>();
     qRegisterMetaType<QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections>>();
-    qRegisterMetaType<QtIVIPropertyAttribute<bool>>();
     qRegisterMetaType<QtIVIPropertyAttribute<QtIVIClimateControl::RecirculationMode>>();
     qRegisterMetaType<QtIVIPropertyAttribute<QtIVIClimateControl::ClimateMode>>();
 }

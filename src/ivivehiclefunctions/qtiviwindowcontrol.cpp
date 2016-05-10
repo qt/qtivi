@@ -300,7 +300,6 @@ QtIVIWindowControl::QtIVIWindowControl(const QString &zone, QObject *parent)
     d->init();
 
     qRegisterMetaType<QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode>>();
-    qRegisterMetaType<QtIVIPropertyAttribute<bool>>();
     qRegisterMetaType<QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode>>();
     qRegisterMetaType<QtIVIPropertyAttribute<QtIVIWindowControl::State>>();
 }

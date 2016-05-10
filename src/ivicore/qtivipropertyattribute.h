@@ -59,6 +59,11 @@ public:
         MinimumMaximum,
         AvailableValues
     };
+
+    QtIVIPropertyAttributeBase();
+
+private:
+    void registerTypes();
 };
 
 template <class T>

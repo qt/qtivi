@@ -41,6 +41,23 @@
 
 #include "qtivipropertyattribute.h"
 
+QtIVIPropertyAttributeBase::QtIVIPropertyAttributeBase()
+{
+    registerTypes();
+}
+
+void QtIVIPropertyAttributeBase::registerTypes()
+{
+    qRegisterMetaType<QtIVIPropertyAttribute<int>>();
+    qRegisterMetaType<QtIVIPropertyAttribute<bool>>();
+    qRegisterMetaType<QtIVIPropertyAttribute<double>>();
+#if defined(QT_COORD_TYPE)
+    qRegisterMetaType<QtIVIPropertyAttribute<qreal>>();
+#endif
+    qRegisterMetaType<QtIVIPropertyAttribute<QString>>();
+}
+
+
 /*!
  * \class QtIVIPropertyAttribute
  * \inmodule QtIVICore
