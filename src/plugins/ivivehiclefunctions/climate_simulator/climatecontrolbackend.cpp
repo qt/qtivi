@@ -121,6 +121,8 @@ void ClimateControlBackend::initializeAttributes()
     emit recirculationModeAttributeChanged(QtIVIPropertyAttribute<QtIVIClimateControl::RecirculationMode>(recirculation));
     emit recirculationSensitivityLevelChanged(m_recirculationSensitivityLevel);
     emit recirculationSensitivityLevelAttributeChanged(QtIVIPropertyAttribute<int>(false));
+    emit recirculationEnabledChanged(m_airRecirculation);
+    emit recirculationAttributeChanged(QtIVIPropertyAttribute<bool>(true));
 
     QVector<QtIVIClimateControl::ClimateMode> climate;
     climate << QtIVIClimateControl::ClimateOff << QtIVIClimateControl::ClimateOn;
@@ -279,6 +281,14 @@ void ClimateControlBackend::setRecirculationMode(QtIVIClimateControl::Recirculat
 
     m_recirculationMode = recirculationMode;
     emit recirculationModeChanged(recirculationMode);
+
+    bool recirculation = (m_recirculationMode == QtIVIClimateControl::RecirculationOn);
+    if (recirculation != m_airRecirculation) {
+        qWarning() << "SIMULATION recirculation changed to" << recirculation;
+
+        m_airRecirculation = recirculation;
+        emit recirculationEnabledChanged(m_airRecirculation);
+    }
 }
 
 void ClimateControlBackend::setRecirculationSensitivityLevel(int recirculationSensitivityLevel, const QString &zone)
