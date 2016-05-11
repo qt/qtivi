@@ -4,3 +4,4 @@ SUBDIRS = servicemanagertest \
           qtivipropertyattribute \
           qtiviproperty \
           qtiviabstractfeature \
+          queryparser \

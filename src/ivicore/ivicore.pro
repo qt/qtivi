@@ -41,4 +41,6 @@ SOURCES += \
     qtiviproperty.cpp \
     qtivipropertyfactory.cpp
 
+include(queryparser/queryparser.pri)
+
 load(qt_module)

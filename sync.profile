@@ -7,6 +7,7 @@
 );
 %classnames = (
      "qdlt.h" => "QtDlt",
+     "qtiviqueryterm.h" => "QtIVIAbstractQueryTerm", "QtIVIConjunctionTerm", "QtIVIScopeTerm", "QtIVIFilterTerm", "QtIVIOrderTerm",
 );
 %deprecatedheaders = (
 );
