@@ -28,7 +28,9 @@ HEADERS += \
     qtiviabstractzonedfeature_p.h \
     qtiviqmlconversion_helper.h \
     qtivipropertytester_p.h \
-    qtivitypetraits.h
+    qtivitypetraits.h \
+    qtiviabstractfeaturelistmodel.h \
+    qtiviabstractfeaturelistmodel_p.h
 
 SOURCES += \
     qtiviservicemanager.cpp \
@@ -39,7 +41,8 @@ SOURCES += \
     qtivizonedfeatureinterface.cpp \
     qtivipropertyattribute.cpp \
     qtiviproperty.cpp \
-    qtivipropertyfactory.cpp
+    qtivipropertyfactory.cpp \
+    qtiviabstractfeaturelistmodel.cpp
 
 include(queryparser/queryparser.pri)
 
