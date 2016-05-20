@@ -140,17 +140,6 @@ QIviClimateControlBackendInterface::QIviClimateControlBackendInterface(QObject *
  */
 
 /*!
- * \fn virtual void QIviClimateControlBackendInterface::setAirRecirculationEnabled(bool enabled, const QString &zone) = 0
- *
- * Enables or disables the \a zone air recirculation based on \a enabled.
- *
- * This method is expected to emit the \l airRecirculationEnabledChanged() signal when the internal state changes
- * due to this function call.
- *
- * \sa airRecirculationEnabledChanged()
- */
-
-/*!
  * \fn virtual void QIviClimateControlBackendInterface::setSteeringWheelHeater(int value, const QString &zone) = 0
  *
  * Sets the steering wheel heater level of \a zone to \a value. The range can be defined using the attribute system.
