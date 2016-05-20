@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the documentation of the QtIVI module of the Qt Toolkit.
+** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:FDL-QTAS$
 ** Commercial License Usage
@@ -38,10 +38,10 @@
     \section1 Classes
 
     \section2 Qt IVI Core C++ Classes
-    \generatelist classesbymodule QtIVICore
+    \generatelist classesbymodule QtIviCore
 
     \section2 Qt IVI Vehicle Functions C++ Classes
-    \generatelist classesbymodule QtIVIVehicleFunctions
+    \generatelist classesbymodule QtIviVehicleFunctions
 */
 
 /*!
@@ -58,8 +58,8 @@
     \section1 QML Types
 
     \section2 Qt IVI Core QML Types
-    \generatelist qmltypesbymodule QtIVICore
+    \generatelist qmltypesbymodule QtIvi
 
     \section2 Qt IVI VehicleFunctions QML Types
-    \generatelist qmltypesbymodule QtIVIVehicleFunctions
+    \generatelist qmltypesbymodule QtIvi.VehicleFunctions
 */

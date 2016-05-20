@@ -1,6 +1,6 @@
 CXX_MODULE = qml
 TARGET  = qtivivehiclefunctionsplugin
-TARGETPATH = QtIVIVehicleFunctions
+TARGETPATH = QtIvi/VehicleFunctions
 
 SOURCES += \
     plugin.cpp

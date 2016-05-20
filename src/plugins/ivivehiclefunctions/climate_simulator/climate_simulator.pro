@@ -2,7 +2,7 @@ TARGET = climate_simulation
 
 PLUGIN_TYPE = qtivi
 PLUGIN_EXTENDS = qtivi
-PLUGIN_CLASS_NAME = QtIVIClimateControlBackendInterface
+PLUGIN_CLASS_NAME = QIviClimateControlBackendInterface
 
 QT       += core ivicore ivivehiclefunctions
 

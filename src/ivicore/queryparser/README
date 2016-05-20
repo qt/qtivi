@@ -1,5 +1,5 @@
 This Directory contains all the files needed to generate
-a Parser for the QtIVI Query Language.
+a Parser for the QtIvi Query Language.
 
 The Grammer is defined by using flex (*.l) and QLALR (*.g)
 

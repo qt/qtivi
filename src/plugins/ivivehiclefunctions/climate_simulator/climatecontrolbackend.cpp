@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -44,8 +44,8 @@
 #include <QDebug>
 
 ClimateControlBackend::ClimateControlBackend(QObject *parent) :
-    QtIVIClimateControlBackendInterface(parent),
-    m_flowDirection(QtIVIClimateControl::Floor | QtIVIClimateControl::Dashboard),
+    QIviClimateControlBackendInterface(parent),
+    m_flowDirection(QIviClimateControl::Floor | QIviClimateControl::Dashboard),
     m_airCondition(true),
     m_heater(true),
     m_airRecirculation(false),
@@ -53,37 +53,37 @@ ClimateControlBackend::ClimateControlBackend(QObject *parent) :
     m_defrost(false),
     m_steeringWheelHeater(0),
     m_fanSpeed(2),
-    m_recirculationMode(QtIVIClimateControl::RecirculationOff),
+    m_recirculationMode(QIviClimateControl::RecirculationOff),
     m_recirculationSensitivityLevel(0),
-    m_climateMode(QtIVIClimateControl::ClimateOn),
+    m_climateMode(QIviClimateControl::ClimateOn),
     m_automaticClimateFanIntensityLevel(0)
 {
 
     ZoneBackend leftZone;
     leftZone.seatCooler = 10;
-    leftZone.seatCoolerAttribute = QtIVIPropertyAttribute<int>(0, 10);
+    leftZone.seatCoolerAttribute = QIviPropertyAttribute<int>(0, 10);
     leftZone.seatHeater = 10;
-    leftZone.seatHeaterAttribute = QtIVIPropertyAttribute<int>(0, 10);
+    leftZone.seatHeaterAttribute = QIviPropertyAttribute<int>(0, 10);
     leftZone.targetTemperature = 20;
-    leftZone.targetTemperatureAttribute = QtIVIPropertyAttribute<int>(0, 10);
+    leftZone.targetTemperatureAttribute = QIviPropertyAttribute<int>(0, 10);
     m_zoneMap.insert("FrontLeft",leftZone);
 
     ZoneBackend rightZone;
     rightZone.seatCooler = 5;
-    rightZone.seatCoolerAttribute = QtIVIPropertyAttribute<int>(0, 10);
+    rightZone.seatCoolerAttribute = QIviPropertyAttribute<int>(0, 10);
     rightZone.seatHeater = 0;
-    rightZone.seatHeaterAttribute = QtIVIPropertyAttribute<int>(0, 10);
+    rightZone.seatHeaterAttribute = QIviPropertyAttribute<int>(0, 10);
     rightZone.targetTemperature = 20;
-    rightZone.targetTemperatureAttribute = QtIVIPropertyAttribute<int>(0, 10);
+    rightZone.targetTemperatureAttribute = QIviPropertyAttribute<int>(0, 10);
     m_zoneMap.insert("FrontRight",rightZone);
 
     ZoneBackend rearZone;
     rearZone.seatCooler = 0;
-    rearZone.seatCoolerAttribute = QtIVIPropertyAttribute<int>();
+    rearZone.seatCoolerAttribute = QIviPropertyAttribute<int>();
     rearZone.seatHeater = 0;
-    rearZone.seatHeaterAttribute = QtIVIPropertyAttribute<int>();
+    rearZone.seatHeaterAttribute = QIviPropertyAttribute<int>();
     rearZone.targetTemperature = 10;
-    rearZone.targetTemperatureAttribute = QtIVIPropertyAttribute<int>(0, 10);
+    rearZone.targetTemperatureAttribute = QIviPropertyAttribute<int>(0, 10);
     m_zoneMap.insert("Rear",rearZone);
 }
 
@@ -98,38 +98,38 @@ QStringList ClimateControlBackend::availableZones() const
 
 void ClimateControlBackend::initializeAttributes()
 {
-    QVector<QtIVIClimateControl::AirflowDirections> airflow;
-    airflow << (QtIVIClimateControl::Floor | QtIVIClimateControl::Dashboard) << QtIVIClimateControl::Floor << QtIVIClimateControl::Dashboard;
-    emit airflowDirectionsAttributeChanged(QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections>(airflow));
+    QVector<QIviClimateControl::AirflowDirections> airflow;
+    airflow << (QIviClimateControl::Floor | QIviClimateControl::Dashboard) << QIviClimateControl::Floor << QIviClimateControl::Dashboard;
+    emit airflowDirectionsAttributeChanged(QIviPropertyAttribute<QIviClimateControl::AirflowDirections>(airflow));
     emit airflowDirectionsChanged(m_flowDirection);
-    emit airConditioningAttributeChanged(QtIVIPropertyAttribute<bool>(true));
+    emit airConditioningAttributeChanged(QIviPropertyAttribute<bool>(true));
     emit airConditioningEnabledChanged(m_airCondition);
-    emit heaterAttributeChanged(QtIVIPropertyAttribute<bool>(true));
+    emit heaterAttributeChanged(QIviPropertyAttribute<bool>(true));
     emit heaterEnabledChanged(m_heater);
     emit zoneSynchronizationEnabledChanged(m_zoneSynchronization);
-    emit zoneSynchronizationAttributeChanged(QtIVIPropertyAttribute<bool>(true));
+    emit zoneSynchronizationAttributeChanged(QIviPropertyAttribute<bool>(true));
     emit defrostEnabledChanged(m_defrost);
-    emit defrostAttributeChanged(QtIVIPropertyAttribute<bool>(true));
-    emit steeringWheelHeaterAttributeChanged(QtIVIPropertyAttribute<int>(false));
+    emit defrostAttributeChanged(QIviPropertyAttribute<bool>(true));
+    emit steeringWheelHeaterAttributeChanged(QIviPropertyAttribute<int>(false));
     emit steeringWheelHeaterChanged(m_steeringWheelHeater);
-    emit fanSpeedLevelAttributeChanged(QtIVIPropertyAttribute<int>(0, 10));
+    emit fanSpeedLevelAttributeChanged(QIviPropertyAttribute<int>(0, 10));
     emit fanSpeedLevelChanged(m_fanSpeed);
 
-    QVector<QtIVIClimateControl::RecirculationMode> recirculation;
-    recirculation << QtIVIClimateControl::RecirculationOff << QtIVIClimateControl::RecirculationOn;
+    QVector<QIviClimateControl::RecirculationMode> recirculation;
+    recirculation << QIviClimateControl::RecirculationOff << QIviClimateControl::RecirculationOn;
     emit recirculationModeChanged(m_recirculationMode);
-    emit recirculationModeAttributeChanged(QtIVIPropertyAttribute<QtIVIClimateControl::RecirculationMode>(recirculation));
+    emit recirculationModeAttributeChanged(QIviPropertyAttribute<QIviClimateControl::RecirculationMode>(recirculation));
     emit recirculationSensitivityLevelChanged(m_recirculationSensitivityLevel);
-    emit recirculationSensitivityLevelAttributeChanged(QtIVIPropertyAttribute<int>(false));
+    emit recirculationSensitivityLevelAttributeChanged(QIviPropertyAttribute<int>(false));
     emit recirculationEnabledChanged(m_airRecirculation);
-    emit recirculationAttributeChanged(QtIVIPropertyAttribute<bool>(true));
+    emit recirculationAttributeChanged(QIviPropertyAttribute<bool>(true));
 
-    QVector<QtIVIClimateControl::ClimateMode> climate;
-    climate << QtIVIClimateControl::ClimateOff << QtIVIClimateControl::ClimateOn;
+    QVector<QIviClimateControl::ClimateMode> climate;
+    climate << QIviClimateControl::ClimateOff << QIviClimateControl::ClimateOn;
     emit climateModeChanged(m_climateMode);
-    emit climateModeAttributeChanged(QtIVIPropertyAttribute<QtIVIClimateControl::ClimateMode>(climate));
+    emit climateModeAttributeChanged(QIviPropertyAttribute<QIviClimateControl::ClimateMode>(climate));
     emit automaticClimateFanIntensityLevelChanged(m_automaticClimateFanIntensityLevel);
-    emit automaticClimateFanIntensityLevelAttributeChanged(QtIVIPropertyAttribute<int>(false));
+    emit automaticClimateFanIntensityLevelAttributeChanged(QIviPropertyAttribute<int>(false));
 
     foreach (QString zone, availableZones()) {
         emit targetTemperatureAttributeChanged(m_zoneMap[zone].targetTemperatureAttribute, zone);
@@ -217,7 +217,7 @@ void ClimateControlBackend::setFanSpeedLevel(int speed, const QString &zone)
     emit fanSpeedLevelChanged(speed, zone);
 }
 
-void ClimateControlBackend::setAirflowDirections(QtIVIClimateControl::AirflowDirections direction, const QString &zone)
+void ClimateControlBackend::setAirflowDirections(QIviClimateControl::AirflowDirections direction, const QString &zone)
 {
     if (!zone.isEmpty() || m_flowDirection == direction)
         return;
@@ -272,7 +272,7 @@ void ClimateControlBackend::setDefrostEnabled(bool defrost, const QString &zone)
     emit defrostEnabledChanged(defrost);
 }
 
-void ClimateControlBackend::setRecirculationMode(QtIVIClimateControl::RecirculationMode recirculationMode, const QString &zone)
+void ClimateControlBackend::setRecirculationMode(QIviClimateControl::RecirculationMode recirculationMode, const QString &zone)
 {
     if (!zone.isEmpty() || m_recirculationMode == recirculationMode)
         return;
@@ -282,7 +282,7 @@ void ClimateControlBackend::setRecirculationMode(QtIVIClimateControl::Recirculat
     m_recirculationMode = recirculationMode;
     emit recirculationModeChanged(recirculationMode);
 
-    bool recirculation = (m_recirculationMode == QtIVIClimateControl::RecirculationOn);
+    bool recirculation = (m_recirculationMode == QIviClimateControl::RecirculationOn);
     if (recirculation != m_airRecirculation) {
         qWarning() << "SIMULATION recirculation changed to" << recirculation;
 
@@ -298,7 +298,7 @@ void ClimateControlBackend::setRecirculationSensitivityLevel(int recirculationSe
     qWarning() << "SIMULATION Setting RecirculationSensitivityLevel is not supported!";
 }
 
-void ClimateControlBackend::setClimateMode(QtIVIClimateControl::ClimateMode climateMode, const QString &zone)
+void ClimateControlBackend::setClimateMode(QIviClimateControl::ClimateMode climateMode, const QString &zone)
 {
     if (!zone.isEmpty() || m_climateMode == climateMode)
         return;

@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -42,70 +42,70 @@
 #include "qtiviwindowcontrol.h"
 #include "qtiviwindowcontrol_p.h"
 #include "qtiviwindowcontrolbackendinterface.h"
-#include <QtIVICore/QtIVIPropertyFactory>
-#include <QtIVICore/QtIVIServiceObject>
+#include <QtIviCore/QIviPropertyFactory>
+#include <QtIviCore/QIviServiceObject>
 
-QtIVIWindowControlPrivate::QtIVIWindowControlPrivate(const QString &interface, const QString &zone, QtIVIWindowControl *parent)
-    : QtIVIAbstractZonedFeaturePrivate(interface, zone, parent)
-    , m_heaterMode(QtIVIWindowControl::HeaterOff)
+QIviWindowControlPrivate::QIviWindowControlPrivate(const QString &interface, const QString &zone, QIviWindowControl *parent)
+    : QIviAbstractZonedFeaturePrivate(interface, zone, parent)
+    , m_heaterMode(QIviWindowControl::HeaterOff)
     , m_heater(false)
-    , m_blindMode(QtIVIWindowControl::BlindClosed)
-    , m_blindState(QtIVIWindowControl::Closed)
-    , m_state(QtIVIWindowControl::Closed)
+    , m_blindMode(QIviWindowControl::BlindClosed)
+    , m_blindState(QIviWindowControl::Closed)
+    , m_state(QIviWindowControl::Closed)
     , q_ptr(parent)
 {}
 
-void QtIVIWindowControlPrivate::init()
+void QIviWindowControlPrivate::init()
 {
-    Q_Q(QtIVIWindowControl);
+    Q_Q(QIviWindowControl);
 
-    m_heaterModeProperty = QtIVIPropertyFactory<QtIVIWindowControl::HeaterMode>::create(q,
-                                                                                        &QtIVIWindowControl::heaterModeAttribute,
-                                                                                        &QtIVIWindowControl::heaterModeAttributeChanged,
-                                                                                        &QtIVIWindowControl::heaterMode,
-                                                                                        &QtIVIWindowControl::heaterModeChanged,
-                                                                                        &QtIVIWindowControl::setHeaterMode);
+    m_heaterModeProperty = QIviPropertyFactory<QIviWindowControl::HeaterMode>::create(q,
+                                                                                        &QIviWindowControl::heaterModeAttribute,
+                                                                                        &QIviWindowControl::heaterModeAttributeChanged,
+                                                                                        &QIviWindowControl::heaterMode,
+                                                                                        &QIviWindowControl::heaterModeChanged,
+                                                                                        &QIviWindowControl::setHeaterMode);
 
-    m_heaterProperty = QtIVIPropertyFactory<bool>::create(q,
-                                                          &QtIVIWindowControl::heaterAttribute,
-                                                          &QtIVIWindowControl::heaterAttributeChanged,
-                                                          &QtIVIWindowControl::isHeaterEnabled,
-                                                          &QtIVIWindowControl::heaterEnabledChanged);
+    m_heaterProperty = QIviPropertyFactory<bool>::create(q,
+                                                          &QIviWindowControl::heaterAttribute,
+                                                          &QIviWindowControl::heaterAttributeChanged,
+                                                          &QIviWindowControl::isHeaterEnabled,
+                                                          &QIviWindowControl::heaterEnabledChanged);
 
-    m_blindModeProperty = QtIVIPropertyFactory<QtIVIWindowControl::BlindMode>::create(q,
-                                                                                      &QtIVIWindowControl::blindModeAttribute,
-                                                                                      &QtIVIWindowControl::blindModeAttributeChanged,
-                                                                                      &QtIVIWindowControl::blindMode,
-                                                                                      &QtIVIWindowControl::blindModeChanged,
-                                                                                      &QtIVIWindowControl::setBlindMode);
+    m_blindModeProperty = QIviPropertyFactory<QIviWindowControl::BlindMode>::create(q,
+                                                                                      &QIviWindowControl::blindModeAttribute,
+                                                                                      &QIviWindowControl::blindModeAttributeChanged,
+                                                                                      &QIviWindowControl::blindMode,
+                                                                                      &QIviWindowControl::blindModeChanged,
+                                                                                      &QIviWindowControl::setBlindMode);
 
-    m_blindStateProperty = QtIVIPropertyFactory<QtIVIWindowControl::State>::create(q,
-                                                                                   &QtIVIWindowControl::blindStateAttribute,
-                                                                                   &QtIVIWindowControl::blindStateAttributeChanged,
-                                                                                   &QtIVIWindowControl::blindState,
-                                                                                   &QtIVIWindowControl::blindStateChanged);
+    m_blindStateProperty = QIviPropertyFactory<QIviWindowControl::State>::create(q,
+                                                                                   &QIviWindowControl::blindStateAttribute,
+                                                                                   &QIviWindowControl::blindStateAttributeChanged,
+                                                                                   &QIviWindowControl::blindState,
+                                                                                   &QIviWindowControl::blindStateChanged);
 
-    m_stateProperty = QtIVIPropertyFactory<QtIVIWindowControl::State>::create(q,
-                                                                              &QtIVIWindowControl::stateAttribute,
-                                                                              &QtIVIWindowControl::stateAttributeChanged,
-                                                                              &QtIVIWindowControl::state,
-                                                                              &QtIVIWindowControl::stateChanged);
+    m_stateProperty = QIviPropertyFactory<QIviWindowControl::State>::create(q,
+                                                                              &QIviWindowControl::stateAttribute,
+                                                                              &QIviWindowControl::stateAttributeChanged,
+                                                                              &QIviWindowControl::state,
+                                                                              &QIviWindowControl::stateChanged);
 
 }
 
-void QtIVIWindowControlPrivate::clearToDefaults()
+void QIviWindowControlPrivate::clearToDefaults()
 {
-    m_heaterMode = QtIVIWindowControl::HeaterOff;
+    m_heaterMode = QIviWindowControl::HeaterOff;
     m_heater = false;
-    m_blindMode = QtIVIWindowControl::BlindClosed;
-    m_blindState = QtIVIWindowControl::Closed;
-    m_state = QtIVIWindowControl::Closed;
+    m_blindMode = QIviWindowControl::BlindClosed;
+    m_blindState = QIviWindowControl::Closed;
+    m_state = QIviWindowControl::Closed;
 }
 
-void QtIVIWindowControlPrivate::onHeaterModeChanged(QtIVIWindowControl::HeaterMode value, const QString &zone)
+void QIviWindowControlPrivate::onHeaterModeChanged(QIviWindowControl::HeaterMode value, const QString &zone)
 {
-    Q_Q(QtIVIWindowControl);
-    QtIVIWindowControl *f = qobject_cast<QtIVIWindowControl*>(q->zoneAt(zone));
+    Q_Q(QIviWindowControl);
+    QIviWindowControl *f = qobject_cast<QIviWindowControl*>(q->zoneAt(zone));
     if (!f)
         f = q;
     if (f->zone() != zone)
@@ -115,10 +115,10 @@ void QtIVIWindowControlPrivate::onHeaterModeChanged(QtIVIWindowControl::HeaterMo
     emit f->heaterModeChanged(value);
 }
 
-void QtIVIWindowControlPrivate::onHeaterModeAttributeChanged(const QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode> &attribute, const QString &zone)
+void QIviWindowControlPrivate::onHeaterModeAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::HeaterMode> &attribute, const QString &zone)
 {
-    Q_Q(QtIVIWindowControl);
-    QtIVIWindowControl *f = qobject_cast<QtIVIWindowControl*>(q->zoneAt(zone));
+    Q_Q(QIviWindowControl);
+    QIviWindowControl *f = qobject_cast<QIviWindowControl*>(q->zoneAt(zone));
     if (!f)
         f = q;
     if (f->zone() != zone)
@@ -128,10 +128,10 @@ void QtIVIWindowControlPrivate::onHeaterModeAttributeChanged(const QtIVIProperty
 }
 
 
-void QtIVIWindowControlPrivate::onHeaterEnabledChanged(bool enabled, const QString &zone)
+void QIviWindowControlPrivate::onHeaterEnabledChanged(bool enabled, const QString &zone)
 {
-    Q_Q(QtIVIWindowControl);
-    QtIVIWindowControl *f = qobject_cast<QtIVIWindowControl*>(q->zoneAt(zone));
+    Q_Q(QIviWindowControl);
+    QIviWindowControl *f = qobject_cast<QIviWindowControl*>(q->zoneAt(zone));
     if (!f)
         f = q;
     if (f->zone() != zone)
@@ -141,10 +141,10 @@ void QtIVIWindowControlPrivate::onHeaterEnabledChanged(bool enabled, const QStri
     emit f->heaterEnabledChanged(enabled);
 }
 
-void QtIVIWindowControlPrivate::onHeaterAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone)
+void QIviWindowControlPrivate::onHeaterAttributeChanged(const QIviPropertyAttribute<bool> &attribute, const QString &zone)
 {
-    Q_Q(QtIVIWindowControl);
-    QtIVIWindowControl *f = qobject_cast<QtIVIWindowControl*>(q->zoneAt(zone));
+    Q_Q(QIviWindowControl);
+    QIviWindowControl *f = qobject_cast<QIviWindowControl*>(q->zoneAt(zone));
     if (!f)
         f = q;
     if (f->zone() != zone)
@@ -154,10 +154,10 @@ void QtIVIWindowControlPrivate::onHeaterAttributeChanged(const QtIVIPropertyAttr
 }
 
 
-void QtIVIWindowControlPrivate::onBlindModeChanged(QtIVIWindowControl::BlindMode value, const QString &zone)
+void QIviWindowControlPrivate::onBlindModeChanged(QIviWindowControl::BlindMode value, const QString &zone)
 {
-    Q_Q(QtIVIWindowControl);
-    QtIVIWindowControl *f = qobject_cast<QtIVIWindowControl*>(q->zoneAt(zone));
+    Q_Q(QIviWindowControl);
+    QIviWindowControl *f = qobject_cast<QIviWindowControl*>(q->zoneAt(zone));
     if (!f)
         f = q;
     if (f->zone() != zone)
@@ -167,10 +167,10 @@ void QtIVIWindowControlPrivate::onBlindModeChanged(QtIVIWindowControl::BlindMode
     emit f->blindModeChanged(value);
 }
 
-void QtIVIWindowControlPrivate::onBlindModeAttributeChanged(const QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode> &attribute, const QString &zone)
+void QIviWindowControlPrivate::onBlindModeAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::BlindMode> &attribute, const QString &zone)
 {
-    Q_Q(QtIVIWindowControl);
-    QtIVIWindowControl *f = qobject_cast<QtIVIWindowControl*>(q->zoneAt(zone));
+    Q_Q(QIviWindowControl);
+    QIviWindowControl *f = qobject_cast<QIviWindowControl*>(q->zoneAt(zone));
     if (!f)
         f = q;
     if (f->zone() != zone)
@@ -180,10 +180,10 @@ void QtIVIWindowControlPrivate::onBlindModeAttributeChanged(const QtIVIPropertyA
 }
 
 
-void QtIVIWindowControlPrivate::onBlindStateChanged(QtIVIWindowControl::State value, const QString &zone)
+void QIviWindowControlPrivate::onBlindStateChanged(QIviWindowControl::State value, const QString &zone)
 {
-    Q_Q(QtIVIWindowControl);
-    QtIVIWindowControl *f = qobject_cast<QtIVIWindowControl*>(q->zoneAt(zone));
+    Q_Q(QIviWindowControl);
+    QIviWindowControl *f = qobject_cast<QIviWindowControl*>(q->zoneAt(zone));
     if (!f)
         f = q;
     if (f->zone() != zone)
@@ -193,10 +193,10 @@ void QtIVIWindowControlPrivate::onBlindStateChanged(QtIVIWindowControl::State va
     emit f->blindStateChanged(value);
 }
 
-void QtIVIWindowControlPrivate::onBlindStateAttributeChanged(const QtIVIPropertyAttribute<QtIVIWindowControl::State> &attribute, const QString &zone)
+void QIviWindowControlPrivate::onBlindStateAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::State> &attribute, const QString &zone)
 {
-    Q_Q(QtIVIWindowControl);
-    QtIVIWindowControl *f = qobject_cast<QtIVIWindowControl*>(q->zoneAt(zone));
+    Q_Q(QIviWindowControl);
+    QIviWindowControl *f = qobject_cast<QIviWindowControl*>(q->zoneAt(zone));
     if (!f)
         f = q;
     if (f->zone() != zone)
@@ -206,10 +206,10 @@ void QtIVIWindowControlPrivate::onBlindStateAttributeChanged(const QtIVIProperty
 }
 
 
-void QtIVIWindowControlPrivate::onStateChanged(QtIVIWindowControl::State value, const QString &zone)
+void QIviWindowControlPrivate::onStateChanged(QIviWindowControl::State value, const QString &zone)
 {
-    Q_Q(QtIVIWindowControl);
-    QtIVIWindowControl *f = qobject_cast<QtIVIWindowControl*>(q->zoneAt(zone));
+    Q_Q(QIviWindowControl);
+    QIviWindowControl *f = qobject_cast<QIviWindowControl*>(q->zoneAt(zone));
     if (!f)
         f = q;
     if (f->zone() != zone)
@@ -219,10 +219,10 @@ void QtIVIWindowControlPrivate::onStateChanged(QtIVIWindowControl::State value, 
     emit f->stateChanged(value);
 }
 
-void QtIVIWindowControlPrivate::onStateAttributeChanged(const QtIVIPropertyAttribute<QtIVIWindowControl::State> &attribute, const QString &zone)
+void QIviWindowControlPrivate::onStateAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::State> &attribute, const QString &zone)
 {
-    Q_Q(QtIVIWindowControl);
-    QtIVIWindowControl *f = qobject_cast<QtIVIWindowControl*>(q->zoneAt(zone));
+    Q_Q(QIviWindowControl);
+    QIviWindowControl *f = qobject_cast<QIviWindowControl*>(q->zoneAt(zone));
     if (!f)
         f = q;
     if (f->zone() != zone)
@@ -231,35 +231,35 @@ void QtIVIWindowControlPrivate::onStateAttributeChanged(const QtIVIPropertyAttri
     emit f->stateAttributeChanged(attribute);
 }
 
-QtIVIWindowControlBackendInterface *QtIVIWindowControlPrivate::windowControlBackend()
+QIviWindowControlBackendInterface *QIviWindowControlPrivate::windowControlBackend()
 {
-    Q_Q(QtIVIWindowControl);
-    return qobject_cast<QtIVIWindowControlBackendInterface*>(q->backend());
+    Q_Q(QIviWindowControl);
+    return qobject_cast<QIviWindowControlBackendInterface*>(q->backend());
 }
 
 /*!
-   \class QtIVIWindowControl
-   \inmodule QtIVIVehicleFunctions
+   \class QIviWindowControl
+   \inmodule QtIviVehicleFunctions
    \brief Provides an interface to the window control.
 
-   The QtIVIWindowControl provides an interface to control the physical windows of the vehicle.
+   The QIviWindowControl provides an interface to control the physical windows of the vehicle.
 
    All properties are exposed through zone objects. The zones are retrieved using the \l zoneAt method.
 
-   The QtIVIWindowControl expects a single backend to be available. It is recommended to use it
-   with \l {QtIVIAbstractFeature::}{discoveryMode} set to \l AutoDiscovery.
+   The QIviWindowControl expects a single backend to be available. It is recommended to use it
+   with \l {QIviAbstractFeature::}{discoveryMode} set to \l AutoDiscovery.
 */
 
 /*!
     \qmltype WindowControl
-    \instantiates QtIVIWindowControl
-    \inqmlmodule QtIVIVehicleFunctions
+    \instantiates QIviWindowControl
+    \inqmlmodule QtIvi.VehicleFunctions
     \inherits AbstractZonedFeature
     \brief The WindowControl provides a QML interface to control the physical windows of the vehicle.
 */
 
 /*!
-   \enum QtIVIWindowControl::HeaterMode
+   \enum QIviWindowControl::HeaterMode
    \value HeaterOn
           The window heater is turned on.
    \value HeaterOff
@@ -269,7 +269,7 @@ QtIVIWindowControlBackendInterface *QtIVIWindowControlPrivate::windowControlBack
 */
 
 /*!
-   \enum QtIVIWindowControl::BlindMode
+   \enum QIviWindowControl::BlindMode
    \value BlindOpen
           The blind will be opened.
    \value BlindClosed
@@ -279,7 +279,7 @@ QtIVIWindowControlBackendInterface *QtIVIWindowControlPrivate::windowControlBack
 */
 
 /*!
-   \enum QtIVIWindowControl::State
+   \enum QIviWindowControl::State
    \value FullyOpen
           The object is fully open.
    \value Open
@@ -291,55 +291,55 @@ QtIVIWindowControlBackendInterface *QtIVIWindowControlPrivate::windowControlBack
 /*!
    Constructs a window control object to the given \a zone.
 
-   The \a parent argument is passed on to the \l QtIVIAbstractZonedFeature base class.
+   The \a parent argument is passed on to the \l QIviAbstractZonedFeature base class.
 */
-QtIVIWindowControl::QtIVIWindowControl(const QString &zone, QObject *parent)
-    : QtIVIAbstractZonedFeature(*new QtIVIWindowControlPrivate(QtIVIStringWindowControlInterfaceName, zone, this), parent)
+QIviWindowControl::QIviWindowControl(const QString &zone, QObject *parent)
+    : QIviAbstractZonedFeature(*new QIviWindowControlPrivate(QIviStringWindowControlInterfaceName, zone, this), parent)
 {
-    Q_D(QtIVIWindowControl);
+    Q_D(QIviWindowControl);
     d->init();
 
-    qRegisterMetaType<QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode>>();
-    qRegisterMetaType<QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode>>();
-    qRegisterMetaType<QtIVIPropertyAttribute<QtIVIWindowControl::State>>();
+    qRegisterMetaType<QIviPropertyAttribute<QIviWindowControl::HeaterMode>>();
+    qRegisterMetaType<QIviPropertyAttribute<QIviWindowControl::BlindMode>>();
+    qRegisterMetaType<QIviPropertyAttribute<QIviWindowControl::State>>();
 }
 
-QtIVIWindowControl::~QtIVIWindowControl()
+QIviWindowControl::~QIviWindowControl()
 {
 }
 
 /*!
    \reimp
 */
-void QtIVIWindowControl::connectToServiceObject(QtIVIServiceObject *serviceObject)
+void QIviWindowControl::connectToServiceObject(QIviServiceObject *serviceObject)
 {
-    Q_D(QtIVIWindowControl);
-    QtIVIAbstractZonedFeature::connectToServiceObject(serviceObject);
+    Q_D(QIviWindowControl);
+    QIviAbstractZonedFeature::connectToServiceObject(serviceObject);
 
-    QtIVIWindowControlBackendInterface* backend = d->windowControlBackend();
+    QIviWindowControlBackendInterface* backend = d->windowControlBackend();
     if (!backend)
         return;
 
-    QObjectPrivate::connect(backend, &QtIVIWindowControlBackendInterface::heaterModeChanged,
-                            d, &QtIVIWindowControlPrivate::onHeaterModeChanged);
-    QObjectPrivate::connect(backend, &QtIVIWindowControlBackendInterface::heaterModeAttributeChanged,
-                            d, &QtIVIWindowControlPrivate::onHeaterModeAttributeChanged);
-    QObjectPrivate::connect(backend, &QtIVIWindowControlBackendInterface::heaterEnabledChanged,
-                            d, &QtIVIWindowControlPrivate::onHeaterEnabledChanged);
-    QObjectPrivate::connect(backend, &QtIVIWindowControlBackendInterface::heaterAttributeChanged,
-                            d, &QtIVIWindowControlPrivate::onHeaterAttributeChanged);
-    QObjectPrivate::connect(backend, &QtIVIWindowControlBackendInterface::blindModeChanged,
-                            d, &QtIVIWindowControlPrivate::onBlindModeChanged);
-    QObjectPrivate::connect(backend, &QtIVIWindowControlBackendInterface::blindModeAttributeChanged,
-                            d, &QtIVIWindowControlPrivate::onBlindModeAttributeChanged);
-    QObjectPrivate::connect(backend, &QtIVIWindowControlBackendInterface::blindStateChanged,
-                            d, &QtIVIWindowControlPrivate::onBlindStateChanged);
-    QObjectPrivate::connect(backend, &QtIVIWindowControlBackendInterface::blindStateAttributeChanged,
-                            d, &QtIVIWindowControlPrivate::onBlindStateAttributeChanged);
-    QObjectPrivate::connect(backend, &QtIVIWindowControlBackendInterface::stateChanged,
-                            d, &QtIVIWindowControlPrivate::onStateChanged);
-    QObjectPrivate::connect(backend, &QtIVIWindowControlBackendInterface::stateAttributeChanged,
-                            d, &QtIVIWindowControlPrivate::onStateAttributeChanged);
+    QObjectPrivate::connect(backend, &QIviWindowControlBackendInterface::heaterModeChanged,
+                            d, &QIviWindowControlPrivate::onHeaterModeChanged);
+    QObjectPrivate::connect(backend, &QIviWindowControlBackendInterface::heaterModeAttributeChanged,
+                            d, &QIviWindowControlPrivate::onHeaterModeAttributeChanged);
+    QObjectPrivate::connect(backend, &QIviWindowControlBackendInterface::heaterEnabledChanged,
+                            d, &QIviWindowControlPrivate::onHeaterEnabledChanged);
+    QObjectPrivate::connect(backend, &QIviWindowControlBackendInterface::heaterAttributeChanged,
+                            d, &QIviWindowControlPrivate::onHeaterAttributeChanged);
+    QObjectPrivate::connect(backend, &QIviWindowControlBackendInterface::blindModeChanged,
+                            d, &QIviWindowControlPrivate::onBlindModeChanged);
+    QObjectPrivate::connect(backend, &QIviWindowControlBackendInterface::blindModeAttributeChanged,
+                            d, &QIviWindowControlPrivate::onBlindModeAttributeChanged);
+    QObjectPrivate::connect(backend, &QIviWindowControlBackendInterface::blindStateChanged,
+                            d, &QIviWindowControlPrivate::onBlindStateChanged);
+    QObjectPrivate::connect(backend, &QIviWindowControlBackendInterface::blindStateAttributeChanged,
+                            d, &QIviWindowControlPrivate::onBlindStateAttributeChanged);
+    QObjectPrivate::connect(backend, &QIviWindowControlBackendInterface::stateChanged,
+                            d, &QIviWindowControlPrivate::onStateChanged);
+    QObjectPrivate::connect(backend, &QIviWindowControlBackendInterface::stateAttributeChanged,
+                            d, &QIviWindowControlPrivate::onStateAttributeChanged);
 
     backend->initializeAttributes();
 }
@@ -347,9 +347,9 @@ void QtIVIWindowControl::connectToServiceObject(QtIVIServiceObject *serviceObjec
 /*!
    \reimp
 */
-void QtIVIWindowControl::disconnectFromServiceObject(QtIVIServiceObject *serviceObject)
+void QIviWindowControl::disconnectFromServiceObject(QIviServiceObject *serviceObject)
 {
-    QtIVIWindowControlBackendInterface *backend = qobject_cast<QtIVIWindowControlBackendInterface*>(serviceObject->interfaceInstance(QtIVIStringWindowControlInterfaceName));
+    QIviWindowControlBackendInterface *backend = qobject_cast<QIviWindowControlBackendInterface*>(serviceObject->interfaceInstance(QIviStringWindowControlInterfaceName));
 
     if (backend)
         disconnect(backend, 0, this, 0);
@@ -358,30 +358,30 @@ void QtIVIWindowControl::disconnectFromServiceObject(QtIVIServiceObject *service
 /*!
    \reimp
 */
-void QtIVIWindowControl::clearServiceObject()
+void QIviWindowControl::clearServiceObject()
 {
-    Q_D(QtIVIWindowControl);
+    Q_D(QIviWindowControl);
     d->clearToDefaults();
-    QtIVIAbstractZonedFeature::clearServiceObject();
+    QIviAbstractZonedFeature::clearServiceObject();
 }
 
-QtIVIWindowControl::QtIVIWindowControl(QtIVIWindowControlPrivate &dd, QObject *parent)
-    : QtIVIAbstractZonedFeature(dd, parent)
+QIviWindowControl::QIviWindowControl(QIviWindowControlPrivate &dd, QObject *parent)
+    : QIviAbstractZonedFeature(dd, parent)
 {
-    Q_D(QtIVIWindowControl);
+    Q_D(QIviWindowControl);
     d->init();
 }
 
 /*!
    \reimp
 */
-QtIVIAbstractZonedFeature *QtIVIWindowControl::createZoneFeature(const QString &zone)
+QIviAbstractZonedFeature *QIviWindowControl::createZoneFeature(const QString &zone)
 {
-    return new QtIVIWindowControl(zone, this);
+    return new QIviWindowControl(zone, this);
 }
 
 /*!
-   \qmlqtivipropertyEnum {QtIVIVehicleFunctions::WindowControl::heaterMode}
+   \qmlqtivipropertyEnum {QtIvi.VehicleFunctions::WindowControl::heaterMode}
 
    \e value holds the heater mode.
    Available values are:
@@ -393,9 +393,9 @@ QtIVIAbstractZonedFeature *QtIVIWindowControl::createZoneFeature(const QString &
           The window heater is turning off and on automatically.
  */
 /*!
-   \property QtIVIWindowControl::heaterMode
+   \property QIviWindowControl::heaterMode
 
-   Holds a QtIVIProperty of type \e QtIVIWindowControl::HeaterMode where the QtIVIProperty::value() function returns the current heaterMode.
+   Holds a QIviProperty of type \e QIviWindowControl::HeaterMode where the QIviProperty::value() function returns the current heaterMode.
 
    \sa AttributeSystem
    \sa heaterMode() setHeaterMode() heaterModeAttribute()
@@ -405,10 +405,10 @@ QtIVIAbstractZonedFeature *QtIVIWindowControl::createZoneFeature(const QString &
  *
  * \sa setHeaterMode() heaterModeChanged() heaterModeAttribute()
  */
-QtIVIWindowControl::HeaterMode QtIVIWindowControl::heaterMode() const
+QIviWindowControl::HeaterMode QIviWindowControl::heaterMode() const
 
 {
-    Q_D(const QtIVIWindowControl);
+    Q_D(const QIviWindowControl);
     return d->m_heaterMode;
 }
 /*!
@@ -416,27 +416,27 @@ QtIVIWindowControl::HeaterMode QtIVIWindowControl::heaterMode() const
  *
  * \sa setHeaterMode() heaterMode() heaterModeChanged()
  */
-QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode> QtIVIWindowControl::heaterModeAttribute() const
+QIviPropertyAttribute<QIviWindowControl::HeaterMode> QIviWindowControl::heaterModeAttribute() const
 {
-    Q_D(const QtIVIWindowControl);
+    Q_D(const QIviWindowControl);
     return d->m_heaterModeAttribute;
 }
 
-QtIVIProperty *QtIVIWindowControl::heaterModeProperty() const
+QIviProperty *QIviWindowControl::heaterModeProperty() const
 {
-    Q_D(const QtIVIWindowControl);
+    Q_D(const QIviWindowControl);
     return d->m_heaterModeProperty;
 }
 
 /*!
-   \qmlqtivipropertyBool {QtIVIVehicleFunctions::WindowControl::heater}
+   \qmlqtivipropertyBool {QtIvi.VehicleFunctions::WindowControl::heater}
 
    \e value is true if the heater is currently running.
  */
 /*!
-   \property QtIVIWindowControl::heater
+   \property QIviWindowControl::heater
 
-   Holds a QtIVIProperty of type \e bool where the QtIVIProperty::value() function indicates if the heater is running.
+   Holds a QIviProperty of type \e bool where the QIviProperty::value() function indicates if the heater is running.
 
    \sa AttributeSystem
    \sa isHeaterEnabled() heaterAttribute()
@@ -446,10 +446,10 @@ QtIVIProperty *QtIVIWindowControl::heaterModeProperty() const
  *
  * \sa heaterEnabledChanged() heaterAttribute()
  */
-bool QtIVIWindowControl::isHeaterEnabled() const
+bool QIviWindowControl::isHeaterEnabled() const
 
 {
-    Q_D(const QtIVIWindowControl);
+    Q_D(const QIviWindowControl);
     return d->m_heater;
 }
 /*!
@@ -457,20 +457,20 @@ bool QtIVIWindowControl::isHeaterEnabled() const
  *
  * \sa isHeaterEnabled() heaterEnabledChanged()
  */
-QtIVIPropertyAttribute<bool> QtIVIWindowControl::heaterAttribute() const
+QIviPropertyAttribute<bool> QIviWindowControl::heaterAttribute() const
 {
-    Q_D(const QtIVIWindowControl);
+    Q_D(const QIviWindowControl);
     return d->m_heaterAttribute;
 }
 
-QtIVIProperty *QtIVIWindowControl::heaterProperty() const
+QIviProperty *QIviWindowControl::heaterProperty() const
 {
-    Q_D(const QtIVIWindowControl);
+    Q_D(const QIviWindowControl);
     return d->m_heaterProperty;
 }
 
 /*!
-   \qmlqtivipropertyEnum {QtIVIVehicleFunctions::WindowControl::blindMode}
+   \qmlqtivipropertyEnum {QtIvi.VehicleFunctions::WindowControl::blindMode}
 
    \e value holds the blind mode.
    Available values are:
@@ -482,9 +482,9 @@ QtIVIProperty *QtIVIWindowControl::heaterProperty() const
           The blind is opened or closed automatically.
  */
 /*!
-   \property QtIVIWindowControl::blindMode
+   \property QIviWindowControl::blindMode
 
-   Holds a QtIVIProperty of type \e QtIVIWindowControl::BlindMode where the QtIVIProperty::value() function returns the current blind mode.
+   Holds a QIviProperty of type \e QIviWindowControl::BlindMode where the QIviProperty::value() function returns the current blind mode.
 
    \sa AttributeSystem
    \sa blindMode() setBlindMode() blindModeAttribute()
@@ -494,10 +494,10 @@ QtIVIProperty *QtIVIWindowControl::heaterProperty() const
  *
  * \sa setBlindMode() blindModeChanged() blindModeAttribute()
  */
-QtIVIWindowControl::BlindMode QtIVIWindowControl::blindMode() const
+QIviWindowControl::BlindMode QIviWindowControl::blindMode() const
 
 {
-    Q_D(const QtIVIWindowControl);
+    Q_D(const QIviWindowControl);
     return d->m_blindMode;
 }
 /*!
@@ -505,20 +505,20 @@ QtIVIWindowControl::BlindMode QtIVIWindowControl::blindMode() const
  *
  * \sa setBlindMode() blindMode() blindModeChanged()
  */
-QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode> QtIVIWindowControl::blindModeAttribute() const
+QIviPropertyAttribute<QIviWindowControl::BlindMode> QIviWindowControl::blindModeAttribute() const
 {
-    Q_D(const QtIVIWindowControl);
+    Q_D(const QIviWindowControl);
     return d->m_blindModeAttribute;
 }
 
-QtIVIProperty *QtIVIWindowControl::blindModeProperty() const
+QIviProperty *QIviWindowControl::blindModeProperty() const
 {
-    Q_D(const QtIVIWindowControl);
+    Q_D(const QIviWindowControl);
     return d->m_blindModeProperty;
 }
 
 /*!
-   \qmlqtivipropertyEnum {QtIVIVehicleFunctions::WindowControl::blindState}
+   \qmlqtivipropertyEnum {QtIvi.VehicleFunctions::WindowControl::blindState}
 
    \e value holds the current blind state.
    Available values are:
@@ -530,9 +530,9 @@ QtIVIProperty *QtIVIWindowControl::blindModeProperty() const
           The object is closed.
  */
 /*!
-   \property QtIVIWindowControl::blindState
+   \property QIviWindowControl::blindState
 
-   Holds a QtIVIProperty of type \e QtIVIWindowControl::State where the QtIVIProperty::value() function returns the current blind state.
+   Holds a QIviProperty of type \e QIviWindowControl::State where the QIviProperty::value() function returns the current blind state.
 
    \sa AttributeSystem
    \sa blindState() blindStateAttribute()
@@ -542,10 +542,10 @@ QtIVIProperty *QtIVIWindowControl::blindModeProperty() const
  *
  * \sa blindStateChanged() blindStateAttribute()
  */
-QtIVIWindowControl::State QtIVIWindowControl::blindState() const
+QIviWindowControl::State QIviWindowControl::blindState() const
 
 {
-    Q_D(const QtIVIWindowControl);
+    Q_D(const QIviWindowControl);
     return d->m_blindState;
 }
 /*!
@@ -553,20 +553,20 @@ QtIVIWindowControl::State QtIVIWindowControl::blindState() const
  *
  * \sa blindState() blindStateChanged()
  */
-QtIVIPropertyAttribute<QtIVIWindowControl::State> QtIVIWindowControl::blindStateAttribute() const
+QIviPropertyAttribute<QIviWindowControl::State> QIviWindowControl::blindStateAttribute() const
 {
-    Q_D(const QtIVIWindowControl);
+    Q_D(const QIviWindowControl);
     return d->m_blindStateAttribute;
 }
 
-QtIVIProperty *QtIVIWindowControl::blindStateProperty() const
+QIviProperty *QIviWindowControl::blindStateProperty() const
 {
-    Q_D(const QtIVIWindowControl);
+    Q_D(const QIviWindowControl);
     return d->m_blindStateProperty;
 }
 
 /*!
-   \qmlqtivipropertyEnum {QtIVIVehicleFunctions::WindowControl::state}
+   \qmlqtivipropertyEnum {QtIvi.VehicleFunctions::WindowControl::state}
 
    \e value holds the current window state.
    Available values are:
@@ -580,9 +580,9 @@ QtIVIProperty *QtIVIWindowControl::blindStateProperty() const
    \sa open() close()
  */
 /*!
-   \property QtIVIWindowControl::state
+   \property QIviWindowControl::state
 
-   Holds a QtIVIProperty of type \e QtIVIWindowControl::State where the QtIVIProperty::value() function returns the current window state.
+   Holds a QIviProperty of type \e QIviWindowControl::State where the QIviProperty::value() function returns the current window state.
 
    \sa AttributeSystem
    \sa state() stateAttribute() open() close()
@@ -592,10 +592,10 @@ QtIVIProperty *QtIVIWindowControl::blindStateProperty() const
  *
  * \sa stateChanged() stateAttribute()
  */
-QtIVIWindowControl::State QtIVIWindowControl::state() const
+QIviWindowControl::State QIviWindowControl::state() const
 
 {
-    Q_D(const QtIVIWindowControl);
+    Q_D(const QIviWindowControl);
     return d->m_state;
 }
 /*!
@@ -603,15 +603,15 @@ QtIVIWindowControl::State QtIVIWindowControl::state() const
  *
  * \sa state() stateChanged()
  */
-QtIVIPropertyAttribute<QtIVIWindowControl::State> QtIVIWindowControl::stateAttribute() const
+QIviPropertyAttribute<QIviWindowControl::State> QIviWindowControl::stateAttribute() const
 {
-    Q_D(const QtIVIWindowControl);
+    Q_D(const QIviWindowControl);
     return d->m_stateAttribute;
 }
 
-QtIVIProperty *QtIVIWindowControl::stateProperty() const
+QIviProperty *QIviWindowControl::stateProperty() const
 {
-    Q_D(const QtIVIWindowControl);
+    Q_D(const QIviWindowControl);
     return d->m_stateProperty;
 }
 
@@ -620,10 +620,10 @@ QtIVIProperty *QtIVIWindowControl::stateProperty() const
  *
  * \sa heaterMode() heaterModeChanged() heaterModeAttribute()
  */
-void QtIVIWindowControl::setHeaterMode(QtIVIWindowControl::HeaterMode value)
+void QIviWindowControl::setHeaterMode(QIviWindowControl::HeaterMode value)
 {
-    Q_D(QtIVIWindowControl);
-    if (QtIVIWindowControlBackendInterface* backend = d->windowControlBackend())
+    Q_D(QIviWindowControl);
+    if (QIviWindowControlBackendInterface* backend = d->windowControlBackend())
         backend->setHeaterMode(value, zone());
 }
 
@@ -632,55 +632,55 @@ void QtIVIWindowControl::setHeaterMode(QtIVIWindowControl::HeaterMode value)
  *
  * \sa blindMode() blindModeChanged() blindModeAttribute()
  */
-void QtIVIWindowControl::setBlindMode(QtIVIWindowControl::BlindMode value)
+void QIviWindowControl::setBlindMode(QIviWindowControl::BlindMode value)
 {
-    Q_D(QtIVIWindowControl);
-    if (QtIVIWindowControlBackendInterface* backend = d->windowControlBackend())
+    Q_D(QIviWindowControl);
+    if (QIviWindowControlBackendInterface* backend = d->windowControlBackend())
         backend->setBlindMode(value, zone());
 }
 
 /*!
  * \qmlmethod WindowControl::open()
  *
- * Opens the window, if not already in the QtIVIWindowControl::FullyOpen state.
+ * Opens the window, if not already in the QIviWindowControl::FullyOpen state.
  *
  * \sa WindowControl::state
  */
 
 /*!
- * Opens the window, if not already in the QtIVIWindowControl::FullyOpen state.
+ * Opens the window, if not already in the QIviWindowControl::FullyOpen state.
  *
  * \sa state() close()
  */
-void QtIVIWindowControl::open()
+void QIviWindowControl::open()
 {
-    Q_D(QtIVIWindowControl);
-    if (QtIVIWindowControlBackendInterface* backend = d->windowControlBackend())
+    Q_D(QIviWindowControl);
+    if (QIviWindowControlBackendInterface* backend = d->windowControlBackend())
         backend->open(zone());
 }
 
 /*!
  * \qmlmethod WindowControl::close()
  *
- * Closes the window, if not already in the QtIVIWindowControl::Closed state.
+ * Closes the window, if not already in the QIviWindowControl::Closed state.
  *
  * \sa WindowControl::state
  */
 
 /*!
- * Closes the window, if not already in the QtIVIWindowControl::Closed state.
+ * Closes the window, if not already in the QIviWindowControl::Closed state.
  *
  * \sa state() open()
  */
-void QtIVIWindowControl::close()
+void QIviWindowControl::close()
 {
-    Q_D(QtIVIWindowControl);
-    if (QtIVIWindowControlBackendInterface* backend = d->windowControlBackend())
+    Q_D(QIviWindowControl);
+    if (QIviWindowControlBackendInterface* backend = d->windowControlBackend())
         backend->close(zone());
 }
 
 /*!
- * \fn void QtIVIWindowControl::heaterModeChanged(QtIVIWindowControl::HeaterMode value);
+ * \fn void QIviWindowControl::heaterModeChanged(QIviWindowControl::HeaterMode value);
  *
  * This signal is emitted whenever the heater mode changed. The new value is passed as \a value.
  *
@@ -688,7 +688,7 @@ void QtIVIWindowControl::close()
  */
 
 /*!
- * \fn void QtIVIWindowControl::heaterModeAttributeChanged(const QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode> &attribute);
+ * \fn void QIviWindowControl::heaterModeAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::HeaterMode> &attribute);
  *
  * This signal is emitted whenever the attribute for the heaterMode property changes. The new attribute is passed as \a attribute.
  *
@@ -696,7 +696,7 @@ void QtIVIWindowControl::close()
  */
 
 /*!
- * \fn void QtIVIWindowControl::heaterEnabledChanged(bool enabled);
+ * \fn void QIviWindowControl::heaterEnabledChanged(bool enabled);
  *
  * This signal is emitted whenever the heater is turned \e on or \e off. The new value is passed as \a enabled.
  *
@@ -704,7 +704,7 @@ void QtIVIWindowControl::close()
  */
 
 /*!
- * \fn void QtIVIWindowControl::heaterAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
+ * \fn void QIviWindowControl::heaterAttributeChanged(const QIviPropertyAttribute<bool> &attribute);
  *
  * This signal is emitted whenever the attribute for the heater property changes. The new attribute is passed as \a attribute.
  *
@@ -712,7 +712,7 @@ void QtIVIWindowControl::close()
  */
 
 /*!
- * \fn void QtIVIWindowControl::blindModeChanged(QtIVIWindowControl::BlindMode value);
+ * \fn void QIviWindowControl::blindModeChanged(QIviWindowControl::BlindMode value);
  *
  * This signal is emitted whenever the blind mode changed. The new value is passed as \a value.
  *
@@ -720,7 +720,7 @@ void QtIVIWindowControl::close()
  */
 
 /*!
- * \fn void QtIVIWindowControl::blindModeAttributeChanged(const QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode> &attribute);
+ * \fn void QIviWindowControl::blindModeAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::BlindMode> &attribute);
  *
  * This signal is emitted whenever the attribute for the blindMode property changes. The new attribute is passed as \a attribute.
  *
@@ -728,7 +728,7 @@ void QtIVIWindowControl::close()
  */
 
 /*!
- * \fn void QtIVIWindowControl::blindStateChanged(QtIVIWindowControl::State value);
+ * \fn void QIviWindowControl::blindStateChanged(QIviWindowControl::State value);
  *
  * This signal is emitted whenever the blind state changed. The new value is passed as \a value.
  *
@@ -736,7 +736,7 @@ void QtIVIWindowControl::close()
  */
 
 /*!
- * \fn void QtIVIWindowControl::blindStateAttributeChanged(const QtIVIPropertyAttribute<QtIVIWindowControl::State> &attribute);
+ * \fn void QIviWindowControl::blindStateAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::State> &attribute);
  *
  * This signal is emitted whenever the attribute for the blindState property changes. The new attribute is passed as \a attribute.
  *
@@ -744,7 +744,7 @@ void QtIVIWindowControl::close()
  */
 
 /*!
- * \fn void QtIVIWindowControl::stateChanged(QtIVIWindowControl::State value);
+ * \fn void QIviWindowControl::stateChanged(QIviWindowControl::State value);
  *
  * This signal is emitted whenever the state changed. The new value is passed as \a value.
  *
@@ -752,7 +752,7 @@ void QtIVIWindowControl::close()
  */
 
 /*!
- * \fn void QtIVIWindowControl::stateAttributeChanged(const QtIVIPropertyAttribute<QtIVIWindowControl::State> &attribute);
+ * \fn void QIviWindowControl::stateAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::State> &attribute);
  *
  * This signal is emitted whenever the attribute for the state property changes. The new attribute is passed as \a attribute.
  *

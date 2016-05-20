@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVIQMLCONVERSION_HELPER_H
-#define QTIVIQMLCONVERSION_HELPER_H
+#ifndef QIVIQMLCONVERSION_HELPER_H
+#define QIVIQMLCONVERSION_HELPER_H
 
 #include <QtCore/QVariant>
 #include <QtCore/QVector>
@@ -80,4 +80,4 @@ template <typename T> QVariantList qtivi_convertAvailableValues(const QVector<T>
 
 QT_END_NAMESPACE
 
-#endif // QTIVIQMLCONVERSION_HELPER_H
+#endif // QIVIQMLCONVERSION_HELPER_H

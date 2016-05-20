@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -45,11 +45,11 @@
 #include <QObject>
 #include <QVariant>
 
-#include <QtIVICore/qtiviglobal.h>
+#include <QtIviCore/qtiviglobal.h>
 
 QT_BEGIN_NAMESPACE
 
-class Q_QTIVICORE_EXPORT QtIVIAbstractQueryTerm
+class Q_QTIVICORE_EXPORT QIviAbstractQueryTerm
 {
 public:
     enum Type {
@@ -58,14 +58,14 @@ public:
         ScopeTerm
     };
 
-    virtual ~QtIVIAbstractQueryTerm();
+    virtual ~QIviAbstractQueryTerm();
 
     virtual QString toString() const = 0;
-    virtual QtIVIAbstractQueryTerm::Type type() const = 0;
+    virtual QIviAbstractQueryTerm::Type type() const = 0;
 };
 
-class QtIVIConjunctionTermPrivate;
-class Q_QTIVICORE_EXPORT QtIVIConjunctionTerm : public QtIVIAbstractQueryTerm
+class QIviConjunctionTermPrivate;
+class Q_QTIVICORE_EXPORT QIviConjunctionTerm : public QIviAbstractQueryTerm
 {
 public:
     enum Conjunction {
@@ -73,41 +73,41 @@ public:
         Or
     };
 
-    QtIVIConjunctionTerm();
-    virtual ~QtIVIConjunctionTerm();
+    QIviConjunctionTerm();
+    virtual ~QIviConjunctionTerm();
 
-    QtIVIAbstractQueryTerm::Type type() const;
+    QIviAbstractQueryTerm::Type type() const;
     QString toString() const;
     Conjunction conjunction() const;
-    QList<QtIVIAbstractQueryTerm*> terms() const;
+    QList<QIviAbstractQueryTerm*> terms() const;
 
 private:
-    QtIVIConjunctionTermPrivate * d_ptr;
-    Q_DECLARE_PRIVATE(QtIVIConjunctionTerm)
-    friend class QtIVIQueryParser;
+    QIviConjunctionTermPrivate * d_ptr;
+    Q_DECLARE_PRIVATE(QIviConjunctionTerm)
+    friend class QIviQueryParser;
 };
 
-class QtIVIScopeTermPrivate;
-class Q_QTIVICORE_EXPORT QtIVIScopeTerm : public QtIVIAbstractQueryTerm
+class QIviScopeTermPrivate;
+class Q_QTIVICORE_EXPORT QIviScopeTerm : public QIviAbstractQueryTerm
 {
 public:
 
-    explicit QtIVIScopeTerm();
-    virtual ~QtIVIScopeTerm();
+    explicit QIviScopeTerm();
+    virtual ~QIviScopeTerm();
 
-    QtIVIAbstractQueryTerm::Type type() const;
+    QIviAbstractQueryTerm::Type type() const;
     QString toString() const;
     bool isNegated() const;
-    QtIVIAbstractQueryTerm* term() const;
+    QIviAbstractQueryTerm* term() const;
 
 private:
-    QtIVIScopeTermPrivate * d_ptr;
-    Q_DECLARE_PRIVATE(QtIVIScopeTerm)
-    friend class QtIVIQueryParser;
+    QIviScopeTermPrivate * d_ptr;
+    Q_DECLARE_PRIVATE(QIviScopeTerm)
+    friend class QIviQueryParser;
 };
 
-class QtIVIFilterTermPrivate;
-class Q_QTIVICORE_EXPORT QtIVIFilterTerm : public QtIVIAbstractQueryTerm
+class QIviFilterTermPrivate;
+class Q_QTIVICORE_EXPORT QIviFilterTerm : public QIviAbstractQueryTerm
 {
 public:
     enum Operator {
@@ -120,10 +120,10 @@ public:
         LowerEquals
     };
 
-    explicit QtIVIFilterTerm();
-    virtual ~QtIVIFilterTerm();
+    explicit QIviFilterTerm();
+    virtual ~QIviFilterTerm();
 
-    QtIVIAbstractQueryTerm::Type type() const;
+    QIviAbstractQueryTerm::Type type() const;
     QString toString() const;
     Operator operatorType() const;
     QVariant value() const;
@@ -131,25 +131,25 @@ public:
     bool isNegated() const;
 
 private:
-    QtIVIFilterTermPrivate * d_ptr;
-    Q_DECLARE_PRIVATE(QtIVIFilterTerm)
-    friend class QtIVIQueryParser;
+    QIviFilterTermPrivate * d_ptr;
+    Q_DECLARE_PRIVATE(QIviFilterTerm)
+    friend class QIviQueryParser;
 };
 
-class QtIVIOrderTermPrivate;
-class Q_QTIVICORE_EXPORT QtIVIOrderTerm
+class QIviOrderTermPrivate;
+class Q_QTIVICORE_EXPORT QIviOrderTerm
 {
 public:
-    QtIVIOrderTerm();
-    virtual ~QtIVIOrderTerm();
+    QIviOrderTerm();
+    virtual ~QIviOrderTerm();
 
     bool isAscending() const;
     QString propertyName() const;
 
 private:
-    QtIVIOrderTermPrivate * d_ptr;
-    Q_DECLARE_PRIVATE(QtIVIOrderTerm)
-    friend class QtIVIQueryParser;
+    QIviOrderTermPrivate * d_ptr;
+    Q_DECLARE_PRIVATE(QIviOrderTerm)
+    friend class QIviQueryParser;
 };
 
 QT_END_NAMESPACE

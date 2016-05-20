@@ -10,7 +10,7 @@ enable-tests {
 
 QML_IMPORT_PATH = $$shadowed($$PWD)/qml
 
-lessThan(QT_MAJOR_VERSION, 5): error("QtIVI only supports Qt 5.")
+lessThan(QT_MAJOR_VERSION, 5): error("QtIvi only supports Qt 5.")
 load(configure)
 qtCompileTest(dlt)
 load(qt_parts)

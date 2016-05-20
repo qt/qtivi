@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -44,17 +44,17 @@
 #include <QUuid>
 
 /*!
- * \class QtIVIServiceObject
- * \inmodule QtIVICore
- * \brief QtIVIServiceObject is the connection point to a Backend Service.
+ * \class QIviServiceObject
+ * \inmodule QtIviCore
+ * \brief QIviServiceObject is the connection point to a Backend Service.
  *
- * QtIVIServiceObject provides you with a list of interfaces the Backend implements.
+ * QIviServiceObject provides you with a list of interfaces the Backend implements.
  *
  * By using interfaceInstance() a QObject implementing this interface will be returned.
  * The returned interface can contain signals that need to be connected to by the Feature
  * implementing this interface.
  *
- * \sa QtIVIAbstractFeature
+ * \sa QIviAbstractFeature
  */
 
 
@@ -63,7 +63,7 @@
  *
  * \a parent is passed on to \l QObject.
  */
-QtIVIServiceObject::QtIVIServiceObject(QObject *parent)
+QIviServiceObject::QIviServiceObject(QObject *parent)
     : QObject(parent)
 {
 
@@ -72,13 +72,13 @@ QtIVIServiceObject::QtIVIServiceObject(QObject *parent)
 /*!
  * Destructor.
  */
-QtIVIServiceObject::~QtIVIServiceObject()
+QIviServiceObject::~QIviServiceObject()
 {
 
 }
 
 /*!
- * \property QtIVIServiceObject::id
+ * \property QIviServiceObject::id
  * \brief A unique ID for the service object instance.
  *
  * Each service object has a unique ID. When subclassing, the id()
@@ -91,38 +91,38 @@ QtIVIServiceObject::~QtIVIServiceObject()
  *
  * By default, QUuid::createUuid() is used.
  */
-QString QtIVIServiceObject::id() const
+QString QIviServiceObject::id() const
 {
     static QUuid id = QUuid::createUuid();
     return id.toString();
 }
 
 /*!
- * \class QtIVIServiceInterface
- * \inmodule QtIVICore
+ * \class QIviServiceInterface
+ * \inmodule QtIviCore
  * \brief Interface class for services.
  *
- * The QtIVIServiceInterface class defines the interface of services registered with QtIVIServiceManager.
+ * The QIviServiceInterface class defines the interface of services registered with QIviServiceManager.
  *
- * Commonly, service objects inherit the concrete class QtIVIServiceObject instead of using QtIVIServiceInterface directly.
+ * Commonly, service objects inherit the concrete class QIviServiceObject instead of using QIviServiceInterface directly.
  *
- * \sa QtIVIServiceObject
+ * \sa QIviServiceObject
  */
 
 /*!
- * \fn QtIVIServiceInterface::~QtIVIServiceInterface()
+ * \fn QIviServiceInterface::~QIviServiceInterface()
  *
- * Destructs the QtIVIServiceInterface instance.
+ * Destructs the QIviServiceInterface instance.
  */
 
 /*!
- * \fn QStringList QtIVIServiceInterface::interfaces() const
+ * \fn QStringList QIviServiceInterface::interfaces() const
  *
  * Returns a list of service interface names supported by the service object instance.
  */
 
 /*!
- * \fn QObject* QtIVIServiceInterface::interfaceInstance(const QString& interface) const
+ * \fn QObject* QIviServiceInterface::interfaceInstance(const QString& interface) const
  *
  * Returns an object implementing the service interface requested through \a interface.
  */

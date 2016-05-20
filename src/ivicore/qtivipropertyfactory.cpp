@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -42,82 +42,82 @@
 #include "qtivipropertyfactory.h"
 
 /*!
- * \class QtIVIPropertyFactory
- * \inmodule QtIVICore
- * \brief The QtIVIPropertyFactory is used as a factory class for creating instances of QtIVIProperty
+ * \class QIviPropertyFactory
+ * \inmodule QtIviCore
+ * \brief The QIviPropertyFactory is used as a factory class for creating instances of QIviProperty
  *
- * QtIVIPropertyFactory will preserve the type information about the template type in QtIVIProperty and
+ * QIviPropertyFactory will preserve the type information about the template type in QIviProperty and
  * does a compile time check whether all provided functions and signals match this type and each other.
  *
  * The following code creates a property of type int:
  * \code
- * QtIVIPropertyFactory<int>::create(this,
- *                                   &QtIVIClimateControl::targetTemperatureAttribute,
- *                                   &QtIVIClimateControl::targetTemperatureAttributeChanged,
- *                                   &QtIVIClimateControl::targetTemperature,
- *                                   &QtIVIClimateControl::targetTemperatureChanged,
- *                                   &QtIVIClimateControl::setTargetTemperature)
+ * QIviPropertyFactory<int>::create(this,
+ *                                   &QIviClimateControl::targetTemperatureAttribute,
+ *                                   &QIviClimateControl::targetTemperatureAttributeChanged,
+ *                                   &QIviClimateControl::targetTemperature,
+ *                                   &QIviClimateControl::targetTemperatureChanged,
+ *                                   &QIviClimateControl::setTargetTemperature)
  * \endcode
  *
  * This Factory provides two functions, one for creating a read-write property and one for a read-only property.
  */
 
 /*!
- * \fn QtIVIPropertyFactory::create(const QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal, valueSlotFunc valueSlot)
+ * \fn QIviPropertyFactory::create(const QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal, valueSlotFunc valueSlot)
  *
- *  Returns an new QtIVIProperty instance for a attribute and value of type T.
+ *  Returns an new QIviProperty instance for a attribute and value of type T.
  *
  *  The \a sender argument needs to be a pointer to the QObject* instance which implements all functions and signals provided next.
  *  The arguments \a attributeGetter and \a attributeSignal need to be functions pointers to your attribute getter function and the attribute signal function.
- *  These arguments need to be of QtIVIPropertyAttribute<T>.
- *  \a valueGetter, \a valueSignal, and \a valueSlot need to be function pointers to the getter, signal, and setter for the value that should be stored in this QtIVIQmlProperty instance.
+ *  These arguments need to be of QIviPropertyAttribute<T>.
+ *  \a valueGetter, \a valueSignal, and \a valueSlot need to be function pointers to the getter, signal, and setter for the value that should be stored in this QIviQmlProperty instance.
  *  The value functions need to have arguments and return values of type T.
  *
- * \sa QtIVIPropertyFactory::create(const QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal)
+ * \sa QIviPropertyFactory::create(const QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal)
  */
 
 /*!
- * \fn QtIVIPropertyFactory::create(const QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal)
+ * \fn QIviPropertyFactory::create(const QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal)
  *
- *  Returns a new QtIVIProperty instance for an attribute and value of type T.
+ *  Returns a new QIviProperty instance for an attribute and value of type T.
  *
  *  The \a sender argument needs to be a pointer to the QObject* instance which implements all functions and signals provided next.
  *  The arguments \a attributeGetter and \a attributeSignal need to be functions pointers to your attribute getter function and the attribute signal function.
- *  These arguments need to be of QtIVIPropertyAttribute<T>.
- *  \a valueGetter, \a valueSignal need to be function pointers to the getter and signal for the value which should be stored in this QtIVIQmlProperty instance.
+ *  These arguments need to be of QIviPropertyAttribute<T>.
+ *  \a valueGetter, \a valueSignal need to be function pointers to the getter and signal for the value which should be stored in this QIviQmlProperty instance.
  *  The value functions need to have arguments and return values of type T.
  *
  *  \note This factory function will create a readonly property as no value setter needs to be provided
  *
- * \sa QtIVIPropertyFactory::create(const QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal, valueSlotFunc valueSlot)
+ * \sa QIviPropertyFactory::create(const QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal, valueSlotFunc valueSlot)
  */
 
 /*!
- * \fn bool QtIVIPropertyFactory::isAvailable() const
+ * \fn bool QIviPropertyFactory::isAvailable() const
  *
  * \reimp
  */
 
 /*!
- * \fn bool QtIVIPropertyFactory::minimumValue() const
+ * \fn bool QIviPropertyFactory::minimumValue() const
  *
  * \reimp
  */
 
 /*!
- * \fn bool QtIVIPropertyFactory::maximumValue() const
+ * \fn bool QIviPropertyFactory::maximumValue() const
  *
  * \reimp
  */
 
 /*!
- * \fn bool QtIVIPropertyFactory::availableValues() const
+ * \fn bool QIviPropertyFactory::availableValues() const
  *
  * \reimp
  */
 
 /*!
- * \fn bool QtIVIPropertyFactory::value() const
+ * \fn bool QIviPropertyFactory::value() const
  *
  * \reimp
  */

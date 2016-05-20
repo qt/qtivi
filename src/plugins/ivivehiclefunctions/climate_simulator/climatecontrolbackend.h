@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -43,9 +43,9 @@
 #define CLIMATECONTROLBACKEND_H
 
 #include <QObject>
-#include <QtIVIVehicleFunctions/QtIVIClimateControlBackendInterface>
+#include <QtIviVehicleFunctions/QIviClimateControlBackendInterface>
 
-class ClimateControlBackend : public QtIVIClimateControlBackendInterface
+class ClimateControlBackend : public QIviClimateControlBackendInterface
 {
 public:
     ClimateControlBackend(QObject* parent = 0);
@@ -61,19 +61,19 @@ public:
     void setSeatHeater(int val, const QString &zone);
     void setSteeringWheelHeater(int val, const QString &zone);
     void setFanSpeedLevel(int, const QString &zone);
-    void setAirflowDirections(QtIVIClimateControl::AirflowDirections direction, const QString &zone);
+    void setAirflowDirections(QIviClimateControl::AirflowDirections direction, const QString &zone);
     void setAirConditioningEnabled(bool val, const QString &zone);
     void setHeaterEnabled(bool val, const QString &zone);
     void setZoneSynchronizationEnabled(bool zoneSynchronization, const QString &zone);
     void setDefrostEnabled(bool defrost, const QString &zone);
-    void setRecirculationMode(QtIVIClimateControl::RecirculationMode recirculationMode, const QString &zone);
+    void setRecirculationMode(QIviClimateControl::RecirculationMode recirculationMode, const QString &zone);
     void setRecirculationSensitivityLevel(int recirculationSensitivityLevel, const QString &zone);
-    void setClimateMode(QtIVIClimateControl::ClimateMode climateMode, const QString &zone);
+    void setClimateMode(QIviClimateControl::ClimateMode climateMode, const QString &zone);
     void setAutomaticClimateFanIntensityLevel(int automaticClimateFanIntensityLevel, const QString &zone);
 
 private:
 
-    QtIVIClimateControl::AirflowDirections m_flowDirection;
+    QIviClimateControl::AirflowDirections m_flowDirection;
     bool m_airCondition;
     bool m_heater;
     bool m_airRecirculation;
@@ -81,18 +81,18 @@ private:
     bool m_defrost;
     int m_steeringWheelHeater;
     int m_fanSpeed;
-    QtIVIClimateControl::RecirculationMode m_recirculationMode;
+    QIviClimateControl::RecirculationMode m_recirculationMode;
     int m_recirculationSensitivityLevel;
-    QtIVIClimateControl::ClimateMode m_climateMode;
+    QIviClimateControl::ClimateMode m_climateMode;
     int m_automaticClimateFanIntensityLevel;
 
     struct ZoneBackend {
         int targetTemperature;
-        QtIVIPropertyAttribute<int> targetTemperatureAttribute;
+        QIviPropertyAttribute<int> targetTemperatureAttribute;
         int seatCooler;
-        QtIVIPropertyAttribute<int> seatCoolerAttribute;
+        QIviPropertyAttribute<int> seatCoolerAttribute;
         int seatHeater;
-        QtIVIPropertyAttribute<int> seatHeaterAttribute;
+        QIviPropertyAttribute<int> seatHeaterAttribute;
     };
 
     QMap<QString,ZoneBackend> m_zoneMap;

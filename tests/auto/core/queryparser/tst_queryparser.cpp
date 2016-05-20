@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:GPL-EXCEPT-QTAS$
 ** Commercial License Usage
@@ -29,7 +29,7 @@
 #include <QtTest/QtTest>
 #include <QtCore/QString>
 
-#include "QtIVICore/private/qtiviqueryparser_p.h"
+#include "QtIviCore/private/qtiviqueryparser_p.h"
 
 // sadly this has to be a define for QVERIFY2() to work
 #define CHECK_ERRORSTRING(_actual_errstr, _expected_errstr) do { \
@@ -140,10 +140,10 @@ void TestQueryParser::validQueries()
     if (representationQuery.isEmpty())
         representationQuery = query;
 
-    QtIVIQueryParser parser;
+    QIviQueryParser parser;
     parser.setQuery(query);
 
-    QtIVIAbstractQueryTerm* term = parser.parse();
+    QIviAbstractQueryTerm* term = parser.parse();
     QVERIFY2(term, qPrintable(parser.lastError()));
 
 //    if ()
@@ -178,7 +178,7 @@ void TestQueryParser::invalidQueries()
 {
     QFETCH(QString, query);
 
-    QtIVIQueryParser parser;
+    QIviQueryParser parser;
     parser.setQuery(query);
 
     QVERIFY(!parser.parse());
@@ -201,13 +201,13 @@ void TestQueryParser::identifierList()
     QFETCH(QString, query);
     QFETCH(QString, identifier);
 
-    QtIVIQueryParser parser;
+    QIviQueryParser parser;
     parser.setQuery(query);
 
     QSet<QString> set;
     set.insert(identifier);
     parser.setAllowedIdentifiers(set);
-    QtIVIAbstractQueryTerm* term = parser.parse();
+    QIviAbstractQueryTerm* term = parser.parse();
     QVERIFY2(term, qPrintable(parser.lastError()));
     delete term;
 }
@@ -228,7 +228,7 @@ void TestQueryParser::invalidIdentifierList()
     QFETCH(QString, query);
     QFETCH(QString, identifier);
 
-    QtIVIQueryParser parser;
+    QIviQueryParser parser;
     parser.setQuery(query);
 
     QSet<QString> set;

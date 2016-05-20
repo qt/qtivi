@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -42,23 +42,23 @@
 #include <QtQml/qqmlextensionplugin.h>
 #include <qqml.h>
 
-#include <QtIVIVehicleFunctions/QtIVIClimateControl>
-#include <QtIVIVehicleFunctions/QtIVIWindowControl>
+#include <QtIviVehicleFunctions/QIviClimateControl>
+#include <QtIviVehicleFunctions/QIviWindowControl>
 
 QT_BEGIN_NAMESPACE
 
-class QtIVIVehicleFunctionsPlugin : public QQmlExtensionPlugin
+class QIviVehicleFunctionsPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
 public:
     virtual void registerTypes(const char *uri)
     {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIVIVehicleFunctions"));
+        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi.VehicleFunctions"));
         Q_UNUSED(uri);
 
-        qmlRegisterType<QtIVIClimateControl>(uri, 1, 0, "ClimateControl");
-        qmlRegisterType<QtIVIWindowControl>(uri, 1, 0, "WindowControl");
+        qmlRegisterType<QIviClimateControl>(uri, 1, 0, "ClimateControl");
+        qmlRegisterType<QIviWindowControl>(uri, 1, 0, "WindowControl");
     }
 };
 

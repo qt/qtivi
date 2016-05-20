@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVIQUERYTERM_P_H
-#define QTIVIQUERYTERM_P_H
+#ifndef QIVIQUERYTERM_P_H
+#define QIVIQUERYTERM_P_H
 
 //
 //  W A R N I N G
@@ -57,41 +57,41 @@
 
 QT_BEGIN_NAMESPACE
 
-class Q_QTIVICORE_EXPORT QtIVIConjunctionTermPrivate
+class Q_QTIVICORE_EXPORT QIviConjunctionTermPrivate
 {
 public:
-    QtIVIConjunctionTermPrivate();
+    QIviConjunctionTermPrivate();
 
-    QList<QtIVIAbstractQueryTerm*> m_terms;
-    QtIVIConjunctionTerm::Conjunction m_conjunction;
+    QList<QIviAbstractQueryTerm*> m_terms;
+    QIviConjunctionTerm::Conjunction m_conjunction;
 };
 
-class Q_QTIVICORE_EXPORT QtIVIScopeTermPrivate
+class Q_QTIVICORE_EXPORT QIviScopeTermPrivate
 {
 public:
-    QtIVIScopeTermPrivate();
+    QIviScopeTermPrivate();
 
-    QtIVIAbstractQueryTerm* m_term;
+    QIviAbstractQueryTerm* m_term;
     bool m_negated;
 };
 
-class Q_QTIVICORE_EXPORT QtIVIFilterTermPrivate
+class Q_QTIVICORE_EXPORT QIviFilterTermPrivate
 {
 public:
-    QtIVIFilterTermPrivate();
+    QIviFilterTermPrivate();
 
     QString operatorToString() const;
 
     QString m_property;
-    QtIVIFilterTerm::Operator m_operator;
+    QIviFilterTerm::Operator m_operator;
     QVariant m_value;
     bool m_negated;
 };
 
-class Q_QTIVICORE_EXPORT QtIVIOrderTermPrivate
+class Q_QTIVICORE_EXPORT QIviOrderTermPrivate
 {
 public:
-    QtIVIOrderTermPrivate();
+    QIviOrderTermPrivate();
 
     bool m_ascending;
     QString m_propertyName;
@@ -99,4 +99,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QTIVIQUERYTERM_P_H
+#endif // QIVIQUERYTERM_P_H

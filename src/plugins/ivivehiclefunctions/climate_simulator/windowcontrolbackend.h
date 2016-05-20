@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -44,7 +44,7 @@
 
 #include <QObject>
 #include <QTimer>
-#include <QtIVIVehicleFunctions/QtIVIWindowControlBackendInterface>
+#include <QtIviVehicleFunctions/QIviWindowControlBackendInterface>
 
 class WindowControlBackend;
 class WindowTimer : public QObject
@@ -71,7 +71,7 @@ private:
     WindowControlBackend* m_backend;
 };
 
-class WindowControlBackend : public QtIVIWindowControlBackendInterface
+class WindowControlBackend : public QIviWindowControlBackendInterface
 {
 public:
     WindowControlBackend(QObject* parent = 0);
@@ -80,25 +80,25 @@ public:
     QStringList availableZones() const;
     void initializeAttributes();
 
-    void setHeaterMode(QtIVIWindowControl::HeaterMode value, const QString &zone);
-    void setBlindMode(QtIVIWindowControl::BlindMode value, const QString &zone);
+    void setHeaterMode(QIviWindowControl::HeaterMode value, const QString &zone);
+    void setBlindMode(QIviWindowControl::BlindMode value, const QString &zone);
     void open(const QString &zone);
     void close(const QString &zone);
 
 private:
 
     struct ZoneBackend {
-        QtIVIWindowControl::HeaterMode heaterMode;
-        QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode> heaterModeAttribute;
+        QIviWindowControl::HeaterMode heaterMode;
+        QIviPropertyAttribute<QIviWindowControl::HeaterMode> heaterModeAttribute;
         bool heaterEnabled;
-        QtIVIPropertyAttribute<bool> heaterAttribute;
-        QtIVIWindowControl::BlindMode blindMode;
-        QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode> blindModeAttribute;
-        QtIVIWindowControl::State blindState;
-        QtIVIPropertyAttribute<QtIVIWindowControl::State> blindStateAttribute;
+        QIviPropertyAttribute<bool> heaterAttribute;
+        QIviWindowControl::BlindMode blindMode;
+        QIviPropertyAttribute<QIviWindowControl::BlindMode> blindModeAttribute;
+        QIviWindowControl::State blindState;
+        QIviPropertyAttribute<QIviWindowControl::State> blindStateAttribute;
         WindowTimer *blindTimer;
-        QtIVIWindowControl::State state;
-        QtIVIPropertyAttribute<QtIVIWindowControl::State> stateAttribute;
+        QIviWindowControl::State state;
+        QIviPropertyAttribute<QIviWindowControl::State> stateAttribute;
         WindowTimer *stateTimer;
     };
 

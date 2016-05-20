@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:BSD-QTAS$
 ** Commercial License Usage
@@ -62,7 +62,7 @@
 
      In the example, ClimateControl is created and autoDiscovery enabled.
      When autoDiscovery is enabled, the module starts searching for the presence
-     of a plugin that implements QtIVIClimateControlBackendInterface.
+     of a plugin that implements QIviClimateControlBackendInterface.
      \snippet climate_qml/main.qml 1
 
      If discovery fails, a message dialog is shown:

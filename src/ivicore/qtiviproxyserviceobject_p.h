@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVIPROXYSERVICEOBJECT_H
-#define QTIVIPROXYSERVICEOBJECT_H
+#ifndef QIVIPROXYSERVICEOBJECT_H
+#define QIVIPROXYSERVICEOBJECT_H
 
 //
 //  W A R N I N G
@@ -53,24 +53,24 @@
 // We mean it.
 //
 
-#include <QtIVICore/QtIVIServiceObject>
+#include <QtIviCore/QIviServiceObject>
 
 QT_BEGIN_NAMESPACE
 
-class QtIVIProxyServiceObject : public QtIVIServiceObject
+class QIviProxyServiceObject : public QIviServiceObject
 {
 public:
-    QtIVIProxyServiceObject(QtIVIServiceInterface* interface);
-    virtual ~QtIVIProxyServiceObject();
+    QIviProxyServiceObject(QIviServiceInterface* interface);
+    virtual ~QIviProxyServiceObject();
 
     virtual QStringList interfaces() const;
     virtual QObject* interfaceInstance(const QString& interface) const;
 
 private:
 
-    QtIVIServiceInterface* m_interface;
+    QIviServiceInterface* m_interface;
 };
 
 QT_END_NAMESPACE
 
-#endif // QTIVIPROXYSERVICEOBJECT_H
+#endif // QIVIPROXYSERVICEOBJECT_H

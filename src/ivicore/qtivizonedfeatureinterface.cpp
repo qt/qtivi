@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -42,11 +42,11 @@
 #include "qtivizonedfeatureinterface.h"
 
 /*!
-   \class QtIVIZonedFeatureInterface
-   \inmodule QtIVICore
+   \class QIviZonedFeatureInterface
+   \inmodule QtIviCore
    \ingroup backends
 
-   \brief QtIVIZonedFeatureInterface defines the base interface for the
+   \brief QIviZonedFeatureInterface defines the base interface for the
    feature backend classes.
 
    Vehicle feature can be zoned or be just generic depending of the vehicle.
@@ -68,7 +68,7 @@
    and "Rear".
 
    The backend must return all available zones via
-   \l {QtIVIZonedFeatureInterface::}{availableZones}:
+   \l {QIviZonedFeatureInterface::}{availableZones}:
    \code
    QStringList backend::availableZones() const {
         QStringList zones;
@@ -85,7 +85,7 @@
    zone as a parameter. Zone is not needed if attribute is generic.
 
    Initialization signals are emitted in the
-   \l {QtIVIZonedFeatureInterface::}{initializeAttributes}:
+   \l {QIviZonedFeatureInterface::}{initializeAttributes}:
    \code
    void backend::initializeAttributes() {
         emit fanSpeedLevelChanged(2, "Front");
@@ -102,7 +102,7 @@
    \code
    void backend::setFanSpeedLevel(int value, const QString &zone) {
         if (!m_fanSpeedZones.contains(zone)) {
-            emit errorChanged(QtIVIAbstractFeature::InvalidZone);
+            emit errorChanged(QIviAbstractFeature::InvalidZone);
         } else {
             // Set specified zone fan to value
             ...
@@ -112,7 +112,7 @@
 
    int backend::fanSpeedLevel(const QString &zone) {
         if (!m_fanSpeedZones.contains(zone)) {
-            emit errorChanged(QtIVIAbstractFeature::InvalidZone);
+            emit errorChanged(QIviAbstractFeature::InvalidZone);
             return -1;
         } else {
             int value = ... // Get vehicle's zone fan Speed
@@ -128,7 +128,7 @@
    \code
    void backend::setSteeringWheelHeater(int value, const QString &zone) {
         if (!zone.isEmpty()) {  // zone must be empty for a generic attribute
-            emit errorChanged(QtIVIAbstractFeature::InvalidZone);
+            emit errorChanged(QIviAbstractFeature::InvalidZone);
             return;
         } else {
             // Set vehicle's steering wheel heater value
@@ -139,7 +139,7 @@
 
    int backend::steeringWheelHeater(const QString &zone) {
         if (!zone.isEmpty()) {  // zone must be empty for a generic attribute
-            emit errorChanged(QtIVIAbstractFeature::InvalidZone);
+            emit errorChanged(QIviAbstractFeature::InvalidZone);
             return -1;
         } else {
             int value = ... // Get vehicle's steering wheel heater value
@@ -148,26 +148,26 @@
    }
    \endcode
 
-   To implement a backend plugin you need also to implement QtIVIServiceInterface from the QtIVICore module.
+   To implement a backend plugin you need also to implement QIviServiceInterface from the QtIviCore module.
 
    See the full example backend implementation from \c {src/plugins/ivivehiclefunctions/climate_simulator}.
-   \sa QtIVIAbstractZonedFeature, QtIVIServiceInterface
+   \sa QIviAbstractZonedFeature, QIviServiceInterface
  */
 
 /*!
- * \fn QtIVIZonedFeatureInterface::QtIVIZonedFeatureInterface(QObject *parent=0)
+ * \fn QIviZonedFeatureInterface::QIviZonedFeatureInterface(QObject *parent=0)
  *
  * Constructs a backend base interface.
  *
  * The \a parent is sent to the QObject constructor.
  */
-QtIVIZonedFeatureInterface::QtIVIZonedFeatureInterface(QObject *parent)
+QIviZonedFeatureInterface::QIviZonedFeatureInterface(QObject *parent)
     : QObject(parent)
 {
 }
 
 /*!
- * \fn QStringList QtIVIZonedFeatureInterface::availableZones() const
+ * \fn QStringList QIviZonedFeatureInterface::availableZones() const
  *
  * Returns a list of supported zone names. This is called from the client
  * after having connected.
@@ -178,7 +178,7 @@ QtIVIZonedFeatureInterface::QtIVIZonedFeatureInterface(QObject *parent)
  */
 
 /*!
- * \fn void QtIVIZonedFeatureInterface::initializeAttributes()
+ * \fn void QIviZonedFeatureInterface::initializeAttributes()
  *
  * Called from the client to initialize attributes. This is called after
  * client is connected and available zones are fetched.
@@ -190,7 +190,7 @@ QtIVIZonedFeatureInterface::QtIVIZonedFeatureInterface(QObject *parent)
  */
 
 /*!
- * \fn void errorChanged(QtIVIAbstractFeature::Error error, const QString &message = QString())
+ * \fn void errorChanged(QIviAbstractFeature::Error error, const QString &message = QString())
  *
  * The signal is emitted when \a error occurs in the backend.
  * Error \a message is optional.

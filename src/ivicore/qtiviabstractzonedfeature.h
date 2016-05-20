@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,20 +39,20 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVIABSTRACTZONEDFEATURE_H
-#define QTIVIABSTRACTZONEDFEATURE_H
+#ifndef QIVIABSTRACTZONEDFEATURE_H
+#define QIVIABSTRACTZONEDFEATURE_H
 
 #include <QtCore/QVariant>
 #include <QtCore/QMap>
-#include <QtIVICore/QtIVIAbstractFeature>
-#include <QtIVICore/qtiviglobal.h>
+#include <QtIviCore/QIviAbstractFeature>
+#include <QtIviCore/qtiviglobal.h>
 
 QT_BEGIN_NAMESPACE
 
-class QtIVIZonedFeatureInterface;
-class QtIVIAbstractZonedFeaturePrivate;
+class QIviZonedFeatureInterface;
+class QIviAbstractZonedFeaturePrivate;
 
-class Q_QTIVICORE_EXPORT QtIVIAbstractZonedFeature : public QtIVIAbstractFeature
+class Q_QTIVICORE_EXPORT QIviAbstractZonedFeature : public QIviAbstractFeature
 {
     Q_OBJECT
 
@@ -63,15 +63,15 @@ class Q_QTIVICORE_EXPORT QtIVIAbstractZonedFeature : public QtIVIAbstractFeature
 
 public:
 
-    explicit QtIVIAbstractZonedFeature(const QString &interface, const QString &zone = QString(), QObject *parent = 0);
-    virtual ~QtIVIAbstractZonedFeature();
+    explicit QIviAbstractZonedFeature(const QString &interface, const QString &zone = QString(), QObject *parent = Q_NULLPTR);
+    virtual ~QIviAbstractZonedFeature();
 
     QString zone() const;
 
     QStringList availableZones() const;
 
-    QtIVIAbstractZonedFeature *zoneAt(const QString &zone) const;
-    QList<QtIVIAbstractZonedFeature*> zones() const;
+    QIviAbstractZonedFeature *zoneAt(const QString &zone) const;
+    QList<QIviAbstractZonedFeature*> zones() const;
 
 Q_SIGNALS:
     void availableZonesChanged(QStringList zones);
@@ -79,13 +79,13 @@ Q_SIGNALS:
     void zonesChanged();
 
 protected:
-    QtIVIAbstractZonedFeature(QtIVIAbstractZonedFeaturePrivate &dd, QObject *parent = Q_NULLPTR);
+    QIviAbstractZonedFeature(QIviAbstractZonedFeaturePrivate &dd, QObject *parent = Q_NULLPTR);
 
-    virtual QtIVIAbstractZonedFeature *createZoneFeature(const QString &zone) = 0;
-    QtIVIZonedFeatureInterface *backend(const QString &interface = QString()) const;
+    virtual QIviAbstractZonedFeature *createZoneFeature(const QString &zone) = 0;
+    QIviZonedFeatureInterface *backend(const QString &interface = QString()) const;
 
-    virtual bool acceptServiceObject(QtIVIServiceObject *serviceObject) Q_DECL_OVERRIDE;
-    virtual void connectToServiceObject(QtIVIServiceObject *serviceObject) Q_DECL_OVERRIDE;
+    virtual bool acceptServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
+    virtual void connectToServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
     virtual void clearServiceObject() Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
@@ -102,9 +102,9 @@ private:
     void resetAttributes();
 
 private:
-    Q_DECLARE_PRIVATE(QtIVIAbstractZonedFeature)
+    Q_DECLARE_PRIVATE(QIviAbstractZonedFeature)
 };
 
 QT_END_NAMESPACE
 
-#endif // QTIVIABSTRACTZONEDFEATURE_H
+#endif // QIVIABSTRACTZONEDFEATURE_H

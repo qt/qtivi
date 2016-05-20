@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -53,32 +53,32 @@
 #include <QDebug>
 #include <QLibrary>
 
-#define QTIVI_PLUGIN_DIRECTORY "qtivi"
+#define QIVI_PLUGIN_DIRECTORY "qtivi"
 
-QtIVIServiceManagerPrivate::QtIVIServiceManagerPrivate(QtIVIServiceManager *parent) : QObject(parent), q_ptr(parent)
+QIviServiceManagerPrivate::QIviServiceManagerPrivate(QIviServiceManager *parent) : QObject(parent), q_ptr(parent)
 {
 }
 
-QtIVIServiceManagerPrivate *QtIVIServiceManagerPrivate::get(QtIVIServiceManager *serviceManager)
+QIviServiceManagerPrivate *QIviServiceManagerPrivate::get(QIviServiceManager *serviceManager)
 {
     Q_ASSERT(serviceManager);
     return serviceManager->d_ptr;
 }
 
-QList<QtIVIServiceObject *> QtIVIServiceManagerPrivate::findServiceByInterface(const QString &interface, QtIVIServiceManager::SearchFlags searchFlags)
+QList<QIviServiceObject *> QIviServiceManagerPrivate::findServiceByInterface(const QString &interface, QIviServiceManager::SearchFlags searchFlags)
 {
-    QList<QtIVIServiceObject*> list;
+    QList<QIviServiceObject*> list;
 
     foreach (Backend *backend, m_backends) {
 
         if (backend->metaData[QLatin1String("interfaces")].toStringList().contains(interface)) {
             bool isSimulation = backend->metaData[QLatin1String("fileName")].toString().contains(QLatin1String("_simulation."));
-            if ((searchFlags & QtIVIServiceManager::IncludeSimulationBackends && isSimulation) ||
-                (searchFlags & QtIVIServiceManager::IncludeProductionBackends && !isSimulation)) {
+            if ((searchFlags & QIviServiceManager::IncludeSimulationBackends && isSimulation) ||
+                (searchFlags & QIviServiceManager::IncludeProductionBackends && !isSimulation)) {
                 if (!backend->proxyServiceObject) {
-                    QtIVIServiceInterface *backendInterface = loadServiceBackendInterface(backend);
+                    QIviServiceInterface *backendInterface = loadServiceBackendInterface(backend);
                     if (backendInterface)
-                        backend->proxyServiceObject = new QtIVIProxyServiceObject(backendInterface);
+                        backend->proxyServiceObject = new QIviProxyServiceObject(backendInterface);
                 }
                 if (backend->proxyServiceObject)
                     list.append(backend->proxyServiceObject);
@@ -89,13 +89,13 @@ QList<QtIVIServiceObject *> QtIVIServiceManagerPrivate::findServiceByInterface(c
     return list;
 }
 
-void QtIVIServiceManagerPrivate::searchPlugins()
+void QIviServiceManagerPrivate::searchPlugins()
 {
     bool found = false;
     foreach (const QString &pluginDir, QCoreApplication::libraryPaths()) {
 
         QDir dir(pluginDir);
-        QString path = pluginDir + QDir::separator() + QLatin1Literal(QTIVI_PLUGIN_DIRECTORY);
+        QString path = pluginDir + QDir::separator() + QLatin1Literal(QIVI_PLUGIN_DIRECTORY);
         //Check whether the directory exists
         if (!QDir(path).exists(QStringLiteral(".")))
             continue;
@@ -116,7 +116,7 @@ void QtIVIServiceManagerPrivate::searchPlugins()
     }
 }
 
-void QtIVIServiceManagerPrivate::registerBackend(const QString &fileName, const QJsonObject &metaData)
+void QIviServiceManagerPrivate::registerBackend(const QString &fileName, const QJsonObject &metaData)
 {
     QVariantMap backendMetaData = metaData.value(QLatin1String("MetaData")).toVariant().toMap();
 
@@ -138,14 +138,14 @@ void QtIVIServiceManagerPrivate::registerBackend(const QString &fileName, const 
     addBackend(backend);
 }
 
-bool QtIVIServiceManagerPrivate::registerBackend(QObject *serviceBackendInterface, const QStringList &interfaces, QtIVIServiceManager::BackendType backendType)
+bool QIviServiceManagerPrivate::registerBackend(QObject *serviceBackendInterface, const QStringList &interfaces, QIviServiceManager::BackendType backendType)
 {
     if (interfaces.isEmpty()) {
         return false;
     }
 
     // Verify that the object implements the ServiceBackendInterface
-    QtIVIServiceInterface *interface = qobject_cast<QtIVIServiceInterface*>(serviceBackendInterface);
+    QIviServiceInterface *interface = qobject_cast<QIviServiceInterface*>(serviceBackendInterface);
     if (!interface) {
         return false;
     }
@@ -153,7 +153,7 @@ bool QtIVIServiceManagerPrivate::registerBackend(QObject *serviceBackendInterfac
     QVariantMap metaData = QVariantMap();
 
     metaData.insert(QLatin1String("interfaces"), interfaces);
-    if (backendType == QtIVIServiceManager::SimulationBackend) //fake a simulation filename
+    if (backendType == QIviServiceManager::SimulationBackend) //fake a simulation filename
         metaData.insert(QLatin1String("fileName"), QLatin1String("_simulation."));
 
     Backend *backend = new Backend;
@@ -167,9 +167,9 @@ bool QtIVIServiceManagerPrivate::registerBackend(QObject *serviceBackendInterfac
     return true;
 }
 
-void QtIVIServiceManagerPrivate::unloadAllBackends()
+void QIviServiceManagerPrivate::unloadAllBackends()
 {
-    Q_Q(QtIVIServiceManager);
+    Q_Q(QIviServiceManager);
 
     q->beginResetModel();
     QMutableListIterator<Backend*> i(m_backends);
@@ -195,9 +195,9 @@ void QtIVIServiceManagerPrivate::unloadAllBackends()
     m_interfaceNames.clear();
 }
 
-void QtIVIServiceManagerPrivate::addBackend(Backend *backend)
+void QIviServiceManagerPrivate::addBackend(Backend *backend)
 {
-    Q_Q(QtIVIServiceManager);
+    Q_Q(QIviServiceManager);
 
     q->beginInsertRows(QModelIndex(), m_backends.count(), m_backends.count());
     m_backends.append(backend);
@@ -208,7 +208,7 @@ void QtIVIServiceManagerPrivate::addBackend(Backend *backend)
     }
 }
 
-QtIVIServiceInterface *QtIVIServiceManagerPrivate::loadServiceBackendInterface(struct Backend *backend)
+QIviServiceInterface *QIviServiceManagerPrivate::loadServiceBackendInterface(struct Backend *backend)
 {
     if (backend->interface) {
         return backend->interface;
@@ -218,7 +218,7 @@ QtIVIServiceInterface *QtIVIServiceManagerPrivate::loadServiceBackendInterface(s
     QObject *plugin = loader->instance();
     if (plugin) {
 
-        QtIVIServiceInterface *backendInterface = qobject_cast<QtIVIServiceInterface*>(plugin);
+        QIviServiceInterface *backendInterface = qobject_cast<QIviServiceInterface*>(plugin);
         if (backendInterface) {
             backend->interface = backendInterface;
             backend->loader = loader;
@@ -238,14 +238,14 @@ QtIVIServiceInterface *QtIVIServiceManagerPrivate::loadServiceBackendInterface(s
 }
 
 /*!
- * \class QtIVIServiceManager
- * \inmodule QtIVICore
- * \brief QtIVIServiceManager provides the Backends to QtIVIAbstractFeature
+ * \class QIviServiceManager
+ * \inmodule QtIviCore
+ * \brief QIviServiceManager provides the Backends to QIviAbstractFeature
  *
- * QtIVIServiceManager is the heart of QtIVI and provides you with an easy way to detect which
+ * QIviServiceManager is the heart of QtIvi and provides you with an easy way to detect which
  * backends and interfaces are available.
  *
- * By default QtIVIServiceManager reads the metaData of all plugins within the "qtivi" folder
+ * By default QIviServiceManager reads the metaData of all plugins within the "qtivi" folder
  * of your plugin path. The plugin itself will be loaded once it's explictly requested by
  * the developer by using findServiceByInterface().
  *
@@ -256,7 +256,7 @@ QtIVIServiceInterface *QtIVIServiceManagerPrivate::loadServiceBackendInterface(s
  */
 
 /*!
- * \enum QtIVIServiceManager::SearchFlag
+ * \enum QIviServiceManager::SearchFlag
  *
  * \value IncludeProductionBackends
  *        Include production backends in the search result. \sa ProductionBackend
@@ -267,7 +267,7 @@ QtIVIServiceInterface *QtIVIServiceManagerPrivate::loadServiceBackendInterface(s
  */
 
 /*!
- * \enum QtIVIServiceManager::BackendType
+ * \enum QIviServiceManager::BackendType
  *
  * \value ProductionBackend
  *        A backend controlling a real automotive interface (e.g. a climate control connected over the CAN bus)
@@ -275,9 +275,9 @@ QtIVIServiceInterface *QtIVIServiceManagerPrivate::loadServiceBackendInterface(s
  *        A backend used for development as it's only returning simulation values and won't be deployed to the final hardware
  */
 
-QtIVIServiceManager::QtIVIServiceManager()
+QIviServiceManager::QIviServiceManager()
     : QAbstractListModel(0)
-    , d_ptr(new QtIVIServiceManagerPrivate(this))
+    , d_ptr(new QIviServiceManagerPrivate(this))
 {
     d_ptr->searchPlugins();
 }
@@ -285,16 +285,16 @@ QtIVIServiceManager::QtIVIServiceManager()
 /*!
  * Returns the global service manager instance.
  */
-QtIVIServiceManager *QtIVIServiceManager::instance()
+QIviServiceManager *QIviServiceManager::instance()
 {
-    static QtIVIServiceManager* instance = new QtIVIServiceManager();
+    static QIviServiceManager* instance = new QIviServiceManager();
     return instance;
 }
 
 /*!
  * Destructor.
  */
-QtIVIServiceManager::~QtIVIServiceManager()
+QIviServiceManager::~QIviServiceManager()
 {
 
 }
@@ -304,26 +304,26 @@ QtIVIServiceManager::~QtIVIServiceManager()
  *
  * The \a searchFlags argument can be used to control which type of backends are included in the search result.
  */
-QList<QtIVIServiceObject *> QtIVIServiceManager::findServiceByInterface(const QString &interface, SearchFlags searchFlags)
+QList<QIviServiceObject *> QIviServiceManager::findServiceByInterface(const QString &interface, SearchFlags searchFlags)
 {
-    Q_D(QtIVIServiceManager);
+    Q_D(QIviServiceManager);
     return d->findServiceByInterface(interface, searchFlags);
 }
 
 /*!
  * Register a backend. The provided \a serviceBackendInterface must implement the
- * QtIVIServiceInterface else the registration will fail. \a interfaces is a list
+ * QIviServiceInterface else the registration will fail. \a interfaces is a list
  * with interfaces (at least one) supported by the backend. The \a backendType
  * indicates the type of the backend and has influence on whether the backend is
  * found by the auto discovery of the Feature.
  *
  * Returns true if the backend was successfully registered else false.
  *
- * \sa QtIVIServiceInterface
+ * \sa QIviServiceInterface
  */
-bool QtIVIServiceManager::registerService(QObject *serviceBackendInterface, const QStringList &interfaces, BackendType backendType)
+bool QIviServiceManager::registerService(QObject *serviceBackendInterface, const QStringList &interfaces, BackendType backendType)
 {
-    Q_D(QtIVIServiceManager);
+    Q_D(QIviServiceManager);
     return d->registerBackend(serviceBackendInterface, interfaces, backendType);
 }
 
@@ -332,18 +332,18 @@ bool QtIVIServiceManager::registerService(QObject *serviceBackendInterface, cons
  *
  * Unloads all currently loaded backends. Commonly only used for unit testing.
  */
-void QtIVIServiceManager::unloadAllBackends()
+void QIviServiceManager::unloadAllBackends()
 {
-    Q_D(QtIVIServiceManager);
+    Q_D(QIviServiceManager);
     return d->unloadAllBackends();
 }
 
 /*!
  * Returns true if the specified \a interface has been registered.
  */
-bool QtIVIServiceManager::hasInterface(const QString &interface) const
+bool QIviServiceManager::hasInterface(const QString &interface) const
 {
-    Q_D(const QtIVIServiceManager);
+    Q_D(const QIviServiceManager);
     return d->m_interfaceNames.contains(interface);
 }
 
@@ -352,9 +352,9 @@ bool QtIVIServiceManager::hasInterface(const QString &interface) const
  *
  * \sa QAbstractListModel::data()
  */
-int QtIVIServiceManager::rowCount(const QModelIndex &parent) const
+int QIviServiceManager::rowCount(const QModelIndex &parent) const
 {
-    Q_D(const QtIVIServiceManager);
+    Q_D(const QIviServiceManager);
     return parent.isValid() ? 0 : d->m_backends.count();
 }
 
@@ -363,9 +363,9 @@ int QtIVIServiceManager::rowCount(const QModelIndex &parent) const
  *
  * \sa QAbstractListModel::data()
  */
-QVariant QtIVIServiceManager::data(const QModelIndex &index, int role) const
+QVariant QIviServiceManager::data(const QModelIndex &index, int role) const
 {
-    Q_D(const QtIVIServiceManager);
+    Q_D(const QIviServiceManager);
 
     if (!index.isValid())
         return QVariant();
@@ -373,7 +373,7 @@ QVariant QtIVIServiceManager::data(const QModelIndex &index, int role) const
     int row = index.row();
 
     if (row >= 0 && row < d->m_backends.count() && role == Qt::DisplayRole) {
-        return QVariant::fromValue<QtIVIServiceInterface*>(d->m_backends.at(index.row())->interface);
+        return QVariant::fromValue<QIviServiceInterface*>(d->m_backends.at(index.row())->interface);
     }
 
     return QVariant();

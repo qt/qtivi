@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVIPROPERTY_P_H
-#define QTIVIPROPERTY_P_H
+#ifndef QIVIPROPERTY_P_H
+#define QIVIPROPERTY_P_H
 
 //
 //  W A R N I N G
@@ -57,10 +57,10 @@
 
 QT_BEGIN_NAMESPACE
 
-class QtIVIPropertyPrivate
+class QIviPropertyPrivate
 {
 public:
-    QtIVIPropertyPrivate(int userType,  QtPrivate::QSlotObjectBase *attributeGetter, QtPrivate::QSlotObjectBase *valueGetter);
+    QIviPropertyPrivate(int userType,  QtPrivate::QSlotObjectBase *attributeGetter, QtPrivate::QSlotObjectBase *valueGetter);
 
     void throwError(QObject *object, const QString &error);
 
@@ -72,4 +72,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QTIVIPROPERTY_P_H
+#endif // QIVIPROPERTY_P_H

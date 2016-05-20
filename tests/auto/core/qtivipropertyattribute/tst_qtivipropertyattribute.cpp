@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:GPL-EXCEPT-QTAS$
 ** Commercial License Usage
@@ -47,14 +47,14 @@ struct ComplexType
     QString m_string;
 };
 Q_DECLARE_METATYPE(ComplexType)
-Q_DECLARE_METATYPE(QtIVIPropertyAttribute<ComplexType>)
+Q_DECLARE_METATYPE(QIviPropertyAttribute<ComplexType>)
 
-class tst_QtIVIPropertyAttribute : public QObject
+class tst_QIviPropertyAttribute : public QObject
 {
     Q_OBJECT
 
 public:
-    tst_QtIVIPropertyAttribute();
+    tst_QIviPropertyAttribute();
 
 private Q_SLOTS:
     void equal();
@@ -62,46 +62,46 @@ private Q_SLOTS:
     void complex();
 };
 
-tst_QtIVIPropertyAttribute::tst_QtIVIPropertyAttribute()
+tst_QIviPropertyAttribute::tst_QIviPropertyAttribute()
 {
     qRegisterMetaType<ComplexType>();
 }
 
-void tst_QtIVIPropertyAttribute::equal()
+void tst_QIviPropertyAttribute::equal()
 {
-    QtIVIPropertyAttribute<int> minMax(5, 10);
-    QtIVIPropertyAttribute<int> minMax2(5, 10);
+    QIviPropertyAttribute<int> minMax(5, 10);
+    QIviPropertyAttribute<int> minMax2(5, 10);
     QCOMPARE(minMax, minMax2);
 
-    QtIVIPropertyAttribute<int> noAtt(false);
-    QtIVIPropertyAttribute<int> noAtt2(false);
+    QIviPropertyAttribute<int> noAtt(false);
+    QIviPropertyAttribute<int> noAtt2(false);
     QCOMPARE(noAtt, noAtt2);
 
     QVector<int> list;
     list << 0 << 5 << 10 << 50;
-    QtIVIPropertyAttribute<int> avVal(list);
-    QtIVIPropertyAttribute<int> avVal2(list);
+    QIviPropertyAttribute<int> avVal(list);
+    QIviPropertyAttribute<int> avVal2(list);
     QCOMPARE(avVal, avVal2);
 }
 
-void tst_QtIVIPropertyAttribute::simple()
+void tst_QIviPropertyAttribute::simple()
 {
-    QtIVIPropertyAttribute<int> invalid;
-    QCOMPARE(invalid.type(), QtIVIPropertyAttributeBase::Invalid);
+    QIviPropertyAttribute<int> invalid;
+    QCOMPARE(invalid.type(), QIviPropertyAttributeBase::Invalid);
     QCOMPARE(invalid.isAvailable(), false);
     QCOMPARE(invalid.minimumValue(), int());
     QCOMPARE(invalid.maximumValue(), int());
     QCOMPARE(invalid.availableValues(), QVector<int>());
 
-    QtIVIPropertyAttribute<int> noAttribute(true);
-    QCOMPARE(noAttribute.type(), QtIVIPropertyAttributeBase::NoAttributes);
+    QIviPropertyAttribute<int> noAttribute(true);
+    QCOMPARE(noAttribute.type(), QIviPropertyAttributeBase::NoAttributes);
     QCOMPARE(noAttribute.isAvailable(), true);
     QCOMPARE(noAttribute.minimumValue(), int());
     QCOMPARE(noAttribute.maximumValue(), int());
     QCOMPARE(noAttribute.availableValues(), QVector<int>());
 
-    QtIVIPropertyAttribute<int> minimumMaximum(5, 10);
-    QCOMPARE(minimumMaximum.type(), QtIVIPropertyAttributeBase::MinimumMaximum);
+    QIviPropertyAttribute<int> minimumMaximum(5, 10);
+    QCOMPARE(minimumMaximum.type(), QIviPropertyAttributeBase::MinimumMaximum);
     QCOMPARE(minimumMaximum.isAvailable(), true);
     QCOMPARE(minimumMaximum.minimumValue(), 5);
     QCOMPARE(minimumMaximum.maximumValue(), 10);
@@ -109,25 +109,25 @@ void tst_QtIVIPropertyAttribute::simple()
 
     QVector<int> list;
     list << 0 << 5 << 10 << 50;
-    QtIVIPropertyAttribute<int> availableValues(list);
-    QCOMPARE(availableValues.type(), QtIVIPropertyAttributeBase::AvailableValues);
+    QIviPropertyAttribute<int> availableValues(list);
+    QCOMPARE(availableValues.type(), QIviPropertyAttributeBase::AvailableValues);
     QCOMPARE(availableValues.isAvailable(), true);
     QCOMPARE(availableValues.minimumValue(), int());
     QCOMPARE(availableValues.maximumValue(), int());
     QCOMPARE(availableValues.availableValues(), list);
 }
 
-void tst_QtIVIPropertyAttribute::complex()
+void tst_QIviPropertyAttribute::complex()
 {
-    QtIVIPropertyAttribute<ComplexType> invalid;
-    QCOMPARE(invalid.type(), QtIVIPropertyAttributeBase::Invalid);
+    QIviPropertyAttribute<ComplexType> invalid;
+    QCOMPARE(invalid.type(), QIviPropertyAttributeBase::Invalid);
     QCOMPARE(invalid.isAvailable(), false);
     QCOMPARE(invalid.minimumValue(), ComplexType());
     QCOMPARE(invalid.maximumValue(), ComplexType());
     QCOMPARE(invalid.availableValues(), QVector<ComplexType>());
 
-    QtIVIPropertyAttribute<ComplexType> noAttribute(true);
-    QCOMPARE(noAttribute.type(), QtIVIPropertyAttributeBase::NoAttributes);
+    QIviPropertyAttribute<ComplexType> noAttribute(true);
+    QCOMPARE(noAttribute.type(), QIviPropertyAttributeBase::NoAttributes);
     QCOMPARE(noAttribute.isAvailable(), true);
     QCOMPARE(noAttribute.minimumValue(), ComplexType());
     QCOMPARE(noAttribute.maximumValue(), ComplexType());
@@ -135,8 +135,8 @@ void tst_QtIVIPropertyAttribute::complex()
 
     ComplexType min(false, QStringLiteral("min"));
     ComplexType max(true, QStringLiteral("max"));
-    QtIVIPropertyAttribute<ComplexType> minimumMaximum(min, max);
-    QCOMPARE(minimumMaximum.type(), QtIVIPropertyAttributeBase::MinimumMaximum);
+    QIviPropertyAttribute<ComplexType> minimumMaximum(min, max);
+    QCOMPARE(minimumMaximum.type(), QIviPropertyAttributeBase::MinimumMaximum);
     QCOMPARE(minimumMaximum.isAvailable(), true);
     QCOMPARE(minimumMaximum.minimumValue(), min);
     QCOMPARE(minimumMaximum.maximumValue(), max);
@@ -144,15 +144,15 @@ void tst_QtIVIPropertyAttribute::complex()
 
     QVector<ComplexType> list;
     list << ComplexType(false, "1") << ComplexType(true, "2") << ComplexType(true, "3") << ComplexType(false, "4");
-    QtIVIPropertyAttribute<ComplexType> availableValues(list);
-    QCOMPARE(availableValues.type(), QtIVIPropertyAttributeBase::AvailableValues);
+    QIviPropertyAttribute<ComplexType> availableValues(list);
+    QCOMPARE(availableValues.type(), QIviPropertyAttributeBase::AvailableValues);
     QCOMPARE(availableValues.isAvailable(), true);
     QCOMPARE(availableValues.minimumValue(), ComplexType());
     QCOMPARE(availableValues.maximumValue(), ComplexType());
     QCOMPARE(availableValues.availableValues(), list);
 }
 
-QTEST_APPLESS_MAIN(tst_QtIVIPropertyAttribute)
+QTEST_APPLESS_MAIN(tst_QIviPropertyAttribute)
 
 #include "tst_qtivipropertyattribute.moc"
 

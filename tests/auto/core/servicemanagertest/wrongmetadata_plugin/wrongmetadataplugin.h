@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:GPL-EXCEPT-QTAS$
 ** Commercial License Usage
@@ -32,12 +32,12 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
-#include <QtIVICore/QtIVIServiceInterface>
+#include <QtIviCore/QIviServiceInterface>
 
-class WrongMetadataPlugin : public QObject, public QtIVIServiceInterface
+class WrongMetadataPlugin : public QObject, public QIviServiceInterface
 {
     Q_OBJECT
-    Q_INTERFACES(QtIVIServiceInterface)
+    Q_INTERFACES(QIviServiceInterface)
 public:
     WrongMetadataPlugin();
     virtual ~WrongMetadataPlugin() {}

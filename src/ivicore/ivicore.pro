@@ -1,4 +1,4 @@
-TARGET = QtIVICore
+TARGET = QtIviCore
 
 QT = core core-private qml qml-private
 CONFIG += c++11

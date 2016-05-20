@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVIVEHICLEFUNCTIONSGLOBAL_H
-#define QTIVIVEHICLEFUNCTIONSGLOBAL_H
+#ifndef QIVIVEHICLEFUNCTIONSGLOBAL_H
+#define QIVIVEHICLEFUNCTIONSGLOBAL_H
 
 #include <QtCore/qglobal.h>
 
@@ -58,5 +58,5 @@ QT_BEGIN_NAMESPACE
 
 QT_END_NAMESPACE
 
-#endif // QTIVIVEHICLEFUNCTIONSGLOBAL_H
+#endif // QIVIVEHICLEFUNCTIONSGLOBAL_H
 

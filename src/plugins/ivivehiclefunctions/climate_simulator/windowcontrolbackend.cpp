@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -79,17 +79,17 @@ void WindowTimer::checkValue()
     else
         m_currentValue--;
 
-    QtIVIWindowControl::State state = QtIVIWindowControl::Closed;
+    QIviWindowControl::State state = QIviWindowControl::Closed;
     if (m_currentValue <= 0) {
         m_currentValue = 0;
         m_timer->stop();
-        state = QtIVIWindowControl::Closed;
+        state = QIviWindowControl::Closed;
     } else if (m_currentValue >= m_interval) {
         m_currentValue = m_interval;
         m_timer->stop();
-        state = QtIVIWindowControl::FullyOpen;
+        state = QIviWindowControl::FullyOpen;
     } else {
-        state = QtIVIWindowControl::Open;
+        state = QIviWindowControl::Open;
     }
 
     if (m_blind) {
@@ -108,99 +108,99 @@ void WindowTimer::checkValue()
 }
 
 WindowControlBackend::WindowControlBackend(QObject *parent)
-    : QtIVIWindowControlBackendInterface(parent)
+    : QIviWindowControlBackendInterface(parent)
 {
     // No Blind in the front
     ZoneBackend frontLeft;
-    frontLeft.heaterMode = QtIVIWindowControl::HeaterOff;
-    frontLeft.heaterModeAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode>(QVector<QtIVIWindowControl::HeaterMode>({QtIVIWindowControl::HeaterOff, QtIVIWindowControl::HeaterOn}));
+    frontLeft.heaterMode = QIviWindowControl::HeaterOff;
+    frontLeft.heaterModeAttribute = QIviPropertyAttribute<QIviWindowControl::HeaterMode>(QVector<QIviWindowControl::HeaterMode>({QIviWindowControl::HeaterOff, QIviWindowControl::HeaterOn}));
     frontLeft.heaterEnabled = false;
-    frontLeft.heaterAttribute = QtIVIPropertyAttribute<bool>(true);
-    frontLeft.blindMode = QtIVIWindowControl::BlindClosed;
-    frontLeft.blindModeAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode>(false);
-    frontLeft.blindState = QtIVIWindowControl::Closed;
-    frontLeft.blindStateAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::State>(false);
+    frontLeft.heaterAttribute = QIviPropertyAttribute<bool>(true);
+    frontLeft.blindMode = QIviWindowControl::BlindClosed;
+    frontLeft.blindModeAttribute = QIviPropertyAttribute<QIviWindowControl::BlindMode>(false);
+    frontLeft.blindState = QIviWindowControl::Closed;
+    frontLeft.blindStateAttribute = QIviPropertyAttribute<QIviWindowControl::State>(false);
     frontLeft.blindTimer = new WindowTimer("FrontLeft", true, this);
-    frontLeft.state = QtIVIWindowControl::Closed;
-    frontLeft.stateAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::State>({QtIVIWindowControl::Closed, QtIVIWindowControl::Open, QtIVIWindowControl::FullyOpen});
+    frontLeft.state = QIviWindowControl::Closed;
+    frontLeft.stateAttribute = QIviPropertyAttribute<QIviWindowControl::State>({QIviWindowControl::Closed, QIviWindowControl::Open, QIviWindowControl::FullyOpen});
     frontLeft.stateTimer = new WindowTimer("FrontLeft", false, this);
     m_zoneMap.insert("FrontLeft", frontLeft);
 
     ZoneBackend frontRight;
-    frontRight.heaterMode = QtIVIWindowControl::HeaterOff;
-    frontRight.heaterModeAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode>(QVector<QtIVIWindowControl::HeaterMode>({QtIVIWindowControl::HeaterOff, QtIVIWindowControl::HeaterOn}));
+    frontRight.heaterMode = QIviWindowControl::HeaterOff;
+    frontRight.heaterModeAttribute = QIviPropertyAttribute<QIviWindowControl::HeaterMode>(QVector<QIviWindowControl::HeaterMode>({QIviWindowControl::HeaterOff, QIviWindowControl::HeaterOn}));
     frontRight.heaterEnabled = false;
-    frontRight.heaterAttribute = QtIVIPropertyAttribute<bool>(true);
-    frontRight.blindMode = QtIVIWindowControl::BlindClosed;
-    frontRight.blindModeAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode>(false);
-    frontRight.blindState = QtIVIWindowControl::Closed;
-    frontRight.blindStateAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::State>(false);
+    frontRight.heaterAttribute = QIviPropertyAttribute<bool>(true);
+    frontRight.blindMode = QIviWindowControl::BlindClosed;
+    frontRight.blindModeAttribute = QIviPropertyAttribute<QIviWindowControl::BlindMode>(false);
+    frontRight.blindState = QIviWindowControl::Closed;
+    frontRight.blindStateAttribute = QIviPropertyAttribute<QIviWindowControl::State>(false);
     frontRight.blindTimer = new WindowTimer("FrontRight", true, this);
-    frontRight.state = QtIVIWindowControl::Closed;
-    frontRight.stateAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::State>({QtIVIWindowControl::Closed, QtIVIWindowControl::Open, QtIVIWindowControl::FullyOpen});
+    frontRight.state = QIviWindowControl::Closed;
+    frontRight.stateAttribute = QIviPropertyAttribute<QIviWindowControl::State>({QIviWindowControl::Closed, QIviWindowControl::Open, QIviWindowControl::FullyOpen});
     frontRight.stateTimer = new WindowTimer("FrontRight", false, this);
     m_zoneMap.insert("FrontRight", frontRight);
 
     // Everything in the rear
     ZoneBackend rearLeft;
-    rearLeft.heaterMode = QtIVIWindowControl::HeaterOff;
-    rearLeft.heaterModeAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode>(QVector<QtIVIWindowControl::HeaterMode>({QtIVIWindowControl::HeaterOff, QtIVIWindowControl::HeaterOn}));
+    rearLeft.heaterMode = QIviWindowControl::HeaterOff;
+    rearLeft.heaterModeAttribute = QIviPropertyAttribute<QIviWindowControl::HeaterMode>(QVector<QIviWindowControl::HeaterMode>({QIviWindowControl::HeaterOff, QIviWindowControl::HeaterOn}));
     rearLeft.heaterEnabled = false;
-    rearLeft.heaterAttribute = QtIVIPropertyAttribute<bool>(true);
-    rearLeft.blindMode = QtIVIWindowControl::BlindClosed;
-    rearLeft.blindModeAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode>(QVector<QtIVIWindowControl::BlindMode>({QtIVIWindowControl::BlindClosed, QtIVIWindowControl::BlindOpen}));
-    rearLeft.blindState = QtIVIWindowControl::Closed;
-    rearLeft.blindStateAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::State>(false);
+    rearLeft.heaterAttribute = QIviPropertyAttribute<bool>(true);
+    rearLeft.blindMode = QIviWindowControl::BlindClosed;
+    rearLeft.blindModeAttribute = QIviPropertyAttribute<QIviWindowControl::BlindMode>(QVector<QIviWindowControl::BlindMode>({QIviWindowControl::BlindClosed, QIviWindowControl::BlindOpen}));
+    rearLeft.blindState = QIviWindowControl::Closed;
+    rearLeft.blindStateAttribute = QIviPropertyAttribute<QIviWindowControl::State>(false);
     rearLeft.blindTimer = new WindowTimer("RearLeft", true, this);
-    rearLeft.state = QtIVIWindowControl::Closed;
-    rearLeft.stateAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::State>({QtIVIWindowControl::Closed, QtIVIWindowControl::Open, QtIVIWindowControl::FullyOpen});
+    rearLeft.state = QIviWindowControl::Closed;
+    rearLeft.stateAttribute = QIviPropertyAttribute<QIviWindowControl::State>({QIviWindowControl::Closed, QIviWindowControl::Open, QIviWindowControl::FullyOpen});
     rearLeft.stateTimer = new WindowTimer("RearLeft", false, this);
     m_zoneMap.insert("RearLeft", rearLeft);
 
     ZoneBackend rearRight;
-    rearRight.heaterMode = QtIVIWindowControl::HeaterOff;
-    rearRight.heaterModeAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode>(QVector<QtIVIWindowControl::HeaterMode>({QtIVIWindowControl::HeaterOff, QtIVIWindowControl::HeaterOn}));
+    rearRight.heaterMode = QIviWindowControl::HeaterOff;
+    rearRight.heaterModeAttribute = QIviPropertyAttribute<QIviWindowControl::HeaterMode>(QVector<QIviWindowControl::HeaterMode>({QIviWindowControl::HeaterOff, QIviWindowControl::HeaterOn}));
     rearRight.heaterEnabled = false;
-    rearRight.heaterAttribute = QtIVIPropertyAttribute<bool>(true);
-    rearRight.blindMode = QtIVIWindowControl::BlindClosed;
-    rearRight.blindModeAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode>(QVector<QtIVIWindowControl::BlindMode>({QtIVIWindowControl::BlindClosed, QtIVIWindowControl::BlindOpen}));
-    rearRight.blindState = QtIVIWindowControl::Closed;
-    rearRight.blindStateAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::State>({QtIVIWindowControl::Closed, QtIVIWindowControl::Open, QtIVIWindowControl::FullyOpen});
+    rearRight.heaterAttribute = QIviPropertyAttribute<bool>(true);
+    rearRight.blindMode = QIviWindowControl::BlindClosed;
+    rearRight.blindModeAttribute = QIviPropertyAttribute<QIviWindowControl::BlindMode>(QVector<QIviWindowControl::BlindMode>({QIviWindowControl::BlindClosed, QIviWindowControl::BlindOpen}));
+    rearRight.blindState = QIviWindowControl::Closed;
+    rearRight.blindStateAttribute = QIviPropertyAttribute<QIviWindowControl::State>({QIviWindowControl::Closed, QIviWindowControl::Open, QIviWindowControl::FullyOpen});
     rearRight.blindTimer = new WindowTimer("RearRight", true, this);
-    rearRight.state = QtIVIWindowControl::Closed;
-    rearRight.stateAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::State>({QtIVIWindowControl::Closed, QtIVIWindowControl::Open, QtIVIWindowControl::FullyOpen});
+    rearRight.state = QIviWindowControl::Closed;
+    rearRight.stateAttribute = QIviPropertyAttribute<QIviWindowControl::State>({QIviWindowControl::Closed, QIviWindowControl::Open, QIviWindowControl::FullyOpen});
     rearRight.stateTimer = new WindowTimer("RearRight", false, this);
     m_zoneMap.insert("RearRight", rearRight);
 
     // Just heating in the back window
     ZoneBackend rear;
-    rear.heaterMode = QtIVIWindowControl::HeaterOff;
-    rear.heaterModeAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode>(QVector<QtIVIWindowControl::HeaterMode>({QtIVIWindowControl::HeaterOff, QtIVIWindowControl::HeaterOn}));
+    rear.heaterMode = QIviWindowControl::HeaterOff;
+    rear.heaterModeAttribute = QIviPropertyAttribute<QIviWindowControl::HeaterMode>(QVector<QIviWindowControl::HeaterMode>({QIviWindowControl::HeaterOff, QIviWindowControl::HeaterOn}));
     rear.heaterEnabled = false;
-    rear.heaterAttribute = QtIVIPropertyAttribute<bool>(true);
-    rear.blindMode = QtIVIWindowControl::BlindClosed;
-    rear.blindModeAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode>(false);
-    rear.blindState = QtIVIWindowControl::Closed;
-    rear.blindStateAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::State>(false);
+    rear.heaterAttribute = QIviPropertyAttribute<bool>(true);
+    rear.blindMode = QIviWindowControl::BlindClosed;
+    rear.blindModeAttribute = QIviPropertyAttribute<QIviWindowControl::BlindMode>(false);
+    rear.blindState = QIviWindowControl::Closed;
+    rear.blindStateAttribute = QIviPropertyAttribute<QIviWindowControl::State>(false);
     rear.blindTimer = nullptr;
-    rear.state = QtIVIWindowControl::Closed;
-    rear.stateAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::State>(false);
+    rear.state = QIviWindowControl::Closed;
+    rear.stateAttribute = QIviPropertyAttribute<QIviWindowControl::State>(false);
     rear.stateTimer = nullptr;
     m_zoneMap.insert("Rear", rear);
 
     // Just no heater in the roof
     ZoneBackend roof;
-    roof.heaterMode = QtIVIWindowControl::HeaterOff;
-    roof.heaterModeAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode>(false);
+    roof.heaterMode = QIviWindowControl::HeaterOff;
+    roof.heaterModeAttribute = QIviPropertyAttribute<QIviWindowControl::HeaterMode>(false);
     roof.heaterEnabled = false;
-    roof.heaterAttribute = QtIVIPropertyAttribute<bool>(true);
-    roof.blindMode = QtIVIWindowControl::BlindClosed;
-    roof.blindModeAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode>(QVector<QtIVIWindowControl::BlindMode>({QtIVIWindowControl::BlindClosed, QtIVIWindowControl::BlindOpen}));
-    roof.blindState = QtIVIWindowControl::Closed;
-    roof.blindStateAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::State>({QtIVIWindowControl::Closed, QtIVIWindowControl::Open, QtIVIWindowControl::FullyOpen});
+    roof.heaterAttribute = QIviPropertyAttribute<bool>(true);
+    roof.blindMode = QIviWindowControl::BlindClosed;
+    roof.blindModeAttribute = QIviPropertyAttribute<QIviWindowControl::BlindMode>(QVector<QIviWindowControl::BlindMode>({QIviWindowControl::BlindClosed, QIviWindowControl::BlindOpen}));
+    roof.blindState = QIviWindowControl::Closed;
+    roof.blindStateAttribute = QIviPropertyAttribute<QIviWindowControl::State>({QIviWindowControl::Closed, QIviWindowControl::Open, QIviWindowControl::FullyOpen});
     roof.blindTimer = new WindowTimer("Roof", true, this);
-    roof.state = QtIVIWindowControl::Closed;
-    roof.stateAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::State>({QtIVIWindowControl::Closed, QtIVIWindowControl::Open, QtIVIWindowControl::FullyOpen});
+    roof.state = QIviWindowControl::Closed;
+    roof.stateAttribute = QIviPropertyAttribute<QIviWindowControl::State>({QIviWindowControl::Closed, QIviWindowControl::Open, QIviWindowControl::FullyOpen});
     roof.stateTimer = new WindowTimer("Roof", false, this);
     m_zoneMap.insert("Roof", roof);
 }
@@ -230,7 +230,7 @@ void WindowControlBackend::initializeAttributes()
     }
 }
 
-void WindowControlBackend::setHeaterMode(QtIVIWindowControl::HeaterMode value, const QString &zone)
+void WindowControlBackend::setHeaterMode(QIviWindowControl::HeaterMode value, const QString &zone)
 {
     if (!m_zoneMap.contains(zone))
         return;
@@ -248,11 +248,11 @@ void WindowControlBackend::setHeaterMode(QtIVIWindowControl::HeaterMode value, c
     m_zoneMap[zone].heaterMode = value;
     emit heaterModeChanged(value, zone);
 
-    m_zoneMap[zone].heaterEnabled = (value == QtIVIWindowControl::HeaterOn);
+    m_zoneMap[zone].heaterEnabled = (value == QIviWindowControl::HeaterOn);
     emit heaterEnabledChanged(m_zoneMap[zone].heaterEnabled, zone);
 }
 
-void WindowControlBackend::setBlindMode(QtIVIWindowControl::BlindMode value, const QString &zone)
+void WindowControlBackend::setBlindMode(QIviWindowControl::BlindMode value, const QString &zone)
 {
     if (!m_zoneMap.contains(zone))
         return;
@@ -267,9 +267,9 @@ void WindowControlBackend::setBlindMode(QtIVIWindowControl::BlindMode value, con
 
     qWarning() << "SIMULATION BlindMode for Zone" << zone << "changed to" << value;
 
-    if (value == QtIVIWindowControl::BlindOpen)
+    if (value == QIviWindowControl::BlindOpen)
         m_zoneMap[zone].blindTimer->open();
-    else if (value == QtIVIWindowControl::BlindClosed)
+    else if (value == QIviWindowControl::BlindClosed)
         m_zoneMap[zone].blindTimer->close();
     m_zoneMap[zone].blindMode = value;
     emit blindModeChanged(value, zone);
@@ -280,7 +280,7 @@ void WindowControlBackend::open(const QString &zone)
     if (!m_zoneMap.contains(zone))
         return;
 
-    if (m_zoneMap[zone].state == QtIVIWindowControl::Open)
+    if (m_zoneMap[zone].state == QIviWindowControl::Open)
         return;
 
     if (!m_zoneMap[zone].stateAttribute.isAvailable()) {
@@ -297,7 +297,7 @@ void WindowControlBackend::close(const QString &zone)
     if (!m_zoneMap.contains(zone))
         return;
 
-    if (m_zoneMap[zone].state == QtIVIWindowControl::Closed)
+    if (m_zoneMap[zone].state == QIviWindowControl::Closed)
         return;
 
     if (!m_zoneMap[zone].stateAttribute.isAvailable()) {

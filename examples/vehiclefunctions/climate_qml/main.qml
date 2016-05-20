@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:BSD-QTAS$
 ** Commercial License Usage
@@ -56,7 +56,7 @@ import QtQuick.Window 2.2
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
 
-import QtIVIVehicleFunctions 1.0
+import QtIvi.VehicleFunctions 1.0
 
 ApplicationWindow {
     title: "Climate Control"

@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:GPL-EXCEPT-QTAS$
 ** Commercial License Usage
@@ -28,29 +28,29 @@
 
 #include <QtTest>
 
-#include <QtIVICore/QtIVIServiceManager>
-#include <QtIVICore/QtIVIServiceObject>
-#include <QtIVIVehicleFunctions/QtIVIWindowControl>
-#include <QtIVIVehicleFunctions/QtIVIWindowControlBackendInterface>
+#include <QtIviCore/QIviServiceManager>
+#include <QtIviCore/QIviServiceObject>
+#include <QtIviVehicleFunctions/QIviWindowControl>
+#include <QtIviVehicleFunctions/QIviWindowControlBackendInterface>
 #include <private/qtivipropertytester_p.h>
 
-class WindowControlTestBackend : public QtIVIWindowControlBackendInterface
+class WindowControlTestBackend : public QIviWindowControlBackendInterface
 {
 public:
     WindowControlTestBackend()
-        : QtIVIWindowControlBackendInterface()
+        : QIviWindowControlBackendInterface()
     {
         ZoneBackend zone;
-        zone.heaterMode = QtIVIWindowControl::HeaterOff;
-        zone.heaterModeAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode>(QVector<QtIVIWindowControl::HeaterMode>({QtIVIWindowControl::HeaterOff, QtIVIWindowControl::HeaterOn}));
+        zone.heaterMode = QIviWindowControl::HeaterOff;
+        zone.heaterModeAttribute = QIviPropertyAttribute<QIviWindowControl::HeaterMode>(QVector<QIviWindowControl::HeaterMode>({QIviWindowControl::HeaterOff, QIviWindowControl::HeaterOn}));
         zone.heaterEnabled = false;
-        zone.heaterAttribute = QtIVIPropertyAttribute<bool>(true);
-        zone.blindMode = QtIVIWindowControl::BlindClosed;
-        zone.blindModeAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode>(QVector<QtIVIWindowControl::BlindMode>({QtIVIWindowControl::BlindClosed, QtIVIWindowControl::BlindOpen}));
-        zone.blindState = QtIVIWindowControl::Closed;
-        zone.blindStateAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::State>({QtIVIWindowControl::Closed, QtIVIWindowControl::Open, QtIVIWindowControl::FullyOpen});
-        zone.state = QtIVIWindowControl::Closed;
-        zone.stateAttribute = QtIVIPropertyAttribute<QtIVIWindowControl::State>({QtIVIWindowControl::Closed, QtIVIWindowControl::Open, QtIVIWindowControl::FullyOpen});
+        zone.heaterAttribute = QIviPropertyAttribute<bool>(true);
+        zone.blindMode = QIviWindowControl::BlindClosed;
+        zone.blindModeAttribute = QIviPropertyAttribute<QIviWindowControl::BlindMode>(QVector<QIviWindowControl::BlindMode>({QIviWindowControl::BlindClosed, QIviWindowControl::BlindOpen}));
+        zone.blindState = QIviWindowControl::Closed;
+        zone.blindStateAttribute = QIviPropertyAttribute<QIviWindowControl::State>({QIviWindowControl::Closed, QIviWindowControl::Open, QIviWindowControl::FullyOpen});
+        zone.state = QIviWindowControl::Closed;
+        zone.stateAttribute = QIviPropertyAttribute<QIviWindowControl::State>({QIviWindowControl::Closed, QIviWindowControl::Open, QIviWindowControl::FullyOpen});
 
         m_zoneMap.insert("FrontLeft", zone);
         m_zoneMap.insert("FrontRight", zone);
@@ -82,7 +82,7 @@ public:
 
 public:
 
-    void setHeaterMode(QtIVIWindowControl::HeaterMode value, const QString &zone) Q_DECL_OVERRIDE
+    void setHeaterMode(QIviWindowControl::HeaterMode value, const QString &zone) Q_DECL_OVERRIDE
     {
         if (!m_zoneMap.contains(zone))
             return;
@@ -93,7 +93,7 @@ public:
         }
     }
 
-    void setHeaterModeAttribute(QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode> attribute, const QString &zone)
+    void setHeaterModeAttribute(QIviPropertyAttribute<QIviWindowControl::HeaterMode> attribute, const QString &zone)
     {
         if (!m_zoneMap.contains(zone))
             return;
@@ -115,7 +115,7 @@ public:
         }
     }
 
-    void setHeaterAttribute(QtIVIPropertyAttribute<bool> attribute, const QString &zone)
+    void setHeaterAttribute(QIviPropertyAttribute<bool> attribute, const QString &zone)
     {
         if (!m_zoneMap.contains(zone))
             return;
@@ -126,7 +126,7 @@ public:
         }
     }
 
-    void setBlindMode(QtIVIWindowControl::BlindMode value, const QString &zone) Q_DECL_OVERRIDE
+    void setBlindMode(QIviWindowControl::BlindMode value, const QString &zone) Q_DECL_OVERRIDE
     {
         if (!m_zoneMap.contains(zone))
             return;
@@ -137,7 +137,7 @@ public:
         }
     }
 
-    void setBlindModeAttribute(QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode> attribute, const QString &zone)
+    void setBlindModeAttribute(QIviPropertyAttribute<QIviWindowControl::BlindMode> attribute, const QString &zone)
     {
         if (!m_zoneMap.contains(zone))
             return;
@@ -148,7 +148,7 @@ public:
         }
     }
 
-    void setBlindState(QtIVIWindowControl::State value, const QString &zone)
+    void setBlindState(QIviWindowControl::State value, const QString &zone)
     {
         if (!m_zoneMap.contains(zone))
             return;
@@ -159,7 +159,7 @@ public:
         }
     }
 
-    void setBlindStateAttribute(QtIVIPropertyAttribute<QtIVIWindowControl::State> attribute, const QString &zone)
+    void setBlindStateAttribute(QIviPropertyAttribute<QIviWindowControl::State> attribute, const QString &zone)
     {
         if (!m_zoneMap.contains(zone))
             return;
@@ -171,7 +171,7 @@ public:
     }
 
 
-    void setState(QtIVIWindowControl::State value, const QString &zone)
+    void setState(QIviWindowControl::State value, const QString &zone)
     {
         if (!m_zoneMap.contains(zone))
             return;
@@ -182,7 +182,7 @@ public:
         }
     }
 
-    void setStateAttribute(QtIVIPropertyAttribute<QtIVIWindowControl::State> attribute, const QString &zone)
+    void setStateAttribute(QIviPropertyAttribute<QIviWindowControl::State> attribute, const QString &zone)
     {
         if (!m_zoneMap.contains(zone))
             return;
@@ -207,40 +207,40 @@ public:
 private:
 
     struct ZoneBackend {
-        QtIVIWindowControl::HeaterMode heaterMode;
-        QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode> heaterModeAttribute;
+        QIviWindowControl::HeaterMode heaterMode;
+        QIviPropertyAttribute<QIviWindowControl::HeaterMode> heaterModeAttribute;
         bool heaterEnabled;
-        QtIVIPropertyAttribute<bool> heaterAttribute;
-        QtIVIWindowControl::BlindMode blindMode;
-        QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode> blindModeAttribute;
-        QtIVIWindowControl::State blindState;
-        QtIVIPropertyAttribute<QtIVIWindowControl::State> blindStateAttribute;
-        QtIVIWindowControl::State state;
-        QtIVIPropertyAttribute<QtIVIWindowControl::State> stateAttribute;
+        QIviPropertyAttribute<bool> heaterAttribute;
+        QIviWindowControl::BlindMode blindMode;
+        QIviPropertyAttribute<QIviWindowControl::BlindMode> blindModeAttribute;
+        QIviWindowControl::State blindState;
+        QIviPropertyAttribute<QIviWindowControl::State> blindStateAttribute;
+        QIviWindowControl::State state;
+        QIviPropertyAttribute<QIviWindowControl::State> stateAttribute;
     };
 
     QMap<QString,ZoneBackend> m_zoneMap;
 };
 
 
-typedef QtIVIPropertyTestData<QtIVIWindowControl, WindowControlTestBackend, QtIVIWindowControl::State> WindowControlTestDataState;
+typedef QIviPropertyTestData<QIviWindowControl, WindowControlTestBackend, QIviWindowControl::State> WindowControlTestDataState;
 Q_DECLARE_METATYPE(WindowControlTestDataState)
 
-class WindowControlTestServiceObject : public QtIVIServiceObject {
+class WindowControlTestServiceObject : public QIviServiceObject {
 
 public:
     explicit WindowControlTestServiceObject(QObject *parent=0) :
-        QtIVIServiceObject(parent), m_name(QLatin1String(""))
+        QIviServiceObject(parent), m_name(QLatin1String(""))
     {
         m_backend = new WindowControlTestBackend;
-        m_interfaces << QtIVIStringWindowControlInterfaceName;
+        m_interfaces << QIviStringWindowControlInterfaceName;
     }
 
     QString name() const { return m_name; }
     QStringList interfaces() const { return m_interfaces; }
     QObject* interfaceInstance(const QString& interface) const
     {
-        if (interface == QtIVIStringWindowControlInterfaceName)
+        if (interface == QIviStringWindowControlInterfaceName)
             return testBackend();
         else
             return 0;
@@ -257,13 +257,13 @@ private:
     WindowControlTestBackend* m_backend;
 };
 
-class WindowControlInvalidServiceObject : public QtIVIServiceObject {
+class WindowControlInvalidServiceObject : public QIviServiceObject {
 
 public:
     explicit WindowControlInvalidServiceObject(QObject *parent=0) :
-        QtIVIServiceObject(parent), m_name(QLatin1String("")), m_dummyBackend(new QObject(this))
+        QIviServiceObject(parent), m_name(QLatin1String("")), m_dummyBackend(new QObject(this))
     {
-        m_interfaces << QtIVIStringWindowControlInterfaceName;
+        m_interfaces << QIviStringWindowControlInterfaceName;
     }
 
     QString name() const { return m_name; }
@@ -298,13 +298,13 @@ private slots:
     void testStates();
 
 private:
-    QtIVIServiceManager *manager;
+    QIviServiceManager *manager;
 };
 
 WindowControlTest::WindowControlTest()
     : QObject()
 {
-    manager = QtIVIServiceManager::instance();
+    manager = QIviServiceManager::instance();
 }
 
 void WindowControlTest::cleanup()
@@ -314,15 +314,15 @@ void WindowControlTest::cleanup()
 
 void WindowControlTest::testWithoutBackend()
 {
-    QtIVIWindowControl wc;
+    QIviWindowControl wc;
 
     // Running without a backend means that changes do not propagate
     // We check this on a single property in this case
-    QSignalSpy heaterModeSpy(&wc, SIGNAL(heaterModeChanged(QtIVIWindowControl::HeaterMode)));
+    QSignalSpy heaterModeSpy(&wc, SIGNAL(heaterModeChanged(QIviWindowControl::HeaterMode)));
 
-    QtIVIWindowControl::HeaterMode e = wc.heaterMode();
-    QCOMPARE(e, QtIVIWindowControl::HeaterOff);
-    wc.setHeaterMode(QtIVIWindowControl::HeaterOn);
+    QIviWindowControl::HeaterMode e = wc.heaterMode();
+    QCOMPARE(e, QIviWindowControl::HeaterOff);
+    wc.setHeaterMode(QIviWindowControl::HeaterOn);
     QCOMPARE(heaterModeSpy.count(), 0);
     QCOMPARE(wc.heaterMode(), e);
 
@@ -333,16 +333,16 @@ void WindowControlTest::testInvalidBackend()
 {
     WindowControlInvalidServiceObject *service = new WindowControlInvalidServiceObject();
     manager->registerService(service, service->interfaces());
-    QtIVIWindowControl wc;
+    QIviWindowControl wc;
     wc.startAutoDiscovery();
 
     // Running without a backend means that changes do not propagate
     // We check this on a single property in this case
-    QSignalSpy heaterModeSpy(&wc, SIGNAL(heaterModeChanged(QtIVIWindowControl::HeaterMode)));
+    QSignalSpy heaterModeSpy(&wc, SIGNAL(heaterModeChanged(QIviWindowControl::HeaterMode)));
 
-    QtIVIWindowControl::HeaterMode e = wc.heaterMode();
-    QCOMPARE(e, QtIVIWindowControl::HeaterOff);
-    wc.setHeaterMode(QtIVIWindowControl::HeaterOn);
+    QIviWindowControl::HeaterMode e = wc.heaterMode();
+    QCOMPARE(e, QIviWindowControl::HeaterOff);
+    wc.setHeaterMode(QIviWindowControl::HeaterOn);
     QCOMPARE(heaterModeSpy.count(), 0);
     QCOMPARE(wc.heaterMode(), e);
 
@@ -353,90 +353,90 @@ void WindowControlTest::testClearServiceObject()
 {
     WindowControlTestServiceObject *service = new WindowControlTestServiceObject();
     manager->registerService(service, service->interfaces());
-    service->testBackend()->setHeaterMode(QtIVIWindowControl::HeaterOn, "FrontLeft");
-    QtIVIWindowControl wc;
+    service->testBackend()->setHeaterMode(QIviWindowControl::HeaterOn, "FrontLeft");
+    QIviWindowControl wc;
     wc.startAutoDiscovery();
     QVERIFY(wc.availableZones().contains("FrontLeft"));
-    QtIVIWindowControl* zone = qobject_cast<QtIVIWindowControl*>(wc.zoneAt("FrontLeft"));
+    QIviWindowControl* zone = qobject_cast<QIviWindowControl*>(wc.zoneAt("FrontLeft"));
     QVERIFY(zone);
-    QCOMPARE(zone->heaterMode(), QtIVIWindowControl::HeaterOn);
+    QCOMPARE(zone->heaterMode(), QIviWindowControl::HeaterOn);
     wc.setServiceObject(0);
     QVERIFY(!wc.zoneAt("FrontLeft"));
 }
 
 void WindowControlTest::testHeaterMode()
 {
-    QVector<QtIVIWindowControl::HeaterMode> list;
-    list << QtIVIWindowControl::HeaterOff << QtIVIWindowControl::HeaterOn;
+    QVector<QIviWindowControl::HeaterMode> list;
+    list << QIviWindowControl::HeaterOff << QIviWindowControl::HeaterOn;
 
-    auto testData = PROPERTY_TEST_DATA(QtIVIWindowControl, WindowControlTestBackend, QtIVIWindowControl::HeaterMode, heaterMode, HeaterMode,
-                                       QList<QtIVIWindowControl::HeaterMode>({QtIVIWindowControl::HeaterOff, QtIVIWindowControl::HeaterOn, QtIVIWindowControl::HeaterOff, QtIVIWindowControl::HeaterOn}),
-                                       QList<QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode>>({QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode>(list), QtIVIPropertyAttribute<QtIVIWindowControl::HeaterMode>(QtIVIWindowControl::AutoHeater)}));
+    auto testData = PROPERTY_TEST_DATA(QIviWindowControl, WindowControlTestBackend, QIviWindowControl::HeaterMode, heaterMode, HeaterMode,
+                                       QList<QIviWindowControl::HeaterMode>({QIviWindowControl::HeaterOff, QIviWindowControl::HeaterOn, QIviWindowControl::HeaterOff, QIviWindowControl::HeaterOn}),
+                                       QList<QIviPropertyAttribute<QIviWindowControl::HeaterMode>>({QIviPropertyAttribute<QIviWindowControl::HeaterMode>(list), QIviPropertyAttribute<QIviWindowControl::HeaterMode>(QIviWindowControl::AutoHeater)}));
 
     WindowControlTestServiceObject *service = new WindowControlTestServiceObject();
     manager->registerService(service, service->interfaces());
-    QtIVIWindowControl wc;
+    QIviWindowControl wc;
     wc.startAutoDiscovery();
     QStringList zones = wc.availableZones();
     zones.removeAll("Dummy");
     foreach (QString z, zones) {
-        QtIVIWindowControl* window = qobject_cast<QtIVIWindowControl*>(wc.zoneAt(z));
-        testIVIProperty<QtIVIWindowControl, WindowControlTestBackend, QtIVIWindowControl::HeaterMode>(testData, window, service->testBackend(), z);
+        QIviWindowControl* window = qobject_cast<QIviWindowControl*>(wc.zoneAt(z));
+        testIVIProperty<QIviWindowControl, WindowControlTestBackend, QIviWindowControl::HeaterMode>(testData, window, service->testBackend(), z);
     }
 }
 
 void WindowControlTest::testHeaterEnabled()
 {
-    auto testData = PROPERTY_TEST_DATA_BOOL_READONLY(QtIVIWindowControl, WindowControlTestBackend, heater, Heater,
+    auto testData = PROPERTY_TEST_DATA_BOOL_READONLY(QIviWindowControl, WindowControlTestBackend, heater, Heater,
                                                      QList<bool>({false, true, false, true}),
-                                                     QList<QtIVIPropertyAttribute<bool>>({QtIVIPropertyAttribute<bool>(true), QtIVIPropertyAttribute<bool>(false)}));
+                                                     QList<QIviPropertyAttribute<bool>>({QIviPropertyAttribute<bool>(true), QIviPropertyAttribute<bool>(false)}));
 
     WindowControlTestServiceObject *service = new WindowControlTestServiceObject();
     manager->registerService(service, service->interfaces());
-    QtIVIWindowControl wc;
+    QIviWindowControl wc;
     wc.startAutoDiscovery();
     QStringList zones = wc.availableZones();
     zones.removeAll("Dummy");
     foreach (QString z, zones) {
-        QtIVIWindowControl* window = qobject_cast<QtIVIWindowControl*>(wc.zoneAt(z));
-        testIVIProperty<QtIVIWindowControl, WindowControlTestBackend, bool>(testData, window, service->testBackend(), z);
+        QIviWindowControl* window = qobject_cast<QIviWindowControl*>(wc.zoneAt(z));
+        testIVIProperty<QIviWindowControl, WindowControlTestBackend, bool>(testData, window, service->testBackend(), z);
     }
 }
 
 void WindowControlTest::testBlindMode()
 {
-    QVector<QtIVIWindowControl::BlindMode> list;
-    list << QtIVIWindowControl::BlindClosed << QtIVIWindowControl::BlindOpen;
+    QVector<QIviWindowControl::BlindMode> list;
+    list << QIviWindowControl::BlindClosed << QIviWindowControl::BlindOpen;
 
-    auto testData = PROPERTY_TEST_DATA(QtIVIWindowControl, WindowControlTestBackend, QtIVIWindowControl::BlindMode, blindMode, BlindMode,
-                                       QList<QtIVIWindowControl::BlindMode>({QtIVIWindowControl::BlindClosed, QtIVIWindowControl::BlindOpen, QtIVIWindowControl::BlindClosed, QtIVIWindowControl::BlindOpen}),
-                                       QList<QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode>>({QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode>(list), QtIVIPropertyAttribute<QtIVIWindowControl::BlindMode>(QtIVIWindowControl::AutoBlind)}));
+    auto testData = PROPERTY_TEST_DATA(QIviWindowControl, WindowControlTestBackend, QIviWindowControl::BlindMode, blindMode, BlindMode,
+                                       QList<QIviWindowControl::BlindMode>({QIviWindowControl::BlindClosed, QIviWindowControl::BlindOpen, QIviWindowControl::BlindClosed, QIviWindowControl::BlindOpen}),
+                                       QList<QIviPropertyAttribute<QIviWindowControl::BlindMode>>({QIviPropertyAttribute<QIviWindowControl::BlindMode>(list), QIviPropertyAttribute<QIviWindowControl::BlindMode>(QIviWindowControl::AutoBlind)}));
 
     WindowControlTestServiceObject *service = new WindowControlTestServiceObject();
     manager->registerService(service, service->interfaces());
-    QtIVIWindowControl wc;
+    QIviWindowControl wc;
     wc.startAutoDiscovery();
     QStringList zones = wc.availableZones();
     zones.removeAll("Dummy");
     foreach (QString z, zones) {
-        QtIVIWindowControl* window = qobject_cast<QtIVIWindowControl*>(wc.zoneAt(z));
-        testIVIProperty<QtIVIWindowControl, WindowControlTestBackend, QtIVIWindowControl::BlindMode>(testData, window, service->testBackend(), z);
+        QIviWindowControl* window = qobject_cast<QIviWindowControl*>(wc.zoneAt(z));
+        testIVIProperty<QIviWindowControl, WindowControlTestBackend, QIviWindowControl::BlindMode>(testData, window, service->testBackend(), z);
     }
 }
 
 void WindowControlTest::testStates_data()
 {
     QTest::addColumn<WindowControlTestDataState>("testData");
-    QVector<QtIVIWindowControl::State> list;
-    list << QtIVIWindowControl::Closed << QtIVIWindowControl::Open  << QtIVIWindowControl::FullyOpen;
+    QVector<QIviWindowControl::State> list;
+    list << QIviWindowControl::Closed << QIviWindowControl::Open  << QIviWindowControl::FullyOpen;
 
-    QTest::newRow("state") << PROPERTY_TEST_DATA_READONLY(QtIVIWindowControl, WindowControlTestBackend, QtIVIWindowControl::State, state, State,
-                                                          QList<QtIVIWindowControl::State>({QtIVIWindowControl::Closed, QtIVIWindowControl::Open, QtIVIWindowControl::FullyOpen, QtIVIWindowControl::Closed}),
-                                                          QList<QtIVIPropertyAttribute<QtIVIWindowControl::State>>({QtIVIPropertyAttribute<QtIVIWindowControl::State>(list), QtIVIPropertyAttribute<QtIVIWindowControl::State>(QtIVIWindowControl::Closed)}));
+    QTest::newRow("state") << PROPERTY_TEST_DATA_READONLY(QIviWindowControl, WindowControlTestBackend, QIviWindowControl::State, state, State,
+                                                          QList<QIviWindowControl::State>({QIviWindowControl::Closed, QIviWindowControl::Open, QIviWindowControl::FullyOpen, QIviWindowControl::Closed}),
+                                                          QList<QIviPropertyAttribute<QIviWindowControl::State>>({QIviPropertyAttribute<QIviWindowControl::State>(list), QIviPropertyAttribute<QIviWindowControl::State>(QIviWindowControl::Closed)}));
 
-    QTest::newRow("blindState") << PROPERTY_TEST_DATA_READONLY(QtIVIWindowControl, WindowControlTestBackend, QtIVIWindowControl::State, state, State,
-                                                               QList<QtIVIWindowControl::State>({QtIVIWindowControl::Closed, QtIVIWindowControl::Open, QtIVIWindowControl::FullyOpen, QtIVIWindowControl::Closed}),
-                                                               QList<QtIVIPropertyAttribute<QtIVIWindowControl::State>>({QtIVIPropertyAttribute<QtIVIWindowControl::State>(list), QtIVIPropertyAttribute<QtIVIWindowControl::State>(QtIVIWindowControl::Closed)}));
+    QTest::newRow("blindState") << PROPERTY_TEST_DATA_READONLY(QIviWindowControl, WindowControlTestBackend, QIviWindowControl::State, state, State,
+                                                               QList<QIviWindowControl::State>({QIviWindowControl::Closed, QIviWindowControl::Open, QIviWindowControl::FullyOpen, QIviWindowControl::Closed}),
+                                                               QList<QIviPropertyAttribute<QIviWindowControl::State>>({QIviPropertyAttribute<QIviWindowControl::State>(list), QIviPropertyAttribute<QIviWindowControl::State>(QIviWindowControl::Closed)}));
 
 }
 
@@ -446,13 +446,13 @@ void WindowControlTest::testStates()
 
     WindowControlTestServiceObject *service = new WindowControlTestServiceObject();
     manager->registerService(service, service->interfaces());
-    QtIVIWindowControl wc;
+    QIviWindowControl wc;
     wc.startAutoDiscovery();
     QStringList zones = wc.availableZones();
     zones.removeAll("Dummy");
     foreach (QString z, zones) {
-        QtIVIWindowControl* window = qobject_cast<QtIVIWindowControl*>(wc.zoneAt(z));
-        testIVIProperty<QtIVIWindowControl, WindowControlTestBackend, QtIVIWindowControl::State>(testData, window, service->testBackend(), z);
+        QIviWindowControl* window = qobject_cast<QIviWindowControl*>(wc.zoneAt(z));
+        testIVIProperty<QIviWindowControl, WindowControlTestBackend, QIviWindowControl::State>(testData, window, service->testBackend(), z);
     }
 }
 

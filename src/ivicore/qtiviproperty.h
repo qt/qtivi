@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,18 +39,18 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVIPROPERTY_H
-#define QTIVIPROPERTY_H
+#ifndef QIVIPROPERTY_H
+#define QIVIPROPERTY_H
 
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
-#include <QtIVICore/qtiviglobal.h>
-#include <QtIVICore/QtIVIPropertyAttribute>
+#include <QtIviCore/qtiviglobal.h>
+#include <QtIviCore/QIviPropertyAttribute>
 
 QT_BEGIN_NAMESPACE
 
-class QtIVIPropertyPrivate;
-class Q_QTIVICORE_EXPORT QtIVIProperty : public QObject
+class QIviPropertyPrivate;
+class Q_QTIVICORE_EXPORT QIviProperty : public QObject
 {
     Q_OBJECT
 
@@ -61,7 +61,7 @@ class Q_QTIVICORE_EXPORT QtIVIProperty : public QObject
     Q_PROPERTY(QVariantList availableValues READ availableValues NOTIFY availableValuesChanged)
 
 public:
-    virtual ~QtIVIProperty();
+    virtual ~QIviProperty();
 
     virtual bool isAvailable() const = 0;
     virtual QVariant minimumValue() const  = 0;
@@ -80,16 +80,16 @@ Q_SIGNALS:
     void availableValuesChanged(const QVariantList &availableValues);
 
 protected:
-    QtIVIProperty(int userType, const QObject *receiver, QtPrivate::QSlotObjectBase *attributeGetter, QtPrivate::QSlotObjectBase *valueGetter);
+    QIviProperty(int userType, const QObject *receiver, QtPrivate::QSlotObjectBase *attributeGetter, QtPrivate::QSlotObjectBase *valueGetter);
     void setValueSetter(QtPrivate::QSlotObjectBase *valueSetter);
     QtPrivate::QSlotObjectBase *attributeGetter() const;
     QtPrivate::QSlotObjectBase *valueGetter() const;
 
 private:
-    QtIVIPropertyPrivate * const d_ptr;
-    Q_DECLARE_PRIVATE(QtIVIProperty)
+    QIviPropertyPrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(QIviProperty)
 };
 
 QT_END_NAMESPACE
 
-#endif // QTIVIPROPERTY_H
+#endif // QIVIPROPERTY_H

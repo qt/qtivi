@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,18 +39,18 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVISERVICEMANAGER_H
-#define QTIVISERVICEMANAGER_H
+#ifndef QIVISERVICEMANAGER_H
+#define QIVISERVICEMANAGER_H
 
 #include <QtCore/QAbstractListModel>
-#include <QtIVICore/qtiviglobal.h>
+#include <QtIviCore/qtiviglobal.h>
 
 QT_BEGIN_NAMESPACE
 
-class QtIVIServiceObject;
-class QtIVIServiceManagerPrivate;
+class QIviServiceObject;
+class QIviServiceManagerPrivate;
 
-class Q_QTIVICORE_EXPORT QtIVIServiceManager : public QAbstractListModel
+class Q_QTIVICORE_EXPORT QIviServiceManager : public QAbstractListModel
 {
     Q_OBJECT
 public:
@@ -68,10 +68,10 @@ public:
     };
     Q_ENUM(BackendType)
 
-    static QtIVIServiceManager *instance();
-    virtual ~QtIVIServiceManager();
+    static QIviServiceManager *instance();
+    virtual ~QIviServiceManager();
 
-    QList<QtIVIServiceObject*> findServiceByInterface(const QString &interface, SearchFlags searchFlags = IncludeAll);
+    QList<QIviServiceObject*> findServiceByInterface(const QString &interface, SearchFlags searchFlags = IncludeAll);
     bool hasInterface(const QString &interface) const;
 
     bool registerService(QObject *serviceBackendInterface, const QStringList &interfaces, BackendType backendType = ProductionBackend);
@@ -82,11 +82,11 @@ public:
 Q_SIGNALS:
 
 private:
-    explicit QtIVIServiceManager();
-    QtIVIServiceManagerPrivate * const d_ptr;
-    Q_DECLARE_PRIVATE(QtIVIServiceManager)
+    explicit QIviServiceManager();
+    QIviServiceManagerPrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(QIviServiceManager)
 };
 
 QT_END_NAMESPACE
 
-#endif // QTIVISERVICEMANAGER_H
+#endif // QIVISERVICEMANAGER_H

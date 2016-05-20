@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -41,34 +41,34 @@
 
 #include "qtivipropertyattribute.h"
 
-QtIVIPropertyAttributeBase::QtIVIPropertyAttributeBase()
+QIviPropertyAttributeBase::QIviPropertyAttributeBase()
 {
     registerTypes();
 }
 
-void QtIVIPropertyAttributeBase::registerTypes()
+void QIviPropertyAttributeBase::registerTypes()
 {
-    qRegisterMetaType<QtIVIPropertyAttribute<int>>();
-    qRegisterMetaType<QtIVIPropertyAttribute<bool>>();
-    qRegisterMetaType<QtIVIPropertyAttribute<double>>();
+    qRegisterMetaType<QIviPropertyAttribute<int>>();
+    qRegisterMetaType<QIviPropertyAttribute<bool>>();
+    qRegisterMetaType<QIviPropertyAttribute<double>>();
 #if defined(QT_COORD_TYPE)
-    qRegisterMetaType<QtIVIPropertyAttribute<qreal>>();
+    qRegisterMetaType<QIviPropertyAttribute<qreal>>();
 #endif
-    qRegisterMetaType<QtIVIPropertyAttribute<QString>>();
+    qRegisterMetaType<QIviPropertyAttribute<QString>>();
 }
 
 
 /*!
- * \class QtIVIPropertyAttribute
- * \inmodule QtIVICore
- * \brief The QtIVIPropertyAttribute encapsulates the attributes of a property
+ * \class QIviPropertyAttribute
+ * \inmodule QtIviCore
+ * \brief The QIviPropertyAttribute encapsulates the attributes of a property
  *
- * QtIVIPropertyAttribute sets the boundaries for a property in Qt IVI. In a
- * Qt IVI backend interface, the QtIVIPropertyAttributes are used to control
+ * QIviPropertyAttribute sets the boundaries for a property in Qt IVI. In a
+ * Qt IVI backend interface, the QIviPropertyAttributes are used to control
  * which properties are implemented by a backend and to set the boundaries like
  * the minimum or the maximum value of a property.
  *
- * By default a QtIVIPropertyAttribute is initialized with the "Invalid" type,
+ * By default a QIviPropertyAttribute is initialized with the "Invalid" type,
  * which indicates that this property is not available. This could be the case
  * when the backend doesn't support this property or the property is not available
  * because the current backend configuration does not support it.
@@ -77,7 +77,7 @@ void QtIVIPropertyAttributeBase::registerTypes()
  */
 
 /*!
- * \enum QtIVIPropertyAttributeBase::AttributeType
+ * \enum QIviPropertyAttributeBase::AttributeType
  *
  * \value Invalid
  *        The attribute is invalid and is not available.
@@ -90,85 +90,85 @@ void QtIVIPropertyAttributeBase::registerTypes()
  */
 
 /*!
- * \fn QtIVIPropertyAttribute::QtIVIPropertyAttribute()
- * Constructs an invalid QtIVIPropertyAttribute.
+ * \fn QIviPropertyAttribute::QIviPropertyAttribute()
+ * Constructs an invalid QIviPropertyAttribute.
  *
  * This constructor can be used to indicate that the property is not available.
  * For example, because the backend doesn't support this property.
  */
 
 /*!
- * \fn QtIVIPropertyAttribute::QtIVIPropertyAttribute(bool available)
- * Constructs an QtIVIPropertyAttribute of type NoAttributes.
+ * \fn QIviPropertyAttribute::QIviPropertyAttribute(bool available)
+ * Constructs an QIviPropertyAttribute of type NoAttributes.
  *
  * The argument \a available defines whether the property is supported by the backend.
  */
 
 /*!
- * \fn QtIVIPropertyAttribute::QtIVIPropertyAttribute(const T &minValue, const T &maxValue)
- * Constructs an QtIVIPropertyAttribute of type MinimumMaximum.
+ * \fn QIviPropertyAttribute::QIviPropertyAttribute(const T &minValue, const T &maxValue)
+ * Constructs an QIviPropertyAttribute of type MinimumMaximum.
  *
  * The arguments \a minValue and \a maxValue define the boundaries the value of the property.
  */
 
 /*!
- * \fn QtIVIPropertyAttribute::QtIVIPropertyAttribute(const QVector<T> &avValues)
- * Constructs an QtIVIPropertyAttribute of type AvailableValues.
+ * \fn QIviPropertyAttribute::QIviPropertyAttribute(const QVector<T> &avValues)
+ * Constructs an QIviPropertyAttribute of type AvailableValues.
  *
  * The argument \a avValues defines the valid values for the property.
  */
 
 /*!
- * \fn AttributeType QtIVIPropertyAttribute::type() const
+ * \fn AttributeType QIviPropertyAttribute::type() const
  *
  * Returns the type of the attribute.
  */
 
 /*!
- * \fn bool QtIVIPropertyAttribute::isAvailable() const
+ * \fn bool QIviPropertyAttribute::isAvailable() const
  *
  * Returns true if the property is available for this backend.
  */
 
 /*!
- * \fn T QtIVIPropertyAttribute::minimumValue() const
+ * \fn T QIviPropertyAttribute::minimumValue() const
  *
  * Returns the minimum value of the property.
  * If the attributeType is not MinimumMaximum, a default constructed value is returned.
  */
 
 /*!
- * \fn T QtIVIPropertyAttribute::maximumValue() const
+ * \fn T QIviPropertyAttribute::maximumValue() const
  *
  * Returns the maximum value of the property.
  * If the attributeType is not MinimumMaximum, a default constructed value is returned.
  */
 
 /*!
- * \fn QList<T> QtIVIPropertyAttribute::availableValues() const
+ * \fn QList<T> QIviPropertyAttribute::availableValues() const
  *
  * Returns a list of valid values for this property.
  * If the attributeType is not AvailableValues an empty list is returned.
  */
 
 /*!
- * \fn QString QtIVIPropertyAttribute::toString() const
+ * \fn QString QIviPropertyAttribute::toString() const
  *
  * Returns a QString with a string representation of the attribute.
  */
 
 /*!
- * \fn bool QtIVIPropertyAttribute::operator==(const QtIVIPropertyAttribute& other) const
+ * \fn bool QIviPropertyAttribute::operator==(const QIviPropertyAttribute& other) const
  *
- * Returns \c true if this QtIVIPropertyAttribute is equal to the \a other QtIVIPropertyAttribute; otherwise returns \c false.
+ * Returns \c true if this QIviPropertyAttribute is equal to the \a other QIviPropertyAttribute; otherwise returns \c false.
  *
- * All elements of QtIVIPropertyAttribute are used for the comparison.
+ * All elements of QIviPropertyAttribute are used for the comparison.
  */
 
 /*!
- * \fn bool QtIVIPropertyAttribute::operator!=(const QtIVIPropertyAttribute& other) const
+ * \fn bool QIviPropertyAttribute::operator!=(const QIviPropertyAttribute& other) const
  *
- * Returns \c true if this QtIVIPropertyAttribute is NOT equal to the \a other QtIVIPropertyAttribute; otherwise returns \c false.
+ * Returns \c true if this QIviPropertyAttribute is NOT equal to the \a other QIviPropertyAttribute; otherwise returns \c false.
  *
- * All elements of QtIVIPropertyAttribute are used for the comparison.
+ * All elements of QIviPropertyAttribute are used for the comparison.
  */

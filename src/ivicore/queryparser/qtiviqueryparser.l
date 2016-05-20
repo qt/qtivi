@@ -13,7 +13,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -72,7 +72,7 @@
 #endif  // #if __cplusplus > 199711L
 
 #define YY_NO_INPUT
-#define YY_DECL int QtIVIQueryParser::nextToken()
+#define YY_DECL int QIviQueryParser::nextToken()
 #define YY_USER_INIT initBuffer()
 #define YY_USER_ACTION calcCurrentColumn();
 extern void readQueryBuffer(char* buffer,unsigned int& numBytesRead,int maxBytesToRead);

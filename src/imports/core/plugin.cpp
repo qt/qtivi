@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -41,22 +41,22 @@
 #include <QtQml/qqmlextensionplugin.h>
 #include <qqml.h>
 
-#include <QtIVICore/QtIVICore>
+#include <QtIviCore/QtIviCore>
 
 QT_BEGIN_NAMESPACE
 
-class QtIVICorePlugin : public QQmlExtensionPlugin
+class QIviCorePlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
 public:
     virtual void registerTypes(const char *uri)
     {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIVICore"));
+        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi"));
         Q_UNUSED(uri);
 
-        qmlRegisterUncreatableType<QtIVIAbstractFeature>(uri, 1, 0, "AbstractFeature", "AbstractFeature is not accessible directly");
-        qmlRegisterUncreatableType<QtIVIAbstractZonedFeature>(uri, 1, 0, "AbstractZonedFeature", "AbstractZonedFeature is not accessible directly");
+        qmlRegisterUncreatableType<QIviAbstractFeature>(uri, 1, 0, "AbstractFeature", "AbstractFeature is not accessible directly");
+        qmlRegisterUncreatableType<QIviAbstractZonedFeature>(uri, 1, 0, "AbstractZonedFeature", "AbstractZonedFeature is not accessible directly");
     }
 };
 

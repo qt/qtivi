@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -48,14 +48,14 @@
 #include <private/qv8engine_p.h>
 #include <private/qv4engine_p.h>
 
-QtIVIPropertyPrivate::QtIVIPropertyPrivate(int userType, QtPrivate::QSlotObjectBase *attributeGetter, QtPrivate::QSlotObjectBase *valueGetter)
+QIviPropertyPrivate::QIviPropertyPrivate(int userType, QtPrivate::QSlotObjectBase *attributeGetter, QtPrivate::QSlotObjectBase *valueGetter)
     : m_type(userType)
     , m_attributeGetter(attributeGetter)
     , m_valueGetter(valueGetter)
     , m_valueSetter(Q_NULLPTR)
 {}
 
-void QtIVIPropertyPrivate::throwError(QObject *object, const QString &error)
+void QIviPropertyPrivate::throwError(QObject *object, const QString &error)
 {
     QJSEngine* jsEngine = qjsEngine(object);
     if (jsEngine) {
@@ -67,62 +67,62 @@ void QtIVIPropertyPrivate::throwError(QObject *object, const QString &error)
 }
 
 /*!
- * \class QtIVIProperty
- * \inmodule QtIVICore
- * \brief The QtIVIProperty combines a normal property and a QtIVIPropertyAttribute
+ * \class QIviProperty
+ * \inmodule QtIviCore
+ * \brief The QIviProperty combines a normal property and a QIviPropertyAttribute
  *
- * The QtIVIProperty is used to retrieve the value of a property and its corresponding
- * QtIVIPropertyAttribute in an easy way. It's designed for QML (but is not limited to)
+ * The QIviProperty is used to retrieve the value of a property and its corresponding
+ * QIviPropertyAttribute in an easy way. It's designed for QML (but is not limited to)
  * and acts as a Grouped Property.
  *
- * Although the QtIVIProperty only contains QVariant properties, it still stores
+ * Although the QIviProperty only contains QVariant properties, it still stores
  * the real type of the value and checks that only values of the correct type can be
  * stored in it.
- * The QtIVIProperty doesn't store a copy of the values, instead it just acts as a
+ * The QIviProperty doesn't store a copy of the values, instead it just acts as a
  * forwarder which calls the respective getters and forwards the notification signals.
  *
- * By default a QtIVIProperty is also able to write a value change back to its origin,
+ * By default a QIviProperty is also able to write a value change back to its origin,
  * but it also supports read-only properties which don't provide a setter for the value.
  *
- * QtIVIProperty is an abstract class and can only be created by using the QtIVIPropertyFactory
+ * QIviProperty is an abstract class and can only be created by using the QIviPropertyFactory
  * class.
  */
 /*!
- * \property QtIVIProperty::available
+ * \property QIviProperty::available
  * True if this property is available.
- * \sa QtIVIPropertyAttribute::isAvailable()
+ * \sa QIviPropertyAttribute::isAvailable()
  */
 /*!
- * \property QtIVIProperty::minimumValue
+ * \property QIviProperty::minimumValue
  * The minimum value of the property.
- * \sa QtIVIPropertyAttribute::minimumValue()
+ * \sa QIviPropertyAttribute::minimumValue()
  */
 /*!
- * \property QtIVIProperty::maximumValue
+ * \property QIviProperty::maximumValue
  * The maximum value of the property.
- * \sa QtIVIPropertyAttribute::maximumValue()
+ * \sa QIviPropertyAttribute::maximumValue()
  */
 /*!
- * \property QtIVIProperty::availableValues
+ * \property QIviProperty::availableValues
  * All available Values for this property.
  * This can be used when exposing for example an enum and the backend only supports some of the values.
- * \sa QtIVIPropertyAttribute::availableValues()
+ * \sa QIviPropertyAttribute::availableValues()
  */
 
 /*!
  * Destructor.
  */
-QtIVIProperty::~QtIVIProperty()
+QIviProperty::~QIviProperty()
 {
 }
 
 /*!
- * \property QtIVIProperty::value
+ * \property QIviProperty::value
  * Stores the value of the property as a QVariant
  */
-void QtIVIProperty::setValue(const QVariant &value)
+void QIviProperty::setValue(const QVariant &value)
 {
-    Q_D(QtIVIProperty);
+    Q_D(QIviProperty);
     QVariant var = value;
 
     //Try to behave like QML would be ;-)
@@ -166,35 +166,35 @@ void QtIVIProperty::setValue(const QVariant &value)
 /*!
  * \internal
  */
-QtIVIProperty::QtIVIProperty(int userType, const QObject *receiver,  QtPrivate::QSlotObjectBase *attributeGetter, QtPrivate::QSlotObjectBase *valueGetter)
+QIviProperty::QIviProperty(int userType, const QObject *receiver,  QtPrivate::QSlotObjectBase *attributeGetter, QtPrivate::QSlotObjectBase *valueGetter)
     : QObject(const_cast<QObject*>(receiver))
-    , d_ptr(new QtIVIPropertyPrivate(userType, attributeGetter, valueGetter))
+    , d_ptr(new QIviPropertyPrivate(userType, attributeGetter, valueGetter))
 {
 }
 
 /*!
  * \internal
  */
-void QtIVIProperty::setValueSetter(QtPrivate::QSlotObjectBase *valueSetter)
+void QIviProperty::setValueSetter(QtPrivate::QSlotObjectBase *valueSetter)
 {
-    Q_D(QtIVIProperty);
+    Q_D(QIviProperty);
     d->m_valueSetter = valueSetter;
 }
 
 /*!
  * \internal
  */
-QtPrivate::QSlotObjectBase *QtIVIProperty::attributeGetter() const
+QtPrivate::QSlotObjectBase *QIviProperty::attributeGetter() const
 {
-    Q_D(const QtIVIProperty);
+    Q_D(const QIviProperty);
     return d->m_attributeGetter;
 }
 
 /*!
  * \internal
  */
-QtPrivate::QSlotObjectBase *QtIVIProperty::valueGetter() const
+QtPrivate::QSlotObjectBase *QIviProperty::valueGetter() const
 {
-    Q_D(const QtIVIProperty);
+    Q_D(const QIviProperty);
     return d->m_valueGetter;
 }

@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVISERVICEMANAGER_P_H
-#define QTIVISERVICEMANAGER_P_H
+#ifndef QIVISERVICEMANAGER_P_H
+#define QIVISERVICEMANAGER_P_H
 
 //
 //  W A R N I N G
@@ -59,49 +59,49 @@
 #include <QtCore/QMap>
 #include <QtCore/QSet>
 
-#include <QtIVICore/qtiviglobal.h>
-#include <QtIVICore/qtiviservicemanager.h>
+#include <QtIviCore/qtiviglobal.h>
+#include <QtIviCore/qtiviservicemanager.h>
 
 QT_BEGIN_NAMESPACE
 
 class QPluginLoader;
-class QtIVIServiceInterface;
-class QtIVIServiceObject;
-class QtIVIProxyServiceObject;
+class QIviServiceInterface;
+class QIviServiceObject;
+class QIviProxyServiceObject;
 
 struct Backend{
     QVariantMap metaData;
-    QtIVIServiceInterface *interface;
+    QIviServiceInterface *interface;
     QObject *interfaceObject;
-    QtIVIProxyServiceObject *proxyServiceObject;
+    QIviProxyServiceObject *proxyServiceObject;
     QPluginLoader *loader;
 };
 
-class Q_QTIVICORE_EXPORT QtIVIServiceManagerPrivate : public QObject
+class Q_QTIVICORE_EXPORT QIviServiceManagerPrivate : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit QtIVIServiceManagerPrivate(QtIVIServiceManager *parent);
+    explicit QIviServiceManagerPrivate(QIviServiceManager *parent);
 
-    static QtIVIServiceManagerPrivate* get(QtIVIServiceManager *serviceManager);
+    static QIviServiceManagerPrivate* get(QIviServiceManager *serviceManager);
 
-    QList<QtIVIServiceObject*> findServiceByInterface(const QString &interface, QtIVIServiceManager::SearchFlags searchFlags);
+    QList<QIviServiceObject*> findServiceByInterface(const QString &interface, QIviServiceManager::SearchFlags searchFlags);
 
     void searchPlugins();
     void registerBackend(const QString &fileName, const QJsonObject &metaData);
-    bool registerBackend(QObject *serviceBackendInterface, const QStringList &interfaces, QtIVIServiceManager::BackendType backendType);
+    bool registerBackend(QObject *serviceBackendInterface, const QStringList &interfaces, QIviServiceManager::BackendType backendType);
     void addBackend(struct Backend *backend);
 
     void unloadAllBackends();
 
-    QtIVIServiceInterface *loadServiceBackendInterface(struct Backend *backend);
+    QIviServiceInterface *loadServiceBackendInterface(struct Backend *backend);
 
     QList<Backend*> m_backends;
     QSet<QString> m_interfaceNames;
 
-    QtIVIServiceManager * const q_ptr;
-    Q_DECLARE_PUBLIC(QtIVIServiceManager)
+    QIviServiceManager * const q_ptr;
+    Q_DECLARE_PUBLIC(QIviServiceManager)
 
 Q_SIGNALS:
     void beginInsertRows(const QModelIndex &index, int start, int end);
@@ -111,5 +111,5 @@ Q_SIGNALS:
 
 QT_END_NAMESPACE
 
-#endif // QTIVISERVICEMANAGER_P_H
+#endif // QIVISERVICEMANAGER_P_H
 

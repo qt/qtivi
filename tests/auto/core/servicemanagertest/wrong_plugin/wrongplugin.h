@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:GPL-EXCEPT-QTAS$
 ** Commercial License Usage
@@ -32,13 +32,13 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
-#include <QtIVICore/QtIVIServiceInterface>
+#include <QtIviCore/QIviServiceInterface>
 
 class WrongPlugin : public QObject
 {
     Q_OBJECT
-    //Q_INTERFACES(QtIVIServiceInterface)
-    Q_PLUGIN_METADATA(IID "com.pelagicore.QtIVIServiceInterface" FILE "wrong_plugin.json")
+    //Q_INTERFACES(QIviServiceInterface)
+    Q_PLUGIN_METADATA(IID "com.pelagicore.QIviServiceInterface" FILE "wrong_plugin.json")
 public:
     WrongPlugin();
     virtual ~WrongPlugin() {}

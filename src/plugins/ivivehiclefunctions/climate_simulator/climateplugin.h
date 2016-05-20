@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -42,16 +42,16 @@
 #ifndef CLIMATEPLUGIN_H
 #define CLIMATEPLUGIN_H
 
-#include <QtIVICore/QtIVIServiceInterface>
+#include <QtIviCore/QIviServiceInterface>
 
 class ClimateControlBackend;
 class WindowControlBackend;
 
-class ClimatePlugin : public QObject, QtIVIServiceInterface
+class ClimatePlugin : public QObject, QIviServiceInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "com.pelagicore.QtIVIServiceInterface" FILE "climate_simulator.json")
-    Q_INTERFACES(QtIVIServiceInterface)
+    Q_PLUGIN_METADATA(IID "com.pelagicore.QIviServiceInterface" FILE "climate_simulator.json")
+    Q_INTERFACES(QIviServiceInterface)
 
 public:
     ClimatePlugin(QObject *parent = 0);

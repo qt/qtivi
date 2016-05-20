@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,75 +39,75 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVICLIMATECONTROLBACKENDINTERFACE_H
-#define QTIVICLIMATECONTROLBACKENDINTERFACE_H
+#ifndef QIVICLIMATECONTROLBACKENDINTERFACE_H
+#define QIVICLIMATECONTROLBACKENDINTERFACE_H
 
 #include <QtCore/QObject>
 
-#include <QtIVICore/qtivizonedfeatureinterface.h>
-#include <QtIVICore/qtivipropertyattribute.h>
-#include <QtIVIVehicleFunctions/qtiviclimatecontrol.h>
+#include <QtIviCore/qtivizonedfeatureinterface.h>
+#include <QtIviCore/qtivipropertyattribute.h>
+#include <QtIviVehicleFunctions/qtiviclimatecontrol.h>
 
 QT_BEGIN_NAMESPACE
 
-class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QtIVIClimateControlBackendInterface : public QtIVIZonedFeatureInterface
+class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QIviClimateControlBackendInterface : public QIviZonedFeatureInterface
 {
     Q_OBJECT
 
 public:
-    QtIVIClimateControlBackendInterface(QObject *parent = 0);
+    QIviClimateControlBackendInterface(QObject *parent = Q_NULLPTR);
 
     virtual void setTargetTemperature(int value, const QString &zone) = 0;
     virtual void setSeatCooler(int value, const QString &zone) = 0;
     virtual void setSeatHeater(int value, const QString &zone) = 0;
     virtual void setSteeringWheelHeater(int value, const QString &zone) = 0;
     virtual void setFanSpeedLevel(int value, const QString &zone) = 0;
-    virtual void setAirflowDirections(QtIVIClimateControl::AirflowDirections airflowDirections, const QString &zone) = 0;
+    virtual void setAirflowDirections(QIviClimateControl::AirflowDirections airflowDirections, const QString &zone) = 0;
     virtual void setAirConditioningEnabled(bool enabled, const QString &zone) = 0;
     virtual void setHeaterEnabled(bool enabled, const QString &zone) = 0;
     virtual void setZoneSynchronizationEnabled(bool zoneSynchronization, const QString &zone) = 0;
     virtual void setDefrostEnabled(bool defrost, const QString &zone) = 0;
-    virtual void setRecirculationMode(QtIVIClimateControl::RecirculationMode recirculationMode, const QString &zone) = 0;
+    virtual void setRecirculationMode(QIviClimateControl::RecirculationMode recirculationMode, const QString &zone) = 0;
     virtual void setRecirculationSensitivityLevel(int recirculationSensitivityLevel, const QString &zone) = 0;
-    virtual void setClimateMode(QtIVIClimateControl::ClimateMode climateMode, const QString &zone) = 0;
+    virtual void setClimateMode(QIviClimateControl::ClimateMode climateMode, const QString &zone) = 0;
     virtual void setAutomaticClimateFanIntensityLevel(int automaticClimateFanIntensityLevel, const QString &zone) = 0;
 
 Q_SIGNALS:
     void targetTemperatureChanged(int value, const QString &zone = QString());
-    void targetTemperatureAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
+    void targetTemperatureAttributeChanged(const QIviPropertyAttribute<int> &attribute, const QString &zone = QString());
     void seatCoolerChanged(int value, const QString &zone = QString());
-    void seatCoolerAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
+    void seatCoolerAttributeChanged(const QIviPropertyAttribute<int> &attribute, const QString &zone = QString());
     void seatHeaterChanged(int value, const QString &zone = QString());
-    void seatHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
+    void seatHeaterAttributeChanged(const QIviPropertyAttribute<int> &attribute, const QString &zone = QString());
     void steeringWheelHeaterChanged(int value, const QString &zone = QString());
-    void steeringWheelHeaterAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
+    void steeringWheelHeaterAttributeChanged(const QIviPropertyAttribute<int> &attribute, const QString &zone = QString());
     void fanSpeedLevelChanged(int value, const QString &zone = QString());
-    void fanSpeedLevelAttributeChanged(const QtIVIPropertyAttribute<int> &attribute, const QString &zone = QString());
-    void airflowDirectionsChanged(QtIVIClimateControl::AirflowDirections value, const QString &zone = QString());
-    void airflowDirectionsAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections> &attribute, const QString &zone = QString());
+    void fanSpeedLevelAttributeChanged(const QIviPropertyAttribute<int> &attribute, const QString &zone = QString());
+    void airflowDirectionsChanged(QIviClimateControl::AirflowDirections value, const QString &zone = QString());
+    void airflowDirectionsAttributeChanged(const QIviPropertyAttribute<QIviClimateControl::AirflowDirections> &attribute, const QString &zone = QString());
     void airConditioningEnabledChanged(bool value, const QString &zone = QString());
-    void airConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone = QString());
+    void airConditioningAttributeChanged(const QIviPropertyAttribute<bool> &attribute, const QString &zone = QString());
     void heaterEnabledChanged(bool value, const QString &zone = QString());
-    void heaterAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute, const QString &zone = QString());
+    void heaterAttributeChanged(const QIviPropertyAttribute<bool> &attribute, const QString &zone = QString());
     void outsideTemperatureChanged(int outsideTemperature, const QString &zone = QString());
-    void outsideTemperatureAttributeChanged(const QtIVIPropertyAttribute<int> &outsideTemperature, const QString &zone = QString());
+    void outsideTemperatureAttributeChanged(const QIviPropertyAttribute<int> &outsideTemperature, const QString &zone = QString());
     void zoneSynchronizationEnabledChanged(bool zoneSynchronization, const QString &zone = QString());
-    void zoneSynchronizationAttributeChanged(const QtIVIPropertyAttribute<bool> &zoneSynchronization, const QString &zone = QString());
+    void zoneSynchronizationAttributeChanged(const QIviPropertyAttribute<bool> &zoneSynchronization, const QString &zone = QString());
     void defrostEnabledChanged(bool defrost, const QString &zone = QString());
-    void defrostAttributeChanged(const QtIVIPropertyAttribute<bool> &defrost, const QString &zone = QString());
-    void recirculationModeChanged(QtIVIClimateControl::RecirculationMode recirculationMode, const QString &zone = QString());
-    void recirculationModeAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::RecirculationMode> &recirculationMode, const QString &zone = QString());
+    void defrostAttributeChanged(const QIviPropertyAttribute<bool> &defrost, const QString &zone = QString());
+    void recirculationModeChanged(QIviClimateControl::RecirculationMode recirculationMode, const QString &zone = QString());
+    void recirculationModeAttributeChanged(const QIviPropertyAttribute<QIviClimateControl::RecirculationMode> &recirculationMode, const QString &zone = QString());
     void recirculationEnabledChanged(bool recirculation, const QString &zone = QString());
-    void recirculationAttributeChanged(const QtIVIPropertyAttribute<bool> &recirculation, const QString &zone = QString());
+    void recirculationAttributeChanged(const QIviPropertyAttribute<bool> &recirculation, const QString &zone = QString());
     void recirculationSensitivityLevelChanged(int recirculationSensitivityLevel, const QString &zone = QString());
-    void recirculationSensitivityLevelAttributeChanged(const QtIVIPropertyAttribute<int> &recirculationSensitivityLevel, const QString &zone = QString());
-    void climateModeChanged(QtIVIClimateControl::ClimateMode climateMode, const QString &zone = QString());
-    void climateModeAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::ClimateMode> &climateMode, const QString &zone = QString());
+    void recirculationSensitivityLevelAttributeChanged(const QIviPropertyAttribute<int> &recirculationSensitivityLevel, const QString &zone = QString());
+    void climateModeChanged(QIviClimateControl::ClimateMode climateMode, const QString &zone = QString());
+    void climateModeAttributeChanged(const QIviPropertyAttribute<QIviClimateControl::ClimateMode> &climateMode, const QString &zone = QString());
     void automaticClimateFanIntensityLevelChanged(int automaticClimateFanIntensityLevel, const QString &zone = QString());
-    void automaticClimateFanIntensityLevelAttributeChanged(const QtIVIPropertyAttribute<int> &automaticClimateFanIntensityLevel, const QString &zone = QString());
+    void automaticClimateFanIntensityLevelAttributeChanged(const QIviPropertyAttribute<int> &automaticClimateFanIntensityLevel, const QString &zone = QString());
 };
 
 QT_END_NAMESPACE
 
-#endif // QTIVICLIMATECONTROLBACKENDINTERFACE_H
+#endif // QIVICLIMATECONTROLBACKENDINTERFACE_H
 

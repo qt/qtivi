@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVIPROPERTYTESTER_P_H
-#define QTIVIPROPERTYTESTER_P_H
+#ifndef QIVIPROPERTYTESTER_P_H
+#define QIVIPROPERTYTESTER_P_H
 
 //
 //  W A R N I N G
@@ -53,24 +53,24 @@
 // We mean it.
 //
 
-#include <QtIVICore/QtIVIProperty>
-#include <QtIVICore/QtIVIPropertyFactory>
-#include <QtIVICore/qtiviqmlconversion_helper.h>
+#include <QtIviCore/QIviProperty>
+#include <QtIviCore/QIviPropertyFactory>
+#include <QtIviCore/qtiviqmlconversion_helper.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
 
-template <typename Feature, typename Backend, typename T> struct QtIVIPropertyTestData
+template <typename Feature, typename Backend, typename T> struct QIviPropertyTestData
 {
     typedef void (Feature::*setter_func)(T);
     typedef T (Feature::*getter_func)() const;
     typedef void (Backend::*backend_setter_func)(T, const QString &);
-    typedef QtIVIPropertyAttribute<T> (Feature::*attribute_getter_func)() const;
-    typedef void (Backend::*backend_attribute_setter_func)(QtIVIPropertyAttribute<T>, const QString &);
+    typedef QIviPropertyAttribute<T> (Feature::*attribute_getter_func)() const;
+    typedef void (Backend::*backend_attribute_setter_func)(QIviPropertyAttribute<T>, const QString &);
 
-    QtIVIPropertyTestData(const QString &pName, const QList<T> &vList, backend_setter_func setValueInBackend_func,
+    QIviPropertyTestData(const QString &pName, const QList<T> &vList, backend_setter_func setValueInBackend_func,
                      const QString &propChangedSignal, const QString &attChangedSignal,
-                     setter_func set, getter_func get, const QList<QtIVIPropertyAttribute<T>> &attList,
+                     setter_func set, getter_func get, const QList<QIviPropertyAttribute<T>> &attList,
                      attribute_getter_func attGet, backend_attribute_setter_func attSet)
         : propertyName(pName)
         , valueList(vList)
@@ -84,7 +84,7 @@ template <typename Feature, typename Backend, typename T> struct QtIVIPropertyTe
         , backend_attribute_setter(attSet)
     {}
 
-    QtIVIPropertyTestData() {}
+    QIviPropertyTestData() {}
 
     QString propertyName;
     QList<T> valueList;
@@ -93,20 +93,20 @@ template <typename Feature, typename Backend, typename T> struct QtIVIPropertyTe
     QString attributeChangedSignal;
     setter_func setter;
     getter_func getter;
-    QList<QtIVIPropertyAttribute<T>> attributeList;
+    QList<QIviPropertyAttribute<T>> attributeList;
     attribute_getter_func attribute_getter;
     backend_attribute_setter_func backend_attribute_setter;
 };
 
 template <typename Feature, typename Backend, typename T>
-void testIVIProperty(const QtIVIPropertyTestData<Feature, Backend, T> &testData, Feature* feature, Backend* backend, const QString &zone = QString())
+void testIVIProperty(const QIviPropertyTestData<Feature, Backend, T> &testData, Feature* feature, Backend* backend, const QString &zone = QString())
 {
     int valueIndex = 0;
     (backend->*testData.backend_setter)(testData.valueList.at(valueIndex), zone);
 
     //WTF need to split these two lines ?
     QVariant var = feature->property(testData.propertyName.toLocal8Bit());
-    QtIVIProperty *property = var.value<QtIVIProperty*>();
+    QIviProperty *property = var.value<QIviProperty*>();
 
     QVERIFY(property);
     QSignalSpy valueSpy(feature, testData.propertyChangedSignal.toLocal8Bit());
@@ -138,7 +138,7 @@ void testIVIProperty(const QtIVIPropertyTestData<Feature, Backend, T> &testData,
     //Test Setter IVIPROPERTY
     if (testData.setter) {
         property->setProperty("value", QVariant::fromValue(testData.valueList.at(valueIndex)));
-        QVERIFY2(valueSpy.count() == 1, "property change signal was not sent, after calling the QtIVIProperty setter");
+        QVERIFY2(valueSpy.count() == 1, "property change signal was not sent, after calling the QIviProperty setter");
         QCOMPARE(valueSpy.takeFirst().at(0).value<T>(), testData.valueList.at(valueIndex));
         QCOMPARE((feature->*testData.getter)(), testData.valueList.at(valueIndex));
         QCOMPARE(property->property("value"), qtivi_convertValue(testData.valueList.at(valueIndex)));
@@ -157,7 +157,7 @@ void testIVIProperty(const QtIVIPropertyTestData<Feature, Backend, T> &testData,
     //Test attribute change notification
     (backend->*testData.backend_attribute_setter)(testData.attributeList.at(1), zone);
     QVERIFY2(attributeSpy.count() == 1, "property change signal was not sent, after changing the value in the backend");
-    QCOMPARE(attributeSpy.takeFirst().at(0).value<QtIVIPropertyAttribute<T>>(), testData.attributeList.at(1));
+    QCOMPARE(attributeSpy.takeFirst().at(0).value<QIviPropertyAttribute<T>>(), testData.attributeList.at(1));
     QCOMPARE((feature->*testData.attribute_getter)(), testData.attributeList.at(1));
     QCOMPARE(property->property("available").toBool(), testData.attributeList.at(1).isAvailable());
     QCOMPARE(property->property("minimumValue").value<T>(), testData.attributeList.at(1).minimumValue());
@@ -167,11 +167,11 @@ void testIVIProperty(const QtIVIPropertyTestData<Feature, Backend, T> &testData,
 }
 
 #define PROPERTY_TEST_DATA_IMPL(_feature_, _backend_, _type_, _prop_, _capitalProp_, _valueList_, _attributeList_, _getter_, _setter_, _signal_, _backSetter_) \
-QtIVIPropertyTestData<_feature_, _backend_, _type_>(#_prop_, \
+QIviPropertyTestData<_feature_, _backend_, _type_>(#_prop_, \
                                                 _valueList_, \
                                                 _backSetter_, \
                                                 SIGNAL(_signal_), \
-                                                SIGNAL(_prop_##AttributeChanged(QtIVIPropertyAttribute<_type_>)), \
+                                                SIGNAL(_prop_##AttributeChanged(QIviPropertyAttribute<_type_>)), \
                                                 _setter_, \
                                                 _getter_, \
                                                 _attributeList_, \
@@ -196,4 +196,4 @@ QtIVIPropertyTestData<_feature_, _backend_, _type_>(#_prop_, \
 
 QT_END_NAMESPACE
 
-#endif // QTIVIPROPERTYTESTER_P_H
+#endif // QIVIPROPERTYTESTER_P_H

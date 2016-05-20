@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVITYPETRAITS_H
-#define QTIVITYPETRAITS_H
+#ifndef QIVITYPETRAITS_H
+#define QIVITYPETRAITS_H
 
 #include <QtCore/qtypetraits.h>
 
@@ -53,7 +53,7 @@ QT_BEGIN_NAMESPACE
 namespace QtPrivate {
     // This functions checks whether the type has a implicit cast operator to int
     template <typename From, typename To>
-    struct QtIVIConvertHelper {
+    struct QIviConvertHelper {
       static small_ Test(To);
       static big_ Test(...);
       static From Create();
@@ -63,8 +63,8 @@ namespace QtPrivate {
     template <typename From, typename To>
     struct qtivi_is_convertible
         : integral_constant<bool,
-                            sizeof(QtIVIConvertHelper<From, To>::Test(
-                                      QtIVIConvertHelper<From, To>::Create()))
+                            sizeof(QIviConvertHelper<From, To>::Test(
+                                      QIviConvertHelper<From, To>::Create()))
                             == sizeof(small_)> {
     };
 
@@ -124,4 +124,4 @@ namespace QtPrivate {
 
 QT_END_NAMESPACE
 
-#endif // QTIVITYPETRAITS_H
+#endif // QIVITYPETRAITS_H

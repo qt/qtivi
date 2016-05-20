@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,25 +39,25 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVIPROPERTYFACTORY_H
-#define QTIVIPROPERTYFACTORY_H
+#ifndef QIVIPROPERTYFACTORY_H
+#define QIVIPROPERTYFACTORY_H
 
-#include <QtIVICore/qtiviglobal.h>
-#include <QtIVICore/QtIVIProperty>
-#include <QtIVICore/qtivitypetraits.h>
-#include <QtIVICore/qtiviqmlconversion_helper.h>
+#include <QtIviCore/qtiviglobal.h>
+#include <QtIviCore/QIviProperty>
+#include <QtIviCore/qtivitypetraits.h>
+#include <QtIviCore/qtiviqmlconversion_helper.h>
 #include <QMetaEnum>
 
 QT_BEGIN_NAMESPACE
 
 template <typename T>
-class QtIVIPropertyFactory : public QtIVIProperty
+class QIviPropertyFactory : public QIviProperty
 {
 public:
 
     //readwrite property
     template <typename attributeGetterFunc, typename attributeSignalFunc, typename valueGetterFunc, typename valueSignalFunc, typename valueSlotFunc>
-    static inline QtIVIPropertyFactory *create(const typename QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal, valueSlotFunc valueSlot)
+    static inline QIviPropertyFactory *create(const typename QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal, valueSlotFunc valueSlot)
     {
         typedef QtPrivate::FunctionPointer<valueSignalFunc> ValueSignalType;
         typedef QtPrivate::FunctionPointer<valueSlotFunc> SlotType;
@@ -71,7 +71,7 @@ public:
         Q_STATIC_ASSERT_X((QtPrivate::CheckCompatibleArguments<ValueType, typename SlotType::Arguments>::value),
                           "Property type and value slot arguments are not compatible.");
 
-        QtIVIPropertyFactory *prop = create(sender, attributeGetter, attributeSignal, valueGetter, valueSignal);
+        QIviPropertyFactory *prop = create(sender, attributeGetter, attributeSignal, valueGetter, valueSignal);
         prop->setValueSetterHelper(new QtPrivate::QSlotObject<valueSlotFunc, typename SlotType::Arguments, void>(valueSlot));
 
         return prop;
@@ -79,7 +79,7 @@ public:
 
     //readonly property (no write slot)
     template <typename attributeGetterFunc, typename attributeSignalFunc, typename valueGetterFunc, typename valueSignalFunc>
-    static inline QtIVIPropertyFactory *create(const typename QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal)
+    static inline QIviPropertyFactory *create(const typename QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal)
     {
         typedef QtPrivate::FunctionPointer<attributeGetterFunc> AttributeGetterType;
         typedef QtPrivate::FunctionPointer<attributeSignalFunc> AttributeSignalType;
@@ -96,7 +96,7 @@ public:
                           "The value signal needs to have exactly one argument");
 
         typedef QtPrivate::List<typename ValueGetterType::ReturnType, void> ValueGetterReturnType;
-        typedef QtPrivate::List<QtIVIPropertyAttribute<T>, void> AttributeType;
+        typedef QtPrivate::List<QIviPropertyAttribute<T>, void> AttributeType;
         typedef QtPrivate::List<typename AttributeGetterType::ReturnType, void> AttributeGetterReturnType;
 
         Q_STATIC_ASSERT_X((QtPrivate::CheckCompatibleArguments<ValueGetterReturnType, typename ValueSignalType::Arguments>::value),
@@ -120,11 +120,11 @@ public:
                 //TODO Do we want to use a qFatal() here or just report a qCritical instead ?
                 qFatal("The provided enum needs to be declared as Q_ENUM or Q_FLAG");
         }
-        QtIVIPropertyFactory *prop = new QtIVIPropertyFactory(userType, sender,
+        QIviPropertyFactory *prop = new QIviPropertyFactory(userType, sender,
                                                       new QtPrivate::QSlotObject<attributeGetterFunc, typename AttributeGetterType::Arguments, typename AttributeGetterType::ReturnType>(attributeGetter),
                                                       new QtPrivate::QSlotObject<valueGetterFunc, typename ValueGetterType::Arguments, typename ValueGetterType::ReturnType>(valueGetter));
 
-        connect(sender, attributeSignal, prop, [prop](const QtIVIPropertyAttribute<T> &attribute) {prop->updateAttribute(attribute);});
+        connect(sender, attributeSignal, prop, [prop](const QIviPropertyAttribute<T> &attribute) {prop->updateAttribute(attribute);});
         connect(sender, valueSignal, prop, [prop](const T &value) {prop->valueChanged(QVariant::fromValue(value));});
 
         return prop;
@@ -157,8 +157,8 @@ public:
     }
 
 private:
-    QtIVIPropertyFactory(int userType, const QObject *receiver, QtPrivate::QSlotObjectBase *attGetter, QtPrivate::QSlotObjectBase *valGetter)
-        : QtIVIProperty(userType, receiver, attGetter, valGetter)
+    QIviPropertyFactory(int userType, const QObject *receiver, QtPrivate::QSlotObjectBase *attGetter, QtPrivate::QSlotObjectBase *valGetter)
+        : QIviProperty(userType, receiver, attGetter, valGetter)
     {
         registerConverters();
     }
@@ -166,14 +166,14 @@ private:
     //We need to know the exact type here to allocate it before calling the getter.
     //The call function will just use the operator=() function to assign it to our local instance,
     //but will not create a new one.
-    QtIVIPropertyAttribute<T> callAttributeGetter() const {
-        QtIVIPropertyAttribute<T> attribute;
+    QIviPropertyAttribute<T> callAttributeGetter() const {
+        QIviPropertyAttribute<T> attribute;
         void *args[] = { reinterpret_cast<void*>(&attribute), QVariant().data() };
         attributeGetter()->call(parent(), args);
         return attribute;
     }
 
-    void updateAttribute(const QtIVIPropertyAttribute<T> &attribute)
+    void updateAttribute(const QIviPropertyAttribute<T> &attribute)
     {
         Q_EMIT availableChanged(attribute.isAvailable());
         Q_EMIT minimumValueChanged(QVariant::fromValue<T>(attribute.minimumValue()));
@@ -204,4 +204,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QTIVIPROPERTYFACTORY_H
+#endif // QIVIPROPERTYFACTORY_H

@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:BSD-QTAS$
 ** Commercial License Usage
@@ -54,7 +54,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QtIVIVehicleFunctions/QtIVIClimateControl>
+#include <QtIviVehicleFunctions/QIviClimateControl>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -75,18 +75,18 @@ public:
 
 private slots:
     void setAirRecirculationEnabled(bool enabled);
-    void onAirRecirculationModeChanged(QtIVIClimateControl::RecirculationMode mode);
-    void onAirRecirculationAttributeChanged(const QtIVIPropertyAttribute<QtIVIClimateControl::RecirculationMode> &attribute);
-    void onHeaterAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
-    void onAirConditioningAttributeChanged(const QtIVIPropertyAttribute<bool> &attribute);
-    void setupFlowDirectionRadioButtons(QtIVIClimateControl::AirflowDirections direction);
-    void setupFlowDirectionAttribute(const QtIVIPropertyAttribute<QtIVIClimateControl::AirflowDirections> &attribute);
+    void onAirRecirculationModeChanged(QIviClimateControl::RecirculationMode mode);
+    void onAirRecirculationAttributeChanged(const QIviPropertyAttribute<QIviClimateControl::RecirculationMode> &attribute);
+    void onHeaterAttributeChanged(const QIviPropertyAttribute<bool> &attribute);
+    void onAirConditioningAttributeChanged(const QIviPropertyAttribute<bool> &attribute);
+    void setupFlowDirectionRadioButtons(QIviClimateControl::AirflowDirections direction);
+    void setupFlowDirectionAttribute(const QIviPropertyAttribute<QIviClimateControl::AirflowDirections> &attribute);
     void onFlowDirectionButtonToggled(QAbstractButton * button, bool checked);
 private:
 
     Ui::MainWindow *ui;
     QButtonGroup *m_buttonGroup;
-    QtIVIClimateControl* m_climateControl;
+    QIviClimateControl* m_climateControl;
 };
 
 #endif // MAINWINDOW_H

@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,27 +39,27 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVIABSTRACTFEATURE_H
-#define QTIVIABSTRACTFEATURE_H
+#ifndef QIVIABSTRACTFEATURE_H
+#define QIVIABSTRACTFEATURE_H
 
 #include <QtCore/QObject>
 #include <QtQml/QQmlParserStatus>
 
-#include <QtIVICore/qtiviglobal.h>
+#include <QtIviCore/qtiviglobal.h>
 
 QT_BEGIN_NAMESPACE
 
-class QtIVIServiceObject;
-class QtIVIAbstractFeaturePrivate;
+class QIviServiceObject;
+class QIviAbstractFeaturePrivate;
 
-class Q_QTIVICORE_EXPORT QtIVIAbstractFeature : public QObject, public QQmlParserStatus
+class Q_QTIVICORE_EXPORT QIviAbstractFeature : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
 
     Q_PROPERTY(DiscoveryMode discoveryMode READ discoveryMode WRITE setDiscoveryMode NOTIFY discoveryModeChanged)
     Q_PROPERTY(DiscoveryResult discoveryResult READ discoveryResult NOTIFY discoveryResultChanged)
-    Q_PROPERTY(QtIVIServiceObject* serviceObject READ serviceObject WRITE setServiceObject NOTIFY serviceObjectChanged)
+    Q_PROPERTY(QIviServiceObject* serviceObject READ serviceObject WRITE setServiceObject NOTIFY serviceObjectChanged)
     Q_PROPERTY(bool isValid READ isValid NOTIFY isValidChanged)
     Q_PROPERTY(QString error READ errorMessage NOTIFY errorChanged)
 
@@ -91,34 +91,34 @@ public:
     };
     Q_ENUM(DiscoveryResult)
 
-    explicit QtIVIAbstractFeature(const QString &interface, QObject *parent = 0);
-    virtual ~QtIVIAbstractFeature();
+    explicit QIviAbstractFeature(const QString &interface, QObject *parent = Q_NULLPTR);
+    virtual ~QIviAbstractFeature();
 
-    QtIVIServiceObject *serviceObject() const;
-    QtIVIAbstractFeature::DiscoveryMode discoveryMode() const;
-    QtIVIAbstractFeature::DiscoveryResult discoveryResult() const;
+    QIviServiceObject *serviceObject() const;
+    QIviAbstractFeature::DiscoveryMode discoveryMode() const;
+    QIviAbstractFeature::DiscoveryResult discoveryResult() const;
     bool isValid() const;
-    QtIVIAbstractFeature::Error error() const;
+    QIviAbstractFeature::Error error() const;
     QString errorMessage() const;
 
 public Q_SLOTS:
-    bool setServiceObject(QtIVIServiceObject *so);
-    void setDiscoveryMode(QtIVIAbstractFeature::DiscoveryMode discoveryMode);
-    QtIVIAbstractFeature::DiscoveryResult startAutoDiscovery();
+    bool setServiceObject(QIviServiceObject *so);
+    void setDiscoveryMode(QIviAbstractFeature::DiscoveryMode discoveryMode);
+    QIviAbstractFeature::DiscoveryResult startAutoDiscovery();
 
 Q_SIGNALS:
     void serviceObjectChanged();
-    void discoveryModeChanged(QtIVIAbstractFeature::DiscoveryMode discoveryMode);
-    void discoveryResultChanged(QtIVIAbstractFeature::DiscoveryResult discoveryResult);
+    void discoveryModeChanged(QIviAbstractFeature::DiscoveryMode discoveryMode);
+    void discoveryResultChanged(QIviAbstractFeature::DiscoveryResult discoveryResult);
     void isValidChanged(bool arg);
-    void errorChanged(QtIVIAbstractFeature::Error error, const QString &message);
+    void errorChanged(QIviAbstractFeature::Error error, const QString &message);
 
 protected:
-    QtIVIAbstractFeature(QtIVIAbstractFeaturePrivate &dd, QObject *parent = Q_NULLPTR);
+    QIviAbstractFeature(QIviAbstractFeaturePrivate &dd, QObject *parent = Q_NULLPTR);
 
-    virtual bool acceptServiceObject(QtIVIServiceObject*) = 0;
-    virtual void connectToServiceObject(QtIVIServiceObject*) = 0;
-    virtual void disconnectFromServiceObject(QtIVIServiceObject*) = 0;
+    virtual bool acceptServiceObject(QIviServiceObject*) = 0;
+    virtual void connectToServiceObject(QIviServiceObject*) = 0;
+    virtual void disconnectFromServiceObject(QIviServiceObject*) = 0;
     virtual void clearServiceObject() = 0;
 
     virtual void classBegin();
@@ -126,18 +126,18 @@ protected:
 
     QString interfaceName() const;
     QString errorText() const;
-    void setError(QtIVIAbstractFeature::Error error, const QString &message = QString());
+    void setError(QIviAbstractFeature::Error error, const QString &message = QString());
 
 protected Q_SLOTS:
-    virtual void onErrorChanged(QtIVIAbstractFeature::Error error, const QString &message = QString());
+    virtual void onErrorChanged(QIviAbstractFeature::Error error, const QString &message = QString());
 
 private Q_SLOTS:
     void serviceObjectDestroyed();
 
 private:
-    Q_DECLARE_PRIVATE(QtIVIAbstractFeature)
+    Q_DECLARE_PRIVATE(QIviAbstractFeature)
 };
 
 QT_END_NAMESPACE
 
-#endif // QTIVIABSTRACTFEATURE_H
+#endif // QIVIABSTRACTFEATURE_H

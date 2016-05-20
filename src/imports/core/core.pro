@@ -1,6 +1,6 @@
 CXX_MODULE = qml
 TARGET  = qtivicoreplugin
-TARGETPATH = QtIVICore
+TARGETPATH = QtIvi
 
 SOURCES += \
     plugin.cpp

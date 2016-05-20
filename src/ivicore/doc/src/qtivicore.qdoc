@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the documentation of the QtIVI module of the Qt Toolkit.
+** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:FDL-QTAS$
 ** Commercial License Usage
@@ -26,7 +26,7 @@
 ****************************************************************************/
 
 /*!
-    \module QtIVICore
+    \module QtIviCore
     \title Qt IVI Core C++ Classes
     \ingroup modules
     \ingroup qtivi_modules
@@ -78,7 +78,7 @@
     notation, e.g. com.example.FeatureName. This is what is used by Core to find service objects
     for a feature.
 
-    The feature is derived from the QtIVIAbstractFeature class. The backend interface is commonly
+    The feature is derived from the QIviAbstractFeature class. The backend interface is commonly
     based on QObject.
 
     To make the API useable from QML, the feature needs to include a QML plugin registering types
@@ -95,12 +95,12 @@
 
     The backends are loaded by Core when the features request them. Each backend has to provide a Qt
     IVI plugin that exposes a factory to the Core. This is what is used to load and create backends.
-    The plugin interface is called QtIVIServiceInterface.
+    The plugin interface is called QIviServiceInterface.
 
     \section2 Simple vs Dynamic Features
 
     Most features are simple. This means that each feature element needs a single service object. By
-    setting the autoDiscover property of QtIVIAbstractFeature to true, the Core module provides the
+    setting the autoDiscover property of QIviAbstractFeature to true, the Core module provides the
     first compatible service object to the feature and issues a warning if none or more than one
     compatible service object is found.
 
@@ -112,10 +112,10 @@
     the auto discovery mechanism does not work. Instead the application must take responsibility for
     finding the right service object for each feature instance.
 
-    QtIVIServiceManager can be used in this case to manually search for plugins with a specific
+    QIviServiceManager can be used in this case to manually search for plugins with a specific
     BackendInterface. The discovery and loading of the backends takes place in this class.
 
-    The QtIVIServiceManager class can also be used to register backends which are part of the same
+    The QIviServiceManager class can also be used to register backends which are part of the same
     application and shouldn’t go into a plugin. This is especially useful for autotest as you need
     to control the backend and the feature at the same time.
 
@@ -228,7 +228,7 @@
 */
 
 /*!
-    \qmlmodule QtIVICore 1.0
+    \qmlmodule QtIvi 1.0
     \title Qt IVI Core QML Types
     \ingroup qmlmodules
     \ingroup qtivi_qmlmodules

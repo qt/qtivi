@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the documentation of the QtIVI module of the Qt Toolkit.
+** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:FDL-QTAS$
 ** Commercial License Usage
@@ -27,7 +27,7 @@
 /*!
     \page index.html
     \title Qt IVI
-    \keyword QtIVI
+    \keyword QtIvi
 
     The Qt IVI (In-Vehicle Infotainment) module provides C++ classes and QML types
     for accessing vehicle features, as well as a core API for implementing

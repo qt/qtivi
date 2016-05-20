@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -42,139 +42,139 @@
 #include "qtiviabstractfeaturelistmodel.h"
 #include "qtiviabstractfeaturelistmodel_p.h"
 
-QtIVIHelperFeature::QtIVIHelperFeature(const QString &interface, QtIVIAbstractFeatureListModel *model)
-    : QtIVIAbstractFeature(interface)
+QIviHelperFeature::QIviHelperFeature(const QString &interface, QIviAbstractFeatureListModel *model)
+    : QIviAbstractFeature(interface)
     , m_model(model)
 {
 }
 
-bool QtIVIHelperFeature::acceptServiceObject(QtIVIServiceObject *so)
+bool QIviHelperFeature::acceptServiceObject(QIviServiceObject *so)
 {
     return m_model->acceptServiceObject(so);
 }
 
-void QtIVIHelperFeature::connectToServiceObject(QtIVIServiceObject *so)
+void QIviHelperFeature::connectToServiceObject(QIviServiceObject *so)
 {
     m_model->connectToServiceObject(so);
 }
 
-void QtIVIHelperFeature::disconnectFromServiceObject(QtIVIServiceObject *so)
+void QIviHelperFeature::disconnectFromServiceObject(QIviServiceObject *so)
 {
     m_model->disconnectFromServiceObject(so);
 }
 
-void QtIVIHelperFeature::clearServiceObject()
+void QIviHelperFeature::clearServiceObject()
 {
     m_model->clearServiceObject();
 }
 
-QtIVIAbstractFeatureListModelPrivate::QtIVIAbstractFeatureListModelPrivate(const QString &interface, QtIVIAbstractFeatureListModel *model)
+QIviAbstractFeatureListModelPrivate::QIviAbstractFeatureListModelPrivate(const QString &interface, QIviAbstractFeatureListModel *model)
     : QAbstractItemModelPrivate()
-    , m_feature(new QtIVIHelperFeature(interface, model))
+    , m_feature(new QIviHelperFeature(interface, model))
 {
 
 }
 
-QtIVIAbstractFeatureListModelPrivate::~QtIVIAbstractFeatureListModelPrivate()
+QIviAbstractFeatureListModelPrivate::~QIviAbstractFeatureListModelPrivate()
 {
     delete m_feature;
 }
 
-QtIVIAbstractFeatureListModel::QtIVIAbstractFeatureListModel(const QString &interface, QObject *parent)
-    : QAbstractListModel(*new QtIVIAbstractFeatureListModelPrivate(interface, this), parent)
+QIviAbstractFeatureListModel::QIviAbstractFeatureListModel(const QString &interface, QObject *parent)
+    : QAbstractListModel(*new QIviAbstractFeatureListModelPrivate(interface, this), parent)
 {
-    Q_D(QtIVIAbstractFeatureListModel);
-    connect(d->m_feature, &QtIVIAbstractFeature::serviceObjectChanged, this, &QtIVIAbstractFeatureListModel::serviceObjectChanged);
-    connect(d->m_feature, &QtIVIAbstractFeature::discoveryModeChanged, this, &QtIVIAbstractFeatureListModel::discoveryModeChanged);
-    connect(d->m_feature, &QtIVIAbstractFeature::discoveryResultChanged, this, &QtIVIAbstractFeatureListModel::discoveryResultChanged);
-    connect(d->m_feature, &QtIVIAbstractFeature::isValidChanged, this, &QtIVIAbstractFeatureListModel::isValidChanged);
-    connect(d->m_feature, &QtIVIAbstractFeature::errorChanged, this, &QtIVIAbstractFeatureListModel::errorChanged);
+    Q_D(QIviAbstractFeatureListModel);
+    connect(d->m_feature, &QIviAbstractFeature::serviceObjectChanged, this, &QIviAbstractFeatureListModel::serviceObjectChanged);
+    connect(d->m_feature, &QIviAbstractFeature::discoveryModeChanged, this, &QIviAbstractFeatureListModel::discoveryModeChanged);
+    connect(d->m_feature, &QIviAbstractFeature::discoveryResultChanged, this, &QIviAbstractFeatureListModel::discoveryResultChanged);
+    connect(d->m_feature, &QIviAbstractFeature::isValidChanged, this, &QIviAbstractFeatureListModel::isValidChanged);
+    connect(d->m_feature, &QIviAbstractFeature::errorChanged, this, &QIviAbstractFeatureListModel::errorChanged);
 }
 
-QtIVIAbstractFeatureListModel::~QtIVIAbstractFeatureListModel()
+QIviAbstractFeatureListModel::~QIviAbstractFeatureListModel()
 {
 
 }
 
-QtIVIServiceObject *QtIVIAbstractFeatureListModel::serviceObject() const
+QIviServiceObject *QIviAbstractFeatureListModel::serviceObject() const
 {
-    Q_D(const QtIVIAbstractFeatureListModel);
+    Q_D(const QIviAbstractFeatureListModel);
     return d->m_feature->serviceObject();
 }
 
-QtIVIAbstractFeature::DiscoveryMode QtIVIAbstractFeatureListModel::discoveryMode() const
+QIviAbstractFeature::DiscoveryMode QIviAbstractFeatureListModel::discoveryMode() const
 {
-    Q_D(const QtIVIAbstractFeatureListModel);
+    Q_D(const QIviAbstractFeatureListModel);
     return d->m_feature->discoveryMode();
 }
 
-QtIVIAbstractFeature::DiscoveryResult QtIVIAbstractFeatureListModel::discoveryResult() const
+QIviAbstractFeature::DiscoveryResult QIviAbstractFeatureListModel::discoveryResult() const
 {
-    Q_D(const QtIVIAbstractFeatureListModel);
+    Q_D(const QIviAbstractFeatureListModel);
     return d->m_feature->discoveryResult();
 }
 
-bool QtIVIAbstractFeatureListModel::isValid() const
+bool QIviAbstractFeatureListModel::isValid() const
 {
-    Q_D(const QtIVIAbstractFeatureListModel);
+    Q_D(const QIviAbstractFeatureListModel);
     return d->m_feature->isValid();
 }
 
-QtIVIAbstractFeature::Error QtIVIAbstractFeatureListModel::error() const
+QIviAbstractFeature::Error QIviAbstractFeatureListModel::error() const
 {
-    Q_D(const QtIVIAbstractFeatureListModel);
+    Q_D(const QIviAbstractFeatureListModel);
     return d->m_feature->error();
 }
 
-QString QtIVIAbstractFeatureListModel::errorMessage() const
+QString QIviAbstractFeatureListModel::errorMessage() const
 {
-    Q_D(const QtIVIAbstractFeatureListModel);
+    Q_D(const QIviAbstractFeatureListModel);
     return d->m_feature->errorMessage();
 }
 
-bool QtIVIAbstractFeatureListModel::setServiceObject(QtIVIServiceObject *so)
+bool QIviAbstractFeatureListModel::setServiceObject(QIviServiceObject *so)
 {
-    Q_D(QtIVIAbstractFeatureListModel);
+    Q_D(QIviAbstractFeatureListModel);
     return d->m_feature->setServiceObject(so);
 }
 
-void QtIVIAbstractFeatureListModel::setDiscoveryMode(QtIVIAbstractFeature::DiscoveryMode discoveryMode)
+void QIviAbstractFeatureListModel::setDiscoveryMode(QIviAbstractFeature::DiscoveryMode discoveryMode)
 {
-    Q_D(QtIVIAbstractFeatureListModel);
+    Q_D(QIviAbstractFeatureListModel);
     return d->m_feature->setDiscoveryMode(discoveryMode);
 }
 
-QtIVIAbstractFeature::DiscoveryResult QtIVIAbstractFeatureListModel::startAutoDiscovery()
+QIviAbstractFeature::DiscoveryResult QIviAbstractFeatureListModel::startAutoDiscovery()
 {
-    Q_D(QtIVIAbstractFeatureListModel);
+    Q_D(QIviAbstractFeatureListModel);
     return d->m_feature->startAutoDiscovery();
 }
 
-QtIVIAbstractFeatureListModel::QtIVIAbstractFeatureListModel(QtIVIAbstractFeatureListModelPrivate &dd, QObject *parent)
+QIviAbstractFeatureListModel::QIviAbstractFeatureListModel(QIviAbstractFeatureListModelPrivate &dd, QObject *parent)
     : QAbstractListModel(dd, parent)
 {
-    Q_D(QtIVIAbstractFeatureListModel);
-    connect(d->m_feature, &QtIVIAbstractFeature::serviceObjectChanged, this, &QtIVIAbstractFeatureListModel::serviceObjectChanged);
-    connect(d->m_feature, &QtIVIAbstractFeature::discoveryModeChanged, this, &QtIVIAbstractFeatureListModel::discoveryModeChanged);
-    connect(d->m_feature, &QtIVIAbstractFeature::discoveryResultChanged, this, &QtIVIAbstractFeatureListModel::discoveryResultChanged);
-    connect(d->m_feature, &QtIVIAbstractFeature::isValidChanged, this, &QtIVIAbstractFeatureListModel::isValidChanged);
-    connect(d->m_feature, &QtIVIAbstractFeature::errorChanged, this, &QtIVIAbstractFeatureListModel::errorChanged);
+    Q_D(QIviAbstractFeatureListModel);
+    connect(d->m_feature, &QIviAbstractFeature::serviceObjectChanged, this, &QIviAbstractFeatureListModel::serviceObjectChanged);
+    connect(d->m_feature, &QIviAbstractFeature::discoveryModeChanged, this, &QIviAbstractFeatureListModel::discoveryModeChanged);
+    connect(d->m_feature, &QIviAbstractFeature::discoveryResultChanged, this, &QIviAbstractFeatureListModel::discoveryResultChanged);
+    connect(d->m_feature, &QIviAbstractFeature::isValidChanged, this, &QIviAbstractFeatureListModel::isValidChanged);
+    connect(d->m_feature, &QIviAbstractFeature::errorChanged, this, &QIviAbstractFeatureListModel::errorChanged);
 }
 
-QString QtIVIAbstractFeatureListModel::interfaceName() const
+QString QIviAbstractFeatureListModel::interfaceName() const
 {
-    Q_D(const QtIVIAbstractFeatureListModel);
+    Q_D(const QIviAbstractFeatureListModel);
     return d->m_feature->interfaceName();
 }
 
-QString QtIVIAbstractFeatureListModel::errorText() const
+QString QIviAbstractFeatureListModel::errorText() const
 {
-    Q_D(const QtIVIAbstractFeatureListModel);
+    Q_D(const QIviAbstractFeatureListModel);
     return d->m_feature->errorText();
 }
 
-void QtIVIAbstractFeatureListModel::setError(QtIVIAbstractFeature::Error error, const QString &message)
+void QIviAbstractFeatureListModel::setError(QIviAbstractFeature::Error error, const QString &message)
 {
-    Q_D(QtIVIAbstractFeatureListModel);
+    Q_D(QIviAbstractFeatureListModel);
     d->m_feature->setError(error, message);
 }

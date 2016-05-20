@@ -1,13 +1,13 @@
 %modules = ( # path to module name map
-    "QtIVICore" => "$basedir/src/ivicore",
-    "QtIVIVehicleFunctions" => "$basedir/src/ivivehiclefunctions",
+    "QtIviCore" => "$basedir/src/ivicore",
+    "QtIviVehicleFunctions" => "$basedir/src/ivivehiclefunctions",
     "QtGeniviExtras" => "$basedir/src/geniviextras",
 );
 %moduleheaders = ( # restrict the module headers to those found in relative path
 );
 %classnames = (
      "qdlt.h" => "QtDlt",
-     "qtiviqueryterm.h" => "QtIVIAbstractQueryTerm", "QtIVIConjunctionTerm", "QtIVIScopeTerm", "QtIVIFilterTerm", "QtIVIOrderTerm",
+     "qtiviqueryterm.h" => "QIviAbstractQueryTerm", "QIviConjunctionTerm", "QIviScopeTerm", "QIviFilterTerm", "QIviOrderTerm",
 );
 %deprecatedheaders = (
 );

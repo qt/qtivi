@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -41,24 +41,24 @@
 
 #include "qtiviproxyserviceobject_p.h"
 
-QtIVIProxyServiceObject::QtIVIProxyServiceObject(QtIVIServiceInterface *interface)
-    : QtIVIServiceObject()
+QIviProxyServiceObject::QIviProxyServiceObject(QIviServiceInterface *interface)
+    : QIviServiceObject()
     , m_interface(interface)
 {
 
 }
 
-QtIVIProxyServiceObject::~QtIVIProxyServiceObject()
+QIviProxyServiceObject::~QIviProxyServiceObject()
 {
 
 }
 
-QStringList QtIVIProxyServiceObject::interfaces() const
+QStringList QIviProxyServiceObject::interfaces() const
 {
     return m_interface->interfaces();
 }
 
-QObject *QtIVIProxyServiceObject::interfaceInstance(const QString &interface) const
+QObject *QIviProxyServiceObject::interfaceInstance(const QString &interface) const
 {
     return m_interface->interfaceInstance(interface);
 }

@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -43,7 +43,7 @@
 #include "climatecontrolbackend.h"
 #include "windowcontrolbackend.h"
 
-#include <QtIVIVehicleFunctions/QtIVIClimateControlBackendInterface>
+#include <QtIviVehicleFunctions/QIviClimateControlBackendInterface>
 #include <QStringList>
 
 ClimatePlugin::ClimatePlugin(QObject *parent) :
@@ -56,16 +56,16 @@ ClimatePlugin::ClimatePlugin(QObject *parent) :
 QStringList ClimatePlugin::interfaces() const
 {
     QStringList list;
-    list << QtIVIStringClimateControlInterfaceName;
-    list << QtIVIStringWindowControlInterfaceName;
+    list << QIviStringClimateControlInterfaceName;
+    list << QIviStringWindowControlInterfaceName;
     return list;
 }
 
 QObject *ClimatePlugin::interfaceInstance(const QString &interface) const
 {
-    if (interface == QtIVIStringClimateControlInterfaceName)
+    if (interface == QIviStringClimateControlInterfaceName)
         return m_climate;
-    else if (interface == QtIVIStringWindowControlInterfaceName)
+    else if (interface == QIviStringWindowControlInterfaceName)
         return m_window;
 
     return 0;

@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -42,72 +42,72 @@
 #include "qtiviqueryterm.h"
 #include "qtiviqueryterm_p.h"
 
-QtIVIConjunctionTermPrivate::QtIVIConjunctionTermPrivate()
-    : m_conjunction(QtIVIConjunctionTerm::And)
+QIviConjunctionTermPrivate::QIviConjunctionTermPrivate()
+    : m_conjunction(QIviConjunctionTerm::And)
 {
 }
 
-QtIVIScopeTermPrivate::QtIVIScopeTermPrivate()
+QIviScopeTermPrivate::QIviScopeTermPrivate()
     : m_term(nullptr)
     , m_negated(false)
 {
 }
 
-QtIVIFilterTermPrivate::QtIVIFilterTermPrivate()
+QIviFilterTermPrivate::QIviFilterTermPrivate()
     : m_negated(false)
 {
 }
 
-QString QtIVIFilterTermPrivate::operatorToString() const
+QString QIviFilterTermPrivate::operatorToString() const
 {
     switch (m_operator){
-    case QtIVIFilterTerm::Equals: return QLatin1String("=");
-    case QtIVIFilterTerm::EqualsCaseInsensitive: return QLatin1String("~=");
-    case QtIVIFilterTerm::Unequals: return QLatin1String("!=");
-    case QtIVIFilterTerm::GreaterThan: return QLatin1String(">");
-    case QtIVIFilterTerm::GreaterEquals: return QLatin1String(">=");
-    case QtIVIFilterTerm::LowerThan: return QLatin1String("<");
-    case QtIVIFilterTerm::LowerEquals: return QLatin1String("<=");
+    case QIviFilterTerm::Equals: return QLatin1String("=");
+    case QIviFilterTerm::EqualsCaseInsensitive: return QLatin1String("~=");
+    case QIviFilterTerm::Unequals: return QLatin1String("!=");
+    case QIviFilterTerm::GreaterThan: return QLatin1String(">");
+    case QIviFilterTerm::GreaterEquals: return QLatin1String(">=");
+    case QIviFilterTerm::LowerThan: return QLatin1String("<");
+    case QIviFilterTerm::LowerEquals: return QLatin1String("<=");
     }
 
     return QLatin1String("unknown type");
 }
 
-QtIVIOrderTermPrivate::QtIVIOrderTermPrivate()
+QIviOrderTermPrivate::QIviOrderTermPrivate()
     : m_ascending(false)
 {
 }
 
-QtIVIAbstractQueryTerm::~QtIVIAbstractQueryTerm()
+QIviAbstractQueryTerm::~QIviAbstractQueryTerm()
 {
 }
 
-QtIVIConjunctionTerm::QtIVIConjunctionTerm()
-    : d_ptr(new QtIVIConjunctionTermPrivate)
+QIviConjunctionTerm::QIviConjunctionTerm()
+    : d_ptr(new QIviConjunctionTermPrivate)
 {
 }
 
-QtIVIConjunctionTerm::~QtIVIConjunctionTerm()
+QIviConjunctionTerm::~QIviConjunctionTerm()
 {
-    Q_D(QtIVIConjunctionTerm);
+    Q_D(QIviConjunctionTerm);
     qDeleteAll(d->m_terms);
     delete d_ptr;
 }
 
-QtIVIAbstractQueryTerm::Type QtIVIConjunctionTerm::type() const
+QIviAbstractQueryTerm::Type QIviConjunctionTerm::type() const
 {
-    return QtIVIAbstractQueryTerm::ConjunctionTerm;
+    return QIviAbstractQueryTerm::ConjunctionTerm;
 }
 
-QString QtIVIConjunctionTerm::toString() const
+QString QIviConjunctionTerm::toString() const
 {
-    Q_D(const QtIVIConjunctionTerm);
+    Q_D(const QIviConjunctionTerm);
     QString conjunction = QLatin1String("&");
     if (d->m_conjunction == Or)
         conjunction = QLatin1String("|");
 
     QString string;
-    QListIterator<QtIVIAbstractQueryTerm*> it(d->m_terms);
+    QListIterator<QIviAbstractQueryTerm*> it(d->m_terms);
     while (it.hasNext()) {
         string += it.next()->toString();
         if (it.hasNext())
@@ -117,38 +117,38 @@ QString QtIVIConjunctionTerm::toString() const
     return string;
 }
 
-QtIVIConjunctionTerm::Conjunction QtIVIConjunctionTerm::conjunction() const
+QIviConjunctionTerm::Conjunction QIviConjunctionTerm::conjunction() const
 {
-    Q_D(const QtIVIConjunctionTerm);
+    Q_D(const QIviConjunctionTerm);
     return d->m_conjunction;
 }
 
-QList<QtIVIAbstractQueryTerm *> QtIVIConjunctionTerm::terms() const
+QList<QIviAbstractQueryTerm *> QIviConjunctionTerm::terms() const
 {
-    Q_D(const QtIVIConjunctionTerm);
+    Q_D(const QIviConjunctionTerm);
     return d->m_terms;
 }
 
-QtIVIScopeTerm::QtIVIScopeTerm()
-    : d_ptr(new QtIVIScopeTermPrivate)
+QIviScopeTerm::QIviScopeTerm()
+    : d_ptr(new QIviScopeTermPrivate)
 {
 }
 
-QtIVIScopeTerm::~QtIVIScopeTerm()
+QIviScopeTerm::~QIviScopeTerm()
 {
-    Q_D(QtIVIScopeTerm);
+    Q_D(QIviScopeTerm);
     delete d->m_term;
     delete d_ptr;
 }
 
-QtIVIAbstractQueryTerm::Type QtIVIScopeTerm::type() const
+QIviAbstractQueryTerm::Type QIviScopeTerm::type() const
 {
-    return QtIVIAbstractQueryTerm::ScopeTerm;
+    return QIviAbstractQueryTerm::ScopeTerm;
 }
 
-QString QtIVIScopeTerm::toString() const
+QString QIviScopeTerm::toString() const
 {
-    Q_D(const QtIVIScopeTerm);
+    Q_D(const QIviScopeTerm);
     QString string = QLatin1Literal("(") + d->m_term->toString() + QLatin1Literal(")");
     if (d->m_negated)
         string.prepend(QLatin1String("!"));
@@ -156,36 +156,36 @@ QString QtIVIScopeTerm::toString() const
     return string;
 }
 
-bool QtIVIScopeTerm::isNegated() const
+bool QIviScopeTerm::isNegated() const
 {
-    Q_D(const QtIVIScopeTerm);
+    Q_D(const QIviScopeTerm);
     return d->m_negated;
 }
 
-QtIVIAbstractQueryTerm *QtIVIScopeTerm::term() const
+QIviAbstractQueryTerm *QIviScopeTerm::term() const
 {
-    Q_D(const QtIVIScopeTerm);
+    Q_D(const QIviScopeTerm);
     return d->m_term;
 }
 
-QtIVIFilterTerm::QtIVIFilterTerm()
-    : d_ptr(new QtIVIFilterTermPrivate)
+QIviFilterTerm::QIviFilterTerm()
+    : d_ptr(new QIviFilterTermPrivate)
 {
 }
 
-QtIVIFilterTerm::~QtIVIFilterTerm()
+QIviFilterTerm::~QIviFilterTerm()
 {
     delete d_ptr;
 }
 
-QtIVIAbstractQueryTerm::Type QtIVIFilterTerm::type() const
+QIviAbstractQueryTerm::Type QIviFilterTerm::type() const
 {
-    return QtIVIAbstractQueryTerm::FilterTerm;
+    return QIviAbstractQueryTerm::FilterTerm;
 }
 
-QString QtIVIFilterTerm::toString() const
+QString QIviFilterTerm::toString() const
 {
-    Q_D(const QtIVIFilterTerm);
+    Q_D(const QIviFilterTerm);
     QString string;
 
     string = d->m_property + d->operatorToString() + d->m_value.toString();
@@ -196,48 +196,48 @@ QString QtIVIFilterTerm::toString() const
     return string;
 }
 
-QtIVIFilterTerm::Operator QtIVIFilterTerm::operatorType() const
+QIviFilterTerm::Operator QIviFilterTerm::operatorType() const
 {
-    Q_D(const QtIVIFilterTerm);
+    Q_D(const QIviFilterTerm);
     return d->m_operator;
 }
 
-QVariant QtIVIFilterTerm::value() const
+QVariant QIviFilterTerm::value() const
 {
-    Q_D(const QtIVIFilterTerm);
+    Q_D(const QIviFilterTerm);
     return d->m_value;
 }
 
-QString QtIVIFilterTerm::propertyName() const
+QString QIviFilterTerm::propertyName() const
 {
-    Q_D(const QtIVIFilterTerm);
+    Q_D(const QIviFilterTerm);
     return d->m_property;
 }
 
-bool QtIVIFilterTerm::isNegated() const
+bool QIviFilterTerm::isNegated() const
 {
-    Q_D(const QtIVIFilterTerm);
+    Q_D(const QIviFilterTerm);
     return d->m_negated;
 }
 
-QtIVIOrderTerm::QtIVIOrderTerm()
-    : d_ptr(new QtIVIOrderTermPrivate)
+QIviOrderTerm::QIviOrderTerm()
+    : d_ptr(new QIviOrderTermPrivate)
 {
 }
 
-QtIVIOrderTerm::~QtIVIOrderTerm()
+QIviOrderTerm::~QIviOrderTerm()
 {
     delete d_ptr;
 }
 
-bool QtIVIOrderTerm::isAscending() const
+bool QIviOrderTerm::isAscending() const
 {
-    Q_D(const QtIVIOrderTerm);
+    Q_D(const QIviOrderTerm);
     return d->m_ascending;
 }
 
-QString QtIVIOrderTerm::propertyName() const
+QString QIviOrderTerm::propertyName() const
 {
-    Q_D(const QtIVIOrderTerm);
+    Q_D(const QIviOrderTerm);
     return d->m_propertyName;
 }

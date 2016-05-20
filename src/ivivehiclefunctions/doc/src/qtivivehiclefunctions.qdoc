@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the documentation of the QtIVI module of the Qt Toolkit.
+** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:FDL-QTAS$
 ** Commercial License Usage
@@ -26,7 +26,7 @@
 ****************************************************************************/
 
 /*!
-    \module QtIVIVehicleFunctions
+    \module QtIviVehicleFunctions
     \title Qt IVI Vehicle Functions C++ Classes
     \ingroup modules
     \ingroup qtivi_modules
@@ -56,10 +56,10 @@
     the element:
 
    \code
-   #include <QtIVIVehicleFunctions/QtIVIClimateControl>
+   #include <QtIviVehicleFunctions/QIviClimateControl>
    ...
-   QtIVIClimateControl* m_climateControl;
-   m_climateControl = new QtIVIClimateControl(this);
+   QIviClimateControl* m_climateControl;
+   m_climateControl = new QIviClimateControl(this);
    \endcode
 
    In order to trigger the auto discovery mechanism, call the startAutoDiscovery method. This will
@@ -86,19 +86,19 @@
    \endcode
 
    Some features, like climate control, are divided into several climate zones. The names
-   of the available zones can be checked using QtIVIAbstractZonedFeature::availableZones():
+   of the available zones can be checked using QIviAbstractZonedFeature::availableZones():
 
    \code
    QStringList zones = m_climateControl->availableZones();
    \endcode
 
-   You can use QtIVIAbstractZonedFeature::zoneAt() to access zone functions:
+   You can use QIviAbstractZonedFeature::zoneAt() to access zone functions:
 
    \code
    m_climateControl->zoneAt("FrontSeat")->setSeatHeater(false);
    \endcode
 
-   Looping zones is done with QtIVIAbstractZonedFeature::zones():
+   Looping zones is done with QIviAbstractZonedFeature::zones():
 
    \code
     foreach (QClimateControl* z, m_climateControl->zones())
@@ -108,7 +108,7 @@
 */
 
 /*!
-    \qmlmodule QtIVIVehicleFunctions 1.0
+    \qmlmodule QtIvi.VehicleFunctions 1.0
     \title Qt IVI Vehicle Functions QML Types
     \ingroup qmlmodules
     \ingroup qtivi_qmlmodules

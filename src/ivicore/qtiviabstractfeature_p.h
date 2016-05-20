@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVIABSTRACTFEATURE_P_H
-#define QTIVIABSTRACTFEATURE_P_H
+#ifndef QIVIABSTRACTFEATURE_P_H
+#define QIVIABSTRACTFEATURE_P_H
 
 //
 //  W A R N I N G
@@ -59,25 +59,25 @@
 
 QT_BEGIN_NAMESPACE
 
-class Q_QTIVICORE_EXPORT QtIVIAbstractFeaturePrivate : public QObjectPrivate
+class Q_QTIVICORE_EXPORT QIviAbstractFeaturePrivate : public QObjectPrivate
 {
 public:
-    QtIVIAbstractFeaturePrivate(const QString &interface, QtIVIAbstractFeature *parent);
+    QIviAbstractFeaturePrivate(const QString &interface, QIviAbstractFeature *parent);
 
-    void setDiscoveryResult(QtIVIAbstractFeature::DiscoveryResult discoveryResult);
+    void setDiscoveryResult(QIviAbstractFeature::DiscoveryResult discoveryResult);
 
-    QtIVIAbstractFeature * const q_ptr;
-    Q_DECLARE_PUBLIC(QtIVIAbstractFeature)
+    QIviAbstractFeature * const q_ptr;
+    Q_DECLARE_PUBLIC(QIviAbstractFeature)
 
     QString m_interface;
-    QtIVIServiceObject* m_serviceObject;
-    QtIVIAbstractFeature::DiscoveryMode m_discoveryMode;
-    QtIVIAbstractFeature::DiscoveryResult m_discoveryResult;
+    QIviServiceObject* m_serviceObject;
+    QIviAbstractFeature::DiscoveryMode m_discoveryMode;
+    QIviAbstractFeature::DiscoveryResult m_discoveryResult;
     QString m_errorMessage;
-    QtIVIAbstractFeature::Error m_error;
+    QIviAbstractFeature::Error m_error;
     bool m_qmlCreation;
 };
 
 QT_END_NAMESPACE
 
-#endif // QTIVIABSTRACTFEATURE_P_H
+#endif // QIVIABSTRACTFEATURE_P_H

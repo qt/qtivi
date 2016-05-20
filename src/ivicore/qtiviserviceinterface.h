@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,27 +39,27 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVISERVICEINTERFACE_H
-#define QTIVISERVICEINTERFACE_H
+#ifndef QIVISERVICEINTERFACE_H
+#define QIVISERVICEINTERFACE_H
 
 #include <QtCore/QtPlugin>
 
 QT_BEGIN_NAMESPACE
 
-class QtIVIServiceInterface {
+class QIviServiceInterface {
 
 public:
-    virtual ~QtIVIServiceInterface() {}
+    virtual ~QIviServiceInterface() {}
 
     virtual QStringList interfaces() const = 0;
     virtual QObject* interfaceInstance(const QString& interface) const = 0;
 };
 
-Q_DECLARE_INTERFACE(QtIVIServiceInterface, "com.pelagicore.QtIVIServiceInterface")
+Q_DECLARE_INTERFACE(QIviServiceInterface, "com.pelagicore.QIviServiceInterface")
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(QtIVIServiceInterface*)
+Q_DECLARE_METATYPE(QIviServiceInterface*)
 
-#endif // QTIVISERVICEINTERFACE_H
+#endif // QIVISERVICEINTERFACE_H
 

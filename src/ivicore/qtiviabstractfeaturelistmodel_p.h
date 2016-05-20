@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVIABSTRACTFEATURELISTMODEL_P_H
-#define QTIVIABSTRACTFEATURELISTMODEL_P_H
+#ifndef QIVIABSTRACTFEATURELISTMODEL_P_H
+#define QIVIABSTRACTFEATURELISTMODEL_P_H
 
 //
 //  W A R N I N G
@@ -59,32 +59,32 @@
 
 QT_BEGIN_NAMESPACE
 
-class QtIVIHelperFeature : public QtIVIAbstractFeature
+class QIviHelperFeature : public QIviAbstractFeature
 {
 public:
-    QtIVIHelperFeature(const QString &interface, QtIVIAbstractFeatureListModel *model);
+    QIviHelperFeature(const QString &interface, QIviAbstractFeatureListModel *model);
 
-    bool acceptServiceObject(QtIVIServiceObject *so);
-    void connectToServiceObject(QtIVIServiceObject *so);
-    void disconnectFromServiceObject(QtIVIServiceObject *so);
+    bool acceptServiceObject(QIviServiceObject *so);
+    void connectToServiceObject(QIviServiceObject *so);
+    void disconnectFromServiceObject(QIviServiceObject *so);
     void clearServiceObject();
 
-    using QtIVIAbstractFeature::interfaceName;
-    using QtIVIAbstractFeature::errorText;
-    using QtIVIAbstractFeature::setError;
+    using QIviAbstractFeature::interfaceName;
+    using QIviAbstractFeature::errorText;
+    using QIviAbstractFeature::setError;
 
-    QtIVIAbstractFeatureListModel *m_model;
+    QIviAbstractFeatureListModel *m_model;
 };
 
-class Q_QTIVICORE_EXPORT QtIVIAbstractFeatureListModelPrivate : public QAbstractItemModelPrivate
+class Q_QTIVICORE_EXPORT QIviAbstractFeatureListModelPrivate : public QAbstractItemModelPrivate
 {
 public:
-    QtIVIAbstractFeatureListModelPrivate(const QString &interface, QtIVIAbstractFeatureListModel *model);
-    virtual ~QtIVIAbstractFeatureListModelPrivate();
+    QIviAbstractFeatureListModelPrivate(const QString &interface, QIviAbstractFeatureListModel *model);
+    virtual ~QIviAbstractFeatureListModelPrivate();
 
-    QtIVIHelperFeature *m_feature;
+    QIviHelperFeature *m_feature;
 };
 
 QT_END_NAMESPACE
 
-#endif // QTIVIABSTRACTFEATURELISTMODEL_P_H
+#endif // QIVIABSTRACTFEATURELISTMODEL_P_H

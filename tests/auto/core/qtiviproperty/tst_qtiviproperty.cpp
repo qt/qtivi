@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:GPL-EXCEPT-QTAS$
 ** Commercial License Usage
@@ -34,23 +34,23 @@
 #include <qtivipropertyattribute.h>
 #include <qtivipropertyfactory.h>
 
-#define QTIVIPROPERTY(_type_, _name_) \
-Q_PROPERTY(QtIVIProperty* _name_##Property READ _name_##Property CONSTANT)  \
-QtIVIProperty *m_##_name_##Property; \
-QtIVIPropertyAttribute<_type_> m_##_name_; \
+#define QIVIPROPERTY(_type_, _name_) \
+Q_PROPERTY(QIviProperty* _name_##Property READ _name_##Property CONSTANT)  \
+QIviProperty *m_##_name_##Property; \
+QIviPropertyAttribute<_type_> m_##_name_; \
 _type_ m_##_name_##Value; \
  \
 public: \
-QtIVIProperty *_name_##Property() const { return m_##_name_##Property; } \
-QtIVIPropertyAttribute<_type_> _name_() const { return m_##_name_; } \
-void set##_name_(QtIVIPropertyAttribute<_type_> attribute) { if (attribute == m_##_name_) return; m_##_name_ = attribute; emit _name_##Changed(attribute); } \
+QIviProperty *_name_##Property() const { return m_##_name_##Property; } \
+QIviPropertyAttribute<_type_> _name_() const { return m_##_name_; } \
+void set##_name_(QIviPropertyAttribute<_type_> attribute) { if (attribute == m_##_name_) return; m_##_name_ = attribute; emit _name_##Changed(attribute); } \
  \
 _type_ _name_##Value() const { return m_##_name_##Value; } \
 void set##_name_##Value(_type_ value) { if (value == m_##_name_##Value) return; m_##_name_##Value = value; emit _name_##ValueChanged(value); } \
  \
 Q_SIGNALS: \
 void _name_##ValueChanged(_type_ value); \
-void _name_##Changed(const QtIVIPropertyAttribute<_type_> _name_); \
+void _name_##Changed(const QIviPropertyAttribute<_type_> _name_); \
 private:
 
 class TestObject : public QObject
@@ -80,34 +80,34 @@ public:
     };
     Q_ENUMS(InvalidEnum)
 
-    QTIVIPROPERTY(int, intAttribute)
-    QTIVIPROPERTY(QString, readOnlyAttribute)
-    QTIVIPROPERTY(TestObject::TestEnum, enumAttribute)
-    QTIVIPROPERTY(TestObject::TestFlags, flagsAttribute)
+    QIVIPROPERTY(int, intAttribute)
+    QIVIPROPERTY(QString, readOnlyAttribute)
+    QIVIPROPERTY(TestObject::TestEnum, enumAttribute)
+    QIVIPROPERTY(TestObject::TestFlags, flagsAttribute)
 
 public:
     TestObject(QObject *parent = Q_NULLPTR)
       : QObject(parent)
-      , m_intAttributeProperty(QtIVIPropertyFactory<int>::create(this,
+      , m_intAttributeProperty(QIviPropertyFactory<int>::create(this,
                                                                  &TestObject::intAttribute,
                                                                  &TestObject::intAttributeChanged,
                                                                  &TestObject::intAttributeValue,
                                                                  &TestObject::intAttributeValueChanged,
                                                                  &TestObject::setintAttributeValue))
       , m_intAttributeValue(-1)
-      , m_readOnlyAttributeProperty(QtIVIPropertyFactory<QString>::create(this,
+      , m_readOnlyAttributeProperty(QIviPropertyFactory<QString>::create(this,
                                                                           &TestObject::readOnlyAttribute,
                                                                           &TestObject::readOnlyAttributeChanged,
                                                                           &TestObject::readOnlyAttributeValue,
                                                                           &TestObject::readOnlyAttributeValueChanged))
-      , m_enumAttributeProperty(QtIVIPropertyFactory<TestObject::TestEnum>::create(this,
+      , m_enumAttributeProperty(QIviPropertyFactory<TestObject::TestEnum>::create(this,
                                                                                    &TestObject::enumAttribute,
                                                                                    &TestObject::enumAttributeChanged,
                                                                                    &TestObject::enumAttributeValue,
                                                                                    &TestObject::enumAttributeValueChanged,
                                                                                    &TestObject::setenumAttributeValue))
       , m_enumAttributeValue(TestObject::TestEnum())
-      , m_flagsAttributeProperty(QtIVIPropertyFactory<TestObject::TestFlags>::create(this,
+      , m_flagsAttributeProperty(QIviPropertyFactory<TestObject::TestFlags>::create(this,
                                                                                    &TestObject::flagsAttribute,
                                                                                    &TestObject::flagsAttributeChanged,
                                                                                    &TestObject::flagsAttributeValue,
@@ -118,18 +118,18 @@ public:
 };
 
 Q_DECLARE_METATYPE(TestObject::TestEnum)
-Q_DECLARE_METATYPE(QtIVIPropertyAttribute<TestObject::TestEnum>)
+Q_DECLARE_METATYPE(QIviPropertyAttribute<TestObject::TestEnum>)
 Q_DECLARE_METATYPE(TestObject::TestFlags)
-Q_DECLARE_METATYPE(QtIVIPropertyAttribute<TestObject::TestFlags>)
+Q_DECLARE_METATYPE(QIviPropertyAttribute<TestObject::TestFlags>)
 Q_DECLARE_OPERATORS_FOR_FLAGS(TestObject::TestFlags)
 Q_DECLARE_METATYPE(QList<QQmlError>)
 
-class tst_QtIVIProperty : public QObject
+class tst_QIviProperty : public QObject
 {
     Q_OBJECT
 
 public:
-    tst_QtIVIProperty();
+    tst_QIviProperty();
 
 private Q_SLOTS:
     void selfTest();
@@ -145,7 +145,7 @@ private Q_SLOTS:
 private:
     void initializeEnumAttribute(TestObject *testObject)
     {
-        QSignalSpy propertyValueChangedSpy(testObject->enumAttributeProperty(), &QtIVIProperty::valueChanged);
+        QSignalSpy propertyValueChangedSpy(testObject->enumAttributeProperty(), &QIviProperty::valueChanged);
         QSignalSpy valueChangedSpy(testObject, &TestObject::enumAttributeValueChanged);
 
         //Initialize
@@ -159,7 +159,7 @@ private:
 
     void initializeFlagsAttribute(TestObject *testObject)
     {
-        QSignalSpy propertyValueChangedSpy(testObject->flagsAttributeProperty(), &QtIVIProperty::valueChanged);
+        QSignalSpy propertyValueChangedSpy(testObject->flagsAttributeProperty(), &QIviProperty::valueChanged);
         QSignalSpy valueChangedSpy(testObject, &TestObject::flagsAttributeValueChanged);
 
         //Initialize
@@ -173,7 +173,7 @@ private:
 
     void initializeIntAttribute(TestObject *testObject)
     {
-        QSignalSpy propertyValueChangedSpy(testObject->intAttributeProperty(), &QtIVIProperty::valueChanged);
+        QSignalSpy propertyValueChangedSpy(testObject->intAttributeProperty(), &QIviProperty::valueChanged);
         QSignalSpy valueChangedSpy(testObject, &TestObject::intAttributeValueChanged);
 
         //Initialize
@@ -186,66 +186,66 @@ private:
     }
 };
 
-tst_QtIVIProperty::tst_QtIVIProperty()
+tst_QIviProperty::tst_QIviProperty()
 {
-    qRegisterMetaType<QtIVIPropertyAttribute<int>>();
-    qRegisterMetaType<QtIVIPropertyAttribute<QString>>();
+    qRegisterMetaType<QIviPropertyAttribute<int>>();
+    qRegisterMetaType<QIviPropertyAttribute<QString>>();
     qRegisterMetaType<TestObject::TestEnum>();
-    qRegisterMetaType<QtIVIPropertyAttribute<TestObject::TestEnum>>();
+    qRegisterMetaType<QIviPropertyAttribute<TestObject::TestEnum>>();
     qRegisterMetaType<TestObject::TestFlags>();
-    qRegisterMetaType<QtIVIPropertyAttribute<TestObject::TestFlags>>();
+    qRegisterMetaType<QIviPropertyAttribute<TestObject::TestFlags>>();
     qRegisterMetaType<QList<QQmlError>>();
 }
 
-void tst_QtIVIProperty::selfTest()
+void tst_QIviProperty::selfTest()
 {
     TestObject *testObject = new TestObject();
 
     QCOMPARE(testObject->intAttributeValue(), -1);
-    QCOMPARE(testObject->intAttribute().type(), QtIVIPropertyAttributeBase::Invalid);
+    QCOMPARE(testObject->intAttribute().type(), QIviPropertyAttributeBase::Invalid);
     QVERIFY(testObject->intAttributeProperty());
 
     QCOMPARE(testObject->readOnlyAttributeValue(), QString());
-    QCOMPARE(testObject->readOnlyAttribute().type(), QtIVIPropertyAttributeBase::Invalid);
+    QCOMPARE(testObject->readOnlyAttribute().type(), QIviPropertyAttributeBase::Invalid);
     QVERIFY(testObject->readOnlyAttributeProperty());
 
     QCOMPARE(testObject->enumAttributeValue(), TestObject::TestEnum());
-    QCOMPARE(testObject->enumAttribute().type(), QtIVIPropertyAttributeBase::Invalid);
+    QCOMPARE(testObject->enumAttribute().type(), QIviPropertyAttributeBase::Invalid);
     QVERIFY(testObject->enumAttributeProperty());
 
     QCOMPARE(testObject->flagsAttributeValue(), TestObject::TestFlags());
-    QCOMPARE(testObject->flagsAttribute().type(), QtIVIPropertyAttributeBase::Invalid);
+    QCOMPARE(testObject->flagsAttribute().type(), QIviPropertyAttributeBase::Invalid);
     QVERIFY(testObject->flagsAttributeProperty());
 }
 
-void tst_QtIVIProperty::attribute_data()
+void tst_QIviProperty::attribute_data()
 {
-    QTest::addColumn<QtIVIPropertyAttribute<int>>("attribute");
+    QTest::addColumn<QIviPropertyAttribute<int>>("attribute");
     QTest::addColumn<QVariantList>("exptectedList");
-    QTest::newRow("noAttribute") << QtIVIPropertyAttribute<int>(true) << QVariantList();
-    QTest::newRow("minimumMaximum") << QtIVIPropertyAttribute<int>(0,10) << QVariantList();
+    QTest::newRow("noAttribute") << QIviPropertyAttribute<int>(true) << QVariantList();
+    QTest::newRow("minimumMaximum") << QIviPropertyAttribute<int>(0,10) << QVariantList();
     QVector<int> avValues;
     QVariantList avVariant;
     avValues << 0 << 5 << 10;
     avVariant << 0 << 5 << 10;
-    QTest::newRow("availableValues") << QtIVIPropertyAttribute<int>(avValues) << QVariantList(avVariant);
+    QTest::newRow("availableValues") << QIviPropertyAttribute<int>(avValues) << QVariantList(avVariant);
 }
 
-void tst_QtIVIProperty::attribute()
+void tst_QIviProperty::attribute()
 {
-    QFETCH(QtIVIPropertyAttribute<int>, attribute);
+    QFETCH(QIviPropertyAttribute<int>, attribute);
     QFETCH(QVariantList, exptectedList);
 
     TestObject *testObject = new TestObject();
 
-    QSignalSpy maximumChangedSpy(testObject->intAttributeProperty(), &QtIVIProperty::maximumValueChanged);
-    QSignalSpy minimumChangedSpy(testObject->intAttributeProperty(), &QtIVIProperty::minimumValueChanged);
-    QSignalSpy availableValuesChangedSpy(testObject->intAttributeProperty(), &QtIVIProperty::availableValuesChanged);
-    QSignalSpy availableChangedSpy(testObject->intAttributeProperty(), &QtIVIProperty::availableChanged);
+    QSignalSpy maximumChangedSpy(testObject->intAttributeProperty(), &QIviProperty::maximumValueChanged);
+    QSignalSpy minimumChangedSpy(testObject->intAttributeProperty(), &QIviProperty::minimumValueChanged);
+    QSignalSpy availableValuesChangedSpy(testObject->intAttributeProperty(), &QIviProperty::availableValuesChanged);
+    QSignalSpy availableChangedSpy(testObject->intAttributeProperty(), &QIviProperty::availableChanged);
     QSignalSpy noAttChangedSpy(testObject, &TestObject::intAttributeChanged);
 
     testObject->setintAttribute(attribute);
-    QVariant attributeVariant = QVariant::fromValue<QtIVIPropertyAttribute<int>>(attribute);
+    QVariant attributeVariant = QVariant::fromValue<QIviPropertyAttribute<int>>(attribute);
 
     QCOMPARE(maximumChangedSpy.count(), 1);
     QCOMPARE(maximumChangedSpy.at(0).at(0), QVariant::fromValue<int>(attribute.maximumValue()));
@@ -264,10 +264,10 @@ void tst_QtIVIProperty::attribute()
     QCOMPARE(testObject->intAttributeProperty()->availableValues(), exptectedList);
 }
 
-void tst_QtIVIProperty::setGetValue()
+void tst_QIviProperty::setGetValue()
 {
     TestObject *testObject = new TestObject();
-    QSignalSpy propertyValueChangedSpy(testObject->enumAttributeProperty(), &QtIVIProperty::valueChanged);
+    QSignalSpy propertyValueChangedSpy(testObject->enumAttributeProperty(), &QIviProperty::valueChanged);
     QSignalSpy valueChangedSpy(testObject, &TestObject::enumAttributeValueChanged);
 
     //Initialize
@@ -299,10 +299,10 @@ void tst_QtIVIProperty::setGetValue()
     QCOMPARE(testObject->enumAttributeProperty()->value(), newValueVariant);
 }
 
-void tst_QtIVIProperty::setGetValue_flags()
+void tst_QIviProperty::setGetValue_flags()
 {
     TestObject *testObject = new TestObject();
-    QSignalSpy propertyValueChangedSpy(testObject->flagsAttributeProperty(), &QtIVIProperty::valueChanged);
+    QSignalSpy propertyValueChangedSpy(testObject->flagsAttributeProperty(), &QIviProperty::valueChanged);
     QSignalSpy valueChangedSpy(testObject, &TestObject::flagsAttributeValueChanged);
 
     //Initialize
@@ -334,7 +334,7 @@ void tst_QtIVIProperty::setGetValue_flags()
     QCOMPARE(testObject->flagsAttributeProperty()->value(), newValueVariant);
 }
 
-void tst_QtIVIProperty::setGetValue_qml()
+void tst_QIviProperty::setGetValue_qml()
 {
     TestObject *testObject = new TestObject();
 
@@ -365,7 +365,7 @@ void tst_QtIVIProperty::setGetValue_qml()
     QVERIFY(!obj->property("isFlag3Set").toBool());
 }
 
-void tst_QtIVIProperty::setValueError_qml()
+void tst_QIviProperty::setValueError_qml()
 {
     TestObject *testObject = new TestObject();
 
@@ -405,10 +405,10 @@ void tst_QtIVIProperty::setValueError_qml()
     QCOMPARE(errorList.at(0).toString(), QUrl::fromLocalFile(testData).toString() + ":37: Error: Expected: int but got QString");
 }
 
-void tst_QtIVIProperty::readOnly()
+void tst_QIviProperty::readOnly()
 {
     TestObject *testObject = new TestObject();
-    QSignalSpy propertyValueChangedSpy(testObject->readOnlyAttributeProperty(), &QtIVIProperty::valueChanged);
+    QSignalSpy propertyValueChangedSpy(testObject->readOnlyAttributeProperty(), &QIviProperty::valueChanged);
     QSignalSpy valueChangedSpy(testObject, &TestObject::readOnlyAttributeValueChanged);
 
     //Initialize
@@ -442,10 +442,10 @@ void tst_QtIVIProperty::readOnly()
     QCOMPARE(testObject->readOnlyAttributeProperty()->value(), valueVariant);
 }
 
-void tst_QtIVIProperty::readOnly_qml()
+void tst_QIviProperty::readOnly_qml()
 {
     TestObject *testObject = new TestObject();
-    QSignalSpy propertyValueChangedSpy(testObject->readOnlyAttributeProperty(), &QtIVIProperty::valueChanged);
+    QSignalSpy propertyValueChangedSpy(testObject->readOnlyAttributeProperty(), &QIviProperty::valueChanged);
     QSignalSpy valueChangedSpy(testObject, &TestObject::readOnlyAttributeValueChanged);
 
     //Initialize
@@ -484,7 +484,7 @@ void tst_QtIVIProperty::readOnly_qml()
     QCOMPARE(errorList.at(0).toString(), QStringLiteral("<Unknown File>:1: Error: TypeError: Cannot assign to read-only property \"value\""));
 }
 
-QTEST_MAIN(tst_QtIVIProperty)
+QTEST_MAIN(tst_QIviProperty)
 
 #include "tst_qtiviproperty.moc"
 

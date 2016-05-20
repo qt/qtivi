@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,29 +39,29 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVIZONEDFEATUREINTERFACE_H
-#define QTIVIZONEDFEATUREINTERFACE_H
+#ifndef QIVIZONEDFEATUREINTERFACE_H
+#define QIVIZONEDFEATUREINTERFACE_H
 
-#include <QtIVICore/QtIVIAbstractZonedFeature>
+#include <QtIviCore/QIviAbstractZonedFeature>
 
 QT_BEGIN_NAMESPACE
 
-class Q_QTIVICORE_EXPORT QtIVIZonedFeatureInterface : public QObject
+class Q_QTIVICORE_EXPORT QIviZonedFeatureInterface : public QObject
 {
     Q_OBJECT
 
 public:
-    QtIVIZonedFeatureInterface(QObject *parent = 0);
+    QIviZonedFeatureInterface(QObject *parent = Q_NULLPTR);
 
     virtual QStringList availableZones() const = 0;
 
     virtual void initializeAttributes() = 0;
 
 Q_SIGNALS:
-    void errorChanged(QtIVIAbstractFeature::Error error, const QString &message = QString());
+    void errorChanged(QIviAbstractFeature::Error error, const QString &message = QString());
 };
 
 QT_END_NAMESPACE
 
-#endif // QTIVIZONEDFEATUREINTERFACE_H
+#endif // QIVIZONEDFEATUREINTERFACE_H
 
