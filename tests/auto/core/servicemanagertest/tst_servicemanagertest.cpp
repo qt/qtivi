@@ -29,10 +29,10 @@
 
 #include <QString>
 #include <QtTest>
-#include <qtiviservicemanager.h>
-#include <QtIviCore/private/qtiviservicemanager_p.h>
-#include <qtiviserviceinterface.h>
-#include <qtiviserviceobject.h>
+#include <qiviservicemanager.h>
+#include <QtIviCore/private/qiviservicemanager_p.h>
+#include <qiviserviceinterface.h>
+#include <qiviserviceobject.h>
 
 class MockServiceBackend : public QObject, public QIviServiceInterface
 {

@@ -1,7 +1,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS = servicemanagertest \
-          qtivipropertyattribute \
-          qtiviproperty \
-          qtiviabstractfeature \
+          qivipropertyattribute \
+          qiviproperty \
+          qiviabstractfeature \
           queryparser \

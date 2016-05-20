@@ -32,7 +32,7 @@
 #include <QtIviCore/QIviServiceObject>
 #include <QtIviVehicleFunctions/QIviWindowControl>
 #include <QtIviVehicleFunctions/QIviWindowControlBackendInterface>
-#include <private/qtivipropertytester_p.h>
+#include <private/qivipropertytester_p.h>
 
 class WindowControlTestBackend : public QIviWindowControlBackendInterface
 {

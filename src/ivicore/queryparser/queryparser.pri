@@ -1,8 +1,8 @@
 QT += core
 
 
-FLEX += $$PWD/qtiviqueryparser.l
-QLALR += $$PWD/qtiviqueryparser.g
+FLEX += $$PWD/qiviqueryparser.l
+QLALR += $$PWD/qiviqueryparser.g
 
 enable-qlalr {
     build-pass: message("Using flex and qlalr to generate code")
@@ -21,15 +21,15 @@ enable-qlalr {
     qlalr.CONFIG += no_link
     QMAKE_EXTRA_COMPILERS += qlalr
 } else {
-    HEADERS += $$PWD/qtiviqueryparser_p.h \
-               $$PWD/qtiviqueryparser_flex_p.h
+    HEADERS += $$PWD/qiviqueryparser_p.h \
+               $$PWD/qiviqueryparser_flex_p.h
     OTHER_FILES += $$FLEX
     OTHER_FILES += $$QLALR
 }
 
 HEADERS += \
-    $$PWD/qtiviqueryterm.h \
-    $$PWD/qtiviqueryterm_p.h
+    $$PWD/qiviqueryterm.h \
+    $$PWD/qiviqueryterm_p.h
 
 SOURCES += \
-    $$PWD/qtiviqueryterm.cpp
+    $$PWD/qiviqueryterm.cpp

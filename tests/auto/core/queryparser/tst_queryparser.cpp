@@ -29,7 +29,7 @@
 #include <QtTest/QtTest>
 #include <QtCore/QString>
 
-#include "QtIviCore/private/qtiviqueryparser_p.h"
+#include "QtIviCore/private/qiviqueryparser_p.h"
 
 // sadly this has to be a define for QVERIFY2() to work
 #define CHECK_ERRORSTRING(_actual_errstr, _expected_errstr) do { \

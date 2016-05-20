@@ -11,38 +11,38 @@ OTHER_FILES += \
 CMAKE_MODULE_TESTS = '-'
 
 HEADERS += \
-    qtiviservicemanager.h \
-    qtiviserviceinterface.h \
-    qtiviservicemanager_p.h \
-    qtiviserviceobject.h \
-    qtiviabstractfeature.h \
-    qtiviabstractzonedfeature.h \
+    qiviservicemanager.h \
+    qiviserviceinterface.h \
+    qiviservicemanager_p.h \
+    qiviserviceobject.h \
+    qiviabstractfeature.h \
+    qiviabstractzonedfeature.h \
     qtiviglobal.h \
-    qtiviproxyserviceobject_p.h \
-    qtivizonedfeatureinterface.h \
-    qtivipropertyattribute.h \
-    qtiviproperty.h \
-    qtivipropertyfactory.h \
-    qtiviproperty_p.h \
-    qtiviabstractfeature_p.h \
-    qtiviabstractzonedfeature_p.h \
-    qtiviqmlconversion_helper.h \
-    qtivipropertytester_p.h \
-    qtivitypetraits.h \
-    qtiviabstractfeaturelistmodel.h \
-    qtiviabstractfeaturelistmodel_p.h
+    qiviproxyserviceobject_p.h \
+    qivizonedfeatureinterface.h \
+    qivipropertyattribute.h \
+    qiviproperty.h \
+    qivipropertyfactory.h \
+    qiviproperty_p.h \
+    qiviabstractfeature_p.h \
+    qiviabstractzonedfeature_p.h \
+    qiviqmlconversion_helper.h \
+    qivipropertytester_p.h \
+    qivitypetraits.h \
+    qiviabstractfeaturelistmodel.h \
+    qiviabstractfeaturelistmodel_p.h
 
 SOURCES += \
-    qtiviservicemanager.cpp \
-    qtiviserviceobject.cpp \
-    qtiviabstractfeature.cpp \
-    qtiviabstractzonedfeature.cpp \
-    qtiviproxyserviceobject_p.cpp \
-    qtivizonedfeatureinterface.cpp \
-    qtivipropertyattribute.cpp \
-    qtiviproperty.cpp \
-    qtivipropertyfactory.cpp \
-    qtiviabstractfeaturelistmodel.cpp
+    qiviservicemanager.cpp \
+    qiviserviceobject.cpp \
+    qiviabstractfeature.cpp \
+    qiviabstractzonedfeature.cpp \
+    qiviproxyserviceobject_p.cpp \
+    qivizonedfeatureinterface.cpp \
+    qivipropertyattribute.cpp \
+    qiviproperty.cpp \
+    qivipropertyfactory.cpp \
+    qiviabstractfeaturelistmodel.cpp
 
 include(queryparser/queryparser.pri)
 
