@@ -1,3 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS = climate_simulator
+SUBDIRS = vehiclefunction_simulator
 

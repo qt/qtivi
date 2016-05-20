@@ -39,29 +39,34 @@
 **
 ****************************************************************************/
 
-#ifndef CLIMATEPLUGIN_H
-#define CLIMATEPLUGIN_H
+#include "vehicleplugin.h"
+#include "climatecontrolbackend.h"
+#include "windowcontrolbackend.h"
 
-#include <QtIviCore/QIviServiceInterface>
+#include <QtIviVehicleFunctions/QIviClimateControlBackendInterface>
+#include <QStringList>
 
-class ClimateControlBackend;
-class WindowControlBackend;
-
-class ClimatePlugin : public QObject, QIviServiceInterface
+VehiclePlugin::VehiclePlugin(QObject *parent) :
+    QObject(parent),
+    m_climate(new ClimateControlBackend(this)),
+    m_window(new WindowControlBackend(this))
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "com.pelagicore.QIviServiceInterface" FILE "climate_simulator.json")
-    Q_INTERFACES(QIviServiceInterface)
+}
 
-public:
-    ClimatePlugin(QObject *parent = 0);
+QStringList VehiclePlugin::interfaces() const
+{
+    QStringList list;
+    list << QIviStringClimateControlInterfaceName;
+    list << QIviStringWindowControlInterfaceName;
+    return list;
+}
 
-    QStringList interfaces() const;
-    QObject* interfaceInstance(const QString& interface) const;
+QObject *VehiclePlugin::interfaceInstance(const QString &interface) const
+{
+    if (interface == QIviStringClimateControlInterfaceName)
+        return m_climate;
+    else if (interface == QIviStringWindowControlInterfaceName)
+        return m_window;
 
-private:
-    ClimateControlBackend* m_climate;
-    WindowControlBackend* m_window;
-};
-
-#endif // CLIMATEPLUGIN_H
+    return 0;
+}

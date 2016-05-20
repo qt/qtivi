@@ -1,4 +1,4 @@
-TARGET = climate_simulation
+TARGET = vehiclefunction_simulator
 
 PLUGIN_TYPE = qtivi
 PLUGIN_EXTENDS = qtivi
@@ -9,12 +9,12 @@ QT       += core ivicore ivivehiclefunctions
 load(qt_plugin)
 
 
-SOURCES += climateplugin.cpp \
+SOURCES += vehicleplugin.cpp \
     climatecontrolbackend.cpp \
     windowcontrolbackend.cpp
 
-HEADERS += climateplugin.h \
+HEADERS += vehicleplugin.h \
     climatecontrolbackend.h \
     windowcontrolbackend.h
 
-DISTFILES += climate_simulator.json
+DISTFILES += vehiclefunction_simulator.json
