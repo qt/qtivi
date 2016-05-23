@@ -12,3 +12,7 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
+
+# install
+target.path = $$[QT_INSTALL_EXAMPLES]/vehiclefunctions/climate_widget
+INSTALLS += target

@@ -13,3 +13,7 @@ SOURCES += main.cpp \
 
 HEADERS += \
     loggingcategories.h \
+
+# install
+target.path = $$[QT_INSTALL_EXAMPLES]/geniviextras/qdlt
+INSTALLS += target
