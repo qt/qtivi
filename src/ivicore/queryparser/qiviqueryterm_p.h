@@ -88,10 +88,11 @@ public:
     bool m_negated;
 };
 
-class Q_QTIVICORE_EXPORT QIviOrderTermPrivate
+class Q_QTIVICORE_EXPORT QIviOrderTermPrivate : public QSharedData
 {
 public:
     QIviOrderTermPrivate();
+    QIviOrderTermPrivate(const QIviOrderTermPrivate &other);
 
     bool m_ascending;
     QString m_propertyName;

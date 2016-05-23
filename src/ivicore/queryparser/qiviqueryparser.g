@@ -412,8 +412,8 @@ order_clause ::= ASCENDING IDENTIFIER;
 /.
               case $rule_number: {
                     QIviOrderTerm order;
-                    order.d_func()->m_ascending = true;
-                    order.d_func()->m_propertyName = sym(2).toString();
+                    order.d->m_ascending = true;
+                    order.d->m_propertyName = sym(2).toString();
                     m_orderList.append(order);
               } break;
 ./
@@ -421,8 +421,8 @@ order_clause ::= DESCENDING IDENTIFIER;
 /.
               case $rule_number: {
                     QIviOrderTerm order;
-                    order.d_func()->m_ascending = false;
-                    order.d_func()->m_propertyName = sym(2).toString();
+                    order.d->m_ascending = false;
+                    order.d->m_propertyName = sym(2).toString();
                     m_orderList.append(order);
               } break;
 ./

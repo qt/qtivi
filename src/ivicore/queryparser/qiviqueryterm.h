@@ -44,6 +44,7 @@
 
 #include <QObject>
 #include <QVariant>
+#include <QSharedData>
 
 #include <QtIviCore/qtiviglobal.h>
 
@@ -82,6 +83,7 @@ public:
     QList<QIviAbstractQueryTerm*> terms() const;
 
 private:
+    Q_DISABLE_COPY(QIviConjunctionTerm)
     QIviConjunctionTermPrivate * d_ptr;
     Q_DECLARE_PRIVATE(QIviConjunctionTerm)
     friend class QIviQueryParser;
@@ -101,6 +103,7 @@ public:
     QIviAbstractQueryTerm* term() const;
 
 private:
+    Q_DISABLE_COPY(QIviScopeTerm)
     QIviScopeTermPrivate * d_ptr;
     Q_DECLARE_PRIVATE(QIviScopeTerm)
     friend class QIviQueryParser;
@@ -131,6 +134,7 @@ public:
     bool isNegated() const;
 
 private:
+    Q_DISABLE_COPY(QIviFilterTerm)
     QIviFilterTermPrivate * d_ptr;
     Q_DECLARE_PRIVATE(QIviFilterTerm)
     friend class QIviQueryParser;
@@ -141,16 +145,19 @@ class Q_QTIVICORE_EXPORT QIviOrderTerm
 {
 public:
     QIviOrderTerm();
+    QIviOrderTerm(const QIviOrderTerm &other);
     virtual ~QIviOrderTerm();
+    QIviOrderTerm& operator =(const QIviOrderTerm &other);
 
     bool isAscending() const;
     QString propertyName() const;
 
 private:
-    QIviOrderTermPrivate * d_ptr;
-    Q_DECLARE_PRIVATE(QIviOrderTerm)
+    QSharedDataPointer<QIviOrderTermPrivate> d;
     friend class QIviQueryParser;
 };
+
+Q_DECLARE_TYPEINFO(QIviOrderTerm, Q_MOVABLE_TYPE);
 
 QT_END_NAMESPACE
 

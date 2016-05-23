@@ -524,15 +524,15 @@ QIviAbstractQueryTerm *QIviQueryParser::parse()
 
               case 5: {
                     QIviOrderTerm order;
-                    order.d_func()->m_ascending = true;
-                    order.d_func()->m_propertyName = sym(2).toString();
+                    order.d->m_ascending = true;
+                    order.d->m_propertyName = sym(2).toString();
                     m_orderList.append(order);
               } break;
 
               case 6: {
                     QIviOrderTerm order;
-                    order.d_func()->m_ascending = false;
-                    order.d_func()->m_propertyName = sym(2).toString();
+                    order.d->m_ascending = false;
+                    order.d->m_propertyName = sym(2).toString();
                     m_orderList.append(order);
               } break;
 

@@ -78,6 +78,14 @@ QIviOrderTermPrivate::QIviOrderTermPrivate()
 {
 }
 
+QIviOrderTermPrivate::QIviOrderTermPrivate(const QIviOrderTermPrivate &other)
+    : QSharedData(other)
+    , m_ascending(other.m_ascending)
+    , m_propertyName(other.m_propertyName)
+{
+
+}
+
 QIviAbstractQueryTerm::~QIviAbstractQueryTerm()
 {
 }
@@ -221,23 +229,31 @@ bool QIviFilterTerm::isNegated() const
 }
 
 QIviOrderTerm::QIviOrderTerm()
-    : d_ptr(new QIviOrderTermPrivate)
+    : d(new QIviOrderTermPrivate)
+{
+}
+
+QIviOrderTerm::QIviOrderTerm(const QIviOrderTerm &other)
+    : d(other.d)
 {
 }
 
 QIviOrderTerm::~QIviOrderTerm()
 {
-    delete d_ptr;
+}
+
+QIviOrderTerm &QIviOrderTerm::operator =(const QIviOrderTerm &other)
+{
+    d = other.d;
+    return *this;
 }
 
 bool QIviOrderTerm::isAscending() const
 {
-    Q_D(const QIviOrderTerm);
     return d->m_ascending;
 }
 
 QString QIviOrderTerm::propertyName() const
 {
-    Q_D(const QIviOrderTerm);
     return d->m_propertyName;
 }
