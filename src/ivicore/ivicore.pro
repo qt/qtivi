@@ -30,7 +30,11 @@ HEADERS += \
     qivipropertytester_p.h \
     qivitypetraits.h \
     qiviabstractfeaturelistmodel.h \
-    qiviabstractfeaturelistmodel_p.h
+    qiviabstractfeaturelistmodel_p.h \
+    qivisearchandbrowsemodel.h \
+    qivisearchandbrowsemodel_p.h \
+    qivisearchandbrowsemodelinterface.h \
+    qivisearchandbrowsemodelinterface_p.h
 
 SOURCES += \
     qiviservicemanager.cpp \
@@ -42,7 +46,9 @@ SOURCES += \
     qivipropertyattribute.cpp \
     qiviproperty.cpp \
     qivipropertyfactory.cpp \
-    qiviabstractfeaturelistmodel.cpp
+    qiviabstractfeaturelistmodel.cpp \
+    qivisearchandbrowsemodel.cpp \
+    qivisearchandbrowsemodelinterface.cpp
 
 include(queryparser/queryparser.pri)
 

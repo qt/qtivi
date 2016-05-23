@@ -38,29 +38,42 @@
 ** SPDX-License-Identifier: LGPL-3.0
 **
 ****************************************************************************/
-#include <QtQml/qqmlextensionplugin.h>
-#include <qqml.h>
 
-#include <QtIviCore/QtIviCore>
+#include "qivisearchandbrowsemodelinterface.h"
+#include "qivisearchandbrowsemodelinterface_p.h"
 
-QT_BEGIN_NAMESPACE
-
-class QIviCorePlugin : public QQmlExtensionPlugin
+QIviSearchAndBrowseModelInterfacePrivate::QIviSearchAndBrowseModelInterfacePrivate()
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
-public:
-    virtual void registerTypes(const char *uri)
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi"));
-        qRegisterMetaType<QIviServiceObject*>();
+}
 
-        qmlRegisterUncreatableType<QIviAbstractFeature>(uri, 1, 0, "AbstractFeature", "AbstractFeature is not accessible directly");
-        qmlRegisterUncreatableType<QIviAbstractZonedFeature>(uri, 1, 0, "AbstractZonedFeature", "AbstractZonedFeature is not accessible directly");
-        qmlRegisterType<QIviSearchAndBrowseModel>(uri, 1, 0, "SearchAndBrowseModel");
+QIviSearchAndBrowseModelInterface::QIviSearchAndBrowseModelInterface(QObject *parent)
+    : QObject(*new QIviSearchAndBrowseModelInterfacePrivate(), parent)
+{}
+
+QIviSearchAndBrowseModelInterface::~QIviSearchAndBrowseModelInterface()
+{}
+
+
+QSet<QString> QIviSearchAndBrowseModelInterface::availableContentTypes() const
+{
+    Q_D(const QIviSearchAndBrowseModelInterface);
+    return d->m_types;
+}
+
+QSet<QString> QIviSearchAndBrowseModelInterface::supportedIdentifiers(const QString &contentType) const
+{
+    Q_D(const QIviSearchAndBrowseModelInterface);
+    return d->m_identifiers.values(contentType).toSet();
+}
+
+void QIviSearchAndBrowseModelInterface::registerContentType(const QMetaObject &object, const QString &contentType)
+{
+    Q_D(QIviSearchAndBrowseModelInterface);
+    for (int i=0; i < object.propertyCount(); i++) {
+        QLatin1String propName(object.property(i).name());
+        if (propName != QLatin1String("objectName"))
+            d->m_identifiers.insert(contentType, propName);
     }
-};
 
-QT_END_NAMESPACE
-
-#include "plugin.moc"
+    d->m_types.insert(contentType);
+}

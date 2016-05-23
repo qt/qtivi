@@ -38,29 +38,36 @@
 ** SPDX-License-Identifier: LGPL-3.0
 **
 ****************************************************************************/
-#include <QtQml/qqmlextensionplugin.h>
-#include <qqml.h>
 
-#include <QtIviCore/QtIviCore>
+#ifndef QIVISEARCHMODELINTERFACE_P_H
+#define QIVISEARCHMODELINTERFACE_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail. This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <private/qobject_p.h>
+
+#include "qivisearchandbrowsemodelinterface.h"
 
 QT_BEGIN_NAMESPACE
 
-class QIviCorePlugin : public QQmlExtensionPlugin
+class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModelInterfacePrivate : public QObjectPrivate
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
 public:
-    virtual void registerTypes(const char *uri)
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi"));
-        qRegisterMetaType<QIviServiceObject*>();
+    QIviSearchAndBrowseModelInterfacePrivate();
 
-        qmlRegisterUncreatableType<QIviAbstractFeature>(uri, 1, 0, "AbstractFeature", "AbstractFeature is not accessible directly");
-        qmlRegisterUncreatableType<QIviAbstractZonedFeature>(uri, 1, 0, "AbstractZonedFeature", "AbstractZonedFeature is not accessible directly");
-        qmlRegisterType<QIviSearchAndBrowseModel>(uri, 1, 0, "SearchAndBrowseModel");
-    }
+    QMultiHash<QString, QString> m_identifiers;
+    QSet<QString> m_types;
 };
 
 QT_END_NAMESPACE
 
-#include "plugin.moc"
+#endif // QIVISEARCHMODELINTERFACE_P_H

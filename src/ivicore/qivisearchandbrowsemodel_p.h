@@ -38,29 +38,72 @@
 ** SPDX-License-Identifier: LGPL-3.0
 **
 ****************************************************************************/
-#include <QtQml/qqmlextensionplugin.h>
-#include <qqml.h>
 
-#include <QtIviCore/QtIviCore>
+#ifndef QIVISEARCHMODEL_P_H
+#define QIVISEARCHMODEL_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail. This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <qiviabstractfeaturelistmodel_p.h>
+
+#include "qivisearchandbrowsemodelinterface.h"
+#include "qivisearchandbrowsemodel.h"
+#include "qiviqueryterm.h"
+
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
-class QIviCorePlugin : public QQmlExtensionPlugin
+class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModelPrivate : public QIviAbstractFeatureListModelPrivate
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
 public:
-    virtual void registerTypes(const char *uri)
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi"));
-        qRegisterMetaType<QIviServiceObject*>();
+    QIviSearchAndBrowseModelPrivate(const QString &interface, QIviSearchAndBrowseModel *model);
+    ~QIviSearchAndBrowseModelPrivate();
 
-        qmlRegisterUncreatableType<QIviAbstractFeature>(uri, 1, 0, "AbstractFeature", "AbstractFeature is not accessible directly");
-        qmlRegisterUncreatableType<QIviAbstractZonedFeature>(uri, 1, 0, "AbstractZonedFeature", "AbstractZonedFeature is not accessible directly");
-        qmlRegisterType<QIviSearchAndBrowseModel>(uri, 1, 0, "SearchAndBrowseModel");
-    }
+    void init();
+    void onDataFetched(const QUuid &identifer, const QList<QVariant> &items, int start, bool moreAvailable);
+    void onCountChanged(const QUuid &identifier, int new_length);
+    void onDataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count);
+    void onFetchMoreThresholdReached();
+    void resetModel();
+    void parseQuery();
+    void checkType();
+    void clearToDefaults();
+    void setCanGoBack(bool canGoBack);
+    const QIviSearchAndBrowseListItem *itemAt(int i) const;
+
+    QIviSearchAndBrowseModelInterface* searchBackend() const;
+    void updateContentType(const QString &contentType);
+
+    QIviSearchAndBrowseModel * const q_ptr;
+    Q_DECLARE_PUBLIC(QIviSearchAndBrowseModel)
+
+    QString m_query;
+    int m_chunkSize;
+
+    QIviAbstractQueryTerm *m_queryTerm;
+    QList<QIviOrderTerm> m_orderTerms;
+    QList<QVariant> m_itemList;
+    bool m_moreAvailable;
+
+    QUuid m_identifier;
+    int m_fetchMoreThreshold;
+    QString m_contentType;
+    int m_fetchedDataCount;
+    QStringList m_availableContentTypes;
+    bool m_canGoBack;
+    QIviSearchAndBrowseModel::LoadingType m_loadingType;
 };
 
 QT_END_NAMESPACE
 
-#include "plugin.moc"
+#endif // QIVISEARCHMODEL_P_H
