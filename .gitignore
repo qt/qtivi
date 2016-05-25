@@ -1,6 +1,7 @@
 *Makefile
 *.pro.user
 *.moc
+*_wrapper.sh
 moc_*
 ui_*
 .build

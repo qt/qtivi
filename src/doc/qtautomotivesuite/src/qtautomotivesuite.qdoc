@@ -1,0 +1,163 @@
+/****************************************************************************
+**
+** Copyright (C) 2016 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the documentation of the Qt Automotive Suite.
+**
+** $QT_BEGIN_LICENSE:FDL-QTAS$
+** Commercial License Usage
+** Licensees holding valid commercial Qt Automotive Suite licenses may use
+** this file in accordance with the commercial license agreement provided
+** with the Software or, alternatively, in accordance with the terms
+** contained in a written agreement between you and The Qt Company.  For
+** licensing terms and conditions see https://www.qt.io/terms-conditions.
+** For further information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \page qtautomotivesuite-index.html
+    \title Qt Automotive Suite
+
+    \e {\QAS} is a collection of software components and tools to enable
+    development of \e In-Vehicle-Infotainment (IVI) systems. Built on top
+    of the Qt framework and compliant with the \l GENIVI automotive platform
+    architecture, \QAS includes an embedded development environment with
+    additional tools for rapid UI development, as well as application
+    introspection and debugging.
+
+    \QAS comes with libraries and ready-made components, as well as hardware
+    adaptation APIs for creating full-featured IVI solutions. In addition,
+    it includes a reference UI for embedded platforms, and reference
+    IVI applications and application store implementations.
+
+    \section1 Contents
+
+    \list
+        \li \l {Qt Automotive Suite Overview}{Overview}
+        \li \l {Installing Qt Automotive Suite}
+        \li \l {Reference Device Images}
+        \li \l {Related Information}
+    \endlist
+
+    \section1 Installing \QAS
+
+    \section1 Reference Device Images
+
+    \section1 Related Information
+*/
+
+/*!
+    \page qtas-overview.html
+    \title Qt Automotive Suite Overview
+
+    \section1 Components
+
+    \QAS includes several components built on Qt and the \l {Qt Creator}
+    integrated development environment.
+
+    \section2 Qt
+
+    Cross-platform \l {http://www.qt.io/}{Qt} development libraries (Qt 5.7)
+    and core tools, developed through an open-source collaboration model.
+    Qt is a full development framework designed to streamline the creation of
+    applications and user interfaces for desktop, embedded, and mobile
+    platforms.
+
+    The Qt libraries provide high-level APIs for a large variety of both
+    non-GUI and GUI related functionality. For UI creation, Qt provides a
+    number of approaches: traditional C++, declarative UI design with
+    \l {Qt Quick} or HTML5/hybrid user interfaces with the \l {Qt WebEngine}
+    module.
+
+    For overview about Qt libraries see the \l {Qt reference documentation}.
+
+    Qt modules that are especially useful for embedded/IVI application
+    development include:
+
+    \list
+        \li \l {Qt Virtual Keyboard} - complete virtual keyboard solution with
+            word-prediction and multiple languages supported.
+        \li \l {Qt Quick Controls 2} - provides a set of controls for building
+            complete user interfaces in Qt Quick.
+        \li \l {Qt Quick Compiler} - enables compiling .qml source files into
+            application binaries, improving load times and security for code
+            assets.
+        \li \l {Qt Charts} - UI Components for displaying visually pleasing
+            charts, driven by static or dynamic data models.
+        \li \l {Qt Data Visualization} - UI Components for creating stunning 3D
+            data visualizations.
+        \li \l {Qt WebEngine} - provides a web browser engine based on the
+            \l {http://www.chromium.org}{Chromium} project.
+    \endlist
+
+    \section2 Development Environment
+
+    The development environment in \QAS is built around \l {Qt Creator}.
+
+    \list
+      \li \l {Qt Creator: Developing Qt Quick Applications}
+      \li \l {Qt Creator: Analyzing Code}
+      \li \l {Qt Creator: Debugging}
+    \endlist
+
+    \QAS comes with additional functionality for diagnostics and debugging,
+    as well as deployment:
+
+    \section3 GammaRay
+
+    GammaRay is a plugin for Qt Creator that provides software introspection
+    for Qt applications. It allows visualization of application behavior and
+    manipulating it at run-time, both locally and remotely on an embedded
+    target.
+
+    \section3 QmlLive
+
+    \e QmlLive provides a live reloader environment for rapid development of
+    Qt Quick applications, dramatically reducing the time it takes to
+    deploy and test changes in the UI design.
+
+    \section3 Deployment
+
+    Device deployment can be done directly from the Qt Creator IDE to a
+    device connected via USB or local area network, or to an emulator
+    running the same, full software stack as the devices.
+
+    As with any Qt application, the same project can be deployed to
+    desktop or mobile targets as well.
+
+    \section2 Automotive APIs
+
+    The \l {Qt IVI} module provides C++ and QML interfaces for accessing
+    vehicle features, and also enables implementing new IVI features.
+
+    \section2 Qt Application Manager
+
+    \e {Qt Application Manager} provides application lifecycle management.
+
+    \section2 Reference Applications
+
+    \QAS includes \l Neptune, a reference UI designed for IVI systems, including
+    multiple IVI applications and an application store implementation.
+
+    \section3 Web Browser
+
+    \l {Qt Web Browser} is a browser designed for embedded devices, based on
+    \l {Qt WebEngine}, with a slick, touch-friendly user interface.
+
+    \section2 Over-The-Air Updates
+
+    \QAS comes with \l {Over-The-Air Update}{Over-The-Air} (OTA) package, proviving
+    tools that assist in enabling distribution of software updates in embedded
+    Linux devices over wireless networks.
+*/

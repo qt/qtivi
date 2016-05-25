@@ -1,3 +1,4 @@
-TEMPLATE = aux
+TEMPLATE = subdirs
 
-QMAKE_DOCS = $$PWD/qtivi.qdocconf
+SUBDIRS = qtivi \
+          qtautomotivesuite
