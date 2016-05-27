@@ -33,6 +33,33 @@
     for accessing vehicle features, as well as a core API for implementing
     new IVI features.
 
+    The module is built around a pattern based on the separation of API facing the
+    application developer, the so called \e {Feature}, and the code implementing it,
+    the \e {Backend}. There can be multiple backends per feature and the Core module
+    provides support for finding the corresponding backend in an easy-to-use way.
+
+    Common use cases driving this separation are:
+
+    \list
+    \li \e {Early development}, where the UI can rely on a feature with a very basic backend
+        implementation.
+    \li \e {Testing / Simulation}, where the backends can be tested separately from the app and the
+        app can be tested using a specialized testing backend.
+    \li \e {Targets with different hardware configurations}, where certain parts of the system are
+        represented by simulated backends while others use a real hardware integration.
+    \li \e {Dynamically appearing services}, when services are available sometimes, but not always,
+        meaning that backends come and go over time.
+    \endlist
+
+    The module provides an extendable set of reference APIs for automotive
+    features. It can be used to develop automotive applications and to provide
+    automotive features to Qt-based applications in a structured manner.
+
+    \list
+    \li \l{Using the Qt IVI Reference API}
+    \li \l{Extending Qt IVI}
+    \endlist
+
     \section1 Modules
 
     Qt IVI consists of the following C++ modules:

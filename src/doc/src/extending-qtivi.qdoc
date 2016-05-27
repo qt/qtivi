@@ -1,0 +1,166 @@
+/****************************************************************************
+**
+** Copyright (C) 2016 Pelagicore AG
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL-QTAS$
+** Commercial License Usage
+** Licensees holding valid commercial Qt Automotive Suite licenses may use
+** this file in accordance with the commercial license agreement provided
+** with the Software or, alternatively, in accordance with the terms
+** contained in a written agreement between you and The Qt Company.  For
+** licensing terms and conditions see https://www.qt.io/terms-conditions.
+** For further information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+/*!
+\page extending-qtivi.html
+\title Extending Qt IVI
+
+\section1 Introduction
+
+Qt IVI provides a pattern for extending Qt with more features in a way that suites the
+automotive use-case.
+
+A key aspect is the separation between the frontend that defines the API, from the
+backend that implements the functionality. This separation makes it possible to have
+multiple implementations of the same API which can be used to interface various hardware
+configurations, but also to provide stubbed or simulated implementations for early
+development and testing purposes.
+
+\section1 The Big Picture
+
+Qt IVI consists of three types of building blocks. The core module provides base classes
+and common code for all the more specific modules and API definitions like a climate API
+or a mediaplayer API. Each of these APIs is the second building block called \e Feature,
+which defines the API used by the application developers. The last block consists of a
+backend interface and one or more \e Backends implementing it to either connect to the
+underlying vehicle or do a simulation of it.
+
+\section2 Features
+
+A feature is a set of classes for working with a specific function. It defines the interface
+towards application developers, but it does not implement the complete functionality. Instead, it
+defines a backend interface to be implemented by a backend providing the actual function.
+
+For easy deployment, Qt IVI extensions should be built as Qt modules. This makes it easy to
+install and find headers, shared libraries, and plugin modules from app projects.
+
+By using the module system the developer can easily enable the inclusion of his
+module in the following way:
+
+\code
+QT += <module>
+\endcode
+
+In addition, your module is properly set up to work with cmake, qdoc, and auto test."
+
+\code
+make tests
+\endcode
+
+When creating a new Qt IVI module, it is recommended that you pick a name such as
+\e {OemFeatureName}, where \e {Oem} is the name of the car maker or platform owner, and
+\e {FeatureName} is the name of the feature(s) of the module. In addition to the name, a reverse
+domain name prefix is needed for prefixing backend interface names, for example \e {com.example}
+
+Features are based on the QIviAbstractFeature base class, or QIviAbstractZonedFeature for
+zoned features. These classes provide the basic functions expected by users, e.g. backend
+loading.
+
+Features define the backend interface to be implemented by the backends providing the
+functionality. The backend interface is commonly based on the QObject class. It is important
+to keep this API as unbiased as possible, as there might be multiple backend implementations
+relying on different technological solutions.
+
+Some key rules to keep in mind are:
+
+\list
+\li Keep everything asynchronous to avoid blocking the main loop.
+\li Avoid call-to-signal sequences and try to keep signals independent from calls, For example,
+when a value change is signalled, it must not be due to a call to change the value from
+the feature (and visa versa). In other words a call to change a value is not required to always
+result in a value changed signal.
+\li Avoid stateful APIs whenever possible as the backend may be replaced at any time.
+\endlist
+
+It is common to provide a stubbed backend implementation and a testing backend with each
+feature.
+
+\section2 Backends
+
+A backend class is derived from the (commonly QObject-derived) backend interface class specified
+by a feature. Instances of the backend class are called \e {service objects}.
+
+Backends are implemented as an ordinary Qt C++ plugin project that depends on
+\l {QtIviCore}{Qt IVI Core} and the corresponding feature module.
+
+The backends are loaded by Qt IVI Core when the features request them. Each backend has to provide
+a Qt IVI plugin that exposes a \e factory to the Core. This is what is used to load and create
+backends. The plugin interface is called QIviServiceInterface.
+
+\section2 Service Manager
+
+In most cases, the backend loading is handed over to the Qt IVI Core, however, QIviServiceManager
+can be used in this case to manually search for plugins with a specific BackendInterface. The
+discovery and loading of the backends takes place in this class.
+
+The QIviServiceManager class can also be used to register backends which are part of the same
+application and shouldn’t go into a plugin. This is especially useful for autotest as you need
+to control the backend and the feature at the same time.
+
+\section1 Common Practices
+
+The reference APIs provided as a part of Qt IVI introduce some common concepts. If
+implementing the same functionality, it is recommended to use these already defined patterns and
+it is encouraged to add API additions back to the Qt IVI repository to create more common ground
+for future APIs.
+
+\section2 Zones
+
+Zones is a standard way to provide a single API for multiple points in the vehicle.
+For instance, climate control commonly has a driver and passenger zones, and might also have
+a rear seat zone. The same goes for wheels, doors, mirrors, windows and more.
+
+A common pattern is to combine zones with \l {Extending Qt IVI#property-attributes}
+{property attributes} to handle small differences in capabilities between zones; for example, no
+steering wheel heater for the passenger side of the car.
+
+Technically, a zoned feature consists of two interfaces, one top level interface derived
+from QIviAbstractZonedFeature, and one zone specific API derived from QObject.
+
+The top level interface can provide vehicle wide settings. For example, whether recirculation
+is to be used in a climate control API, while the zoned interface provides per-zone functions
+(for example, the desired temperature).
+
+Building a zoned feature requires the backend interface to be derived from
+QIviZonedFeatureInterface. This provides the backend an interface for enumerating the
+available zones. This interface also includes the necessary
+QIviZonedFeatureInterface::initializeAttributes method to initialize any
+\l {Extending Qt IVI#property-attributes} {property attributes}.
+
+\section2 Property Attributes
+
+Some properties need additional associated information to be useful from the application.
+By exposing the properties as QIviProperty elements instead of a set of methods, the
+interface for the application developers is made smaller and more homogenous.
+
+Each QIviProperty element is initialized with getter and setter functions, a notification
+signal for value changes, as well as a getter function and a notification signal for a
+QIviPropertyAttribute. The latter describes the former by providing available values for
+enumerated types, minimum and maximum values for ranged numerical values and availability.
+This means that the application can adapt to the abilities of the backend while accessing
+the backend through an interface shared by all backend implementations.
+
+*/
