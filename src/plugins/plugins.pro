@@ -1,3 +1,4 @@
 TEMPLATE = subdirs
-SUBDIRS = ivivehiclefunctions
+SUBDIRS = ivivehiclefunctions \
+          ivimedia
 

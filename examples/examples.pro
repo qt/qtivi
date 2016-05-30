@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
-SUBDIRS = vehiclefunctions
+SUBDIRS = vehiclefunctions \
+          media
 qtHaveModule(geniviextras) {
     SUBDIRS += geniviextras
 }
