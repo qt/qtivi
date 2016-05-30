@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIvi module of the Qt Toolkit.
+** This file is part of the QtIVI module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,29 +39,59 @@
 **
 ****************************************************************************/
 
-#include <QtQml/qqmlextensionplugin.h>
-#include <qqml.h>
+#ifndef QIVIPLAYABLEITEM_H
+#define QIVIPLAYABLEITEM_H
 
-#include <QtIviMedia/QIviMediaPlayer>
-#include <QtIviMedia/QIviPlayQueue>
+#include <QtIviMedia/qtivimediaglobal.h>
+#include <QtIviCore/QIviSearchAndBrowseModel>
+#include <QtCore/QUrl>
 
 QT_BEGIN_NAMESPACE
 
-class QIviMediaPlugin : public QQmlExtensionPlugin
+class Q_QTIVIMEDIA_EXPORT QIviPlayableItem : public QIviSearchAndBrowseListItem
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
-public:
-    virtual void registerTypes(const char *uri)
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi.Media"));
-        Q_UNUSED(uri);
+    Q_GADGET
 
-        qmlRegisterType<QIviMediaPlayer>(uri, 1, 0, "MediaPlayer");
-        qmlRegisterUncreatableType<QIviPlayQueue>(uri, 1, 0, "PlayQueue", "PlayQueue needs to be retrieved from the MediaPlayer");
-    }
+    Q_PROPERTY(QUrl url READ url)
+
+public:
+    QIviPlayableItem();
+    virtual ~QIviPlayableItem();
+    virtual QUrl url() const { return QUrl(); }
+};
+
+class Q_QTIVIMEDIA_EXPORT QIviAudioTrackItem : public QIviPlayableItem
+{
+    Q_GADGET
+
+    Q_PROPERTY(QString title READ title)
+    Q_PROPERTY(QString artist READ artist)
+    Q_PROPERTY(QString album READ album)
+    Q_PROPERTY(QString genre READ genre)
+    Q_PROPERTY(int year READ year) //FIXME What type should we use here ?
+    Q_PROPERTY(int trackNumber READ trackNumber)
+    Q_PROPERTY(int duration READ duration)
+    Q_PROPERTY(QString coverArt READ coverArt) //FIXME How to best serve this ?
+    Q_PROPERTY(int rating READ rating)
+
+public:
+    QIviAudioTrackItem();
+    virtual ~QIviAudioTrackItem();
+
+    virtual QString title() { return QString(); }
+    virtual QString artist() { return QString(); }
+    virtual QString album() { return QString(); }
+    virtual QString genre() { return QString(); }
+    virtual int year() { return -1; }
+    virtual int trackNumber() { return -1; }
+    virtual int duration() { return -1; }
+    virtual QString coverArt() { return QString(); }
+    virtual int rating() { return -1; }
 };
 
 QT_END_NAMESPACE
 
-#include "plugin.moc"
+Q_DECLARE_METATYPE(QIviPlayableItem)
+Q_DECLARE_METATYPE(QIviAudioTrackItem)
+
+#endif // QIVIPLAYABLEITEM_H

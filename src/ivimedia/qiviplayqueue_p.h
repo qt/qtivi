@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIvi module of the Qt Toolkit.
+** This file is part of the QtIVI module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,29 +39,60 @@
 **
 ****************************************************************************/
 
-#include <QtQml/qqmlextensionplugin.h>
-#include <qqml.h>
+#ifndef QIVIPLAYQUEUE_P_H
+#define QIVIPLAYQUEUE_P_H
 
-#include <QtIviMedia/QIviMediaPlayer>
-#include <QtIviMedia/QIviPlayQueue>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail. This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <private/qabstractitemmodel_p.h>
+
+#include "qiviplayqueue.h"
+#include "qiviplayableitem.h"
+#include "qivimediaplayer_p.h"
 
 QT_BEGIN_NAMESPACE
 
-class QIviMediaPlugin : public QQmlExtensionPlugin
+class Q_QTIVIMEDIA_EXPORT QIviPlayQueuePrivate : public QAbstractItemModelPrivate
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
 public:
-    virtual void registerTypes(const char *uri)
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi.Media"));
-        Q_UNUSED(uri);
+    QIviPlayQueuePrivate(QIviMediaPlayer *player, QIviPlayQueue *model);
+    ~QIviPlayQueuePrivate();
 
-        qmlRegisterType<QIviMediaPlayer>(uri, 1, 0, "MediaPlayer");
-        qmlRegisterUncreatableType<QIviPlayQueue>(uri, 1, 0, "PlayQueue", "PlayQueue needs to be retrieved from the MediaPlayer");
-    }
+    void init();
+    void onCurrentIndexChanged(int currentIndex);
+    void onDataFetched(const QList<QVariant> &items, int start, bool moreAvailable);
+    void onCountChanged(int new_length);
+    void onDataChanged(const QList<QVariant> &data, int start, int count);
+    void onFetchMoreThresholdReached();
+    void resetModel();
+    void clearToDefaults();
+    const QIviPlayableItem *itemAt(int i) const;
+    const QIviPlayableItem *playableItem(const QVariant &item) const;
+
+    QIviMediaPlayerBackendInterface* playerBackend() const;
+
+    QIviPlayQueue * const q_ptr;
+    Q_DECLARE_PUBLIC(QIviPlayQueue)
+
+    QIviMediaPlayer *m_player;
+    int m_currentIndex;
+    int m_chunkSize;
+    QList<QVariant> m_itemList;
+    bool m_moreAvailable;
+    int m_fetchMoreThreshold;
+    int m_fetchedDataCount;
+    QIviPlayQueue::LoadingType m_loadingType;
 };
 
 QT_END_NAMESPACE
 
-#include "plugin.moc"
+#endif // QIVIPLAYQUEUE_P_H

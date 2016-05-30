@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIvi module of the Qt Toolkit.
+** This file is part of the QtIVI module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,29 +39,48 @@
 **
 ****************************************************************************/
 
-#include <QtQml/qqmlextensionplugin.h>
-#include <qqml.h>
+#ifndef QIVIMEDIAPLAYERBACKENDINTERFACE_H
+#define QIVIMEDIAPLAYERBACKENDINTERFACE_H
 
-#include <QtIviMedia/QIviMediaPlayer>
-#include <QtIviMedia/QIviPlayQueue>
+#include <QtIviMedia/qtivimediaglobal.h>
+#include <QtCore/QObject>
 
 QT_BEGIN_NAMESPACE
 
-class QIviMediaPlugin : public QQmlExtensionPlugin
+class QIviPlayableItem;
+
+class Q_QTIVIMEDIA_EXPORT QIviMediaPlayerBackendInterface : public QObject
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
-public:
-    virtual void registerTypes(const char *uri)
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi.Media"));
-        Q_UNUSED(uri);
 
-        qmlRegisterType<QIviMediaPlayer>(uri, 1, 0, "MediaPlayer");
-        qmlRegisterUncreatableType<QIviPlayQueue>(uri, 1, 0, "PlayQueue", "PlayQueue needs to be retrieved from the MediaPlayer");
-    }
+public:
+    explicit QIviMediaPlayerBackendInterface(QObject *parent = Q_NULLPTR);
+
+    virtual void initialize() = 0;
+    virtual void play() = 0;
+    virtual void pause() = 0;
+    virtual void stop() = 0;
+    virtual void seek(int offset) = 0;
+    virtual void next() = 0;
+    virtual void previous() = 0;
+
+    virtual bool canReportListCount() = 0;
+    virtual void fetchData(int start, int count) = 0;
+
+    virtual void insert(int index, const QIviPlayableItem *item) = 0;
+    virtual void remove(int index) = 0;
+    virtual void move(int cur_index, int new_index) = 0;
+
+Q_SIGNALS:
+    void currentTrackChanged(const QVariant &currentTrack); //TODO Do we need this or is the currentIndex + the playlistdata enough ?
+    void positionChanged(int position);
+    void durationChanged(int duration);
+    void currentIndexChanged(int currentIndex);
+    void countChanged(int new_length);                          // Emitted by the backend if it already knows the total count of items in the model (can be used by the dataChanged display method)
+    void dataFetched(const QList<QVariant> &data, int start, bool moreAvailabe);
+    void dataChanged(const QList<QVariant> &data, int start, int count);    //start and count defines which data gets replace by the new data content. If data is empty the rows will be removed, if count is 0, the data will be added.
 };
 
 QT_END_NAMESPACE
 
-#include "plugin.moc"
+#endif // QIVIMEDIAPLAYERBACKENDINTERFACE_H
