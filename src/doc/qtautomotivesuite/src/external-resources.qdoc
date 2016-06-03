@@ -99,3 +99,8 @@
     \externalpage https://doc.qt.io/qtcreator/creator-debugging.html
     \title Qt Creator: Debugging
 */
+
+/*!
+    \externalpage https://doc.qt.io/QtApplicationManager/index.html
+    \title Qt Application Manager
+*/
