@@ -1,9 +1,11 @@
+#ifndef QIVIMEDIAINDEXERCONTROL_H
+#define QIVIMEDIAINDEXERCONTROL_H
 /****************************************************************************
 **
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIvi module of the Qt Toolkit.
+** This file is part of the QtIVI module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,34 +41,58 @@
 **
 ****************************************************************************/
 
-#include <QtQml/qqmlextensionplugin.h>
-#include <qqml.h>
-
-#include <QtIviMedia/QIviMediaPlayer>
-#include <QtIviMedia/QIviMediaDeviceDiscoveryModel>
-#include <QtIviMedia/QIviMediaIndexerControl>
-#include <QtIviMedia/QIviPlayQueue>
+#include <QtIviCore/QIviAbstractFeature>
+#include <QtIviMedia/qtivimediaglobal.h>
 
 QT_BEGIN_NAMESPACE
 
-class QIviMediaPlugin : public QQmlExtensionPlugin
+class QIviMediaIndexerControlPrivate;
+
+static const QLatin1String QIviStringMediaIndexerInterfaceName("com.qt-project.qtivi.MediaIndexer");
+
+class Q_QTIVIMEDIA_EXPORT QIviMediaIndexerControl : public QIviAbstractFeature
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
-public:
-    virtual void registerTypes(const char *uri)
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi.Media"));
-        Q_UNUSED(uri);
 
-        qmlRegisterType<QIviMediaPlayer>(uri, 1, 0, "MediaPlayer");
-        //This should be an singleton, otherwise we might delete a pointer twice ?
-        qmlRegisterType<QIviMediaDeviceDiscoveryModel>(uri, 1, 0, "MediaDeviceDiscoveryModel");
-        qmlRegisterType<QIviMediaIndexerControl>(uri, 1, 0, "MediaIndexerControl");
-        qmlRegisterUncreatableType<QIviPlayQueue>(uri, 1, 0, "PlayQueue", "PlayQueue needs to be retrieved from the MediaPlayer");
-    }
+    Q_PROPERTY(qreal progress READ progress NOTIFY progressChanged)
+    Q_PROPERTY(QIviMediaIndexerControl::State state READ state NOTIFY stateChanged)
+public:
+
+    enum State {
+        Idle,
+        Active,
+        Paused,
+        Error
+    };
+    Q_ENUM(State)
+
+    explicit QIviMediaIndexerControl(QObject *parent = Q_NULLPTR);
+
+    qreal progress() const;
+    QIviMediaIndexerControl::State state() const;
+
+public Q_SLOTS:
+    void pause();
+    void resume();
+
+Q_SIGNALS:
+    void progressChanged(qreal progress);
+    void stateChanged(QIviMediaIndexerControl::State state);
+
+protected:
+    QIviMediaIndexerControl(QIviMediaIndexerControlPrivate &dd, QObject *parent = Q_NULLPTR);
+
+    virtual bool acceptServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
+    virtual void connectToServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
+    virtual void disconnectFromServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
+    virtual void clearServiceObject() Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QIviMediaIndexerControl)
+    Q_PRIVATE_SLOT(d_func(), void onProgressChanged(qreal progress))
+    Q_PRIVATE_SLOT(d_func(), void onStateChanged(QIviMediaIndexerControl::State state))
 };
 
 QT_END_NAMESPACE
 
-#include "plugin.moc"
+#endif // QIVIMEDIAINDEXERCONTROL_H

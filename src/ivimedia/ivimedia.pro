@@ -21,7 +21,10 @@ HEADERS += \
     qivimediadevicediscoverymodel.h \
     qivimediadevicediscoverymodel_p.h \
     qivimediadevicediscoverymodelbackendinterface.h \
-    qivimediadevice.h
+    qivimediadevice.h \
+    qivimediaindexercontrol.h \
+    qivimediaindexercontrol_p.h \
+    qivimediaindexercontrolbackendinterface.h
 
 SOURCES += \
     qivimediaplayer.cpp \
@@ -30,6 +33,8 @@ SOURCES += \
     qiviplayqueue.cpp \
     qivimediadevicediscoverymodel.cpp \
     qivimediadevicediscoverymodelbackendinterface.cpp \
-    qivimediadevice.cpp
+    qivimediadevice.cpp \
+    qivimediaindexercontrol.cpp \
+    qivimediaindexercontrolbackendinterface.cpp
 
 load(qt_module)
