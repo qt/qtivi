@@ -39,49 +39,61 @@
 **
 ****************************************************************************/
 
-
-#include "mediaplugin.h"
-#include "mediaplayerbackend.h"
-#include "searchandbrowsebackend.h"
 #include "mediadiscoverybackend.h"
+#include "usbdevice.h"
 
-#include <QtIviMedia/QIviMediaPlayer>
-#include <QtIviCore/QIviSearchAndBrowseModel>
-#include <QStringList>
+#include <QDir>
 #include <QtDebug>
 
-MediaPlugin::MediaPlugin(QObject *parent)
-    : QObject(parent)
-    , m_discovery(new MediaDiscoveryBackend(this))
+MediaDiscoveryBackend::MediaDiscoveryBackend(QObject *parent)
+    : QIviMediaDeviceDiscoveryModelBackendInterface(parent)
 {
-    m_db = QSqlDatabase::addDatabase("QSQLITE");
-    const QByteArray database = qgetenv("QTIVIMEDIA_SIMULATOR_DATABASE");
-    if (database.isEmpty()) {
-        qCritical() << "QTIVIMEDIA_SIMULATOR_DATABASE environment variable needs to be set to a valid database file location.";
+    m_deviceFolder = QDir::homePath() + "/usb-simulation";
+    const QByteArray customDeviceFolder = qgetenv("QTIVIMEDIA_SIMULATOR_DEVICEFOLDER");
+    if (customDeviceFolder.isEmpty())
+        qCritical() << "QTIVIMEDIA_SIMULATOR_DEVICEFOLDER environment variable is not set, falling back to:" << m_deviceFolder;
+    else
+        m_deviceFolder = customDeviceFolder;
+
+}
+
+void MediaDiscoveryBackend::initialize()
+{
+#ifndef QT_NO_FILESYSTEMWATCHER
+    m_watcher.addPath(m_deviceFolder);
+    connect(&m_watcher, &QFileSystemWatcher::directoryChanged, this, &MediaDiscoveryBackend::onDirectoryChanged);
+#endif
+
+    QDir deviceFolder(m_deviceFolder);
+    for (const QString &folder : deviceFolder.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
+        qDebug() << "Adding USB Device for: " << folder;
+        m_deviceMap.insert(folder, new USBDevice(deviceFolder.absoluteFilePath(folder)));
     }
-    m_db.setDatabaseName(database);
-
-    m_player = new MediaPlayerBackend(m_db, this);
-    m_browse = new SearchAndBrowseBackend(m_db, this);
+    emit availableDevices(m_deviceMap.values());
 }
 
-QStringList MediaPlugin::interfaces() const
+void MediaDiscoveryBackend::onDirectoryChanged(const QString &path)
 {
-    QStringList list;
-    list << QIviStringMediaPlayerInterfaceName;
-    list << QIviStringSearchAndBrowseModelInterfaceName;
-    list << QIviStringMediaDeviceDiscoveryInterfaceName;
-    return list;
-}
+    Q_UNUSED(path)
+    QDir deviceFolder(m_deviceFolder);
 
-QObject *MediaPlugin::interfaceInstance(const QString &interface) const
-{
-    if (interface == QIviStringMediaPlayerInterfaceName)
-        return m_player;
-    else if (interface == QIviStringSearchAndBrowseModelInterfaceName)
-        return m_browse;
-    else if (interface == QIviStringMediaDeviceDiscoveryInterfaceName)
-        return m_discovery;
+    //Check for removed Devices
+    for (const QString &folder : m_deviceMap.keys()) {
+        if (!deviceFolder.exists(folder)) {
+            qDebug() << "Removing USB Device for: " << folder;
+            QIviServiceObject *device = m_deviceMap.take(folder);
+            emit deviceRemoved(device);
+        }
+    }
 
-    return 0;
+    //Check for newly added Devices
+    for (const QString &folder : deviceFolder.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
+        if (m_deviceMap.contains(folder))
+            continue;
+
+        qDebug() << "Adding USB Device for: " << folder;
+        USBDevice *device = new USBDevice(deviceFolder.absoluteFilePath(folder));
+        m_deviceMap.insert(folder, device);
+        emit deviceAdded(device);
+    }
 }

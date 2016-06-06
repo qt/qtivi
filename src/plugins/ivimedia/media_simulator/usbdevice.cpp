@@ -39,34 +39,39 @@
 **
 ****************************************************************************/
 
+#include "usbdevice.h"
+#include "usbbrowsebackend.h"
+#include <QtIviCore/QIviSearchAndBrowseModel>
+#include <QDir>
 
-#ifndef MEDIAPLUGIN_H
-#define MEDIAPLUGIN_H
-
-#include <QtIviCore/QIviServiceInterface>
-#include <QSqlDatabase>
-
-class MediaPlayerBackend;
-class SearchAndBrowseBackend;
-class MediaDiscoveryBackend;
-
-class MediaPlugin : public QObject, QIviServiceInterface
+USBDevice::USBDevice(const QString &folder, QObject *parent)
+    : QIviMediaUsbDevice(parent)
+    , m_browseModel(new UsbBrowseBackend(folder, this))
+    , m_folder(folder)
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "com.pelagicore.QIviServiceInterface" FILE "media_simulator.json")
-    Q_INTERFACES(QIviServiceInterface)
+}
 
-public:
-    explicit MediaPlugin(QObject *parent = Q_NULLPTR);
+QString USBDevice::name() const
+{
+    return QDir(m_folder).dirName();
+}
 
-    QStringList interfaces() const;
-    QObject *interfaceInstance(const QString &interface) const;
+void USBDevice::eject()
+{
+    qWarning("Ejecting a USB Device is not supported in the simulation");
+}
 
-private:
-    MediaPlayerBackend *m_player;
-    SearchAndBrowseBackend *m_browse;
-    MediaDiscoveryBackend *m_discovery;
-    QSqlDatabase m_db;
-};
+QStringList USBDevice::interfaces() const
+{
+    QStringList list;
+    list << QIviStringSearchAndBrowseModelInterfaceName;
+    return list;
+}
 
-#endif // MEDIAPLUGIN_H
+QObject *USBDevice::interfaceInstance(const QString &interface) const
+{
+    if (interface == QIviStringSearchAndBrowseModelInterfaceName)
+        return m_browseModel;
+
+    return nullptr;
+}

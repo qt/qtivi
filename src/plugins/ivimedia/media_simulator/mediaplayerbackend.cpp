@@ -49,7 +49,7 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QtDebug>
 
-MediaPlayerBackend::MediaPlayerBackend(QObject *parent)
+MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *parent)
     : QIviMediaPlayerBackendInterface(parent)
     , m_player(new QMediaPlayer(this))
 {
@@ -58,12 +58,7 @@ MediaPlayerBackend::MediaPlayerBackend(QObject *parent)
     connect(m_player, &QMediaPlayer::positionChanged,
             this, &MediaPlayerBackend::positionChanged);
 
-    m_db = QSqlDatabase::addDatabase("QSQLITE");
-    const QByteArray database = qgetenv("QTIVIMEDIA_SIMULATOR_DATABASE");
-    if (database.isEmpty()) {
-        qCritical() << "QTIVIMEDIA_SIMULATOR_DATABASE environment variable needs to be set to a valid database file location.";
-    }
-    m_db.setDatabaseName(database);
+    m_db = database;
     m_db.open();
 
     QSqlQuery query = m_db.exec(QLatin1String("CREATE TABLE IF NOT EXISTS \"queue\" (\"id\" INTEGER PRIMARY KEY, \"qindex\" INTEGER, \"track_index\" INTEGER)"));

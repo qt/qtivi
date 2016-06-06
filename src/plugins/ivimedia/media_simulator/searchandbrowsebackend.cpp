@@ -47,7 +47,7 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QtDebug>
 
-SearchAndBrowseBackend::SearchAndBrowseBackend(QObject *parent)
+SearchAndBrowseBackend::SearchAndBrowseBackend(const QSqlDatabase &database, QObject *parent)
     : QIviSearchAndBrowseModelInterface(parent)
 {
     qRegisterMetaType<SearchAndBrowseItem>();
@@ -56,12 +56,7 @@ SearchAndBrowseBackend::SearchAndBrowseBackend(QObject *parent)
     registerContentType<SearchAndBrowseItem>("album");
     registerContentType<TrackItem>("track");
 
-    m_db = QSqlDatabase::addDatabase("QSQLITE");
-    const QByteArray database = qgetenv("QTIVIMEDIA_SIMULATOR_DATABASE");
-    if (database.isEmpty()) {
-        qCritical() << "QTIVIMEDIA_SIMULATOR_DATABASE environment variable needs to be set to a valid database file location.";
-    }
-    m_db.setDatabaseName(database);
+    m_db = database;
     m_db.open();
 }
 

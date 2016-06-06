@@ -39,34 +39,31 @@
 **
 ****************************************************************************/
 
+#ifndef MEDIADISCOVERYBACKEND_H
+#define MEDIADISCOVERYBACKEND_H
 
-#ifndef MEDIAPLUGIN_H
-#define MEDIAPLUGIN_H
+#include <QtIviMedia/QIviMediaDeviceDiscoveryModelBackendInterface>
+#include <QtIviMedia/QIviMediaDeviceDiscoveryModel>
+#include <QFileSystemWatcher>
 
-#include <QtIviCore/QIviServiceInterface>
-#include <QSqlDatabase>
-
-class MediaPlayerBackend;
-class SearchAndBrowseBackend;
-class MediaDiscoveryBackend;
-
-class MediaPlugin : public QObject, QIviServiceInterface
+class MediaDiscoveryBackend : public QIviMediaDeviceDiscoveryModelBackendInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "com.pelagicore.QIviServiceInterface" FILE "media_simulator.json")
-    Q_INTERFACES(QIviServiceInterface)
 
 public:
-    explicit MediaPlugin(QObject *parent = Q_NULLPTR);
+    MediaDiscoveryBackend(QObject *parent = 0);
 
-    QStringList interfaces() const;
-    QObject *interfaceInstance(const QString &interface) const;
+    void initialize() Q_DECL_OVERRIDE;
+
+private slots:
+    void onDirectoryChanged(const QString &path);
 
 private:
-    MediaPlayerBackend *m_player;
-    SearchAndBrowseBackend *m_browse;
-    MediaDiscoveryBackend *m_discovery;
-    QSqlDatabase m_db;
+    QString m_deviceFolder;
+#ifndef QT_NO_FILESYSTEMWATCHER
+    QFileSystemWatcher m_watcher;
+#endif
+    QMap<QString, QIviServiceObject*> m_deviceMap;
 };
 
-#endif // MEDIAPLUGIN_H
+#endif // MEDIADISCOVERYBACKEND_H

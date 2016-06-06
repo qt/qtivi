@@ -39,64 +39,15 @@
 **
 ****************************************************************************/
 
-#ifndef SEARCHBACKEND_H
-#define SEARCHBACKEND_H
+#ifndef USBBROWSEBACKEND_H
+#define USBBROWSEBACKEND_H
 
-#include <QtIviCore/QIviSearchAndBrowseModelInterface>
-#include <QtIviCore/QIviSearchAndBrowseModel>
-#include <QtIviMedia/QIviAudioTrackItem>
-#include <QSqlDatabase>
-#include <QStack>
+#include "searchandbrowsebackend.h"
 
-class SearchAndBrowseItem : public QIviSearchAndBrowseListItem
+class UsbBrowseBackend : public QIviSearchAndBrowseModelInterface
 {
-    Q_GADGET
-
 public:
-    virtual QString id() const { return m_name; }
-    virtual QString name() const { return m_name; }
-    void setName(const QString &name) { m_name = name; }
-    virtual QString type() const { return m_type; }
-    void setType(const QString &type) { m_type = type; }
-
-private:
-    QString m_name;
-    QString m_type;
-};
-Q_DECLARE_METATYPE(SearchAndBrowseItem)
-
-class TrackItem : public QIviAudioTrackItem
-{
-    Q_GADGET
-
-public:
-    virtual QString id() const { return m_id; }
-    void setId(const QString &id) { m_id = id; }
-    virtual QString name() const { return m_title; }
-    virtual QString type() const { return "track"; }
-    virtual QString title() { return QString(); }
-    void setTitle(const QString &title) { m_title = title; }
-    virtual QString artist() { return QString(); }
-    void setArtist(const QString &artist) { m_artist = artist; }
-    virtual QString album() { return QString(); }
-    void setAlbum(const QString &album) { m_artist = album; }
-    virtual QUrl url() const { return m_url; }
-    void setUrl(const QUrl &url) { m_url = url; }
-
-private:
-    QString m_id;
-    QString m_title;
-    QString m_artist;
-    QString m_album;
-    QUrl m_url;
-};
-Q_DECLARE_METATYPE(TrackItem)
-
-class SearchAndBrowseBackend : public QIviSearchAndBrowseModelInterface
-{
-    Q_OBJECT
-public:
-    explicit SearchAndBrowseBackend(const QSqlDatabase &database, QObject *parent = Q_NULLPTR);
+    UsbBrowseBackend(const QString &path, QObject *parent = 0);
 
     virtual Flags supportedFlags() const Q_DECL_OVERRIDE;
     virtual void fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count) Q_DECL_OVERRIDE;
@@ -105,14 +56,8 @@ public:
     virtual bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) Q_DECL_OVERRIDE;
     virtual QString goForward(const QUuid &identifier, const QString &type, const QString &itemId) Q_DECL_OVERRIDE;
 
-private slots:
-    void search(const QUuid &identifier, const QString &queryString, const QString &type, int start, int count);
-    QString createSortOrder(const QString &type, const QList<QIviOrderTerm> &orderTerms);
-    QString createWhereClause(const QString &type, QIviAbstractQueryTerm *term);
 private:
-    QString mapIdentifiers(const QString &type, const QString &identifer);
-
-    QSqlDatabase m_db;
+    QString m_rootFolder;
 };
 
-#endif // SEARCHBACKEND_H
+#endif // USBBROWSEBACKEND_H

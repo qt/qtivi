@@ -61,7 +61,7 @@ public:
     };
     Q_ENUM(OperationType)
 
-    MediaPlayerBackend(QObject *parent = Q_NULLPTR);
+    MediaPlayerBackend(const QSqlDatabase &database, QObject *parent = Q_NULLPTR);
 
     virtual void initialize() Q_DECL_OVERRIDE;
     virtual void play() Q_DECL_OVERRIDE;

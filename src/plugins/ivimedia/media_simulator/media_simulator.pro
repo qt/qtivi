@@ -14,9 +14,15 @@ DISTFILES += media_simulator.json
 HEADERS += \
     mediaplugin.h \
     mediaplayerbackend.h \
-    searchandbrowsebackend.h
+    searchandbrowsebackend.h \
+    mediadiscoverybackend.h \
+    usbdevice.h \
+    usbbrowsebackend.h
 
 SOURCES += \
     mediaplugin.cpp \
     mediaplayerbackend.cpp \
-    searchandbrowsebackend.cpp
+    searchandbrowsebackend.cpp \
+    mediadiscoverybackend.cpp \
+    usbdevice.cpp \
+    usbbrowsebackend.cpp

@@ -39,34 +39,28 @@
 **
 ****************************************************************************/
 
+#ifndef USBDEVICE_H
+#define USBDEVICE_H
 
-#ifndef MEDIAPLUGIN_H
-#define MEDIAPLUGIN_H
+#include <QtIviMedia/QIviMediaDevice>
 
-#include <QtIviCore/QIviServiceInterface>
-#include <QSqlDatabase>
+class UsbBrowseBackend;
 
-class MediaPlayerBackend;
-class SearchAndBrowseBackend;
-class MediaDiscoveryBackend;
-
-class MediaPlugin : public QObject, QIviServiceInterface
+class USBDevice : public QIviMediaUsbDevice
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "com.pelagicore.QIviServiceInterface" FILE "media_simulator.json")
-    Q_INTERFACES(QIviServiceInterface)
-
 public:
-    explicit MediaPlugin(QObject *parent = Q_NULLPTR);
+    explicit USBDevice(const QString &folder, QObject *parent = 0);
 
-    QStringList interfaces() const;
-    QObject *interfaceInstance(const QString &interface) const;
+    virtual QString name() const Q_DECL_OVERRIDE;
+    virtual void eject() Q_DECL_OVERRIDE;
+
+    virtual QStringList interfaces() const Q_DECL_OVERRIDE;
+    virtual QObject *interfaceInstance(const QString &interface) const Q_DECL_OVERRIDE;
 
 private:
-    MediaPlayerBackend *m_player;
-    SearchAndBrowseBackend *m_browse;
-    MediaDiscoveryBackend *m_discovery;
-    QSqlDatabase m_db;
+    UsbBrowseBackend *m_browseModel;
+    QString m_folder;
 };
 
-#endif // MEDIAPLUGIN_H
+#endif // USBDEVICE_H

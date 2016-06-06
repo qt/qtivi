@@ -58,8 +58,8 @@ import QtIvi.Media 1.0
 
 ApplicationWindow {
     visible: true
-    width: 640
-    height: 480
+    width: 800
+    height: 600
     title: qsTr("Media Player")
 
     MediaPlayer {
@@ -152,7 +152,7 @@ ApplicationWindow {
                 spacing: 8
                 clip: true
                 Layout.fillHeight: true
-                Layout.fillWidth: true
+                Layout.minimumWidth: 300
 
                 header: Rectangle {
                     width: ListView.view.width
@@ -191,7 +191,6 @@ ApplicationWindow {
                         id: column
                         width: parent.width
 
-                        Text { text: "Index: " + index }
                         Text { text: "Name: " + model.name }
                         Text { text: "Type: " + model.item.type }
                         Text { text: "CanForward: " + model.canGoForward }
@@ -204,6 +203,74 @@ ApplicationWindow {
                                 mediaPlayer.playQueue.insert(0, item)
                             else
                                 searchModel.goForward(index, SearchAndBrowseModel.InModelNavigation)
+                        }
+                    }
+                }
+            }
+        }
+
+        ColumnLayout {
+            ListView {
+                id: browseView
+                spacing: 8
+                clip: true
+                Layout.fillHeight: true
+                Layout.minimumWidth: 300
+
+                header: Rectangle {
+                    width: ListView.view.width
+                    height: browseView.model !== discoveryModel ? 50 : 0
+                    visible: height > 0
+                    color: "#efefef"
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "back"
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            if (filterModel.canGoBack)
+                                filterModel.goBack()
+                            else
+                                browseView.model = discoveryModel
+                        }
+                    }
+                }
+
+                model: MediaDeviceDiscoveryModel {
+                    id: discoveryModel
+                }
+
+                SearchAndBrowseModel {
+                    id: filterModel
+                    contentType: "file"
+                }
+
+                delegate: Rectangle {
+                    width: ListView.view.width
+                    height: column.height
+                    color: "#efefef"
+
+                    Column {
+                        id: column
+                        width: parent.width
+
+                        Text { text: "Name: " + model.name }
+                        Text { text: "Type: " + model.item.type }
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            if (browseView.model === discoveryModel) {
+                                filterModel.serviceObject = model.item
+                                browseView.model = filterModel
+                                return;
+                            }
+
+                            filterModel.goForward(index, SearchAndBrowseModel.InModelNavigation)
                         }
                     }
                 }
