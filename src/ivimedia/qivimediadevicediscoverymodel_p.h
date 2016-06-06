@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIvi module of the Qt Toolkit.
+** This file is part of the QtIVI module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,32 +39,47 @@
 **
 ****************************************************************************/
 
-#include <QtQml/qqmlextensionplugin.h>
-#include <qqml.h>
+#ifndef QIVIMEDIADEVICEDISCOVERYMODEL_P_H
+#define QIVIMEDIADEVICEDISCOVERYMODEL_P_H
 
-#include <QtIviMedia/QIviMediaPlayer>
-#include <QtIviMedia/QIviMediaDeviceDiscoveryModel>
-#include <QtIviMedia/QIviPlayQueue>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail. This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include "private/qiviabstractfeaturelistmodel_p.h"
+
+#include "qivimediadevicediscoverymodel.h"
+#include "qivimediadevicediscoverymodelbackendinterface.h"
 
 QT_BEGIN_NAMESPACE
 
-class QIviMediaPlugin : public QQmlExtensionPlugin
+class QIviMediaDeviceDiscoveryModelPrivate : public QIviAbstractFeatureListModelPrivate
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
 public:
-    virtual void registerTypes(const char *uri)
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi.Media"));
-        Q_UNUSED(uri);
+    QIviMediaDeviceDiscoveryModelPrivate(const QString &interface, QIviMediaDeviceDiscoveryModel *parent);
 
-        qmlRegisterType<QIviMediaPlayer>(uri, 1, 0, "MediaPlayer");
-        //This should be an singleton, otherwise we might delete a pointer twice ?
-        qmlRegisterType<QIviMediaDeviceDiscoveryModel>(uri, 1, 0, "MediaDeviceDiscoveryModel");
-        qmlRegisterUncreatableType<QIviPlayQueue>(uri, 1, 0, "PlayQueue", "PlayQueue needs to be retrieved from the MediaPlayer");
-    }
+    void init();
+    void clearToDefaults();
+    void resetModel(const QList<QIviServiceObject *> deviceList);
+    void onDeviceAdded(QIviServiceObject *device);
+    void onDeviceRemoved(QIviServiceObject *device);
+
+    //TODO rename me to something more handy ?
+    QIviMediaDeviceDiscoveryModelBackendInterface *discoveryBackend() const;
+
+    QIviMediaDeviceDiscoveryModel * const q_ptr;
+
+    QList<QIviServiceObject *> m_deviceList;
+    Q_DECLARE_PUBLIC(QIviMediaDeviceDiscoveryModel)
 };
 
 QT_END_NAMESPACE
 
-#include "plugin.moc"
+#endif // QIVIMEDIADEVICEDISCOVERYMODEL_P_H

@@ -17,12 +17,19 @@ HEADERS += \
     qiviplayableitem.h \
     qivimediaplayerbackendinterface.h \
     qiviplayqueue.h \
-    qiviplayqueue_p.h
+    qiviplayqueue_p.h \
+    qivimediadevicediscoverymodel.h \
+    qivimediadevicediscoverymodel_p.h \
+    qivimediadevicediscoverymodelbackendinterface.h \
+    qivimediadevice.h
 
 SOURCES += \
     qivimediaplayer.cpp \
     qiviplayableitem.cpp \
     qivimediaplayerbackendinterface.cpp \
-    qiviplayqueue.cpp
+    qiviplayqueue.cpp \
+    qivimediadevicediscoverymodel.cpp \
+    qivimediadevicediscoverymodelbackendinterface.cpp \
+    qivimediadevice.cpp
 
 load(qt_module)
