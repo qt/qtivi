@@ -83,6 +83,7 @@ public:
     virtual ~QIviAbstractFeatureListModelPrivate();
 
     QIviHelperFeature *m_feature;
+    bool m_qmlCreation;
 };
 
 QT_END_NAMESPACE

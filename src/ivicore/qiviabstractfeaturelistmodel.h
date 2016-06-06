@@ -49,9 +49,10 @@ QT_BEGIN_NAMESPACE
 
 class QIviAbstractFeatureListModelPrivate;
 
-class Q_QTIVICORE_EXPORT QIviAbstractFeatureListModel : public QAbstractListModel
+class Q_QTIVICORE_EXPORT QIviAbstractFeatureListModel : public QAbstractListModel, public QQmlParserStatus
 {
     Q_OBJECT
+    Q_INTERFACES(QQmlParserStatus)
 
     Q_PROPERTY(QIviAbstractFeature::DiscoveryMode discoveryMode READ discoveryMode WRITE setDiscoveryMode NOTIFY discoveryModeChanged)
     Q_PROPERTY(QIviAbstractFeature::DiscoveryResult discoveryResult READ discoveryResult NOTIFY discoveryResultChanged)
@@ -90,6 +91,9 @@ protected:
     virtual void connectToServiceObject(QIviServiceObject*) = 0;
     virtual void disconnectFromServiceObject(QIviServiceObject*) = 0;
     virtual void clearServiceObject() = 0;
+
+    virtual void classBegin() Q_DECL_OVERRIDE;
+    virtual void componentComplete() Q_DECL_OVERRIDE;
 
     QString interfaceName() const;
     QString errorText() const;

@@ -71,6 +71,7 @@ void QIviHelperFeature::clearServiceObject()
 QIviAbstractFeatureListModelPrivate::QIviAbstractFeatureListModelPrivate(const QString &interface, QIviAbstractFeatureListModel *model)
     : QAbstractItemModelPrivate()
     , m_feature(new QIviHelperFeature(interface, model))
+    , m_qmlCreation(false)
 {
 
 }
@@ -159,6 +160,19 @@ QIviAbstractFeatureListModel::QIviAbstractFeatureListModel(QIviAbstractFeatureLi
     connect(d->m_feature, &QIviAbstractFeature::discoveryResultChanged, this, &QIviAbstractFeatureListModel::discoveryResultChanged);
     connect(d->m_feature, &QIviAbstractFeature::isValidChanged, this, &QIviAbstractFeatureListModel::isValidChanged);
     connect(d->m_feature, &QIviAbstractFeature::errorChanged, this, &QIviAbstractFeatureListModel::errorChanged);
+}
+
+void QIviAbstractFeatureListModel::classBegin()
+{
+    Q_D(QIviAbstractFeatureListModel);
+    d->m_qmlCreation = true;
+}
+
+void QIviAbstractFeatureListModel::componentComplete()
+{
+    Q_D(QIviAbstractFeatureListModel);
+    d->m_qmlCreation = false;
+    startAutoDiscovery();
 }
 
 QString QIviAbstractFeatureListModel::interfaceName() const
