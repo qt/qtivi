@@ -31,10 +31,10 @@
 
     \e {\QAS} is a collection of software components and tools to enable
     development of \e In-Vehicle-Infotainment (IVI) systems. Built on top
-    of the Qt framework and compliant with the \l GENIVI automotive platform
-    architecture, \QAS includes an embedded development environment with
-    additional tools for rapid UI development, as well as application
-    introspection and debugging.
+    of the \l {Qt for Device Creation} offering and compliant with the
+    \l GENIVI automotive platform architecture, \QAS includes an embedded
+    development environment with additional tools for rapid UI development,
+    as well as application introspection and debugging.
 
     \QAS comes with libraries and ready-made components, as well as hardware
     adaptation APIs for creating full-featured IVI solutions. In addition,
@@ -45,16 +45,18 @@
 
     \list
         \li \l {Qt Automotive Suite Overview}{Overview}
-        \li \l {Installing Qt Automotive Suite}
-        \li \l {Reference Device Images}
         \li \l {Related Information}
     \endlist
 
-    \section1 Installing \QAS
-
-    \section1 Reference Device Images
-
     \section1 Related Information
+
+    \list
+        \li \l {Qt for Device Creation}
+        \li \l {Qt IVI}{Qt IVI Module Reference Documentation}
+        \li \l {Qt Application Manager}
+        \li \l {Over-The-Air Update}
+        \li \l {Qt Web Browser}
+    \endlist
 */
 
 /*!
@@ -157,7 +159,7 @@
 
     \section2 Over-The-Air Updates
 
-    \QAS comes with \l {Over-The-Air Update}{Over-The-Air} (OTA) package, proviving
+    \QAS comes with \l {Over-The-Air Update}{Over-The-Air} (OTA) package, providing
     tools that assist in enabling distribution of software updates in embedded
     Linux devices over wireless networks.
 */

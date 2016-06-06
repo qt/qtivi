@@ -104,3 +104,8 @@
     \externalpage https://doc.qt.io/QtApplicationManager/index.html
     \title Qt Application Manager
 */
+
+/*!
+    \externalpage https://doc.qt.io/QtForDeviceCreation/index.html
+    \title Qt for Device Creation
+*/
