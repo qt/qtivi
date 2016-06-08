@@ -13,6 +13,7 @@ QML_IMPORT_PATH = $$shadowed($$PWD)/qml
 lessThan(QT_MAJOR_VERSION, 5): error("QtIvi only supports Qt 5.")
 load(configure)
 qtCompileTest(dlt)
+qtCompileTest(taglib)
 load(qt_parts)
 
 OTHER_FILES += sync.profile

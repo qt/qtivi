@@ -39,59 +39,49 @@
 **
 ****************************************************************************/
 
+#ifndef MEDIAINDEXERBACKEND_H
+#define MEDIAINDEXERBACKEND_H
 
-#include "mediaplugin.h"
-#include "mediaplayerbackend.h"
-#include "searchandbrowsebackend.h"
-#include "mediadiscoverybackend.h"
-#include "mediaindexerbackend.h"
+#include <QtIviMedia/QIviMediaIndexerControlBackendInterface>
+#include <QtIviMedia/QIviMediaIndexerControl>
 
-#include <QtIviMedia/QIviMediaPlayer>
-#include <QtIviCore/QIviSearchAndBrowseModel>
-#include <QStringList>
-#include <QtDebug>
+#include <QSqlDatabase>
+#include <QQueue>
+#include <QFutureWatcher>
 
-MediaPlugin::MediaPlugin(QObject *parent)
-    : QObject(parent)
-    , m_discovery(new MediaDiscoveryBackend(this))
+class MediaIndexerBackend : public QIviMediaIndexerControlBackendInterface
 {
-    m_db = QSqlDatabase::addDatabase("QSQLITE");
-    const QByteArray database = qgetenv("QTIVIMEDIA_SIMULATOR_DATABASE");
-    if (database.isEmpty()) {
-        qCritical() << "QTIVIMEDIA_SIMULATOR_DATABASE environment variable needs to be set to a valid database file location.";
-    }
-    m_db.setDatabaseName(database);
+    Q_OBJECT
+public:
+    explicit MediaIndexerBackend(const QSqlDatabase &database, QObject *parent = 0);
 
-    m_player = new MediaPlayerBackend(m_db, this);
-    m_browse = new SearchAndBrowseBackend(m_db, this);
-    m_indexer = new MediaIndexerBackend(m_db, this);
+    virtual void initialize() Q_DECL_OVERRIDE;
+    virtual void pause() Q_DECL_OVERRIDE;
+    virtual void resume() Q_DECL_OVERRIDE;
 
-    connect(m_discovery, &MediaDiscoveryBackend::mediaDirectoryAdded,
-            m_indexer, &MediaIndexerBackend::addMediaFolder);
-    connect(m_discovery, &MediaDiscoveryBackend::mediaDirectoryRemoved,
-            m_indexer, &MediaIndexerBackend::removeMediaFolder);
-}
+signals:
+    void indexingDone();
 
-QStringList MediaPlugin::interfaces() const
-{
-    QStringList list;
-    list << QIviStringMediaPlayerInterfaceName;
-    list << QIviStringSearchAndBrowseModelInterfaceName;
-    list << QIviStringMediaDeviceDiscoveryInterfaceName;
-    list << QIviStringMediaIndexerInterfaceName;
-    return list;
-}
+public slots:
+    void addMediaFolder(const QString &path);
+    void removeMediaFolder(const QString &path);
 
-QObject *MediaPlugin::interfaceInstance(const QString &interface) const
-{
-    if (interface == QIviStringMediaPlayerInterfaceName)
-        return m_player;
-    else if (interface == QIviStringSearchAndBrowseModelInterfaceName)
-        return m_browse;
-    else if (interface == QIviStringMediaDeviceDiscoveryInterfaceName)
-        return m_discovery;
-    else if (interface == QIviStringMediaIndexerInterfaceName)
-        return m_indexer;
+private slots:
+    bool scanWorker(const QString &mediaDir, bool removeData);
+    void onScanFinished();
 
-    return 0;
-}
+private:
+    void scanNext();
+
+    QSqlDatabase m_db;
+    struct ScanData {
+        bool remove;
+        QString folder;
+    };
+
+    QQueue<ScanData> m_folderQueue;
+    QString m_currentFolder;
+    QFutureWatcher<bool> m_watcher;
+};
+
+#endif // MEDIAINDEXERBACKEND_H

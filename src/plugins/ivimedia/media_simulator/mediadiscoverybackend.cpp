@@ -83,6 +83,7 @@ void MediaDiscoveryBackend::onDirectoryChanged(const QString &path)
             qDebug() << "Removing USB Device for: " << folder;
             QIviServiceObject *device = m_deviceMap.take(folder);
             emit deviceRemoved(device);
+            emit mediaDirectoryRemoved(deviceFolder.absoluteFilePath(folder));
         }
     }
 
@@ -95,5 +96,6 @@ void MediaDiscoveryBackend::onDirectoryChanged(const QString &path)
         USBDevice *device = new USBDevice(deviceFolder.absoluteFilePath(folder));
         m_deviceMap.insert(folder, device);
         emit deviceAdded(device);
+        emit mediaDirectoryAdded(deviceFolder.absoluteFilePath(folder));
     }
 }

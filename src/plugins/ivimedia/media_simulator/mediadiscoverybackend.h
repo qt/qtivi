@@ -58,6 +58,10 @@ public:
 private slots:
     void onDirectoryChanged(const QString &path);
 
+signals:
+    void mediaDirectoryAdded(const QString& path);
+    void mediaDirectoryRemoved(const QString& path);
+
 private:
     QString m_deviceFolder;
 #ifndef QT_NO_FILESYSTEMWATCHER

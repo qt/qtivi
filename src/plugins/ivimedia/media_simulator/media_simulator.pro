@@ -8,6 +8,15 @@ QT       += core ivicore ivimedia sql multimedia
 
 load(qt_plugin)
 
+config_taglib {
+    DEFINES += QT_TAGLIB
+    !contains(QT_CONFIG, no-pkg-config) {
+        CONFIG += link_pkgconfig
+        PKGCONFIG = taglib
+    } else {
+        LIBS += -ltag
+    }
+}
 
 DISTFILES += media_simulator.json
 
@@ -17,7 +26,8 @@ HEADERS += \
     searchandbrowsebackend.h \
     mediadiscoverybackend.h \
     usbdevice.h \
-    usbbrowsebackend.h
+    usbbrowsebackend.h \
+    mediaindexerbackend.h
 
 SOURCES += \
     mediaplugin.cpp \
@@ -25,4 +35,5 @@ SOURCES += \
     searchandbrowsebackend.cpp \
     mediadiscoverybackend.cpp \
     usbdevice.cpp \
-    usbbrowsebackend.cpp
+    usbbrowsebackend.cpp \
+    mediaindexerbackend.cpp

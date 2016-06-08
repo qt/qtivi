@@ -39,59 +39,9 @@
 **
 ****************************************************************************/
 
+#include <taglib.h>
 
-#include "mediaplugin.h"
-#include "mediaplayerbackend.h"
-#include "searchandbrowsebackend.h"
-#include "mediadiscoverybackend.h"
-#include "mediaindexerbackend.h"
-
-#include <QtIviMedia/QIviMediaPlayer>
-#include <QtIviCore/QIviSearchAndBrowseModel>
-#include <QStringList>
-#include <QtDebug>
-
-MediaPlugin::MediaPlugin(QObject *parent)
-    : QObject(parent)
-    , m_discovery(new MediaDiscoveryBackend(this))
+int main()
 {
-    m_db = QSqlDatabase::addDatabase("QSQLITE");
-    const QByteArray database = qgetenv("QTIVIMEDIA_SIMULATOR_DATABASE");
-    if (database.isEmpty()) {
-        qCritical() << "QTIVIMEDIA_SIMULATOR_DATABASE environment variable needs to be set to a valid database file location.";
-    }
-    m_db.setDatabaseName(database);
-
-    m_player = new MediaPlayerBackend(m_db, this);
-    m_browse = new SearchAndBrowseBackend(m_db, this);
-    m_indexer = new MediaIndexerBackend(m_db, this);
-
-    connect(m_discovery, &MediaDiscoveryBackend::mediaDirectoryAdded,
-            m_indexer, &MediaIndexerBackend::addMediaFolder);
-    connect(m_discovery, &MediaDiscoveryBackend::mediaDirectoryRemoved,
-            m_indexer, &MediaIndexerBackend::removeMediaFolder);
-}
-
-QStringList MediaPlugin::interfaces() const
-{
-    QStringList list;
-    list << QIviStringMediaPlayerInterfaceName;
-    list << QIviStringSearchAndBrowseModelInterfaceName;
-    list << QIviStringMediaDeviceDiscoveryInterfaceName;
-    list << QIviStringMediaIndexerInterfaceName;
-    return list;
-}
-
-QObject *MediaPlugin::interfaceInstance(const QString &interface) const
-{
-    if (interface == QIviStringMediaPlayerInterfaceName)
-        return m_player;
-    else if (interface == QIviStringSearchAndBrowseModelInterfaceName)
-        return m_browse;
-    else if (interface == QIviStringMediaDeviceDiscoveryInterfaceName)
-        return m_discovery;
-    else if (interface == QIviStringMediaIndexerInterfaceName)
-        return m_indexer;
-
     return 0;
 }
