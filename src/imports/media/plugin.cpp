@@ -46,6 +46,7 @@
 #include <QtIviMedia/QIviMediaDeviceDiscoveryModel>
 #include <QtIviMedia/QIviMediaIndexerControl>
 #include <QtIviMedia/QIviPlayQueue>
+#include <QtIviMedia/QIviMediaDevice>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,6 +65,9 @@ public:
         qmlRegisterType<QIviMediaDeviceDiscoveryModel>(uri, 1, 0, "MediaDeviceDiscoveryModel");
         qmlRegisterType<QIviMediaIndexerControl>(uri, 1, 0, "MediaIndexerControl");
         qmlRegisterUncreatableType<QIviPlayQueue>(uri, 1, 0, "PlayQueue", "PlayQueue needs to be retrieved from the MediaPlayer");
+
+        qmlRegisterUncreatableType<QIviMediaDevice>(uri, 1, 0, "MediaDevice", "MediaDevice can't be instantiated from QML");
+        qmlRegisterUncreatableType<QIviMediaUsbDevice>(uri, 1, 0, "MediaUsbDevice", "MediaUsbDevice can't be instantiated from QML");
     }
 };
 

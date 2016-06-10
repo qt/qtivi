@@ -63,7 +63,7 @@ public:
     enum Roles {
         NameRole = Qt::DisplayRole,
         TypeRole = Qt::UserRole,
-        ItemRole
+        ItemRole = Qt::UserRole + 1
     };
 
     explicit QIviMediaDeviceDiscoveryModel(QObject *parent = Q_NULLPTR);

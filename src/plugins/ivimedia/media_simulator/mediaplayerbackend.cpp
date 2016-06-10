@@ -85,7 +85,7 @@ void MediaPlayerBackend::stop()
     m_player->stop();
 }
 
-void MediaPlayerBackend::seek(int offset)
+void MediaPlayerBackend::seek(qint64 offset)
 {
     m_player->setPosition(m_player->position() + offset);
 }
@@ -98,7 +98,7 @@ void MediaPlayerBackend::previous()
 {
 }
 
-bool MediaPlayerBackend::canReportListCount()
+bool MediaPlayerBackend::canReportCount()
 {
     return false;
 }

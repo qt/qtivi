@@ -68,8 +68,8 @@ public:
     void init();
     void clearToDefaults();
     void onCurrentTrackChanged(const QVariant &currentTrack);
-    void onPositionChanged(int position);
-    void onDurationChanged(int duration);
+    void onPositionChanged(qint64 position);
+    void onDurationChanged(qint64 duration);
     const QIviPlayableItem *playableItem(const QVariant &item);
 
     QIviMediaPlayerBackendInterface *playerBackend() const;
@@ -78,8 +78,8 @@ public:
     QIviPlayQueue *m_playQueue;
     QVariant m_currentTrackData;
     const QIviPlayableItem *m_currentTrack;
-    int m_position;
-    int m_duration;
+    qint64 m_position;
+    qint64 m_duration;
     Q_DECLARE_PUBLIC(QIviMediaPlayer)
 };
 

@@ -93,6 +93,49 @@ QIviMediaIndexerControlBackendInterface *QIviMediaIndexerControlPrivate::indexer
     return nullptr;
 }
 
+/*!
+    \class QIviMediaIndexerControl
+    \inmodule QtIviMedia
+    \brief Provides a interface to control the media indexer
+
+    The QIviMediaIndexerControl controls the media indexer. It provides a way to temporarily pause the indexing
+    and resume it, as well as to inquire about the current state and progress of the indexing operation.
+
+    The QIviMediaIndexerControl expects a single backend to be available. It is recommended to use it
+    with \l {QIviAbstractFeature::}{discoveryMode} set to \l QIviAbstractFeature::AutoDiscovery.
+*/
+
+/*!
+    \qmltype MediaIndexerControl
+    \instantiates QIviMediaIndexerControl
+    \inqmlmodule QtIvi.Media
+    \inherits AbstractFeature
+    \brief Provides a interface to control the media indexer
+
+    The MediaIndexerControl controls the media indexer. It provides a way to temporarily pause the indexing
+    and resume it, as well as to inquire about the current state and progress of the indexing operation.
+
+    The MediaIndexerControl expects a single backend to be available. It is recommended to use it
+    with \l {AbstractFeature::}{discoveryMode} set to AbstractFeature.AutoDiscovery.
+*/
+
+/*!
+    \enum QIviMediaIndexerControl::State
+    \value Idle
+           The indexer is currently idle and is waiting for new files to be indexed.
+    \value Active
+           The indexer is currently busy with indexing.
+    \value Paused
+           The indexer is paused, due to a call to pause().
+    \value Error
+           An error has occurred during the indexing operation.
+*/
+
+/*!
+   Constructs a QIviMediaIndexerControl.
+
+   The \a parent argument is passed on to the \l QIviAbstractFeature base class.
+*/
 QIviMediaIndexerControl::QIviMediaIndexerControl(QObject *parent)
     : QIviAbstractFeature(*new QIviMediaIndexerControlPrivate(QIviStringMediaIndexerInterfaceName, this), parent)
 {
@@ -100,18 +143,63 @@ QIviMediaIndexerControl::QIviMediaIndexerControl(QObject *parent)
     d->init();
 }
 
+/*!
+    \qmlproperty real MediaIndexerControl::progress
+    \brief Holds the progress of the indexing operation.
+
+    The value is between \e 0 and \e 1.
+ */
+/*!
+    \property QIviMediaIndexerControl::progress
+    \brief Holds the progress of the indexing operation.
+
+    The value is between \e 0 and \e 1.
+ */
 qreal QIviMediaIndexerControl::progress() const
 {
     Q_D(const QIviMediaIndexerControl);
     return d->m_progress;
 }
 
+/*!
+    \qmlproperty enumeration MediaIndexerControl::state
+    \brief Holds the current state of the indexer.
+
+    It can be one of the following values:
+    \value Idle
+           The indexer is currently idle and is waiting for new files to be indexed.
+    \value Active
+           The indexer is currently busy with indexing.
+    \value Paused
+           The indexer is paused, due to a call to pause().
+    \value Error
+           An error has occurred during the indexing operation.
+ */
+/*!
+    \property QIviMediaIndexerControl::state
+    \brief Holds the current state of the indexer.
+ */
 QIviMediaIndexerControl::State QIviMediaIndexerControl::state() const
 {
     Q_D(const QIviMediaIndexerControl);
     return d->m_state;
 }
 
+/*!
+    \qmlmethod MediaIndexerControl::pause()
+
+    Pauses the currently ongoing indexing operation.
+
+    \sa resume() state
+*/
+
+/*!
+    \fn void QIviMediaIndexerControl::pause()
+
+    Pauses the currently ongoing indexing operation.
+
+    \sa resume() state
+*/
 void QIviMediaIndexerControl::pause()
 {
     Q_D(QIviMediaIndexerControl);
@@ -124,6 +212,21 @@ void QIviMediaIndexerControl::pause()
     backend->pause();
 }
 
+/*!
+    \qmlmethod MediaIndexerControl::resume()
+
+    Resumes from the Paused state and resumes the indexing operation.
+
+    \sa pause() state
+*/
+
+/*!
+    \fn void QIviMediaIndexerControl::resume()
+
+    Resumes from the Paused state and resumes the indexing operation.
+
+    \sa pause() state
+*/
 void QIviMediaIndexerControl::resume()
 {
     Q_D(QIviMediaIndexerControl);
@@ -136,6 +239,9 @@ void QIviMediaIndexerControl::resume()
     backend->resume();
 }
 
+/*!
+    \internal
+*/
 QIviMediaIndexerControl::QIviMediaIndexerControl(QIviMediaIndexerControlPrivate &dd, QObject *parent)
     : QIviAbstractFeature(dd, parent)
 {
@@ -143,11 +249,17 @@ QIviMediaIndexerControl::QIviMediaIndexerControl(QIviMediaIndexerControlPrivate 
     d->init();
 }
 
+/*!
+    \reimp
+*/
 bool QIviMediaIndexerControl::acceptServiceObject(QIviServiceObject *serviceObject)
 {
     return serviceObject->interfaces().contains(QIviStringMediaIndexerInterfaceName);
 }
 
+/*!
+    \reimp
+*/
 void QIviMediaIndexerControl::connectToServiceObject(QIviServiceObject *serviceObject)
 {
     Q_UNUSED(serviceObject);
@@ -166,6 +278,9 @@ void QIviMediaIndexerControl::connectToServiceObject(QIviServiceObject *serviceO
     backend->initialize();
 }
 
+/*!
+    \reimp
+*/
 void QIviMediaIndexerControl::disconnectFromServiceObject(QIviServiceObject *serviceObject)
 {
     QIviMediaIndexerControlBackendInterface *backend = qobject_cast<QIviMediaIndexerControlBackendInterface*>(serviceObject->interfaceInstance(QIviStringMediaIndexerInterfaceName));
@@ -174,6 +289,9 @@ void QIviMediaIndexerControl::disconnectFromServiceObject(QIviServiceObject *ser
         disconnect(backend, 0, this, 0);
 }
 
+/*!
+    \reimp
+*/
 void QIviMediaIndexerControl::clearServiceObject()
 {
     Q_D(QIviMediaIndexerControl);

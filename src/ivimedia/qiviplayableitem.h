@@ -70,7 +70,7 @@ class Q_QTIVIMEDIA_EXPORT QIviAudioTrackItem : public QIviPlayableItem
     Q_PROPERTY(QString genre READ genre)
     Q_PROPERTY(int year READ year) //FIXME What type should we use here ?
     Q_PROPERTY(int trackNumber READ trackNumber)
-    Q_PROPERTY(int duration READ duration)
+    Q_PROPERTY(qint64 duration READ duration)
     Q_PROPERTY(QString coverArt READ coverArt) //FIXME How to best serve this ?
     Q_PROPERTY(int rating READ rating)
 
@@ -84,7 +84,7 @@ public:
     virtual QString genre() { return QString(); }
     virtual int year() { return -1; }
     virtual int trackNumber() { return -1; }
-    virtual int duration() { return -1; }
+    virtual qint64 duration() { return -1; }
     virtual QString coverArt() { return QString(); }
     virtual int rating() { return -1; }
 };

@@ -10,6 +10,7 @@ headerdirs                   += .
 # include sub-modules' sources and headers
 include(../../ivicore/doc/qtivicore.qdocconf)
 include(../../ivivehiclefunctions/doc/qtivivehiclefunctions.qdocconf)
+include(../../ivimedia/doc/qtivimedia.qdocconf)
 
 qhp.projects                  = QtIvi
 

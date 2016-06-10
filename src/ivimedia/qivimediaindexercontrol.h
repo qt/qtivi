@@ -1,5 +1,3 @@
-#ifndef QIVIMEDIAINDEXERCONTROL_H
-#define QIVIMEDIAINDEXERCONTROL_H
 /****************************************************************************
 **
 ** Copyright (C) 2016 Pelagicore AG
@@ -40,6 +38,9 @@
 ** SPDX-License-Identifier: LGPL-3.0
 **
 ****************************************************************************/
+
+#ifndef QIVIMEDIAINDEXERCONTROL_H
+#define QIVIMEDIAINDEXERCONTROL_H
 
 #include <QtIviCore/QIviAbstractFeature>
 #include <QtIviMedia/qtivimediaglobal.h>

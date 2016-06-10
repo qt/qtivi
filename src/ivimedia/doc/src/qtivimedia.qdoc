@@ -33,6 +33,10 @@
     \qtvariable ivimedia
 
     \brief C++ classes for the Qt IVI Media API.
+
+    The Qt IVI Media QML API provides media searching, browsing and playback management functions for in-vehicle infotainment systems.
+
+    \section1 C++ Classes
 */
 
 /*!
@@ -43,7 +47,7 @@
 
     \brief QML types for the Qt IVI Media API.
 
-    The Qt IVI Media QML API provides media functions for in-vehicle infotainment systems.
+    The Qt IVI Media QML API provides media searching, browsing and playback management functions for in-vehicle infotainment systems.
 
     \section1 QML Types
 */

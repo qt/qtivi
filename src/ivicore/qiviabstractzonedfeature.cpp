@@ -67,7 +67,7 @@ QIviAbstractZonedFeaturePrivate::QIviAbstractZonedFeaturePrivate(const QString &
     \instantiates QIviAbstractZonedFeature
     \inqmlmodule QtIvi 1.0
     \inherits AbstractFeature
-    \brief The AbstractZonedFeature is not directly accessible. QML type provides
+    \brief The AbstractZonedFeature is not directly accessible. The QML type provides
     base QML properties for each QML Vehicle feature like zone and error access.
 */
 

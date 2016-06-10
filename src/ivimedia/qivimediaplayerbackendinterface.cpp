@@ -41,8 +41,180 @@
 
 #include "qivimediaplayerbackendinterface.h"
 
+/*!
+    \class QIviMediaPlayerBackendInterface
+    \inmodule QtIviMedia
+    \ingroup backends
+    \inherits QObject
+    \brief The QIviMediaPlayerBackendInterface defines the interface for backends to the
+    QIviMediaPlayer feature class.
+
+    The QIviMediaPlayerBackendInterface is the interface used by \l QIviMediaPlayer
+
+    The interface is discovered by a \l QIviMediaPlayer object, which connects to it and sets it up.
+
+    <example of a fully featured backend>
+*/
+
+/*!
+    Constructs a backend interface.
+
+    The \a parent is sent to the QObject constructor.
+*/
 QIviMediaPlayerBackendInterface::QIviMediaPlayerBackendInterface(QObject *parent)
     : QObject(parent)
 {
 
 }
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::initialize()
+
+    Initializes the backend. This function is called, after a feature connected to the backend.
+    It is expected that this function will inform about the current state of the backend by emitting signals with the current status.
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::play()
+
+    Starts playing the current playable item.
+
+    \sa pause() stop()
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::pause()
+
+    Pauses the playback of the current playable item.
+
+    \sa play() stop()
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::stop()
+
+    Stops playing the current playable item.
+
+    \sa play() stop()
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::seek(qint64 offset)
+
+    Seeks the current playable item using \a offset in ms.
+
+    The offset can be positive or negative to either seek forward
+    or backward. A successful seek will result in a change of the
+    position property.
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::next()
+
+    Skips to the next playable item.
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::previous()
+
+    Skips to the previous playable item.
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::canReportCount()
+
+    Returns \e true if the backend can return the final number of items for a specific request. This makes it possible to support the QIviPlayQueue::DataChanged loading
+    type. The number of items can be returned by emitting the countChanged signal.
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::fetchData(int start, int count)
+
+    This function is called whenever new playable items needs to be retrieved by the QIviPlayQueue.
+
+    The parameters \a start and \a count define the range of data which should be fetched. This method is expected to emit the dataFetched() signal once
+    the new data is ready.
+
+    \sa dataFetched()
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::insert(int index, const QIviPlayableItem *item)
+
+    Adds the playable item identitifed by \a item into the play queue at \a index. The provided item is owned by the QIviMediaPlayer and it's expected
+    that the backend stores its internal representation.
+
+    \sa dataChanged()
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::remove(int index)
+
+    Removes the playable item at position \a index from the play queue.
+
+    \sa dataChanged()
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::move(int currentIndex, int newIndex)
+
+    Moves the playable item at position \a currentIndex of the play queue to the new position \a newIndex.
+
+    \sa dataChanged()
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::currentTrackChanged(const QVariant &currentTrack)
+
+    Emitted when the currently played playable item changed. The new playable item will be passed as \a currentTrack.
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::positionChanged(qint64 position)
+
+    Emitted when the position of the currently playing playable item changed. The new position will be passed as \a position in ms.
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::durationChanged(qint64 duration)
+
+    Emitted when the duration of the currently playing playable item changed. The new duration will be passed as \a duration in ms.
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::currentIndexChanged(int currentIndex)
+
+    Emitted when the currently played playable item in the play queue changed. The index of the new current playable item will be passed as \a currentIndex.
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::countChanged(int newLength)
+
+    This signal is emitted once the backend knows about the new size of the play queue.
+    The new number of items is returned as \a newLength.
+
+    This signal is expected to be emitted before the data is returned by emitting the dataFetched() signal.
+
+    \sa fetchData() dataFetched()
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::dataFetched(const QList<QVariant> &data, int start, bool moreAvailable)
+
+    This signal is emitted as a result of a call of fetchData() and returns the requested data in the argument \a data to the QIviPlayQueue.
+    The arguments \a start holds the index where the data starts and \a moreAvailable holds whether there is more data available and a new fetchData() call can be used to retrieve this data.
+
+    \sa fetchData() dataFetched()
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::dataChanged(const QList<QVariant> &data, int start, int count)
+
+    This signal is emitted whenever the play queue changes, e.g. by a insert, remove or a move operation.
+    The \a data argument holds the new data which will replace the data starting at \a start until \a count.
+
+    If \a data is empty the rows identified by the range of \a start and \a count will be removed.
+    If \a count is 0, \a data will be inserted at \a start.
+
+    \sa insert() remove() move()
+*/

@@ -72,6 +72,7 @@ public:
 
     virtual QString type() const Q_DECL_OVERRIDE;
 
+    //TODO add a signal to indicate that the stick can be removed now.
 public Q_SLOTS:
     virtual void eject() = 0;
 };

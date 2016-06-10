@@ -41,7 +41,64 @@
 
 #include "qivimediadevicediscoverymodelbackendinterface.h"
 
-QIviMediaDeviceDiscoveryModelBackendInterface::QIviMediaDeviceDiscoveryModelBackendInterface(QObject *parent) : QObject(parent)
+/*!
+    \class QIviMediaDeviceDiscoveryModelBackendInterface
+    \inmodule QtIviMedia
+    \ingroup backends
+    \inherits QObject
+    \brief The QIviMediaDeviceDiscoveryModelBackendInterface defines the interface for backends to the
+    QIviMediaDeviceDiscoveryModel feature class.
+
+    The QIviMediaDeviceDiscoveryModelBackendInterface is the interface used by \l QIviMediaDeviceDiscoveryModel
+
+    The interface is discovered by a \l QIviMediaDeviceDiscoveryModel object, which connects to it and sets it up.
+
+    <example of a fully featured backend>
+*/
+
+/*!
+    Constructs a backend interface.
+
+    The \a parent is sent to the QObject constructor.
+*/
+QIviMediaDeviceDiscoveryModelBackendInterface::QIviMediaDeviceDiscoveryModelBackendInterface(QObject *parent)
+    : QObject(parent)
 {
 
 }
+
+/*!
+    \fn QIviMediaDeviceDiscoveryModelBackendInterface::initialize()
+
+    Initializes the backend. This function is called after a feature connected to the backend.
+    It is expected that this function will use the availableDevices signal to inform the feature about the
+    currently available devices.
+
+    \note It may happen that a second feature instance is connecting to the same backend and because of this,
+    this function can be called multiple times. The implementation should inform about the current state after every call.
+
+    \sa availableDevices()
+*/
+
+//TODO add a unit test for testing multiple features instances connecting to the same instance.
+
+/*!
+    \fn void QIviMediaDeviceDiscoveryModelBackendInterface::availableDevices(const QList<QIviServiceObject*> devices)
+
+    This signal is emitted after a call to initialize() and indicates all the already connected \a devices, which are ready
+    to be used.
+
+    \sa initialize()
+*/
+
+/*!
+    \fn void QIviMediaDeviceDiscoveryModelBackendInterface::deviceAdded(QIviServiceObject *device)
+
+    This signal is emitted when a new \a device is added to the system and is ready to be used.
+*/
+
+/*!
+    \fn void QIviMediaDeviceDiscoveryModelBackendInterface::deviceRemoved(QIviServiceObject *device)
+
+    This signal is emitted when a \a device has been removed from the system and cannot be used anymore.
+*/

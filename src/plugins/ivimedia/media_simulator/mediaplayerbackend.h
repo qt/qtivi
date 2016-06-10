@@ -67,11 +67,11 @@ public:
     virtual void play() Q_DECL_OVERRIDE;
     virtual void pause() Q_DECL_OVERRIDE;
     virtual void stop() Q_DECL_OVERRIDE;
-    virtual void seek(int offset) Q_DECL_OVERRIDE;
+    virtual void seek(qint64 offset) Q_DECL_OVERRIDE;
     virtual void next() Q_DECL_OVERRIDE;
     virtual void previous() Q_DECL_OVERRIDE;
 
-    virtual bool canReportListCount() Q_DECL_OVERRIDE;
+    virtual bool canReportCount() Q_DECL_OVERRIDE;
     virtual void fetchData(int start, int count) Q_DECL_OVERRIDE;
 
     virtual void insert(int index, const QIviPlayableItem *item) Q_DECL_OVERRIDE;

@@ -84,8 +84,8 @@ public:
     virtual QString goForward(const QUuid &identifier, const QString &type, const QString &itemId) = 0; //Returns the new type identifier used for the next level. The identifier will stay the same for the following calls but the type might differ.
 
 Q_SIGNALS:
-    void countChanged(const QUuid &identifier, int new_length);                          // Emitted by the backend if it already knows the total count of items in the model (can be used by the dataChanged display method)
-    void dataFetched(const QUuid &identifier, const QList<QVariant> &data, int start, bool moreAvailabe);
+    void countChanged(const QUuid &identifier, int newLength);                          // Emitted by the backend if it already knows the total count of items in the model (can be used by the dataChanged display method)
+    void dataFetched(const QUuid &identifier, const QList<QVariant> &data, int start, bool moreAvailable);
     void dataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count);    //start and count defines which data gets replace by the new data content. If data is empty the rows will be removed, if count is 0, the data will be added.
 
 protected:

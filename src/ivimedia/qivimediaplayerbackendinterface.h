@@ -60,25 +60,26 @@ public:
     virtual void play() = 0;
     virtual void pause() = 0;
     virtual void stop() = 0;
-    virtual void seek(int offset) = 0;
+    virtual void seek(qint64 offset) = 0;
     virtual void next() = 0;
     virtual void previous() = 0;
 
-    virtual bool canReportListCount() = 0;
+    virtual bool canReportCount() = 0;
     virtual void fetchData(int start, int count) = 0;
 
     virtual void insert(int index, const QIviPlayableItem *item) = 0;
     virtual void remove(int index) = 0;
-    virtual void move(int cur_index, int new_index) = 0;
+    virtual void move(int currentIndex, int newIndex) = 0;
 
 Q_SIGNALS:
     void currentTrackChanged(const QVariant &currentTrack); //TODO Do we need this or is the currentIndex + the playlistdata enough ?
-    void positionChanged(int position);
-    void durationChanged(int duration);
+    void positionChanged(qint64 position);
+    //TODO do we need durationChanged, we can get that from the currentTrack metadata.
+    void durationChanged(qint64 duration);
     void currentIndexChanged(int currentIndex);
-    void countChanged(int new_length);                          // Emitted by the backend if it already knows the total count of items in the model (can be used by the dataChanged display method)
-    void dataFetched(const QList<QVariant> &data, int start, bool moreAvailabe);
-    void dataChanged(const QList<QVariant> &data, int start, int count);    //start and count defines which data gets replace by the new data content. If data is empty the rows will be removed, if count is 0, the data will be added.
+    void countChanged(int newLength);
+    void dataFetched(const QList<QVariant> &data, int start, bool moreAvailable);
+    void dataChanged(const QList<QVariant> &data, int start, int count);
 };
 
 QT_END_NAMESPACE

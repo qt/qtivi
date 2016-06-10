@@ -81,6 +81,101 @@ QIviAbstractFeatureListModelPrivate::~QIviAbstractFeatureListModelPrivate()
     delete m_feature;
 }
 
+/*!
+    \class QIviAbstractFeatureListModel
+    \inmodule QtIviCore
+    \brief The QIviAbstractFeatureListModel is the base class for QtIvi Features which should act as a model.
+
+    See QIviAbstractFeature for more details on how a Feature works. This base class is needed to avoid a diamond
+    inheritance from QAbstractListModel and QIviAbstractFeature.
+
+    \section1 Subclassing
+
+    //TODO add docs here.
+*/
+
+/*!
+    \qmltype AbstractFeatureListModel
+    \instantiates QIviAbstractFeatureListModel
+    \inqmlmodule QtIvi
+
+    \brief The QIviAbstractFeatureListModel is the base class for QtIvi Features which should act as a model.
+
+    See QIviAbstractFeature for more details on how a Feature works. This base class is needed to avoid a diamond
+    inheritance from QAbstractListModel and QIviAbstractFeature.
+
+    This element is not directly accessible from QML. It provides the
+    base QML properties for the feature, like autoDiscovery and isValid.
+
+    \sa AbstractFeature
+*/
+
+/*!
+    \fn bool QIviAbstractFeatureListModel::acceptServiceObject(QIviServiceObject *serviceObject)
+
+    This method is expected to be implemented by any class subclassing QIviAbstractFeature.
+
+    The method should return \c true if the given \a serviceObject is accepted and
+    can be used, otherwise \c false.
+
+    If the object is accepted, \l connectToServiceObject is called to actually connect to the
+    service object.
+
+    \sa connectToServiceObject(), disconnectFromServiceObject(), clearServiceObject()
+ */
+
+/*!
+    \fn void QIviAbstractFeatureListModel::connectToServiceObject(QIviServiceObject *serviceObject)
+
+    This method is expected to be implemented by any class subclassing QIviAbstractFeature.
+
+    The implementation should connect to the \a serviceObject, and set up all
+    properties to reflect the state of the service object.
+
+    There is no previous service object connected, as this function call is always preceded by a call to
+    \l disconnectFromServiceObject or \l clearServiceObject.
+
+    It is safe to assume that the \a serviceObject, has always been accepted through the
+    \l acceptServiceObject method prior to being passed to this method.
+
+    \sa acceptServiceObject(), disconnectFromServiceObject(), clearServiceObject()
+ */
+
+/*!
+    \fn void QIviAbstractFeatureListModel::disconnectFromServiceObject(QIviServiceObject *serviceObject)
+
+    This method is expected to be implemented by any class subclassing QIviAbstractFeature.
+
+    The implementation should disconnect all connections to the \a serviceObject.
+
+    There is no need to reset internal variables to safe defaults. A call to this function is
+    always followed by a call to \l connectToServiceObject or \l clearServiceObject.
+
+    \sa acceptServiceObject(), connectToServiceObject(), clearServiceObject()
+*/
+
+
+/*!
+    \fn void QIviAbstractFeatureListModel::clearServiceObject()
+
+    This method is expected to be implemented by any class subclassing QIviAbstractFeatureListModel.
+
+    Called when no service object is available. The implementation is expected to set all
+    properties to safe defaults and forget all links to the previous service object.
+
+    There is no need to disconnect from the service object. If it still exists, it is guaranteed
+    that \l disconnectFromServiceObject is called first.
+
+    \sa acceptServiceObject(), connectToServiceObject(), disconnectFromServiceObject()
+ */
+
+/*!
+   Constructs a QIviAbstractFeatureListModel.
+
+   The \a parent argument is passed on to the \l QAbstractListModel base class.
+
+   The \a interface argument is used to locate suitable service objects.
+*/
 QIviAbstractFeatureListModel::QIviAbstractFeatureListModel(const QString &interface, QObject *parent)
     : QAbstractListModel(*new QIviAbstractFeatureListModelPrivate(interface, this), parent)
 {
@@ -97,36 +192,144 @@ QIviAbstractFeatureListModel::~QIviAbstractFeatureListModel()
 
 }
 
+/*!
+    \qmlproperty ServiceObject AbstractFeatureListModel::serviceObject
+    \brief Sets the service object for the feature.
+
+    As features only expose the front API facing the developer, a service object implementing the
+    actual function is required. This is usually retrieved through the auto discovery mechanism.
+
+    The setter for this property returns false if the \e {Service Object} is already set to exactly this instance
+    or the \e {Service Object} doesn't get accepted by the feature.
+
+    \sa discoveryMode
+ */
+
+/*!
+    \property QIviAbstractFeatureListModel::serviceObject
+    \brief Sets the service object for the feature.
+
+    As features only expose the front API facing the developer, a service object implementing the
+    actual function is required. This is usually retrieved through the auto discovery mechanism.
+
+    The setter for this property returns false if the \e {Service Object} is already set to exactly this instance
+    or the \e {Service Object} doesn't get accepted by the feature.
+
+    \sa discoveryMode
+ */
 QIviServiceObject *QIviAbstractFeatureListModel::serviceObject() const
 {
     Q_D(const QIviAbstractFeatureListModel);
     return d->m_feature->serviceObject();
 }
 
+/*!
+    \qmlproperty enumeration AbstractFeatureListModel::discoveryMode
+    \brief Holds the mode that is used for the autoDiscovery
+
+    Available values are:
+    \value NoAutoDiscovery
+           No auto discovery is done and the ServiceObject needs to be set manually.
+    \value AutoDiscovery
+           Tries to find a production backend with a matching interface and falls back to a simulation backend if not found.
+    \value LoadOnlyProductionBackends
+           Only tries to load a production backend with a matching interface.
+    \value LoadOnlySimulationBackends
+           Only tries to load a simulation backend with a matching interface.
+
+    If needed the auto discovery will be started once the Feature creation is completed.
+
+    \note If you change this property after the Feature is instantiated you need to call startAutoDiscovery() to search for
+    a new Service Object
+ */
+
+/*!
+    \property QIviAbstractFeatureListModel::discoveryMode
+    \brief Holds the mode that is used for the autoDiscovery
+
+    \note If you change this property after the Feature is instantiated you need to call startAutoDiscovery() to search for
+    a new Service Object
+ */
 QIviAbstractFeature::DiscoveryMode QIviAbstractFeatureListModel::discoveryMode() const
 {
     Q_D(const QIviAbstractFeatureListModel);
     return d->m_feature->discoveryMode();
 }
 
+/*!
+    \qmlproperty enumeration AbstractFeatureListModel::autoDiscoveryResult
+    \brief The result of the last autoDiscovery attempt
+
+    Available values are:
+    \value NoResult
+           Indicates that no auto discovery was started because the feature has already assigned a valid ServiceObject.
+    \value ErrorWhileLoading
+           An error has happened while searching for a backend with a matching interface.
+    \value ProductionBackendLoaded
+           As a result of the auto discovery a production backend was loaded.
+    \value SimulationBackendLoaded
+           As a result of the auto discovery a simulation backend was loaded.
+ */
+
+/*!
+    \property QIviAbstractFeatureListModel::discoveryResult
+    \brief The result of the last autoDiscovery attempt
+
+    \sa startAutoDiscovery()
+ */
 QIviAbstractFeature::DiscoveryResult QIviAbstractFeatureListModel::discoveryResult() const
 {
     Q_D(const QIviAbstractFeatureListModel);
     return d->m_feature->discoveryResult();
 }
 
+/*!
+    \qmlproperty bool AbstractFeatureListModel::isValid
+    \brief Indicates whether the feature is ready for use.
+
+    The property is \c true if the feature is ready to be used, otherwise \c false. Not being
+    ready usually indicates that no suitable service object could be found, or that automatic
+    discovery has not been triggered.
+
+    \sa QIviServiceObject, discoveryMode
+ */
+/*!
+    \property QIviAbstractFeatureListModel::isValid
+    \brief Indicates whether the feature is ready to use.
+
+    The property is \c true if the feature is ready to be used, otherwise \c false. Not being
+    ready usually indicates that no suitable service object could be found, or that automatic
+    discovery has not been triggered.
+
+    \sa QIviServiceObject, discoveryMode
+ */
 bool QIviAbstractFeatureListModel::isValid() const
 {
     Q_D(const QIviAbstractFeatureListModel);
     return d->m_feature->isValid();
 }
 
+/*!
+   Returns the last error code.
+
+   \sa QIviAbstractFeature::Error
+ */
 QIviAbstractFeature::Error QIviAbstractFeatureListModel::error() const
 {
     Q_D(const QIviAbstractFeatureListModel);
     return d->m_feature->error();
 }
 
+/*!
+   \qmlproperty string AbstractFeatureListModel::error
+
+   Last error message of the feature. Empty if no error.
+ */
+/*!
+   \property QIviAbstractFeatureListModel::error
+
+   Last error message of the feature. Empty if no error.
+ */
 QString QIviAbstractFeatureListModel::errorMessage() const
 {
     Q_D(const QIviAbstractFeatureListModel);
@@ -145,12 +348,26 @@ void QIviAbstractFeatureListModel::setDiscoveryMode(QIviAbstractFeature::Discove
     return d->m_feature->setDiscoveryMode(discoveryMode);
 }
 
+/*!
+    \qmlmethod enumeration AbstractFeatureListModel::startAutoDiscovery()
+
+    Performs an automatic discovery attempt.
+
+    See AbstractFeature::startAutoDiscovery() for more information
+ */
+
+/*!
+    \brief Performs an automatic discovery attempt.
+ */
 QIviAbstractFeature::DiscoveryResult QIviAbstractFeatureListModel::startAutoDiscovery()
 {
     Q_D(QIviAbstractFeatureListModel);
     return d->m_feature->startAutoDiscovery();
 }
 
+/*!
+    \internal
+*/
 QIviAbstractFeatureListModel::QIviAbstractFeatureListModel(QIviAbstractFeatureListModelPrivate &dd, QObject *parent)
     : QAbstractListModel(dd, parent)
 {
@@ -162,12 +379,18 @@ QIviAbstractFeatureListModel::QIviAbstractFeatureListModel(QIviAbstractFeatureLi
     connect(d->m_feature, &QIviAbstractFeature::errorChanged, this, &QIviAbstractFeatureListModel::errorChanged);
 }
 
+/*!
+    \internal
+*/
 void QIviAbstractFeatureListModel::classBegin()
 {
     Q_D(QIviAbstractFeatureListModel);
     d->m_qmlCreation = true;
 }
 
+/*!
+    \internal
+*/
 void QIviAbstractFeatureListModel::componentComplete()
 {
     Q_D(QIviAbstractFeatureListModel);
@@ -175,18 +398,35 @@ void QIviAbstractFeatureListModel::componentComplete()
     startAutoDiscovery();
 }
 
+/*!
+    Returns the interface name this Feature expect to be available from the Service Object and this Feature is implementing.
+
+    See \l {Extending Qt IVI} for more information.
+*/
 QString QIviAbstractFeatureListModel::interfaceName() const
 {
     Q_D(const QIviAbstractFeatureListModel);
     return d->m_feature->interfaceName();
 }
 
+/*!
+   Returns the current error code converted from QIviAbstractFeature::Error to QString
+
+   \sa error
+*/
 QString QIviAbstractFeatureListModel::errorText() const
 {
     Q_D(const QIviAbstractFeatureListModel);
     return d->m_feature->errorText();
 }
 
+/*!
+   Sets \a error with the \a message.
+
+   Emits errorChanged() signal.
+
+   \sa QIviAbstractFeature::Error
+ */
 void QIviAbstractFeatureListModel::setError(QIviAbstractFeature::Error error, const QString &message)
 {
     Q_D(QIviAbstractFeatureListModel);

@@ -134,7 +134,7 @@ void QIviAbstractFeaturePrivate::setDiscoveryResult(QIviAbstractFeature::Discove
    \enum QIviAbstractFeature::DiscoveryMode
 
    \value NoAutoDiscovery
-          No Auto Discovery is done and the ServiceObject needs to be set manually
+          No auto discovery is done and the ServiceObject needs to be set manually
    \value AutoDiscovery
           Tries to first find a production backend with a matching interface and falls back to a simulation backend if not found
    \value LoadOnlyProductionBackends
@@ -158,22 +158,23 @@ void QIviAbstractFeaturePrivate::setDiscoveryResult(QIviAbstractFeature::Discove
 
 /*!
     \qmltype AbstractFeature
+    \qmlabstract
     \instantiates QIviAbstractFeature
     \inqmlmodule QtIvi
 
-    \brief The AbstractFeature is not directly accessible. QML type provides
+    \brief The AbstractFeature is not directly accessible. The QML type provides
     base QML properties for the feature, like autoDiscovery and isValid.
 
-    Once the AbstracteFeature is instantiated by QML the autoDiscovery will be started automatically.
-    To disable this behavior the discoveryMode needs to be set to \c NoDiscovery;
+    Once the AbstractFeature is instantiated by QML the autoDiscovery will be started automatically.
+    To disable this behavior the discoveryMode can be set to \c NoDiscovery;
 */
 
 /*!
- * \fn bool QIviAbstractFeature::acceptServiceObject(QIviServiceObject *so)
+ * \fn bool QIviAbstractFeature::acceptServiceObject(QIviServiceObject *serviceObject)
  *
  * This method is expected to be implemented by any class subclassing QIviAbstractFeature.
  *
- * This method is expected to return \c true if the given service object, \a so, is accepted and
+ * The method should return \c true if the given \a serviceObject is accepted and
  * can be used, otherwise \c false.
  *
  * If the object is accepted, \l connectToServiceObject is called to actually connect to the
@@ -183,30 +184,30 @@ void QIviAbstractFeaturePrivate::setDiscoveryResult(QIviAbstractFeature::Discove
  */
 
 /*!
- * \fn void QIviAbstractFeature::connectToServiceObject(QIviServiceObject *so)
+ * \fn void QIviAbstractFeature::connectToServiceObject(QIviServiceObject *serviceObject)
  *
  * This method is expected to be implemented by any class subclassing QIviAbstractFeature.
  *
- * The implementation is expected to connect to the service object, \a so, and to set all
+ * The implementation should connect to the \a serviceObject, and set up all
  * properties to reflect the state of the service object.
  *
  * There is no previous service object connected, as this function call is always preceded by a call to
  * \l disconnectFromServiceObject or \l clearServiceObject.
  *
- * It is safe to assume that the service object, \a so, has always been accepted through the
+ * It is safe to assume that the \a serviceObject, has always been accepted through the
  * \l acceptServiceObject method prior to being passed to this method.
  *
  * \sa acceptServiceObject(), disconnectFromServiceObject(), clearServiceObject()
  */
 
 /*!
- * \fn void QIviAbstractFeature::disconnectFromServiceObject(QIviServiceObject *so)
+ * \fn void QIviAbstractFeature::disconnectFromServiceObject(QIviServiceObject *serviceObject)
  *
  * This method is expected to be implemented by any class subclassing QIviAbstractFeature.
  *
- * The implementation is expected to disconnect from the service object, \a so.
+ * The implementation should disconnect all connections to the \a serviceObject.
  *
- * It is not expected that the implementation goes to safe defaults. A call to this function is
+ * There is no need to reset internal variables to safe defaults. A call to this function is
  * always followed by a call to \l connectToServiceObject or \l clearServiceObject.
  *
  * \sa acceptServiceObject(), connectToServiceObject(), clearServiceObject()
@@ -250,13 +251,26 @@ QIviAbstractFeature::~QIviAbstractFeature()
 }
 
 /*!
+ * \qmlproperty ServiceObject AbstractFeature::serviceObject
+ * \brief Sets the service object for the feature.
+ *
+ * As features only expose the front API facing the developer, a service object implementing the
+ * actual function is required. This is usually retrieved through the auto discovery mechanism.
+ *
+ * The setter for this property returns false if the \e {Service Object} is already set to exactly this instance
+ * or the \e {Service Object} doesn't get accepted by the feature.
+ *
+ * \sa discoveryMode
+ */
+/*!
  * \property QIviAbstractFeature::serviceObject
  * \brief Sets the service object for the feature.
  *
  * As features only expose the front API facing the developer, a service object implementing the
  * actual function is required. This is usually retrieved through the auto discovery mechanism.
  *
- * Returns false if so is already set or the so doesn't get accepted by the feature.
+ * The setter for this property returns false if the \e {Service Object} is already set to exactly this instance
+ * or the \e {Service Object} doesn't get accepted by the feature.
  *
  * \sa discoveryMode
  */
@@ -306,7 +320,7 @@ bool QIviAbstractFeature::setServiceObject(QIviServiceObject *so)
  *
  *  Available values are:
  *  \value NoAutoDiscovery
- *         No Auto Discovery is done and the ServiceObject needs to be set manually.
+ *         No auto discovery is done and the ServiceObject needs to be set manually.
  *  \value AutoDiscovery
  *         Tries to find a production backend with a matching interface and falls back to a simulation backend if not found.
  *  \value LoadOnlyProductionBackends
@@ -314,9 +328,9 @@ bool QIviAbstractFeature::setServiceObject(QIviServiceObject *so)
  *  \value LoadOnlySimulationBackends
  *         Only tries to load a simulation backend with a matching interface.
  *
- *  If needed the auto discovery will be started once the Item is created.
+ *  If needed the auto discovery will be started once the Feature creation is completed.
  *
- *  \note If you change this property after the Item is instantiated you need to call startAutoDiscovery() to search for
+ *  \note If you change this property after the Feature is instantiated you need to call startAutoDiscovery() to search for
  *  a new Service Object
  */
 
@@ -324,7 +338,8 @@ bool QIviAbstractFeature::setServiceObject(QIviServiceObject *so)
  * \property QIviAbstractFeature::discoveryMode
  * \brief Holds the mode that is used for the autoDiscovery
  *
- * \sa startAutoDiscovery()
+ * \note If you change this property after the Feature is instantiated you need to call startAutoDiscovery() to search for
+ * a new Service Object
  */
 void QIviAbstractFeature::setDiscoveryMode(QIviAbstractFeature::DiscoveryMode discoveryMode)
 {
@@ -357,7 +372,11 @@ void QIviAbstractFeature::componentComplete()
 }
 
 /*!
- * Returns the interface name.
+ * Returns the interface name this Feature is implementing.
+ *
+ * When the Feature discovers a matching backend, this interface name needs to be supported by the Service Object the Feature is connecting to.
+ *
+ * See \l {Extending Qt IVI} for more information.
  */
 QString QIviAbstractFeature::interfaceName() const
 {
@@ -379,7 +398,7 @@ QIviAbstractFeature::DiscoveryMode QIviAbstractFeature::discoveryMode() const
 
 /*!
  *  \qmlproperty enumeration AbstractFeature::autoDiscoveryResult
- *  \brief Holds the result of the last autoDiscovery
+ *  \brief The result of the last autoDiscovery
  *
  *  Available values are:
  *  \value NoResult
@@ -394,7 +413,7 @@ QIviAbstractFeature::DiscoveryMode QIviAbstractFeature::discoveryMode() const
 
 /*!
  *  \property QIviAbstractFeature::discoveryResult
- *  \brief Holds the result of the last autoDiscovery
+ *  \brief The result of the last autoDiscovery
  *
  *  \sa startAutoDiscovery()
  */
@@ -434,7 +453,7 @@ QIviAbstractFeature::Error QIviAbstractFeature::error() const
 
 
 /*!
-   \qmlproperty QString QIviAbstractFeature::error
+   \qmlproperty string QIviAbstractFeature::error
 
    Last error message of the feature. Empty if no error.
  */
@@ -450,9 +469,9 @@ QString QIviAbstractFeature::errorMessage() const
 }
 
 /*!
-   Returns a string containing the error code.
+   Returns the current error code converted from QIviAbstractFeature::Error to QString
 
-   Empty if no error.
+   \sa error
 */
 QString QIviAbstractFeature::errorText() const
 {
@@ -465,7 +484,7 @@ QString QIviAbstractFeature::errorText() const
 
 
 /*!
- *  \qmlmethod enumeration AbstractFeature::startAutoDiscovery()
+ * \qmlmethod enumeration AbstractFeature::startAutoDiscovery()
  *
  * Performs an automatic discovery attempt.
  *
@@ -570,9 +589,9 @@ QIviAbstractFeature::QIviAbstractFeature(QIviAbstractFeaturePrivate &dd, QObject
 
 /*!
  * \qmlproperty bool AbstractFeature::isValid
- * \brief Holds whether the feature is ready for use.
+ * \brief Indicates whether the feature is ready for use.
  *
- * The property holds \c true if the feature is ready to be used, otherwise \c false. Not being
+ * The property is \c true if the feature is ready to be used, otherwise \c false. Not being
  * ready usually indicates that no suitable service object could be found, or that automatic
  * discovery has not been triggered.
  *
@@ -580,9 +599,9 @@ QIviAbstractFeature::QIviAbstractFeature(QIviAbstractFeaturePrivate &dd, QObject
  */
 /*!
  * \property QIviAbstractFeature::isValid
- * \brief Holds whether the feature is ready to use.
+ * \brief Indicates whether the feature is ready to use.
  *
- * The property holds \c true if the feature is ready to be used, otherwise \c false. Not being
+ * The property is \c true if the feature is ready to be used, otherwise \c false. Not being
  * ready usually indicates that no suitable service object could be found, or that automatic
  * discovery has not been triggered.
  *

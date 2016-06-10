@@ -88,7 +88,7 @@ void QIviMediaPlayerPrivate::onCurrentTrackChanged(const QVariant &currentTrack)
     emit q->currentTrackChanged(m_currentTrackData);
 }
 
-void QIviMediaPlayerPrivate::onPositionChanged(int position)
+void QIviMediaPlayerPrivate::onPositionChanged(qint64 position)
 {
     if (m_position == position)
         return;
@@ -97,7 +97,7 @@ void QIviMediaPlayerPrivate::onPositionChanged(int position)
     emit q->positionChanged(position);
 }
 
-void QIviMediaPlayerPrivate::onDurationChanged(int duration)
+void QIviMediaPlayerPrivate::onDurationChanged(qint64 duration)
 {
     if (m_duration == duration)
         return;
@@ -138,6 +138,37 @@ QIviMediaPlayerBackendInterface *QIviMediaPlayerPrivate::playerBackend() const
     return nullptr;
 }
 
+/*!
+    \class QIviMediaPlayer
+    \inmodule QtIviMedia
+    \brief Provides a interface to control a media player
+
+    The QIviMediaPlayer provides methods to control a media player. This media player can
+    be local or even a remote device you are connected to e.g. over bluetooth.
+
+    By default the autoDiscovery is turned to Automatic for this feature and most likely will connect to
+    a local media player instance.
+*/
+
+/*!
+    \qmltype MediaPlayer
+    \instantiates QIviMediaPlayer
+    \inqmlmodule QtIvi.Media
+    \inherits AbstractFeature
+    \brief Provides a interface to control a media player
+
+    The MediaPlayer provides methods to control a media player. This media player can
+    be local or even a remote device you are connected to e.g. over bluetooth.
+
+    By default the autoDiscovery is turned to Automatic for this feature and most likely will connect to
+    a local media player instance.
+*/
+
+/*!
+   Constructs a QIviMediaPlayer.
+
+   The \a parent argument is passed on to the \l QIviAbstractFeature base class.
+*/
 QIviMediaPlayer::QIviMediaPlayer(QObject *parent)
     : QIviAbstractFeature(*new QIviMediaPlayerPrivate(QIviStringMediaPlayerInterfaceName, this), parent)
 {
@@ -145,30 +176,87 @@ QIviMediaPlayer::QIviMediaPlayer(QObject *parent)
     d->init();
 }
 
+/*!
+    \qmlproperty PlayQueue MediaPlayer::playQueue
+    \brief Holds the play queue of this media player.
+
+    \sa PlayQueue
+ */
+/*!
+    \property QIviMediaPlayer::playQueue
+    \brief Holds the play queue of this media player.
+
+    \sa QIviPlayQueue
+ */
 QIviPlayQueue *QIviMediaPlayer::playQueue() const
 {
     Q_D(const QIviMediaPlayer);
     return d->m_playQueue;
 }
 
+/*!
+    \qmlproperty object MediaPlayer::currentTrack
+    \brief Holds the current track represented as QVariant.
+
+    \note This will be replaced by soon.
+ */
+/*!
+    \property QIviMediaPlayer::currentTrack
+    \brief Holds the current track represented as QVariant.
+
+    \note This will be replaced by soon.
+ */
 QVariant QIviMediaPlayer::currentTrack() const
 {
     Q_D(const QIviMediaPlayer);
     return d->m_currentTrackData;
 }
 
-int QIviMediaPlayer::position() const
+/*!
+    \qmlproperty int MediaPlayer::position
+    \brief Holds the position of the current song of the media player in seconds.
+ */
+/*!
+    \property QIviMediaPlayer::position
+    \brief Holds the position of the current song of the media player in seconds.
+ */
+qint64 QIviMediaPlayer::position() const
 {
     Q_D(const QIviMediaPlayer);
     return d->m_position;
 }
 
-int QIviMediaPlayer::duration() const
+/*!
+    \qmlproperty int MediaPlayer::duration
+    \brief Holds the total duration of the current song in seconds.
+ */
+/*!
+    \property QIviMediaPlayer::duration
+    \brief Holds the total duration of the current song in seconds.
+ */
+qint64 QIviMediaPlayer::duration() const
 {
     Q_D(const QIviMediaPlayer);
     return d->m_duration;
 }
 
+/*!
+    \qmlmethod MediaPlayer::play()
+
+    Starts to play the current track. If the playQueue is empty
+    it's up to the backend to decide what to do.
+
+    \sa pause() stop()
+*/
+
+/*!
+    \fn void QIviMediaPlayer::play()
+
+    Starts to play the current track. If the playQueue is empty
+    it's up to the backend to decide what to do.
+
+    \sa pause() stop()
+*/
 void QIviMediaPlayer::play()
 {
     Q_D(QIviMediaPlayer);
@@ -181,6 +269,21 @@ void QIviMediaPlayer::play()
     backend->play();
 }
 
+/*!
+    \qmlmethod MediaPlayer::pause()
+
+    Pauses the currently ongoing playback.
+
+    \sa play() stop()
+*/
+
+/*!
+    \fn void QIviMediaPlayer::pause()
+
+    Pauses the currently ongoing playback.
+
+    \sa play() stop()
+*/
 void QIviMediaPlayer::pause()
 {
     Q_D(QIviMediaPlayer);
@@ -193,6 +296,21 @@ void QIviMediaPlayer::pause()
     backend->pause();
 }
 
+/*!
+    \qmlmethod MediaPlayer::stop()
+
+    Stops the currently ongoing playback.
+
+    \sa play() pause()
+*/
+
+/*!
+    \fn void QIviMediaPlayer::stop()
+
+    Stops the currently ongoing playback.
+
+    \sa play() pause()
+*/
 void QIviMediaPlayer::stop()
 {
     Q_D(QIviMediaPlayer);
@@ -205,7 +323,26 @@ void QIviMediaPlayer::stop()
     backend->stop();
 }
 
-void QIviMediaPlayer::seek(int offset)
+/*!
+    \qmlmethod MediaPlayer::seek(offset)
+
+    Seeks into the current track using \a offset.
+
+    The offset can be positive or negative to either seek forward
+    or backward. A successful seek will result in a change of the
+    position property.
+*/
+
+/*!
+    \fn void QIviMediaPlayer::seek(qint64 offset)
+
+    Seeks into the current track using \a offset.
+
+    The offset can be positive or negative to either seek forward
+    or backward. A successful seek will result in a change of the
+    position property.
+*/
+void QIviMediaPlayer::seek(qint64 offset)
 {
     Q_D(QIviMediaPlayer);
     QIviMediaPlayerBackendInterface *backend = d->playerBackend();
@@ -217,6 +354,21 @@ void QIviMediaPlayer::seek(int offset)
     backend->seek(offset);
 }
 
+/*!
+    \qmlmethod MediaPlayer::next()
+
+    Skips to the next track in the playQueue.
+
+    \sa playMode
+*/
+
+/*!
+    \fn void QIviMediaPlayer::next()
+
+    Skips to the next track in the playQueue.
+
+    \sa playMode
+*/
 void QIviMediaPlayer::next()
 {
     Q_D(QIviMediaPlayer);
@@ -229,6 +381,21 @@ void QIviMediaPlayer::next()
     backend->next();
 }
 
+/*!
+    \qmlmethod MediaPlayer::previous()
+
+    Skips to the previous track in the playQueue.
+
+    \sa playMode
+*/
+
+/*!
+    \fn void QIviMediaPlayer::previous()
+
+    Skips to the previous track in the playQueue.
+
+    \sa playMode
+*/
 void QIviMediaPlayer::previous()
 {
     Q_D(QIviMediaPlayer);
@@ -241,6 +408,9 @@ void QIviMediaPlayer::previous()
     backend->previous();
 }
 
+/*!
+    \internal
+ */
 QIviMediaPlayer::QIviMediaPlayer(QIviMediaPlayerPrivate &dd, QObject *parent)
     : QIviAbstractFeature(dd, parent)
 {
@@ -248,11 +418,17 @@ QIviMediaPlayer::QIviMediaPlayer(QIviMediaPlayerPrivate &dd, QObject *parent)
     d->init();
 }
 
+/*!
+    \reimp
+ */
 bool QIviMediaPlayer::acceptServiceObject(QIviServiceObject *serviceObject)
 {
     return serviceObject->interfaces().contains(QIviStringMediaPlayerInterfaceName);
 }
 
+/*!
+    \reimp
+ */
 void QIviMediaPlayer::connectToServiceObject(QIviServiceObject *serviceObject)
 {
     Q_UNUSED(serviceObject);
@@ -282,6 +458,9 @@ void QIviMediaPlayer::connectToServiceObject(QIviServiceObject *serviceObject)
     d->m_playQueue->d_func()->resetModel();
 }
 
+/*!
+    \reimp
+ */
 void QIviMediaPlayer::disconnectFromServiceObject(QIviServiceObject *serviceObject)
 {
     QIviMediaPlayerBackendInterface *backend = qobject_cast<QIviMediaPlayerBackendInterface*>(serviceObject->interfaceInstance(QIviStringMediaPlayerInterfaceName));
@@ -290,6 +469,9 @@ void QIviMediaPlayer::disconnectFromServiceObject(QIviServiceObject *serviceObje
         disconnect(backend, 0, this, 0);
 }
 
+/*!
+    \reimp
+ */
 void QIviMediaPlayer::clearServiceObject()
 {
     Q_D(QIviMediaPlayer);

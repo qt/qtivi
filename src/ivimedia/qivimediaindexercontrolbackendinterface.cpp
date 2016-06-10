@@ -41,8 +41,68 @@
 
 #include "qivimediaindexercontrolbackendinterface.h"
 
+/*!
+    \class QIviMediaIndexerControlBackendInterface
+    \inmodule QtIviMedia
+    \ingroup backends
+    \inherits QObject
+    \brief The QIviMediaIndexerControlBackendInterface defines the interface for backends to the
+    QIviMediaIndexerControl feature class.
+
+    The QIviMediaIndexerControlBackendInterface is the interface used by \l QIviMediaIndexerControl
+
+    The interface is discovered by a \l QIviMediaIndexerControl object, which connects to it and sets it up.
+
+    <example of a fully featured backend>
+*/
+
+/*!
+    Constructs a backend interface.
+
+    The \a parent is sent to the QObject constructor.
+*/
 QIviMediaIndexerControlBackendInterface::QIviMediaIndexerControlBackendInterface(QObject *parent)
     : QObject(parent)
 {
 
 }
+
+/*!
+    \fn QIviMediaIndexerControlBackendInterface::initialize()
+
+    Initializes the backend. This function is called after a feature connected to the backend.
+    It is expected that this function will use the stateChanged and the progressChanged signals to inform the feature about the
+    current state of the indexing.
+
+    \sa stateChanged() progressChanged()
+*/
+
+/*!
+    \fn QIviMediaIndexerControlBackendInterface::pause()
+
+    Pauses the currently ongoing indexing. If currently no indexing is ongoing this call should not perform any actions.
+
+    \sa resume()
+*/
+
+/*!
+    \fn QIviMediaIndexerControlBackendInterface::resume()
+
+    Resumes the previously paused indexing. If there is nothing to resume this call should not perform any actions.
+
+    \sa pause()
+*/
+
+/*!
+    \fn void QIviMediaIndexerControlBackendInterface::progressChanged(qreal progress)
+
+    This signal is emitted when indexing is currently ongoing and the progress of the operation changed.
+    The \a progress argument passes the current progress between \e 0 and \e 1.
+*/
+
+/*!
+    \fn void QIviMediaIndexerControlBackendInterface::stateChanged(QIviMediaIndexerControl::State state)
+
+    This signal is emitted whenever the indexing state changed. The \a state argument holds the new state
+    of the indexer.
+*/

@@ -41,15 +41,176 @@
 
 #include "qiviplayableitem.h"
 
+/*!
+    \class QIviPlayableItem
+    \inmodule QtIviMedia
+    \brief The QIviPlayableItem is the base class of a row in the QIviPlayQueue model.
+*/
+
+/*!
+    \qmltype PlayableItem
+    \qmlabstract
+    \instantiates QIviPlayableItem
+    \inqmlmodule QtIvi.Media
+    \brief The PlayableItem is the base class of a row in the PlayQueue model.
+
+    \note This item is not creatable from QML.
+*/
+
+/*!
+    \qmlproperty QUrl PlayableItem::url
+
+    The url to the resource which should be played.
+
+    E.g. a local file url to a audio track or a url to a web stream.
+*/
+
+/*!
+    \property QIviPlayableItem::url
+
+    The url to the resource which should be played.
+
+    E.g. a local file url to a audio track or a url to a web stream.
+*/
+
 QIviPlayableItem::QIviPlayableItem()
 {
-
 }
 
 QIviPlayableItem::~QIviPlayableItem()
 {
 }
 
+/*!
+    \class QIviAudioTrackItem
+    \inmodule QtIviMedia
+    \brief The QIviAudioTrackItem represents a playable audio track.
+*/
+
+/*!
+    \qmltype AudioTrackItem
+    \instantiates QIviAudioTrackItem
+    \inqmlmodule QtIvi.Media
+    \brief The AudioTrackItem represents a playable audio track.
+
+    \note This item is not creatable from QML.
+*/
+
+/*!
+    \qmlproperty string AudioTrackItem::title
+
+    Holds the title of the audio track.
+*/
+
+/*!
+    \property QIviAudioTrackItem::title
+
+    Holds the title of the audio track.
+*/
+
+/*!
+    \qmlproperty string AudioTrackItem::album
+
+    Holds the album name of the audio track.
+*/
+
+/*!
+    \property QIviAudioTrackItem::album
+
+    Holds the album name of the audio track.
+*/
+
+/*!
+    \qmlproperty string AudioTrackItem::artist
+
+    Holds the artist of the audio track.
+*/
+
+/*!
+    \property QIviAudioTrackItem::artist
+
+    Holds the artist of the audio track.
+*/
+
+/*!
+    \qmlproperty string AudioTrackItem::genre
+
+    Holds the genre of the audio track.
+*/
+
+/*!
+    \property QIviAudioTrackItem::genre
+
+    Holds the genre of the audio track.
+*/
+
+/*!
+    \qmlproperty int AudioTrackItem::year
+
+    Holds the release year of the audio track.
+*/
+
+/*!
+    \property QIviAudioTrackItem::year
+
+    Holds the release year of the audio track.
+*/
+
+/*!
+    \qmlproperty int AudioTrackItem::trackNumber
+
+    Holds the number this track has in the album.
+*/
+
+/*!
+    \property QIviAudioTrackItem::trackNumber
+
+    Holds the number this track has in the album.
+*/
+
+/*!
+    \qmlproperty int AudioTrackItem::duration
+
+    Holds the duration of the audio track in ms.
+*/
+
+/*!
+    \property QIviAudioTrackItem::duration
+
+    Holds the duration of the audio track.
+*/
+
+/*!
+    \qmlproperty string AudioTrackItem::coverArt
+
+    Holds the cover art of the audio track.
+
+    This can be a url to a local image file or a link to a qml image provider
+*/
+
+/*!
+    \property QIviAudioTrackItem::coverArt
+
+    Holds the cover art of the audio track.
+
+    This can be a url to a local image file or a link to a qml image provider
+*/
+
+/*!
+    \qmlproperty int AudioTrackItem::rating
+
+    Holds the rating of the audio track.
+
+    This is usually a value between \e 0 and \e 5.
+*/
+
+/*!
+    \property QIviAudioTrackItem::rating
+
+    Holds the rating of the audio track.
+
+    This is usually a value between \e 0 and \e 5.
+*/
 QIviAudioTrackItem::QIviAudioTrackItem()
 {
 }

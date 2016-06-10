@@ -61,29 +61,29 @@ class Q_QTIVIMEDIA_EXPORT QIviMediaPlayer : public QIviAbstractFeature
     //TODO Status
     Q_PROPERTY(QIviPlayQueue *playQueue READ playQueue CONSTANT)
     Q_PROPERTY(QVariant currentTrack READ currentTrack NOTIFY currentTrackChanged)
-    Q_PROPERTY(int position READ position NOTIFY positionChanged)
-    Q_PROPERTY(int duration READ duration NOTIFY durationChanged) //qint64 ???
+    Q_PROPERTY(qint64 position READ position NOTIFY positionChanged)
+    Q_PROPERTY(qint64 duration READ duration NOTIFY durationChanged)
 
 public:
     explicit QIviMediaPlayer(QObject *parent = Q_NULLPTR);
 
     QIviPlayQueue *playQueue() const;
     QVariant currentTrack() const;
-    int position() const;
-    int duration() const;
+    qint64 position() const;
+    qint64 duration() const;
 
 public Q_SLOTS:
     void play();
     void pause();
     void stop();
-    void seek(int offset);
+    void seek(qint64 offset);
     void next();
     void previous();
 
 Q_SIGNALS:
     void currentTrackChanged(const QVariant &currentTrack);
-    void positionChanged(int position);
-    void durationChanged(int duration);
+    void positionChanged(qint64 position);
+    void durationChanged(qint64 duration);
 
 protected:
     QIviMediaPlayer(QIviMediaPlayerPrivate &dd, QObject *parent = Q_NULLPTR);
@@ -96,8 +96,8 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QIviMediaPlayer)
     Q_PRIVATE_SLOT(d_func(), void onCurrentTrackChanged(const QVariant &currentTrack))
-    Q_PRIVATE_SLOT(d_func(), void onPositionChanged(int position))
-    Q_PRIVATE_SLOT(d_func(), void onDurationChanged(int duration))
+    Q_PRIVATE_SLOT(d_func(), void onPositionChanged(qint64 position))
+    Q_PRIVATE_SLOT(d_func(), void onDurationChanged(qint64 duration))
 
     friend class QIviPlayQueuePrivate;
 };

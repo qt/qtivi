@@ -75,7 +75,7 @@ class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModel : public QIviAbstractFeatureLi
     Q_PROPERTY(QStringList availableContentTypes READ availableContentTypes NOTIFY availableContentTypesChanged)
     Q_PROPERTY(int chunkSize READ chunkSize WRITE setChunkSize NOTIFY chunkSizeChanged)
     Q_PROPERTY(int fetchMoreThreshold READ fetchMoreThreshold WRITE setFetchMoreThreshold NOTIFY fetchMoreThresholdChanged)
-    Q_PROPERTY(int count READ rowCount() NOTIFY countChanged)
+    Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
     Q_PROPERTY(bool canGoBack READ canGoBack NOTIFY canGoBackChanged)
 
     //TODO fix naming
@@ -86,8 +86,8 @@ public:
     enum Roles {
         NameRole = Qt::DisplayRole,
         TypeRole = Qt::UserRole,
-        ItemRole,
-        CanGoForwardRole
+        ItemRole = Qt::UserRole + 1,
+        CanGoForwardRole = Qt::UserRole +2
     };
 
     //TODO fix naming

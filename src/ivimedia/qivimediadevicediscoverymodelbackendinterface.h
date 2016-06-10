@@ -59,7 +59,7 @@ public:
 Q_SIGNALS:
 
     //The ownership will be transferred to discoveryModel. This will reset the model with the new content, using add/remove is recommended
-    void availableDevices(const QList<QIviServiceObject*>);
+    void availableDevices(const QList<QIviServiceObject*> devices);
     void deviceAdded(QIviServiceObject *device);
     void deviceRemoved(QIviServiceObject *device);
 };

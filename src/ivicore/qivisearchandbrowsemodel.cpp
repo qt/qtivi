@@ -269,6 +269,163 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
     resetModel();
 }
 
+/*!
+    \class QIviSearchAndBrowseListItem
+    \inmodule QtIviCore
+    \brief The QIviSearchAndBrowseListItem is the base class of a row in the QIviSearchAndBrowseModel model.
+*/
+
+/*!
+    \qmltype SearchAndBrowseListItem
+    \qmlabstract
+    \instantiates QIviSearchAndBrowseListItem
+    \inqmlmodule QtIvi
+    \brief The SearchAndBrowseListItem is the base class of a row in the SearchAndBrowseModel model.
+
+    \note This item is not creatable from QML.
+*/
+
+/*!
+    \qmlproperty string SearchAndBrowseListItem::id
+    A unique identifier, which can be used to identify this item.
+
+    This is mainly used by the backend to implement filtering or browsing.
+*/
+
+/*!
+    \property QIviSearchAndBrowseListItem::id
+    A unique identifier, which can be used to identify this item.
+
+    This is mainly used by the backend to implement filtering or browsing.
+*/
+
+/*!
+    \qmlproperty string SearchAndBrowseListItem::name
+    The name of the item. E.g. The name of a contact in a addressbook, or the artist-name in a list of artists.
+*/
+
+/*!
+    \property QIviSearchAndBrowseListItem::name
+    The name of the item. E.g. The name of a contact in a addressbook, or the artist-name in a list of artists.
+*/
+
+/*!
+    \qmlproperty string SearchAndBrowseListItem::type
+    The type of the item. E.g. "artist", "track", "contact".
+*/
+
+/*!
+    \property QIviSearchAndBrowseListItem::type
+    The type of the item. E.g. "artist", "track", "contact".
+*/
+
+/*!
+    \class QIviSearchAndBrowseModel
+    \inmodule QtIviCore
+    \brief The QIviSearchAndBrowseModel is a generic model which can be used to search, browse, filter and sort data.
+
+    The QIviSearchAndBrowseModel should be used directly or as a base class whenever a lot of data needs to be
+    presented in a ListView.
+
+    The model is built upon the basic principle of filtering and sorting the data already where
+    they are created instead of retrieving everything and sort or filter it locally. In addition the QIviSearchAndBrowseModel
+    only fetches the data it really needs and can it can be configured how this can be done.
+
+    The backend filling the model with data needs to implement the QIviSearchAndBrowseModelInterface class.
+
+    \section1 Filtering and Sorting
+    \target FilteringAndSorting
+
+    \l {Qt IVI Query Language}
+
+    \section1 Browsing
+    \target Browsing
+
+    \section1 Fetch Modes
+*/
+
+/*!
+    \enum QIviSearchAndBrowseModel::NavigationType
+    \value InModelNavigation
+           The new content will be loaded into this model and the existing model data will be reset
+    \value OutOfModelNavigation
+           A new model will be returned which loads the new content. The model data of this model will
+           not be changed and can still be used.
+*/
+
+/*!
+    \enum QIviSearchAndBrowseModel::LoadingType
+    \value FetchMore
+           This is the default and can be used if you don't know the final size of the list (e.g. a infinite list).
+           The list will detect that it is near the end (fetchMoreThreshold) and then fetch the next chunk of data using canFetchMore and fetchMore.
+           The drawback of this method is that, because the final size of the data is not known, you can't display a dynamic scroll-bar indicator which is resized depending on the content of the list.
+           The other problem could be fast scrolling, as the data might not come in-time and scrolling stops. This can be tweaked by the fetchMoreThreshold property.
+
+    \value DataChanged
+           For this loading type you need to know how many items are in the list, as dummy items are created and the user can already start scrolling even though the data is not yet ready to be displayed.
+           Similar to FetchMore the data is also loaded in chunks. You can safely use a scroll indicator here.
+           The delegate needs to support this approach, as it doesn't have a content when it's first created.
+*/
+
+/*!
+   \enum QIviSearchAndBrowseModel::Roles
+   \value NameRole
+          The name of the item. E.g. The name of a contact in a addressbook, or the artist-name in a list of artists.
+   \value TypeRole
+          The type of the item. E.g. "artist", "track", "contact".
+   \value ItemRole
+          The item itself. This provides access to the properties which are type specific. E.g. the address of a contact.
+   \value CanGoForwardRole
+          True if this item can be used to go one level forward and display the next set of items. \sa goForward()
+*/
+
+/*!
+    \qmltype SearchAndBrowseModel
+    \instantiates QIviSearchAndBrowseModel
+    \inqmlmodule QtIvi
+    \inherits AbstractFeatureListModel
+    \brief The SearchAndBrowseModel is a generic model which can be used to search, browse, filter and sort data.
+
+    The SearchAndBrowseModel should be used directly or as a base class whenever a lot of data needs to be
+    presented in a ListView.
+
+    The model is built upon the basic principle of filtering and sorting the data already where
+    they are created instead of retrieving everything and sort or filter it locally. In addition the SearchAndBrowseModel
+    only fetches the data it really needs and can it can be configured how this can be done.
+
+    All rows in the model need to be subclassed from SearchAndBrowseListItem.
+
+    The following roles are available in this model:
+
+    \table
+    \header
+        \li Role name
+        \li Type
+        \li Description
+    \row
+        \li \c name
+        \li string
+        \li The name of the item. E.g. The name of a contact in a addressbook, or the artist-name in a list of artists.
+    \row
+        \li \c type
+        \li string
+        \li The type of the item. E.g. "artist", "track", "contact".
+    \row
+        \li \c item
+        \li object
+        \li The item itself. This provides access to the properties which are type specific. E.g. the address of a contact.
+    \row
+        \li \c canGoForward
+        \li bool
+        \li True if this item can be used to go one level forward and display the next set of items. \sa goForward()
+    \endtable
+*/
+
+/*!
+   Constructs a QIviSearchAndBrowseModel.
+
+   The \a parent argument is passed on to the \l QIviAbstractFeatureListModel base class.
+ */
 QIviSearchAndBrowseModel::QIviSearchAndBrowseModel(QObject *parent)
     : QIviAbstractFeatureListModel(*new QIviSearchAndBrowseModelPrivate(QIviStringSearchAndBrowseModelInterfaceName, this), parent)
 {
@@ -280,6 +437,25 @@ QIviSearchAndBrowseModel::~QIviSearchAndBrowseModel()
 {
 }
 
+/*!
+    \qmlproperty string SearchAndBrowseModel::query
+    \brief Holds the current query used for filtering and sorting the current content of the model.
+
+    \note When changing this property the content will be reset.
+
+    See \l {Qt IVI Query Language} for more information.
+    \sa FilteringAndSorting
+ */
+
+/*!
+    \property QIviSearchAndBrowseModel::query
+    \brief Holds the current query used for filtering and sorting the current content of the model.
+
+    \note When changing this property the content will be reset.
+
+    See \l {Qt IVI Query Language} for more information.
+    \sa FilteringAndSorting
+ */
 QString QIviSearchAndBrowseModel::query() const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -301,6 +477,25 @@ void QIviSearchAndBrowseModel::setQuery(const QString &query)
     d->resetModel();
 }
 
+/*!
+    \qmlproperty int SearchAndBrowseModel::chunkSize
+    \brief Holds the number of rows which are requested from the backend interface.
+
+    This property can be used to fine tune the loading performance.
+
+    Bigger chunks means less calls to the backend and to a potential IPC underneath, but more data
+    to be transferred and probably longer waiting time until the request was finished.
+ */
+
+/*!
+    \property QIviSearchAndBrowseModel::chunkSize
+    \brief Holds the number of rows which are requested from the backend interface.
+
+    This property can be used to fine tune the loading performance.
+
+    Bigger chunks means less calls to the backend and to a potential IPC underneath, but more data
+    to be transferred and probably longer waiting time until the request was finished.
+ */
 int QIviSearchAndBrowseModel::chunkSize() const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -317,6 +512,31 @@ void QIviSearchAndBrowseModel::setChunkSize(int chunkSize)
     emit chunkSizeChanged(chunkSize);
 }
 
+/*!
+    \qmlproperty int SearchAndBrowseModel::fetchMoreThreshold
+    \brief Holds the row delta to the end before the next chunk is loaded
+
+    This property can be used to fine tune the loading performance. When the
+    threshold is reached the next chunk of rows are requested from the backend. How many rows are fetched
+    can be defined by using the chunkSize property.
+
+    The threshold defines the number of rows before the cached rows ends.
+
+    \note This property is only used when loadingType is set to FetchMore.
+ */
+
+/*!
+    \property QIviSearchAndBrowseModel::fetchMoreThreshold
+    \brief Holds the row delta to the end before the next chunk is loaded
+
+    This property can be used to fine tune the loading performance. When the
+    threshold is reached the next chunk of rows are requested from the backend. How many rows are fetched
+    can be defined by using the chunkSize property.
+
+    The threshold defines the number of rows before the cached rows ends.
+
+    \note This property is only used when loadingType is set to FetchMore.
+ */
 int QIviSearchAndBrowseModel::fetchMoreThreshold() const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -333,6 +553,23 @@ void QIviSearchAndBrowseModel::setFetchMoreThreshold(int fetchMoreThreshold)
     emit fetchMoreThresholdChanged(fetchMoreThreshold);
 }
 
+/*!
+    \qmlproperty string SearchAndBrowseModel::contentType
+    \brief Holds the current type of content displayed in this model.
+
+    \note When changing this property the content will be reset.
+
+    \sa SearchAndBrowseModel::availableContentTypes
+ */
+
+/*!
+    \property QIviSearchAndBrowseModel::contentType
+    \brief Holds the current type of content displayed in this model.
+
+    \note When changing this property the content will be reset.
+
+    \sa availableContentTypes
+ */
 QString QIviSearchAndBrowseModel::contentType() const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -351,18 +588,57 @@ void QIviSearchAndBrowseModel::setContentType(const QString &contentType)
     emit contentTypeChanged(contentType);
 }
 
+/*!
+    \qmlproperty list<string> SearchAndBrowseModel::availableContentTypes
+    \brief Holds all the available content types
+
+    \sa contentType
+ */
+
+/*!
+    \property QIviSearchAndBrowseModel::availableContentTypes
+    \brief Holds all the available content types
+
+    \sa contentType
+ */
 QStringList QIviSearchAndBrowseModel::availableContentTypes() const
 {
     Q_D(const QIviSearchAndBrowseModel);
     return d->m_availableContentTypes;
 }
 
+/*!
+    \qmlproperty bool SearchAndBrowseModel::canGoBack
+    \brief Holds whether the goBack() function can be used to return to the previous content.
+
+    See \l Browsing for more information.
+ */
+
+/*!
+    \property QIviSearchAndBrowseModel::canGoBack
+    \brief Holds whether the goBack() function can be used to return to the previous content.
+
+    See \l Browsing for more information.
+ */
 bool QIviSearchAndBrowseModel::canGoBack() const
 {
     Q_D(const QIviSearchAndBrowseModel);
     return d->m_canGoBack;
 }
 
+/*!
+    \qmlproperty enumeration SearchAndBrowseModel::loadingType
+    \brief Holds the currently used loading type used for loading the data.
+
+    \note When changing this property the content will be reset.
+ */
+
+/*!
+    \property QIviSearchAndBrowseModel::loadingType
+    \brief Holds the currently used loading type used for loading the data.
+
+    \note When changing this property the content will be reset.
+ */
 QIviSearchAndBrowseModel::LoadingType QIviSearchAndBrowseModel::loadingType() const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -386,6 +662,14 @@ void QIviSearchAndBrowseModel::setLoadingType(QIviSearchAndBrowseModel::LoadingT
     d->resetModel();
 }
 
+/*!
+    \qmlproperty int SearchAndBrowseModel::count
+    \brief Holds the current number of rows in this model.
+ */
+/*!
+    \property QIviSearchAndBrowseModel::count
+    \brief Holds the current number of rows in this model.
+ */
 int QIviSearchAndBrowseModel::rowCount(const QModelIndex &parent) const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -395,6 +679,9 @@ int QIviSearchAndBrowseModel::rowCount(const QModelIndex &parent) const
     return d->m_itemList.count();
 }
 
+/*!
+    \reimp
+ */
 QVariant QIviSearchAndBrowseModel::data(const QModelIndex &index, int role) const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -415,15 +702,28 @@ QVariant QIviSearchAndBrowseModel::data(const QModelIndex &index, int role) cons
         return QVariant();
 
     switch (role) {
-        case NameRole: return item->name();
-        case TypeRole: return item->type();
-        case CanGoForwardRole: return canGoForward(row);
-        case ItemRole: return d->m_itemList.at(row);
+    case NameRole: return item->name();
+    case TypeRole: return item->type();
+    case CanGoForwardRole: return canGoForward(row);
+    case ItemRole: return d->m_itemList.at(row);
     }
 
     return QVariant();
 }
 
+/*!
+    \fn T QIviSearchAndBrowseModel::at(int i) const
+
+    Returns the item at index \a i converted to the template type T.
+*/
+/*!
+    \qmlmethod object SearchAndBrowseModel::get(i)
+
+    Returns the item at index \a i.
+ */
+/*!
+    Returns the item at index \a i represented as QVariantMap.
+*/
 QVariantMap QIviSearchAndBrowseModel::get(int i) const
 {
     QVariantMap map;
@@ -435,6 +735,17 @@ QVariantMap QIviSearchAndBrowseModel::get(int i) const
     return map;
 }
 
+/*!
+    \qmlmethod void SearchAndBrowseModel::goBack()
+    Goes one level back in the navigation history.
+
+    See also \l Browsing for more information.
+ */
+/*!
+    Goes one level back in the navigation history.
+
+    See also \l Browsing for more information.
+ */
 void QIviSearchAndBrowseModel::goBack()
 {
     Q_D(QIviSearchAndBrowseModel);
@@ -455,6 +766,17 @@ void QIviSearchAndBrowseModel::goBack()
         d->updateContentType(newContentType);
 }
 
+/*!
+    \qmlmethod bool SearchAndBrowseModel::canGoForward(i)
+    Returns true when the item at index \a i can be used to show the next set of elements.
+
+    See also \l Browsing for more information.
+ */
+/*!
+    Returns true when the item at index \a i can be used to show the next set of elements.
+
+    See also \l Browsing for more information.
+ */
 bool QIviSearchAndBrowseModel::canGoForward(int i) const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -475,6 +797,32 @@ bool QIviSearchAndBrowseModel::canGoForward(int i) const
     return backend->canGoForward(d->m_identifier, d->m_contentType, item->id());
 }
 
+/*!
+    \qmlmethod SearchAndBrowseModel SearchAndBrowseModel::goForward(i, navigationType)
+    Uses the item at index \a i and shows the next set of items.
+
+    \a navigationType can be one of the following values:
+    \value InModelNavigation
+           The new content will be loaded into this model and the existing model data will be reset
+    \value OutOfModelNavigation
+           A new model will be returned which loads the new content. The model data of this model will
+           not be changed and can still be used.
+
+    \note Whether the OutOfModelNavigation navigation type is supported is decided by the backend.
+
+    See also \l Browsing for more information.
+ */
+/*!
+    Returns true when the item at index \a i can be used to show the next set of elements.
+
+    Uses the item at index \a i and shows the next set of items. The \a navigationType can be used
+    to control whether the new data should be shown in this model instance or whether a new instance
+    should be created and returned.
+
+    \note Whether the OutOfModelNavigation navigation type is supported is decided by the backend.
+
+    See also \l Browsing for more information.
+ */
 QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationType navigationType)
 {
     Q_D(QIviSearchAndBrowseModel);
@@ -514,6 +862,9 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
     return nullptr;
 }
 
+/*!
+    \reimp
+*/
 bool QIviSearchAndBrowseModel::canFetchMore(const QModelIndex &parent) const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -523,6 +874,9 @@ bool QIviSearchAndBrowseModel::canFetchMore(const QModelIndex &parent) const
     return d->m_moreAvailable;
 }
 
+/*!
+    \reimp
+*/
 void QIviSearchAndBrowseModel::fetchMore(const QModelIndex &parent)
 {
     Q_D(QIviSearchAndBrowseModel);
@@ -536,6 +890,9 @@ void QIviSearchAndBrowseModel::fetchMore(const QModelIndex &parent)
     d->searchBackend()->fetchData(d->m_identifier, d->m_contentType, d->m_queryTerm, d->m_orderTerms, d->m_fetchedDataCount, d->m_chunkSize);
 }
 
+/*!
+    \reimp
+*/
 QHash<int, QByteArray> QIviSearchAndBrowseModel::roleNames() const
 {
     static QHash<int, QByteArray> roles;
@@ -548,6 +905,9 @@ QHash<int, QByteArray> QIviSearchAndBrowseModel::roleNames() const
     return roles;
 }
 
+/*!
+    \internal
+*/
 QIviSearchAndBrowseModel::QIviSearchAndBrowseModel(QIviServiceObject *serviceObject, const QString &contentType, QObject *parent)
     : QIviSearchAndBrowseModel(parent)
 {
@@ -557,6 +917,9 @@ QIviSearchAndBrowseModel::QIviSearchAndBrowseModel(QIviServiceObject *serviceObj
     setContentType(contentType);
 }
 
+/*!
+    \internal
+*/
 QIviSearchAndBrowseModel::QIviSearchAndBrowseModel(QIviSearchAndBrowseModelPrivate &dd, QObject *parent)
     : QIviAbstractFeatureListModel(dd, parent)
 {
@@ -564,6 +927,9 @@ QIviSearchAndBrowseModel::QIviSearchAndBrowseModel(QIviSearchAndBrowseModelPriva
     d->init();
 }
 
+/*!
+    \reimp
+*/
 bool QIviSearchAndBrowseModel::acceptServiceObject(QIviServiceObject *serviceObject)
 {
     if (serviceObject)
@@ -571,6 +937,9 @@ bool QIviSearchAndBrowseModel::acceptServiceObject(QIviServiceObject *serviceObj
     return false;
 }
 
+/*!
+    \reimp
+*/
 void QIviSearchAndBrowseModel::connectToServiceObject(QIviServiceObject *serviceObject)
 {
     Q_UNUSED(serviceObject);
@@ -593,6 +962,9 @@ void QIviSearchAndBrowseModel::connectToServiceObject(QIviServiceObject *service
     d->resetModel();
 }
 
+/*!
+    \reimp
+*/
 void QIviSearchAndBrowseModel::disconnectFromServiceObject(QIviServiceObject *serviceObject)
 {
     QIviSearchAndBrowseModelInterface *backend = qobject_cast<QIviSearchAndBrowseModelInterface*>(serviceObject->interfaceInstance(QIviStringSearchAndBrowseModelInterfaceName));
@@ -601,10 +973,25 @@ void QIviSearchAndBrowseModel::disconnectFromServiceObject(QIviServiceObject *se
         disconnect(backend, 0, this, 0);
 }
 
+/*!
+    \reimp
+*/
 void QIviSearchAndBrowseModel::clearServiceObject()
 {
     Q_D(QIviSearchAndBrowseModel);
     d->clearToDefaults();
 }
 
- #include "moc_qivisearchandbrowsemodel.cpp"
+/*!
+    \fn void QIviSearchAndBrowseModel::fetchMoreThresholdReached() const
+
+    This signal is emitted whenever the fetchMoreThreshold is reached and new data is requested from the backend.
+*/
+
+/*!
+    \qmlsignal SearchAndBrowseModel::fetchMoreThresholdReached()
+
+    This signal is emitted whenever the fetchMoreThreshold is reached and new data is requested from the backend.
+*/
+
+#include "moc_qivisearchandbrowsemodel.cpp"

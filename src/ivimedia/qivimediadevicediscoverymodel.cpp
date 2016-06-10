@@ -129,6 +129,73 @@ QIviMediaDeviceDiscoveryModelBackendInterface *QIviMediaDeviceDiscoveryModelPriv
     return nullptr;
 }
 
+/*!
+    \class QIviMediaDeviceDiscoveryModel
+    \inmodule QtIviMedia
+    \brief Provides a model for discovering media devices.
+
+    The QIviMediaDeviceDiscoveryModel provides a way to query for available media devices and
+    to get notified when new media devices get added or are removed.
+
+    All devices listed here need to be a subclass of QIviMediaDevice.
+
+    The QIviMediaDeviceDiscoveryModel expects a single backend to be available. It is recommended to use it
+    with \l {QIviAbstractFeatureListModel::}{discoveryMode} set to \l QIviAbstractFeature::AutoDiscovery.
+*/
+
+/*!
+    \qmltype MediaDeviceDiscoveryModel
+    \instantiates QIviMediaDeviceDiscoveryModel
+    \inqmlmodule QtIvi.Media
+    \inherits AbstractFeatureListModel
+    \brief Provides a model for discovering media devices.
+
+    The MediaDeviceDiscoveryModel provides a way to query for available media devices and
+    to get notified when new media devices get added or are removed.
+
+    All devices listed here need to be a subclass of MediaDevice.
+
+    The following roles are available in this model:
+
+    \table
+    \header
+        \li Role name
+        \li Type
+        \li Description
+    \row
+        \li \c name
+        \li string
+        \li The name of the media device. E.g. The name of the connected USB-Thumbdrive/SDCard or a connected Ipod.
+    \row
+        \li \c type
+        \li string
+        \li The type of the media device. See \l SupportedMediaDevices for a detailed listing.
+    \row
+        \li \c item
+        \li QIviMediaDevice
+        \li The Media Device. This object be used as ServiceObject for other Features. E.g. The SearchAndBrowseModel.
+    \endtable
+
+
+    The MediaDeviceDiscoveryModel expects a single backend to be available. It is recommended to use it
+    with \l {AbstractFeatureListModel::}{discoveryMode} set to AbstractFeature.AutoDiscovery.
+*/
+
+/*!
+   \enum QIviMediaDeviceDiscoveryModel::Roles
+   \value NameRole
+          The name of the media device. E.g. The name of the connected USB-Thumbdrive/SDCard or a connected Ipod.
+   \value TypeRole
+          The type of the media device. See \l SupportedMediaDevices for a detailed listing.
+   \value ItemRole
+          A pointer to the media device itself. This pointer can be used as the ServiceObject for other Features. E.g. The QIviSearchAndBrowseModel.
+*/
+
+/*!
+   Constructs a QIviMediaDeviceDiscoveryModel.
+
+   The \a parent argument is passed on to the \l QIviAbstractFeatureListModel base class.
+*/
 QIviMediaDeviceDiscoveryModel::QIviMediaDeviceDiscoveryModel(QObject *parent)
     : QIviAbstractFeatureListModel(*new QIviMediaDeviceDiscoveryModelPrivate(QIviStringMediaDeviceDiscoveryInterfaceName, this), parent)
 {
@@ -136,6 +203,14 @@ QIviMediaDeviceDiscoveryModel::QIviMediaDeviceDiscoveryModel(QObject *parent)
     d->init();
 }
 
+/*!
+    \qmlproperty int MediaDeviceDiscoveryModel::count
+    \brief Holds the current number of rows in this model.
+ */
+/*!
+    \property QIviMediaDeviceDiscoveryModel::count
+    \brief Holds the current number of rows in this model.
+ */
 int QIviMediaDeviceDiscoveryModel::rowCount(const QModelIndex &parent) const
 {
     Q_D(const QIviMediaDeviceDiscoveryModel);
@@ -145,6 +220,9 @@ int QIviMediaDeviceDiscoveryModel::rowCount(const QModelIndex &parent) const
     return d->m_deviceList.count();
 }
 
+/*!
+    \reimp
+*/
 QVariant QIviMediaDeviceDiscoveryModel::data(const QModelIndex &index, int role) const
 {
     Q_D(const QIviMediaDeviceDiscoveryModel);
@@ -169,6 +247,14 @@ QVariant QIviMediaDeviceDiscoveryModel::data(const QModelIndex &index, int role)
     return QVariant();
 }
 
+/*!
+    \qmlmethod object MediaDeviceDiscoveryModel::get(i)
+
+    Returns the media devices at index \a i.
+ */
+/*!
+    Returns the media devices at index \a i represented as QVariantMap.
+*/
 QVariantMap QIviMediaDeviceDiscoveryModel::get(int i) const
 {
     QVariantMap map;
@@ -179,6 +265,9 @@ QVariantMap QIviMediaDeviceDiscoveryModel::get(int i) const
     return map;
 }
 
+/*!
+    \reimp
+*/
 QHash<int, QByteArray> QIviMediaDeviceDiscoveryModel::roleNames() const
 {
     static QHash<int, QByteArray> roles;
@@ -190,6 +279,9 @@ QHash<int, QByteArray> QIviMediaDeviceDiscoveryModel::roleNames() const
     return roles;
 }
 
+/*!
+    \internal
+*/
 QIviMediaDeviceDiscoveryModel::QIviMediaDeviceDiscoveryModel(QIviMediaDeviceDiscoveryModelPrivate &dd, QObject *parent)
     : QIviAbstractFeatureListModel(dd, parent)
 {
@@ -197,11 +289,17 @@ QIviMediaDeviceDiscoveryModel::QIviMediaDeviceDiscoveryModel(QIviMediaDeviceDisc
     d->init();
 }
 
+/*!
+    \reimp
+*/
 bool QIviMediaDeviceDiscoveryModel::acceptServiceObject(QIviServiceObject *serviceObject)
 {
     return serviceObject->interfaces().contains(QIviStringMediaDeviceDiscoveryInterfaceName);
 }
 
+/*!
+    \reimp
+*/
 void QIviMediaDeviceDiscoveryModel::connectToServiceObject(QIviServiceObject *serviceObject)
 {
     Q_UNUSED(serviceObject)
@@ -221,6 +319,9 @@ void QIviMediaDeviceDiscoveryModel::connectToServiceObject(QIviServiceObject *se
     backend->initialize();
 }
 
+/*!
+    \reimp
+*/
 void QIviMediaDeviceDiscoveryModel::disconnectFromServiceObject(QIviServiceObject *serviceObject)
 {
     QIviMediaDeviceDiscoveryModelBackendInterface *backend = qobject_cast<QIviMediaDeviceDiscoveryModelBackendInterface*>(serviceObject->interfaceInstance(QIviStringMediaDeviceDiscoveryInterfaceName));
@@ -229,10 +330,39 @@ void QIviMediaDeviceDiscoveryModel::disconnectFromServiceObject(QIviServiceObjec
         disconnect(backend, 0, this, 0);
 }
 
+/*!
+    \reimp
+*/
 void QIviMediaDeviceDiscoveryModel::clearServiceObject()
 {
     Q_D(QIviMediaDeviceDiscoveryModel);
     d->clearToDefaults();
 }
+
+/*!
+    \fn void QIviMediaDeviceDiscoveryModel::deviceAdded(QIviMediaDevice *device)
+
+    This signal is emitted whenever a new media device got added. The new media device is passed as \a device.
+*/
+
+/*!
+    \qmlsignal MediaDeviceDiscoveryModel::deviceAdded(MediaDevice device)
+
+    This signal is emitted whenever a new media device got added. The new media device is passed as \a device.
+*/
+
+/*!
+    \fn void QIviMediaDeviceDiscoveryModel::deviceRemoved(QIviMediaDevice *device)
+
+    This signal is emitted whenever a media device got removed. The device which got removed is passed as \a device.
+    Afterwards the device will be deleted.
+*/
+
+/*!
+    \qmlsignal MediaDeviceDiscoveryModel::deviceRemoved(MediaDevice device)
+
+    This signal is emitted whenever a media device got removed. The device which got removed is passed as \a device.
+    Afterwards the device will be deleted.
+*/
 
 #include "moc_qivimediadevicediscoverymodel.cpp"
