@@ -219,6 +219,10 @@ QIviQueryParser::QIviQueryParser():
       reallocateStack();
 }
 
+//This is needed to comparison warning in the generated flex code.
+#define YY_TYPEDEF_YY_SIZE_T
+typedef int yy_size_t;
+
 #include "qiviqueryparser_flex_p.h"
 
 QIviQueryParser::~QIviQueryParser()
@@ -658,7 +662,7 @@ void QIviQueryParser::setErrorString(const QString &error)
     for (int i=0; i<err_col; i++)
         marker.prepend(QLatin1String(" "));
 
-    for (unsigned long i=0; i<yyleng - 1; i++)
+    for (int i=0; i<yyleng - 1; i++)
         marker.append(QLatin1String("-"));
 
     m_error.append(marker);
