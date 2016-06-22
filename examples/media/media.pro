@@ -1,2 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS = mediaplayer
+SUBDIRS = mediaplayer \
+          tuner

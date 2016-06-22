@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIvi module of the Qt Toolkit.
+** This file is part of the QtIVI module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,41 +39,71 @@
 **
 ****************************************************************************/
 
-#include <QtQml/qqmlextensionplugin.h>
-#include <qqml.h>
+#ifndef QIVIAMFMTUNER_H
+#define QIVIAMFMTUNER_H
 
-#include <QtIviMedia/QIviMediaPlayer>
-#include <QtIviMedia/QIviMediaDeviceDiscoveryModel>
-#include <QtIviMedia/QIviMediaIndexerControl>
-#include <QtIviMedia/QIviPlayQueue>
-#include <QtIviMedia/QIviAmFmTuner>
-#include <QtIviMedia/QIviMediaDevice>
+#include <QtIviCore/QIviAbstractFeature>
+#include <QtIviMedia/qtivimediaglobal.h>
+#include <QVariant>
 
 QT_BEGIN_NAMESPACE
 
-class QIviMediaPlugin : public QQmlExtensionPlugin
+class QIviAmFmTunerPrivate;
+
+static const QLatin1String QIviStringAmFmTunerInterfaceName("com.qt-project.qtivi.AmFmTuner");
+
+class Q_QTIVIMEDIA_EXPORT QIviAmFmTuner : public QIviAbstractFeature
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
+
+    Q_PROPERTY(int frequency READ frequency WRITE setFrequency NOTIFY frequencyChanged)
+    Q_PROPERTY(QIviAmFmTuner::Band band READ band WRITE setBand NOTIFY bandChanged)
+    Q_PROPERTY(QVariant station READ station NOTIFY stationChanged)
+
 public:
-    virtual void registerTypes(const char *uri)
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi.Media"));
-        Q_UNUSED(uri);
+    explicit QIviAmFmTuner(QObject *parent = Q_NULLPTR);
 
-        qmlRegisterType<QIviMediaPlayer>(uri, 1, 0, "MediaPlayer");
-        //This should be an singleton, otherwise we might delete a pointer twice ?
-        qmlRegisterType<QIviMediaDeviceDiscoveryModel>(uri, 1, 0, "MediaDeviceDiscoveryModel");
-        qmlRegisterType<QIviMediaIndexerControl>(uri, 1, 0, "MediaIndexerControl");
-        qmlRegisterType<QIviAmFmTuner>(uri, 1, 0, "AmFmTuner");
+    enum Band {
+        AMBand,
+        FMBand
+    };
+    Q_ENUM(Band)
 
-        qmlRegisterUncreatableType<QIviPlayQueue>(uri, 1, 0, "PlayQueue", "PlayQueue needs to be retrieved from the MediaPlayer");
 
-        qmlRegisterUncreatableType<QIviMediaDevice>(uri, 1, 0, "MediaDevice", "MediaDevice can't be instantiated from QML");
-        qmlRegisterUncreatableType<QIviMediaUsbDevice>(uri, 1, 0, "MediaUsbDevice", "MediaUsbDevice can't be instantiated from QML");
-    }
+    int frequency() const;
+    Band band() const;
+    QVariant station() const;
+
+    Q_INVOKABLE void tune(const QVariant &station);
+
+public Q_SLOTS:
+    void setFrequency(int frequency);
+    void setBand(QIviAmFmTuner::Band band);
+    void stepUp();
+    void stepDown();
+    void seekUp();
+    void seekDown();
+
+Q_SIGNALS:
+    void frequencyChanged(int frequency);
+    void bandChanged(QIviAmFmTuner::Band band);
+    void stationChanged(const QVariant &station);
+
+protected:
+    QIviAmFmTuner(QIviAmFmTunerPrivate &dd, QObject *parent = Q_NULLPTR);
+
+    virtual bool acceptServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
+    virtual void connectToServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
+    virtual void disconnectFromServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
+    virtual void clearServiceObject() Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QIviAmFmTuner)
+    Q_PRIVATE_SLOT(d_func(), void onFrequencyChanged(int frequency))
+    Q_PRIVATE_SLOT(d_func(), void onBandChanged(QIviAmFmTuner::Band band))
+    Q_PRIVATE_SLOT(d_func(), void onStationChanged(const QVariant &station))
 };
 
 QT_END_NAMESPACE
 
-#include "plugin.moc"
+#endif // QIVIAMFMTUNER_H

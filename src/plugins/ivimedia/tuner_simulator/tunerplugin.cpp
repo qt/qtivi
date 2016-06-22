@@ -39,41 +39,36 @@
 **
 ****************************************************************************/
 
-#include <QtQml/qqmlextensionplugin.h>
-#include <qqml.h>
+#include "tunerplugin.h"
+#include "amfmtunerbackend.h"
+#include "searchandbrowsebackend.h"
 
 #include <QtIviMedia/QIviMediaPlayer>
-#include <QtIviMedia/QIviMediaDeviceDiscoveryModel>
-#include <QtIviMedia/QIviMediaIndexerControl>
-#include <QtIviMedia/QIviPlayQueue>
-#include <QtIviMedia/QIviAmFmTuner>
-#include <QtIviMedia/QIviMediaDevice>
+#include <QtIviCore/QIviSearchAndBrowseModel>
+#include <QStringList>
+#include <QtDebug>
 
-QT_BEGIN_NAMESPACE
-
-class QIviMediaPlugin : public QQmlExtensionPlugin
+TunerPlugin::TunerPlugin(QObject *parent)
+    : QObject(parent)
+    , m_amfmtuner(new AmFmTunerBackend(this))
+    , m_searchbackend(new SearchAndBrowseBackend(m_amfmtuner, this))
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
-public:
-    virtual void registerTypes(const char *uri)
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi.Media"));
-        Q_UNUSED(uri);
+}
 
-        qmlRegisterType<QIviMediaPlayer>(uri, 1, 0, "MediaPlayer");
-        //This should be an singleton, otherwise we might delete a pointer twice ?
-        qmlRegisterType<QIviMediaDeviceDiscoveryModel>(uri, 1, 0, "MediaDeviceDiscoveryModel");
-        qmlRegisterType<QIviMediaIndexerControl>(uri, 1, 0, "MediaIndexerControl");
-        qmlRegisterType<QIviAmFmTuner>(uri, 1, 0, "AmFmTuner");
+QStringList TunerPlugin::interfaces() const
+{
+    QStringList list;
+    list << QIviStringSearchAndBrowseModelInterfaceName;
+    list << QIviStringAmFmTunerInterfaceName;
+    return list;
+}
 
-        qmlRegisterUncreatableType<QIviPlayQueue>(uri, 1, 0, "PlayQueue", "PlayQueue needs to be retrieved from the MediaPlayer");
+QObject *TunerPlugin::interfaceInstance(const QString &interface) const
+{
+    if (interface == QIviStringAmFmTunerInterfaceName)
+        return m_amfmtuner;
+    else if (interface == QIviStringSearchAndBrowseModelInterfaceName)
+        return m_searchbackend;
 
-        qmlRegisterUncreatableType<QIviMediaDevice>(uri, 1, 0, "MediaDevice", "MediaDevice can't be instantiated from QML");
-        qmlRegisterUncreatableType<QIviMediaUsbDevice>(uri, 1, 0, "MediaUsbDevice", "MediaUsbDevice can't be instantiated from QML");
-    }
-};
-
-QT_END_NAMESPACE
-
-#include "plugin.moc"
+    return 0;
+}

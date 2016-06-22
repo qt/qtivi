@@ -50,6 +50,7 @@ class MediaPlayerBackend;
 class SearchAndBrowseBackend;
 class MediaDiscoveryBackend;
 class MediaIndexerBackend;
+class AmFmTunerBackend;
 
 class MediaPlugin : public QObject, QIviServiceInterface
 {
@@ -68,6 +69,7 @@ private:
     SearchAndBrowseBackend *m_browse;
     MediaDiscoveryBackend *m_discovery;
     MediaIndexerBackend *m_indexer;
+    AmFmTunerBackend *m_amfmtuner;
     QSqlDatabase m_db;
 };
 

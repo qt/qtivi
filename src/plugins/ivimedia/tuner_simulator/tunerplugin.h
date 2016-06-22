@@ -39,41 +39,29 @@
 **
 ****************************************************************************/
 
-#include <QtQml/qqmlextensionplugin.h>
-#include <qqml.h>
+#ifndef TUNERPLUGIN_H
+#define TUNERPLUGIN_H
 
-#include <QtIviMedia/QIviMediaPlayer>
-#include <QtIviMedia/QIviMediaDeviceDiscoveryModel>
-#include <QtIviMedia/QIviMediaIndexerControl>
-#include <QtIviMedia/QIviPlayQueue>
-#include <QtIviMedia/QIviAmFmTuner>
-#include <QtIviMedia/QIviMediaDevice>
+#include <QtIviCore/QIviServiceInterface>
 
-QT_BEGIN_NAMESPACE
+class AmFmTunerBackend;
+class SearchAndBrowseBackend;
 
-class QIviMediaPlugin : public QQmlExtensionPlugin
+class TunerPlugin : public QObject, QIviServiceInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
+    Q_PLUGIN_METADATA(IID "com.pelagicore.QIviServiceInterface" FILE "tuner_simulator.json")
+    Q_INTERFACES(QIviServiceInterface)
+
 public:
-    virtual void registerTypes(const char *uri)
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi.Media"));
-        Q_UNUSED(uri);
+    explicit TunerPlugin(QObject *parent = Q_NULLPTR);
 
-        qmlRegisterType<QIviMediaPlayer>(uri, 1, 0, "MediaPlayer");
-        //This should be an singleton, otherwise we might delete a pointer twice ?
-        qmlRegisterType<QIviMediaDeviceDiscoveryModel>(uri, 1, 0, "MediaDeviceDiscoveryModel");
-        qmlRegisterType<QIviMediaIndexerControl>(uri, 1, 0, "MediaIndexerControl");
-        qmlRegisterType<QIviAmFmTuner>(uri, 1, 0, "AmFmTuner");
+    QStringList interfaces() const;
+    QObject *interfaceInstance(const QString &interface) const;
 
-        qmlRegisterUncreatableType<QIviPlayQueue>(uri, 1, 0, "PlayQueue", "PlayQueue needs to be retrieved from the MediaPlayer");
-
-        qmlRegisterUncreatableType<QIviMediaDevice>(uri, 1, 0, "MediaDevice", "MediaDevice can't be instantiated from QML");
-        qmlRegisterUncreatableType<QIviMediaUsbDevice>(uri, 1, 0, "MediaUsbDevice", "MediaUsbDevice can't be instantiated from QML");
-    }
+private:
+    AmFmTunerBackend *m_amfmtuner;
+    SearchAndBrowseBackend *m_searchbackend;
 };
 
-QT_END_NAMESPACE
-
-#include "plugin.moc"
+#endif // TUNERPLUGIN_H

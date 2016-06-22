@@ -39,41 +39,67 @@
 **
 ****************************************************************************/
 
-#include <QtQml/qqmlextensionplugin.h>
-#include <qqml.h>
+#ifndef AMFMTUNERBACKEND_H
+#define AMFMTUNERBACKEND_H
 
-#include <QtIviMedia/QIviMediaPlayer>
-#include <QtIviMedia/QIviMediaDeviceDiscoveryModel>
-#include <QtIviMedia/QIviMediaIndexerControl>
-#include <QtIviMedia/QIviPlayQueue>
-#include <QtIviMedia/QIviAmFmTuner>
-#include <QtIviMedia/QIviMediaDevice>
+#include <QtIviMedia/QIviAmFmTunerBackendInterface>
+#include <QtIviMedia/QIviTunerStation>
 
-QT_BEGIN_NAMESPACE
+class AmFmStation : public QIviAmFmTunerStation
+{
+    Q_GADGET
 
-class QIviMediaPlugin : public QQmlExtensionPlugin
+public:
+    virtual QString id() const { return m_id; }
+    void setId(const QString &id) { m_id = id; }
+    virtual QString name() const { return m_stationName; }
+    virtual QString type() const { return "amfmstation"; }
+
+    virtual QString stationName() const { return m_stationName; }
+    void setStationName(const QString &name) { m_stationName = name; }
+
+    virtual int frequency() const { return m_frequency; }
+    void setFrequency(int frequency) { m_frequency = frequency; }
+
+    virtual QIviAmFmTuner::Band band() const { return m_band; }
+    void setBand(QIviAmFmTuner::Band band) { m_band = band; }
+
+private:
+    QString m_id;
+    QString m_stationName;
+    int m_frequency;
+    QIviAmFmTuner::Band m_band;
+};
+Q_DECLARE_METATYPE(AmFmStation)
+
+class AmFmTunerBackend : public QIviAmFmTunerBackendInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
 public:
-    virtual void registerTypes(const char *uri)
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi.Media"));
-        Q_UNUSED(uri);
+    explicit AmFmTunerBackend(QObject *parent = 0);
 
-        qmlRegisterType<QIviMediaPlayer>(uri, 1, 0, "MediaPlayer");
-        //This should be an singleton, otherwise we might delete a pointer twice ?
-        qmlRegisterType<QIviMediaDeviceDiscoveryModel>(uri, 1, 0, "MediaDeviceDiscoveryModel");
-        qmlRegisterType<QIviMediaIndexerControl>(uri, 1, 0, "MediaIndexerControl");
-        qmlRegisterType<QIviAmFmTuner>(uri, 1, 0, "AmFmTuner");
+    virtual void initialize() Q_DECL_OVERRIDE;
+    virtual void setFrequency(int frequency) Q_DECL_OVERRIDE;
+    virtual void setBand(QIviAmFmTuner::Band band) Q_DECL_OVERRIDE;
+    virtual void stepUp() Q_DECL_OVERRIDE;
+    virtual void stepDown() Q_DECL_OVERRIDE;
+    virtual void seekUp() Q_DECL_OVERRIDE;
+    virtual void seekDown() Q_DECL_OVERRIDE;
 
-        qmlRegisterUncreatableType<QIviPlayQueue>(uri, 1, 0, "PlayQueue", "PlayQueue needs to be retrieved from the MediaPlayer");
+private:
+    void setCurrentStation(const AmFmStation &station);
+    int stationIndexFromFrequency(int frequency) const;
+    AmFmStation stationAt(int frequency) const;
 
-        qmlRegisterUncreatableType<QIviMediaDevice>(uri, 1, 0, "MediaDevice", "MediaDevice can't be instantiated from QML");
-        qmlRegisterUncreatableType<QIviMediaUsbDevice>(uri, 1, 0, "MediaUsbDevice", "MediaUsbDevice can't be instantiated from QML");
-    }
+    QIviAmFmTuner::Band m_band;
+    struct BandData {
+        QVector<AmFmStation> m_stations;
+        int m_stepSize;
+        int m_frequency;
+    };
+    QHash<QIviAmFmTuner::Band, BandData> m_bandHash;
+
+    friend class SearchAndBrowseBackend;
 };
 
-QT_END_NAMESPACE
-
-#include "plugin.moc"
+#endif // AMFMTUNERBACKEND_H

@@ -1,0 +1,6 @@
+{
+    "interfaces" : [
+        "com.qt-project.qtivi.AmFmTuner",
+        "com.qt-project.qtivi.SearchAndBrowseModel"
+    ]
+}

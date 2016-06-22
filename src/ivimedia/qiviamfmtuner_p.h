@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIvi module of the Qt Toolkit.
+** This file is part of the QtIVI module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,41 +39,51 @@
 **
 ****************************************************************************/
 
-#include <QtQml/qqmlextensionplugin.h>
-#include <qqml.h>
+#ifndef QIVIAMFMTUNER_P_H
+#define QIVIAMFMTUNER_P_H
 
-#include <QtIviMedia/QIviMediaPlayer>
-#include <QtIviMedia/QIviMediaDeviceDiscoveryModel>
-#include <QtIviMedia/QIviMediaIndexerControl>
-#include <QtIviMedia/QIviPlayQueue>
-#include <QtIviMedia/QIviAmFmTuner>
-#include <QtIviMedia/QIviMediaDevice>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail. This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include "private/qiviabstractfeature_p.h"
+
+#include "qiviamfmtuner.h"
+#include "qiviamfmtunerbackendinterface.h"
+
+#include <QtIviMedia/QIviTunerStation>
 
 QT_BEGIN_NAMESPACE
 
-class QIviMediaPlugin : public QQmlExtensionPlugin
+class QIviAmFmTunerPrivate : public QIviAbstractFeaturePrivate
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
 public:
-    virtual void registerTypes(const char *uri)
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi.Media"));
-        Q_UNUSED(uri);
+    QIviAmFmTunerPrivate(const QString &interface, QIviAmFmTuner *parent);
 
-        qmlRegisterType<QIviMediaPlayer>(uri, 1, 0, "MediaPlayer");
-        //This should be an singleton, otherwise we might delete a pointer twice ?
-        qmlRegisterType<QIviMediaDeviceDiscoveryModel>(uri, 1, 0, "MediaDeviceDiscoveryModel");
-        qmlRegisterType<QIviMediaIndexerControl>(uri, 1, 0, "MediaIndexerControl");
-        qmlRegisterType<QIviAmFmTuner>(uri, 1, 0, "AmFmTuner");
+    void init();
+    void clearToDefaults();
+    void onFrequencyChanged(int frequency);
+    void onBandChanged(QIviAmFmTuner::Band band);
+    void onStationChanged(const QVariant &station);
 
-        qmlRegisterUncreatableType<QIviPlayQueue>(uri, 1, 0, "PlayQueue", "PlayQueue needs to be retrieved from the MediaPlayer");
+    const QIviAmFmTunerStation *stationItem(const QVariant &item);
+    QIviAmFmTunerBackendInterface *tunerBackend() const;
 
-        qmlRegisterUncreatableType<QIviMediaDevice>(uri, 1, 0, "MediaDevice", "MediaDevice can't be instantiated from QML");
-        qmlRegisterUncreatableType<QIviMediaUsbDevice>(uri, 1, 0, "MediaUsbDevice", "MediaUsbDevice can't be instantiated from QML");
-    }
+    QIviAmFmTuner * const q_ptr;
+    int m_frequency;
+    QIviAmFmTuner::Band m_band;
+    QVariant m_station;
+
+    Q_DECLARE_PUBLIC(QIviAmFmTuner)
 };
 
 QT_END_NAMESPACE
 
-#include "plugin.moc"
+#endif // QIVIAMFMTUNER_P_H

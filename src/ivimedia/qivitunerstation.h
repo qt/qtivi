@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIvi module of the Qt Toolkit.
+** This file is part of the QtIVI module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,41 +39,46 @@
 **
 ****************************************************************************/
 
-#include <QtQml/qqmlextensionplugin.h>
-#include <qqml.h>
+#ifndef QIVITUNERSTATION_H
+#define QIVITUNERSTATION_H
 
-#include <QtIviMedia/QIviMediaPlayer>
-#include <QtIviMedia/QIviMediaDeviceDiscoveryModel>
-#include <QtIviMedia/QIviMediaIndexerControl>
-#include <QtIviMedia/QIviPlayQueue>
+#include <QtIviMedia/qtivimediaglobal.h>
 #include <QtIviMedia/QIviAmFmTuner>
-#include <QtIviMedia/QIviMediaDevice>
+#include <QtIviCore/QIviSearchAndBrowseListItem>
 
 QT_BEGIN_NAMESPACE
 
-class QIviMediaPlugin : public QQmlExtensionPlugin
+class Q_QTIVIMEDIA_EXPORT QIviTunerStation : public QIviSearchAndBrowseListItem
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
+    Q_GADGET
+
+    Q_PROPERTY(QString stationName READ stationName)
+    Q_PROPERTY(int frequency READ frequency)
+
 public:
-    virtual void registerTypes(const char *uri)
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi.Media"));
-        Q_UNUSED(uri);
+    QIviTunerStation();
+    virtual ~QIviTunerStation();
 
-        qmlRegisterType<QIviMediaPlayer>(uri, 1, 0, "MediaPlayer");
-        //This should be an singleton, otherwise we might delete a pointer twice ?
-        qmlRegisterType<QIviMediaDeviceDiscoveryModel>(uri, 1, 0, "MediaDeviceDiscoveryModel");
-        qmlRegisterType<QIviMediaIndexerControl>(uri, 1, 0, "MediaIndexerControl");
-        qmlRegisterType<QIviAmFmTuner>(uri, 1, 0, "AmFmTuner");
+    virtual QString stationName() const { return QString(); }
+    virtual int frequency() const { return -1; }
+};
 
-        qmlRegisterUncreatableType<QIviPlayQueue>(uri, 1, 0, "PlayQueue", "PlayQueue needs to be retrieved from the MediaPlayer");
+class Q_QTIVIMEDIA_EXPORT QIviAmFmTunerStation : public QIviTunerStation
+{
+    Q_GADGET
 
-        qmlRegisterUncreatableType<QIviMediaDevice>(uri, 1, 0, "MediaDevice", "MediaDevice can't be instantiated from QML");
-        qmlRegisterUncreatableType<QIviMediaUsbDevice>(uri, 1, 0, "MediaUsbDevice", "MediaUsbDevice can't be instantiated from QML");
-    }
+    Q_PROPERTY(QIviAmFmTuner::Band band READ band)
+
+public:
+    QIviAmFmTunerStation();
+    virtual ~QIviAmFmTunerStation();
+
+    virtual QIviAmFmTuner::Band band() const { return QIviAmFmTuner::FMBand; }
 };
 
 QT_END_NAMESPACE
 
-#include "plugin.moc"
+Q_DECLARE_METATYPE(QIviTunerStation)
+Q_DECLARE_METATYPE(QIviAmFmTunerStation)
+
+#endif // QIVITUNERSTATION_H

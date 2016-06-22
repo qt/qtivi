@@ -24,7 +24,11 @@ HEADERS += \
     qivimediadevice.h \
     qivimediaindexercontrol.h \
     qivimediaindexercontrol_p.h \
-    qivimediaindexercontrolbackendinterface.h
+    qivimediaindexercontrolbackendinterface.h \
+    qiviamfmtuner.h \
+    qiviamfmtuner_p.h \
+    qiviamfmtunerbackendinterface.h \
+    qivitunerstation.h
 
 SOURCES += \
     qivimediaplayer.cpp \
@@ -35,6 +39,9 @@ SOURCES += \
     qivimediadevicediscoverymodelbackendinterface.cpp \
     qivimediadevice.cpp \
     qivimediaindexercontrol.cpp \
-    qivimediaindexercontrolbackendinterface.cpp
+    qivimediaindexercontrolbackendinterface.cpp \
+    qiviamfmtuner.cpp \
+    qiviamfmtunerbackendinterface.cpp \
+    qivitunerstation.cpp
 
 load(qt_module)
