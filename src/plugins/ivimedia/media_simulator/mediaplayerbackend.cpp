@@ -121,7 +121,7 @@ void MediaPlayerBackend::fetchData(int start, int count)
 
 void MediaPlayerBackend::insert(int index, const QIviPlayableItem *item)
 {
-    if (item->type() != "track")
+    if (item->type() != "audiotrack")
         return;
 
     int track_index = item->id().toInt();
@@ -181,7 +181,7 @@ void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, 
                     QString album = query.value(2).toString();
 
                     //Creating the TrackItem in an factory with would make this more performant
-                    TrackItem item;
+                    QIviAudioTrackItem item;
                     item.setId(id);
                     item.setTitle(query.value(3).toString());
                     item.setArtist(artist);

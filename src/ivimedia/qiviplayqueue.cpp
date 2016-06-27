@@ -443,7 +443,7 @@ QVariant QIviPlayQueue::data(const QModelIndex &index, int role) const
     if (row >= d->m_fetchedDataCount - d->m_fetchMoreThreshold && canFetchMore(QModelIndex()))
         emit fetchMoreThresholdReached();
 
-    const QIviSearchAndBrowseListItem *item = d->itemAt(row);
+    const QIviSearchAndBrowseModelItem *item = d->itemAt(row);
     if (!item)
         return QVariant();
 

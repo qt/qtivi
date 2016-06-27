@@ -68,7 +68,7 @@ public:
 Q_SIGNALS:
     void frequencyChanged(int frequency);
     void bandChanged(QIviAmFmTuner::Band band);
-    void stationChanged(QVariant station);
+    void stationChanged(const QIviAmFmTunerStation &station);
 
 };
 

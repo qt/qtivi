@@ -60,7 +60,7 @@ QIviSearchAndBrowseModelPrivate::QIviSearchAndBrowseModelPrivate(const QString &
     , m_canGoBack(false)
     , m_loadingType(QIviSearchAndBrowseModel::FetchMore)
 {
-    qRegisterMetaType<QIviSearchAndBrowseListItem>();
+    qRegisterMetaType<QIviSearchAndBrowseModelItem>();
 }
 
 QIviSearchAndBrowseModelPrivate::~QIviSearchAndBrowseModelPrivate()
@@ -222,7 +222,7 @@ void QIviSearchAndBrowseModelPrivate::setCanGoBack(bool canGoBack)
     emit q->canGoBackChanged(m_canGoBack);
 }
 
-const QIviSearchAndBrowseListItem *QIviSearchAndBrowseModelPrivate::itemAt(int i) const
+const QIviSearchAndBrowseModelItem *QIviSearchAndBrowseModelPrivate::itemAt(int i) const
 {
     QVariant var = m_itemList.at(i);
     if (!var.isValid())
@@ -237,12 +237,12 @@ const QIviSearchAndBrowseListItem *QIviSearchAndBrowseModelPrivate::itemAt(int i
 
     const QMetaObject *mo = type.metaObject();
     while (mo) {
-        if (mo->className() == QIviSearchAndBrowseListItem::staticMetaObject.className())
-            return reinterpret_cast<const QIviSearchAndBrowseListItem*>(data);
+        if (mo->className() == QIviSearchAndBrowseModelItem::staticMetaObject.className())
+            return reinterpret_cast<const QIviSearchAndBrowseModelItem*>(data);
         mo = mo->superClass();
     }
 
-    qCritical() << "QVariant at" << i << "is not derived from QIviSearchAndBrowseListItem";
+    qCritical() << "QVariant at" << i << "is not derived from QIviSearchAndBrowseModelItem";
 
     return nullptr;
 }
@@ -268,56 +268,6 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
 
     resetModel();
 }
-
-/*!
-    \class QIviSearchAndBrowseListItem
-    \inmodule QtIviCore
-    \brief The QIviSearchAndBrowseListItem is the base class of a row in the QIviSearchAndBrowseModel model.
-*/
-
-/*!
-    \qmltype SearchAndBrowseListItem
-    \qmlabstract
-    \instantiates QIviSearchAndBrowseListItem
-    \inqmlmodule QtIvi
-    \brief The SearchAndBrowseListItem is the base class of a row in the SearchAndBrowseModel model.
-
-    \note This item is not creatable from QML.
-*/
-
-/*!
-    \qmlproperty string SearchAndBrowseListItem::id
-    A unique identifier, which can be used to identify this item.
-
-    This is mainly used by the backend to implement filtering or browsing.
-*/
-
-/*!
-    \property QIviSearchAndBrowseListItem::id
-    A unique identifier, which can be used to identify this item.
-
-    This is mainly used by the backend to implement filtering or browsing.
-*/
-
-/*!
-    \qmlproperty string SearchAndBrowseListItem::name
-    The name of the item. E.g. The name of a contact in a addressbook, or the artist-name in a list of artists.
-*/
-
-/*!
-    \property QIviSearchAndBrowseListItem::name
-    The name of the item. E.g. The name of a contact in a addressbook, or the artist-name in a list of artists.
-*/
-
-/*!
-    \qmlproperty string SearchAndBrowseListItem::type
-    The type of the item. E.g. "artist", "track", "contact".
-*/
-
-/*!
-    \property QIviSearchAndBrowseListItem::type
-    The type of the item. E.g. "artist", "track", "contact".
-*/
 
 /*!
     \class QIviSearchAndBrowseModel
@@ -393,7 +343,7 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
     they are created instead of retrieving everything and sort or filter it locally. In addition the SearchAndBrowseModel
     only fetches the data it really needs and can it can be configured how this can be done.
 
-    All rows in the model need to be subclassed from SearchAndBrowseListItem.
+    All rows in the model need to be subclassed from SearchAndBrowseModelItem.
 
     The following roles are available in this model:
 
@@ -697,7 +647,7 @@ QVariant QIviSearchAndBrowseModel::data(const QModelIndex &index, int role) cons
     if (row >= d->m_fetchedDataCount - d->m_fetchMoreThreshold && canFetchMore(QModelIndex()))
         emit fetchMoreThresholdReached();
 
-    const QIviSearchAndBrowseListItem *item = d->itemAt(row);
+    const QIviSearchAndBrowseModelItem *item = d->itemAt(row);
     if (!item)
         return QVariant();
 
@@ -790,7 +740,7 @@ bool QIviSearchAndBrowseModel::canGoForward(int i) const
         return false;
     }
 
-    const QIviSearchAndBrowseListItem *item = d->itemAt(i);
+    const QIviSearchAndBrowseModelItem *item = d->itemAt(i);
     if (!item)
         return false;
 
@@ -836,7 +786,7 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
         return nullptr;
     }
 
-    const QIviSearchAndBrowseListItem *item = d->itemAt(i);
+    const QIviSearchAndBrowseModelItem *item = d->itemAt(i);
     if (!item)
         return nullptr;
 

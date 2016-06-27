@@ -48,8 +48,8 @@ SearchAndBrowseBackend::SearchAndBrowseBackend(AmFmTunerBackend *tunerBackend, Q
     : QIviSearchAndBrowseModelInterface(parent)
     , m_tunerBackend(tunerBackend)
 {
-    qRegisterMetaType<AmFmStation>();
-    registerContentType<AmFmStation>("station");
+    qRegisterMetaType<QIviAmFmTunerStation>();
+    registerContentType<QIviAmFmTunerStation>("station");
 }
 
 
@@ -68,7 +68,7 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &t
     if (type != "station")
         return;
 
-    QVector<AmFmStation> stations = m_tunerBackend->m_bandHash[QIviAmFmTuner::AMBand].m_stations + m_tunerBackend->m_bandHash[QIviAmFmTuner::FMBand].m_stations;
+    QVector<QIviAmFmTunerStation> stations = m_tunerBackend->m_bandHash[QIviAmFmTuner::AMBand].m_stations + m_tunerBackend->m_bandHash[QIviAmFmTuner::FMBand].m_stations;
 
     emit countChanged(identifier, stations.length());
     QVariantList requestedStations;

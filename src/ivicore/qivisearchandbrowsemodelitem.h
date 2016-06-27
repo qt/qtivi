@@ -39,41 +39,48 @@
 **
 ****************************************************************************/
 
-#ifndef AMFMTUNERBACKEND_H
-#define AMFMTUNERBACKEND_H
+#ifndef QIVISEARCHANDBROWSEMODELITEM_H
+#define QIVISEARCHANDBROWSEMODELITEM_H
 
-#include <QtIviMedia/QIviAmFmTunerBackendInterface>
-#include <QtIviMedia/QIviTunerStation>
-#include <QtCore/QVector>
+#include <QtIviCore/qtiviglobal.h>
+#include <QtCore/QMetaType>
+#include <QtCore/qobjectdefs.h>
+#include <QtCore/QSharedDataPointer>
 
-class AmFmTunerBackend : public QIviAmFmTunerBackendInterface
+QT_BEGIN_NAMESPACE
+
+class QIviSearchAndBrowseModelItemPrivate;
+
+class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModelItem
 {
-    Q_OBJECT
-public:
-    explicit AmFmTunerBackend(QObject *parent = 0);
+    Q_GADGET
 
-    virtual void initialize() Q_DECL_OVERRIDE;
-    virtual void setFrequency(int frequency) Q_DECL_OVERRIDE;
-    virtual void setBand(QIviAmFmTuner::Band band) Q_DECL_OVERRIDE;
-    virtual void stepUp() Q_DECL_OVERRIDE;
-    virtual void stepDown() Q_DECL_OVERRIDE;
-    virtual void seekUp() Q_DECL_OVERRIDE;
-    virtual void seekDown() Q_DECL_OVERRIDE;
+    Q_PROPERTY(QString id READ id WRITE setId)
+    Q_PROPERTY(QString name READ name)
+    Q_PROPERTY(QString type READ type)
+
+public:
+    QIviSearchAndBrowseModelItem();
+    QIviSearchAndBrowseModelItem(const QIviSearchAndBrowseModelItem &);
+    QIviSearchAndBrowseModelItem &operator=(const QIviSearchAndBrowseModelItem &);
+    virtual ~QIviSearchAndBrowseModelItem();
+
+    virtual QString id() const;
+    virtual void setId(const QString &id);
+    virtual QString name() const;
+    virtual QString type() const;
+
+    bool operator==(const QIviSearchAndBrowseModelItem &other);
+    inline bool operator!=(const QIviSearchAndBrowseModelItem &other) { return !(*this == other); }
 
 private:
-    void setCurrentStation(const QIviAmFmTunerStation &station);
-    int stationIndexFromFrequency(int frequency) const;
-    QIviAmFmTunerStation stationAt(int frequency) const;
-
-    QIviAmFmTuner::Band m_band;
-    struct BandData {
-        QVector<QIviAmFmTunerStation> m_stations;
-        int m_stepSize;
-        int m_frequency;
-    };
-    QHash<QIviAmFmTuner::Band, BandData> m_bandHash;
-
-    friend class SearchAndBrowseBackend;
+    QSharedDataPointer<QIviSearchAndBrowseModelItemPrivate> d;
 };
 
-#endif // AMFMTUNERBACKEND_H
+Q_DECLARE_TYPEINFO(QIviSearchAndBrowseModelItem, Q_MOVABLE_TYPE);
+
+QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(QIviSearchAndBrowseModelItem)
+
+#endif // QIVISEARCHANDBROWSEMODELITEM_H

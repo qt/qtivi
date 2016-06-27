@@ -41,6 +41,58 @@
 
 #include "qiviplayableitem.h"
 
+QT_BEGIN_NAMESPACE
+
+class QIviPlayableItemPrivate : public QSharedData
+{
+public:
+    QIviPlayableItemPrivate()
+    {}
+
+    QIviPlayableItemPrivate(const QIviPlayableItemPrivate &other)
+        : QSharedData(other)
+        , m_url(other.m_url)
+    {}
+
+    QUrl m_url;
+};
+
+class QIviAudioTrackItemPrivate : public QSharedData
+{
+public:
+    QIviAudioTrackItemPrivate()
+        : m_year(-1)
+        , m_trackNumber(-1)
+        , m_duration(-1)
+        , m_rating(-1)
+    {}
+
+    QIviAudioTrackItemPrivate(const QIviAudioTrackItemPrivate &other)
+        : QSharedData(other)
+        , m_title(other.m_title)
+        , m_artist(other.m_artist)
+        , m_album(other.m_album)
+        , m_genre(other.m_genre)
+        , m_year(other.m_year)
+        , m_trackNumber(other.m_trackNumber)
+        , m_duration(other.m_duration)
+        , m_coverArtUrl(other.m_coverArtUrl)
+        , m_rating(other.m_rating)
+    {}
+
+    QString m_title;
+    QString m_artist;
+    QString m_album;
+    QString m_genre;
+    int m_year;
+    int m_trackNumber;
+    qint64 m_duration;
+    QUrl m_coverArtUrl;
+    int m_rating;
+};
+
+QT_END_NAMESPACE
+
 /*!
     \class QIviPlayableItem
     \inmodule QtIviMedia
@@ -74,12 +126,65 @@
 */
 
 QIviPlayableItem::QIviPlayableItem()
+    : QIviSearchAndBrowseModelItem()
+    , d(new QIviPlayableItemPrivate)
 {
+}
+
+QIviPlayableItem::QIviPlayableItem(const QIviPlayableItem &rhs)
+    : QIviSearchAndBrowseModelItem(rhs)
+    , d(rhs.d)
+{
+}
+
+QIviPlayableItem &QIviPlayableItem::operator=(const QIviPlayableItem &rhs)
+{
+    QIviSearchAndBrowseModelItem::operator=(rhs);
+    if (this != &rhs)
+        d.operator=(rhs.d);
+    return *this;
 }
 
 QIviPlayableItem::~QIviPlayableItem()
 {
 }
+
+QUrl QIviPlayableItem::url() const
+{
+    return d->m_url;
+}
+
+void QIviPlayableItem::setUrl(const QUrl &url)
+{
+    d->m_url = url;
+}
+
+/*!
+    \reimp
+*/
+QString QIviPlayableItem::type() const
+{
+    return QLatin1String("playableitem");
+}
+
+/*!
+    Returns \e true if this item is equal to \a other; otherwise returns false.
+
+    \sa operator!=()
+*/
+bool QIviPlayableItem::operator==(const QIviPlayableItem &other)
+{
+    return (QIviSearchAndBrowseModelItem::operator==(other) &&
+            d->m_url == other.d->m_url);
+}
+
+/*!
+    \fn bool QIviPlayableItem::operator!=(const QIviPlayableItem &other)
+
+    Returns \e true if this item is not equal to \a other; otherwise returns false.
+
+    \sa operator==()
+*/
 
 /*!
     \class QIviAudioTrackItem
@@ -189,7 +294,7 @@ QIviPlayableItem::~QIviPlayableItem()
 */
 
 /*!
-    \property QIviAudioTrackItem::coverArt
+    \property QIviAudioTrackItem::coverArtUrl
 
     Holds the cover art of the audio track.
 
@@ -212,9 +317,159 @@ QIviPlayableItem::~QIviPlayableItem()
     This is usually a value between \e 0 and \e 5.
 */
 QIviAudioTrackItem::QIviAudioTrackItem()
+    : QIviPlayableItem()
+    , d(new QIviAudioTrackItemPrivate)
 {
+}
+
+QIviAudioTrackItem::QIviAudioTrackItem(const QIviAudioTrackItem &rhs)
+    : QIviPlayableItem(rhs)
+    , d(rhs.d)
+{
+}
+
+QIviAudioTrackItem &QIviAudioTrackItem::operator=(const QIviAudioTrackItem &rhs)
+{
+    QIviPlayableItem::operator=(rhs);
+    if (this != &rhs)
+        d.operator=(rhs.d);
+    return *this;
 }
 
 QIviAudioTrackItem::~QIviAudioTrackItem()
 {
 }
+
+QString QIviAudioTrackItem::title()
+{
+    return d->m_title;
+}
+
+void QIviAudioTrackItem::setTitle(const QString &title)
+{
+    d->m_title = title;
+}
+
+QString QIviAudioTrackItem::artist()
+{
+    return d->m_artist;
+}
+
+void QIviAudioTrackItem::setArtist(const QString &artist)
+{
+    d->m_artist = artist;
+}
+
+QString QIviAudioTrackItem::album()
+{
+    return d->m_album;
+}
+
+void QIviAudioTrackItem::setAlbum(const QString &album)
+{
+    d->m_album = album;
+}
+
+QString QIviAudioTrackItem::genre()
+{
+    return d->m_genre;
+}
+
+void QIviAudioTrackItem::setGenre(const QString &genre)
+{
+    d->m_genre = genre;
+}
+
+int QIviAudioTrackItem::year()
+{
+    return d->m_year;
+}
+
+void QIviAudioTrackItem::setYear(int year)
+{
+    d->m_year = year;
+}
+
+int QIviAudioTrackItem::trackNumber()
+{
+    return d->m_trackNumber;
+}
+
+void QIviAudioTrackItem::setTrackNumber(int trackNumber)
+{
+    d->m_trackNumber = trackNumber;
+}
+
+qint64 QIviAudioTrackItem::duration()
+{
+    return d->m_duration;
+}
+
+void QIviAudioTrackItem::setDuration(qint64 duration)
+{
+    d->m_duration = duration;
+}
+
+QUrl QIviAudioTrackItem::coverArtUrl()
+{
+    return d->m_coverArtUrl;
+}
+
+void QIviAudioTrackItem::setCoverArtUrl(const QUrl &url)
+{
+    d->m_coverArtUrl = url;
+}
+
+int QIviAudioTrackItem::rating()
+{
+    return d->m_rating;
+}
+
+
+void QIviAudioTrackItem::setRating(int rating)
+{
+    d->m_rating = rating;
+}
+
+/*!
+    \reimp
+*/
+QString QIviAudioTrackItem::name() const
+{
+    return d->m_title;
+}
+
+/*!
+    \reimp
+*/
+QString QIviAudioTrackItem::type() const
+{
+    return QLatin1String("audiotrack");
+}
+
+/*!
+    Returns \e true if this item is equal to \a other; otherwise returns false.
+
+    \sa operator!=()
+*/
+bool QIviAudioTrackItem::operator==(const QIviAudioTrackItem &other)
+{
+    return (QIviPlayableItem::operator==(other) &&
+            d->m_title == other.d->m_title &&
+            d->m_artist == other.d->m_artist &&
+            d->m_album == other.d->m_album &&
+            d->m_genre == other.d->m_genre &&
+            d->m_year == other.d->m_year &&
+            d->m_trackNumber == other.d->m_trackNumber &&
+            d->m_duration == other.d->m_duration &&
+            d->m_coverArtUrl == other.d->m_coverArtUrl &&
+            d->m_rating == other.d->m_rating);
+}
+
+/*!
+    \fn bool QIviAudioTrackItem::operator!=(const QIviAudioTrackItem &other)
+
+    Returns \e true if this item is not equal to \a other; otherwise returns false.
+
+    \sa operator==()
+*/

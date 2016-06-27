@@ -47,17 +47,17 @@ AmFmTunerBackend::AmFmTunerBackend(QObject *parent)
     : QIviAmFmTunerBackendInterface(parent)
     , m_band(QIviAmFmTuner::FMBand)
 {
-    qRegisterMetaType<AmFmStation>();
+    qRegisterMetaType<QIviAmFmTunerStation>();
 
-    QVector<AmFmStation> fm_stations;
-    AmFmStation radioQt;
+    QVector<QIviAmFmTunerStation> fm_stations;
+    QIviAmFmTunerStation radioQt;
     radioQt.setId("0");
     radioQt.setStationName("Radio Qt");
     radioQt.setFrequency(87500000);
     radioQt.setBand(QIviAmFmTuner::FMBand);
     fm_stations.append(radioQt);
 
-    AmFmStation qtRocksNonStop;
+    QIviAmFmTunerStation qtRocksNonStop;
     qtRocksNonStop.setId("1");
     qtRocksNonStop.setStationName("Qt Rocks non-stop");
     qtRocksNonStop.setFrequency(102500000);
@@ -79,7 +79,7 @@ void AmFmTunerBackend::initialize()
 {
     emit bandChanged(m_band);
     emit frequencyChanged(m_bandHash[m_band].m_frequency);
-    emit stationChanged(QVariant::fromValue(m_bandHash[m_band].m_stations.at(0)));
+    emit stationChanged(m_bandHash[m_band].m_stations.at(0));
 }
 
 void AmFmTunerBackend::setFrequency(int frequency)
@@ -91,7 +91,7 @@ void AmFmTunerBackend::setFrequency(int frequency)
 
     m_bandHash[m_band].m_frequency = frequency;
     emit frequencyChanged(frequency);
-    emit stationChanged(QVariant::fromValue(stationAt(m_bandHash[m_band].m_frequency)));
+    emit stationChanged(stationAt(m_bandHash[m_band].m_frequency));
 }
 
 void AmFmTunerBackend::setBand(QIviAmFmTuner::Band band)
@@ -104,7 +104,7 @@ void AmFmTunerBackend::setBand(QIviAmFmTuner::Band band)
     m_band = band;
     emit bandChanged(band);
     emit frequencyChanged(m_bandHash[m_band].m_frequency);
-    emit stationChanged(QVariant::fromValue(stationAt(m_bandHash[m_band].m_frequency)));
+    emit stationChanged(stationAt(m_bandHash[m_band].m_frequency));
 }
 
 void AmFmTunerBackend::stepUp()
@@ -123,7 +123,7 @@ void AmFmTunerBackend::seekUp()
 {
     qWarning() << "SIMULATION Seek Up";
 
-    QVector<AmFmStation> stations = m_bandHash[m_band].m_stations;
+    QVector<QIviAmFmTunerStation> stations = m_bandHash[m_band].m_stations;
     if (stations.count() == 0) {
         return;
     } else if (stations.count() == 1) {
@@ -142,7 +142,7 @@ void AmFmTunerBackend::seekDown()
 {
     qWarning() << "SIMULATION Seek Down";
 
-    QVector<AmFmStation> stations = m_bandHash[m_band].m_stations;
+    QVector<QIviAmFmTunerStation> stations = m_bandHash[m_band].m_stations;
     if (stations.count() == 0) {
         return;
     } else if (stations.count() == 1) {
@@ -157,21 +157,21 @@ void AmFmTunerBackend::seekDown()
     }
 }
 
-void AmFmTunerBackend::setCurrentStation(const AmFmStation& station)
+void AmFmTunerBackend::setCurrentStation(const QIviAmFmTunerStation &station)
 {
     m_bandHash[m_band].m_frequency = station.frequency();
 
     qWarning() << "SIMULATION Station changed to" << station.stationName() << station.frequency();
 
     emit frequencyChanged(station.frequency());
-    emit stationChanged(QVariant::fromValue(station));
+    emit stationChanged(station);
 }
 
 int AmFmTunerBackend::stationIndexFromFrequency(int frequency) const
 {
-    QVector<AmFmStation> stations = m_bandHash[m_band].m_stations;
+    QVector<QIviAmFmTunerStation> stations = m_bandHash[m_band].m_stations;
     for (int i=0; i < stations.count(); i++) {
-        const AmFmStation& station = stations.at(i);
+        const QIviAmFmTunerStation& station = stations.at(i);
         if (station.frequency() == frequency)
             return i;
     }
@@ -179,11 +179,11 @@ int AmFmTunerBackend::stationIndexFromFrequency(int frequency) const
     return -1;
 }
 
-AmFmStation AmFmTunerBackend::stationAt(int frequency) const
+QIviAmFmTunerStation AmFmTunerBackend::stationAt(int frequency) const
 {
     int index = stationIndexFromFrequency(frequency);
     if (index != -1)
         return m_bandHash[m_band].m_stations.at(index);
 
-    return AmFmStation();
+    return QIviAmFmTunerStation();
 }

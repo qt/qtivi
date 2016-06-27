@@ -47,6 +47,7 @@
 #include <QtIviMedia/QIviMediaIndexerControl>
 #include <QtIviMedia/QIviPlayQueue>
 #include <QtIviMedia/QIviAmFmTuner>
+#include <QtIviMedia/QIviTunerStation>
 #include <QtIviMedia/QIviMediaDevice>
 
 QT_BEGIN_NAMESPACE
@@ -60,6 +61,9 @@ public:
     {
         Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi.Media"));
         Q_UNUSED(uri);
+
+        qRegisterMetaType<QIviTunerStation>();
+        qRegisterMetaType<QIviAmFmTunerStation>();
 
         qmlRegisterType<QIviMediaPlayer>(uri, 1, 0, "MediaPlayer");
         //This should be an singleton, otherwise we might delete a pointer twice ?

@@ -199,7 +199,7 @@ ApplicationWindow {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            if (item.type === "track")
+                            if (item.type === "audiotrack")
                                 mediaPlayer.playQueue.insert(0, item)
                             else
                                 searchModel.goForward(index, SearchAndBrowseModel.InModelNavigation)

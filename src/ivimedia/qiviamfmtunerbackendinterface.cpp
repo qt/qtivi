@@ -138,7 +138,7 @@ QIviAmFmTunerBackendInterface::QIviAmFmTunerBackendInterface(QObject *parent)
 */
 
 /*!
-    \fn QIviAmFmTunerBackendInterface::stationChanged(QVariant station)
+    \fn QIviAmFmTunerBackendInterface::stationChanged(const QIviAmFmTunerStation &station)
 
     Emitted when the current station changed. The new station is passed as \a station.
 */

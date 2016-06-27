@@ -62,7 +62,7 @@ void QIviAmFmTunerPrivate::clearToDefaults()
 {
     m_frequency = -1;
     m_band = QIviAmFmTuner::FMBand;
-    m_station = QVariant();
+    m_station = QIviAmFmTunerStation();
 }
 
 void QIviAmFmTunerPrivate::onFrequencyChanged(int frequency)
@@ -85,37 +85,14 @@ void QIviAmFmTunerPrivate::onBandChanged(QIviAmFmTuner::Band band)
     emit q->bandChanged(band);
 }
 
-void QIviAmFmTunerPrivate::onStationChanged(const QVariant &station)
+void QIviAmFmTunerPrivate::onStationChanged(const QIviAmFmTunerStation &station)
 {
-    const QIviAmFmTunerStation *st = stationItem(station);
-    if (st && m_station == station)
+    if (m_station == station)
         return;
 
     Q_Q(QIviAmFmTuner);
     m_station = station;
     emit q->stationChanged(station);
-}
-
-//TODO replace me by a generic function for all classes
-const QIviAmFmTunerStation *QIviAmFmTunerPrivate::stationItem(const QVariant &item)
-{
-    const void *data = item.constData();
-
-    QMetaType type(item.userType());
-    if (!type.flags().testFlag(QMetaType::IsGadget)) {
-        qCritical() << "The passed QVariant needs to use the Q_GADGET macro";
-        return nullptr;
-    }
-
-    const QMetaObject *mo = type.metaObject();
-    while (mo) {
-        if (mo->className() == QIviAmFmTunerStation::staticMetaObject.className())
-            return reinterpret_cast<const QIviAmFmTunerStation*>(data);
-        mo = mo->superClass();
-    }
-
-    qCritical() << "The passed QVariant is not derived from QIviPlayableItem";
-    return nullptr;
 }
 
 QIviAmFmTunerBackendInterface *QIviAmFmTunerPrivate::tunerBackend() const
@@ -212,7 +189,7 @@ QIviAmFmTuner::Band QIviAmFmTuner::band() const
     \property QIviAmFmTuner::station
     \brief The currently tuned station.
  */
-QVariant QIviAmFmTuner::station() const
+QIviAmFmTunerStation QIviAmFmTuner::station() const
 {
     Q_D(const QIviAmFmTuner);
     return d->m_station;
@@ -225,22 +202,18 @@ QVariant QIviAmFmTuner::station() const
 */
 
 /*!
-    \fn void QIviAmFmTuner::tune(const QVariant &station)
+    \fn void QIviAmFmTuner::tune(const QIviAmFmTunerStation &station)
 
     Tunes to the provided \a station.
 */
-//TODO Change this to use the real class, but for this we need to refactor the Q_GADGET classes to real classes with copy constructors and propably QSharedData
-void QIviAmFmTuner::tune(const QVariant &station)
+void QIviAmFmTuner::tune(const QIviAmFmTunerStation &station)
 {
     Q_D(QIviAmFmTuner);
-    const QIviAmFmTunerStation *stationItem = d->stationItem(station);
-    if (!stationItem)
-        return;
 
-    if (stationItem->band() != d->m_band)
-        setBand(stationItem->band());
-    if (stationItem->frequency() != d->m_frequency)
-        setFrequency(stationItem->frequency());
+    if (station.band() != d->m_band)
+        setBand(station.band());
+    if (station.frequency() != d->m_frequency)
+        setFrequency(station.frequency());
 }
 
 void QIviAmFmTuner::setFrequency(int frequency)

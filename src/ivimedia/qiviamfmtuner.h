@@ -48,6 +48,7 @@
 
 QT_BEGIN_NAMESPACE
 
+class QIviAmFmTunerStation;
 class QIviAmFmTunerPrivate;
 
 static const QLatin1String QIviStringAmFmTunerInterfaceName("com.qt-project.qtivi.AmFmTuner");
@@ -58,7 +59,7 @@ class Q_QTIVIMEDIA_EXPORT QIviAmFmTuner : public QIviAbstractFeature
 
     Q_PROPERTY(int frequency READ frequency WRITE setFrequency NOTIFY frequencyChanged)
     Q_PROPERTY(QIviAmFmTuner::Band band READ band WRITE setBand NOTIFY bandChanged)
-    Q_PROPERTY(QVariant station READ station NOTIFY stationChanged)
+    Q_PROPERTY(QIviAmFmTunerStation station READ station NOTIFY stationChanged)
 
 public:
     explicit QIviAmFmTuner(QObject *parent = Q_NULLPTR);
@@ -72,9 +73,9 @@ public:
 
     int frequency() const;
     Band band() const;
-    QVariant station() const;
+    QIviAmFmTunerStation station() const;
 
-    Q_INVOKABLE void tune(const QVariant &station);
+    Q_INVOKABLE void tune(const QIviAmFmTunerStation &station);
 
 public Q_SLOTS:
     void setFrequency(int frequency);
@@ -87,7 +88,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     void frequencyChanged(int frequency);
     void bandChanged(QIviAmFmTuner::Band band);
-    void stationChanged(const QVariant &station);
+    void stationChanged(const QIviAmFmTunerStation &station);
 
 protected:
     QIviAmFmTuner(QIviAmFmTunerPrivate &dd, QObject *parent = Q_NULLPTR);
@@ -101,7 +102,7 @@ private:
     Q_DECLARE_PRIVATE(QIviAmFmTuner)
     Q_PRIVATE_SLOT(d_func(), void onFrequencyChanged(int frequency))
     Q_PRIVATE_SLOT(d_func(), void onBandChanged(QIviAmFmTuner::Band band))
-    Q_PRIVATE_SLOT(d_func(), void onStationChanged(const QVariant &station))
+    Q_PRIVATE_SLOT(d_func(), void onStationChanged(const QIviAmFmTunerStation &station))
 };
 
 QT_END_NAMESPACE

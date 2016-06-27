@@ -44,50 +44,86 @@
 
 #include <QtIviMedia/qtivimediaglobal.h>
 #include <QtIviCore/QIviSearchAndBrowseModel>
+#include <QtIviCore/QIviSearchAndBrowseModelItem>
 #include <QtCore/QUrl>
 
 QT_BEGIN_NAMESPACE
 
-class Q_QTIVIMEDIA_EXPORT QIviPlayableItem : public QIviSearchAndBrowseListItem
+class QIviPlayableItemPrivate;
+class QIviAudioTrackItemPrivate;
+
+class Q_QTIVIMEDIA_EXPORT QIviPlayableItem : public QIviSearchAndBrowseModelItem
 {
     Q_GADGET
 
-    Q_PROPERTY(QUrl url READ url)
+    Q_PROPERTY(QUrl url READ url WRITE setUrl)
 
 public:
     QIviPlayableItem();
+    QIviPlayableItem(const QIviPlayableItem &);
+    QIviPlayableItem &operator=(const QIviPlayableItem &);
     virtual ~QIviPlayableItem();
-    virtual QUrl url() const { return QUrl(); }
+
+    virtual QUrl url() const;
+    virtual void setUrl(const QUrl &url);
+    virtual QString type() const Q_DECL_OVERRIDE;
+
+    bool operator==(const QIviPlayableItem &other);
+    inline bool operator!=(const QIviPlayableItem &other) { return !(*this == other); }
+
+private:
+    QSharedDataPointer<QIviPlayableItemPrivate> d;
 };
+Q_DECLARE_TYPEINFO(QIviPlayableItem, Q_MOVABLE_TYPE);
 
 class Q_QTIVIMEDIA_EXPORT QIviAudioTrackItem : public QIviPlayableItem
 {
     Q_GADGET
 
-    Q_PROPERTY(QString title READ title)
-    Q_PROPERTY(QString artist READ artist)
-    Q_PROPERTY(QString album READ album)
-    Q_PROPERTY(QString genre READ genre)
-    Q_PROPERTY(int year READ year) //FIXME What type should we use here ?
-    Q_PROPERTY(int trackNumber READ trackNumber)
-    Q_PROPERTY(qint64 duration READ duration)
-    Q_PROPERTY(QString coverArt READ coverArt) //FIXME How to best serve this ?
-    Q_PROPERTY(int rating READ rating)
+    Q_PROPERTY(QString title READ title WRITE setTitle)
+    Q_PROPERTY(QString artist READ artist WRITE setArtist)
+    Q_PROPERTY(QString album READ album WRITE setAlbum)
+    Q_PROPERTY(QString genre READ genre WRITE setGenre)
+    Q_PROPERTY(int year READ year WRITE setYear)
+    Q_PROPERTY(int trackNumber READ trackNumber WRITE setTrackNumber)
+    Q_PROPERTY(qint64 duration READ duration WRITE setDuration)
+    Q_PROPERTY(QUrl coverArtUrl READ coverArtUrl WRITE setCoverArtUrl)
+    Q_PROPERTY(int rating READ rating WRITE setRating)
 
 public:
     QIviAudioTrackItem();
+    QIviAudioTrackItem(const QIviAudioTrackItem &);
+    QIviAudioTrackItem &operator=(const QIviAudioTrackItem &);
     virtual ~QIviAudioTrackItem();
 
-    virtual QString title() { return QString(); }
-    virtual QString artist() { return QString(); }
-    virtual QString album() { return QString(); }
-    virtual QString genre() { return QString(); }
-    virtual int year() { return -1; }
-    virtual int trackNumber() { return -1; }
-    virtual qint64 duration() { return -1; }
-    virtual QString coverArt() { return QString(); }
-    virtual int rating() { return -1; }
+    virtual QString title();
+    virtual void setTitle(const QString &title);
+    virtual QString artist();
+    virtual void setArtist(const QString &artist);
+    virtual QString album();
+    virtual void setAlbum(const QString &album);
+    virtual QString genre();
+    virtual void setGenre(const QString &genre);
+    virtual int year();
+    virtual void setYear(int year);
+    virtual int trackNumber();
+    virtual void setTrackNumber(int trackNumber);
+    virtual qint64 duration();
+    virtual void setDuration(qint64 duration);
+    virtual QUrl coverArtUrl();
+    virtual void setCoverArtUrl(const QUrl &url);
+    virtual int rating();
+    virtual void setRating(int rating);
+    virtual QString name() const Q_DECL_OVERRIDE;
+    virtual QString type() const Q_DECL_OVERRIDE;
+
+    bool operator==(const QIviAudioTrackItem &other);
+    inline bool operator!=(const QIviAudioTrackItem &other) { return !(*this == other); }
+
+private:
+    QSharedDataPointer<QIviAudioTrackItemPrivate> d;
 };
+Q_DECLARE_TYPEINFO(QIviAudioTrackItem, Q_MOVABLE_TYPE);
 
 QT_END_NAMESPACE
 

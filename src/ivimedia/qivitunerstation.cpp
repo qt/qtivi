@@ -41,20 +41,144 @@
 
 #include "qivitunerstation.h"
 
-QIviTunerStation::QIviTunerStation()
-    : QIviSearchAndBrowseListItem()
+QT_BEGIN_NAMESPACE
+
+class QIviTunerStationPrivate : public QSharedData
 {
+public:
+    QIviTunerStationPrivate()
+        : m_frequency(-1)
+    {}
+
+    QIviTunerStationPrivate(const QIviTunerStationPrivate &other)
+        : QSharedData(other)
+        , m_stationName(other.m_stationName)
+        , m_frequency(other.m_frequency)
+    {}
+
+    QString m_stationName;
+    int m_frequency;
+};
+
+class QIviAmFmTunerStationPrivate : public QSharedData
+{
+public:
+    QIviAmFmTunerStationPrivate()
+        : m_band(QIviAmFmTuner::FMBand)
+    {}
+
+    QIviAmFmTunerStationPrivate(const QIviAmFmTunerStationPrivate &other)
+        : QSharedData(other)
+        , m_band(other.m_band)
+    {}
+
+    QIviAmFmTuner::Band m_band;
+};
+
+QT_END_NAMESPACE
+
+QIviTunerStation::QIviTunerStation()
+    : QIviSearchAndBrowseModelItem()
+    , d(new QIviTunerStationPrivate)
+{
+}
+
+QIviTunerStation::QIviTunerStation(const QIviTunerStation &rhs)
+    : QIviSearchAndBrowseModelItem(rhs)
+    , d(rhs.d)
+{
+}
+
+QIviTunerStation &QIviTunerStation::operator=(const QIviTunerStation &rhs)
+{
+    QIviSearchAndBrowseModelItem::operator=(rhs);
+    if (this != &rhs)
+        d.operator=(rhs.d);
+    return *this;
 }
 
 QIviTunerStation::~QIviTunerStation()
 {
 }
 
+QString QIviTunerStation::stationName() const
+{
+    return d->m_stationName;
+}
+
+void QIviTunerStation::setStationName(const QString &stationName)
+{
+    d->m_stationName = stationName;
+}
+
+int QIviTunerStation::frequency() const
+{
+    return d->m_frequency;
+}
+
+void QIviTunerStation::setFrequency(int frequency)
+{
+    d->m_frequency = frequency;
+}
+
+QString QIviTunerStation::name() const
+{
+    return d->m_stationName;
+}
+
+QString QIviTunerStation::type() const
+{
+    return QLatin1String("tunerstation");
+}
+
+bool QIviTunerStation::operator==(const QIviTunerStation &other)
+{
+    return (QIviSearchAndBrowseModelItem::operator==(other) &&
+            d->m_stationName == other.d->m_stationName &&
+            d->m_frequency == other.d->m_frequency);
+}
+
 QIviAmFmTunerStation::QIviAmFmTunerStation()
     : QIviTunerStation()
+    , d(new QIviAmFmTunerStationPrivate)
 {
+}
+
+QIviAmFmTunerStation::QIviAmFmTunerStation(const QIviAmFmTunerStation &rhs)
+    : QIviTunerStation(rhs)
+    , d(rhs.d)
+{
+}
+
+QIviAmFmTunerStation &QIviAmFmTunerStation::operator=(const QIviAmFmTunerStation &rhs)
+{
+    QIviTunerStation::operator=(rhs);
+    if (this != &rhs)
+        d.operator=(rhs.d);
+    return *this;
 }
 
 QIviAmFmTunerStation::~QIviAmFmTunerStation()
 {
+}
+
+QIviAmFmTuner::Band QIviAmFmTunerStation::band() const
+{
+    return d->m_band;
+}
+
+void QIviAmFmTunerStation::setBand(QIviAmFmTuner::Band band)
+{
+    d->m_band = band;
+}
+
+QString QIviAmFmTunerStation::type() const
+{
+    return QLatin1String("amfmtunerstation");
+}
+
+bool QIviAmFmTunerStation::operator==(const QIviAmFmTunerStation &other)
+{
+    return (QIviTunerStation::operator==(other) &&
+            d->m_band == other.d->m_band);
 }

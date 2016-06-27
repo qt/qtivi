@@ -71,15 +71,14 @@ public:
     void clearToDefaults();
     void onFrequencyChanged(int frequency);
     void onBandChanged(QIviAmFmTuner::Band band);
-    void onStationChanged(const QVariant &station);
+    void onStationChanged(const QIviAmFmTunerStation &station);
 
-    const QIviAmFmTunerStation *stationItem(const QVariant &item);
     QIviAmFmTunerBackendInterface *tunerBackend() const;
 
     QIviAmFmTuner * const q_ptr;
     int m_frequency;
     QIviAmFmTuner::Band m_band;
-    QVariant m_station;
+    QIviAmFmTunerStation m_station;
 
     Q_DECLARE_PUBLIC(QIviAmFmTuner)
 };

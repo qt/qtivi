@@ -48,7 +48,7 @@
 #include <QSqlDatabase>
 #include <QStack>
 
-class SearchAndBrowseItem : public QIviSearchAndBrowseListItem
+class SearchAndBrowseItem : public QIviSearchAndBrowseModelItem
 {
     Q_GADGET
 
@@ -64,33 +64,6 @@ private:
     QString m_type;
 };
 Q_DECLARE_METATYPE(SearchAndBrowseItem)
-
-class TrackItem : public QIviAudioTrackItem
-{
-    Q_GADGET
-
-public:
-    virtual QString id() const { return m_id; }
-    void setId(const QString &id) { m_id = id; }
-    virtual QString name() const { return m_title; }
-    virtual QString type() const { return "track"; }
-    virtual QString title() { return QString(); }
-    void setTitle(const QString &title) { m_title = title; }
-    virtual QString artist() { return QString(); }
-    void setArtist(const QString &artist) { m_artist = artist; }
-    virtual QString album() { return QString(); }
-    void setAlbum(const QString &album) { m_artist = album; }
-    virtual QUrl url() const { return m_url; }
-    void setUrl(const QUrl &url) { m_url = url; }
-
-private:
-    QString m_id;
-    QString m_title;
-    QString m_artist;
-    QString m_album;
-    QUrl m_url;
-};
-Q_DECLARE_METATYPE(TrackItem)
 
 class SearchAndBrowseBackend : public QIviSearchAndBrowseModelInterface
 {

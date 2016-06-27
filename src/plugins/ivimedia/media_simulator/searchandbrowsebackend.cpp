@@ -51,10 +51,9 @@ SearchAndBrowseBackend::SearchAndBrowseBackend(const QSqlDatabase &database, QOb
     : QIviSearchAndBrowseModelInterface(parent)
 {
     qRegisterMetaType<SearchAndBrowseItem>();
-    qRegisterMetaType<TrackItem>();
     registerContentType<SearchAndBrowseItem>("artist");
     registerContentType<SearchAndBrowseItem>("album");
-    registerContentType<TrackItem>("track");
+    registerContentType<QIviAudioTrackItem>("track");
 
     m_db = database;
     m_db.open();
@@ -148,7 +147,7 @@ void SearchAndBrowseBackend::search(const QUuid &identifier, const QString &quer
             QString album = query.value(1).toString();
 
             if (type == QLatin1String("track")) {
-                TrackItem item;
+                QIviAudioTrackItem item;
                 item.setId(query.value(6).toString());
                 item.setTitle(query.value(2).toString());
                 item.setArtist(artist);

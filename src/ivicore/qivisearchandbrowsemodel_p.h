@@ -57,6 +57,7 @@
 
 #include "qivisearchandbrowsemodelinterface.h"
 #include "qivisearchandbrowsemodel.h"
+#include "qivisearchandbrowsemodelitem.h"
 #include "qiviqueryterm.h"
 
 #include <QUuid>
@@ -79,7 +80,7 @@ public:
     void checkType();
     void clearToDefaults();
     void setCanGoBack(bool canGoBack);
-    const QIviSearchAndBrowseListItem *itemAt(int i) const;
+    const QIviSearchAndBrowseModelItem *itemAt(int i) const;
 
     QIviSearchAndBrowseModelInterface* searchBackend() const;
     void updateContentType(const QString &contentType);

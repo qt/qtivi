@@ -44,37 +44,64 @@
 
 #include <QtIviMedia/qtivimediaglobal.h>
 #include <QtIviMedia/QIviAmFmTuner>
-#include <QtIviCore/QIviSearchAndBrowseListItem>
+#include <QtIviCore/QIviSearchAndBrowseModelItem>
 
 QT_BEGIN_NAMESPACE
 
-class Q_QTIVIMEDIA_EXPORT QIviTunerStation : public QIviSearchAndBrowseListItem
+class QIviTunerStationPrivate;
+class QIviAmFmTunerStationPrivate;
+
+class Q_QTIVIMEDIA_EXPORT QIviTunerStation : public QIviSearchAndBrowseModelItem
 {
     Q_GADGET
 
-    Q_PROPERTY(QString stationName READ stationName)
-    Q_PROPERTY(int frequency READ frequency)
+    Q_PROPERTY(QString stationName READ stationName WRITE setStationName)
+    Q_PROPERTY(int frequency READ frequency WRITE setFrequency)
 
 public:
     QIviTunerStation();
+    QIviTunerStation(const QIviTunerStation &);
+    QIviTunerStation &operator=(const QIviTunerStation &);
     virtual ~QIviTunerStation();
 
-    virtual QString stationName() const { return QString(); }
-    virtual int frequency() const { return -1; }
+    virtual QString stationName() const;
+    virtual void setStationName(const QString &stationName);
+    virtual int frequency() const;
+    virtual void setFrequency(int frequency);
+    virtual QString name() const Q_DECL_OVERRIDE;
+    virtual QString type() const Q_DECL_OVERRIDE;
+
+    bool operator==(const QIviTunerStation &other);
+    inline bool operator!=(const QIviTunerStation &other) { return !(*this == other); }
+
+private:
+    QSharedDataPointer<QIviTunerStationPrivate> d;
 };
+Q_DECLARE_TYPEINFO(QIviTunerStation, Q_MOVABLE_TYPE);
 
 class Q_QTIVIMEDIA_EXPORT QIviAmFmTunerStation : public QIviTunerStation
 {
     Q_GADGET
 
-    Q_PROPERTY(QIviAmFmTuner::Band band READ band)
+    Q_PROPERTY(QIviAmFmTuner::Band band READ band WRITE setBand)
 
 public:
     QIviAmFmTunerStation();
+    QIviAmFmTunerStation(const QIviAmFmTunerStation &);
+    QIviAmFmTunerStation &operator=(const QIviAmFmTunerStation &);
     virtual ~QIviAmFmTunerStation();
 
-    virtual QIviAmFmTuner::Band band() const { return QIviAmFmTuner::FMBand; }
+    virtual QIviAmFmTuner::Band band() const;
+    virtual void setBand(QIviAmFmTuner::Band band);
+    virtual QString type() const Q_DECL_OVERRIDE;
+
+    bool operator==(const QIviAmFmTunerStation &other);
+    inline bool operator!=(const QIviAmFmTunerStation &other) { return !(*this == other); }
+
+private:
+    QSharedDataPointer<QIviAmFmTunerStationPrivate> d;
 };
+Q_DECLARE_TYPEINFO(QIviAmFmTunerStation, Q_MOVABLE_TYPE);
 
 QT_END_NAMESPACE
 

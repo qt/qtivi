@@ -51,21 +51,6 @@ class QIviSearchAndBrowseModelPrivate;
 
 static const QLatin1String QIviStringSearchAndBrowseModelInterfaceName("com.qt-project.qtivi.SearchAndBrowseModel");
 
-class Q_QTIVICORE_EXPORT QIviSearchAndBrowseListItem
-{
-    Q_GADGET
-
-    Q_PROPERTY(QString id READ id)
-    Q_PROPERTY(QString name READ name)
-    Q_PROPERTY(QString type READ type)
-public:
-    virtual ~QIviSearchAndBrowseListItem() {};
-
-    virtual QString id() const { return QString(); }
-    virtual QString name() const { return QString(); }
-    virtual QString type() const { return QString(); }
-};
-
 class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModel : public QIviAbstractFeatureListModel
 {
     Q_OBJECT
@@ -171,7 +156,5 @@ private:
 };
 
 QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(QIviSearchAndBrowseListItem)
 
 #endif // QIVISEARCHANDBROWSEMODEL_H
