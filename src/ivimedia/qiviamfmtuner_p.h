@@ -70,15 +70,23 @@ public:
     void init();
     void clearToDefaults();
     void onFrequencyChanged(int frequency);
+    void onMinimumFrequencyChanged(int frequency);
+    void onMaximumFrequencyChanged(int frequency);
+    void onStepSizeChanged(int stepSize);
     void onBandChanged(QIviAmFmTuner::Band band);
     void onStationChanged(const QIviAmFmTunerStation &station);
+    void onScanStatusChanged(bool scanRunning);
 
     QIviAmFmTunerBackendInterface *tunerBackend() const;
 
     QIviAmFmTuner * const q_ptr;
     int m_frequency;
+    int m_minimumFrequency;
+    int m_maximumFrequency;
+    int m_stepSize;
     QIviAmFmTuner::Band m_band;
     QIviAmFmTunerStation m_station;
+    bool m_scanRunning;
 
     Q_DECLARE_PUBLIC(QIviAmFmTuner)
 };

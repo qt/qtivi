@@ -59,19 +59,25 @@ public:
     virtual void stepDown() Q_DECL_OVERRIDE;
     virtual void seekUp() Q_DECL_OVERRIDE;
     virtual void seekDown() Q_DECL_OVERRIDE;
+    virtual void startScan() Q_DECL_OVERRIDE;
+    virtual void stopScan() Q_DECL_OVERRIDE;
 
 private:
     void setCurrentStation(const QIviAmFmTunerStation &station);
     int stationIndexFromFrequency(int frequency) const;
     QIviAmFmTunerStation stationAt(int frequency) const;
+    void timerEvent(QTimerEvent *event) Q_DECL_OVERRIDE;
 
     QIviAmFmTuner::Band m_band;
     struct BandData {
         QVector<QIviAmFmTunerStation> m_stations;
         int m_stepSize;
         int m_frequency;
+        int m_minimumFrequency;
+        int m_maximumFrequency;
     };
     QHash<QIviAmFmTuner::Band, BandData> m_bandHash;
+    int m_timerId;
 
     friend class SearchAndBrowseBackend;
 };

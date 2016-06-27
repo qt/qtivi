@@ -46,6 +46,7 @@
 AmFmTunerBackend::AmFmTunerBackend(QObject *parent)
     : QIviAmFmTunerBackendInterface(parent)
     , m_band(QIviAmFmTuner::FMBand)
+    , m_timerId(-1)
 {
     qRegisterMetaType<QIviAmFmTunerStation>();
 
@@ -65,12 +66,16 @@ AmFmTunerBackend::AmFmTunerBackend(QObject *parent)
     fm_stations.append(qtRocksNonStop);
     BandData fmdata;
     fmdata.m_frequency = 87500000;
+    fmdata.m_minimumFrequency = 87500000;
+    fmdata.m_maximumFrequency = 108000000;
     fmdata.m_stepSize = 100000;
     fmdata.m_stations = fm_stations;
     m_bandHash.insert(QIviAmFmTuner::FMBand, fmdata);
 
     BandData amdata;
-    amdata.m_frequency = 520000;
+    amdata.m_frequency = 535000;
+    amdata.m_minimumFrequency = 535000;
+    amdata.m_maximumFrequency = 1700000;
     amdata.m_stepSize = 10000;
     m_bandHash.insert(QIviAmFmTuner::AMBand, amdata);
 }
@@ -78,6 +83,9 @@ AmFmTunerBackend::AmFmTunerBackend(QObject *parent)
 void AmFmTunerBackend::initialize()
 {
     emit bandChanged(m_band);
+    emit minimumFrequencyChanged(m_bandHash[m_band].m_minimumFrequency);
+    emit maximumFrequencyChanged(m_bandHash[m_band].m_maximumFrequency);
+    emit stepSizeChanged(m_bandHash[m_band].m_stepSize);
     emit frequencyChanged(m_bandHash[m_band].m_frequency);
     emit stationChanged(m_bandHash[m_band].m_stations.at(0));
 }
@@ -86,6 +94,11 @@ void AmFmTunerBackend::setFrequency(int frequency)
 {
     if (m_bandHash[m_band].m_frequency == frequency)
         return;
+
+    if (frequency < m_bandHash[m_band].m_minimumFrequency || frequency > m_bandHash[m_band].m_maximumFrequency) {
+        qWarning() << "SIMULATION Frequency out of range";
+        return;
+    }
 
     qWarning() << "SIMULATION Frequency changed to" << frequency;
 
@@ -103,6 +116,9 @@ void AmFmTunerBackend::setBand(QIviAmFmTuner::Band band)
 
     m_band = band;
     emit bandChanged(band);
+    emit minimumFrequencyChanged(m_bandHash[m_band].m_minimumFrequency);
+    emit maximumFrequencyChanged(m_bandHash[m_band].m_maximumFrequency);
+    emit stepSizeChanged(m_bandHash[m_band].m_stepSize);
     emit frequencyChanged(m_bandHash[m_band].m_frequency);
     emit stationChanged(stationAt(m_bandHash[m_band].m_frequency));
 }
@@ -110,12 +126,22 @@ void AmFmTunerBackend::setBand(QIviAmFmTuner::Band band)
 void AmFmTunerBackend::stepUp()
 {
     qWarning() << "SIMULATION Step Up";
-    setFrequency(m_bandHash[m_band].m_frequency + m_bandHash[m_band].m_stepSize);
+
+    int newFreq = m_bandHash[m_band].m_frequency + m_bandHash[m_band].m_stepSize;
+    if (newFreq > m_bandHash[m_band].m_maximumFrequency)
+        newFreq = m_bandHash[m_band].m_minimumFrequency;
+
+    setFrequency(newFreq);
 }
 
 void AmFmTunerBackend::stepDown()
 {
     qWarning() << "SIMULATION Step Down";
+
+    int newFreq = m_bandHash[m_band].m_frequency + m_bandHash[m_band].m_stepSize;
+    if (newFreq < m_bandHash[m_band].m_minimumFrequency)
+        newFreq = m_bandHash[m_band].m_maximumFrequency;
+
     setFrequency(m_bandHash[m_band].m_frequency - m_bandHash[m_band].m_stepSize);
 }
 
@@ -157,6 +183,34 @@ void AmFmTunerBackend::seekDown()
     }
 }
 
+void AmFmTunerBackend::startScan()
+{
+    if (m_timerId != -1) {
+        qWarning() << "SIMULATION a Scan is already in progress";
+        return;
+    }
+
+    qWarning() << "SIMULATION Scan started";
+
+    emit scanStatusChanged(true);
+    seekUp();
+    m_timerId = startTimer(5000);
+}
+
+void AmFmTunerBackend::stopScan()
+{
+    if (m_timerId == -1) {
+        qWarning() << "SIMULATION no Scan is currently in progress, which can be stopped";
+        return;
+    }
+
+    qWarning() << "SIMULATION Scan stopped";
+
+    killTimer(m_timerId);
+    m_timerId = -1;
+    emit scanStatusChanged(false);
+}
+
 void AmFmTunerBackend::setCurrentStation(const QIviAmFmTunerStation &station)
 {
     m_bandHash[m_band].m_frequency = station.frequency();
@@ -186,4 +240,10 @@ QIviAmFmTunerStation AmFmTunerBackend::stationAt(int frequency) const
         return m_bandHash[m_band].m_stations.at(index);
 
     return QIviAmFmTunerStation();
+}
+
+void AmFmTunerBackend::timerEvent(QTimerEvent *event)
+{
+    Q_UNUSED(event);
+    seekUp();
 }

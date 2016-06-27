@@ -66,6 +66,14 @@ ApplicationWindow {
         id: tuner
 
         band: bandGroup.current.text === "AM" ? AmFmTuner.AMBand : AmFmTuner.FMBand
+
+        onScanStarted: {
+            console.log("A Station SCAN has been started")
+        }
+
+        onScanStopped: {
+            console.log("A Station SCAN has been stopped")
+        }
     }
 
     SplitView {
@@ -90,6 +98,26 @@ ApplicationWindow {
                 RadioButton { text: "FM"; exclusiveGroup: bandGroup; checked: tuner.band === AmFmTuner.FMBand }
             }
 
+            GroupBox {
+                title: "Band settings"
+                ColumnLayout {
+                    RowLayout {
+                        Label { text: "Step Size:" }
+                        Label { text: tuner.stepSize }
+                    }
+
+                    RowLayout {
+                        Label { text: "Minimum Frequency:" }
+                        Label { text: tuner.minimumFrequency }
+                    }
+
+                    RowLayout {
+                        Label { text: "Maximum Frequency::" }
+                        Label { text: tuner.maximumFrequency }
+                    }
+                }
+            }
+
             ExclusiveGroup {
                 id: bandGroup
             }
@@ -103,6 +131,17 @@ ApplicationWindow {
                 Button {
                     text: "<"
                     onClicked: tuner.stepDown()
+                }
+
+                Button {
+                    text: "Scan"
+                    checkable: true
+                    onClicked: {
+                        if (checked)
+                            tuner.startScan();
+                        else
+                            tuner.stopScan();
+                    }
                 }
 
                 Button {

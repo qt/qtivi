@@ -64,12 +64,17 @@ public:
     virtual void stepDown() = 0;
     virtual void seekUp() = 0;
     virtual void seekDown() = 0;
+    virtual void startScan() = 0;
+    virtual void stopScan() = 0;
 
 Q_SIGNALS:
     void frequencyChanged(int frequency);
+    void minimumFrequencyChanged(int minimumFrequency);
+    void maximumFrequencyChanged(int maximumFrequency);
+    void stepSizeChanged(int stepSize);
     void bandChanged(QIviAmFmTuner::Band band);
     void stationChanged(const QIviAmFmTunerStation &station);
-
+    void scanStatusChanged(bool scanRunning);
 };
 
 QT_END_NAMESPACE
