@@ -77,6 +77,46 @@ public:
 
 QT_END_NAMESPACE
 
+/*!
+    \class QIviTunerStation
+    \inmodule QtIviMedia
+    \brief The QIviTunerStation represents a tuner station.
+*/
+
+/*!
+    \qmltype TunerStation
+    \instantiates QIviTunerStation
+    \inqmlmodule QtIvi.Media
+    \inherits SearchAndBrowseModelItem
+    \brief The TunerStation represents a tuner station.
+
+    \note This item is not creatable from QML.
+*/
+
+/*!
+    \qmlproperty string TunerStation::stationName
+
+    Holds the name of the tuner station.
+*/
+
+/*!
+    \property QIviTunerStation::stationName
+
+    Holds the name of the tuner station.
+*/
+
+/*!
+    \qmlproperty int TunerStation::frequency
+
+    Holds the frequency of the tuner station.
+*/
+
+/*!
+    \property QIviTunerStation::frequency
+
+    Holds the frequency of the tuner station.
+*/
+
 QIviTunerStation::QIviTunerStation()
     : QIviSearchAndBrowseModelItem()
     , d(new QIviTunerStationPrivate)
@@ -121,22 +161,77 @@ void QIviTunerStation::setFrequency(int frequency)
     d->m_frequency = frequency;
 }
 
+/*!
+    \reimp
+*/
 QString QIviTunerStation::name() const
 {
     return d->m_stationName;
 }
 
+/*!
+    \reimp
+*/
 QString QIviTunerStation::type() const
 {
     return QLatin1String("tunerstation");
 }
 
+/*!
+    Returns \e true if this item is equal to \a other; otherwise returns false.
+
+    \sa operator!=()
+*/
 bool QIviTunerStation::operator==(const QIviTunerStation &other)
 {
     return (QIviSearchAndBrowseModelItem::operator==(other) &&
             d->m_stationName == other.d->m_stationName &&
             d->m_frequency == other.d->m_frequency);
 }
+
+/*!
+    \fn bool QIviTunerStation::operator!=(const QIviTunerStation &other)
+
+    Returns \e true if this item is not equal to \a other; otherwise returns false.
+
+    \sa operator==()
+*/
+
+/*!
+    \class QIviAmFmTunerStation
+    \inmodule QtIviMedia
+    \brief The QIviTunerStation represents a tuner station.
+*/
+
+/*!
+    \qmltype AmFmTunerStation
+    \instantiates QIviAmFmTunerStation
+    \inqmlmodule QtIvi.Media
+    \inherits TunerStation
+    \brief The TunerStation represents a tuner station.
+
+    \note This item is not creatable from QML.
+*/
+
+/*!
+    \qmlproperty enumeration AmFmTunerStation::band
+
+    Holds the band of the tuner station.
+
+    Available values are:
+    \value AMBand
+           The AM Band is based on the Amplitude Modulation technique and can range from 520 to 1610 kHz (1710 kHz).
+           The step size is usually between 9 or 10 kHz.
+    \value FMBand
+           The FM Band is based on the Frequency Modulation technique and can range from 87.5 to 108.0 MHz.
+           The step size is usually 100 kHz.
+*/
+
+/*!
+    \property QIviAmFmTunerStation::band
+
+    Holds the band of the tuner station.
+*/
 
 QIviAmFmTunerStation::QIviAmFmTunerStation()
     : QIviTunerStation()
@@ -172,13 +267,29 @@ void QIviAmFmTunerStation::setBand(QIviAmFmTuner::Band band)
     d->m_band = band;
 }
 
+/*!
+    \reimp
+*/
 QString QIviAmFmTunerStation::type() const
 {
     return QLatin1String("amfmtunerstation");
 }
 
+/*!
+    Returns \e true if this item is equal to \a other; otherwise returns false.
+
+    \sa operator!=()
+*/
 bool QIviAmFmTunerStation::operator==(const QIviAmFmTunerStation &other)
 {
     return (QIviTunerStation::operator==(other) &&
             d->m_band == other.d->m_band);
 }
+
+/*!
+    \fn bool QIviAmFmTunerStation::operator!=(const QIviAmFmTunerStation &other)
+
+    Returns \e true if this item is not equal to \a other; otherwise returns false.
+
+    \sa operator==()
+*/

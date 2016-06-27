@@ -101,9 +101,9 @@ QT_END_NAMESPACE
 
 /*!
     \qmltype PlayableItem
-    \qmlabstract
     \instantiates QIviPlayableItem
     \inqmlmodule QtIvi.Media
+    \inherits SearchAndBrowseModelItem
     \brief The PlayableItem is the base class of a row in the PlayQueue model.
 
     \note This item is not creatable from QML.
@@ -196,6 +196,7 @@ bool QIviPlayableItem::operator==(const QIviPlayableItem &other)
     \qmltype AudioTrackItem
     \instantiates QIviAudioTrackItem
     \inqmlmodule QtIvi.Media
+    \inherits PlayableItem
     \brief The AudioTrackItem represents a playable audio track.
 
     \note This item is not creatable from QML.
