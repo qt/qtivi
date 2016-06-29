@@ -21,12 +21,11 @@ qhp.QtAutomotiveSuite.customFilters.Qt.filterAttributes = qtautomotivesuite 1.0.
 qhp.QtAutomotiveSuite.subprojects                   = manual
 qhp.QtAutomotiveSuite.subprojects.manual.title      = Qt Automotive Suite
 qhp.QtAutomotiveSuite.subprojects.manual.indexTitle = Qt Automotive Suite
-qhp.QtAutomotiveSuite.subprojects.manual.selectors  = doc:page
-qhp.QtAutomotiveSuite.subprojects.manual.sortPages  = true
+qhp.QtAutomotiveSuite.subprojects.manual.selectors  = fake:none
 
 tagfile                       = qtautomotivesuite.tags
 
-depends += qtdoc qtivi qtautomotiveota
+depends += qtdoc qtivi qtota
 
 buildversion = "Qt Automotive Suite 1.0"
 
