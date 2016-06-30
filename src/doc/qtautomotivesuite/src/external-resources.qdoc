@@ -109,3 +109,13 @@
     \externalpage https://doc.qt.io/QtForDeviceCreation/index.html
     \title Qt for Device Creation
 */
+
+/*!
+    \externalpage https://doc.qt.io/QtIVI/index.html
+    \title Qt IVI
+*/
+
+/*!
+    \externalpage https://doc.qt.io/QtOTA/index.html
+    \title Over-The-Air Update
+*/
