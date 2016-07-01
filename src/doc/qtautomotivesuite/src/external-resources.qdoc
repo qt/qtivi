@@ -119,3 +119,8 @@
     \externalpage https://doc.qt.io/QtOTA/index.html
     \title Over-The-Air Update
 */
+
+/*!
+    \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-installation-guide.html
+    \title Qt for Device Creation: Installation Guide
+*/
