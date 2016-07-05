@@ -48,16 +48,25 @@ class QIviTunerStationPrivate : public QSharedData
 public:
     QIviTunerStationPrivate()
         : m_frequency(-1)
+        , m_receptionQuality(-1)
     {}
 
     QIviTunerStationPrivate(const QIviTunerStationPrivate &other)
         : QSharedData(other)
         , m_stationName(other.m_stationName)
         , m_frequency(other.m_frequency)
+        , m_stationLogoUrl(other.m_stationLogoUrl)
+        , m_category(other.m_category)
+        , m_radioText(other.m_radioText)
+        , m_receptionQuality(other.m_receptionQuality)
     {}
 
     QString m_stationName;
     int m_frequency;
+    QString m_stationLogoUrl;
+    QString m_category;
+    QString m_radioText;
+    int m_receptionQuality;
 };
 
 class QIviAmFmTunerStationPrivate : public QSharedData
@@ -117,6 +126,74 @@ QT_END_NAMESPACE
     Holds the frequency of the tuner station.
 */
 
+/*!
+    \qmlproperty string TunerStation::stationLogoUrl
+
+    Holds the logo of this station.
+
+    This can be a url to a local image file or a link to a qml image provider.
+*/
+
+/*!
+    \property QIviTunerStation::stationLogoUrl
+
+    Holds the logo of this station.
+
+    This can be a url to a local image file or a link to a qml image provider.
+*/
+
+/*!
+    \qmlproperty string TunerStation::category
+
+    Holds the category of the tuner station.
+
+    For a AM/FM station this is usually string representation of pty (programme type) inside the RDS (Radio Data Segment).
+*/
+
+/*!
+    \property QIviTunerStation::category
+
+    Holds the category of the tuner station.
+
+    For a AM/FM station this is usually string representation of pty (programme type) inside the RDS (Radio Data Segment).
+*/
+
+/*!
+    \qmlproperty string TunerStation::radioText
+
+    Holds the radio text transmitted by the tuner station.
+
+    The radio text is used to provide additional information about the current station program or for commericials.
+    It is expected that the backend extracts the useful information from the radioText and provide it in more suitable properties
+    like the the currentArtist or similar.
+*/
+
+/*!
+    \property QIviTunerStation::radioText
+
+    Holds the radio text transmitted by the tuner station.
+
+    The radio text is used to provide additional information about the current station program or for commericials.
+    It is expected that the backend extracts the useful information from the radioText and provide it in more suitable properties
+    like the the currentArtist or similar.
+*/
+
+/*!
+    \qmlproperty int TunerStation::receptionQuality
+
+    Holds the reception quality of the tuner station.
+
+    //TODO What's the usual unit and range of this ?
+*/
+
+/*!
+    \property QIviTunerStation::receptionQuality
+
+    Holds the reception quality of the tuner station.
+
+    //TODO What's the usual unit and range of this ?
+*/
+
 QIviTunerStation::QIviTunerStation()
     : QIviSearchAndBrowseModelItem()
     , d(new QIviTunerStationPrivate)
@@ -161,6 +238,46 @@ void QIviTunerStation::setFrequency(int frequency)
     d->m_frequency = frequency;
 }
 
+QString QIviTunerStation::stationLogoUrl() const
+{
+    return d->m_stationLogoUrl;
+}
+
+void QIviTunerStation::setStationLogoUrl(QString stationLogoUrl)
+{
+    d->m_stationLogoUrl = stationLogoUrl;
+}
+
+QString QIviTunerStation::category() const
+{
+    return d->m_category;
+}
+
+void QIviTunerStation::setCategory(QString category)
+{
+    d->m_category = category;
+}
+
+QString QIviTunerStation::radioText() const
+{
+    return d->m_radioText;
+}
+
+void QIviTunerStation::setRadioText(QString radioText)
+{
+    d->m_radioText = radioText;
+}
+
+int QIviTunerStation::receptionQuality() const
+{
+    return d->m_receptionQuality;
+}
+
+void QIviTunerStation::setReceptionQuality(int receptionQuality)
+{
+    d->m_receptionQuality = receptionQuality;
+}
+
 /*!
     \reimp
 */
@@ -186,7 +303,11 @@ bool QIviTunerStation::operator==(const QIviTunerStation &other)
 {
     return (QIviSearchAndBrowseModelItem::operator==(other) &&
             d->m_stationName == other.d->m_stationName &&
-            d->m_frequency == other.d->m_frequency);
+            d->m_frequency == other.d->m_frequency &&
+            d->m_stationLogoUrl == other.d->m_stationLogoUrl &&
+            d->m_category == other.d->m_category &&
+            d->m_radioText == other.d->m_radioText &&
+            d->m_receptionQuality == other.d->m_receptionQuality);
 }
 
 /*!

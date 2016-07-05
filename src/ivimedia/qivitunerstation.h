@@ -57,6 +57,10 @@ class Q_QTIVIMEDIA_EXPORT QIviTunerStation : public QIviSearchAndBrowseModelItem
 
     Q_PROPERTY(QString stationName READ stationName WRITE setStationName)
     Q_PROPERTY(int frequency READ frequency WRITE setFrequency)
+    Q_PROPERTY(QString stationLogoUrl READ stationLogoUrl WRITE setStationLogoUrl)
+    Q_PROPERTY(QString category READ category WRITE setCategory)
+    Q_PROPERTY(QString radioText READ radioText WRITE setRadioText)
+    Q_PROPERTY(int receptionQuality READ receptionQuality WRITE setReceptionQuality)
 
 public:
     QIviTunerStation();
@@ -68,6 +72,14 @@ public:
     virtual void setStationName(const QString &stationName);
     virtual int frequency() const;
     virtual void setFrequency(int frequency);
+    QString stationLogoUrl() const;
+    void setStationLogoUrl(QString stationLogoUrl);
+    QString category() const;
+    void setCategory(QString category);
+    QString radioText() const;
+    void setRadioText(QString radioText);
+    int receptionQuality() const;
+    void setReceptionQuality(int receptionQuality);
     virtual QString name() const Q_DECL_OVERRIDE;
     virtual QString type() const Q_DECL_OVERRIDE;
 
