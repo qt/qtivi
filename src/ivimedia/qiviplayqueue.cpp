@@ -127,11 +127,45 @@ void QIviPlayQueuePrivate::onCountChanged(int new_length)
 
 void QIviPlayQueuePrivate::onDataChanged(const QList<QVariant> &data, int start, int count)
 {
-    Q_UNUSED(data)
-    Q_UNUSED(start)
-    Q_UNUSED(count)
+    if (start < 0 || start > m_itemList.count()) {
+        qWarning("provided start argument is out of range");
+        return;
+    }
 
-    //TODO Handle add/update/remove here.
+    if (count < 0 || count > m_itemList.count() - start) {
+        qWarning("provided count argument is out of range");
+        return;
+    }
+
+    Q_Q(QIviPlayQueue);
+
+    //delta > 0 insert rows
+    //delta < 0 remove rows
+    int delta = data.count() - count;
+    //find data overlap for updates
+    int updateCount = qMin(data.count(), count);
+    int updateCountEnd = updateCount > 0 ? updateCount + 1 : 0;
+    //range which is either added or removed
+    int insertRemoveStart = start + updateCountEnd;
+    int insertRemoveCount = qMax(data.count(), count) - updateCount;
+
+    if (updateCount > 0) {
+        for (int i = start, j=0; j < updateCount; i++, j++)
+            m_itemList.replace(i, data.at(j));
+        q->dataChanged(q->index(start), q->index(start + updateCount -1));
+    }
+
+    if (delta < 0) { //Remove
+        q->beginRemoveRows(QModelIndex(), insertRemoveStart, insertRemoveStart + insertRemoveCount -1);
+        for (int i = insertRemoveStart; i < insertRemoveStart + insertRemoveCount; i++)
+            m_itemList.removeAt(i);
+        q->endRemoveRows();
+    } else if (delta > 0) { //Insert
+        q->beginInsertRows(QModelIndex(), insertRemoveStart, insertRemoveStart + insertRemoveCount -1);
+        for (int i = insertRemoveStart, j = updateCountEnd; i < insertRemoveStart + insertRemoveCount; i++, j++)
+            m_itemList.insert(i, data.at(j));
+        q->endInsertRows();
+    }
 }
 
 void QIviPlayQueuePrivate::onFetchMoreThresholdReached()

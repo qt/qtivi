@@ -55,6 +55,7 @@ class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModel : public QIviAbstractFeatureLi
 {
     Q_OBJECT
 
+    Q_PROPERTY(Capabilities capabilities READ capabilities NOTIFY capabilitiesChanged)
     Q_PROPERTY(QString query READ query WRITE setQuery NOTIFY queryChanged)
     Q_PROPERTY(QString contentType READ contentType WRITE setContentType NOTIFY contentTypeChanged)
     Q_PROPERTY(QStringList availableContentTypes READ availableContentTypes NOTIFY availableContentTypesChanged)
@@ -89,8 +90,26 @@ public:
     };
     Q_ENUM(LoadingType)
 
+    //TODO Do we need to split this further into backend dependent and contentType dependent caps ?
+    enum Capability {
+        NoExtras = 0x0,
+        SupportsFiltering = 0x1,
+        SupportsSorting = 0x2,
+        SupportsAndConjunction = 0x4,
+        SupportsOrConjunction = 0x8,
+        SupportsStatelessNavigation = 0x10, // (the backend supports to have multiple models showing different contentTypes and filters at the same time)
+        SupportsGetSize = 0x20, // (the backend knows the size of the model when the query is done and the user can select a different way for loading the model content)
+        SupportsInsert = 0x40,
+        SupportsMove = 0x80,
+        SupportsRemove = 0x100
+    };
+    Q_DECLARE_FLAGS(Capabilities, Capability)
+    Q_FLAG(Capabilities)
+
     QIviSearchAndBrowseModel(QObject *parent = Q_NULLPTR);
     virtual ~QIviSearchAndBrowseModel();
+
+    Capabilities capabilities() const;
 
     QString query() const;
     void setQuery(const QString &query);
@@ -123,12 +142,16 @@ public:
     Q_INVOKABLE void goBack();
     Q_INVOKABLE bool canGoForward(int index) const;
     Q_INVOKABLE QIviSearchAndBrowseModel *goForward(int index, NavigationType navigationType);
+    Q_INVOKABLE void insert(int index, const QVariant &variant);
+    Q_INVOKABLE void remove(int index);
+    Q_INVOKABLE void move(int cur_index, int new_index);
 
     template <typename T> T at(int i) const {
         return data(index(i,0), ItemRole).value<T>();
     }
 
 Q_SIGNALS:
+    void capabilitiesChanged(Capabilities capabilities);
     void queryChanged(const QString &query);
     void chunkSizeChanged(int chunkSize);
     void countChanged();
@@ -149,6 +172,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QIviSearchAndBrowseModel)
+    Q_PRIVATE_SLOT(d_func(), void onCapabilitiesChanged(const QUuid &identifier, QIviSearchAndBrowseModel::Capabilities capabilities))
     Q_PRIVATE_SLOT(d_func(), void onDataFetched(const QUuid &identifer, const QList<QVariant> &items, int start, bool moreAvailable))
     Q_PRIVATE_SLOT(d_func(), void onCountChanged(const QUuid &identifier, int new_length))
     Q_PRIVATE_SLOT(d_func(), void onDataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count))

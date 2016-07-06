@@ -52,16 +52,13 @@ SearchAndBrowseBackend::SearchAndBrowseBackend(AmFmTunerBackend *tunerBackend, Q
     registerContentType<QIviAmFmTunerStation>("station");
 }
 
-
-QIviSearchAndBrowseModelInterface::Flags SearchAndBrowseBackend::supportedFlags() const
-{
-    return QIviSearchAndBrowseModelInterface::Flags(
-           QIviSearchAndBrowseModelInterface::SupportsStatelessNavigation |
-           QIviSearchAndBrowseModelInterface::SupportsGetSize);
-}
-
 void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count)
 {
+    emit supportedCapabilitiesChanged(identifier, QIviSearchAndBrowseModel::Capabilities(
+                                          QIviSearchAndBrowseModel::SupportsStatelessNavigation |
+                                          QIviSearchAndBrowseModel::SupportsGetSize
+                                          ));
+
     Q_UNUSED(term)
     Q_UNUSED(orderTerms)
 
@@ -108,4 +105,27 @@ QString SearchAndBrowseBackend::goForward(const QUuid &identifier, const QString
     Q_UNUSED(type)
     Q_UNUSED(itemId)
     return QString();
+}
+
+void SearchAndBrowseBackend::insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item)
+{
+    Q_UNUSED(identifier)
+    Q_UNUSED(type)
+    Q_UNUSED(index)
+    Q_UNUSED(item)
+}
+
+void SearchAndBrowseBackend::remove(const QUuid &identifier, const QString &type, int index)
+{
+    Q_UNUSED(identifier)
+    Q_UNUSED(type)
+    Q_UNUSED(index)
+}
+
+void SearchAndBrowseBackend::move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex)
+{
+    Q_UNUSED(identifier)
+    Q_UNUSED(type)
+    Q_UNUSED(currentIndex)
+    Q_UNUSED(newIndex)
 }

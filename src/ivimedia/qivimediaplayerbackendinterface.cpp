@@ -216,5 +216,22 @@ QIviMediaPlayerBackendInterface::QIviMediaPlayerBackendInterface(QObject *parent
     If \a data is empty the rows identified by the range of \a start and \a count will be removed.
     If \a count is 0, \a data will be inserted at \a start.
 
+    For inserting a new item, the item is passed in \a data and \a start is used for where the item should be inserted, the \a count argument needs to be 0 as we don't want to replace existing data:
+
+    \code
+    QList<ExampleItem> list;
+    ExampleItem item = ExampleItem();
+    list.insert(index, item);
+    QVariantList items = { QVariant::fromValue(item) };
+    emit dataChanged(items, index, 0);
+    \endcode
+
+    Removing an item is very similar, \a start is used to indicate which item and \a count to indicate how much:
+
+    \code
+    list.removeAt(index);
+    emit dataChanged(QVariantList(), index, 1);
+    \endcode
+
     \sa insert() remove() move()
 */

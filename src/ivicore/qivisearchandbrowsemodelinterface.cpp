@@ -68,29 +68,6 @@ QIviSearchAndBrowseModelInterfacePrivate::QIviSearchAndBrowseModelInterfacePriva
 */
 
 /*!
-    \enum QIviSearchAndBrowseModelInterface::Flag
-    \value NoExtras
-           The backend does only support the minimum feature set and is stateful.
-    \value SupportsFiltering
-           The backend supports filtering of the content. availableContentTypes() and supportedIdentifiers() will be used as input for the
-           \l {Qt IVI Query Language}. \sa registerContentType
-    \value SupportsSorting
-           The backend supports sorting of the content. availableContentTypes() and supportedIdentifiers() will be used as input for the
-           \l {Qt IVI Query Language}. \sa registerContentType
-    \value SupportsAndConjunction
-           The backend supports handling multiple filters at the same time and these filters can be combined by using the AND conjunction.
-    \value SupportsOrConjunction
-           The backend supports handling multiple filters at the same time and these filters can be combined by using the OR conjunction.
-    \value SupportsStatelessNavigation
-           The backend is stateless and supports handling multiple instances of a QIviSearchAndBrowseModel requesting different data at the same time.
-           E.g. One request for artists, sorted by name and another request for tracks. The backend has to consider that both request come from models which are
-           currently visible at the same time.
-    \value SupportsGetSize
-           The backend can return the final number of items for a specific request. This makes it possible to support the QIviSearchAndBrowseModel::DataChanged loading
-           type.
-*/
-
-/*!
     \fn QIviSearchAndBrowseModelInterface::QIviSearchAndBrowseModelInterface(QObject *parent=0)
 
     Constructs a backend interface.
@@ -151,12 +128,6 @@ void QIviSearchAndBrowseModelInterface::registerContentType(const QMetaObject &o
 }
 
 /*!
-    \fn Flags QIviSearchAndBrowseModelInterface::supportedFlags() const
-
-    Returns all the flags this backend instance supports.
-*/
-
-/*!
     \fn void QIviSearchAndBrowseModelInterface::fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count)
 
     This function is called whenever new data of the given type \a type needs to be retrieved by a QIviSearchAndBrowseModel identified by \a identifier.
@@ -210,6 +181,37 @@ void QIviSearchAndBrowseModelInterface::registerContentType(const QMetaObject &o
 */
 
 /*!
+    \fn QIviSearchAndBrowseModelInterface::insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item)
+
+    Adds the browsable \a item into the current dataset of the QIviSearchAndBrowseModel instance identified by \a identifier and the current content type \a type at \a index.
+    The provided item could be owned by another model or QML, because of that it's expected that the backend stores its internal representation.
+
+    \sa dataChanged()
+*/
+
+/*!
+    \fn QIviSearchAndBrowseModelInterface::remove(const QUuid &identifier, const QString &type, int index)
+
+    Removes the browsable item at position \a index from the current dataset of the QIviSearchAndBrowseModel instance identified by \a identifier and the current content type \a type.
+
+    \sa dataChanged()
+*/
+
+/*!
+    \fn QIviSearchAndBrowseModelInterface::move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex)
+
+    Moves the browsable item at position \a currentIndex of the current dataset of the QIviSearchAndBrowseModel instance identified by \a identifier and the current content type \a type to the new position \a newIndex.
+
+    \sa dataChanged()
+*/
+
+/*!
+    \fn void QIviSearchAndBrowseModelInterface::supportedCapabilitiesChanged(const QUuid &identifier, QIviSearchAndBrowseModel::Capabilities capabilities)
+
+    Emitted when the \a capabilities of the model instance identified by \a identifier changed.
+*/
+
+/*!
     \fn void QIviSearchAndBrowseModelInterface::countChanged(const QUuid &identifier, int newLength)
 
     This signal is emitted when the current number of items in the QIviSearchAndBrowseModel instance identified by \a identifier changed.
@@ -236,5 +238,22 @@ void QIviSearchAndBrowseModelInterface::registerContentType(const QMetaObject &o
     This signal is emitted whenever the data in the QIviSearchAndBrowseModel instance identified by \a identifier changed and the model needs to be updated.
     The new data is passed as \a data. The arguments \a start and \a count can be used to define the set of items which should be replaced with the new data.
 
-    <example>
+    For inserting a new item, the item is passed in \a data and \a start is used for where the item should be inserted, the \a count argument needs to be 0 as we don't want to replace existing data:
+
+    \code
+    QList<ExampleItem> list;
+    ExampleItem item = ExampleItem();
+    list.insert(index, item);
+    QVariantList items = { QVariant::fromValue(item) };
+    emit dataChanged(items, index, 0);
+    \endcode
+
+    Removing an item is very similar, \a start is used to indicate which item and \a count to indicate how much:
+
+    \code
+    list.removeAt(index);
+    emit dataChanged(identifier, QVariantList(), index, 1);
+    \endcode
+
+    \sa insert() remove() move()
 */

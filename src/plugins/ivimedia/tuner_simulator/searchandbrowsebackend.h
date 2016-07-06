@@ -53,13 +53,15 @@ class SearchAndBrowseBackend : public QIviSearchAndBrowseModelInterface
 public:
     explicit SearchAndBrowseBackend(AmFmTunerBackend *tunerBackend, QObject *parent = Q_NULLPTR);
 
-    virtual Flags supportedFlags() const Q_DECL_OVERRIDE;
     virtual void fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count) Q_DECL_OVERRIDE;
     virtual bool canGoBack(const QUuid &identifier, const QString &type) Q_DECL_OVERRIDE;
     virtual QString goBack(const QUuid &identifier, const QString &type) Q_DECL_OVERRIDE;
     virtual bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) Q_DECL_OVERRIDE;
     virtual QString goForward(const QUuid &identifier, const QString &type, const QString &itemId) Q_DECL_OVERRIDE;
 
+    virtual void insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item) Q_DECL_OVERRIDE;
+    virtual void remove(const QUuid &identifier, const QString &type, int index) Q_DECL_OVERRIDE;
+    virtual void move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) Q_DECL_OVERRIDE;
 private:
 
     AmFmTunerBackend *m_tunerBackend;

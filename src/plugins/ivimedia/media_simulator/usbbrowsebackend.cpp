@@ -51,16 +51,14 @@ UsbBrowseBackend::UsbBrowseBackend(const QString &path, QObject *parent)
     registerContentType<SearchAndBrowseItem>("file");
 }
 
-QIviSearchAndBrowseModelInterface::Flags UsbBrowseBackend::supportedFlags() const
-{
-    return QIviSearchAndBrowseModelInterface::Flags(
-           QIviSearchAndBrowseModelInterface::SupportsSorting |
-           QIviSearchAndBrowseModelInterface::SupportsStatelessNavigation |
-           QIviSearchAndBrowseModelInterface::SupportsGetSize);
-}
-
 void UsbBrowseBackend::fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count)
 {
+    emit supportedCapabilitiesChanged(identifier, QIviSearchAndBrowseModel::Capabilities(
+                                          QIviSearchAndBrowseModel::SupportsSorting |
+                                          QIviSearchAndBrowseModel::SupportsStatelessNavigation |
+                                          QIviSearchAndBrowseModel::SupportsGetSize
+                                          ));
+
     Q_UNUSED(term);
     Q_UNUSED(orderTerms);
 
@@ -119,4 +117,27 @@ QString UsbBrowseBackend::goForward(const QUuid &identifier, const QString &type
         return type + "/" + itemId;
     else
         return itemId;
+}
+
+void UsbBrowseBackend::insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item)
+{
+    Q_UNUSED(identifier)
+    Q_UNUSED(type)
+    Q_UNUSED(index)
+    Q_UNUSED(item)
+}
+
+void UsbBrowseBackend::remove(const QUuid &identifier, const QString &type, int index)
+{
+    Q_UNUSED(identifier)
+    Q_UNUSED(type)
+    Q_UNUSED(index)
+}
+
+void UsbBrowseBackend::move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex)
+{
+    Q_UNUSED(identifier)
+    Q_UNUSED(type)
+    Q_UNUSED(currentIndex)
+    Q_UNUSED(newIndex)
 }

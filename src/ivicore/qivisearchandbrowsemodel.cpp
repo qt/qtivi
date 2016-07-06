@@ -51,6 +51,7 @@
 QIviSearchAndBrowseModelPrivate::QIviSearchAndBrowseModelPrivate(const QString &interface, QIviSearchAndBrowseModel *model)
     : QIviAbstractFeatureListModelPrivate(interface, model)
     , q_ptr(model)
+    , m_capabilities(QIviSearchAndBrowseModel::NoExtras)
     , m_chunkSize(30)
     , m_queryTerm(nullptr)
     , m_moreAvailable(false)
@@ -81,6 +82,19 @@ void QIviSearchAndBrowseModelPrivate::init()
                      q, &QIviSearchAndBrowseModel::countChanged);
     QObjectPrivate::connect(q, &QIviSearchAndBrowseModel::fetchMoreThresholdReached,
                             this, &QIviSearchAndBrowseModelPrivate::onFetchMoreThresholdReached);
+}
+
+void QIviSearchAndBrowseModelPrivate::onCapabilitiesChanged(const QUuid &identifier, QIviSearchAndBrowseModel::Capabilities capabilities)
+{
+    if (identifier != m_identifier)
+        return;
+
+    if (m_capabilities == capabilities)
+        return;
+
+    Q_Q(QIviSearchAndBrowseModel);
+    m_capabilities = capabilities;
+    q->capabilitiesChanged(capabilities);
 }
 
 void QIviSearchAndBrowseModelPrivate::onDataFetched(const QUuid &identifer, const QList<QVariant> &items, int start, bool moreAvailable)
@@ -126,11 +140,46 @@ void QIviSearchAndBrowseModelPrivate::onDataChanged(const QUuid &identifier, con
 {
     if (identifier != m_identifier)
         return;
-    Q_UNUSED(data)
-    Q_UNUSED(start)
-    Q_UNUSED(count)
 
-    //TODO Handle add/update/remove here.
+    if (start < 0 || start > m_itemList.count()) {
+        qWarning("provided start argument is out of range");
+        return;
+    }
+
+    if (count < 0 || count > m_itemList.count() - start) {
+        qWarning("provided count argument is out of range");
+        return;
+    }
+
+    Q_Q(QIviSearchAndBrowseModel);
+
+    //delta > 0 insert rows
+    //delta < 0 remove rows
+    int delta = data.count() - count;
+    //find data overlap for updates
+    int updateCount = qMin(data.count(), count);
+    int updateCountEnd = updateCount > 0 ? updateCount + 1 : 0;
+    //range which is either added or removed
+    int insertRemoveStart = start + updateCountEnd;
+    int insertRemoveCount = qMax(data.count(), count) - updateCount;
+
+    if (updateCount > 0) {
+        for (int i = start, j=0; j < updateCount; i++, j++)
+            m_itemList.replace(i, data.at(j));
+        q->dataChanged(q->index(start), q->index(start + updateCount -1));
+    }
+
+    if (delta < 0) { //Remove
+        q->beginRemoveRows(QModelIndex(), insertRemoveStart, insertRemoveStart + insertRemoveCount -1);
+        for (int i = insertRemoveStart; i < insertRemoveStart + insertRemoveCount; i++)
+            m_itemList.removeAt(i);
+        q->endRemoveRows();
+    } else if (delta > 0) { //Insert
+        q->beginInsertRows(QModelIndex(), insertRemoveStart, insertRemoveStart + insertRemoveCount -1);
+        for (int i = insertRemoveStart, j = updateCountEnd; i < insertRemoveStart + insertRemoveCount; i++, j++)
+            m_itemList.insert(i, data.at(j));
+        q->endInsertRows();
+    }
 }
 
 void QIviSearchAndBrowseModelPrivate::onFetchMoreThresholdReached()
@@ -166,7 +215,7 @@ void QIviSearchAndBrowseModelPrivate::parseQuery()
     if (m_query.isEmpty())
         return;
 
-    if (!searchBackend()->supportedFlags().testFlag(QIviSearchAndBrowseModelInterface::SupportsFiltering) && !searchBackend()->supportedFlags().testFlag(QIviSearchAndBrowseModelInterface::SupportsSorting)) {
+    if (!m_capabilities.testFlag(QIviSearchAndBrowseModel::SupportsFiltering) && !m_capabilities.testFlag(QIviSearchAndBrowseModel::SupportsSorting)) {
         qWarning("The backend doesn't support filtering or sorting. Changing the query will have no effect");
         return;
     }
@@ -227,11 +276,17 @@ const QIviSearchAndBrowseModelItem *QIviSearchAndBrowseModelPrivate::itemAt(int 
     QVariant var = m_itemList.at(i);
     if (!var.isValid())
         return nullptr;
+
+    return itemFromVariant(var);
+}
+
+const QIviSearchAndBrowseModelItem *QIviSearchAndBrowseModelPrivate::itemFromVariant(const QVariant &var) const
+{
     const void *data = var.constData();
 
     QMetaType type(var.userType());
     if (!type.flags().testFlag(QMetaType::IsGadget)) {
-        qCritical() << "QVariant at" << i << "needs to use the Q_GADGET macro";
+        qCritical() << "The passed QVariant needs to use the Q_GADGET macro";
         return nullptr;
     }
 
@@ -242,7 +297,7 @@ const QIviSearchAndBrowseModelItem *QIviSearchAndBrowseModelPrivate::itemAt(int 
         mo = mo->superClass();
     }
 
-    qCritical() << "QVariant at" << i << "is not derived from QIviSearchAndBrowseModelItem";
+    qCritical() << "The passed QVariant is not derived from QIviSearchAndBrowseModelItem";
 
     return nullptr;
 }
@@ -330,6 +385,35 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
 */
 
 /*!
+    \enum QIviSearchAndBrowseModel::Capability
+    \value NoExtras
+           The backend does only support the minimum feature set and is stateful.
+    \value SupportsFiltering
+           The backend supports filtering of the content. QIviSearchAndBrowseModelInterface::availableContentTypes() and QIviSearchAndBrowseModelInterface::supportedIdentifiers() will be used as input for the
+           \l {Qt IVI Query Language}. \sa QIviSearchAndBrowseModelInterface::registerContentType
+    \value SupportsSorting
+           The backend supports sorting of the content. QIviSearchAndBrowseModelInterface::availableContentTypes() and QIviSearchAndBrowseModelInterface::supportedIdentifiers() will be used as input for the
+           \l {Qt IVI Query Language}. \sa QIviSearchAndBrowseModelInterface::registerContentType
+    \value SupportsAndConjunction
+           The backend supports handling multiple filters at the same time and these filters can be combined by using the AND conjunction.
+    \value SupportsOrConjunction
+           The backend supports handling multiple filters at the same time and these filters can be combined by using the OR conjunction.
+    \value SupportsStatelessNavigation
+           The backend is stateless and supports handling multiple instances of a QIviSearchAndBrowseModel requesting different data at the same time.
+           E.g. One request for artists, sorted by name and another request for tracks. The backend has to consider that both request come from models which are
+           currently visible at the same time.
+    \value SupportsGetSize
+           The backend can return the final number of items for a specific request. This makes it possible to support the QIviSearchAndBrowseModel::DataChanged loading
+           type.
+    \value SupportsInsert
+           The backend supports inserting new items at a given position.
+    \value SupportsMove
+           The backend supports moving items within the model.
+    \value SupportsRemove
+           The backend supports removing items from the model.
+*/
+
+/*!
     \qmltype SearchAndBrowseModel
     \instantiates QIviSearchAndBrowseModel
     \inqmlmodule QtIvi
@@ -385,6 +469,53 @@ QIviSearchAndBrowseModel::QIviSearchAndBrowseModel(QObject *parent)
 
 QIviSearchAndBrowseModel::~QIviSearchAndBrowseModel()
 {
+}
+
+/*!
+    \qmlproperty enumeration SearchAndBrowseModel::capabilities
+    \brief Holds the capabilities of the backend for the current content of the model.
+
+    The capabilties controls what the current contentType supports. e.g. filtering or sorting.
+    It can be a combination of the following values:
+
+    \value NoExtras
+           The backend does only support the minimum feature set and is stateful.
+    \value SupportsFiltering
+           The backend supports filtering of the content. QIviSearchAndBrowseModelInterface::availableContentTypes() and QIviSearchAndBrowseModelInterface::supportedIdentifiers() will be used as input for the
+           \l {Qt IVI Query Language}. \sa QIviSearchAndBrowseModelInterface::registerContentType
+    \value SupportsSorting
+           The backend supports sorting of the content. QIviSearchAndBrowseModelInterface::availableContentTypes() and QIviSearchAndBrowseModelInterface::supportedIdentifiers() will be used as input for the
+           \l {Qt IVI Query Language}. \sa QIviSearchAndBrowseModelInterface::registerContentType
+    \value SupportsAndConjunction
+           The backend supports handling multiple filters at the same time and these filters can be combined by using the AND conjunction.
+    \value SupportsOrConjunction
+           The backend supports handling multiple filters at the same time and these filters can be combined by using the OR conjunction.
+    \value SupportsStatelessNavigation
+           The backend is stateless and supports handling multiple instances of a QIviSearchAndBrowseModel requesting different data at the same time.
+           E.g. One request for artists, sorted by name and another request for tracks. The backend has to consider that both request come from models which are
+           currently visible at the same time.
+    \value SupportsGetSize
+           The backend can return the final number of items for a specific request. This makes it possible to support the QIviSearchAndBrowseModel::DataChanged loading
+           type.
+    \value SupportsInsert
+           The backend supports inserting new items at a given position.
+    \value SupportsMove
+           The backend supports moving items within the model.
+    \value SupportsRemove
+           The backend supports removing items from the model.
+ */
+
+/*!
+    \property QIviSearchAndBrowseModel::capabilities
+    \brief Holds the capabilities of the backend for the current content of the model.
+
+    The capabilties controls what the current contentType supports. e.g. filtering or sorting.
+ */
+
+QIviSearchAndBrowseModel::Capabilities QIviSearchAndBrowseModel::capabilities() const
+{
+    Q_D(const QIviSearchAndBrowseModel);
+    return d->m_capabilities;
 }
 
 /*!
@@ -601,7 +732,7 @@ void QIviSearchAndBrowseModel::setLoadingType(QIviSearchAndBrowseModel::LoadingT
     if (d->m_loadingType == loadingType)
         return;
 
-    if (loadingType == QIviSearchAndBrowseModel::DataChanged && !d->searchBackend()->supportedFlags().testFlag(QIviSearchAndBrowseModelInterface::SupportsGetSize)) {
+    if (loadingType == QIviSearchAndBrowseModel::DataChanged && !d->m_capabilities.testFlag(QIviSearchAndBrowseModel::SupportsGetSize)) {
         qWarning("The backend doesn't support the DataChanged loading type. This call will have no effect");
         return;
     }
@@ -796,7 +927,7 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
     }
 
     if (navigationType == OutOfModelNavigation) {
-        if (backend->supportedFlags() & QIviSearchAndBrowseModelInterface::SupportsStatelessNavigation) {
+        if (d->m_capabilities.testFlag(QIviSearchAndBrowseModel::SupportsStatelessNavigation)) {
             QString newContentType = backend->goForward(d->m_identifier, d->m_contentType, item->id());
             QIviSearchAndBrowseModel* newModel = new QIviSearchAndBrowseModel(serviceObject(), newContentType, this);
             return newModel;
@@ -810,6 +941,98 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
     }
 
     return nullptr;
+}
+
+/*!
+    \qmlmethod SearchAndBrowseModel::insert(int index, SearchAndBrowseModelItem item)
+
+    Insert the \a item at the position \a index.
+
+    If the backend doesn't accept the provided item, this operation will end in a no op.
+*/
+
+/*!
+    \fn void QIviSearchAndBrowseModel::insert(int index, const QVariant &variant)
+
+    Insert the \a variant at the position \a index.
+
+    If the backend doesn't accept the provided item, this operation will end in a no op.
+*/
+void QIviSearchAndBrowseModel::insert(int index, const QVariant &variant)
+{
+    Q_D(QIviSearchAndBrowseModel);
+    const QIviSearchAndBrowseModelItem *item = d->itemFromVariant(variant);
+    if (!item)
+        return;
+
+    QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
+    if (!backend) {
+        qWarning("Can't insert itmes without a connected backend");
+        return;
+    }
+
+    if (!d->m_capabilities.testFlag(SupportsInsert)) {
+        qWarning("The backend doesn't support inserting items");
+        return;
+    }
+
+    backend->insert(d->m_identifier, d->m_contentType, index, item);
+}
+
+/*!
+    \qmlmethod SearchAndBrowseModel::remove(int index)
+
+    Removes the item at position \a index.
+*/
+
+/*!
+    \fn void QIviSearchAndBrowseModel::remove(int index)
+
+    Removes the item at position \a index.
+*/
+void QIviSearchAndBrowseModel::remove(int index)
+{
+    Q_D(QIviSearchAndBrowseModel);
+    QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
+    if (!backend) {
+        qWarning("Can't remove items without a connected backend");
+        return;
+    }
+
+    if (!d->m_capabilities.testFlag(SupportsRemove)) {
+        qWarning("The backend doesn't support removing of items");
+        return;
+    }
+
+    backend->remove(d->m_identifier, d->m_contentType, index);
+}
+
+/*!
+    \qmlmethod SearchAndBrowseModel::move(int cur_index, int new_index)
+
+    Moves the item at position \a cur_index to the new position \a new_index.
+*/
+
+/*!
+    \fn void QIviSearchAndBrowseModel::move(int cur_index, int new_index)
+
+    Moves the item at position \a cur_index to the new position \a new_index.
+*/
+void QIviSearchAndBrowseModel::move(int cur_index, int new_index)
+{
+    Q_D(QIviSearchAndBrowseModel);
+    QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
+    if (!backend) {
+        qWarning("Can't move items without a connected backend");
+        return;
+    }
+
+    if (!d->m_capabilities.testFlag(SupportsMove)) {
+        qWarning("The backend doesn't support moving of items");
+        return;
+    }
+
+    backend->move(d->m_identifier, d->m_contentType, cur_index, new_index);
 }
 
 /*!
@@ -900,6 +1123,8 @@ void QIviSearchAndBrowseModel::connectToServiceObject(QIviServiceObject *service
     if (!backend)
         return;
 
+    QObjectPrivate::connect(backend, &QIviSearchAndBrowseModelInterface::supportedCapabilitiesChanged,
+                            d, &QIviSearchAndBrowseModelPrivate::onCapabilitiesChanged);
     QObjectPrivate::connect(backend, &QIviSearchAndBrowseModelInterface::dataFetched,
                             d, &QIviSearchAndBrowseModelPrivate::onDataFetched);
     QObjectPrivate::connect(backend, &QIviSearchAndBrowseModelInterface::countChanged,

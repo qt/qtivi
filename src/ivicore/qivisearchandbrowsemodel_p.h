@@ -71,6 +71,7 @@ public:
     ~QIviSearchAndBrowseModelPrivate();
 
     void init();
+    void onCapabilitiesChanged(const QUuid &identifier, QIviSearchAndBrowseModel::Capabilities capabilities);
     void onDataFetched(const QUuid &identifer, const QList<QVariant> &items, int start, bool moreAvailable);
     void onCountChanged(const QUuid &identifier, int new_length);
     void onDataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count);
@@ -81,6 +82,7 @@ public:
     void clearToDefaults();
     void setCanGoBack(bool canGoBack);
     const QIviSearchAndBrowseModelItem *itemAt(int i) const;
+    const QIviSearchAndBrowseModelItem *itemFromVariant(const QVariant &var) const;
 
     QIviSearchAndBrowseModelInterface* searchBackend() const;
     void updateContentType(const QString &contentType);
@@ -88,6 +90,7 @@ public:
     QIviSearchAndBrowseModel * const q_ptr;
     Q_DECLARE_PUBLIC(QIviSearchAndBrowseModel)
 
+    QIviSearchAndBrowseModel::Capabilities m_capabilities;
     QString m_query;
     int m_chunkSize;
 
