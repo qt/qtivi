@@ -122,21 +122,59 @@ ApplicationWindow {
                     height: column.height
                     color: "#efefef"
 
-                    Column {
-                        id: column
-                        width: parent.width
-
-                        Text { text: "Index: " + index }
-                        Text { text: "Name: " + model.name }
-                        Text { text: "Type: " + model.item.type }
-                    }
-
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
 
                         }
                     }
+
+                    Row {
+                        anchors.fill: parent
+                        Column {
+                            id: column
+                            width: parent.width * 7 / 10
+
+                            Text { text: "Index: " + index }
+                            Text { text: "Name: " + model.name }
+                            Text { text: "Type: " + model.item.type }
+                        }
+
+                        Button {
+                            text: "\u2227"
+                            width: parent.width / 10
+                            height: parent.height
+
+                            enabled: index > 0
+
+                            onClicked: {
+                                mediaPlayer.playQueue.move(index, index - 1)
+                            }
+                        }
+
+                        Button {
+                            text: "\u2228"
+                            width: parent.width / 10
+                            height: parent.height
+
+                            enabled: index < mediaPlayer.playQueue.count -1
+
+                            onClicked: {
+                                mediaPlayer.playQueue.move(index, index + 1)
+                            }
+                        }
+
+                        Button {
+                            text: "X"
+                            width: parent.width / 10
+                            height: parent.height
+
+                            onClicked: {
+                                mediaPlayer.playQueue.remove(index)
+                            }
+                        }
+                    }
+
                 }
             }
         }

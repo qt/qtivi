@@ -58,8 +58,8 @@ import QtIvi.Media 1.0
 
 ApplicationWindow {
     visible: true
-    width: 500
-    height: 250
+    width: 1000
+    height: 500
     title: qsTr("Tuner")
 
     AmFmTuner {
@@ -159,8 +159,9 @@ ApplicationWindow {
         ListView {
             spacing: 8
             clip: true
+
+            width: 300
             Layout.fillHeight: true
-            Layout.fillWidth: true
 
             model: SearchAndBrowseModel {
                 serviceObject: tuner.serviceObject
@@ -172,18 +173,101 @@ ApplicationWindow {
                 height: column.height
                 color: "#efefef"
 
-                Column {
-                    id: column
-                    width: parent.width
-
-                    Text { text: "Name: " + model.item.stationName }
-                    Text { text: "Type: " + model.item.frequency }
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        tuner.tune(model.item)
+                    }
                 }
+
+                Row {
+                    anchors.fill: parent
+                    Column {
+                        id: column
+                        width: parent.width * 9 / 10
+
+                        Text { text: "Name: " + model.item.stationName }
+                        Text { text: "Type: " + model.item.frequency }
+                    }
+
+                    Button {
+                        text: "+"
+                        width: parent.width / 10
+                        height: parent.height
+
+                        onClicked: {
+                            presetsModel.insert(0, model.item)
+                        }
+                    }
+                }
+            }
+        }
+
+        ListView {
+            spacing: 8
+            clip: true
+            Layout.fillWidth: true
+
+            model: SearchAndBrowseModel {
+                id: presetsModel
+                serviceObject: tuner.serviceObject
+                contentType: "presets"
+            }
+
+            delegate: Rectangle {
+                width: ListView.view.width
+                height: column.height
+                color: "#efefef"
 
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
                         tuner.tune(model.item)
+                    }
+                }
+
+                Row {
+                    anchors.fill: parent
+                    Column {
+                        id: column
+                        width: parent.width * 7 / 10
+
+                        Text { text: "Name: " + model.item.stationName }
+                        Text { text: "Type: " + model.item.frequency }
+                    }
+
+                    Button {
+                        text: "\u2227"
+                        width: parent.width / 10
+                        height: parent.height
+
+                        enabled: index > 0
+
+                        onClicked: {
+                            presetsModel.move(index, index - 1)
+                        }
+                    }
+
+                    Button {
+                        text: "\u2228"
+                        width: parent.width / 10
+                        height: parent.height
+
+                        enabled: index < presetsModel.count -1
+
+                        onClicked: {
+                            presetsModel.move(index, index + 1)
+                        }
+                    }
+
+                    Button {
+                        text: "X"
+                        width: parent.width / 10
+                        height: parent.height
+
+                        onClicked: {
+                            presetsModel.remove(index)
+                        }
                     }
                 }
             }

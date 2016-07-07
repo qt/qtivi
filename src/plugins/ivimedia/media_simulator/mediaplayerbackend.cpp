@@ -127,7 +127,8 @@ void MediaPlayerBackend::insert(int index, const QIviPlayableItem *item)
     int track_index = item->id().toInt();
 
     QString queryString = QString(QLatin1String("UPDATE queue SET qindex = qindex + 1 WHERE qindex >= %1;"
-                                                "INSERT INTO queue(qindex, track_index) VALUES( %1, %2)"))
+                                                "INSERT INTO queue(qindex, track_index) VALUES( %1, %2);"
+                                                "SELECT track.id, artistName, albumName, trackName, genre, number, file FROM track JOIN queue ON queue.track_index=track.id WHERE qindex=%1"))
             .arg(index)
             .arg(track_index);
     QStringList queries = queryString.split(';');
@@ -135,7 +136,7 @@ void MediaPlayerBackend::insert(int index, const QIviPlayableItem *item)
     QtConcurrent::run(this,
                       &MediaPlayerBackend::doSqlOperation,
                       MediaPlayerBackend::Insert,
-                      queries, 0, 0);
+                      queries, index, 0);
 }
 
 void MediaPlayerBackend::remove(int index)
@@ -148,58 +149,66 @@ void MediaPlayerBackend::remove(int index)
     QtConcurrent::run(this,
                       &MediaPlayerBackend::doSqlOperation,
                       MediaPlayerBackend::Remove,
-                      queries, 0, 0);
+                      queries, index, 1);
 }
 
 void MediaPlayerBackend::move(int cur_index, int new_index)
 {
-    QString queryString = QString(QLatin1String("INSERT INTO queue(qindex, track_index) VALUES( %1, %2);"
-                                                "DELETE FROM queue WHERE qindex=%1;"
-                                                "UPDATE queue SET qindex = qindex + 1 WHERE qindex >= %1 AND qindex <= %2;"))
+    int delta = new_index - cur_index;
+    if (delta == 0)
+        return;
+
+    QString queryString = QString(QLatin1String("UPDATE queue SET qindex = ( SELECT MAX(qindex) + 1 FROM queue) WHERE qindex=%1;"
+                                                "UPDATE queue SET qindex = qindex %5 1 WHERE qindex >= %3 AND qindex <= %4;"
+                                                "UPDATE queue SET qindex = %2 WHERE qindex= ( SELECT MAX(qindex) FROM queue);"
+                                                "SELECT track.id, artistName, albumName, trackName, genre, number, file FROM track JOIN queue ON queue.track_index=track.id WHERE qindex >= %3 AND qindex <= %4 ORDER BY qindex"))
             .arg(cur_index)
-            .arg(new_index);
+            .arg(new_index)
+            .arg(qMin(cur_index, new_index))
+            .arg(qMax(cur_index, new_index))
+            .arg(delta > 0 ? "-" : "+");
     QStringList queries = queryString.split(';');
 
     QtConcurrent::run(this,
                       &MediaPlayerBackend::doSqlOperation,
                       MediaPlayerBackend::Move,
-                      queries, 0, 0);
+                      queries, qMin(cur_index, new_index), qAbs(delta) + 1);
 }
 
 void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, const QStringList &queries, int start, int count)
 {
     m_db.transaction();
     QSqlQuery query(m_db);
+    QVariantList list;
 
     for (const QString& queryString : queries) {
         if (query.exec(queryString)) {
-            if (type == MediaPlayerBackend::Select) {
-                QVariantList list;
-                while (query.next()) {
-                    QString id = query.value(0).toString();
-                    QString artist = query.value(1).toString();
-                    QString album = query.value(2).toString();
+            while (query.next()) {
+                QString id = query.value(0).toString();
+                QString artist = query.value(1).toString();
+                QString album = query.value(2).toString();
 
-                    //Creating the TrackItem in an factory with would make this more performant
-                    QIviAudioTrackItem item;
-                    item.setId(id);
-                    item.setTitle(query.value(3).toString());
-                    item.setArtist(artist);
-                    item.setAlbum(album);
-                    item.setUrl(QUrl::fromLocalFile(query.value(6).toString()));
-                    list.append(QVariant::fromValue(item));
-                }
-
-                emit dataFetched(list, start, list.count() >= count);
-            } else if (type == MediaPlayerBackend::Insert) {
-
+                //Creating the TrackItem in an factory with would make this more performant
+                QIviAudioTrackItem item;
+                item.setId(id);
+                item.setTitle(query.value(3).toString());
+                item.setArtist(artist);
+                item.setAlbum(album);
+                item.setUrl(QUrl::fromLocalFile(query.value(6).toString()));
+                list.append(QVariant::fromValue(item));
             }
         } else {
-            qDebug() << queries;
+            qDebug() << queryString;
             qDebug() << query.lastError().text();
             m_db.rollback();
             break;
         }
     }
+
+    if (type == MediaPlayerBackend::Select)
+        emit dataFetched(list, start, list.count() >= count);
+    else
+        emit dataChanged(list, start, count);
+
     m_db.commit();
 }

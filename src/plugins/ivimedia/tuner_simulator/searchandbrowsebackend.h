@@ -44,6 +44,7 @@
 
 #include <QtIviCore/QIviSearchAndBrowseModelInterface>
 #include <QtIviCore/QIviSearchAndBrowseModel>
+#include <QtIviMedia/QIviAmFmTunerStation>
 
 class AmFmTunerBackend;
 
@@ -65,6 +66,7 @@ public:
 private:
 
     AmFmTunerBackend *m_tunerBackend;
+    QVector<QIviAmFmTunerStation> m_presets;
 };
 
 #endif // SEARCHBACKEND_H

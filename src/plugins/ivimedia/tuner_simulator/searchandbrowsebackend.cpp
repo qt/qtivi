@@ -50,22 +50,29 @@ SearchAndBrowseBackend::SearchAndBrowseBackend(AmFmTunerBackend *tunerBackend, Q
 {
     qRegisterMetaType<QIviAmFmTunerStation>();
     registerContentType<QIviAmFmTunerStation>("station");
+    registerContentType<QIviAmFmTunerStation>("presets");
 }
 
 void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count)
 {
     emit supportedCapabilitiesChanged(identifier, QIviSearchAndBrowseModel::Capabilities(
                                           QIviSearchAndBrowseModel::SupportsStatelessNavigation |
-                                          QIviSearchAndBrowseModel::SupportsGetSize
+                                          QIviSearchAndBrowseModel::SupportsGetSize |
+                                          QIviSearchAndBrowseModel::SupportsInsert |
+                                          QIviSearchAndBrowseModel::SupportsMove |
+                                          QIviSearchAndBrowseModel::SupportsRemove
                                           ));
 
     Q_UNUSED(term)
     Q_UNUSED(orderTerms)
+    QVector<QIviAmFmTunerStation> stations;
 
-    if (type != "station")
+    if (type == "station")
+        stations = m_tunerBackend->m_bandHash[QIviAmFmTuner::AMBand].m_stations + m_tunerBackend->m_bandHash[QIviAmFmTuner::FMBand].m_stations;
+    else if (type == "presets")
+        stations = m_presets;
+    else
         return;
-
-    QVector<QIviAmFmTunerStation> stations = m_tunerBackend->m_bandHash[QIviAmFmTuner::AMBand].m_stations + m_tunerBackend->m_bandHash[QIviAmFmTuner::FMBand].m_stations;
 
     emit countChanged(identifier, stations.length());
     QVariantList requestedStations;
@@ -109,23 +116,36 @@ QString SearchAndBrowseBackend::goForward(const QUuid &identifier, const QString
 
 void SearchAndBrowseBackend::insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item)
 {
-    Q_UNUSED(identifier)
-    Q_UNUSED(type)
-    Q_UNUSED(index)
-    Q_UNUSED(item)
+    if (type != "presets" || item->type() != "amfmtunerstation")
+        return;
+
+    QIviAmFmTunerStation station = *static_cast<const QIviAmFmTunerStation*>(item);
+    m_presets.insert(index, station);
+    QVariantList stations = { QVariant::fromValue(station) };
+    emit dataChanged(identifier, stations, index, 0);
 }
 
 void SearchAndBrowseBackend::remove(const QUuid &identifier, const QString &type, int index)
 {
-    Q_UNUSED(identifier)
-    Q_UNUSED(type)
-    Q_UNUSED(index)
+    if (type != "presets")
+        return;
+
+    m_presets.removeAt(index);
+    emit dataChanged(identifier, QVariantList(), index, 1);
 }
 
 void SearchAndBrowseBackend::move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex)
 {
-    Q_UNUSED(identifier)
-    Q_UNUSED(type)
-    Q_UNUSED(currentIndex)
-    Q_UNUSED(newIndex)
+    if (type != "presets")
+        return;
+
+    int min = qMin(currentIndex, newIndex);
+    int max = qMax(currentIndex, newIndex);
+
+    m_presets.move(currentIndex, newIndex);
+    QVariantList stations;
+    for (int i = min; i <= max; i++)
+        stations.append(QVariant::fromValue(m_presets.at(i)));
+
+    emit dataChanged(identifier, stations, min, max - min + 1);
 }
