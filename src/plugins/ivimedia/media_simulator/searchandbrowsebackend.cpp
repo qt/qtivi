@@ -347,3 +347,12 @@ void SearchAndBrowseBackend::move(const QUuid &identifier, const QString &type, 
     Q_UNUSED(currentIndex)
     Q_UNUSED(newIndex)
 }
+
+int SearchAndBrowseBackend::indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item)
+{
+    Q_UNUSED(identifier)
+    Q_UNUSED(type)
+    Q_UNUSED(item)
+
+    return -1;
+}

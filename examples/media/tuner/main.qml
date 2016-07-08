@@ -191,12 +191,28 @@ ApplicationWindow {
                     }
 
                     Button {
+                        id: addButton
                         text: "+"
                         width: parent.width / 10
                         height: parent.height
 
                         onClicked: {
                             presetsModel.insert(0, model.item)
+                        }
+
+                        function checkExists() {
+                            presetsModel.indexOf(model.item, function (index) {
+                                addButton.enabled = (index == -1)
+                            })
+                        }
+
+                        Component.onCompleted: {
+                            checkExists()
+                        }
+
+                        Connections {
+                            target: presetsModel
+                            onCountChanged: addButton.checkExists()
                         }
                     }
                 }

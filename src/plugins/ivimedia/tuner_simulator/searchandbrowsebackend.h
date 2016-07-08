@@ -63,6 +63,7 @@ public:
     virtual void insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item) Q_DECL_OVERRIDE;
     virtual void remove(const QUuid &identifier, const QString &type, int index) Q_DECL_OVERRIDE;
     virtual void move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) Q_DECL_OVERRIDE;
+    virtual int indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item) Q_DECL_OVERRIDE;
 private:
 
     AmFmTunerBackend *m_tunerBackend;

@@ -149,3 +149,25 @@ void SearchAndBrowseBackend::move(const QUuid &identifier, const QString &type, 
 
     emit dataChanged(identifier, stations, min, max - min + 1);
 }
+
+int SearchAndBrowseBackend::indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item)
+{
+    if (item->type() != "amfmtunerstation")
+        return -1;
+
+    QVector<QIviAmFmTunerStation> stations;
+
+    if (type == "station")
+        stations = m_tunerBackend->m_bandHash[QIviAmFmTuner::AMBand].m_stations + m_tunerBackend->m_bandHash[QIviAmFmTuner::FMBand].m_stations;
+    else if (type == "presets")
+        stations = m_presets;
+    else
+        return -1;
+
+    QIviAmFmTunerStation station = *static_cast<const QIviAmFmTunerStation*>(item);
+    static int callID = 0;
+
+    emit indexOfCallResult(identifier, callID, stations.indexOf(station));
+
+    return callID++;
+}

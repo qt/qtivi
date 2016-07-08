@@ -182,6 +182,16 @@ void QIviSearchAndBrowseModelPrivate::onDataChanged(const QUuid &identifier, con
     }
 }
 
+void QIviSearchAndBrowseModelPrivate::onIndexOfCallResult(const QUuid &identifier, int callID, int index)
+{
+    if (identifier != m_identifier || !m_indexOfFunctorHash.contains(callID))
+        return;
+
+    QJSValue functor = m_indexOfFunctorHash.take(callID);
+    QJSValueList list = { QJSValue(index) };
+    functor.call(list);
+}
+
 void QIviSearchAndBrowseModelPrivate::onFetchMoreThresholdReached()
 {
     Q_Q(QIviSearchAndBrowseModel);
@@ -1036,6 +1046,58 @@ void QIviSearchAndBrowseModel::move(int cur_index, int new_index)
 }
 
 /*!
+    \qmlmethod SearchAndBrowseModel::indexOf(SearchAndBrowseModelItem item, object functor)
+
+    Determines the index of \a item in this model and calls the \a functor once the result is ready.
+    The result is passed as the first argument to the functor and is -1 if the item is not part of the list.
+
+    \code
+    model.indexOf(item, function (index) {
+        console.log("The index of item is: ", index)
+    })
+    \endcode
+*/
+
+/*!
+    \fn void QIviSearchAndBrowseModel::indexOf(const QVariant &variant, const QJSValue &functor)
+
+    Determines the index of \a variant in this model and calls the \a functor once the result is ready.
+    The result is passed as the first argument to the functor and is -1 if the item is not part of the list.
+
+    \code
+    model.indexOf(item, function (index) {
+        console.log("The index of item is: ", index)
+    })
+    \endcode
+*/
+void QIviSearchAndBrowseModel::indexOf(const QVariant &variant, const QJSValue &functor)
+{
+    Q_D(QIviSearchAndBrowseModel);
+    const QIviSearchAndBrowseModelItem *item = d->itemFromVariant(variant);
+    if (!item)
+        return;
+
+    if (!functor.isCallable()) {
+        qWarning("Provided functor is not callable");
+        return;
+    }
+
+    QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
+    if (!backend) {
+        qWarning("Can't get the index without a connected backend");
+        return;
+    }
+
+    int callID = backend->indexOf(d->m_identifier, d->m_contentType, item);
+    if (callID == -1) {
+        qWarning("An error happened while calling the backend");
+        return;
+    }
+
+    d->m_indexOfFunctorHash.insert(callID, functor);
+}
+
+/*!
     \reimp
 */
 bool QIviSearchAndBrowseModel::canFetchMore(const QModelIndex &parent) const
@@ -1131,6 +1193,9 @@ void QIviSearchAndBrowseModel::connectToServiceObject(QIviServiceObject *service
                             d, &QIviSearchAndBrowseModelPrivate::onCountChanged);
     QObjectPrivate::connect(backend, &QIviSearchAndBrowseModelInterface::dataChanged,
                             d, &QIviSearchAndBrowseModelPrivate::onDataChanged);
+    QObjectPrivate::connect(backend, &QIviSearchAndBrowseModelInterface::indexOfCallResult,
+                            d, &QIviSearchAndBrowseModelPrivate::onIndexOfCallResult,
+                            Qt::QueuedConnection);
 
     d->setCanGoBack(backend->canGoBack(d->m_identifier, d->m_contentType));
 

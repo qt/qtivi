@@ -76,12 +76,14 @@ public:
     virtual void insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item) = 0;
     virtual void remove(const QUuid &identifier, const QString &type, int index) = 0;
     virtual void move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) = 0;
+    virtual int indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item) = 0;
 
 Q_SIGNALS:
     void supportedCapabilitiesChanged(const QUuid &identifier, QIviSearchAndBrowseModel::Capabilities capabilities);
     void countChanged(const QUuid &identifier, int newLength);                          // Emitted by the backend if it already knows the total count of items in the model (can be used by the dataChanged display method)
     void dataFetched(const QUuid &identifier, const QList<QVariant> &data, int start, bool moreAvailable);
     void dataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count);    //start and count defines which data gets replace by the new data content. If data is empty the rows will be removed, if count is 0, the data will be added.
+    void indexOfCallResult(const QUuid &identifier, int callID, int index);
 
 protected:
     template <typename T>

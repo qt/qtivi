@@ -44,6 +44,7 @@
 
 #include <QtIviCore/QIviAbstractFeatureListModel>
 #include <QtIviCore/QIviServiceObject>
+#include <QtQml/QJSValue>
 
 QT_BEGIN_NAMESPACE
 
@@ -145,6 +146,8 @@ public:
     Q_INVOKABLE void insert(int index, const QVariant &variant);
     Q_INVOKABLE void remove(int index);
     Q_INVOKABLE void move(int cur_index, int new_index);
+    //TODO add a C++ version for this, similar to QTimer::singleShot()
+    Q_INVOKABLE void indexOf(const QVariant &variant, const QJSValue &functor);
 
     template <typename T> T at(int i) const {
         return data(index(i,0), ItemRole).value<T>();
@@ -176,6 +179,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onDataFetched(const QUuid &identifer, const QList<QVariant> &items, int start, bool moreAvailable))
     Q_PRIVATE_SLOT(d_func(), void onCountChanged(const QUuid &identifier, int new_length))
     Q_PRIVATE_SLOT(d_func(), void onDataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count))
+    Q_PRIVATE_SLOT(d_func(), void onIndexOfCallResult(const QUuid &identifier, int callID, int index))
     Q_PRIVATE_SLOT(d_func(), void onFetchMoreThresholdReached())
 };
 

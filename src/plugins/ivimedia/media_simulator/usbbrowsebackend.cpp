@@ -141,3 +141,12 @@ void UsbBrowseBackend::move(const QUuid &identifier, const QString &type, int cu
     Q_UNUSED(currentIndex)
     Q_UNUSED(newIndex)
 }
+
+int UsbBrowseBackend::indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item)
+{
+    Q_UNUSED(identifier)
+    Q_UNUSED(type)
+    Q_UNUSED(item)
+
+    return -1;
+}
