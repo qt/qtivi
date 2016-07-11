@@ -156,9 +156,10 @@ private Q_SLOTS:
     void cleanup();
 
     void testAutoDiscoveryFailure();
+    void testAutoDiscoveryWithMultipleBackends_data();
+    void testAutoDiscoveryWithMultipleBackends();
     void testAutoDiscovery_data();
     void testAutoDiscovery();
-    void testAutoDiscoveryWithMultipleBackends();
     void testAutoDiscovery_qml();
     void testErrors_data();
     void testErrors();
@@ -179,12 +180,14 @@ void tst_QIviAbstractFeature::testAutoDiscoveryFailure()
     TestFeature f;
     QTest::ignoreMessage(QtWarningMsg, "There is no production backend implementing \"testFeature\" .");
     QTest::ignoreMessage(QtWarningMsg, "There is no simulation backend implementing \"testFeature\" .");
+    QTest::ignoreMessage(QtWarningMsg, "No suitable ServiceObject found.");
     QIviAbstractFeature::DiscoveryResult result = f.startAutoDiscovery();
     QVERIFY(!f.serviceObject());
     QVERIFY(!f.isValid());
     QCOMPARE(result, QIviAbstractFeature::ErrorWhileLoading);
 
     QTest::ignoreMessage(QtWarningMsg, "There is no production backend implementing \"testFeature\" .");
+    QTest::ignoreMessage(QtWarningMsg, "No suitable ServiceObject found.");
     f.setDiscoveryMode(QIviAbstractFeature::LoadOnlyProductionBackends);
     result = f.startAutoDiscovery();
     QVERIFY(!f.serviceObject());
@@ -195,8 +198,9 @@ void tst_QIviAbstractFeature::testAutoDiscoveryFailure()
     m_manager->registerService(backend1, backend1->interfaces());
 
     f.m_acceptCounter = 0;
+    QTest::ignoreMessage(QtWarningMsg, "There is no production backend implementing \"testFeature\" .");
     QTest::ignoreMessage(QtWarningMsg, "ServiceObject is not accepted");
-    QTest::ignoreMessage(QtWarningMsg, "No ServiceObject got accepted.");
+    QTest::ignoreMessage(QtWarningMsg, "No suitable ServiceObject found.");
     result = f.startAutoDiscovery();
     QVERIFY(!f.serviceObject());
     QCOMPARE(result, QIviAbstractFeature::ErrorWhileLoading);
@@ -211,10 +215,45 @@ void tst_QIviAbstractFeature::testAutoDiscoveryFailure()
     TestBackend* backend2 = new TestBackend();
     m_manager->registerService(backend2, backend2->interfaces());
 
-    QTest::ignoreMessage(QtWarningMsg, "There is more than one backend implementing \"testFeature\" .");
+    QTest::ignoreMessage(QtWarningMsg, "There is more than one backend implementing \"testFeature\" . Using the first one");
     result = f.startAutoDiscovery();
     QVERIFY(f.serviceObject());
     QCOMPARE(result, QIviAbstractFeature::ProductionBackendLoaded);
+}
+
+void tst_QIviAbstractFeature::testAutoDiscoveryWithMultipleBackends_data()
+{
+    QTest::addColumn<QIviServiceManager::BackendType>("firstBackendType");
+    QTest::addColumn<QIviServiceManager::BackendType>("secondBackendType");
+    QTest::addColumn<QIviAbstractFeature::DiscoveryResult>("result");
+    QTest::newRow("Production") << QIviServiceManager::ProductionBackend << QIviServiceManager::ProductionBackend << QIviAbstractFeature::ProductionBackendLoaded;
+    QTest::newRow("Simulation") << QIviServiceManager::SimulationBackend << QIviServiceManager::SimulationBackend << QIviAbstractFeature::SimulationBackendLoaded;
+    //Fallback to Simulation if Production was not accepted
+    QTest::newRow("Production - Simulation") << QIviServiceManager::ProductionBackend << QIviServiceManager::SimulationBackend << QIviAbstractFeature::SimulationBackendLoaded;
+}
+
+void tst_QIviAbstractFeature::testAutoDiscoveryWithMultipleBackends()
+{
+    QFETCH(QIviServiceManager::BackendType, firstBackendType);
+    QFETCH(QIviServiceManager::BackendType, secondBackendType);
+    QFETCH(QIviAbstractFeature::DiscoveryResult, result);
+    TestBackend* backend1 = new TestBackend();
+    m_manager->registerService(backend1, backend1->interfaces(), firstBackendType);
+    TestBackend* backend2 = new TestBackend();
+    m_manager->registerService(backend2, backend2->interfaces(), secondBackendType);
+
+    //The first backend is not accepted, test that the second backend is tested as well and accepted now.
+    TestFeature f;
+    f.m_acceptCounter = 0;
+    if (firstBackendType == secondBackendType)
+        QTest::ignoreMessage(QtWarningMsg, "There is more than one backend implementing \"testFeature\" . Using the first one");
+    if (secondBackendType != QIviServiceManager::ProductionBackend)
+        QTest::ignoreMessage(QtWarningMsg, "There is no production backend implementing \"testFeature\" .");
+    QTest::ignoreMessage(QtWarningMsg, "ServiceObject is not accepted");
+    QIviAbstractFeature::DiscoveryResult res = f.startAutoDiscovery();
+    QVERIFY(f.serviceObject());
+    QVERIFY(f.isValid());
+    QCOMPARE(res, result);
 }
 
 void tst_QIviAbstractFeature::testAutoDiscovery_data()
@@ -226,23 +265,6 @@ void tst_QIviAbstractFeature::testAutoDiscovery_data()
     QTest::newRow("Simulation") << QIviAbstractFeature::LoadOnlySimulationBackends << QIviAbstractFeature::SimulationBackendLoaded << true;
     QTest::newRow("Auto") << QIviAbstractFeature::AutoDiscovery << QIviAbstractFeature::ProductionBackendLoaded << true;
     QTest::newRow("Auto fallback") << QIviAbstractFeature::AutoDiscovery << QIviAbstractFeature::SimulationBackendLoaded << false;
-}
-
-void tst_QIviAbstractFeature::testAutoDiscoveryWithMultipleBackends()
-{
-    TestBackend* backend1 = new TestBackend();
-    m_manager->registerService(backend1, backend1->interfaces());
-    TestBackend* backend2 = new TestBackend();
-    m_manager->registerService(backend2, backend2->interfaces());
-
-    //The first backend is not accepted, test that the second backend is tested as well and accepted now.
-    TestFeature f;
-    f.m_acceptCounter = 0;
-    QTest::ignoreMessage(QtWarningMsg, "There is more than one backend implementing \"testFeature\" .");
-    QTest::ignoreMessage(QtWarningMsg, "ServiceObject is not accepted");
-    f.startAutoDiscovery();
-    QVERIFY(f.serviceObject());
-    QVERIFY(f.isValid());
 }
 
 void tst_QIviAbstractFeature::testAutoDiscovery()

@@ -44,6 +44,7 @@
 
 #include "qiviserviceobject.h"
 #include "qiviservicemanager.h"
+#include "qiviservicemanager_p.h"
 
 #include <QMetaEnum>
 #include <QDebug>
@@ -542,7 +543,18 @@ QIviAbstractFeature::DiscoveryResult QIviAbstractFeature::startAutoDiscovery()
         result = ProductionBackendLoaded;
     }
 
-    if (serviceObjects.isEmpty()) {
+    //Check whether we can use the found production backends
+    bool serviceObjectSet = false;
+    foreach (QIviServiceObject* object, serviceObjects) {
+        qCDebug(qLcIviServiceManagement) << "Trying to use" << object << "Supported Interfaces:" << object->interfaces();
+        if (setServiceObject(object)) {
+            serviceObjectSet = true;
+            break;
+        }
+    }
+
+    //If no production backends are found or none of them accepted fall back to the simulation backends
+    if (!serviceObjectSet) {
 
         if (Q_UNLIKELY(d->m_discoveryMode == AutoDiscovery || d->m_discoveryMode == LoadOnlyProductionBackends))
             qWarning() << "There is no production backend implementing" << d->m_interface << ".";
@@ -550,30 +562,24 @@ QIviAbstractFeature::DiscoveryResult QIviAbstractFeature::startAutoDiscovery()
         if (d->m_discoveryMode == AutoDiscovery || d->m_discoveryMode == LoadOnlySimulationBackends) {
             serviceObjects = serviceManager->findServiceByInterface(d->m_interface, QIviServiceManager::IncludeSimulationBackends);
             result = SimulationBackendLoaded;
-            if (Q_UNLIKELY(serviceObjects.isEmpty())) {
+            if (Q_UNLIKELY(serviceObjects.isEmpty()))
                 qWarning() << "There is no simulation backend implementing" << d->m_interface << ".";
-                d->setDiscoveryResult(ErrorWhileLoading);
-                return ErrorWhileLoading;
+
+            foreach (QIviServiceObject* object, serviceObjects) {
+                qCDebug(qLcIviServiceManagement) << "Trying to use" << object << "Supported Interfaces:" << object->interfaces();
+                if (setServiceObject(object)) {
+                    serviceObjectSet = true;
+                    break;
+                }
             }
-        } else {
-            d->setDiscoveryResult(ErrorWhileLoading);
-            return ErrorWhileLoading;
         }
     }
 
     if (Q_UNLIKELY(serviceObjects.count() > 1))
-        qWarning() << "There is more than one backend implementing" << d->m_interface << ".";
-
-    bool serviceObjectSet = false;
-    foreach (QIviServiceObject* object, serviceObjects) {
-        if (setServiceObject(object)) {
-            serviceObjectSet = true;
-            break;
-        }
-    }
+        qWarning() << "There is more than one backend implementing" << d->m_interface << ". Using the first one";
 
     if (Q_UNLIKELY(!serviceObjectSet)) {
-        qWarning() << "No ServiceObject got accepted.";
+        qWarning() << "No suitable ServiceObject found.";
         d->setDiscoveryResult(ErrorWhileLoading);
         return ErrorWhileLoading;
     }

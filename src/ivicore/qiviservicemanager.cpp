@@ -55,6 +55,12 @@
 
 #define QIVI_PLUGIN_DIRECTORY "qtivi"
 
+QT_BEGIN_NAMESPACE
+
+Q_LOGGING_CATEGORY(qLcIviServiceManagement, "qt.ivi.servicemanagement");
+
+QT_END_NAMESPACE
+
 QIviServiceManagerPrivate::QIviServiceManagerPrivate(QIviServiceManager *parent) : QObject(parent), q_ptr(parent)
 {
 }
@@ -68,11 +74,13 @@ QIviServiceManagerPrivate *QIviServiceManagerPrivate::get(QIviServiceManager *se
 QList<QIviServiceObject *> QIviServiceManagerPrivate::findServiceByInterface(const QString &interface, QIviServiceManager::SearchFlags searchFlags)
 {
     QList<QIviServiceObject*> list;
+    qCDebug(qLcIviServiceManagement) << "Searching for a backend for:" << interface << "SearchFlags:" << searchFlags;
 
     foreach (Backend *backend, m_backends) {
 
         if (backend->metaData[QLatin1String("interfaces")].toStringList().contains(interface)) {
-            bool isSimulation = backend->metaData[QLatin1String("fileName")].toString().contains(QLatin1String("_simulation."));
+            const QString& fileName = backend->metaData[QLatin1String("fileName")].toString();
+            bool isSimulation = fileName.contains(QLatin1String("_simulation.")) || fileName.contains(QLatin1String("_simulator."));
             if ((searchFlags & QIviServiceManager::IncludeSimulationBackends && isSimulation) ||
                 (searchFlags & QIviServiceManager::IncludeProductionBackends && !isSimulation)) {
                 if (!backend->proxyServiceObject) {
@@ -80,8 +88,10 @@ QList<QIviServiceObject *> QIviServiceManagerPrivate::findServiceByInterface(con
                     if (backendInterface)
                         backend->proxyServiceObject = new QIviProxyServiceObject(backendInterface);
                 }
-                if (backend->proxyServiceObject)
+                if (backend->proxyServiceObject) {
+                    qCDebug(qLcIviServiceManagement) << "Found: " << backend->proxyServiceObject << "from: " << fileName;
                     list.append(backend->proxyServiceObject);
+                }
             }
         }
     }
@@ -121,7 +131,7 @@ void QIviServiceManagerPrivate::registerBackend(const QString &fileName, const Q
     QVariantMap backendMetaData = metaData.value(QLatin1String("MetaData")).toVariant().toMap();
 
     if (backendMetaData[QLatin1String("interfaces")].isNull() || backendMetaData[QLatin1String("interfaces")].toList().isEmpty()) {
-        qWarning("PluginManager - Malformed metaData in '%s'. MetaData must contain a list of interfaces", qPrintable(fileName));
+        qCWarning(qLcIviServiceManagement, "PluginManager - Malformed metaData in '%s'. MetaData must contain a list of interfaces", qPrintable(fileName));
         return;
     }
 
@@ -154,7 +164,7 @@ bool QIviServiceManagerPrivate::registerBackend(QObject *serviceBackendInterface
 
     metaData.insert(QLatin1String("interfaces"), interfaces);
     if (backendType == QIviServiceManager::SimulationBackend) //fake a simulation filename
-        metaData.insert(QLatin1String("fileName"), QLatin1String("_simulation."));
+        metaData.insert(QLatin1String("fileName"), QLatin1String("fake_simulation."));
 
     Backend *backend = new Backend;
     backend->metaData = metaData;
@@ -224,11 +234,11 @@ QIviServiceInterface *QIviServiceManagerPrivate::loadServiceBackendInterface(str
             backend->loader = loader;
             return backend->interface;
         } else {
-            qWarning("ServiceManager::serviceObjects - failed to cast to interface from '%s'", qPrintable(loader->fileName()));
+            qCWarning(qLcIviServiceManagement, "ServiceManager::serviceObjects - failed to cast to interface from '%s'", qPrintable(loader->fileName()));
         }
 
     } else {
-        qWarning("ServiceManager::serviceObjects - failed to load '%s'", qPrintable(loader->fileName()));
+        qCWarning(qLcIviServiceManagement, "ServiceManager::serviceObjects - failed to load '%s'", qPrintable(loader->fileName()));
     }
 
     //Only delete the Loader right away if we didn't succeeded with loading the interfaces.

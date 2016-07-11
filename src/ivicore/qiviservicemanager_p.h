@@ -54,6 +54,7 @@
 //
 
 #include <QtCore/QAbstractListModel>
+#include <QtCore/QLoggingCategory>
 #include <QtCore/QVariantMap>
 #include <QtCore/QStringList>
 #include <QtCore/QMap>
@@ -68,6 +69,8 @@ class QPluginLoader;
 class QIviServiceInterface;
 class QIviServiceObject;
 class QIviProxyServiceObject;
+
+Q_DECLARE_LOGGING_CATEGORY(qLcIviServiceManagement)
 
 struct Backend{
     QVariantMap metaData;
