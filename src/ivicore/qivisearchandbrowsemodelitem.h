@@ -59,7 +59,7 @@ class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModelItem
     Q_PROPERTY(QString id READ id WRITE setId)
     Q_PROPERTY(QString name READ name)
     Q_PROPERTY(QString type READ type)
-    Q_PROPERTY(QVariantMap data READ data)
+    Q_PROPERTY(QVariantMap data READ data WRITE setData)
 
 public:
     QIviSearchAndBrowseModelItem();
