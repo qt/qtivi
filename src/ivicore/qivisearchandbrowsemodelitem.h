@@ -46,6 +46,7 @@
 #include <QtCore/QMetaType>
 #include <QtCore/qobjectdefs.h>
 #include <QtCore/QSharedDataPointer>
+#include <QtCore/QVariantMap>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,6 +59,7 @@ class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModelItem
     Q_PROPERTY(QString id READ id WRITE setId)
     Q_PROPERTY(QString name READ name)
     Q_PROPERTY(QString type READ type)
+    Q_PROPERTY(QVariantMap data READ data)
 
 public:
     QIviSearchAndBrowseModelItem();
@@ -69,6 +71,8 @@ public:
     virtual void setId(const QString &id);
     virtual QString name() const;
     virtual QString type() const;
+    virtual QVariantMap data() const;
+    virtual void setData(const QVariantMap &data);
 
     bool operator==(const QIviSearchAndBrowseModelItem &other);
     inline bool operator!=(const QIviSearchAndBrowseModelItem &other) { return !(*this == other); }

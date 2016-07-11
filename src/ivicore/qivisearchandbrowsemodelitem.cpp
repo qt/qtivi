@@ -52,9 +52,11 @@ public:
     QIviSearchAndBrowseModelItemPrivate(const QIviSearchAndBrowseModelItemPrivate &other)
         : QSharedData(other)
         , m_id(other.m_id)
+        , m_data(other.m_data)
     {}
 
     QString m_id;
+    QVariantMap m_data;
 };
 
 QT_END_NAMESPACE
@@ -109,6 +111,21 @@ QT_END_NAMESPACE
     The type of the item. E.g. "artist", "track", "contact".
 */
 
+/*!
+    \qmlproperty object SearchAndBrowseModelItem::data
+    A generic data field which can hold any data.
+
+    This can be moved for storing additional data which is not part of the base class.
+    E.g. the "composer" of an audio track.
+*/
+
+/*!
+    \property QIviSearchAndBrowseModelItem::data
+    A generic data field which can hold any data.
+
+    This can be moved for storing additional data which is not part of the base class.
+    E.g. the "composer" of an audio track.
+*/
 
 QIviSearchAndBrowseModelItem::QIviSearchAndBrowseModelItem()
     : d(new QIviSearchAndBrowseModelItemPrivate)
@@ -151,6 +168,16 @@ QString QIviSearchAndBrowseModelItem::name() const
 QString QIviSearchAndBrowseModelItem::type() const
 {
     return QString();
+}
+
+QVariantMap QIviSearchAndBrowseModelItem::data() const
+{
+    return d->m_data;
+}
+
+void QIviSearchAndBrowseModelItem::setData(const QVariantMap &data)
+{
+    d->m_data = data;
 }
 
 /*!
