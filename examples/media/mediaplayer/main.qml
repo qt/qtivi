@@ -296,14 +296,14 @@ ApplicationWindow {
                         width: parent.width
 
                         Text { text: "Name: " + model.name }
-                        Text { text: "Type: " + model.item.type }
+                        Text { text: "Type: " + model.type }
                     }
 
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
                             if (browseView.model === discoveryModel) {
-                                filterModel.serviceObject = model.item
+                                filterModel.serviceObject = model.serviceObject
                                 browseView.model = filterModel
                                 return;
                             }

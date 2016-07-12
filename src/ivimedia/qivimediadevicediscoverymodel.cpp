@@ -171,7 +171,7 @@ QIviMediaDeviceDiscoveryModelBackendInterface *QIviMediaDeviceDiscoveryModelPriv
         \li string
         \li The type of the media device. See \l SupportedMediaDevices for a detailed listing.
     \row
-        \li \c item
+        \li \c serviceObject
         \li QIviMediaDevice
         \li The Media Device. This object be used as ServiceObject for other Features. E.g. The SearchAndBrowseModel.
     \endtable
@@ -187,7 +187,7 @@ QIviMediaDeviceDiscoveryModelBackendInterface *QIviMediaDeviceDiscoveryModelPriv
           The name of the media device. E.g. The name of the connected USB-Thumbdrive/SDCard or a connected Ipod.
    \value TypeRole
           The type of the media device. See \l SupportedMediaDevices for a detailed listing.
-   \value ItemRole
+   \value ServiceObjectRole
           A pointer to the media device itself. This pointer can be used as the ServiceObject for other Features. E.g. The QIviSearchAndBrowseModel.
 */
 
@@ -241,7 +241,7 @@ QVariant QIviMediaDeviceDiscoveryModel::data(const QModelIndex &index, int role)
     switch (role) {
         case NameRole: return item->name();
         case TypeRole: return item->type();
-        case ItemRole: return QVariant::fromValue(item);
+        case ServiceObjectRole: return QVariant::fromValue(item);
     }
 
     return QVariant();
@@ -260,7 +260,7 @@ QVariantMap QIviMediaDeviceDiscoveryModel::get(int i) const
     QVariantMap map;
     map[QLatin1String("name")] = data(index(i,0), NameRole);
     map[QLatin1String("type")] = data(index(i,0), TypeRole);
-    map[QLatin1String("item")] = data(index(i,0), ItemRole);
+    map[QLatin1String("serviceObject")] = data(index(i,0), ServiceObjectRole);
 
     return map;
 }
@@ -274,7 +274,7 @@ QHash<int, QByteArray> QIviMediaDeviceDiscoveryModel::roleNames() const
     if (roles.isEmpty()) {
         roles[NameRole] = "name";
         roles[TypeRole] = "type";
-        roles[ItemRole] = "item";
+        roles[ServiceObjectRole] = "serviceObject";
     }
     return roles;
 }
