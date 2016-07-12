@@ -96,11 +96,12 @@ public:
 
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
 
-    Q_INVOKABLE QVariantMap get(int index) const;
+    Q_INVOKABLE QVariant get(int index) const;
 
-    //TODO How to prevent that Items from another backend gets added here ?
-    //TODO Can we simply pass the id and the backend knows which data is meant ?
-    //This way we could also add the functions into the items itself for convenience ?
+    template <typename T> T at(int i) const {
+        return data(index(i,0), ItemRole).value<T>();
+    }
+
     Q_INVOKABLE void insert(int index, const QVariant &variant);
     Q_INVOKABLE void remove(int index);
     Q_INVOKABLE void move(int cur_index, int new_index);

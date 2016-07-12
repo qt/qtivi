@@ -248,21 +248,36 @@ QVariant QIviMediaDeviceDiscoveryModel::data(const QModelIndex &index, int role)
 }
 
 /*!
-    \qmlmethod object MediaDeviceDiscoveryModel::get(i)
+    \qmlmethod MediaDevice MediaDeviceDiscoveryModel::get(i)
 
     Returns the media devices at index \a i.
+
+    \note The returned device is owned by the model and can be deleted at any time.
+    If stored in a property or a var, this could lead to a dangling pointer.
  */
 /*!
-    Returns the media devices at index \a i represented as QVariantMap.
-*/
-QVariantMap QIviMediaDeviceDiscoveryModel::get(int i) const
-{
-    QVariantMap map;
-    map[QLatin1String("name")] = data(index(i,0), NameRole);
-    map[QLatin1String("type")] = data(index(i,0), TypeRole);
-    map[QLatin1String("serviceObject")] = data(index(i,0), ServiceObjectRole);
+    Returns the media device at index \a i.
 
-    return map;
+    \note The returned device is owned by the model and can be deleted at any time.
+*/
+QIviMediaDevice *QIviMediaDeviceDiscoveryModel::get(int i) const
+{
+    Q_D(const QIviMediaDeviceDiscoveryModel);
+    if (i >= d->m_deviceList.count() || i < 0)
+        return nullptr;
+
+    QIviMediaDevice *item = qobject_cast<QIviMediaDevice*>(d->m_deviceList.at(i));
+    return item;
+}
+
+/*!
+    Returns the media device at index \a i.
+
+    \note The returned device is owned by the model and can be deleted at any time.
+*/
+QIviMediaDevice *QIviMediaDeviceDiscoveryModel::at(int i) const
+{
+    return get(i);
 }
 
 /*!

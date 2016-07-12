@@ -491,21 +491,24 @@ QVariant QIviPlayQueue::data(const QModelIndex &index, int role) const
 }
 
 /*!
+    \fn T QIviPlayQueue::at(int i) const
+
+    Returns the item at index \a i converted to the template type T.
+*/
+/*!
     \qmlmethod object PlayQueue::get(i)
 
     Returns the item at index \a i.
  */
 /*!
-    Returns the item at index \a i represented as QVariantMap.
-*/
-QVariantMap QIviPlayQueue::get(int i) const
-{
-    QVariantMap map;
-    map[QLatin1String("name")] = data(index(i,0), NameRole);
-    map[QLatin1String("type")] = data(index(i,0), TypeRole);
-    map[QLatin1String("item")] = data(index(i,0), ItemRole);
+    Returns the item at index \a i.
 
-    return map;
+    This function is intended to be used from QML. For C++
+    please use the at() instead.
+*/
+QVariant QIviPlayQueue::get(int i) const
+{
+    return data(index(i,0), ItemRole);
 }
 
 /*!

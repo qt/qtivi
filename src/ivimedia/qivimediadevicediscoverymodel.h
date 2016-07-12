@@ -70,7 +70,8 @@ public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
     virtual QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
-    Q_INVOKABLE QVariantMap get(int i) const;
+    Q_INVOKABLE QIviMediaDevice *get(int i) const;
+    QIviMediaDevice *at(int i) const;
 
     virtual QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
 

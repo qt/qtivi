@@ -139,7 +139,7 @@ public:
 
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
 
-    Q_INVOKABLE QVariantMap get(int index) const;
+    Q_INVOKABLE QVariant get(int index) const;
     Q_INVOKABLE void goBack();
     Q_INVOKABLE bool canGoForward(int index) const;
     Q_INVOKABLE QIviSearchAndBrowseModel *goForward(int index, NavigationType navigationType);

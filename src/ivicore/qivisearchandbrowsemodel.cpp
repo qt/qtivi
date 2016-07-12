@@ -813,17 +813,14 @@ QVariant QIviSearchAndBrowseModel::data(const QModelIndex &index, int role) cons
     Returns the item at index \a i.
  */
 /*!
-    Returns the item at index \a i represented as QVariantMap.
-*/
-QVariantMap QIviSearchAndBrowseModel::get(int i) const
-{
-    QVariantMap map;
-    map[QLatin1String("name")] = data(index(i,0), NameRole);
-    map[QLatin1String("type")] = data(index(i,0), TypeRole);
-    map[QLatin1String("canGoForward")] = data(index(i,0), CanGoForwardRole);
-    map[QLatin1String("item")] = data(index(i,0), ItemRole);
+    Returns the item at index \a i as QVariant.
 
-    return map;
+    This function is intended to be used from QML. For C++
+    please use the at() instead.
+*/
+QVariant QIviSearchAndBrowseModel::get(int i) const
+{
+    return data(index(i,0), ItemRole);
 }
 
 /*!
