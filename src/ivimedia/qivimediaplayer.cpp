@@ -43,6 +43,7 @@
 #include "qivimediaplayer_p.h"
 #include "qiviplayqueue.h"
 #include "qiviplayqueue_p.h"
+#include "qiviqmlconversion_helper.h"
 #include <QtIviCore/QIviServiceObject>
 #include <QtDebug>
 
@@ -78,7 +79,7 @@ void QIviMediaPlayerPrivate::onCurrentTrackChanged(const QVariant &currentTrack)
     if (m_currentTrackData == currentTrack)
         return;
 
-    const QIviPlayableItem *currentItem = playableItem(m_currentTrackData);
+    const QIviPlayableItem *currentItem = qtivi_gadgetFromVariant<QIviPlayableItem>(m_currentTrackData);
     if (m_currentTrack == currentItem)
         return;
 
@@ -104,28 +105,6 @@ void QIviMediaPlayerPrivate::onDurationChanged(qint64 duration)
     Q_Q(QIviMediaPlayer);
     m_duration = duration;
     emit q->durationChanged(duration);
-}
-
-//TODO replace me by a generic function for all classes
-const QIviPlayableItem *QIviMediaPlayerPrivate::playableItem(const QVariant &item)
-{
-    const void *data = item.constData();
-
-    QMetaType type(item.userType());
-    if (!type.flags().testFlag(QMetaType::IsGadget)) {
-        qCritical() << "The passed QVariant needs to use the Q_GADGET macro";
-        return nullptr;
-    }
-
-    const QMetaObject *mo = type.metaObject();
-    while (mo) {
-        if (mo->className() == QIviPlayableItem::staticMetaObject.className())
-            return reinterpret_cast<const QIviPlayableItem*>(data);
-        mo = mo->superClass();
-    }
-
-    qCritical() << "The passed QVariant is not derived from QIviPlayableItem";
-    return nullptr;
 }
 
 QIviMediaPlayerBackendInterface *QIviMediaPlayerPrivate::playerBackend() const

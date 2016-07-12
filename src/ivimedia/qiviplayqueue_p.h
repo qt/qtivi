@@ -76,7 +76,6 @@ public:
     void resetModel();
     void clearToDefaults();
     const QIviPlayableItem *itemAt(int i) const;
-    const QIviPlayableItem *playableItem(const QVariant &item) const;
 
     QIviMediaPlayerBackendInterface* playerBackend() const;
 

@@ -53,7 +53,7 @@
 // We mean it.
 //
 
-#include <qiviabstractfeaturelistmodel_p.h>
+#include <QtIviCore/private/qiviabstractfeaturelistmodel_p.h>
 
 #include "qivisearchandbrowsemodelinterface.h"
 #include "qivisearchandbrowsemodel.h"
@@ -83,7 +83,6 @@ public:
     void clearToDefaults();
     void setCanGoBack(bool canGoBack);
     const QIviSearchAndBrowseModelItem *itemAt(int i) const;
-    const QIviSearchAndBrowseModelItem *itemFromVariant(const QVariant &var) const;
 
     QIviSearchAndBrowseModelInterface* searchBackend() const;
     void updateContentType(const QString &contentType);

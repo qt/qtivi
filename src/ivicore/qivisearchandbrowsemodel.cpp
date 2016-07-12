@@ -44,6 +44,7 @@
 
 #include "qivisearchandbrowsemodelinterface.h"
 #include "queryparser/qiviqueryparser_p.h"
+#include "qiviqmlconversion_helper.h"
 
 #include <QMetaObject>
 #include <QDebug>
@@ -287,29 +288,7 @@ const QIviSearchAndBrowseModelItem *QIviSearchAndBrowseModelPrivate::itemAt(int 
     if (!var.isValid())
         return nullptr;
 
-    return itemFromVariant(var);
-}
-
-const QIviSearchAndBrowseModelItem *QIviSearchAndBrowseModelPrivate::itemFromVariant(const QVariant &var) const
-{
-    const void *data = var.constData();
-
-    QMetaType type(var.userType());
-    if (!type.flags().testFlag(QMetaType::IsGadget)) {
-        qCritical() << "The passed QVariant needs to use the Q_GADGET macro";
-        return nullptr;
-    }
-
-    const QMetaObject *mo = type.metaObject();
-    while (mo) {
-        if (mo->className() == QIviSearchAndBrowseModelItem::staticMetaObject.className())
-            return reinterpret_cast<const QIviSearchAndBrowseModelItem*>(data);
-        mo = mo->superClass();
-    }
-
-    qCritical() << "The passed QVariant is not derived from QIviSearchAndBrowseModelItem";
-
-    return nullptr;
+    return qtivi_gadgetFromVariant<QIviSearchAndBrowseModelItem>(var);
 }
 
 QIviSearchAndBrowseModelInterface *QIviSearchAndBrowseModelPrivate::searchBackend() const
@@ -968,7 +947,7 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
 void QIviSearchAndBrowseModel::insert(int index, const QVariant &variant)
 {
     Q_D(QIviSearchAndBrowseModel);
-    const QIviSearchAndBrowseModelItem *item = d->itemFromVariant(variant);
+    const QIviSearchAndBrowseModelItem *item = qtivi_gadgetFromVariant<QIviSearchAndBrowseModelItem>(variant);
     if (!item)
         return;
 
@@ -1070,7 +1049,7 @@ void QIviSearchAndBrowseModel::move(int cur_index, int new_index)
 void QIviSearchAndBrowseModel::indexOf(const QVariant &variant, const QJSValue &functor)
 {
     Q_D(QIviSearchAndBrowseModel);
-    const QIviSearchAndBrowseModelItem *item = d->itemFromVariant(variant);
+    const QIviSearchAndBrowseModelItem *item = qtivi_gadgetFromVariant<QIviSearchAndBrowseModelItem>(variant);
     if (!item)
         return;
 

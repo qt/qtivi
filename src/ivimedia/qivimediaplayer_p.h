@@ -70,7 +70,6 @@ public:
     void onCurrentTrackChanged(const QVariant &currentTrack);
     void onPositionChanged(qint64 position);
     void onDurationChanged(qint64 duration);
-    const QIviPlayableItem *playableItem(const QVariant &item);
 
     QIviMediaPlayerBackendInterface *playerBackend() const;
 

@@ -42,6 +42,7 @@
 #include "qiviplayqueue.h"
 #include "qiviplayqueue_p.h"
 #include "qivimediaplayer.h"
+#include "qiviqmlconversion_helper.h"
 
 #include <QtDebug>
 
@@ -202,28 +203,7 @@ const QIviPlayableItem *QIviPlayQueuePrivate::itemAt(int i) const
     if (!var.isValid())
         return nullptr;
 
-    return playableItem(var);
-}
-
-const QIviPlayableItem *QIviPlayQueuePrivate::playableItem(const QVariant &item) const
-{
-    const void *data = item.constData();
-
-    QMetaType type(item.userType());
-    if (!type.flags().testFlag(QMetaType::IsGadget)) {
-        qCritical() << "The passed QVariant needs to use the Q_GADGET macro";
-        return nullptr;
-    }
-
-    const QMetaObject *mo = type.metaObject();
-    while (mo) {
-        if (mo->className() == QIviPlayableItem::staticMetaObject.className())
-            return reinterpret_cast<const QIviPlayableItem*>(data);
-        mo = mo->superClass();
-    }
-
-    qCritical() << "The passed QVariant is not derived from QIviPlayableItem";
-    return nullptr;
+    return qtivi_gadgetFromVariant<QIviPlayableItem>(var);
 }
 
 QIviMediaPlayerBackendInterface *QIviPlayQueuePrivate::playerBackend() const
@@ -529,7 +509,7 @@ QVariant QIviPlayQueue::get(int i) const
 void QIviPlayQueue::insert(int index, const QVariant &variant)
 {
     Q_D(QIviPlayQueue);
-    const QIviPlayableItem *item = d->playableItem(variant);
+    const QIviPlayableItem *item = qtivi_gadgetFromVariant<QIviPlayableItem>(variant);
     if (!item)
         return;
 
@@ -539,7 +519,6 @@ void QIviPlayQueue::insert(int index, const QVariant &variant)
         return;
     }
 
-    //TODO should we use qBegin here ? instead of relying on dataChanged signal ?
     backend->insert(index, item);
 }
 
@@ -563,7 +542,6 @@ void QIviPlayQueue::remove(int index)
         return;
     }
 
-    //TODO should we use qBegin here ? instead of relying on dataChanged signal ?
     backend->remove(index);
 }
 
@@ -587,7 +565,6 @@ void QIviPlayQueue::move(int cur_index, int new_index)
         return;
     }
 
-    //TODO should we use qBegin here ? instead of relying on dataChanged signal ?
     backend->move(cur_index, new_index);
 }
 

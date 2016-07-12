@@ -45,6 +45,7 @@
 #include <QtCore/QVariant>
 #include <QtCore/QVector>
 #include <QtCore/QMetaEnum>
+#include <QtCore/QtDebug>
 
 QT_BEGIN_NAMESPACE
 
@@ -76,6 +77,28 @@ template <typename T> QVariantList qtivi_convertAvailableValues(const QVector<T>
         list.append(qtivi_convertValue<T>(val));
     }
     return list;
+}
+
+template <class T> const T *qtivi_gadgetFromVariant(const QVariant &var)
+{
+    const void *data = var.constData();
+
+    QMetaType type(var.userType());
+    if (!type.flags().testFlag(QMetaType::IsGadget)) {
+        qCritical("The passed QVariant needs to use the Q_GADGET macro");
+        return nullptr;
+    }
+
+    const QMetaObject *mo = type.metaObject();
+    while (mo) {
+        if (mo->className() == T::staticMetaObject.className())
+            return reinterpret_cast<const T*>(data);
+        mo = mo->superClass();
+    }
+
+    qCritical("The passed QVariant is not derived from %s", T::staticMetaObject.className());
+
+    return nullptr;
 }
 
 QT_END_NAMESPACE
