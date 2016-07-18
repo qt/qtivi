@@ -10,3 +10,6 @@ SOURCES += \
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 TESTDATA = testdata/*
+
+HEADERS += \
+    qivifeaturetester.h

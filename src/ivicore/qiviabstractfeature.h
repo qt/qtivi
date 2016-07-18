@@ -136,6 +136,7 @@ private Q_SLOTS:
 
 private:
     Q_DECLARE_PRIVATE(QIviAbstractFeature)
+    friend class QIviFeatureTester;
 };
 
 QT_END_NAMESPACE

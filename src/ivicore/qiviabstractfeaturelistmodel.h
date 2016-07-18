@@ -99,9 +99,13 @@ protected:
     QString errorText() const;
     void setError(QIviAbstractFeature::Error error, const QString &message = QString());
 
+protected Q_SLOTS:
+    virtual void onErrorChanged(QIviAbstractFeature::Error error, const QString &message = QString());
+
 private:
     Q_DECLARE_PRIVATE(QIviAbstractFeatureListModel)
     friend class QIviHelperFeature;
+    friend class QIviFeatureTester;
 };
 
 QT_END_NAMESPACE

@@ -432,3 +432,13 @@ void QIviAbstractFeatureListModel::setError(QIviAbstractFeature::Error error, co
     Q_D(QIviAbstractFeatureListModel);
     d->m_feature->setError(error, message);
 }
+
+/*!
+   Updates \a error and \a message from the backend.
+
+   This slot can be used when implementing a new Feature to report generic errors.
+*/
+void QIviAbstractFeatureListModel::onErrorChanged(QIviAbstractFeature::Error error, const QString &message)
+{
+    setError(error, message);
+}

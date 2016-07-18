@@ -36,11 +36,13 @@ Item {
     }
 
     TestFeature {
+        id: noAutoItem
         objectName: "autoDiscoveryDisabled"
         discoveryMode: TestFeature.NoAutoDiscovery
-        function discover() {
-            discoveryMode = TestFeature.LoadOnlyProductionBackends
-            startAutoDiscovery()
-        }
+    }
+
+    function discover() {
+        noAutoItem.discoveryMode = TestFeature.LoadOnlyProductionBackends
+        noAutoItem.startAutoDiscovery()
     }
 }
