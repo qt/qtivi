@@ -1,0 +1,264 @@
+/****************************************************************************
+**
+** Copyright (C) 2016 Pelagicore AG
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL-QTAS$
+** Commercial License Usage
+** Licensees holding valid commercial Qt Automotive Suite licenses may use
+** this file in accordance with the commercial license agreement provided
+** with the Software or, alternatively, in accordance with the terms
+** contained in a written agreement between you and The Qt Company.  For
+** licensing terms and conditions see https://www.qt.io/terms-conditions.
+** For further information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+/*!
+\page query-language.html
+\title The Qt IVI Query Language
+\keyword Qt IVI Query Language
+
+Automotive systems are getting bigger and bigger and with it also the feature-set in areas like
+entertainment or connectivity. Modern system can handle phone calls, access the mobile phone's addressbook, and have a mediaplayer
+which can manage a media database similar to desktop tools like iTunes. As addressbooks and media databases
+are quite big these days, it's important to be able to filter, sort and search them in a convenient way.
+
+Because of this the Qt IVI Query Language was created and it provides you with an own minimal
+language to express what exactly you want to be displayed and how it should be sorted.
+
+It was chosen to create a new language to be independent on the underlying architecture and
+its (potentially) underlying database languages like SQL or PSQL. Other than the two named, the Qt IVI Query Language
+is not specifying the actual data itself and is just used for filtering and sorting.
+
+\section1 Working with the Query Language
+
+Currently the QIviSearchAndBrowseModel is the only class which supports the usage of the query language. In this
+case the backend of the model informs the query parser about the identifiers available for filtering and sorting.
+
+An identifier is the name of a column or the property which can be used in the query language. Let's say you use the QIviSearchAndBrowseModel
+to access a list of QIviAudioTrackItems, then the available identfiers will be every property of the QIviAudioTrackItem. Writing the following
+query would result in a search for tracks on the album "Nevermind":
+
+\code
+album='Nevermind'
+\endcode
+
+\section2 Filtering and Sorting
+
+The Qt IVI Query Language has two parts: the first part being the filter specification, and the second part defining the sort order.
+
+\code
+album='Nevermind' [/trackNumber]
+\endcode
+
+In the query shown above the first part is \c{album='Nevermind'}, and it indicates to only show tracks which are from the album "Nevermind". The second
+part is specified by \c{[]} and defines the ordering: in this case the result should be sorted by trackNumber in ascending order.
+
+\section3 Filtering
+
+For filtering a result the following operators can be used to match a identifier to a value:
+
+\table
+\header
+    \li Operator
+    \li Description
+\row
+    \li =
+    \li Tests whether the identifier's value is equal to the passed value. In case of a string the comparison is case-sensitive.
+        The \c{==} operator is an alias and delivers the same result.
+
+\row
+    \li !=
+    \li Tests whether the identifier's value is not equal to the passed value. In case of a string the comparison is case-sensitive.
+
+\row
+    \li ~=
+    \li Tests whether the identifier's value is equal to the passed value, but the comparison is done case-insensitive.
+
+\row
+    \li >
+    \li Tests whether the lefthand-side value is greater than the righthand-side value. (only works for numbers).
+
+\row
+    \li >=
+    \li Tests whether the lefthand-side value is greater than or equal to the righthand-side value. (only works for numbers).
+
+\row
+    \li <
+    \li Tests whether the lefthand-side value is less than the righthand-side value. (only works for numbers).
+
+\row
+    \li <=
+    \li Tests whether the lefthand-side value is less than or equal to the righthand-side value. (only works for numbers).
+
+\endtable
+
+When comparing an identifier against a string, the string always needs to be encapsulated either between two quotation marks - either single \c{'} or double \c{"} ones.
+Numbers are supported in various formats, including signed and unsigned numbers and floats using an exponent e.g. -5.0E15.
+
+\section3 Sorting
+
+The second part of a query is used for sorting the result. It's optional and if not provided, the backend can decide in which order the result
+should be listed. To sort by trackNumber in ascending order use the following code:
+
+\code
+[/trackNumber]
+\endcode
+
+to sort in descending order:
+
+\code
+[\trackNumber]
+\endcode
+
+Using this query on a big list of songs might not give the intendend result as there could be two different tracks having the same trackNumber.
+For this case multiple sort orders can be provided.
+
+\code
+[\trackNumber][/album]
+\endcode
+
+The above query would sort the tracks by trackNumber in descending order and the track with the same trackNumber by album name in ascending order.
+
+\section2 Conjunctions
+
+Only adding a specific condition and defining the order is often not enough to achieve the wanted result. The Qt IVI Query Language also supports
+basic boolean algebra. Multiple filters can be combined by using AND / OR conjunctions. The following query would only list the first 5 tracks
+of the album 'Metallica':
+
+\code
+album='Metallica' & trackNumber<=5
+\endcode
+
+Of course it's also supported to use brackets as well as to negate filters:
+
+\code
+(album='Metallica') & !(trackNumber>5)
+\endcode
+
+\section1 Backend integration
+
+For the backend, the query is translated from a string to a binary representation similar to an AST. Like the query itself, the representation is split into two
+parts: the first part is a pointer to a QIviAbstractQueryTerm which can be cast to one of the following types:
+
+\annotatedlist qtivi_queryterms
+
+The second part is a QList<QIviOrderTerm> and provides the ordering the user wants the result to be in.
+
+Usually this C++ representation is translated into whatever form the backend supports. For getting the results from an SQL database this can look like this:
+
+First we need a function to translate the identifiers used in the query to the column names used in the database:
+\code
+QString SearchAndBrowseBackend::mapIdentifiers(const QString &type)
+{
+    if (type == QLatin1String("artist"))
+        return QLatin1String("artistName");
+    else if (type == QLatin1String("album"))
+        return QLatin1String("albumName");
+    else if (type == QLatin1String("track"))
+        return QLatin1String("trackName");
+    else
+        return type;
+}
+\endcode
+
+Next we need functions to translate the QueryTerms and the OrderTerms into SQL clauses:
+
+\code
+QString SearchAndBrowseBackend::createSortOrder(const QString &type, const QList<QIviOrderTerm> &orderTerms)
+{
+    QStringList order;
+    int i = 0;
+    for (const QIviOrderTerm & term : orderTerms) {
+        if (i)
+            order.append(",");
+
+        order.append(mapIdentifiers(term.propertyName()));
+        if (term.isAscending())
+            order.append("ASC");
+        else
+            order.append("DESC");
+
+        i++;
+    }
+
+    return order.join(' ');
+}
+
+QString SearchAndBrowseBackend::createWhereClause(QIviAbstractQueryTerm *term)
+{
+    if (!term)
+        return QString();
+
+    switch (term->type()) {
+    case QIviAbstractQueryTerm::ScopeTerm: {
+        QIviScopeTerm *scope = static_cast<QIviScopeTerm*>(term);
+        return QString(QLatin1String("%1 (%2)")).arg(scope->isNegated() ? "NOT" : "",createWhereClause(scope->term()));
+    }
+    case QIviAbstractQueryTerm::ConjunctionTerm: {
+        QIviConjunctionTerm *conjunctionTerm = static_cast<QIviConjunctionTerm*>(term);
+        QString conjunction = QLatin1String("AND");
+        if (conjunctionTerm->conjunction() == QIviConjunctionTerm::Or)
+            conjunction = QLatin1String("OR");
+
+        QString string;
+        QListIterator<QIviAbstractQueryTerm*> it(conjunctionTerm->terms());
+        while (it.hasNext()) {
+            string += createWhereClause(it.next());
+            if (it.hasNext())
+                string += QLatin1Literal(" ") + conjunction + QLatin1Literal(" ");
+        }
+        return string;
+    }
+    case QIviAbstractQueryTerm::FilterTerm: {
+        QIviFilterTerm *filter = static_cast<QIviFilterTerm*>(term);
+        QString operatorString;
+        bool negated = filter->isNegated();
+        QString value;
+        if (filter->value().type() == QVariant::String)
+            value = QString(QLatin1String("'%1'")).arg(filter->value().toString().replace('*', '%'));
+        else
+            value = filter->value().toString();
+
+        switch (filter->operatorType()){
+            case QIviFilterTerm::Equals: operatorString = QLatin1String("="); break;
+            case QIviFilterTerm::EqualsCaseInsensitive: operatorString = QLatin1String("LIKE"); break;
+            case QIviFilterTerm::Unequals: operatorString = QLatin1String("="); negated = !negated; break;
+            case QIviFilterTerm::GreaterThan: operatorString = QLatin1String(">"); break;
+            case QIviFilterTerm::GreaterEquals: operatorString = QLatin1String(">="); break;
+            case QIviFilterTerm::LowerThan: operatorString = QLatin1String("<"); break;
+            case QIviFilterTerm::LowerEquals: operatorString = QLatin1String("<="); break;
+        }
+
+        QStringList clause;
+        if (negated)
+            clause.append(QLatin1String("NOT"));
+        clause.append(mapIdentifiers(filter->propertyName()));
+        clause.append(operatorString);
+        clause.append(value);
+
+        return clause.join(" ");
+    }
+    }
+
+    return QString();
+}
+\endcode
+
+The actual query can then be created like this:
+
+\code
+QString query = QString(QLatin1String("SELECT * FROM tracks WHERE %1 ORDER BY %2")).arg(createWhereClause(queryTerm), createSortOrder(orderTerms));
+\endcode
+*/

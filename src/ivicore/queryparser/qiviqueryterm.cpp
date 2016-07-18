@@ -86,9 +86,57 @@ QIviOrderTermPrivate::QIviOrderTermPrivate(const QIviOrderTermPrivate &other)
 
 }
 
+/*!
+    \class QIviAbstractQueryTerm
+    \inmodule QtIviCore
+    \brief The base class of all query terms
+
+    Following terms are supported:
+    \annotatedlist qtivi_queryterms
+
+    See \l {Qt IVI Query Language} for how it can be used.
+*/
+
+/*!
+    \enum QIviAbstractQueryTerm::Type
+    \value FilterTerm
+           A filter term stands for a filter which checks a specific identifier against a given value.
+    \value ConjunctionTerm
+           A conjunction term can combine multiple terms together, either by a OR or an AND conjunction.
+    \value ScopeTerm
+           A scope term is used to group terms together, e.g. to apply a negation to a group.
+*/
+
+/*!
+    \fn QIviAbstractQueryTerm::Type QIviAbstractQueryTerm::type() const
+
+    Returns the type of this query term.
+*/
+
+/*!
+    \fn QString QIviAbstractQueryTerm::toString() const
+
+    Returns a string representation of the query.
+*/
+
 QIviAbstractQueryTerm::~QIviAbstractQueryTerm()
 {
 }
+
+/*!
+    \class QIviConjunctionTerm
+    \inmodule QtIviCore
+    \ingroup qtivi_queryterms
+    \brief The QIviConjunctionTerm is the representation of a conjunction between two query terms
+*/
+
+/*!
+    \enum QIviConjunctionTerm::Conjunction
+    \value And
+           The AND conjunction combines the filters to only match when all supplied filters are \c true.
+    \value Or
+           The OR conjunction combines the filters to match when one of the supplied filters are \c true.
+*/
 
 QIviConjunctionTerm::QIviConjunctionTerm()
     : d_ptr(new QIviConjunctionTermPrivate)
@@ -102,11 +150,17 @@ QIviConjunctionTerm::~QIviConjunctionTerm()
     delete d_ptr;
 }
 
+/*!
+    \reimp
+*/
 QIviAbstractQueryTerm::Type QIviConjunctionTerm::type() const
 {
     return QIviAbstractQueryTerm::ConjunctionTerm;
 }
 
+/*!
+    \reimp
+*/
 QString QIviConjunctionTerm::toString() const
 {
     Q_D(const QIviConjunctionTerm);
@@ -125,18 +179,30 @@ QString QIviConjunctionTerm::toString() const
     return string;
 }
 
+/*!
+    Returns the type of the conjunction.
+*/
 QIviConjunctionTerm::Conjunction QIviConjunctionTerm::conjunction() const
 {
     Q_D(const QIviConjunctionTerm);
     return d->m_conjunction;
 }
 
+/*!
+    Returns the terms which are conjuncted together.
+*/
 QList<QIviAbstractQueryTerm *> QIviConjunctionTerm::terms() const
 {
     Q_D(const QIviConjunctionTerm);
     return d->m_terms;
 }
 
+/*!
+    \class QIviScopeTerm
+    \inmodule QtIviCore
+    \ingroup qtivi_queryterms
+    \brief The QIviScopeTerm is the representation of a scope which can hold another term
+*/
 QIviScopeTerm::QIviScopeTerm()
     : d_ptr(new QIviScopeTermPrivate)
 {
@@ -149,11 +215,17 @@ QIviScopeTerm::~QIviScopeTerm()
     delete d_ptr;
 }
 
+/*!
+    \reimp
+*/
 QIviAbstractQueryTerm::Type QIviScopeTerm::type() const
 {
     return QIviAbstractQueryTerm::ScopeTerm;
 }
 
+/*!
+    \reimp
+*/
 QString QIviScopeTerm::toString() const
 {
     Q_D(const QIviScopeTerm);
@@ -164,17 +236,62 @@ QString QIviScopeTerm::toString() const
     return string;
 }
 
+/*!
+    Returns \c true when this term is negated, otherwise \c false
+*/
 bool QIviScopeTerm::isNegated() const
 {
     Q_D(const QIviScopeTerm);
     return d->m_negated;
 }
 
+/*!
+    Returns the term which is inside this scope.
+
+    This term can be a conjunction term if there are multiple terms inside.
+*/
 QIviAbstractQueryTerm *QIviScopeTerm::term() const
 {
     Q_D(const QIviScopeTerm);
     return d->m_term;
 }
+
+/*!
+    \class QIviFilterTerm
+    \inmodule QtIviCore
+    \ingroup qtivi_queryterms
+    \brief The QIviFilterTerm is the representation of a filter
+
+    The filter is either in the form:
+
+    \code
+    identifier operator value
+    \endcode
+
+    or:
+
+    \code
+    value operator identifier
+    \endcode
+*/
+
+/*!
+    \enum QIviFilterTerm::Operator
+    \value Equals
+           Tests whether the value from the identifier is the equal to the passed value. In case of a string the comparison is case-senstitive.
+    \value EqualsCaseInsensitive
+           Tests whether the value from the identifier is the equal to the passed value, but the comparison is done case-insensitive.
+    \value Unequals
+           Tests whether the value from the identifier is the unequal to the passed value. In case of a string the comparison is case-senstitive.
+    \value GreaterThan
+           Tests whether the value from the identifier is greater than the passed value. This does only work for numbers.
+    \value GreaterEquals
+           Tests whether the value from the identifier is greater than or equal to the passed value. This does only work for numbers.
+    \value LowerThan
+           Tests whether the value from the identifier is lower than the passed value. This does only work for numbers.
+    \value LowerEquals
+           Tests whether the value from the identifier is lower than or equal to the passed value. This does only work for numbers.
+*/
 
 QIviFilterTerm::QIviFilterTerm()
     : d_ptr(new QIviFilterTermPrivate)
@@ -186,11 +303,17 @@ QIviFilterTerm::~QIviFilterTerm()
     delete d_ptr;
 }
 
+/*!
+    \reimp
+*/
 QIviAbstractQueryTerm::Type QIviFilterTerm::type() const
 {
     return QIviAbstractQueryTerm::FilterTerm;
 }
 
+/*!
+    \reimp
+*/
 QString QIviFilterTerm::toString() const
 {
     Q_D(const QIviFilterTerm);
@@ -204,30 +327,47 @@ QString QIviFilterTerm::toString() const
     return string;
 }
 
+/*!
+    Returns the operator of this filter.
+*/
 QIviFilterTerm::Operator QIviFilterTerm::operatorType() const
 {
     Q_D(const QIviFilterTerm);
     return d->m_operator;
 }
 
+/*!
+    Returns the value of the filter.
+*/
 QVariant QIviFilterTerm::value() const
 {
     Q_D(const QIviFilterTerm);
     return d->m_value;
 }
 
+/*!
+    Returns the property this filter should act on.
+*/
 QString QIviFilterTerm::propertyName() const
 {
     Q_D(const QIviFilterTerm);
     return d->m_property;
 }
 
+/*!
+    Returns \c true when this term is negated, otherwise \c false
+*/
 bool QIviFilterTerm::isNegated() const
 {
     Q_D(const QIviFilterTerm);
     return d->m_negated;
 }
 
+/*!
+    \class QIviOrderTerm
+    \inmodule QtIviCore
+    \brief The QIviOrderTerm is the representation of a scope which can hold another term
+*/
 QIviOrderTerm::QIviOrderTerm()
     : d(new QIviOrderTermPrivate)
 {
@@ -248,11 +388,18 @@ QIviOrderTerm &QIviOrderTerm::operator =(const QIviOrderTerm &other)
     return *this;
 }
 
+/*!
+    Returns \c true when it should be sorted in ascending order.
+    Returns \c false when it should be sorted in descending order.
+*/
 bool QIviOrderTerm::isAscending() const
 {
     return d->m_ascending;
 }
 
+/*!
+    Returns the property which should be used for sorting.
+*/
 QString QIviOrderTerm::propertyName() const
 {
     return d->m_propertyName;
