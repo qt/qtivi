@@ -1,6 +1,7 @@
 TEMPLATE = subdirs
 SUBDIRS = vehiclefunctions \
           media
-qtHaveModule(geniviextras) {
+
+config_dlt {
     SUBDIRS += geniviextras
 }

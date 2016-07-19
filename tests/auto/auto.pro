@@ -2,6 +2,6 @@ TEMPLATE = subdirs
 
 SUBDIRS = core vehiclefunctions
 TEMPLATE = subdirs
-qtHaveModule(geniviextras) {
+config_dlt {
     SUBDIRS += dlt
 }
