@@ -62,6 +62,7 @@ QIviSearchAndBrowseModelPrivate::QIviSearchAndBrowseModelPrivate(const QString &
     , m_canGoBack(false)
     , m_loadingType(QIviSearchAndBrowseModel::FetchMore)
 {
+    qRegisterMetaType<QIviSearchAndBrowseModel::LoadingType>();
     qRegisterMetaType<QIviSearchAndBrowseModelItem>();
 }
 
@@ -207,6 +208,9 @@ void QIviSearchAndBrowseModelPrivate::resetModel()
     q->endResetModel();
     m_fetchedDataCount = 0;
 
+    if (searchBackend())
+        m_availableContentTypes = searchBackend()->availableContentTypes().toList();
+
     checkType();
     parseQuery();
 
@@ -249,10 +253,9 @@ void QIviSearchAndBrowseModelPrivate::checkType()
     if (!searchBackend() || m_contentType.isEmpty())
         return;
 
-    QSet<QString> types = searchBackend()->availableContentTypes();
-    if (!types.contains(m_contentType)) {
+    if (!m_availableContentTypes.contains(m_contentType)) {
         QString error = QString(QLatin1String("Unsupported type: \"%1\" \n Supported types are: \n")).arg(m_contentType);
-        for (const QString &type : types)
+        for (const QString &type : m_availableContentTypes)
             error.append(type + QLatin1String("\n"));
         qWarning("%s", qPrintable(error));
     }
@@ -270,6 +273,9 @@ void QIviSearchAndBrowseModelPrivate::clearToDefaults()
     m_fetchedDataCount = 0;
     m_canGoBack = false;
     m_loadingType = QIviSearchAndBrowseModel::FetchMore;
+    m_availableContentTypes.clear();
+    m_capabilities = QIviSearchAndBrowseModel::NoExtras;
+    m_itemList.clear();
 }
 
 void QIviSearchAndBrowseModelPrivate::setCanGoBack(bool canGoBack)
@@ -284,7 +290,7 @@ void QIviSearchAndBrowseModelPrivate::setCanGoBack(bool canGoBack)
 
 const QIviSearchAndBrowseModelItem *QIviSearchAndBrowseModelPrivate::itemAt(int i) const
 {
-    QVariant var = m_itemList.at(i);
+    const QVariant &var = m_itemList.at(i);
     if (!var.isValid())
         return nullptr;
 
@@ -884,7 +890,8 @@ bool QIviSearchAndBrowseModel::canGoForward(int i) const
 
     Uses the item at index \a i and shows the next set of items. The \a navigationType can be used
     to control whether the new data should be shown in this model instance or whether a new instance
-    should be created and returned.
+    should be created and returned. If a instance is returned, this instance is owned
+    by the caller.
 
     \note Whether the OutOfModelNavigation navigation type is supported is decided by the backend.
 
@@ -915,7 +922,7 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
     if (navigationType == OutOfModelNavigation) {
         if (d->m_capabilities.testFlag(QIviSearchAndBrowseModel::SupportsStatelessNavigation)) {
             QString newContentType = backend->goForward(d->m_identifier, d->m_contentType, item->id());
-            QIviSearchAndBrowseModel* newModel = new QIviSearchAndBrowseModel(serviceObject(), newContentType, this);
+            QIviSearchAndBrowseModel* newModel = new QIviSearchAndBrowseModel(serviceObject(), newContentType);
             return newModel;
         } else {
             qWarning("The backend doesn't support the OutOfModelNavigation");

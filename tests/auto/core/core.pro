@@ -5,3 +5,4 @@ SUBDIRS = servicemanagertest \
           qiviproperty \
           qiviabstractfeature \
           queryparser \
+          qivisearchandbrowsemodel \

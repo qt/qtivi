@@ -166,7 +166,7 @@ Q_SIGNALS:
     void loadingTypeChanged(QIviSearchAndBrowseModel::LoadingType loadingType);
 
 protected:
-    QIviSearchAndBrowseModel(QIviServiceObject *serviceObject, const QString &contentType, QObject *parent);
+    QIviSearchAndBrowseModel(QIviServiceObject *serviceObject, const QString &contentType, QObject *parent = Q_NULLPTR);
     QIviSearchAndBrowseModel(QIviSearchAndBrowseModelPrivate &dd, QObject *parent);
     virtual bool acceptServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
     virtual void connectToServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
