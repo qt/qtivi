@@ -81,12 +81,12 @@ private slots:
     void onAirConditioningAttributeChanged(const QIviPropertyAttribute<bool> &attribute);
     void setupFlowDirectionRadioButtons(QIviClimateControl::AirflowDirections direction);
     void setupFlowDirectionAttribute(const QIviPropertyAttribute<QIviClimateControl::AirflowDirections> &attribute);
-    void onFlowDirectionButtonToggled(QAbstractButton * button, bool checked);
+    void onFlowDirectionButtonToggled(QAbstractButton *button, bool checked);
 private:
 
     Ui::MainWindow *ui;
     QButtonGroup *m_buttonGroup;
-    QIviClimateControl* m_climateControl;
+    QIviClimateControl *m_climateControl;
 };
 
 #endif // MAINWINDOW_H

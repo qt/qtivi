@@ -52,7 +52,7 @@ class WindowTimer : public QObject
     Q_OBJECT
 
 public:
-    WindowTimer(const QString &zone, bool isBlind, WindowControlBackend* backend);
+    WindowTimer(const QString &zone, bool isBlind, WindowControlBackend *backend);
 
     void setOpeningTime(int intervalInSeconds);
     void open();
@@ -68,13 +68,13 @@ private:
     int m_interval;
     QString m_zone;
     bool m_blind;
-    WindowControlBackend* m_backend;
+    WindowControlBackend *m_backend;
 };
 
 class WindowControlBackend : public QIviWindowControlBackendInterface
 {
 public:
-    WindowControlBackend(QObject* parent = 0);
+    WindowControlBackend(QObject *parent = 0);
     ~WindowControlBackend();
 
     QStringList availableZones() const;

@@ -86,7 +86,7 @@ public:
     };
     Q_ENUM(State)
 
-    QIviWindowControl(const QString &zone=QString(), QObject *parent = Q_NULLPTR);
+    QIviWindowControl(const QString &zone = QString(), QObject *parent = Q_NULLPTR);
     ~QIviWindowControl();
 
     QIviWindowControl::HeaterMode heaterMode() const;

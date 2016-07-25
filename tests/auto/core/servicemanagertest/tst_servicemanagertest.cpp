@@ -48,7 +48,7 @@ public:
         return m_serviceObjects.keys();
     }
 
-    QObject* interfaceInstance(const QString &interface) const {
+    QObject *interfaceInstance(const QString &interface) const {
         return m_serviceObjects.value(interface);
     }
 
@@ -168,12 +168,12 @@ void ServiceManagerTest::testFindServiceObjects()
         type = QIviServiceManager::SimulationBackend;
     bool regResult = manager->registerService(backend, QStringList() << "TestInterface", type);
     QCOMPARE(regResult, true);
-    QObject* testObject = new QObject();
+    QObject *testObject = new QObject();
     backend->addServiceObject("TestInterface", testObject);
 
     QList<QIviServiceObject*> list = manager->findServiceByInterface("TestInterface", searchFlags);
     QVERIFY(!list.isEmpty());
-    QIviServiceObject* serviceObject = list.at(0);
+    QIviServiceObject *serviceObject = list.at(0);
     QVERIFY(serviceObject->interfaces().contains("TestInterface"));
     QCOMPARE(serviceObject->interfaceInstance("TestInterface"), testObject);
 }

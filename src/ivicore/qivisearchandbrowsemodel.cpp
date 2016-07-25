@@ -300,7 +300,7 @@ const QIviSearchAndBrowseModelItem *QIviSearchAndBrowseModelPrivate::itemAt(int 
 QIviSearchAndBrowseModelInterface *QIviSearchAndBrowseModelPrivate::searchBackend() const
 {
     Q_Q(const QIviSearchAndBrowseModel);
-    QIviServiceObject* so = q->serviceObject();
+    QIviServiceObject *so = q->serviceObject();
     if (so)
         return qobject_cast<QIviSearchAndBrowseModelInterface*>(so->interfaceInstance(QIviStringSearchAndBrowseModelInterfaceName));
 
@@ -1164,7 +1164,7 @@ void QIviSearchAndBrowseModel::connectToServiceObject(QIviServiceObject *service
 
     Q_D(QIviSearchAndBrowseModel);
 
-    QIviSearchAndBrowseModelInterface* backend = d->searchBackend();
+    QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
     if (!backend)
         return;
 

@@ -57,7 +57,7 @@ QIviPropertyPrivate::QIviPropertyPrivate(int userType, QtPrivate::QSlotObjectBas
 
 void QIviPropertyPrivate::throwError(QObject *object, const QString &error)
 {
-    QJSEngine* jsEngine = qjsEngine(object);
+    QJSEngine *jsEngine = qjsEngine(object);
     if (jsEngine) {
         QV4::ExecutionEngine *v4 = QV8Engine::getV4(jsEngine);
         v4->throwError(error);
@@ -140,7 +140,7 @@ void QIviProperty::setValue(const QVariant &value)
     QMetaType metaType(d->m_type);
     bool isEnumOrFlag = false;
 
-    const QMetaObject* mo = metaType.metaObject();
+    const QMetaObject *mo = metaType.metaObject();
     QString enumName = QString::fromLocal8Bit(QMetaType::typeName(d->m_type)).split(QStringLiteral("::")).last();
     if (mo) {
         QMetaEnum mEnum = mo->enumerator(mo->indexOfEnumerator(enumName.toLocal8Bit().constData()));

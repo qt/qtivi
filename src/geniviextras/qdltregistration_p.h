@@ -64,19 +64,19 @@ class QDltRegistration;
 class QDltRegistrationPrivate
 {
 public:
-    QDltRegistrationPrivate(QDltRegistration* parent);
+    QDltRegistrationPrivate(QDltRegistration *parent);
 
-    void registerCategory(const QLoggingCategory* category, DltContext *dltContext, const char *dltCtxName, const char *dltCtxDescription);
-    void setDefaultContext(DltContext* dltContext);
+    void registerCategory(const QLoggingCategory *category, DltContext *dltContext, const char *dltCtxName, const char *dltCtxDescription);
+    void setDefaultContext(DltContext *dltContext);
 
-    DltContext* context(const char* categoryName);
+    DltContext *context(const char *categoryName);
     void dltLogLevelChanged(char context_id[], uint8_t log_level, uint8_t trace_status);
 
 private:
-    QDltRegistration* const q_ptr;
+    QDltRegistration *const q_ptr;
     Q_DECLARE_PUBLIC(QDltRegistration)
     QString m_dltAppID;
-    DltContext* m_defaultContext;
+    DltContext *m_defaultContext;
     QHash<QString, DltContext*> m_categoryName2DltContext;
     QHash<QString, QLoggingCategory*> m_ctxName2Category;
 };

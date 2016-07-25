@@ -517,7 +517,7 @@ public:
 
     QString name() const { return m_name; }
     QStringList interfaces() const { return m_interfaces; }
-    QObject* interfaceInstance(const QString& interface) const
+    QObject *interfaceInstance(const QString& interface) const
     {
         if (interface == QIviStringClimateControlInterfaceName)
             return testBackend();
@@ -533,7 +533,7 @@ public:
 private:
     QString m_name;
     QStringList m_interfaces;
-    ClimateControlTestBackend* m_backend;
+    ClimateControlTestBackend *m_backend;
 };
 
 class ClimateControlInvalidServiceObject : public QIviServiceObject {
@@ -547,12 +547,12 @@ public:
 
     QString name() const { return m_name; }
     QStringList interfaces() const { return m_interfaces; }
-    QObject* interfaceInstance(const QString& ) const { return m_dummyBackend; }
+    QObject *interfaceInstance(const QString& ) const { return m_dummyBackend; }
 
 private:
     QString m_name;
     QStringList m_interfaces;
-    QObject* m_dummyBackend;
+    QObject *m_dummyBackend;
 };
 
 class ClimateControlTest : public QObject
@@ -695,7 +695,7 @@ void ClimateControlTest::testIntProperties()
         QStringList zones = cc.availableZones();
         zones.removeAll("Dummy");
         foreach (QString z, zones) {
-            QIviClimateControl* climateZone = qobject_cast<QIviClimateControl*>(cc.zoneAt(z));
+            QIviClimateControl *climateZone = qobject_cast<QIviClimateControl*>(cc.zoneAt(z));
             testIVIProperty<QIviClimateControl, ClimateControlTestBackend, int>(testData, climateZone, service->testBackend(), z);
         }
     } else {
@@ -743,7 +743,7 @@ void ClimateControlTest::testBoolProperties()
         QStringList zones = cc.availableZones();
         zones.removeAll("Dummy");
         foreach (QString z, zones) {
-            QIviClimateControl* climateZone = qobject_cast<QIviClimateControl*>(cc.zoneAt(z));
+            QIviClimateControl *climateZone = qobject_cast<QIviClimateControl*>(cc.zoneAt(z));
             testIVIProperty<QIviClimateControl, ClimateControlTestBackend, bool>(testData, climateZone, service->testBackend(), z);
         }
     } else {

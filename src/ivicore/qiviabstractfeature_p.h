@@ -70,7 +70,7 @@ public:
     Q_DECLARE_PUBLIC(QIviAbstractFeature)
 
     QString m_interface;
-    QIviServiceObject* m_serviceObject;
+    QIviServiceObject *m_serviceObject;
     QIviAbstractFeature::DiscoveryMode m_discoveryMode;
     QIviAbstractFeature::DiscoveryResult m_discoveryResult;
     QString m_errorMessage;

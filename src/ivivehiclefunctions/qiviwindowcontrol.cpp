@@ -316,7 +316,7 @@ void QIviWindowControl::connectToServiceObject(QIviServiceObject *serviceObject)
     Q_D(QIviWindowControl);
     QIviAbstractZonedFeature::connectToServiceObject(serviceObject);
 
-    QIviWindowControlBackendInterface* backend = d->windowControlBackend();
+    QIviWindowControlBackendInterface *backend = d->windowControlBackend();
     if (!backend)
         return;
 
@@ -623,7 +623,7 @@ QIviProperty *QIviWindowControl::stateProperty() const
 void QIviWindowControl::setHeaterMode(QIviWindowControl::HeaterMode value)
 {
     Q_D(QIviWindowControl);
-    if (QIviWindowControlBackendInterface* backend = d->windowControlBackend())
+    if (QIviWindowControlBackendInterface *backend = d->windowControlBackend())
         backend->setHeaterMode(value, zone());
 }
 
@@ -635,7 +635,7 @@ void QIviWindowControl::setHeaterMode(QIviWindowControl::HeaterMode value)
 void QIviWindowControl::setBlindMode(QIviWindowControl::BlindMode value)
 {
     Q_D(QIviWindowControl);
-    if (QIviWindowControlBackendInterface* backend = d->windowControlBackend())
+    if (QIviWindowControlBackendInterface *backend = d->windowControlBackend())
         backend->setBlindMode(value, zone());
 }
 
@@ -655,7 +655,7 @@ void QIviWindowControl::setBlindMode(QIviWindowControl::BlindMode value)
 void QIviWindowControl::open()
 {
     Q_D(QIviWindowControl);
-    if (QIviWindowControlBackendInterface* backend = d->windowControlBackend())
+    if (QIviWindowControlBackendInterface *backend = d->windowControlBackend())
         backend->open(zone());
 }
 
@@ -675,7 +675,7 @@ void QIviWindowControl::open()
 void QIviWindowControl::close()
 {
     Q_D(QIviWindowControl);
-    if (QIviWindowControlBackendInterface* backend = d->windowControlBackend())
+    if (QIviWindowControlBackendInterface *backend = d->windowControlBackend())
         backend->close(zone());
 }
 

@@ -297,7 +297,7 @@ QIviServiceManager::QIviServiceManager()
  */
 QIviServiceManager *QIviServiceManager::instance()
 {
-    static QIviServiceManager* instance = new QIviServiceManager();
+    static QIviServiceManager *instance = new QIviServiceManager();
     return instance;
 }
 

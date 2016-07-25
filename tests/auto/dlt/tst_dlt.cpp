@@ -50,7 +50,7 @@ class QDltParser {
 
 public:
 
-    QDltParser(QFile* file)
+    QDltParser(QFile *file)
         : dltFile(new DltFile())
     {
         QVERIFY(dlt_file_init(dltFile, false) >= 0);
@@ -63,14 +63,14 @@ public:
         QVERIFY(dlt_file_free(dltFile, false) >= 0);
     }
 
-    QString idToString(char* id)
+    QString idToString(char *id)
     {
         QByteArray appData(DLT_ID_SIZE, '\0');
         dlt_print_id(appData.data(),id);
         return QString(appData);
     }
 
-    QString readPayload(DltMessage* msg)
+    QString readPayload(DltMessage *msg)
     {
         QByteArray payload(msg->datasize, '\0');
         dlt_message_payload(msg,payload.data(),msg->datasize,DLT_OUTPUT_ASCII,false);
@@ -95,7 +95,7 @@ public:
     }
 
 private:
-    DltFile* dltFile;
+    DltFile *dltFile;
 };
 
 
@@ -120,7 +120,7 @@ private Q_SLOTS:
 
 private:
     QTemporaryFile m_tempFile;
-    QDltParser* m_dltParser;
+    QDltParser *m_dltParser;
 };
 
 void QDltTest::initTestCase()
@@ -134,7 +134,7 @@ void QDltTest::initTestCase()
 
 void QDltTest::testLogging()
 {
-    QDltRegistration* registration = globalDltRegistration();
+    QDltRegistration *registration = globalDltRegistration();
     registration->registerApplication("APP1", "Description for APP");
     registration->registerCategory(&TEST1(), "TES1", "Test Category One");
 

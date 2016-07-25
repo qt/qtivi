@@ -71,7 +71,7 @@ class Q_QTIVICORE_EXPORT QIviScopeTermPrivate
 public:
     QIviScopeTermPrivate();
 
-    QIviAbstractQueryTerm* m_term;
+    QIviAbstractQueryTerm *m_term;
     bool m_negated;
 };
 

@@ -238,7 +238,7 @@ public:
 
     QString name() const { return m_name; }
     QStringList interfaces() const { return m_interfaces; }
-    QObject* interfaceInstance(const QString& interface) const
+    QObject *interfaceInstance(const QString& interface) const
     {
         if (interface == QIviStringWindowControlInterfaceName)
             return testBackend();
@@ -254,7 +254,7 @@ public:
 private:
     QString m_name;
     QStringList m_interfaces;
-    WindowControlTestBackend* m_backend;
+    WindowControlTestBackend *m_backend;
 };
 
 class WindowControlInvalidServiceObject : public QIviServiceObject {
@@ -268,12 +268,12 @@ public:
 
     QString name() const { return m_name; }
     QStringList interfaces() const { return m_interfaces; }
-    QObject* interfaceInstance(const QString& ) const { return m_dummyBackend; }
+    QObject *interfaceInstance(const QString& ) const { return m_dummyBackend; }
 
 private:
     QString m_name;
     QStringList m_interfaces;
-    QObject* m_dummyBackend;
+    QObject *m_dummyBackend;
 };
 
 class WindowControlTest : public QObject
@@ -357,7 +357,7 @@ void WindowControlTest::testClearServiceObject()
     QIviWindowControl wc;
     wc.startAutoDiscovery();
     QVERIFY(wc.availableZones().contains("FrontLeft"));
-    QIviWindowControl* zone = qobject_cast<QIviWindowControl*>(wc.zoneAt("FrontLeft"));
+    QIviWindowControl *zone = qobject_cast<QIviWindowControl*>(wc.zoneAt("FrontLeft"));
     QVERIFY(zone);
     QCOMPARE(zone->heaterMode(), QIviWindowControl::HeaterOn);
     wc.setServiceObject(0);
@@ -380,7 +380,7 @@ void WindowControlTest::testHeaterMode()
     QStringList zones = wc.availableZones();
     zones.removeAll("Dummy");
     foreach (QString z, zones) {
-        QIviWindowControl* window = qobject_cast<QIviWindowControl*>(wc.zoneAt(z));
+        QIviWindowControl *window = qobject_cast<QIviWindowControl*>(wc.zoneAt(z));
         testIVIProperty<QIviWindowControl, WindowControlTestBackend, QIviWindowControl::HeaterMode>(testData, window, service->testBackend(), z);
     }
 }
@@ -398,7 +398,7 @@ void WindowControlTest::testHeaterEnabled()
     QStringList zones = wc.availableZones();
     zones.removeAll("Dummy");
     foreach (QString z, zones) {
-        QIviWindowControl* window = qobject_cast<QIviWindowControl*>(wc.zoneAt(z));
+        QIviWindowControl *window = qobject_cast<QIviWindowControl*>(wc.zoneAt(z));
         testIVIProperty<QIviWindowControl, WindowControlTestBackend, bool>(testData, window, service->testBackend(), z);
     }
 }
@@ -419,7 +419,7 @@ void WindowControlTest::testBlindMode()
     QStringList zones = wc.availableZones();
     zones.removeAll("Dummy");
     foreach (QString z, zones) {
-        QIviWindowControl* window = qobject_cast<QIviWindowControl*>(wc.zoneAt(z));
+        QIviWindowControl *window = qobject_cast<QIviWindowControl*>(wc.zoneAt(z));
         testIVIProperty<QIviWindowControl, WindowControlTestBackend, QIviWindowControl::BlindMode>(testData, window, service->testBackend(), z);
     }
 }
@@ -451,7 +451,7 @@ void WindowControlTest::testStates()
     QStringList zones = wc.availableZones();
     zones.removeAll("Dummy");
     foreach (QString z, zones) {
-        QIviWindowControl* window = qobject_cast<QIviWindowControl*>(wc.zoneAt(z));
+        QIviWindowControl *window = qobject_cast<QIviWindowControl*>(wc.zoneAt(z));
         testIVIProperty<QIviWindowControl, WindowControlTestBackend, QIviWindowControl::State>(testData, window, service->testBackend(), z);
     }
 }

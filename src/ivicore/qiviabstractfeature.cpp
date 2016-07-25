@@ -535,7 +535,7 @@ QIviAbstractFeature::DiscoveryResult QIviAbstractFeature::startAutoDiscovery()
         return NoResult;
     }
 
-    QIviServiceManager* serviceManager = QIviServiceManager::instance();
+    QIviServiceManager *serviceManager = QIviServiceManager::instance();
     QList<QIviServiceObject*> serviceObjects;
     DiscoveryResult result = NoResult;
     if (d->m_discoveryMode == AutoDiscovery || d->m_discoveryMode == LoadOnlyProductionBackends) {
@@ -545,7 +545,7 @@ QIviAbstractFeature::DiscoveryResult QIviAbstractFeature::startAutoDiscovery()
 
     //Check whether we can use the found production backends
     bool serviceObjectSet = false;
-    foreach (QIviServiceObject* object, serviceObjects) {
+    foreach (QIviServiceObject *object, serviceObjects) {
         qCDebug(qLcIviServiceManagement) << "Trying to use" << object << "Supported Interfaces:" << object->interfaces();
         if (setServiceObject(object)) {
             serviceObjectSet = true;
@@ -565,7 +565,7 @@ QIviAbstractFeature::DiscoveryResult QIviAbstractFeature::startAutoDiscovery()
             if (Q_UNLIKELY(serviceObjects.isEmpty()))
                 qWarning() << "There is no simulation backend implementing" << d->m_interface << ".";
 
-            foreach (QIviServiceObject* object, serviceObjects) {
+            foreach (QIviServiceObject *object, serviceObjects) {
                 qCDebug(qLcIviServiceManagement) << "Trying to use" << object << "Supported Interfaces:" << object->interfaces();
                 if (setServiceObject(object)) {
                     serviceObjectSet = true;

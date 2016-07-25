@@ -143,7 +143,7 @@ void TestQueryParser::validQueries()
     QIviQueryParser parser;
     parser.setQuery(query);
 
-    QIviAbstractQueryTerm* term = parser.parse();
+    QIviAbstractQueryTerm *term = parser.parse();
     QVERIFY2(term, qPrintable(parser.lastError()));
 
 //    if ()
@@ -207,7 +207,7 @@ void TestQueryParser::identifierList()
     QSet<QString> set;
     set.insert(identifier);
     parser.setAllowedIdentifiers(set);
-    QIviAbstractQueryTerm* term = parser.parse();
+    QIviAbstractQueryTerm *term = parser.parse();
     QVERIFY2(term, qPrintable(parser.lastError()));
     delete term;
 }

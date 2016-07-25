@@ -59,8 +59,8 @@ private slots:
     void onDirectoryChanged(const QString &path);
 
 signals:
-    void mediaDirectoryAdded(const QString& path);
-    void mediaDirectoryRemoved(const QString& path);
+    void mediaDirectoryAdded(const QString &path);
+    void mediaDirectoryRemoved(const QString &path);
 
 private:
     QString m_deviceFolder;

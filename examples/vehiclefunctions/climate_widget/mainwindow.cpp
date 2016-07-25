@@ -140,12 +140,12 @@ void MainWindow::onAirRecirculationModeChanged(QIviClimateControl::Recirculation
     ui->cb_airRecirculation->setChecked(mode == QIviClimateControl::RecirculationOn);
 }
 
-void MainWindow::onAirRecirculationAttributeChanged(const QIviPropertyAttribute<QIviClimateControl::RecirculationMode> & attribute)
+void MainWindow::onAirRecirculationAttributeChanged(const QIviPropertyAttribute<QIviClimateControl::RecirculationMode> &attribute)
 {
     ui->cb_airRecirculation->setEnabled(attribute.isAvailable());
 }
 
-void MainWindow::onHeaterAttributeChanged(const QIviPropertyAttribute<bool> & attribute)
+void MainWindow::onHeaterAttributeChanged(const QIviPropertyAttribute<bool> &attribute)
 {
     ui->cb_heater->setEnabled(attribute.isAvailable());
 }
@@ -163,7 +163,7 @@ void MainWindow::setupFlowDirectionRadioButtons(QIviClimateControl::AirflowDirec
     ui->cb_floor->setChecked(direction.testFlag(QIviClimateControl::Floor));
 }
 
-void MainWindow::setupFlowDirectionAttribute(const QIviPropertyAttribute<QIviClimateControl::AirflowDirections> & attribute)
+void MainWindow::setupFlowDirectionAttribute(const QIviPropertyAttribute<QIviClimateControl::AirflowDirections> &attribute)
 {
     ui->cb_windshield->setEnabled(attribute.availableValues().contains(QIviClimateControl::Windshield));
     ui->cb_dashboard->setEnabled(attribute.availableValues().contains(QIviClimateControl::Dashboard));

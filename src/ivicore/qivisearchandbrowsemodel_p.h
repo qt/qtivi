@@ -84,7 +84,7 @@ public:
     void setCanGoBack(bool canGoBack);
     const QIviSearchAndBrowseModelItem *itemAt(int i) const;
 
-    QIviSearchAndBrowseModelInterface* searchBackend() const;
+    QIviSearchAndBrowseModelInterface *searchBackend() const;
     void updateContentType(const QString &contentType);
 
     QIviSearchAndBrowseModel * const q_ptr;

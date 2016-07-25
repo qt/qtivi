@@ -54,13 +54,12 @@ template <typename T>  QVariant qtivi_convertValue(const T &val)
     QVariant var;
     int userType = qMetaTypeId<T>();
     QMetaType metaType(userType);
-    const QMetaObject* mo = metaType.metaObject();
+    const QMetaObject *mo = metaType.metaObject();
     QString enumName = QString::fromLocal8Bit(QMetaType::typeName(userType)).split(QStringLiteral("::")).last();
     if (mo) {
         QMetaEnum mEnum = mo->enumerator(mo->indexOfEnumerator(enumName.toLocal8Bit().constData()));
-        if (mEnum.isValid()) {
+        if (mEnum.isValid())
             var = QVariant::fromValue<T>(val).toInt();
-        }
     }
 
     if (!var.isValid())
@@ -72,10 +71,9 @@ template <typename T>  QVariant qtivi_convertValue(const T &val)
 template <typename T> QVariantList qtivi_convertAvailableValues(const QVector<T> &aValues)
 {
     QVariantList list;
-    Q_FOREACH (const T &val, aValues) {
+    Q_FOREACH (const T &val, aValues)
         //As QML doesn't support Enums in Lists we need to convert it to int
         list.append(qtivi_convertValue<T>(val));
-    }
     return list;
 }
 

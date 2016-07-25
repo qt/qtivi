@@ -642,7 +642,7 @@ QIviClimateControlBackendInterface *QIviClimateControlPrivate::climateControlBac
 
    The \a parent argument is passed on to the \l QIviAbstractZonedFeature base class.
 */
-QIviClimateControl::QIviClimateControl(const QString &zone, QObject* parent)
+QIviClimateControl::QIviClimateControl(const QString &zone, QObject *parent)
     : QIviAbstractZonedFeature(*new QIviClimateControlPrivate(QIviStringClimateControlInterfaceName, zone, this), parent)
 {
     Q_D(QIviClimateControl);
@@ -664,7 +664,7 @@ void QIviClimateControl::connectToServiceObject(QIviServiceObject *serviceObject
     Q_D(QIviClimateControl);
     QIviAbstractZonedFeature::connectToServiceObject(serviceObject);
 
-    QIviClimateControlBackendInterface* backend = d->climateControlBackend();
+    QIviClimateControlBackendInterface *backend = d->climateControlBackend();
     if (!backend)
         return;
 
@@ -1469,7 +1469,7 @@ QIviProperty *QIviClimateControl::automaticClimateFanIntensityLevelProperty() co
 void QIviClimateControl::setAirConditioningEnabled(bool enabled)
 {
     Q_D(QIviClimateControl);
-    if (QIviClimateControlBackendInterface* backend = d->climateControlBackend())
+    if (QIviClimateControlBackendInterface *backend = d->climateControlBackend())
         backend->setAirConditioningEnabled(enabled, zone());
 }
 
@@ -1481,7 +1481,7 @@ void QIviClimateControl::setAirConditioningEnabled(bool enabled)
 void QIviClimateControl::setAirflowDirections(QIviClimateControl::AirflowDirections direction)
 {
     Q_D(QIviClimateControl);
-    if (QIviClimateControlBackendInterface* backend = d->climateControlBackend())
+    if (QIviClimateControlBackendInterface *backend = d->climateControlBackend())
         backend->setAirflowDirections(direction, zone());
 }
 
@@ -1493,7 +1493,7 @@ void QIviClimateControl::setAirflowDirections(QIviClimateControl::AirflowDirecti
 void QIviClimateControl::setHeaterEnabled(bool enabled)
 {
     Q_D(QIviClimateControl);
-    if (QIviClimateControlBackendInterface* backend = d->climateControlBackend())
+    if (QIviClimateControlBackendInterface *backend = d->climateControlBackend())
         backend->setHeaterEnabled(enabled, zone());
 }
 
@@ -1505,7 +1505,7 @@ void QIviClimateControl::setHeaterEnabled(bool enabled)
 void QIviClimateControl::setSteeringWheelHeater(int value)
 {
     Q_D(QIviClimateControl);
-    if (QIviClimateControlBackendInterface* backend = d->climateControlBackend())
+    if (QIviClimateControlBackendInterface *backend = d->climateControlBackend())
         backend->setSteeringWheelHeater(value, zone());
 }
 
@@ -1517,7 +1517,7 @@ void QIviClimateControl::setSteeringWheelHeater(int value)
 void QIviClimateControl::setFanSpeedLevel(int value)
 {
     Q_D(QIviClimateControl);
-    if (QIviClimateControlBackendInterface* backend = d->climateControlBackend())
+    if (QIviClimateControlBackendInterface *backend = d->climateControlBackend())
         backend->setFanSpeedLevel(value, zone());
 }
 
@@ -1529,7 +1529,7 @@ void QIviClimateControl::setFanSpeedLevel(int value)
 void QIviClimateControl::setTargetTemperature(int temperature)
 {
     Q_D(QIviClimateControl);
-    if (QIviClimateControlBackendInterface* backend = d->climateControlBackend())
+    if (QIviClimateControlBackendInterface *backend = d->climateControlBackend())
         backend->setTargetTemperature(temperature, zone());
 }
 
@@ -1541,7 +1541,7 @@ void QIviClimateControl::setTargetTemperature(int temperature)
 void QIviClimateControl::setSeatCooler(int value)
 {
     Q_D(QIviClimateControl);
-    if (QIviClimateControlBackendInterface* backend = d->climateControlBackend())
+    if (QIviClimateControlBackendInterface *backend = d->climateControlBackend())
         backend->setSeatCooler(value, zone());
 }
 
@@ -1553,7 +1553,7 @@ void QIviClimateControl::setSeatCooler(int value)
 void QIviClimateControl::setSeatHeater(int value)
 {
     Q_D(QIviClimateControl);
-    if (QIviClimateControlBackendInterface* backend = d->climateControlBackend())
+    if (QIviClimateControlBackendInterface *backend = d->climateControlBackend())
         backend->setSeatHeater(value, zone());
 }
 
@@ -1565,7 +1565,7 @@ void QIviClimateControl::setSeatHeater(int value)
 void QIviClimateControl::setZoneSynchronizationEnabled(bool enabled)
 {
     Q_D(QIviClimateControl);
-    if (QIviClimateControlBackendInterface* backend = d->climateControlBackend())
+    if (QIviClimateControlBackendInterface *backend = d->climateControlBackend())
         backend->setZoneSynchronizationEnabled(enabled, zone());
 }
 
@@ -1577,7 +1577,7 @@ void QIviClimateControl::setZoneSynchronizationEnabled(bool enabled)
 void QIviClimateControl::setDefrostEnabled(bool enabled)
 {
     Q_D(QIviClimateControl);
-    if (QIviClimateControlBackendInterface* backend = d->climateControlBackend())
+    if (QIviClimateControlBackendInterface *backend = d->climateControlBackend())
         backend->setDefrostEnabled(enabled, zone());
 }
 
@@ -1589,7 +1589,7 @@ void QIviClimateControl::setDefrostEnabled(bool enabled)
 void QIviClimateControl::setRecirculationMode(QIviClimateControl::RecirculationMode recirculationMode)
 {
     Q_D(QIviClimateControl);
-    if (QIviClimateControlBackendInterface* backend = d->climateControlBackend())
+    if (QIviClimateControlBackendInterface *backend = d->climateControlBackend())
         backend->setRecirculationMode(recirculationMode, zone());
 }
 
@@ -1601,7 +1601,7 @@ void QIviClimateControl::setRecirculationMode(QIviClimateControl::RecirculationM
 void QIviClimateControl::setRecirculationSensitivityLevel(int value)
 {
     Q_D(QIviClimateControl);
-    if (QIviClimateControlBackendInterface* backend = d->climateControlBackend())
+    if (QIviClimateControlBackendInterface *backend = d->climateControlBackend())
         backend->setRecirculationSensitivityLevel(value, zone());
 }
 
@@ -1613,7 +1613,7 @@ void QIviClimateControl::setRecirculationSensitivityLevel(int value)
 void QIviClimateControl::setClimateMode(QIviClimateControl::ClimateMode climateMode)
 {
     Q_D(QIviClimateControl);
-    if (QIviClimateControlBackendInterface* backend = d->climateControlBackend())
+    if (QIviClimateControlBackendInterface *backend = d->climateControlBackend())
         backend->setClimateMode(climateMode, zone());
 }
 
@@ -1625,7 +1625,7 @@ void QIviClimateControl::setClimateMode(QIviClimateControl::ClimateMode climateM
 void QIviClimateControl::setAutomaticClimateFanIntensityLevel(int value)
 {
     Q_D(QIviClimateControl);
-    if (QIviClimateControlBackendInterface* backend = d->climateControlBackend())
+    if (QIviClimateControlBackendInterface *backend = d->climateControlBackend())
         backend->setAutomaticClimateFanIntensityLevel(value, zone());
 }
 

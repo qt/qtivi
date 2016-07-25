@@ -99,7 +99,7 @@ template <typename Feature, typename Backend, typename T> struct QIviPropertyTes
 };
 
 template <typename Feature, typename Backend, typename T>
-void testIVIProperty(const QIviPropertyTestData<Feature, Backend, T> &testData, Feature* feature, Backend* backend, const QString &zone = QString())
+void testIVIProperty(const QIviPropertyTestData<Feature, Backend, T> &testData, Feature *feature, Backend *backend, const QString &zone = QString())
 {
     int valueIndex = 0;
     (backend->*testData.backend_setter)(testData.valueList.at(valueIndex), zone);

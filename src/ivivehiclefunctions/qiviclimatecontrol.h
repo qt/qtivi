@@ -56,22 +56,22 @@ static const QLatin1String QIviStringClimateControlInterfaceName("com.qt-project
 class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QIviClimateControl : public QIviAbstractZonedFeature
 {
     Q_OBJECT
-    Q_PROPERTY(QIviProperty* airConditioning READ airConditioningProperty CONSTANT)
-    Q_PROPERTY(QIviProperty* airflowDirections READ airflowDirectionsProperty CONSTANT)
-    Q_PROPERTY(QIviProperty* heater READ heaterProperty CONSTANT)
-    Q_PROPERTY(QIviProperty* fanSpeedLevel READ fanSpeedLevelProperty CONSTANT)
-    Q_PROPERTY(QIviProperty* steeringWheelHeater READ steeringWheelHeaterProperty CONSTANT)
-    Q_PROPERTY(QIviProperty* targetTemperature READ targetTemperatureProperty CONSTANT)
-    Q_PROPERTY(QIviProperty* seatCooler READ seatCoolerProperty CONSTANT)
-    Q_PROPERTY(QIviProperty* seatHeater READ seatHeaterProperty CONSTANT)
-    Q_PROPERTY(QIviProperty* outsideTemperature READ outsideTemperatureProperty CONSTANT)
-    Q_PROPERTY(QIviProperty* zoneSynchronization READ zoneSynchronizationProperty CONSTANT)
-    Q_PROPERTY(QIviProperty* defrost READ defrostProperty CONSTANT)
-    Q_PROPERTY(QIviProperty* recirculationMode READ recirculationModeProperty CONSTANT)
-    Q_PROPERTY(QIviProperty* recirculation READ recirculationProperty CONSTANT)
-    Q_PROPERTY(QIviProperty* recirculationSensitivityLevel READ recirculationSensitivityLevelProperty CONSTANT)
-    Q_PROPERTY(QIviProperty* climateMode READ climateModeProperty CONSTANT)
-    Q_PROPERTY(QIviProperty* automaticClimateFanIntensityLevel READ automaticClimateFanIntensityLevelProperty CONSTANT)
+    Q_PROPERTY(QIviProperty *airConditioning READ airConditioningProperty CONSTANT)
+    Q_PROPERTY(QIviProperty *airflowDirections READ airflowDirectionsProperty CONSTANT)
+    Q_PROPERTY(QIviProperty *heater READ heaterProperty CONSTANT)
+    Q_PROPERTY(QIviProperty *fanSpeedLevel READ fanSpeedLevelProperty CONSTANT)
+    Q_PROPERTY(QIviProperty *steeringWheelHeater READ steeringWheelHeaterProperty CONSTANT)
+    Q_PROPERTY(QIviProperty *targetTemperature READ targetTemperatureProperty CONSTANT)
+    Q_PROPERTY(QIviProperty *seatCooler READ seatCoolerProperty CONSTANT)
+    Q_PROPERTY(QIviProperty *seatHeater READ seatHeaterProperty CONSTANT)
+    Q_PROPERTY(QIviProperty *outsideTemperature READ outsideTemperatureProperty CONSTANT)
+    Q_PROPERTY(QIviProperty *zoneSynchronization READ zoneSynchronizationProperty CONSTANT)
+    Q_PROPERTY(QIviProperty *defrost READ defrostProperty CONSTANT)
+    Q_PROPERTY(QIviProperty *recirculationMode READ recirculationModeProperty CONSTANT)
+    Q_PROPERTY(QIviProperty *recirculation READ recirculationProperty CONSTANT)
+    Q_PROPERTY(QIviProperty *recirculationSensitivityLevel READ recirculationSensitivityLevelProperty CONSTANT)
+    Q_PROPERTY(QIviProperty *climateMode READ climateModeProperty CONSTANT)
+    Q_PROPERTY(QIviProperty *automaticClimateFanIntensityLevel READ automaticClimateFanIntensityLevelProperty CONSTANT)
 
 public:
     enum AirflowDirection {
@@ -96,57 +96,57 @@ public:
     };
     Q_ENUM(ClimateMode)
 
-    QIviClimateControl(const QString &zone=QString(), QObject* parent=Q_NULLPTR);
+    QIviClimateControl(const QString &zone = QString(), QObject *parent = Q_NULLPTR);
     ~QIviClimateControl();
 
     bool isAirConditioningEnabled() const;
     QIviPropertyAttribute<bool> airConditioningAttribute() const;
-    QIviProperty* airConditioningProperty() const;
+    QIviProperty *airConditioningProperty() const;
     QIviClimateControl::AirflowDirections airflowDirections() const;
     QIviPropertyAttribute<QIviClimateControl::AirflowDirections> airflowDirectionsAttribute() const;
-    QIviProperty* airflowDirectionsProperty() const;
+    QIviProperty *airflowDirectionsProperty() const;
     bool isHeaterEnabled() const;
     QIviPropertyAttribute<bool> heaterAttribute() const;
-    QIviProperty* heaterProperty() const;
+    QIviProperty *heaterProperty() const;
     int steeringWheelHeater() const;
     QIviPropertyAttribute<int> steeringWheelHeaterAttribute() const;
-    QIviProperty* steeringWheelHeaterProperty() const;
+    QIviProperty *steeringWheelHeaterProperty() const;
     int fanSpeedLevel() const;
     QIviPropertyAttribute<int> fanSpeedLevelAttribute() const;
-    QIviProperty* fanSpeedLevelProperty() const;
+    QIviProperty *fanSpeedLevelProperty() const;
     int targetTemperature() const;
     QIviPropertyAttribute<int> targetTemperatureAttribute() const;
-    QIviProperty* targetTemperatureProperty() const;
+    QIviProperty *targetTemperatureProperty() const;
     int seatCooler() const;
     QIviPropertyAttribute<int> seatCoolerAttribute() const;
-    QIviProperty* seatCoolerProperty() const;
+    QIviProperty *seatCoolerProperty() const;
     int seatHeater() const;
     QIviPropertyAttribute<int> seatHeaterAttribute() const;
-    QIviProperty* seatHeaterProperty() const;
+    QIviProperty *seatHeaterProperty() const;
     int outsideTemperature() const;
     QIviPropertyAttribute<int> outsideTemperatureAttribute() const;
-    QIviProperty* outsideTemperatureProperty() const;
+    QIviProperty *outsideTemperatureProperty() const;
     bool isZoneSynchronizationEnabled() const;
     QIviPropertyAttribute<bool> zoneSynchronizationAttribute() const;
-    QIviProperty* zoneSynchronizationProperty() const;
+    QIviProperty *zoneSynchronizationProperty() const;
     bool isDefrostEnabled() const;
     QIviPropertyAttribute<bool> defrostAttribute() const;
-    QIviProperty* defrostProperty() const;
+    QIviProperty *defrostProperty() const;
     QIviClimateControl::RecirculationMode recirculationMode() const;
     QIviPropertyAttribute<QIviClimateControl::RecirculationMode> recirculationModeAttribute() const;
-    QIviProperty* recirculationModeProperty() const;
+    QIviProperty *recirculationModeProperty() const;
     bool isRecirculationEnabled() const;
     QIviPropertyAttribute<bool> recirculationAttribute() const;
-    QIviProperty* recirculationProperty() const;
+    QIviProperty *recirculationProperty() const;
     int recirculationSensitivityLevel() const;
     QIviPropertyAttribute<int> recirculationSensitivityLevelAttribute() const;
-    QIviProperty* recirculationSensitivityLevelProperty() const;
+    QIviProperty *recirculationSensitivityLevelProperty() const;
     QIviClimateControl::ClimateMode climateMode() const;
     QIviPropertyAttribute<QIviClimateControl::ClimateMode> climateModeAttribute() const;
-    QIviProperty* climateModeProperty() const;
+    QIviProperty *climateModeProperty() const;
     int automaticClimateFanIntensityLevel() const;
     QIviPropertyAttribute<int> automaticClimateFanIntensityLevelAttribute() const;
-    QIviProperty* automaticClimateFanIntensityLevelProperty() const;
+    QIviProperty *automaticClimateFanIntensityLevelProperty() const;
 
 public Q_SLOTS:
     void setAirConditioningEnabled(bool enabled);
@@ -200,7 +200,7 @@ Q_SIGNALS:
 
 protected:
     QIviClimateControl(QIviClimateControlPrivate &dd, QObject *parent = Q_NULLPTR);
-    virtual QIviAbstractZonedFeature* createZoneFeature(const QString &zone) Q_DECL_OVERRIDE;
+    virtual QIviAbstractZonedFeature *createZoneFeature(const QString &zone) Q_DECL_OVERRIDE;
 
     virtual void connectToServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
     virtual void disconnectFromServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;

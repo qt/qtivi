@@ -319,7 +319,7 @@ public:
 
 private:
     QStringList m_interfaces;
-    TestBackend* m_backend;
+    TestBackend *m_backend;
 };
 
 class tst_QIviSearchAndBrowseModel : public QObject
@@ -587,7 +587,7 @@ void tst_QIviSearchAndBrowseModel::testNavigation()
     manager->registerService(service, service->interfaces());
     service->testBackend()->initializeNavigationData();
 
-    QIviSearchAndBrowseModel* model = new QIviSearchAndBrowseModel();
+    QIviSearchAndBrowseModel *model = new QIviSearchAndBrowseModel();
     model->setServiceObject(service);
 
     QVERIFY(model->availableContentTypes().contains("levelOne"));

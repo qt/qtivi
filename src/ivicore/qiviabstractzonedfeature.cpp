@@ -97,7 +97,7 @@ QIviAbstractZonedFeature::~QIviAbstractZonedFeature()
 */
 bool QIviAbstractZonedFeature::acceptServiceObject(QIviServiceObject *serviceObject)
 {
-    if (QIviAbstractZonedFeature* parentFeature = qobject_cast<QIviAbstractZonedFeature*>(parent()))
+    if (QIviAbstractZonedFeature *parentFeature = qobject_cast<QIviAbstractZonedFeature*>(parent()))
         return parentFeature->acceptServiceObject(serviceObject);
     else if (serviceObject)
         return serviceObject->interfaces().contains(interfaceName());
@@ -145,9 +145,9 @@ QIviZonedFeatureInterface *QIviAbstractZonedFeature::backend(const QString &inte
     if (iface.isEmpty())
         iface = interfaceName();
 
-    if (QIviAbstractZonedFeature* parentFeature = qobject_cast<QIviAbstractZonedFeature*>(parent())) {
+    if (QIviAbstractZonedFeature *parentFeature = qobject_cast<QIviAbstractZonedFeature*>(parent())) {
         return parentFeature->backend();
-    } else if (QIviServiceObject* so = serviceObject()) {
+    } else if (QIviServiceObject *so = serviceObject()) {
         return qobject_cast<QIviZonedFeatureInterface*>(so->interfaceInstance(iface));
     }
     return 0;
@@ -198,7 +198,7 @@ QIviZonedFeatureInterface *QIviAbstractZonedFeature::backend(const QString &inte
    It's recommended to initialize the zone in the feature constructor:
 
    \code
-   QIviClimateControl* climateControl = new QIviClimateControl("FrontLeft", this);
+   QIviClimateControl *climateControl = new QIviClimateControl("FrontLeft", this);
    climateControl->startAutoDiscovery();
    QString zone = climateControl->zone();
    \endcode
@@ -225,7 +225,7 @@ void QIviAbstractZonedFeature::initializeZones()
 
     Q_D(QIviAbstractZonedFeature);
     foreach (const QString &zone, backend()->availableZones()) {
-        QIviAbstractZonedFeature* f = zoneAt(zone);
+        QIviAbstractZonedFeature *f = zoneAt(zone);
         if (!f) {
             if (this->zone() == zone)
                 f = this;

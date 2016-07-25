@@ -101,7 +101,7 @@ public:
     void onAutomaticClimateFanIntensityLevelChanged(int automaticClimateFanIntensityLevel, const QString &zone);
     void onAutomaticClimateFanIntensityLevelAttributeChanged(const QIviPropertyAttribute<int> &attribute, const QString &zone);
 
-    QIviClimateControlBackendInterface* climateControlBackend();
+    QIviClimateControlBackendInterface *climateControlBackend();
 
     QIviClimateControl::AirflowDirections m_airflowDirections;
     QIviPropertyAttribute<QIviClimateControl::AirflowDirections> m_airflowDirectionsAttribute;

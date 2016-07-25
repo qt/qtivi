@@ -68,7 +68,7 @@ QDltRegistrationPrivate::QDltRegistrationPrivate(QDltRegistration *parent)
 {
 }
 
-void QDltRegistrationPrivate::registerCategory(const QLoggingCategory* category, DltContext *dltContext, const char *dltCtxName, const char *dltCtxDescription)
+void QDltRegistrationPrivate::registerCategory(const QLoggingCategory *category, DltContext *dltContext, const char *dltCtxName, const char *dltCtxDescription)
 {
     DLT_REGISTER_CONTEXT(*dltContext, dltCtxName, dltCtxDescription);
     m_categoryName2DltContext.insert(QString::fromLatin1(category->categoryName()), dltContext);
@@ -100,8 +100,7 @@ void QDltRegistrationPrivate::dltLogLevelChanged(char context_id[], uint8_t log_
     Q_UNUSED(trace_status)
 
     const QString contextName = QString::fromLatin1(context_id);
-    if (m_ctxName2Category.contains(contextName))
-    {
+    if (m_ctxName2Category.contains(contextName)) {
         QList<QtMsgType> msgTypes;
 
         //Enable all QtLoggingCategories with a lower severity than the DLT level
@@ -138,8 +137,7 @@ void QDltRegistrationPrivate::dltLogLevelChanged(char context_id[], uint8_t log_
             if (!msgTypes.contains(type))
                 enabled = !enabled;
             QLoggingCategory* category = m_ctxName2Category.value(contextName);
-            if (category->isEnabled(type) != enabled)
-            {
+            if (category->isEnabled(type) != enabled) {
                 category->setEnabled(type, enabled);
                 q->logLevelChanged(category);
             }
@@ -164,7 +162,7 @@ void QDltRegistration::registerApplication(const char *dltAppID, const char *dlt
     DLT_REGISTER_APP(dltAppID, dltAppDescription);
 }
 
-void QDltRegistration::registerCategory(const QLoggingCategory* category, const char *dltCtxName, const char *dltCtxDescription)
+void QDltRegistration::registerCategory(const QLoggingCategory *category, const char *dltCtxName, const char *dltCtxDescription)
 {
     Q_D(QDltRegistration);
     //TODO memory leak
@@ -184,13 +182,11 @@ void QDltRegistration::unregisterApplication()
         DLT_UNREGISTER_APP();
 }
 
-void QDltRegistration::messageHandler(QtMsgType msgTypes, const QMessageLogContext & msgCtx, const QString & msg)
+void QDltRegistration::messageHandler(QtMsgType msgTypes, const QMessageLogContext &msgCtx, const QString &msg)
 {
-    DltContext* dltCtx = globalDltRegistration()->d_ptr->context(msgCtx.category);
+    DltContext *dltCtx = globalDltRegistration()->d_ptr->context(msgCtx.category);
     if (!dltCtx)
-    {
         return;
-    }
 
     DltLogLevelType logLevel = DLT_LOG_INFO;
 

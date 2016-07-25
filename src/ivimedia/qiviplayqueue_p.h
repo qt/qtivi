@@ -77,7 +77,7 @@ public:
     void clearToDefaults();
     const QIviPlayableItem *itemAt(int i) const;
 
-    QIviMediaPlayerBackendInterface* playerBackend() const;
+    QIviMediaPlayerBackendInterface *playerBackend() const;
 
     QIviPlayQueue * const q_ptr;
     Q_DECLARE_PUBLIC(QIviPlayQueue)
