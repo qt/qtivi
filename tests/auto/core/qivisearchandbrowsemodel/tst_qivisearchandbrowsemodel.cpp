@@ -300,13 +300,13 @@ public:
         QIviServiceObject(parent)
     {
         m_backend = new TestBackend;
-        m_interfaces << QIviStringSearchAndBrowseModelInterfaceName;
+        m_interfaces << QIviSearchAndBrowseModel_iid;
     }
 
     QStringList interfaces() const { return m_interfaces; }
     QObject *interfaceInstance(const QString &interface) const
     {
-        if (interface == QIviStringSearchAndBrowseModelInterfaceName)
+        if (interface == QIviSearchAndBrowseModel_iid)
             return testBackend();
         else
             return 0;

@@ -55,7 +55,7 @@ class AmFmTunerBackend;
 class MediaPlugin : public QObject, QIviServiceInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "com.pelagicore.QIviServiceInterface" FILE "media_simulator.json")
+    Q_PLUGIN_METADATA(IID QIviServiceInterface_iid FILE "media_simulator.json")
     Q_INTERFACES(QIviServiceInterface)
 
 public:

@@ -64,13 +64,13 @@ void USBDevice::eject()
 QStringList USBDevice::interfaces() const
 {
     QStringList list;
-    list << QIviStringSearchAndBrowseModelInterfaceName;
+    list << QIviSearchAndBrowseModel_iid;
     return list;
 }
 
 QObject *USBDevice::interfaceInstance(const QString &interface) const
 {
-    if (interface == QIviStringSearchAndBrowseModelInterfaceName)
+    if (interface == QIviSearchAndBrowseModel_iid)
         return m_browseModel;
 
     return nullptr;

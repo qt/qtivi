@@ -152,7 +152,7 @@ QIviAmFmTunerBackendInterface *QIviAmFmTunerPrivate::tunerBackend() const
     Q_Q(const QIviAmFmTuner);
     QIviServiceObject *so = q->serviceObject();
     if (so)
-        return qobject_cast<QIviAmFmTunerBackendInterface*>(so->interfaceInstance(QIviStringAmFmTunerInterfaceName));
+        return qobject_cast<QIviAmFmTunerBackendInterface*>(so->interfaceInstance(QLatin1String(QIviAmFmTuner_iid)));
 
     return nullptr;
 }
@@ -191,7 +191,7 @@ QIviAmFmTunerBackendInterface *QIviAmFmTunerPrivate::tunerBackend() const
    The \a parent argument is passed on to the \l QIviAbstractFeature base class.
 */
 QIviAmFmTuner::QIviAmFmTuner(QObject *parent)
-    : QIviAbstractFeature(*new QIviAmFmTunerPrivate(QIviStringAmFmTunerInterfaceName, this), parent)
+    : QIviAbstractFeature(*new QIviAmFmTunerPrivate(QLatin1String(QIviAmFmTuner_iid), this), parent)
 {
     Q_D(QIviAmFmTuner);
     d->init();
@@ -545,7 +545,7 @@ QIviAmFmTuner::QIviAmFmTuner(QIviAmFmTunerPrivate &dd, QObject *parent)
  */
 bool QIviAmFmTuner::acceptServiceObject(QIviServiceObject *serviceObject)
 {
-    return serviceObject->interfaces().contains(QIviStringAmFmTunerInterfaceName);
+    return serviceObject->interfaces().contains(QLatin1String(QIviAmFmTuner_iid));
 }
 
 /*!
@@ -583,7 +583,7 @@ void QIviAmFmTuner::connectToServiceObject(QIviServiceObject *serviceObject)
  */
 void QIviAmFmTuner::disconnectFromServiceObject(QIviServiceObject *serviceObject)
 {
-    QIviAmFmTunerBackendInterface *backend = qobject_cast<QIviAmFmTunerBackendInterface*>(serviceObject->interfaceInstance(QIviStringAmFmTunerInterfaceName));
+    QIviAmFmTunerBackendInterface *backend = qobject_cast<QIviAmFmTunerBackendInterface*>(serviceObject->interfaceInstance(QLatin1String(QIviAmFmTuner_iid)));
 
     if (backend)
         disconnect(backend, 0, this, 0);

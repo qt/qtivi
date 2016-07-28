@@ -63,6 +63,8 @@ Q_SIGNALS:
     void stateChanged(QIviMediaIndexerControl::State state);
 };
 
+#define QIviMediaIndexer_iid "org.qt-project.qtivi.MediaIndexer/1.0"
+
 QT_END_NAMESPACE
 
 #endif // QIVIMEDIAINDEXERCONTROLBACKENDINTERFACE_H

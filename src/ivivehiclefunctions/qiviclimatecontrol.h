@@ -51,8 +51,6 @@ QT_BEGIN_NAMESPACE
 class QIviClimateControlBackendInterface;
 class QIviClimateControlPrivate;
 
-static const QLatin1String QIviStringClimateControlInterfaceName("com.qt-project.qtivi.ClimateControl");
-
 class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QIviClimateControl : public QIviAbstractZonedFeature
 {
     Q_OBJECT

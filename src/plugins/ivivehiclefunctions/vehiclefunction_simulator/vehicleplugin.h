@@ -50,7 +50,7 @@ class WindowControlBackend;
 class VehiclePlugin : public QObject, QIviServiceInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "com.pelagicore.QIviServiceInterface" FILE "vehiclefunction_simulator.json")
+    Q_PLUGIN_METADATA(IID QIviServiceInterface_iid FILE "vehiclefunction_simulator.json")
     Q_INTERFACES(QIviServiceInterface)
 
 public:

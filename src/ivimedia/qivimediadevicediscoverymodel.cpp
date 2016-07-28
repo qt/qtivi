@@ -124,7 +124,7 @@ QIviMediaDeviceDiscoveryModelBackendInterface *QIviMediaDeviceDiscoveryModelPriv
     Q_Q(const QIviMediaDeviceDiscoveryModel);
     QIviServiceObject *so = q->serviceObject();
     if (so)
-        return qobject_cast<QIviMediaDeviceDiscoveryModelBackendInterface*>(so->interfaceInstance(QIviStringMediaDeviceDiscoveryInterfaceName));
+        return qobject_cast<QIviMediaDeviceDiscoveryModelBackendInterface*>(so->interfaceInstance(QLatin1String(QIviMediaDeviceDiscovery_iid)));
 
     return nullptr;
 }
@@ -197,7 +197,7 @@ QIviMediaDeviceDiscoveryModelBackendInterface *QIviMediaDeviceDiscoveryModelPriv
    The \a parent argument is passed on to the \l QIviAbstractFeatureListModel base class.
 */
 QIviMediaDeviceDiscoveryModel::QIviMediaDeviceDiscoveryModel(QObject *parent)
-    : QIviAbstractFeatureListModel(*new QIviMediaDeviceDiscoveryModelPrivate(QIviStringMediaDeviceDiscoveryInterfaceName, this), parent)
+    : QIviAbstractFeatureListModel(*new QIviMediaDeviceDiscoveryModelPrivate(QLatin1String(QIviMediaDeviceDiscovery_iid), this), parent)
 {
     Q_D(QIviMediaDeviceDiscoveryModel);
     d->init();
@@ -309,7 +309,7 @@ QIviMediaDeviceDiscoveryModel::QIviMediaDeviceDiscoveryModel(QIviMediaDeviceDisc
 */
 bool QIviMediaDeviceDiscoveryModel::acceptServiceObject(QIviServiceObject *serviceObject)
 {
-    return serviceObject->interfaces().contains(QIviStringMediaDeviceDiscoveryInterfaceName);
+    return serviceObject->interfaces().contains(QLatin1String(QIviMediaDeviceDiscovery_iid));
 }
 
 /*!
@@ -339,7 +339,7 @@ void QIviMediaDeviceDiscoveryModel::connectToServiceObject(QIviServiceObject *se
 */
 void QIviMediaDeviceDiscoveryModel::disconnectFromServiceObject(QIviServiceObject *serviceObject)
 {
-    QIviMediaDeviceDiscoveryModelBackendInterface *backend = qobject_cast<QIviMediaDeviceDiscoveryModelBackendInterface*>(serviceObject->interfaceInstance(QIviStringMediaDeviceDiscoveryInterfaceName));
+    QIviMediaDeviceDiscoveryModelBackendInterface *backend = qobject_cast<QIviMediaDeviceDiscoveryModelBackendInterface*>(serviceObject->interfaceInstance(QLatin1String(QIviMediaDeviceDiscovery_iid)));
 
     if (backend)
         disconnect(backend, 0, this, 0);

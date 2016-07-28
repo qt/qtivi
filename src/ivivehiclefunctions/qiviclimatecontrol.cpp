@@ -643,7 +643,7 @@ QIviClimateControlBackendInterface *QIviClimateControlPrivate::climateControlBac
    The \a parent argument is passed on to the \l QIviAbstractZonedFeature base class.
 */
 QIviClimateControl::QIviClimateControl(const QString &zone, QObject *parent)
-    : QIviAbstractZonedFeature(*new QIviClimateControlPrivate(QIviStringClimateControlInterfaceName, zone, this), parent)
+    : QIviAbstractZonedFeature(*new QIviClimateControlPrivate(QLatin1String(QIviClimateControl_iid), zone, this), parent)
 {
     Q_D(QIviClimateControl);
     d->init();
@@ -741,7 +741,7 @@ void QIviClimateControl::connectToServiceObject(QIviServiceObject *serviceObject
 */
 void QIviClimateControl::disconnectFromServiceObject(QIviServiceObject *serviceObject)
 {
-    QIviClimateControlBackendInterface *backend = qobject_cast<QIviClimateControlBackendInterface*>(serviceObject->interfaceInstance(QIviStringClimateControlInterfaceName));
+    QIviClimateControlBackendInterface *backend = qobject_cast<QIviClimateControlBackendInterface*>(serviceObject->interfaceInstance(QLatin1String(QIviClimateControl_iid)));
 
     if (backend)
         disconnect(backend, 0, this, 0);

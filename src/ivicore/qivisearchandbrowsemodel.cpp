@@ -302,7 +302,7 @@ QIviSearchAndBrowseModelInterface *QIviSearchAndBrowseModelPrivate::searchBacken
     Q_Q(const QIviSearchAndBrowseModel);
     QIviServiceObject *so = q->serviceObject();
     if (so)
-        return qobject_cast<QIviSearchAndBrowseModelInterface*>(so->interfaceInstance(QIviStringSearchAndBrowseModelInterfaceName));
+        return qobject_cast<QIviSearchAndBrowseModelInterface*>(so->interfaceInstance(QLatin1String(QIviSearchAndBrowseModel_iid)));
 
     return nullptr;
 }
@@ -456,7 +456,7 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
    The \a parent argument is passed on to the \l QIviAbstractFeatureListModel base class.
  */
 QIviSearchAndBrowseModel::QIviSearchAndBrowseModel(QObject *parent)
-    : QIviAbstractFeatureListModel(*new QIviSearchAndBrowseModelPrivate(QIviStringSearchAndBrowseModelInterfaceName, this), parent)
+    : QIviAbstractFeatureListModel(*new QIviSearchAndBrowseModelPrivate(QLatin1String(QIviSearchAndBrowseModel_iid), this), parent)
 {
     Q_D(QIviSearchAndBrowseModel);
     d->init();
@@ -1190,7 +1190,7 @@ void QIviSearchAndBrowseModel::connectToServiceObject(QIviServiceObject *service
 */
 void QIviSearchAndBrowseModel::disconnectFromServiceObject(QIviServiceObject *serviceObject)
 {
-    QIviSearchAndBrowseModelInterface *backend = qobject_cast<QIviSearchAndBrowseModelInterface*>(serviceObject->interfaceInstance(QIviStringSearchAndBrowseModelInterfaceName));
+    QIviSearchAndBrowseModelInterface *backend = qobject_cast<QIviSearchAndBrowseModelInterface*>(serviceObject->interfaceInstance(QLatin1String(QIviSearchAndBrowseModel_iid)));
 
     if (backend)
         disconnect(backend, 0, this, 0);

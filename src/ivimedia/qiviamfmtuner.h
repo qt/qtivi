@@ -51,8 +51,6 @@ QT_BEGIN_NAMESPACE
 class QIviAmFmTunerStation;
 class QIviAmFmTunerPrivate;
 
-static const QLatin1String QIviStringAmFmTunerInterfaceName("com.qt-project.qtivi.AmFmTuner");
-
 class Q_QTIVIMEDIA_EXPORT QIviAmFmTuner : public QIviAbstractFeature
 {
     Q_OBJECT

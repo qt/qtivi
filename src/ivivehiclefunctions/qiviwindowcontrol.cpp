@@ -294,7 +294,7 @@ QIviWindowControlBackendInterface *QIviWindowControlPrivate::windowControlBacken
    The \a parent argument is passed on to the \l QIviAbstractZonedFeature base class.
 */
 QIviWindowControl::QIviWindowControl(const QString &zone, QObject *parent)
-    : QIviAbstractZonedFeature(*new QIviWindowControlPrivate(QIviStringWindowControlInterfaceName, zone, this), parent)
+    : QIviAbstractZonedFeature(*new QIviWindowControlPrivate(QLatin1String(QIviWindowControl_iid), zone, this), parent)
 {
     Q_D(QIviWindowControl);
     d->init();
@@ -349,7 +349,7 @@ void QIviWindowControl::connectToServiceObject(QIviServiceObject *serviceObject)
 */
 void QIviWindowControl::disconnectFromServiceObject(QIviServiceObject *serviceObject)
 {
-    QIviWindowControlBackendInterface *backend = qobject_cast<QIviWindowControlBackendInterface*>(serviceObject->interfaceInstance(QIviStringWindowControlInterfaceName));
+    QIviWindowControlBackendInterface *backend = qobject_cast<QIviWindowControlBackendInterface*>(serviceObject->interfaceInstance(QLatin1String(QIviWindowControl_iid)));
 
     if (backend)
         disconnect(backend, 0, this, 0);

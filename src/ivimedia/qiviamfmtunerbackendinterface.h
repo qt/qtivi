@@ -77,6 +77,8 @@ Q_SIGNALS:
     void scanStatusChanged(bool scanRunning);
 };
 
+#define QIviAmFmTuner_iid "org.qt-project.qtivi.AmFmTuner/1.0"
+
 QT_END_NAMESPACE
 
 #endif // QIVIAMFMTUNERBACKENDINTERFACE_H

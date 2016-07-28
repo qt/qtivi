@@ -49,8 +49,6 @@ QT_BEGIN_NAMESPACE
 
 class QIviMediaIndexerControlPrivate;
 
-static const QLatin1String QIviStringMediaIndexerInterfaceName("com.qt-project.qtivi.MediaIndexer");
-
 class Q_QTIVIMEDIA_EXPORT QIviMediaIndexerControl : public QIviAbstractFeature
 {
     Q_OBJECT

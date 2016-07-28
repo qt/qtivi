@@ -38,7 +38,7 @@ class SimplePlugin : public QObject, public QIviServiceInterface
 {
     Q_OBJECT
     Q_INTERFACES(QIviServiceInterface)
-    Q_PLUGIN_METADATA(IID "com.pelagicore.QIviServiceInterface" FILE "simple_plugin.json")
+    Q_PLUGIN_METADATA(IID QIviServiceInterface_iid FILE "simple_plugin.json")
 public:
     SimplePlugin();
     virtual ~SimplePlugin() {}

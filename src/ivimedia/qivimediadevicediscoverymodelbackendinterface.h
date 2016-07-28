@@ -64,6 +64,8 @@ Q_SIGNALS:
     void deviceRemoved(QIviServiceObject *device);
 };
 
+#define QIviMediaDeviceDiscovery_iid "org.qt-project.qtivi.MediaDiscovery/1.0"
+
 QT_END_NAMESPACE
 
 #endif // QIVIMEDIADEVICEDISCOVERYMODELBACKENDINTERFACE_H

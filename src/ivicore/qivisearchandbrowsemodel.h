@@ -50,8 +50,6 @@ QT_BEGIN_NAMESPACE
 
 class QIviSearchAndBrowseModelPrivate;
 
-static const QLatin1String QIviStringSearchAndBrowseModelInterfaceName("com.qt-project.qtivi.SearchAndBrowseModel");
-
 class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModel : public QIviAbstractFeatureListModel
 {
     Q_OBJECT

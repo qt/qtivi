@@ -233,14 +233,14 @@ public:
         QIviServiceObject(parent), m_name(QLatin1String(""))
     {
         m_backend = new WindowControlTestBackend;
-        m_interfaces << QIviStringWindowControlInterfaceName;
+        m_interfaces << QIviWindowControl_iid;
     }
 
     QString name() const { return m_name; }
     QStringList interfaces() const { return m_interfaces; }
     QObject *interfaceInstance(const QString& interface) const
     {
-        if (interface == QIviStringWindowControlInterfaceName)
+        if (interface == QIviWindowControl_iid)
             return testBackend();
         else
             return 0;
@@ -263,7 +263,7 @@ public:
     explicit WindowControlInvalidServiceObject(QObject *parent=0) :
         QIviServiceObject(parent), m_name(QLatin1String("")), m_dummyBackend(new QObject(this))
     {
-        m_interfaces << QIviStringWindowControlInterfaceName;
+        m_interfaces << QIviWindowControl_iid;
     }
 
     QString name() const { return m_name; }

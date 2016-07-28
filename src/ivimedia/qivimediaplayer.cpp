@@ -112,7 +112,7 @@ QIviMediaPlayerBackendInterface *QIviMediaPlayerPrivate::playerBackend() const
     Q_Q(const QIviMediaPlayer);
     QIviServiceObject *so = q->serviceObject();
     if (so)
-        return qobject_cast<QIviMediaPlayerBackendInterface*>(so->interfaceInstance(QIviStringMediaPlayerInterfaceName));
+        return qobject_cast<QIviMediaPlayerBackendInterface*>(so->interfaceInstance(QLatin1String(QIviMediaPlayer_iid)));
 
     return nullptr;
 }
@@ -149,7 +149,7 @@ QIviMediaPlayerBackendInterface *QIviMediaPlayerPrivate::playerBackend() const
    The \a parent argument is passed on to the \l QIviAbstractFeature base class.
 */
 QIviMediaPlayer::QIviMediaPlayer(QObject *parent)
-    : QIviAbstractFeature(*new QIviMediaPlayerPrivate(QIviStringMediaPlayerInterfaceName, this), parent)
+    : QIviAbstractFeature(*new QIviMediaPlayerPrivate(QLatin1String(QIviMediaPlayer_iid), this), parent)
 {
     Q_D(QIviMediaPlayer);
     d->init();
@@ -402,7 +402,7 @@ QIviMediaPlayer::QIviMediaPlayer(QIviMediaPlayerPrivate &dd, QObject *parent)
  */
 bool QIviMediaPlayer::acceptServiceObject(QIviServiceObject *serviceObject)
 {
-    return serviceObject->interfaces().contains(QIviStringMediaPlayerInterfaceName);
+    return serviceObject->interfaces().contains(QLatin1String(QIviMediaPlayer_iid));
 }
 
 /*!
@@ -442,7 +442,7 @@ void QIviMediaPlayer::connectToServiceObject(QIviServiceObject *serviceObject)
  */
 void QIviMediaPlayer::disconnectFromServiceObject(QIviServiceObject *serviceObject)
 {
-    QIviMediaPlayerBackendInterface *backend = qobject_cast<QIviMediaPlayerBackendInterface*>(serviceObject->interfaceInstance(QIviStringMediaPlayerInterfaceName));
+    QIviMediaPlayerBackendInterface *backend = qobject_cast<QIviMediaPlayerBackendInterface*>(serviceObject->interfaceInstance(QLatin1String(QIviMediaPlayer_iid)));
 
     if (backend)
         disconnect(backend, 0, this, 0);

@@ -50,8 +50,6 @@ QT_BEGIN_NAMESPACE
 class QIviMediaDeviceDiscoveryModelPrivate;
 class QIviMediaDevice;
 
-static const QLatin1String QIviStringMediaDeviceDiscoveryInterfaceName("com.qt-project.qtivi.MediaDiscovery");
-
 //TODO Should we add a generic base class ? If not we should use QIviMediaDevice* internally
 class Q_QTIVIMEDIA_EXPORT QIviMediaDeviceDiscoveryModel : public QIviAbstractFeatureListModel
 {

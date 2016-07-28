@@ -56,16 +56,16 @@ VehiclePlugin::VehiclePlugin(QObject *parent) :
 QStringList VehiclePlugin::interfaces() const
 {
     QStringList list;
-    list << QIviStringClimateControlInterfaceName;
-    list << QIviStringWindowControlInterfaceName;
+    list << QIviClimateControl_iid;
+    list << QIviWindowControl_iid;
     return list;
 }
 
 QObject *VehiclePlugin::interfaceInstance(const QString &interface) const
 {
-    if (interface == QIviStringClimateControlInterfaceName)
+    if (interface == QIviClimateControl_iid)
         return m_climate;
-    else if (interface == QIviStringWindowControlInterfaceName)
+    else if (interface == QIviWindowControl_iid)
         return m_window;
 
     return 0;

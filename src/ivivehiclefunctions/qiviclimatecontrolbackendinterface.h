@@ -107,6 +107,8 @@ Q_SIGNALS:
     void automaticClimateFanIntensityLevelAttributeChanged(const QIviPropertyAttribute<int> &automaticClimateFanIntensityLevel, const QString &zone = QString());
 };
 
+#define QIviClimateControl_iid "org.qt-project.qtivi.ClimateControl/1.0"
+
 QT_END_NAMESPACE
 
 #endif // QIVICLIMATECONTROLBACKENDINTERFACE_H

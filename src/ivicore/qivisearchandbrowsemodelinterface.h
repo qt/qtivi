@@ -96,6 +96,8 @@ private:
     Q_DECLARE_PRIVATE(QIviSearchAndBrowseModelInterface)
 };
 
+#define QIviSearchAndBrowseModel_iid "org.qt-project.qtivi.SearchAndBrowseModel/1.0"
+
 QT_END_NAMESPACE
 
 #endif // QIVISEARCHMODELINTERFACE_H

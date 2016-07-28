@@ -38,7 +38,7 @@ class WrongPlugin : public QObject
 {
     Q_OBJECT
     //Q_INTERFACES(QIviServiceInterface)
-    Q_PLUGIN_METADATA(IID "com.pelagicore.QIviServiceInterface" FILE "wrong_plugin.json")
+    Q_PLUGIN_METADATA(IID QIviServiceInterface_iid FILE "wrong_plugin.json")
 public:
     WrongPlugin();
     virtual ~WrongPlugin() {}

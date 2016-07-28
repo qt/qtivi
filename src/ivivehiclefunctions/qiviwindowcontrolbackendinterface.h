@@ -75,6 +75,8 @@ Q_SIGNALS:
     void stateAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::State> &state, const QString &zone = QString());
 };
 
+#define QIviWindowControl_iid "org.qt-project.qtivi.WindowControl/1.0"
+
 QT_END_NAMESPACE
 
 #endif // QIVIWINDOWCONTROLBACKENDINTERFACE_H

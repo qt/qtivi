@@ -58,16 +58,16 @@ TunerPlugin::TunerPlugin(QObject *parent)
 QStringList TunerPlugin::interfaces() const
 {
     QStringList list;
-    list << QIviStringSearchAndBrowseModelInterfaceName;
-    list << QIviStringAmFmTunerInterfaceName;
+    list << QIviSearchAndBrowseModel_iid;
+    list << QIviAmFmTuner_iid;
     return list;
 }
 
 QObject *TunerPlugin::interfaceInstance(const QString &interface) const
 {
-    if (interface == QIviStringAmFmTunerInterfaceName)
+    if (interface == QIviAmFmTuner_iid)
         return m_amfmtuner;
-    else if (interface == QIviStringSearchAndBrowseModelInterfaceName)
+    else if (interface == QIviSearchAndBrowseModel_iid)
         return m_searchbackend;
 
     return 0;

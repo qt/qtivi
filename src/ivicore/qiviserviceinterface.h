@@ -55,7 +55,8 @@ public:
     virtual QObject *interfaceInstance(const QString &interface) const = 0;
 };
 
-Q_DECLARE_INTERFACE(QIviServiceInterface, "com.pelagicore.QIviServiceInterface")
+#define QIviServiceInterface_iid "org.qt-project.qtivi.QIviServiceInterface/1.0"
+Q_DECLARE_INTERFACE(QIviServiceInterface, QIviServiceInterface_iid)
 
 QT_END_NAMESPACE
 

@@ -50,7 +50,7 @@ class SearchAndBrowseBackend;
 class TunerPlugin : public QObject, QIviServiceInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "com.pelagicore.QIviServiceInterface" FILE "tuner_simulator.json")
+    Q_PLUGIN_METADATA(IID QIviServiceInterface_iid FILE "tuner_simulator.json")
     Q_INTERFACES(QIviServiceInterface)
 
 public:

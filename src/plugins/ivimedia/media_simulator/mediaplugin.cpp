@@ -75,22 +75,22 @@ MediaPlugin::MediaPlugin(QObject *parent)
 QStringList MediaPlugin::interfaces() const
 {
     QStringList list;
-    list << QIviStringMediaPlayerInterfaceName;
-    list << QIviStringSearchAndBrowseModelInterfaceName;
-    list << QIviStringMediaDeviceDiscoveryInterfaceName;
-    list << QIviStringMediaIndexerInterfaceName;
+    list << QIviMediaPlayer_iid;
+    list << QIviSearchAndBrowseModel_iid;
+    list << QIviMediaDeviceDiscovery_iid;
+    list << QIviMediaIndexer_iid;
     return list;
 }
 
 QObject *MediaPlugin::interfaceInstance(const QString &interface) const
 {
-    if (interface == QIviStringMediaPlayerInterfaceName)
+    if (interface == QIviMediaPlayer_iid)
         return m_player;
-    else if (interface == QIviStringSearchAndBrowseModelInterfaceName)
+    else if (interface == QIviSearchAndBrowseModel_iid)
         return m_browse;
-    else if (interface == QIviStringMediaDeviceDiscoveryInterfaceName)
+    else if (interface == QIviMediaDeviceDiscovery_iid)
         return m_discovery;
-    else if (interface == QIviStringMediaIndexerInterfaceName)
+    else if (interface == QIviMediaIndexer_iid)
         return m_indexer;
 
     return 0;

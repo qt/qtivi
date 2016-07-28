@@ -51,8 +51,6 @@ QT_BEGIN_NAMESPACE
 class QIviMediaPlayerPrivate;
 class QIviPlayQueue;
 
-static const QLatin1String QIviStringMediaPlayerInterfaceName("com.qt-project.qtivi.MediaPlayer");
-
 class Q_QTIVIMEDIA_EXPORT QIviMediaPlayer : public QIviAbstractFeature
 {
     Q_OBJECT

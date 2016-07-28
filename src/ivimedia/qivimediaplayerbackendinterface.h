@@ -82,6 +82,8 @@ Q_SIGNALS:
     void dataChanged(const QList<QVariant> &data, int start, int count);
 };
 
+#define QIviMediaPlayer_iid "org.qt-project.qtivi.MediaPlayer/1.0"
+
 QT_END_NAMESPACE
 
 #endif // QIVIMEDIAPLAYERBACKENDINTERFACE_H

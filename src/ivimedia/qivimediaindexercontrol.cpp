@@ -88,7 +88,7 @@ QIviMediaIndexerControlBackendInterface *QIviMediaIndexerControlPrivate::indexer
     Q_Q(const QIviMediaIndexerControl);
     QIviServiceObject *so = q->serviceObject();
     if (so)
-        return qobject_cast<QIviMediaIndexerControlBackendInterface*>(so->interfaceInstance(QIviStringMediaIndexerInterfaceName));
+        return qobject_cast<QIviMediaIndexerControlBackendInterface*>(so->interfaceInstance(QLatin1String(QIviMediaIndexer_iid)));
 
     return nullptr;
 }
@@ -137,7 +137,7 @@ QIviMediaIndexerControlBackendInterface *QIviMediaIndexerControlPrivate::indexer
    The \a parent argument is passed on to the \l QIviAbstractFeature base class.
 */
 QIviMediaIndexerControl::QIviMediaIndexerControl(QObject *parent)
-    : QIviAbstractFeature(*new QIviMediaIndexerControlPrivate(QIviStringMediaIndexerInterfaceName, this), parent)
+    : QIviAbstractFeature(*new QIviMediaIndexerControlPrivate(QLatin1String(QIviMediaIndexer_iid), this), parent)
 {
     Q_D(QIviMediaIndexerControl);
     d->init();
@@ -254,7 +254,7 @@ QIviMediaIndexerControl::QIviMediaIndexerControl(QIviMediaIndexerControlPrivate 
 */
 bool QIviMediaIndexerControl::acceptServiceObject(QIviServiceObject *serviceObject)
 {
-    return serviceObject->interfaces().contains(QIviStringMediaIndexerInterfaceName);
+    return serviceObject->interfaces().contains(QLatin1String(QIviMediaIndexer_iid));
 }
 
 /*!
@@ -283,7 +283,7 @@ void QIviMediaIndexerControl::connectToServiceObject(QIviServiceObject *serviceO
 */
 void QIviMediaIndexerControl::disconnectFromServiceObject(QIviServiceObject *serviceObject)
 {
-    QIviMediaIndexerControlBackendInterface *backend = qobject_cast<QIviMediaIndexerControlBackendInterface*>(serviceObject->interfaceInstance(QIviStringMediaIndexerInterfaceName));
+    QIviMediaIndexerControlBackendInterface *backend = qobject_cast<QIviMediaIndexerControlBackendInterface*>(serviceObject->interfaceInstance(QLatin1String(QIviMediaIndexer_iid)));
 
     if (backend)
         disconnect(backend, 0, this, 0);
