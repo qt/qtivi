@@ -67,7 +67,7 @@ public:
     QIviPlayQueuePrivate(QIviMediaPlayer *player, QIviPlayQueue *model);
     ~QIviPlayQueuePrivate();
 
-    void init();
+    void initialize();
     void onCurrentIndexChanged(int currentIndex);
     void onDataFetched(const QList<QVariant> &items, int start, bool moreAvailable);
     void onCountChanged(int new_length);

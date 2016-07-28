@@ -65,7 +65,6 @@ class QIviMediaIndexerControlPrivate : public QIviAbstractFeaturePrivate
 public:
     QIviMediaIndexerControlPrivate(const QString &interface, QIviMediaIndexerControl *parent);
 
-    void init();
     void clearToDefaults();
     void onProgressChanged(qreal progress);
     void onStateChanged(QIviMediaIndexerControl::State state);

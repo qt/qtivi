@@ -65,7 +65,7 @@ class QIviClimateControlPrivate : public QIviAbstractZonedFeaturePrivate
 public:
     QIviClimateControlPrivate(const QString &interface, const QString &zone, QIviClimateControl *parent);
 
-    void init();
+    virtual void initialize() Q_DECL_OVERRIDE;
     void clearToDefaults();
 
     void onAirflowDirectionsChanged(QIviClimateControl::AirflowDirections value, const QString &zone);

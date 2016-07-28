@@ -67,8 +67,9 @@ QIviClimateControlPrivate::QIviClimateControlPrivate(const QString &interface, c
 {
 }
 
-void QIviClimateControlPrivate::init()
+void QIviClimateControlPrivate::initialize()
 {
+    QIviAbstractZonedFeaturePrivate::initialize();
     Q_Q(QIviClimateControl);
     m_airFlowDirectionProperty = QIviPropertyFactory<QIviClimateControl::AirflowDirections>::create(q,
                                                                                                      &QIviClimateControl::airflowDirectionsAttribute,
@@ -645,8 +646,6 @@ QIviClimateControlBackendInterface *QIviClimateControlPrivate::climateControlBac
 QIviClimateControl::QIviClimateControl(const QString &zone, QObject *parent)
     : QIviAbstractZonedFeature(*new QIviClimateControlPrivate(QLatin1String(QIviClimateControl_iid), zone, this), parent)
 {
-    Q_D(QIviClimateControl);
-    d->init();
     qRegisterMetaType<QIviPropertyAttribute<QIviClimateControl::AirflowDirections>>();
     qRegisterMetaType<QIviPropertyAttribute<QIviClimateControl::RecirculationMode>>();
     qRegisterMetaType<QIviPropertyAttribute<QIviClimateControl::ClimateMode>>();
@@ -760,8 +759,6 @@ void QIviClimateControl::clearServiceObject()
 QIviClimateControl::QIviClimateControl(QIviClimateControlPrivate &dd, QObject *parent)
     : QIviAbstractZonedFeature(dd, parent)
 {
-    Q_D(QIviClimateControl);
-    d->init();
 }
 
 /*!

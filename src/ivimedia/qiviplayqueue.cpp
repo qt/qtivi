@@ -64,7 +64,7 @@ QIviPlayQueuePrivate::~QIviPlayQueuePrivate()
 {
 }
 
-void QIviPlayQueuePrivate::init()
+void QIviPlayQueuePrivate::initialize()
 {
     Q_Q(QIviPlayQueue);
 
@@ -617,7 +617,7 @@ QIviPlayQueue::QIviPlayQueue(QIviMediaPlayer *parent)
     : QAbstractListModel(*new QIviPlayQueuePrivate(parent, this), parent)
 {
     Q_D(QIviPlayQueue);
-    d->init();
+    d->initialize();
 }
 
 /*!

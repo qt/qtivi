@@ -64,6 +64,8 @@ class Q_QTIVICORE_EXPORT QIviAbstractFeaturePrivate : public QObjectPrivate
 public:
     QIviAbstractFeaturePrivate(const QString &interface, QIviAbstractFeature *parent);
 
+    virtual void initialize();
+
     void setDiscoveryResult(QIviAbstractFeature::DiscoveryResult discoveryResult);
 
     QIviAbstractFeature * const q_ptr;

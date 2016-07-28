@@ -65,7 +65,7 @@ class QIviMediaPlayerPrivate : public QIviAbstractFeaturePrivate
 public:
     QIviMediaPlayerPrivate(const QString &interface, QIviMediaPlayer *parent);
 
-    void init();
+    virtual void initialize() Q_DECL_OVERRIDE;
     void clearToDefaults();
     void onCurrentTrackChanged(const QVariant &currentTrack);
     void onPositionChanged(qint64 position);

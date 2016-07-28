@@ -53,10 +53,6 @@ QIviMediaIndexerControlPrivate::QIviMediaIndexerControlPrivate(const QString &in
 {
 }
 
-void QIviMediaIndexerControlPrivate::init()
-{
-}
-
 void QIviMediaIndexerControlPrivate::clearToDefaults()
 {
     m_progress = 0;
@@ -139,8 +135,6 @@ QIviMediaIndexerControlBackendInterface *QIviMediaIndexerControlPrivate::indexer
 QIviMediaIndexerControl::QIviMediaIndexerControl(QObject *parent)
     : QIviAbstractFeature(*new QIviMediaIndexerControlPrivate(QLatin1String(QIviMediaIndexer_iid), this), parent)
 {
-    Q_D(QIviMediaIndexerControl);
-    d->init();
 }
 
 /*!
@@ -245,8 +239,6 @@ void QIviMediaIndexerControl::resume()
 QIviMediaIndexerControl::QIviMediaIndexerControl(QIviMediaIndexerControlPrivate &dd, QObject *parent)
     : QIviAbstractFeature(dd, parent)
 {
-    Q_D(QIviMediaIndexerControl);
-    d->init();
 }
 
 /*!

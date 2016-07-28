@@ -55,8 +55,9 @@ QIviWindowControlPrivate::QIviWindowControlPrivate(const QString &interface, con
     , q_ptr(parent)
 {}
 
-void QIviWindowControlPrivate::init()
+void QIviWindowControlPrivate::initialize()
 {
+    QIviAbstractZonedFeaturePrivate::initialize();
     Q_Q(QIviWindowControl);
 
     m_heaterModeProperty = QIviPropertyFactory<QIviWindowControl::HeaterMode>::create(q,
@@ -296,9 +297,6 @@ QIviWindowControlBackendInterface *QIviWindowControlPrivate::windowControlBacken
 QIviWindowControl::QIviWindowControl(const QString &zone, QObject *parent)
     : QIviAbstractZonedFeature(*new QIviWindowControlPrivate(QLatin1String(QIviWindowControl_iid), zone, this), parent)
 {
-    Q_D(QIviWindowControl);
-    d->init();
-
     qRegisterMetaType<QIviPropertyAttribute<QIviWindowControl::HeaterMode>>();
     qRegisterMetaType<QIviPropertyAttribute<QIviWindowControl::BlindMode>>();
     qRegisterMetaType<QIviPropertyAttribute<QIviWindowControl::State>>();
@@ -368,8 +366,6 @@ void QIviWindowControl::clearServiceObject()
 QIviWindowControl::QIviWindowControl(QIviWindowControlPrivate &dd, QObject *parent)
     : QIviAbstractZonedFeature(dd, parent)
 {
-    Q_D(QIviWindowControl);
-    d->init();
 }
 
 /*!

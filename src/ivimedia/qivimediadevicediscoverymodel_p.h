@@ -65,7 +65,7 @@ class QIviMediaDeviceDiscoveryModelPrivate : public QIviAbstractFeatureListModel
 public:
     QIviMediaDeviceDiscoveryModelPrivate(const QString &interface, QIviMediaDeviceDiscoveryModel *parent);
 
-    void init();
+    virtual void initialize() Q_DECL_OVERRIDE;
     void clearToDefaults();
     void resetModel(const QList<QIviServiceObject *> deviceList);
     void onDeviceAdded(QIviServiceObject *device);

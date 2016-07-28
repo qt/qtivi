@@ -81,6 +81,10 @@ QIviAbstractFeatureListModelPrivate::~QIviAbstractFeatureListModelPrivate()
     delete m_feature;
 }
 
+void QIviAbstractFeatureListModelPrivate::initialize()
+{
+}
+
 /*!
     \class QIviAbstractFeatureListModel
     \inmodule QtIviCore
@@ -180,6 +184,7 @@ QIviAbstractFeatureListModel::QIviAbstractFeatureListModel(const QString &interf
     : QAbstractListModel(*new QIviAbstractFeatureListModelPrivate(interface, this), parent)
 {
     Q_D(QIviAbstractFeatureListModel);
+    d->initialize();
     connect(d->m_feature, &QIviAbstractFeature::serviceObjectChanged, this, &QIviAbstractFeatureListModel::serviceObjectChanged);
     connect(d->m_feature, &QIviAbstractFeature::discoveryModeChanged, this, &QIviAbstractFeatureListModel::discoveryModeChanged);
     connect(d->m_feature, &QIviAbstractFeature::discoveryResultChanged, this, &QIviAbstractFeatureListModel::discoveryResultChanged);
@@ -372,6 +377,7 @@ QIviAbstractFeatureListModel::QIviAbstractFeatureListModel(QIviAbstractFeatureLi
     : QAbstractListModel(dd, parent)
 {
     Q_D(QIviAbstractFeatureListModel);
+    d->initialize();
     connect(d->m_feature, &QIviAbstractFeature::serviceObjectChanged, this, &QIviAbstractFeatureListModel::serviceObjectChanged);
     connect(d->m_feature, &QIviAbstractFeature::discoveryModeChanged, this, &QIviAbstractFeatureListModel::discoveryModeChanged);
     connect(d->m_feature, &QIviAbstractFeature::discoveryResultChanged, this, &QIviAbstractFeatureListModel::discoveryResultChanged);

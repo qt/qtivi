@@ -52,8 +52,9 @@ QIviMediaDeviceDiscoveryModelPrivate::QIviMediaDeviceDiscoveryModelPrivate(const
 {
 }
 
-void QIviMediaDeviceDiscoveryModelPrivate::init()
+void QIviMediaDeviceDiscoveryModelPrivate::initialize()
 {
+    QIviAbstractFeatureListModelPrivate::initialize();
     Q_Q(QIviMediaDeviceDiscoveryModel);
 
     QObject::connect(q, &QAbstractListModel::rowsInserted,
@@ -199,8 +200,6 @@ QIviMediaDeviceDiscoveryModelBackendInterface *QIviMediaDeviceDiscoveryModelPriv
 QIviMediaDeviceDiscoveryModel::QIviMediaDeviceDiscoveryModel(QObject *parent)
     : QIviAbstractFeatureListModel(*new QIviMediaDeviceDiscoveryModelPrivate(QLatin1String(QIviMediaDeviceDiscovery_iid), this), parent)
 {
-    Q_D(QIviMediaDeviceDiscoveryModel);
-    d->init();
 }
 
 /*!
@@ -300,8 +299,6 @@ QHash<int, QByteArray> QIviMediaDeviceDiscoveryModel::roleNames() const
 QIviMediaDeviceDiscoveryModel::QIviMediaDeviceDiscoveryModel(QIviMediaDeviceDiscoveryModelPrivate &dd, QObject *parent)
     : QIviAbstractFeatureListModel(dd, parent)
 {
-    Q_D(QIviMediaDeviceDiscoveryModel);
-    d->init();
 }
 
 /*!

@@ -60,8 +60,9 @@ QIviMediaPlayerPrivate::QIviMediaPlayerPrivate(const QString &interface, QIviMed
     qRegisterMetaType<QIviAudioTrackItem>();
 }
 
-void QIviMediaPlayerPrivate::init()
+void QIviMediaPlayerPrivate::initialize()
 {
+    QIviAbstractFeaturePrivate::initialize();
     m_playQueue = new QIviPlayQueue(q_ptr);
 }
 
@@ -151,8 +152,6 @@ QIviMediaPlayerBackendInterface *QIviMediaPlayerPrivate::playerBackend() const
 QIviMediaPlayer::QIviMediaPlayer(QObject *parent)
     : QIviAbstractFeature(*new QIviMediaPlayerPrivate(QLatin1String(QIviMediaPlayer_iid), this), parent)
 {
-    Q_D(QIviMediaPlayer);
-    d->init();
 }
 
 /*!
@@ -393,8 +392,6 @@ void QIviMediaPlayer::previous()
 QIviMediaPlayer::QIviMediaPlayer(QIviMediaPlayerPrivate &dd, QObject *parent)
     : QIviAbstractFeature(dd, parent)
 {
-    Q_D(QIviMediaPlayer);
-    d->init();
 }
 
 /*!

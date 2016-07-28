@@ -58,10 +58,6 @@ QIviAmFmTunerPrivate::QIviAmFmTunerPrivate(const QString &interface, QIviAmFmTun
     qRegisterMetaType<QIviAmFmTunerStation>();
 }
 
-void QIviAmFmTunerPrivate::init()
-{
-}
-
 void QIviAmFmTunerPrivate::clearToDefaults()
 {
     m_frequency = -1;
@@ -193,8 +189,6 @@ QIviAmFmTunerBackendInterface *QIviAmFmTunerPrivate::tunerBackend() const
 QIviAmFmTuner::QIviAmFmTuner(QObject *parent)
     : QIviAbstractFeature(*new QIviAmFmTunerPrivate(QLatin1String(QIviAmFmTuner_iid), this), parent)
 {
-    Q_D(QIviAmFmTuner);
-    d->init();
 }
 
 /*!
@@ -536,8 +530,6 @@ void QIviAmFmTuner::stopScan()
 QIviAmFmTuner::QIviAmFmTuner(QIviAmFmTunerPrivate &dd, QObject *parent)
     : QIviAbstractFeature(dd, parent)
 {
-    Q_D(QIviAmFmTuner);
-    d->init();
 }
 
 /*!

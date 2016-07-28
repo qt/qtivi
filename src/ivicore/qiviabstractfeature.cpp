@@ -61,6 +61,10 @@ QIviAbstractFeaturePrivate::QIviAbstractFeaturePrivate(const QString &interface,
 {
 }
 
+void QIviAbstractFeaturePrivate::initialize()
+{
+}
+
 void QIviAbstractFeaturePrivate::setDiscoveryResult(QIviAbstractFeature::DiscoveryResult discoveryResult)
 {
     if (m_discoveryResult == discoveryResult)
@@ -238,6 +242,8 @@ void QIviAbstractFeaturePrivate::setDiscoveryResult(QIviAbstractFeature::Discove
 QIviAbstractFeature::QIviAbstractFeature(const QString &interface, QObject *parent)
     : QObject(*new QIviAbstractFeaturePrivate(interface, this), parent)
 {
+    Q_D(QIviAbstractFeature);
+    d->initialize();
     qRegisterMetaType<QIviAbstractFeature::Error>();
     qRegisterMetaType<QIviAbstractFeature::DiscoveryMode>();
     qRegisterMetaType<QIviAbstractFeature::DiscoveryResult>();
@@ -591,6 +597,8 @@ QIviAbstractFeature::DiscoveryResult QIviAbstractFeature::startAutoDiscovery()
 QIviAbstractFeature::QIviAbstractFeature(QIviAbstractFeaturePrivate &dd, QObject *parent)
     : QObject(dd, parent)
 {
+    Q_D(QIviAbstractFeature);
+    d->initialize();
 }
 
 /*!

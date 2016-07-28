@@ -65,7 +65,7 @@ class QIviWindowControlPrivate : public QIviAbstractZonedFeaturePrivate
 public:
     QIviWindowControlPrivate(const QString &interface, const QString &zone, QIviWindowControl *parent);
 
-    void init();
+    virtual void initialize() Q_DECL_OVERRIDE;
     void clearToDefaults();
 
     void onHeaterModeChanged(QIviWindowControl::HeaterMode heaterMode, const QString &zone);

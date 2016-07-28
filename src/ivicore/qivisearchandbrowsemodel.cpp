@@ -71,8 +71,10 @@ QIviSearchAndBrowseModelPrivate::~QIviSearchAndBrowseModelPrivate()
     delete m_queryTerm;
 }
 
-void QIviSearchAndBrowseModelPrivate::init()
+void QIviSearchAndBrowseModelPrivate::initialize()
 {
+    QIviAbstractFeatureListModelPrivate::initialize();
+
     Q_Q(QIviSearchAndBrowseModel);
     q->setDiscoveryMode(QIviAbstractFeature::NoAutoDiscovery);
 
@@ -458,8 +460,6 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
 QIviSearchAndBrowseModel::QIviSearchAndBrowseModel(QObject *parent)
     : QIviAbstractFeatureListModel(*new QIviSearchAndBrowseModelPrivate(QLatin1String(QIviSearchAndBrowseModel_iid), this), parent)
 {
-    Q_D(QIviSearchAndBrowseModel);
-    d->init();
 }
 
 QIviSearchAndBrowseModel::~QIviSearchAndBrowseModel()
@@ -1129,8 +1129,6 @@ QHash<int, QByteArray> QIviSearchAndBrowseModel::roleNames() const
 QIviSearchAndBrowseModel::QIviSearchAndBrowseModel(QIviServiceObject *serviceObject, const QString &contentType, QObject *parent)
     : QIviSearchAndBrowseModel(parent)
 {
-    Q_D(QIviSearchAndBrowseModel);
-    d->init();
     setServiceObject(serviceObject);
     setContentType(contentType);
 }
@@ -1141,8 +1139,6 @@ QIviSearchAndBrowseModel::QIviSearchAndBrowseModel(QIviServiceObject *serviceObj
 QIviSearchAndBrowseModel::QIviSearchAndBrowseModel(QIviSearchAndBrowseModelPrivate &dd, QObject *parent)
     : QIviAbstractFeatureListModel(dd, parent)
 {
-    Q_D(QIviSearchAndBrowseModel);
-    d->init();
 }
 
 /*!

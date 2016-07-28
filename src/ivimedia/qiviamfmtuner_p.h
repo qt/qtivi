@@ -67,7 +67,6 @@ class QIviAmFmTunerPrivate : public QIviAbstractFeaturePrivate
 public:
     QIviAmFmTunerPrivate(const QString &interface, QIviAmFmTuner *parent);
 
-    void init();
     void clearToDefaults();
     void onFrequencyChanged(int frequency);
     void onMinimumFrequencyChanged(int frequency);

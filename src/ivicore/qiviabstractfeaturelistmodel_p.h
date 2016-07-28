@@ -82,6 +82,8 @@ public:
     QIviAbstractFeatureListModelPrivate(const QString &interface, QIviAbstractFeatureListModel *model);
     virtual ~QIviAbstractFeatureListModelPrivate();
 
+    virtual void initialize();
+
     QIviHelperFeature *m_feature;
     bool m_qmlCreation;
 };
