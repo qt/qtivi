@@ -167,6 +167,9 @@ void QDltRegistration::registerApplication(const char *dltAppID, const char *dlt
 void QDltRegistration::registerCategory(const QLoggingCategory* category, const char *dltCtxName, const char *dltCtxDescription)
 {
     Q_D(QDltRegistration);
+    Q_ASSERT_X(!d->m_dltAppID.isEmpty(), "registerCategory", "A DLT Application needs to be registered before registering a Logging Category");
+    Q_ASSERT(category);
+    Q_ASSERT(strlen(category->categoryName()) != 0);
     //TODO memory leak
     d->registerCategory(category, new DltContext, dltCtxName, dltCtxDescription);
 }
