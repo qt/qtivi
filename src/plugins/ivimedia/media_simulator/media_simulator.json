@@ -1,8 +1,8 @@
 {
     "interfaces" : [
-        "org.qt-project.qtivi.MediaPlayer",
-        "org.qt-project.qtivi.SearchAndBrowseModel",
-        "org.qt-project.qtivi.MediaDiscovery",
-        "org.qt-project.qtivi.MediaIndexer"
+        "org.qt-project.qtivi.MediaPlayer/1.0",
+        "org.qt-project.qtivi.SearchAndBrowseModel/1.0",
+        "org.qt-project.qtivi.MediaDiscovery/1.0",
+        "org.qt-project.qtivi.MediaIndexer/1.0"
     ]
 }
