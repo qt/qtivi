@@ -51,6 +51,10 @@ QIviAbstractZonedFeaturePrivate::QIviAbstractZonedFeaturePrivate(const QString &
     , m_zone(zone)
 {}
 
+QIviAbstractZonedFeaturePrivate::~QIviAbstractZonedFeaturePrivate()
+{
+}
+
 /*!
     \class QIviAbstractZonedFeature
     \inmodule QtIviCore

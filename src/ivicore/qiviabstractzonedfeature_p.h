@@ -62,6 +62,7 @@ class Q_QTIVICORE_EXPORT QIviAbstractZonedFeaturePrivate : public QIviAbstractFe
 {
 public:
     QIviAbstractZonedFeaturePrivate(const QString &interface, const QString &zone, QIviAbstractFeature *parent);
+    ~QIviAbstractZonedFeaturePrivate();
 
     QString m_zone;
     QList<QIviAbstractZonedFeature*> m_zoneFeatures;
