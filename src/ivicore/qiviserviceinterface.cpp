@@ -39,29 +39,12 @@
 **
 ****************************************************************************/
 
-#ifndef QIVISERVICEINTERFACE_H
-#define QIVISERVICEINTERFACE_H
-
-#include <QtIviCore/qtiviglobal.h>
-
-#include <QtCore/QtPlugin>
+#include "qiviserviceinterface.h"
 
 QT_BEGIN_NAMESPACE
 
-class Q_QTIVICORE_EXPORT QIviServiceInterface
+QIviServiceInterface::~QIviServiceInterface()
 {
-public:
-    virtual ~QIviServiceInterface();
-
-    virtual QStringList interfaces() const = 0;
-    virtual QObject* interfaceInstance(const QString& interface) const = 0;
-};
-
-Q_DECLARE_INTERFACE(QIviServiceInterface, "com.pelagicore.QIviServiceInterface")
+}
 
 QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(QIviServiceInterface*)
-
-#endif // QIVISERVICEINTERFACE_H
-

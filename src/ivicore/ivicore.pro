@@ -34,6 +34,7 @@ HEADERS += \
 
 SOURCES += \
     qiviservicemanager.cpp \
+    qiviserviceinterface.cpp \
     qiviserviceobject.cpp \
     qiviabstractfeature.cpp \
     qiviabstractzonedfeature.cpp \
