@@ -546,7 +546,7 @@ QIviAbstractFeature::DiscoveryResult QIviAbstractFeature::startAutoDiscovery()
         qWarning() << "There is more than one backend implementing" << d->m_interface << ".";
 
     bool serviceObjectSet = false;
-    foreach (QIviServiceObject* object, serviceObjects) {
+    for (QIviServiceObject* object : qAsConst(serviceObjects)) {
         if (setServiceObject(object)) {
             serviceObjectSet = true;
             break;

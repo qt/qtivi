@@ -69,7 +69,7 @@ public:
         climate << QIviClimateControl::ClimateOff << QIviClimateControl::ClimateOn;
         m_climateModeAttribute = climate;
         m_zones << "FrontLeft" << "Upper" << "Lower";
-        foreach (const QString &z, m_zones) {
+        for (const QString &z : qAsConst(m_zones)) {
             m_zoneTargetTemperature[z] = 0;
             m_zoneTargetTemperatureAttribute[z] = QIviPropertyAttribute<int>(0, 10);
             m_zoneSeatCooler[z] = 0;
@@ -116,7 +116,7 @@ public:
 
         QStringList zones = availableZones();
         zones.removeLast(); // Do not init zone "Dummy"
-        foreach (QString zone, zones) {
+        for (const QString &zone : qAsConst(zones)) {
             emit targetTemperatureChanged(m_zoneTargetTemperature[zone], zone);
             emit targetTemperatureAttributeChanged(m_zoneTargetTemperatureAttribute[zone], zone);
             emit seatCoolerChanged(m_zoneSeatCooler[zone], zone);
@@ -692,9 +692,10 @@ void ClimateControlTest::testIntProperties()
     cc.startAutoDiscovery();
 
     if (testZones) {
-        QStringList zones = cc.availableZones();
-        zones.removeAll("Dummy");
-        foreach (QString z, zones) {
+        const QStringList zones = cc.availableZones();
+        for (const QString &z : zones) {
+            if (z == QLatin1String("Dummy"))
+                continue;
             QIviClimateControl* climateZone = qobject_cast<QIviClimateControl*>(cc.zoneAt(z));
             testIVIProperty<QIviClimateControl, ClimateControlTestBackend, int>(testData, climateZone, service->testBackend(), z);
         }
@@ -740,9 +741,10 @@ void ClimateControlTest::testBoolProperties()
     cc.startAutoDiscovery();
 
     if (testZones) {
-        QStringList zones = cc.availableZones();
-        zones.removeAll("Dummy");
-        foreach (QString z, zones) {
+        const QStringList zones = cc.availableZones();
+        for (const QString &z : zones) {
+            if (z == QLatin1String("Dummy"))
+                continue;
             QIviClimateControl* climateZone = qobject_cast<QIviClimateControl*>(cc.zoneAt(z));
             testIVIProperty<QIviClimateControl, ClimateControlTestBackend, bool>(testData, climateZone, service->testBackend(), z);
         }

@@ -86,7 +86,7 @@ public:
 
     static QIviServiceManagerPrivate* get(QIviServiceManager *serviceManager);
 
-    QList<QIviServiceObject*> findServiceByInterface(const QString &interface, QIviServiceManager::SearchFlags searchFlags);
+    QList<QIviServiceObject*> findServiceByInterface(const QString &interface, QIviServiceManager::SearchFlags searchFlags) const;
 
     void searchPlugins();
     void registerBackend(const QString &fileName, const QJsonObject &metaData);
@@ -95,7 +95,7 @@ public:
 
     void unloadAllBackends();
 
-    QIviServiceInterface *loadServiceBackendInterface(struct Backend *backend);
+    QIviServiceInterface *loadServiceBackendInterface(struct Backend *backend) const;
 
     QList<Backend*> m_backends;
     QSet<QString> m_interfaceNames;

@@ -65,11 +65,11 @@ QIviServiceManagerPrivate *QIviServiceManagerPrivate::get(QIviServiceManager *se
     return serviceManager->d_ptr;
 }
 
-QList<QIviServiceObject *> QIviServiceManagerPrivate::findServiceByInterface(const QString &interface, QIviServiceManager::SearchFlags searchFlags)
+QList<QIviServiceObject *> QIviServiceManagerPrivate::findServiceByInterface(const QString &interface, QIviServiceManager::SearchFlags searchFlags) const
 {
     QList<QIviServiceObject*> list;
 
-    foreach (Backend *backend, m_backends) {
+    for (Backend *backend : m_backends) {
 
         if (backend->metaData[QLatin1String("interfaces")].toStringList().contains(interface)) {
             bool isSimulation = backend->metaData[QLatin1String("fileName")].toString().contains(QLatin1String("_simulation."));
@@ -92,7 +92,8 @@ QList<QIviServiceObject *> QIviServiceManagerPrivate::findServiceByInterface(con
 void QIviServiceManagerPrivate::searchPlugins()
 {
     bool found = false;
-    foreach (const QString &pluginDir, QCoreApplication::libraryPaths()) {
+    const auto pluginDirs = QCoreApplication::libraryPaths();
+    for (const QString &pluginDir : pluginDirs) {
 
         QDir dir(pluginDir);
         QString path = pluginDir + QDir::separator() + QLatin1Literal(QIVI_PLUGIN_DIRECTORY);
@@ -100,8 +101,8 @@ void QIviServiceManagerPrivate::searchPlugins()
         if (!QDir(path).exists(QStringLiteral(".")))
             continue;
 
-        QStringList plugins = QDir(path).entryList(QDir::Files);
-        foreach (const QString &pluginPath, plugins) {
+        const QStringList plugins = QDir(path).entryList(QDir::Files);
+        for (const QString &pluginPath : plugins) {
             if (!QLibrary::isLibrary(pluginPath))
                 continue;
             QString fileName = QDir::cleanPath(path + QLatin1Char('/') + pluginPath);
@@ -202,9 +203,9 @@ void QIviServiceManagerPrivate::addBackend(Backend *backend)
     m_backends.append(backend);
     q->endInsertRows();
 
-    foreach (const QString &interface, backend->metaData[QLatin1String("interfaces")].toStringList()) {
+    const auto interfaces = backend->metaData[QLatin1String("interfaces")].toStringList();
+    for (const QString &interface : interfaces)
         m_interfaceNames.insert(interface);
-    }
 }
 
 namespace {
@@ -218,7 +219,7 @@ static QIviServiceInterface *warn(const char *what, const QPluginLoader *loader)
 }
 } // unnamed namespace
 
-QIviServiceInterface *QIviServiceManagerPrivate::loadServiceBackendInterface(struct Backend *backend)
+QIviServiceInterface *QIviServiceManagerPrivate::loadServiceBackendInterface(struct Backend *backend) const
 {
     if (backend->interface) {
         return backend->interface;

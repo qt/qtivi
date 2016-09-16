@@ -64,9 +64,9 @@ public:
 
     void initializeAttributes() Q_DECL_OVERRIDE
     {
-        QStringList zones = availableZones();
+        const QStringList zones = availableZones();
         //zones.removeLast(); // Do not init zone "Dummy"
-        foreach (QString zone, zones) {
+        for (const QString &zone : zones) {
             emit heaterModeChanged(m_zoneMap[zone].heaterMode, zone);
             emit heaterModeAttributeChanged(m_zoneMap[zone].heaterModeAttribute, zone);
             emit heaterEnabledChanged(m_zoneMap[zone].heaterEnabled, zone);
@@ -377,9 +377,10 @@ void WindowControlTest::testHeaterMode()
     manager->registerService(service, service->interfaces());
     QIviWindowControl wc;
     wc.startAutoDiscovery();
-    QStringList zones = wc.availableZones();
-    zones.removeAll("Dummy");
-    foreach (QString z, zones) {
+    const QStringList zones = wc.availableZones();
+    for (const QString &z : zones) {
+        if (z == QLatin1String("Dummy"))
+            continue;
         QIviWindowControl* window = qobject_cast<QIviWindowControl*>(wc.zoneAt(z));
         testIVIProperty<QIviWindowControl, WindowControlTestBackend, QIviWindowControl::HeaterMode>(testData, window, service->testBackend(), z);
     }
@@ -395,9 +396,10 @@ void WindowControlTest::testHeaterEnabled()
     manager->registerService(service, service->interfaces());
     QIviWindowControl wc;
     wc.startAutoDiscovery();
-    QStringList zones = wc.availableZones();
-    zones.removeAll("Dummy");
-    foreach (QString z, zones) {
+    const QStringList zones = wc.availableZones();
+    for (const QString &z : zones) {
+        if (z == QLatin1String("Dummy"))
+            continue;
         QIviWindowControl* window = qobject_cast<QIviWindowControl*>(wc.zoneAt(z));
         testIVIProperty<QIviWindowControl, WindowControlTestBackend, bool>(testData, window, service->testBackend(), z);
     }
@@ -416,9 +418,10 @@ void WindowControlTest::testBlindMode()
     manager->registerService(service, service->interfaces());
     QIviWindowControl wc;
     wc.startAutoDiscovery();
-    QStringList zones = wc.availableZones();
-    zones.removeAll("Dummy");
-    foreach (QString z, zones) {
+    const QStringList zones = wc.availableZones();
+    for (const QString &z : zones) {
+        if (z == QLatin1String("Dummy"))
+            continue;
         QIviWindowControl* window = qobject_cast<QIviWindowControl*>(wc.zoneAt(z));
         testIVIProperty<QIviWindowControl, WindowControlTestBackend, QIviWindowControl::BlindMode>(testData, window, service->testBackend(), z);
     }
@@ -448,9 +451,10 @@ void WindowControlTest::testStates()
     manager->registerService(service, service->interfaces());
     QIviWindowControl wc;
     wc.startAutoDiscovery();
-    QStringList zones = wc.availableZones();
-    zones.removeAll("Dummy");
-    foreach (QString z, zones) {
+    const QStringList zones = wc.availableZones();
+    for (const QString &z : zones) {
+        if (z == QLatin1String("Dummy"))
+            continue;
         QIviWindowControl* window = qobject_cast<QIviWindowControl*>(wc.zoneAt(z));
         testIVIProperty<QIviWindowControl, WindowControlTestBackend, QIviWindowControl::State>(testData, window, service->testBackend(), z);
     }

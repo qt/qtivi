@@ -216,7 +216,8 @@ QStringList WindowControlBackend::availableZones() const
 
 void WindowControlBackend::initializeAttributes()
 {
-    foreach (QString zone, availableZones()) {
+    const auto zones = availableZones();
+    for (const QString &zone : zones) {
         emit heaterModeChanged(m_zoneMap[zone].heaterMode, zone);
         emit heaterModeAttributeChanged(m_zoneMap[zone].heaterModeAttribute, zone);
         emit heaterEnabledChanged(m_zoneMap[zone].heaterEnabled, zone);

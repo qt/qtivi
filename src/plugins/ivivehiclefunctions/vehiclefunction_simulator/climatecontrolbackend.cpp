@@ -131,7 +131,8 @@ void ClimateControlBackend::initializeAttributes()
     emit automaticClimateFanIntensityLevelChanged(m_automaticClimateFanIntensityLevel);
     emit automaticClimateFanIntensityLevelAttributeChanged(QIviPropertyAttribute<int>(false));
 
-    foreach (QString zone, availableZones()) {
+    const auto zones = availableZones();
+    for (const QString &zone : zones) {
         emit targetTemperatureAttributeChanged(m_zoneMap[zone].targetTemperatureAttribute, zone);
         emit targetTemperatureChanged(m_zoneMap[zone].targetTemperature, zone);
         emit seatCoolerAttributeChanged(m_zoneMap[zone].seatCoolerAttribute, zone);

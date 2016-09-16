@@ -101,7 +101,8 @@
    Looping zones is done with QIviAbstractZonedFeature::zones():
 
    \code
-    foreach (QClimateControl* z, m_climateControl->zones())
+    const auto zones = m_climateControl->zones();
+    for (QClimateControl *z : zones)
         if (z->zone() == "FrontSeat")
             z->setSeatHeater(true);
    \endcode
