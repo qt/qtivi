@@ -26,7 +26,7 @@
 ****************************************************************************/
 
 /*!
-    \page index.html
+    \page qtautomotivie-index.html
     \title Qt Automotive Suite
     \nextpage {Qt Automotive Suite Overview}{Overview}
 
@@ -99,10 +99,6 @@
         \li \l {Qt Quick Compiler} - enables compiling .qml source files into
             application binaries, improving load times and security for code
             assets.
-        \li \l {Qt Charts} - UI Components for displaying visually pleasing
-            charts, driven by static or dynamic data models.
-        \li \l {Qt Data Visualization} - UI Components for creating stunning 3D
-            data visualizations.
         \li \l {Qt WebEngine} - provides a web browser engine based on the
             \l {http://www.chromium.org}{Chromium} project.
     \endlist
@@ -129,7 +125,7 @@
 
     \section3 QmlLive
 
-    \e QmlLive provides a live reloader environment for rapid development of
+    \l{Qt QML Live}{QmlLive} provides a live reloader environment for rapid development of
     Qt Quick applications, dramatically reducing the time it takes to
     deploy and test changes in the UI design.
 

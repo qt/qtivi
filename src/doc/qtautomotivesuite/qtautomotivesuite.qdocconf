@@ -29,8 +29,18 @@ qhp.QtAutomotiveSuite.subprojects.install.selectors  = fake:none
 
 tagfile                       = qtautomotivesuite.tags
 
-# TODO: Check dependencies, linking using external URLs for now
-#depends += qtdoc qtivi qtota
+#Check dependencies, linking using external URLs for now
+depends += \
+     qtdoc \
+     qtivi \
+     applicationmanager \
+     qmllive \
+     qtquickcontrols2 \
+     qtdatavisualization \
+     qtcharts \
+     qtwebengine \
+     qtvirtualkeyboard \
+     qtquick
 
 buildversion = "Qt Automotive Suite 1.0"
 
