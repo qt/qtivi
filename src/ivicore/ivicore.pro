@@ -30,7 +30,8 @@ HEADERS += \
     qivipropertytester_p.h \
     qivitypetraits.h \
     qiviabstractfeaturelistmodel.h \
-    qiviabstractfeaturelistmodel_p.h
+    qiviabstractfeaturelistmodel_p.h \
+    qtiviglobal_p.h
 
 SOURCES += \
     qiviservicemanager.cpp \
