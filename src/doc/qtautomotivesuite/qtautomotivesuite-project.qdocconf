@@ -1,0 +1,46 @@
+project                       = QtAutomotiveSuite
+description                   = Qt Automotive Suite Documentation
+version                       = 1.0.0
+
+sourcedirs                   += src
+
+qhp.projects                  = QtAutomotiveSuite
+
+qhp.QtAutomotiveSuite.file                = qtautomotivesuite.qhp
+qhp.QtAutomotiveSuite.namespace           = org.qt-project.qtautomotivesuite.100
+qhp.QtAutomotiveSuite.virtualFolder       = qtautomotivesuite
+qhp.QtAutomotiveSuite.indexTitle          = Qt Automotive Suite
+qhp.QtAutomotiveSuite.indexRoot           =
+
+qhp.QtAutomotiveSuite.filterAttributes    = qtautomotivesuite 1.0.0 qtrefdoc
+qhp.QtAutomotiveSuite.customFilters.Qt.name = QtAutomotiveSuite 1.0.0
+qhp.QtAutomotiveSuite.customFilters.Qt.filterAttributes = qtautomotivesuite 1.0.0
+
+qhp.QtAutomotiveSuite.subprojects                     = overview install
+qhp.QtAutomotiveSuite.subprojects.overview.title      = Overview
+qhp.QtAutomotiveSuite.subprojects.overview.indexTitle = Qt Automotive Suite Overview
+qhp.QtAutomotiveSuite.subprojects.overview.selectors  = fake:none
+
+qhp.QtAutomotiveSuite.subprojects.install.title      = Installation
+qhp.QtAutomotiveSuite.subprojects.install.indexTitle = Installing Qt Automotive Suite
+qhp.QtAutomotiveSuite.subprojects.install.selectors  = fake:none
+
+tagfile                       = qtautomotivesuite.tags
+
+#Check dependencies, linking using external URLs for now
+depends += \
+     qtdoc \
+     qtivi \
+     applicationmanager \
+     qmllive \
+     qtquickcontrols2 \
+     qtdatavisualization \
+     qtcharts \
+     qtwebengine \
+     qtvirtualkeyboard \
+     qtquick
+
+buildversion = "Qt Automotive Suite 1.0"
+
+macro.QAS = "Qt Automotive Suite"
+navigation.homepage = "Qt Automotive Suite"
