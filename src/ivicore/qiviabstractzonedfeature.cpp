@@ -51,6 +51,10 @@ QIviAbstractZonedFeaturePrivate::QIviAbstractZonedFeaturePrivate(const QString &
     , m_zone(zone)
 {}
 
+QIviAbstractZonedFeaturePrivate::~QIviAbstractZonedFeaturePrivate()
+{
+}
+
 /*!
     \class QIviAbstractZonedFeature
     \inmodule QtIviCore
@@ -224,7 +228,8 @@ void QIviAbstractZonedFeature::initializeZones()
         return;
 
     Q_D(QIviAbstractZonedFeature);
-    foreach (const QString &zone, backend()->availableZones()) {
+    const auto zones = backend()->availableZones();
+    for (const QString &zone : zones) {
         QIviAbstractZonedFeature *f = zoneAt(zone);
         if (!f) {
             if (this->zone() == zone)
@@ -267,7 +272,7 @@ QStringList QIviAbstractZonedFeature::availableZones() const
 QIviAbstractZonedFeature *QIviAbstractZonedFeature::zoneAt(const QString &zone) const
 {
     Q_D(const QIviAbstractZonedFeature);
-    foreach (QIviAbstractZonedFeature *f, d->m_zoneFeatures)
+    for (QIviAbstractZonedFeature *f : d->m_zoneFeatures)
         if (f->zone() == zone)
             return f;
     return 0;

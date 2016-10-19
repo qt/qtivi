@@ -39,80 +39,12 @@
 **
 ****************************************************************************/
 
-#ifndef QIVISERVICEMANAGER_P_H
-#define QIVISERVICEMANAGER_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail. This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <QtCore/QAbstractListModel>
-#include <QtCore/QLoggingCategory>
-#include <QtCore/QVariantMap>
-#include <QtCore/QStringList>
-#include <QtCore/QMap>
-#include <QtCore/QSet>
-
-#include <QtIviCore/qtiviglobal.h>
-#include <QtIviCore/qiviservicemanager.h>
+#include "qiviserviceinterface.h"
 
 QT_BEGIN_NAMESPACE
 
-class QPluginLoader;
-class QIviServiceInterface;
-class QIviServiceObject;
-class QIviProxyServiceObject;
-
-Q_DECLARE_LOGGING_CATEGORY(qLcIviServiceManagement)
-
-struct Backend{
-    QVariantMap metaData;
-    QIviServiceInterface *interface;
-    QObject *interfaceObject;
-    QIviProxyServiceObject *proxyServiceObject;
-    QPluginLoader *loader;
-};
-
-class Q_QTIVICORE_EXPORT QIviServiceManagerPrivate : public QObject
+QIviServiceInterface::~QIviServiceInterface()
 {
-    Q_OBJECT
-
-public:
-    explicit QIviServiceManagerPrivate(QIviServiceManager *parent);
-
-    static QIviServiceManagerPrivate* get(QIviServiceManager *serviceManager);
-
-    QList<QIviServiceObject*> findServiceByInterface(const QString &interface, QIviServiceManager::SearchFlags searchFlags) const;
-
-    void searchPlugins();
-    void registerBackend(const QString &fileName, const QJsonObject &metaData);
-    bool registerBackend(QObject *serviceBackendInterface, const QStringList &interfaces, QIviServiceManager::BackendType backendType);
-    void addBackend(struct Backend *backend);
-
-    void unloadAllBackends();
-
-    QIviServiceInterface *loadServiceBackendInterface(struct Backend *backend) const;
-
-    QList<Backend*> m_backends;
-    QSet<QString> m_interfaceNames;
-
-    QIviServiceManager * const q_ptr;
-    Q_DECLARE_PUBLIC(QIviServiceManager)
-
-Q_SIGNALS:
-    void beginInsertRows(const QModelIndex &index, int start, int end);
-    void endInsertRows();
-
-};
+}
 
 QT_END_NAMESPACE
-
-#endif // QIVISERVICEMANAGER_P_H
-

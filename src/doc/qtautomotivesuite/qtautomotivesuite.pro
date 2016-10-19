@@ -1,7 +1,11 @@
 TEMPLATE = aux
+build_online_docs: {
+    QMAKE_DOCS_TARGETDIR = qtautomotivesuite
+    QMAKE_DOCS = $$PWD/qtautomotivesuite-online.qdocconf
+} else {
+    QMAKE_DOCS = $$PWD/qtautomotivesuite.qdocconf
+}
 
-QMAKE_DOCS = $$PWD/qtautomotivesuite.qdocconf
-QMAKE_DOCS_OUTPUTDIR = $$OUT_PWD/qtautomotivesuite
-
-OTHER_FILES += $$QMAKE_DOCS \
+OTHER_FILES += \
+    $$PWD/*.qdocconf \
     $$PWD/src/*.qdoc

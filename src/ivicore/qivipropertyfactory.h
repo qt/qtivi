@@ -116,7 +116,7 @@ public:
         QMetaType metaType(userType);
         if (metaType.flags() & QMetaType::IsEnumeration) {
             const QMetaObject *mo = metaType.metaObject();
-            if (!mo)
+            if (Q_UNLIKELY(!mo))
                 //TODO Do we want to use a qFatal() here or just report a qCritical instead ?
                 qFatal("The provided enum needs to be declared as Q_ENUM or Q_FLAG");
         }

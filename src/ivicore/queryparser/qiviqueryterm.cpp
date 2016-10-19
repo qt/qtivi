@@ -164,18 +164,14 @@ QIviAbstractQueryTerm::Type QIviConjunctionTerm::type() const
 QString QIviConjunctionTerm::toString() const
 {
     Q_D(const QIviConjunctionTerm);
-    QString conjunction = QLatin1String("&");
-    if (d->m_conjunction == Or)
-        conjunction = QLatin1String("|");
+    const QChar conjunction = d->m_conjunction == Or ? QLatin1Char('|') : QLatin1Char('&');
 
     QString string;
-    QListIterator<QIviAbstractQueryTerm*> it(d->m_terms);
-    while (it.hasNext()) {
-        string += it.next()->toString();
-        if (it.hasNext())
-            string += QLatin1Literal(" ") + conjunction + QLatin1Literal(" ");
+    if (!d->m_terms.empty()) {
+        for (QIviAbstractQueryTerm *term : d->m_terms)
+            string += term->toString() + QLatin1Char(' ') + conjunction + QLatin1Char(' ');
+        string.chop(3); // remove trailing " & " or " | "
     }
-
     return string;
 }
 

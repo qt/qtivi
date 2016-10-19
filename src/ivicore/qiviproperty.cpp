@@ -58,12 +58,12 @@ QIviPropertyPrivate::QIviPropertyPrivate(int userType, QtPrivate::QSlotObjectBas
 void QIviPropertyPrivate::throwError(QObject *object, const QString &error)
 {
     QJSEngine *jsEngine = qjsEngine(object);
-    if (jsEngine) {
-        QV4::ExecutionEngine *v4 = QV8Engine::getV4(jsEngine);
-        v4->throwError(error);
-    } else {
+    if (Q_UNLIKELY(!jsEngine)) {
         qWarning("%s", qPrintable(error));
+        return;
     }
+    QV4::ExecutionEngine *v4 = QV8Engine::getV4(jsEngine);
+    v4->throwError(error);
 }
 
 /*!

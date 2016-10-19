@@ -31,6 +31,7 @@ HEADERS += \
     qivitypetraits.h \
     qiviabstractfeaturelistmodel.h \
     qiviabstractfeaturelistmodel_p.h \
+    qtiviglobal_p.h \
     qivisearchandbrowsemodel.h \
     qivisearchandbrowsemodel_p.h \
     qivisearchandbrowsemodelinterface.h \
@@ -39,6 +40,7 @@ HEADERS += \
 
 SOURCES += \
     qiviservicemanager.cpp \
+    qiviserviceinterface.cpp \
     qiviserviceobject.cpp \
     qiviabstractfeature.cpp \
     qiviabstractzonedfeature.cpp \

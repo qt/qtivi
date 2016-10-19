@@ -39,8 +39,9 @@
 **
 ****************************************************************************/
 
-#ifndef QIVISERVICEMANAGER_P_H
-#define QIVISERVICEMANAGER_P_H
+#ifndef QTIVIGLOBAL_P_H
+#define QTIVIGLOBAL_P_H
+
 
 //
 //  W A R N I N G
@@ -53,66 +54,31 @@
 // We mean it.
 //
 
-#include <QtCore/QAbstractListModel>
-#include <QtCore/QLoggingCategory>
-#include <QtCore/QVariantMap>
-#include <QtCore/QStringList>
-#include <QtCore/QMap>
-#include <QtCore/QSet>
 
-#include <QtIviCore/qtiviglobal.h>
-#include <QtIviCore/qiviservicemanager.h>
+#include <QtCore/qglobal.h>
 
 QT_BEGIN_NAMESPACE
 
-class QPluginLoader;
-class QIviServiceInterface;
-class QIviServiceObject;
-class QIviProxyServiceObject;
+//Backport some functions to keep it working with 5.6
+#if (QT_VERSION < QT_VERSION_CHECK(5,7,0))
+namespace QtPrivate {
+template <typename T> struct QAddConst { typedef const T Type; };
+}
 
-Q_DECLARE_LOGGING_CATEGORY(qLcIviServiceManagement)
+// this adds const to non-const objects (like std::as_const)
+template <typename T>
+Q_DECL_CONSTEXPR typename QtPrivate::QAddConst<T>::Type &qAsConst(T &t) Q_DECL_NOTHROW { return t; }
+// prevent rvalue arguments:
+template <typename T>
+void qAsConst(const T &&) Q_DECL_EQ_DELETE;
 
-struct Backend{
-    QVariantMap metaData;
-    QIviServiceInterface *interface;
-    QObject *interfaceObject;
-    QIviProxyServiceObject *proxyServiceObject;
-    QPluginLoader *loader;
-};
-
-class Q_QTIVICORE_EXPORT QIviServiceManagerPrivate : public QObject
-{
-    Q_OBJECT
-
-public:
-    explicit QIviServiceManagerPrivate(QIviServiceManager *parent);
-
-    static QIviServiceManagerPrivate* get(QIviServiceManager *serviceManager);
-
-    QList<QIviServiceObject*> findServiceByInterface(const QString &interface, QIviServiceManager::SearchFlags searchFlags) const;
-
-    void searchPlugins();
-    void registerBackend(const QString &fileName, const QJsonObject &metaData);
-    bool registerBackend(QObject *serviceBackendInterface, const QStringList &interfaces, QIviServiceManager::BackendType backendType);
-    void addBackend(struct Backend *backend);
-
-    void unloadAllBackends();
-
-    QIviServiceInterface *loadServiceBackendInterface(struct Backend *backend) const;
-
-    QList<Backend*> m_backends;
-    QSet<QString> m_interfaceNames;
-
-    QIviServiceManager * const q_ptr;
-    Q_DECLARE_PUBLIC(QIviServiceManager)
-
-Q_SIGNALS:
-    void beginInsertRows(const QModelIndex &index, int start, int end);
-    void endInsertRows();
-
-};
+#ifndef qUtf16Printable
+#  define qUtf16Printable(string) \
+    static_cast<const wchar_t*>(static_cast<const void*>(QString(string).utf16()))
+#endif
+#endif
 
 QT_END_NAMESPACE
 
-#endif // QIVISERVICEMANAGER_P_H
+#endif // QTIVIGLOBAL_P_H
 

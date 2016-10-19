@@ -31,38 +31,8 @@
 */
 
 /*!
-    \externalpage https://doc.qt.io/
-    \title Qt reference documentation
-*/
-
-/*!
-    \externalpage https://doc.qt.io/QtDataVisualization
-    \title Qt Data Visualization
-*/
-
-/*!
-    \externalpage https://doc.qt.io/QtVirtualKeyboard
-    \title Qt Virtual Keyboard
-*/
-
-/*!
-    \externalpage https://doc.qt.io/QtCharts
-    \title Qt Charts
-*/
-
-/*!
     \externalpage https://doc.qt.io/QtQuickCompiler
     \title Qt Quick Compiler
-*/
-
-/*!
-    \externalpage https://doc.qt.io/qt-5/qtwebengine-index.html
-    \title Qt WebEngine
-*/
-
-/*!
-    \externalpage https://doc.qt.io/qt-5/qtquick-index.html
-    \title Qt Quick
 */
 
 /*!
@@ -71,18 +41,13 @@
 */
 
 /*!
-    \externalpage https://www.kdab.com/gammaray/
-    \title GammaRay
-*/
-
-/*!
     \externalpage https://doc.qt.io/QtWebBrowser/
     \title Qt Web Browser
 */
 
 /*!
-    \externalpage https://doc.qt.io/qt-5/qtquickcontrols2-index.html
-    \title Qt Quick Controls 2
+    \externalpage https://www.kdab.com/gammaray/
+    \title GammaRay
 */
 
 /*!
@@ -108,4 +73,14 @@
 /*!
     \externalpage https://doc.qt.io/QtForDeviceCreation/index.html
     \title Qt for Device Creation
+*/
+
+/*!
+    \externalpage https://doc.qt.io/QtOTA/index.html
+    \title Over-The-Air Update
+*/
+
+/*!
+    \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-installation-guide.html
+    \title Qt for Device Creation: Installation Guide
 */

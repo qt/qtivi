@@ -71,9 +71,11 @@ template <typename T>  QVariant qtivi_convertValue(const T &val)
 template <typename T> QVariantList qtivi_convertAvailableValues(const QVector<T> &aValues)
 {
     QVariantList list;
-    Q_FOREACH (const T &val, aValues)
+    list.reserve(aValues.size());
+    for (const T &val : aValues) {
         //As QML doesn't support Enums in Lists we need to convert it to int
         list.append(qtivi_convertValue<T>(val));
+    }
     return list;
 }
 

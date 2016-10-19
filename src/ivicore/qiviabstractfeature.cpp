@@ -41,6 +41,7 @@
 
 #include "qiviabstractfeature.h"
 #include "qiviabstractfeature_p.h"
+#include "qtiviglobal_p.h"
 
 #include "qiviserviceobject.h"
 #include "qiviservicemanager.h"
@@ -298,7 +299,7 @@ bool QIviAbstractFeature::setServiceObject(QIviServiceObject *so)
     //We only want to call clearServiceObject if we are sure that the serviceObject changes
     if (!so) {
         clearServiceObject();
-    } else if (so && !acceptServiceObject(so)) {
+    } else if (Q_UNLIKELY(so && !acceptServiceObject(so))) {
         qWarning("ServiceObject is not accepted");
         clearServiceObject();
 
@@ -551,7 +552,7 @@ QIviAbstractFeature::DiscoveryResult QIviAbstractFeature::startAutoDiscovery()
 
     //Check whether we can use the found production backends
     bool serviceObjectSet = false;
-    foreach (QIviServiceObject *object, serviceObjects) {
+    for (QIviServiceObject *object : qAsConst(serviceObjects)) {
         qCDebug(qLcIviServiceManagement) << "Trying to use" << object << "Supported Interfaces:" << object->interfaces();
         if (setServiceObject(object)) {
             serviceObjectSet = true;
@@ -571,7 +572,7 @@ QIviAbstractFeature::DiscoveryResult QIviAbstractFeature::startAutoDiscovery()
             if (Q_UNLIKELY(serviceObjects.isEmpty()))
                 qWarning() << "There is no simulation backend implementing" << d->m_interface << ".";
 
-            foreach (QIviServiceObject *object, serviceObjects) {
+            for (QIviServiceObject* object : qAsConst(serviceObjects)) {
                 qCDebug(qLcIviServiceManagement) << "Trying to use" << object << "Supported Interfaces:" << object->interfaces();
                 if (setServiceObject(object)) {
                     serviceObjectSet = true;

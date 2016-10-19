@@ -42,14 +42,16 @@
 #ifndef QIVISERVICEINTERFACE_H
 #define QIVISERVICEINTERFACE_H
 
+#include <QtIviCore/qtiviglobal.h>
+
 #include <QtCore/QtPlugin>
 
 QT_BEGIN_NAMESPACE
 
-class QIviServiceInterface {
-
+class Q_QTIVICORE_EXPORT QIviServiceInterface
+{
 public:
-    virtual ~QIviServiceInterface() {}
+    virtual ~QIviServiceInterface();
 
     virtual QStringList interfaces() const = 0;
     virtual QObject *interfaceInstance(const QString &interface) const = 0;

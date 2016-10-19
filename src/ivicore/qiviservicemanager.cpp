@@ -71,12 +71,12 @@ QIviServiceManagerPrivate *QIviServiceManagerPrivate::get(QIviServiceManager *se
     return serviceManager->d_ptr;
 }
 
-QList<QIviServiceObject *> QIviServiceManagerPrivate::findServiceByInterface(const QString &interface, QIviServiceManager::SearchFlags searchFlags)
+QList<QIviServiceObject *> QIviServiceManagerPrivate::findServiceByInterface(const QString &interface, QIviServiceManager::SearchFlags searchFlags) const
 {
     QList<QIviServiceObject*> list;
     qCDebug(qLcIviServiceManagement) << "Searching for a backend for:" << interface << "SearchFlags:" << searchFlags;
 
-    foreach (Backend *backend, m_backends) {
+    for (Backend *backend : m_backends) {
 
         if (backend->metaData[QLatin1String("interfaces")].toStringList().contains(interface)) {
             const QString& fileName = backend->metaData[QLatin1String("fileName")].toString();
@@ -102,7 +102,8 @@ QList<QIviServiceObject *> QIviServiceManagerPrivate::findServiceByInterface(con
 void QIviServiceManagerPrivate::searchPlugins()
 {
     bool found = false;
-    foreach (const QString &pluginDir, QCoreApplication::libraryPaths()) {
+    const auto pluginDirs = QCoreApplication::libraryPaths();
+    for (const QString &pluginDir : pluginDirs) {
 
         QDir dir(pluginDir);
         QString path = pluginDir + QDir::separator() + QLatin1Literal(QIVI_PLUGIN_DIRECTORY);
@@ -110,8 +111,8 @@ void QIviServiceManagerPrivate::searchPlugins()
         if (!QDir(path).exists(QStringLiteral(".")))
             continue;
 
-        QStringList plugins = QDir(path).entryList(QDir::Files);
-        foreach (const QString &pluginPath, plugins) {
+        const QStringList plugins = QDir(path).entryList(QDir::Files);
+        for (const QString &pluginPath : plugins) {
             if (!QLibrary::isLibrary(pluginPath))
                 continue;
             QString fileName = QDir::cleanPath(path + QLatin1Char('/') + pluginPath);
@@ -120,17 +121,16 @@ void QIviServiceManagerPrivate::searchPlugins()
             found = true;
         }
     }
-    if (!found)
-    {
+    if (Q_UNLIKELY(!found))
         qWarning() << "No plugins found in search path: " << QCoreApplication::libraryPaths().join(QLatin1String(":"));
-    }
 }
 
 void QIviServiceManagerPrivate::registerBackend(const QString &fileName, const QJsonObject &metaData)
 {
     QVariantMap backendMetaData = metaData.value(QLatin1String("MetaData")).toVariant().toMap();
 
-    if (backendMetaData[QLatin1String("interfaces")].isNull() || backendMetaData[QLatin1String("interfaces")].toList().isEmpty()) {
+    if (Q_UNLIKELY(backendMetaData[QLatin1String("interfaces")].isNull() ||
+                   backendMetaData[QLatin1String("interfaces")].toList().isEmpty())) {
         qCWarning(qLcIviServiceManagement, "PluginManager - Malformed metaData in '%s'. MetaData must contain a list of interfaces", qPrintable(fileName));
         return;
     }
@@ -213,12 +213,23 @@ void QIviServiceManagerPrivate::addBackend(Backend *backend)
     m_backends.append(backend);
     q->endInsertRows();
 
-    foreach (const QString &interface, backend->metaData[QLatin1String("interfaces")].toStringList()) {
+    const auto interfaces = backend->metaData[QLatin1String("interfaces")].toStringList();
+    for (const QString &interface : interfaces)
         m_interfaceNames.insert(interface);
-    }
 }
 
-QIviServiceInterface *QIviServiceManagerPrivate::loadServiceBackendInterface(struct Backend *backend)
+namespace {
+Q_NEVER_INLINE
+static QIviServiceInterface *warn(const char *what, const QPluginLoader *loader)
+{
+    qWarning("ServiceManager::serviceObjects - failed to %s '%s'",
+             what, qPrintable(loader->fileName()));
+    delete loader;
+    return Q_NULLPTR;
+}
+} // unnamed namespace
+
+QIviServiceInterface *QIviServiceManagerPrivate::loadServiceBackendInterface(struct Backend *backend) const
 {
     if (backend->interface) {
         return backend->interface;
@@ -226,25 +237,16 @@ QIviServiceInterface *QIviServiceManagerPrivate::loadServiceBackendInterface(str
 
     QPluginLoader *loader = new QPluginLoader(backend->metaData[QLatin1String("fileName")].toString());
     QObject *plugin = loader->instance();
-    if (plugin) {
+    if (Q_UNLIKELY(!plugin))
+        return warn("load", loader);
 
-        QIviServiceInterface *backendInterface = qobject_cast<QIviServiceInterface*>(plugin);
-        if (backendInterface) {
-            backend->interface = backendInterface;
-            backend->loader = loader;
-            return backend->interface;
-        } else {
-            qCWarning(qLcIviServiceManagement, "ServiceManager::serviceObjects - failed to cast to interface from '%s'", qPrintable(loader->fileName()));
-        }
+    QIviServiceInterface *backendInterface = qobject_cast<QIviServiceInterface*>(plugin);
+    if (Q_UNLIKELY(!backendInterface))
+        return warn("cast to interface from", loader);
 
-    } else {
-        qCWarning(qLcIviServiceManagement, "ServiceManager::serviceObjects - failed to load '%s'", qPrintable(loader->fileName()));
-    }
-
-    //Only delete the Loader right away if we didn't succeeded with loading the interfaces.
-    delete loader;
-
-    return 0;
+    backend->interface = backendInterface;
+    backend->loader = loader;
+    return backend->interface;
 }
 
 /*!
