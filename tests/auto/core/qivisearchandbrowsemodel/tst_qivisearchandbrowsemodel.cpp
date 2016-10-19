@@ -62,8 +62,8 @@ public:
     //Adds multiple sets of data which can be used for the navigation
     void initializeNavigationData()
     {
-        QStringList types = { "levelOne", "levelTwo", "levelThree" };
-        foreach (const QString &type, types) {
+        static const QStringList types = { "levelOne", "levelTwo", "levelThree" };
+        for (const QString &type : types) {
             registerType(type);
             m_lists.insert(type, createItemList(type));
         }
@@ -137,7 +137,7 @@ public:
             QMetaProperty mp = mo.property(mpi);
 
             QList<QIviSearchAndBrowseModelItem> resultList;
-            foreach (const QIviSearchAndBrowseModelItem &item, list) {
+            for (const QIviSearchAndBrowseModelItem &item : qAsConst(list)) {
                 QVariant value = mp.readOnGadget(&item);
                 if (value.canConvert(filterTerm->value().userType()))
                     value.convert(filterTerm->value().userType());
