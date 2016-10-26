@@ -72,13 +72,29 @@ public:
     DltContext *context(const char *categoryName);
     void dltLogLevelChanged(char context_id[], uint8_t log_level, uint8_t trace_status);
 
+    static DltLogLevelType category2dltLevel(const QLoggingCategory *category);
+    static DltLogLevelType severity2dltLevel(QtMsgType type);
+
 private:
     QDltRegistration *const q_ptr;
     Q_DECLARE_PUBLIC(QDltRegistration)
     QString m_dltAppID;
     DltContext *m_defaultContext;
-    QHash<QString, DltContext*> m_categoryName2DltContext;
-    QHash<QString, QLoggingCategory*> m_ctxName2Category;
+    struct CategoryInfo {
+        CategoryInfo()
+            : m_category(nullptr)
+            , m_context(nullptr)
+            , m_registered(false)
+        {}
+
+        QByteArray m_ctxName;
+        QByteArray m_ctxDescription;
+        QLoggingCategory *m_category;
+        DltContext *m_context;
+        bool m_registered;
+    };
+    QHash<QString, CategoryInfo> m_categoryInfoHash;
+    bool m_registerOnFirstUse;
 };
 
 QT_END_NAMESPACE

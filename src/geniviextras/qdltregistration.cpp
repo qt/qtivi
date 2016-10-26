@@ -52,7 +52,6 @@ void qtGeniviLogLevelChangedHandler(char context_id[], uint8_t log_level, uint8_
     globalDltRegistration()->d_ptr->dltLogLevelChanged(context_id, log_level, trace_status);
 }
 
-
 Q_GLOBAL_STATIC(QDltRegistration, dltRegistration)
 
 QDltRegistration *globalDltRegistration()
@@ -65,19 +64,30 @@ QT_END_NAMESPACE
 QDltRegistrationPrivate::QDltRegistrationPrivate(QDltRegistration *parent)
     : q_ptr(parent)
     , m_defaultContext(nullptr)
+    , m_registerOnFirstUse(false)
 {
 }
 
 void QDltRegistrationPrivate::registerCategory(const QLoggingCategory *category, DltContext *dltContext, const char *dltCtxName, const char *dltCtxDescription)
 {
-    DLT_REGISTER_CONTEXT(*dltContext, dltCtxName, dltCtxDescription);
-    m_categoryName2DltContext.insert(QString::fromLatin1(category->categoryName()), dltContext);
-    m_ctxName2Category.insert(QString::fromLatin1(dltCtxName), const_cast<QLoggingCategory*>(category));
+    CategoryInfo info;
+    info.m_category = const_cast<QLoggingCategory*>(category);
+    info.m_ctxName = dltCtxName;
+    info.m_ctxDescription = dltCtxDescription;
+    info.m_context = dltContext;
 
+    if (!m_registerOnFirstUse) {
+        DLT_REGISTER_CONTEXT_LL_TS(*dltContext, dltCtxName, dltCtxDescription, category2dltLevel(category), DLT_TRACE_STATUS_DEFAULT);
 #ifdef DLT_VERSION_2_12
-    //TODO move to lamda once c++11 is ok to be used
-    DLT_REGISTER_LOG_LEVEL_CHANGED_CALLBACK(*dltContext, &qtGeniviLogLevelChangedHandler);
+        //TODO move to lamda once c++11 is ok to be used
+        DLT_REGISTER_LOG_LEVEL_CHANGED_CALLBACK(*dltContext, &qtGeniviLogLevelChangedHandler);
 #endif
+        info.m_registered = true;
+    } else {
+        info.m_registered = false;
+    }
+
+    m_categoryInfoHash.insert(QString::fromLatin1(category->categoryName()), info);
 }
 
 void QDltRegistrationPrivate::setDefaultContext(DltContext *dltContext)
@@ -88,10 +98,16 @@ void QDltRegistrationPrivate::setDefaultContext(DltContext *dltContext)
 DltContext *QDltRegistrationPrivate::context(const char *categoryName)
 {
     const QString category = QString::fromLatin1(categoryName);
-    if (!m_categoryName2DltContext.contains(category) && m_defaultContext)
+    if (!m_categoryInfoHash.contains(category) && m_defaultContext)
         return m_defaultContext;
 
-    return m_categoryName2DltContext.value(category);
+    CategoryInfo info = m_categoryInfoHash.value(category);
+    if (info.m_context && !info.m_registered) {
+        DLT_REGISTER_CONTEXT_LL_TS(*info.m_context, info.m_ctxName, info.m_ctxDescription, category2dltLevel(info.m_category), DLT_TRACE_STATUS_DEFAULT);
+        info.m_registered = true;
+    }
+
+    return info.m_context;
 }
 
 void QDltRegistrationPrivate::dltLogLevelChanged(char context_id[], uint8_t log_level, uint8_t trace_status)
@@ -99,8 +115,10 @@ void QDltRegistrationPrivate::dltLogLevelChanged(char context_id[], uint8_t log_
     Q_Q(QDltRegistration);
     Q_UNUSED(trace_status)
 
-    const QString contextName = QString::fromLatin1(context_id);
-    if (m_ctxName2Category.contains(contextName)) {
+    for (auto it = m_categoryInfoHash.begin(); it != m_categoryInfoHash.end(); ++it) {
+        if (it.value().m_ctxName != context_id)
+            continue;
+
         QList<QtMsgType> msgTypes;
 
         //Enable all QtLoggingCategories with a lower severity than the DLT level
@@ -136,13 +154,31 @@ void QDltRegistrationPrivate::dltLogLevelChanged(char context_id[], uint8_t log_
             bool enabled = true;
             if (!msgTypes.contains(type))
                 enabled = !enabled;
-            QLoggingCategory* category = m_ctxName2Category.value(contextName);
+            QLoggingCategory* category = it.value().m_category;
             if (category->isEnabled(type) != enabled) {
                 category->setEnabled(type, enabled);
                 q->logLevelChanged(category);
             }
         }
     }
+}
+
+DltLogLevelType QDltRegistrationPrivate::category2dltLevel(const QLoggingCategory *category)
+{
+    DltLogLevelType logLevel = DLT_LOG_OFF;
+
+    if (category->isDebugEnabled())
+        logLevel = DLT_LOG_DEBUG;
+#if QT_VERSION >= 0x050500
+    else if (category->isInfoEnabled())
+        logLevel = DLT_LOG_INFO;
+#endif
+    else if (category->isWarningEnabled())
+        logLevel = DLT_LOG_WARN;
+    else if (category->isCriticalEnabled())
+        logLevel = DLT_LOG_ERROR;
+
+    return logLevel;
 }
 
 QDltRegistration::QDltRegistration()
@@ -178,6 +214,23 @@ void QDltRegistration::setDefaultContext(const char *categoryName)
     d->setDefaultContext(d->context(categoryName));
 }
 
+void QDltRegistration::setRegisterContextOnFirstUseEnabled(bool enabled)
+{
+    Q_D(QDltRegistration);
+    d->m_registerOnFirstUse = enabled;
+}
+
+void QDltRegistration::registerUnregisteredContexts()
+{
+    Q_D(QDltRegistration);
+    for (auto it = d->m_categoryInfoHash.begin(); it != d->m_categoryInfoHash.end(); ++it) {
+        if (!it.value().m_registered) {
+            DLT_REGISTER_CONTEXT_LL_TS(*it.value().m_context, it.value().m_ctxName, it.value().m_ctxDescription, d->category2dltLevel(it.value().m_category), DLT_TRACE_STATUS_DEFAULT);
+            it.value().m_registered = true;
+        }
+    }
+}
+
 void QDltRegistration::unregisterApplication()
 {
     Q_D(QDltRegistration);
@@ -191,16 +244,16 @@ void QDltRegistration::messageHandler(QtMsgType msgTypes, const QMessageLogConte
     if (!dltCtx)
         return;
 
-    DltLogLevelType logLevel = DLT_LOG_INFO;
+    DltLogLevelType logLevel = DLT_LOG_OFF;
 
     switch (msgTypes) {
     case QtDebugMsg: logLevel = DLT_LOG_DEBUG; break;
-    case QtWarningMsg: logLevel = DLT_LOG_WARN; break;
-    case QtCriticalMsg: logLevel = DLT_LOG_ERROR; break;
-    case QtFatalMsg: logLevel = DLT_LOG_FATAL; break;
 #if QT_VERSION >= 0x050500
     case QtInfoMsg: logLevel = DLT_LOG_INFO; break;
 #endif
+    case QtWarningMsg: logLevel = DLT_LOG_WARN; break;
+    case QtCriticalMsg: logLevel = DLT_LOG_ERROR; break;
+    case QtFatalMsg: logLevel = DLT_LOG_FATAL; break;
     }
 
     DLT_LOG(*dltCtx, logLevel, DLT_STRING(qPrintable(qFormatLogMessage(msgTypes, msgCtx, msg))));

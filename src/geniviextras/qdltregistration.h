@@ -66,6 +66,9 @@ public:
     void registerCategory(const QLoggingCategory *category, const char *dltCtxName, const char *dltCtxDescription);
     void setDefaultContext(const char *categoryName);
 
+    void setRegisterContextOnFirstUseEnabled(bool enabled);
+    void registerUnregisteredContexts();
+
     static void messageHandler(QtMsgType msgTypes, const QMessageLogContext &msgCtx, const QString &msg);
 
 Q_SIGNALS:
