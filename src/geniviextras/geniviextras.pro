@@ -2,7 +2,6 @@ TARGET = QtGeniviExtras
 
 QT = core
 CONFIG += c++11
-VERSION = 1.0.0
 
 CONFIG += link_pkgconfig
 

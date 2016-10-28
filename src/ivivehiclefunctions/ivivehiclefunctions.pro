@@ -1,7 +1,6 @@
 TARGET = QtIviVehicleFunctions
 QT = core core-private ivicore ivicore-private
 CONFIG += c++11
-VERSION = 1.0.0
 
 OTHER_FILES = \
     $$PWD/doc/*.qdocconf \

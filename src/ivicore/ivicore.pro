@@ -2,7 +2,6 @@ TARGET = QtIviCore
 
 QT = core core-private qml qml-private
 CONFIG += c++11
-VERSION = 1.0.0
 
 OTHER_FILES += \
     $$PWD/doc/*.qdocconf \
