@@ -1,2 +1,2 @@
 include($QT_INSTALL_DOCS/global/qt-module-defaults-offline.qdocconf)
-include(qtivi.qdocconf)
+include(qtivi-project.qdocconf)
