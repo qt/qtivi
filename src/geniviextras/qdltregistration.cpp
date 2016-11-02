@@ -147,6 +147,18 @@ void QDltRegistrationPrivate::dltLogLevelChanged(char context_id[], uint8_t log_
     }
 }
 
+/*!
+    \class QDltRegistration
+    \inmodule QtGeniviExtras
+    \brief The QDltRegistration class controls controls the mapping between QLoggingCategory and dlt context.
+
+    The class talks to the dlt-daemon and provides a Qt messageHandler which forwards logging messages logged
+    by the Qt Logging Framework to the dlt-daemon.
+
+    Using dlt-daemon version 2.12 or higher it also reacts to DLT control messages and adapts the enabled msg
+    types of a QLoggingCategory whenever the log level of a dlt context changes.
+*/
+
 QDltRegistration::QDltRegistration()
     : d_ptr(new QDltRegistrationPrivate(this))
 {
@@ -157,6 +169,12 @@ QDltRegistration::~QDltRegistration()
     unregisterApplication();
 }
 
+/*!
+    Registers this application with the dlt-daemon using \a dltAppID and \a dltAppDescription.
+
+    This function shouldn't be used directly, instead use the convenience macro.
+    \sa QDLT_REGISTER_APPLICATION
+*/
 void QDltRegistration::registerApplication(const char *dltAppID, const char *dltAppDescription)
 {
     Q_D(QDltRegistration);
@@ -164,6 +182,12 @@ void QDltRegistration::registerApplication(const char *dltAppID, const char *dlt
     DLT_REGISTER_APP(dltAppID, dltAppDescription);
 }
 
+/*!
+    Registers \a category with the dlt-daemon using \a dltCtxName and \a dltCtxDescription.
+
+    This function shouldn't be used directly, instead use the convenience macro.
+    \sa QDLT_LOGGING_CATEGORY QDLT_REGISTER_LOGGING_CATEGORY
+*/
 void QDltRegistration::registerCategory(const QLoggingCategory* category, const char *dltCtxName, const char *dltCtxDescription)
 {
     Q_D(QDltRegistration);
@@ -174,12 +198,25 @@ void QDltRegistration::registerCategory(const QLoggingCategory* category, const 
     d->registerCategory(category, new DltContext, dltCtxName, dltCtxDescription);
 }
 
+/*!
+    Sets \a categoryName as the fallback logging category.
+
+    \a categoryName needs to be the name of a valid QLoggingCategory which has been registered within the dlt-daemon.
+    Either by using QDLT_LOGGING_CATEGORY or QDLT_REGISTER_LOGGING_CATEGORY.
+
+    This function shouldn't be used directly, instead use the convenience macro.
+    \sa QDLT_FALLBACK_CATEGORY
+*/
 void QDltRegistration::setDefaultContext(const char *categoryName)
 {
     Q_D(QDltRegistration);
     d->setDefaultContext(d->context(categoryName));
 }
 
+/*!
+    Unregisters the application with the dlt-daemon.
+    The registered application as well as all registered dlt context will be deleted.
+*/
 void QDltRegistration::unregisterApplication()
 {
     Q_D(QDltRegistration);
@@ -187,6 +224,20 @@ void QDltRegistration::unregisterApplication()
         DLT_UNREGISTER_APP();
 }
 
+/*!
+    The Qt message handler which forwards all the logging messages to the dlt-daemon.
+
+    The function will map \a msgTypes to the appropriate dlt log level and forward the \a msg to
+    the dlt context matching the category in \a msgCtx.
+
+    If the category in \a msgCtx hasn't been registered with a dlt context, the fallback logging category
+    will be used instead (if one is registered).
+
+    This messageHandler needs to be installed using:
+    \badcode
+    qInstallMessageHandler(QDltRegistration::messageHandler);
+    \endcode
+*/
 void QDltRegistration::messageHandler(QtMsgType msgTypes, const QMessageLogContext & msgCtx, const QString & msg)
 {
     DltContext* dltCtx = globalDltRegistration()->d_ptr->context(msgCtx.category);
@@ -209,3 +260,13 @@ void QDltRegistration::messageHandler(QtMsgType msgTypes, const QMessageLogConte
 
     DLT_LOG(*dltCtx, logLevel, DLT_STRING(qPrintable(qFormatLogMessage(msgTypes, msgCtx, msg))));
 }
+
+/*!
+    \fn void QDltRegistration::logLevelChanged(const QLoggingCategory *category)
+
+    This signal is emitted whenever the dlt-daemon changes the log level of a dlt context and
+    the dlt context is registered with a QLoggingCategory. The updated QLoggingCategory is passed
+    as \a category.
+
+    \note This signal requires a dlt-daemon version equal to 2.12 or higher.
+*/

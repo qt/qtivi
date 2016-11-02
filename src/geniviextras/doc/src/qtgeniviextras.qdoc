@@ -1,0 +1,154 @@
+/****************************************************************************
+**
+** Copyright (C) 2016 Pelagicore AG
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL-QTAS$
+** Commercial License Usage
+** Licensees holding valid commercial Qt Automotive Suite licenses may use
+** this file in accordance with the commercial license agreement provided
+** with the Software or, alternatively, in accordance with the terms
+** contained in a written agreement between you and The Qt Company.  For
+** licensing terms and conditions see https://www.qt.io/terms-conditions.
+** For further information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \module QtGeniviExtras
+    \title Qt GENIVI Extras C++ Classes
+    \ingroup modules
+    \qtvariable geniviextras
+
+    \brief C++ classes for the Qt GENIVI Extras API.
+
+    The Qt GENIVI Extras C++ API provides functions to interact with GENIVI services.
+
+    \section1 Headers
+
+    \annotatedlist geniviextras_headers
+*/
+
+/*!
+    \headerfile <QtDlt>
+    \title Qt DLT Declarations
+    \ingroup geniviextras_headers
+    \inmodule QtGeniviExtras
+
+    \brief The <QtDlt> header file includes macros to register with a
+    dlt-daemon and map \l {QLoggingCategory}{QLoggingCategories} to dlt contexts.
+
+    \section1 GENIVI DLT
+    GENIVI DLT is a logging system for automotive. It consists of two applications;
+    a logging daemon (dlt-daemon) to collect logs of various applications and the linux system,
+    and a viewer application (dlt-viewer) that runs on the host and can connect to targets running a dlt-daemon.
+
+    The dlt-daemon can be configured to log to a file, or forward logs to another dlt-daemon in the
+    multiple ECU case. For further information about the dlt-daemon, see the dlt-daemon
+    \l {https://at.projects.genivi.org/wiki/display/PROJ/Diagnostic+Log+and+Trace} {documentation}.
+
+    \section2 DLT Applications, Contexts, and Log Level
+
+    Every application that wants to log to the dlt-daemon needs to register itself.
+    Applications are identified by a four characters long identifier and a longer description for the dlt-viewer.
+
+    Every registered application can register multiple dlt contexts, which consist of a 3 characters long
+    identifier and a comprehensive description.
+
+    Every dlt context has a current log level, which defines which logs are forwarded to the dlt-daemon or are
+    discarded already in the application.
+
+    \section2 Controlling the dlt-daemon
+
+    The dlt-daemon is controlled by the dlt-viewer running on a host machine. The dlt-viewer can see all the
+    applications that are registered to the dlt-daemon, along with their contexts and current log levels.
+    All logs are forwarded from the dlt-daemon to the connected dlt-viewer, and can be filtered and exported.
+
+    In addition, the dlt-viewer can send so called "control messages" to the dlt-daemon to change the log level of
+    a dlt context. Beginning with dlt-daemon version 2.12, these "control messages" are also forwarded to the logging
+    application and is parsed by Qt to also set the matching log level of the registered QLoggingCategory.
+
+    \section1 Qt Message Type Mapping
+    \target QDLTMessageTypeMapping
+
+    As the DLT system isn't a one to one match to the Qt Categorized Logging system, a mapping of the log levels is needed.
+    With DLT, it's not possible to only enable a specific message type of a QLoggingCategory as DLT only defines the maximum
+    log level. Because of this limitation all lower message types are automatically enabled once a dlt contexts log level is changed.
+
+    The following mapping is used for logging to DLT:
+
+    \table
+    \header \li Qt Message Type \li DLT log level
+    \row \li QtDebugMsg \li DLT_LOG_DEBUG
+    \row \li QtInfoMsg \li DLT_LOG_INFO
+    \row \li QtWarningMsg \li DLT_LOG_WARN
+    \row \li QtCriticalMsg \li DLT_LOG_ERROR
+    \row \li QtFatalMsg \li DLT_LOG_FATAL
+    \row \li No message type enabled \li DLT_LOG_OFF
+    \endtable
+
+    Changing the log level using dlt-viewer enables the following message types:
+
+    \table
+    \header \li DLT log level \li Qt Message Types
+    \row \li DLT_LOG_VERBOSE \li QtDebugMsg QtInfoMsg QtWarningMsg QtCriticalMsg QtFatalMsg
+    \row \li DLT_LOG_INFO \li QtDebugMsg QtInfoMsg QtWarningMsg QtCriticalMsg QtFatalMsg
+    \row \li DLT_LOG_DEBUG \li QtInfoMsg QtWarningMsg QtCriticalMsg QtFatalMsg
+    \row \li DLT_LOG_WARN \li QtWarningMsg QtCriticalMsg QtFatalMsg
+    \row \li DLT_LOG_ERROR \li QtCriticalMsg QtFatalMsg
+    \row \li DLT_LOG_FATAL \li QtFatalMsg
+    \row \li DLT_LOG_OFF \li No message type enabled
+    \endtable
+*/
+
+/*!
+    \macro QDLT_REGISTER_APPLICATION(NAME, DESCRIPTION)
+    \relates <QtDlt>
+
+    Registers an application with the dlt-daemon as \a NAME and \a DESCRIPTION.
+    All registered DLT Logging Categories will be part of this application in the
+    dlt-daemon.
+    Only one application can be registered per process.
+
+    \note \a NAME is limited to (a size of) 4 characters.
+*/
+
+/*!
+    \macro QDLT_LOGGING_CATEGORY(CATEGORY, CATEGORYNAME, DLT_CTX_NAME, DLT_CTX_DESCRIPTION)
+    \relates <QtDlt>
+
+    Defines a new QLoggingCategory \a CATEGORY and makes it configurable under the \a CATEGORYNAME identifier.
+    The dlt context will be registered as \a DLT_CTX_NAME and using \a DLT_CTX_DESCRIPTION as a description.
+
+    \note \a DLT_CTX_NAME is limited to (a size of) 3 characters.
+*/
+
+/*!
+    \macro QDLT_REGISTER_LOGGING_CATEGORY(CATEGORY, CATEGORYNAME, DLT_CTX_NAME, DLT_CTX_DESCRIPTION)
+    \relates <QtDlt>
+
+    Registers an existing QLoggingCategory \a CATEGORY configurable under the \a CATEGORYNAME identifier.
+    The new category is mapped to the dlt context, \a DLT_CTX_NAME, with the \a DLT_CTX_DESCRIPTION.
+
+    \note \a DLT_CTX_NAME is limited to (a size of) 3 characters.
+*/
+
+/*!
+    \macro QDLT_FALLBACK_CATEGORY(CATEGORY)
+    \relates <QtDlt>
+
+    Registers an existing QLoggingCategory \a CATEGORY as the dlt fallback category. \a CATEGORY must be
+    already mapped to a dlt context by using QDLT_LOGGING_CATEGORY or QDLT_REGISTER_LOGGING_CATEGORY. The fallback
+    category is used for all log messages, which are not mapped to dlt contexts or don't use a QLoggingCategory.
+*/

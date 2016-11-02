@@ -1,0 +1,40 @@
+project                       = QtGeniviExtras
+description                   = QtGeniviExtras Reference Documentation
+version                       = $QT_VERSION
+
+sourcedirs                   += .
+headerdirs                   += .
+
+# include sub-modules' sources and headers
+include(../../geniviextras/doc/qtgeniviextras.qdocconf)
+
+qhp.projects                  = QtGeniviExtras
+
+qhp.QtGeniviExtras.file                = qtgeniviextras.qhp
+qhp.QtGeniviExtras.namespace           = org.qt-project.qtgeniviextras.$QT_VERSION_TAG
+qhp.QtGeniviExtras.virtualFolder       = qtgeniviextras
+qhp.QtGeniviExtras.indexTitle          = Qt GENIVI Extras
+qhp.QtGeniviExtras.indexRoot           =
+
+qhp.QtGeniviExtras.filterAttributes    = qtgeniviextras $QT_VERSION qtrefdoc
+qhp.QtGeniviExtras.customFilters.Qt.name = QtGeniviExtras $QT_VERSION
+qhp.QtGeniviExtras.customFilters.Qt.filterAttributes = qtgeniviextras $QT_VERSION
+
+qhp.QtGeniviExtras.subprojects         = classes qml examples
+
+qhp.QtGeniviExtras.subprojects.classes.title = C++ Classes
+qhp.QtGeniviExtras.subprojects.classes.indexTitle = Qt GENIVI Extras C++ Classes
+qhp.QtGeniviExtras.subprojects.classes.selectors = class fake:headerfile
+qhp.QtGeniviExtras.subprojects.classes.sortPages = true
+
+qhp.QtGeniviExtras.subprojects.examples.title = Examples
+qhp.QtGeniviExtras.subprojects.examples.indexTitle = Qt GENIVI Extras Examples
+qhp.QtGeniviExtras.subprojects.examples.selectors = fake:example
+qhp.QtGeniviExtras.subprojects.examples.sortPages = true
+
+tagfile                 = qtgeniviextras.tags
+
+depends += qtcore qtdoc
+
+navigation.landingpage = "Qt GENIVI Extras"
+navigation.cppclassespage = "Qt GENIVI Extras C++ Classes"
