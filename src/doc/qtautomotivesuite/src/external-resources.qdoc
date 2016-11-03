@@ -84,3 +84,13 @@
     \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-installation-guide.html
     \title Qt for Device Creation: Installation Guide
 */
+
+/*!
+    \externalpage https://www.qt.io/download-open-source/#section-2
+    \title Qt Online Installer Download
+*/
+
+/*!
+    \externalpage https://www.qt.io/download/
+    \title Download Qt
+*/

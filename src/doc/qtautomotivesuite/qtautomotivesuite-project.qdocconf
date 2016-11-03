@@ -4,6 +4,7 @@ version                       = 1.0.0
 url                           = http://doc.qt.io/QtAutomotiveSuite
 
 sourcedirs                   += src
+imagedirs                    += src/images
 
 qhp.projects                  = QtAutomotiveSuite
 

@@ -172,10 +172,44 @@
     \title Installing Qt Automotive Suite
     \previouspage {Qt Automotive Suite Overview}{Overview}
 
-    \QAS is based on the \l {Qt for Device Creation} offering. System requirements
-    and install instructions are available here:
+    \QAS is a commercial product and requires a license to install and
+    explore its possibilities. Use the guide on the
+    \l{Download Qt} page to find the license that suits your need. The license you
+    buy is associated with a Qt Account, which is required to install the product.
 
-    \list
-      \li \l {Qt for Device Creation: Installation Guide}
+    \section1 Development Hosts and their Prerequisites
+
+    \QAS is based on the \l {Qt for Device Creation} offering so the following
+    prerequisites for \QAS to function as expected are the same. For more
+    information about how to install and configure these prerequisites on your
+    development host, see \e {Host-specific Requirements} section in the
+    \l {Qt for Device Creation: Installation Guide}.
+
+    \section1 Install \QAS
+
+    \list 1
+     \li Download the \l{Qt Online Installer Download}{Qt online installer}.
+
+     \note On Linux, the installer needs executable permissions before you
+     can run it.
+
+     \li Run the installer and select \uicontrol Next to get to the Qt account
+     section.
+
+     \li Enter your Qt account credentials and select \uicontrol Next to run
+     a license check against the Qt account.
+
+     \li Select \uicontrol Next again to choose an install path.
+
+     \li Select \uicontrol Next to see available packages to install from.
+
+     \li Select \b{Qt Automotive Suite} and at least one \b Qt version
+     (v5.7 or later) from the list, and follow the instructions to complete
+     the installation.
+
+     \borderedimage qtinstaller-qas.png
     \endlist
+
+    Once the installation is complete, start Qt Creator and try running one of the
+    examples against an automotive target or the Qt Automotive emulator.
 */
