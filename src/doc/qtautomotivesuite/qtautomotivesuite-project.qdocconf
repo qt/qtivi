@@ -1,6 +1,7 @@
 project                       = QtAutomotiveSuite
 description                   = Qt Automotive Suite Documentation
 version                       = 1.0.0
+url                           = http://doc.qt.io/QtAutomotiveSuite
 
 sourcedirs                   += src
 
