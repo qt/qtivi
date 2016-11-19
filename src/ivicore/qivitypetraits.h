@@ -46,80 +46,10 @@
 
 QT_BEGIN_NAMESPACE
 
-//This is a copy of specific typtraits from qtypetraits.h which were disabled for MSVC
-//We copy it to enable it by default to not hardly depend on a specific Qt version here and also
-//make it work with older Qt versions on selected platforms
-
 namespace QtPrivate {
-    // This functions checks whether the type has a implicit cast operator to int
-    template <typename From, typename To>
-    struct QIviConvertHelper {
-      static small_ Test(To);
-      static big_ Test(...);
-      static From Create();
-    };
-
-    // Inherits from true_type if From is convertible to To, false_type otherwise.
-    template <typename From, typename To>
-    struct qtivi_is_convertible
-        : integral_constant<bool,
-                            sizeof(QIviConvertHelper<From, To>::Test(
-                                      QIviConvertHelper<From, To>::Create()))
-                            == sizeof(small_)> {
-    };
-
-    namespace qtivi_internal {
-
-    template <class T> struct is_class_or_union {
-      template <class U> static small_ tester(void (U::*)());
-      template <class U> static big_ tester(...);
-      static const bool value = sizeof(tester<T>(0)) == sizeof(small_);
-    };
-
-    // is_convertible chokes if the first argument is an array. That's why
-    // we use add_reference here.
-    template <bool NotUnum, class T> struct is_enum_impl
-        : qtivi_is_convertible<typename add_reference<T>::type, int> { };
-
-    template <class T> struct is_enum_impl<true, T> : false_type { };
-
-    }  // namespace qtivi_internal
-
-    // Specified by TR1 [4.5.1] primary type categories.
-
-    // Implementation note:
-    //
-    // Each type is either void, integral, floating point, array, pointer,
-    // reference, member object pointer, member function pointer, enum,
-    // union or class. Out of these, only integral, floating point, reference,
-    // class and enum types are potentially convertible to int. Therefore,
-    // if a type is not a reference, integral, floating point or class and
-    // is convertible to int, it's a enum. Adding cv-qualification to a type
-    // does not change whether it's an enum.
-    //
-    // Is-convertible-to-int check is done only if all other checks pass,
-    // because it can't be used with some types (e.g. void or classes with
-    // inaccessible conversion operators).
-    template <class T> struct qtivi_is_enum
-        : qtivi_internal::is_enum_impl<
-              is_same<T, void>::value ||
-                  is_integral<T>::value ||
-                  is_floating_point<T>::value ||
-                  is_reference<T>::value ||
-                  qtivi_internal::is_class_or_union<T>::value,
-              T> { };
-
-    template <class T> struct qtivi_is_enum<const T> : qtivi_is_enum<T> { };
-    template <class T> struct qtivi_is_enum<volatile T> : qtivi_is_enum<T> { };
-    template <class T> struct qtivi_is_enum<const volatile T> : qtivi_is_enum<T> { };
-
-
-    template <class T> struct is_flag
-        : integral_constant<bool,
-            qtivi_is_convertible<T, int>::value &&
-            !is_pod<T>::value &&
-            !qtivi_is_enum<T>::value
-          >{};
+    template <class T>
+    struct is_flag : std::integral_constant<bool, std::is_convertible<T, int>::value && !std::is_pod<T>::value && !std::is_enum<T>::value>
+    {};
 }
 
 QT_END_NAMESPACE
