@@ -5,8 +5,9 @@ CONFIG += c++11
 
 CONFIG += link_pkgconfig
 
-#QMAKE_DOCS = $$PWD/doc/qtgeniviextras.qdocconf
-OTHER_FILES += $$PWD/doc/*.qdoc
+OTHER_FILES += \
+    $$PWD/doc/*.qdocconf \
+    $$PWD/doc/src/*.qdoc
 
 system($$pkgConfigExecutable() --libs \"automotive-dlt >= 2.12.0\"): DEFINES += DLT_VERSION_2_12
 

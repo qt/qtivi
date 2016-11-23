@@ -1,6 +1,7 @@
 project                       = QtAutomotiveSuite
 description                   = Qt Automotive Suite Documentation
 version                       = 1.0.0
+url                           = http://doc.qt.io/QtAutomotiveSuite
 
 sourcedirs                   += src
 
@@ -38,7 +39,8 @@ depends += \
      qtcharts \
      qtwebengine \
      qtvirtualkeyboard \
-     qtquick
+     qtquick \
+     neptuneui
 
 buildversion = "Qt Automotive Suite 1.0"
 

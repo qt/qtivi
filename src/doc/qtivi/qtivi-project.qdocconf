@@ -1,6 +1,7 @@
 project                       = QtIvi
 description                   = QtIvi Reference Documentation
 version                       = $QT_VERSION
+url                           = http://doc.qt.io/QtIVI
 
 sourcedirs                   += .
 headerdirs                   += .

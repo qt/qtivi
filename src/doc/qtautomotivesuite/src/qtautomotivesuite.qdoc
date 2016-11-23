@@ -26,7 +26,7 @@
 ****************************************************************************/
 
 /*!
-    \page qtautomotivie-index.html
+    \page qtautomotive-index.html
     \title Qt Automotive Suite
     \nextpage {Qt Automotive Suite Overview}{Overview}
 
@@ -58,6 +58,7 @@
         \li \l {Qt Application Manager}
         \li \l {Over-The-Air Update}
         \li \l {Qt Web Browser}
+        \li \l {GammaRay}
     \endlist
 */
 
@@ -149,8 +150,10 @@
 
     \section2 Reference Applications
 
-    \QAS includes \l Neptune, a reference UI designed for IVI systems, including
-    multiple IVI applications and an application store implementation.
+    \QAS includes \l{Neptune UI}{Neptune}, a reference HMI designed for IVI
+    systems, including multiple IVI applications and an application store
+    implementation. It enables the OEMs to test their applications on supported
+    hardware and emulator targets.
 
     \section3 Web Browser
 

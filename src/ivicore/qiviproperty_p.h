@@ -57,10 +57,14 @@
 
 QT_BEGIN_NAMESPACE
 
+class QIviProperty;
+
 class QIviPropertyPrivate
 {
 public:
     QIviPropertyPrivate(int userType,  QtPrivate::QSlotObjectBase *attributeGetter, QtPrivate::QSlotObjectBase *valueGetter);
+
+    static QIviPropertyPrivate *get(QIviProperty *property) { return property->d_ptr; }
 
     void throwError(QObject *object, const QString &error);
 

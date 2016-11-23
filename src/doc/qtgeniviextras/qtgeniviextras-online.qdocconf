@@ -1,0 +1,6 @@
+include($QT_INSTALL_DOCS/global/qt-module-defaults-online.qdocconf)
+
+# Add an .html file with sidebar content, used in the online style
+# HTML.stylesheets               += style/qt5-sidebar.html
+
+include(qtgeniviextras-project.qdocconf)
