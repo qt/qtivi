@@ -32,6 +32,7 @@
 #include <QtIviCore/QIviServiceObject>
 #include <QtIviVehicleFunctions/QIviClimateControl>
 #include <QtIviVehicleFunctions/QIviClimateControlBackendInterface>
+#include <private/qtiviglobal_p.h>
 #include <private/qivipropertytester_p.h>
 
 class ClimateControlTestBackend : public QIviClimateControlBackendInterface
