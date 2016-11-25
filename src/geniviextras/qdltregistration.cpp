@@ -206,14 +206,39 @@ QDltRegistration::~QDltRegistration()
 /*!
     Registers this application with the dlt-daemon using \a dltAppID and \a dltAppDescription.
 
-    This function shouldn't be used directly, instead use the convenience macro.
+    Per process only one application can be registered. Calling this function after an
+    application is already registered, will register the application under the new \a dltAppID
+    and \a dltAppDescription and also populating the already registered dlt contexts under this
+    application. Calling the method with an empty \a dltAppID will update just the description
+    if the app was already registered before.
+
     \sa QDLT_REGISTER_APPLICATION
 */
 void QDltRegistration::registerApplication(const char *dltAppID, const char *dltAppDescription)
 {
     Q_D(QDltRegistration);
-    d->m_dltAppID = QString::fromLatin1(dltAppID);
-    DLT_REGISTER_APP(dltAppID, dltAppDescription);
+    bool registerCategories = false;
+    if (!d->m_dltAppID.isEmpty()) {
+        DLT_UNREGISTER_APP();
+        registerCategories = true;
+    }
+
+    if (dltAppID)
+        d->m_dltAppID = QString::fromLatin1(dltAppID);
+
+    Q_ASSERT_X(!d->m_dltAppID.isEmpty(), "registerApplication", "dltAppID needs to be a valid char * on the first call.");
+
+    DLT_REGISTER_APP(d->m_dltAppID.toLocal8Bit(), dltAppDescription);
+
+    //Register all Contexts which already have been registered again under the new application
+    if (registerCategories) {
+        for (auto it = d->m_categoryInfoHash.cbegin(); it != d->m_categoryInfoHash.cend(); ++it) {
+            if (it.value().m_registered) {
+                DLT_REGISTER_CONTEXT_LL_TS(*it.value().m_context, it.value().m_ctxName, it.value().m_ctxDescription, d->category2dltLevel(it.value().m_category), DLT_TRACE_STATUS_DEFAULT);
+                DLT_REGISTER_LOG_LEVEL_CHANGED_CALLBACK(*it.value().m_context, &qtGeniviLogLevelChangedHandler);
+            }
+        }
+    }
 }
 
 /*!
@@ -263,6 +288,7 @@ void QDltRegistration::registerUnregisteredContexts()
     for (auto it = d->m_categoryInfoHash.begin(); it != d->m_categoryInfoHash.end(); ++it) {
         if (!it.value().m_registered) {
             DLT_REGISTER_CONTEXT_LL_TS(*it.value().m_context, it.value().m_ctxName, it.value().m_ctxDescription, d->category2dltLevel(it.value().m_category), DLT_TRACE_STATUS_DEFAULT);
+            DLT_REGISTER_LOG_LEVEL_CHANGED_CALLBACK(*it.value().m_context, &qtGeniviLogLevelChangedHandler);
             it.value().m_registered = true;
         }
     }
