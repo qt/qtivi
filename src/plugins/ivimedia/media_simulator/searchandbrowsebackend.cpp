@@ -95,7 +95,7 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &t
     else if (current_type == QLatin1String("album"))
         columns = QLatin1String("DISTINCT artistName, albumName");
     else
-        columns = QLatin1String("artistName, albumName, trackName, genre, number, file, id");
+        columns = QLatin1String("artistName, albumName, trackName, genre, number, file, id, coverArtUrl");
 
     QString filterClause = createWhereClause(current_type, term);
     if (!filterClause.isEmpty())
@@ -151,6 +151,7 @@ void SearchAndBrowseBackend::search(const QUuid &identifier, const QString &quer
                 item.setArtist(artist);
                 item.setAlbum(album);
                 item.setUrl(QUrl::fromLocalFile(query.value(5).toString()));
+                item.setCoverArtUrl(QUrl::fromLocalFile(query.value(6).toString()));
                 list.append(QVariant::fromValue(item));
             } else {
                 SearchAndBrowseItem item;

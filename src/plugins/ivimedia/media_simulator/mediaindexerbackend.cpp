@@ -44,6 +44,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDirIterator>
+#include <QImage>
 #include <QtConcurrent/QtConcurrent>
 
 #ifdef QT_TAGLIB
@@ -51,6 +52,11 @@
 #include <tag.h>
 #include <tstring.h>
 #include <fileref.h>
+#include <mpegfile.h>
+#include <id3v2tag.h>
+#include <id3v2frame.h>
+#include <id3v2header.h>
+#include <attachedpictureframe.h>
 #endif
 
 MediaIndexerBackend::MediaIndexerBackend(const QSqlDatabase &database, QObject *parent)
@@ -139,6 +145,7 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
                      "genre varchar(200), "
                      "number integer,"
                      "file varchar(200),"
+                     "coverArtUrl varchar(200),"
                      "UNIQUE(file))");
 
     if (!ret) {
@@ -166,11 +173,12 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
 
 #ifdef QT_TAGLIB
         TagLib::FileRef f(fileName.toLocal8Bit());
+        QString coverArtUrl;
 
         QSqlQuery query(m_db);
 
-        query.prepare("INSERT OR IGNORE INTO track (trackName, albumName, artistName, genre, number, file) "
-                      "VALUES (:trackName, :albumName, :artistName, :genre, :number, :file)");
+        query.prepare("INSERT OR IGNORE INTO track (trackName, albumName, artistName, genre, number, file, coverArtUrl) "
+                      "VALUES (:trackName, :albumName, :artistName, :genre, :number, :file, :coverArtUrl)");
 
         query.bindValue(":trackName", QLatin1String(f.tag()->title().toCString()));
         query.bindValue(":albumName", QLatin1String(f.tag()->album().toCString()));
@@ -178,6 +186,27 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
         query.bindValue(":genre", QLatin1String(f.tag()->genre().toCString()));
         query.bindValue(":number", f.tag()->track());
         query.bindValue(":file", fileName);
+
+        // Extract cover art
+        TagLib::MPEG::File file(fileName.toLocal8Bit());
+        TagLib::ID3v2::Tag *tag = file.ID3v2Tag(true);
+        TagLib::ID3v2::FrameList frameList = tag->frameList("APIC");
+
+        if (frameList.isEmpty()) {
+            qWarning() << "No cover art was found";
+        } else {
+            TagLib::ID3v2::AttachedPictureFrame *coverImage =
+                static_cast<TagLib::ID3v2::AttachedPictureFrame *>(frameList.front());
+
+            coverArtUrl = fileName + QLatin1Literal(".png");
+
+            QImage coverQImg;
+
+            coverQImg.loadFromData((const uchar *)coverImage->picture().data(), coverImage->picture().size());
+            coverQImg.save(coverArtUrl, "PNG");
+
+            query.bindValue(":coverArtUrl", coverArtUrl);
+        }
 
         bool ret = query.exec();
 

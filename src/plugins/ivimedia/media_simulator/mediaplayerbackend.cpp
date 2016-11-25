@@ -105,7 +105,7 @@ bool MediaPlayerBackend::canReportCount()
 
 void MediaPlayerBackend::fetchData(int start, int count)
 {
-    QString queryString = QString(QLatin1String("SELECT track.id, artistName, albumName, trackName, genre, number, file FROM track JOIN queue ON queue.track_index=track.id ORDER BY queue.qindex LIMIT %4, %5"))
+    QString queryString = QString(QLatin1String("SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id ORDER BY queue.qindex LIMIT %4, %5"))
             .arg(start)
             .arg(count);
 
@@ -128,7 +128,7 @@ void MediaPlayerBackend::insert(int index, const QIviPlayableItem *item)
 
     QString queryString = QString(QLatin1String("UPDATE queue SET qindex = qindex + 1 WHERE qindex >= %1;"
                                                 "INSERT INTO queue(qindex, track_index) VALUES( %1, %2);"
-                                                "SELECT track.id, artistName, albumName, trackName, genre, number, file FROM track JOIN queue ON queue.track_index=track.id WHERE qindex=%1"))
+                                                "SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id WHERE qindex=%1"))
             .arg(index)
             .arg(track_index);
     QStringList queries = queryString.split(';');
@@ -161,7 +161,7 @@ void MediaPlayerBackend::move(int cur_index, int new_index)
     QString queryString = QString(QLatin1String("UPDATE queue SET qindex = ( SELECT MAX(qindex) + 1 FROM queue) WHERE qindex=%1;"
                                                 "UPDATE queue SET qindex = qindex %5 1 WHERE qindex >= %3 AND qindex <= %4;"
                                                 "UPDATE queue SET qindex = %2 WHERE qindex= ( SELECT MAX(qindex) FROM queue);"
-                                                "SELECT track.id, artistName, albumName, trackName, genre, number, file FROM track JOIN queue ON queue.track_index=track.id WHERE qindex >= %3 AND qindex <= %4 ORDER BY qindex"))
+                                                "SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id WHERE qindex >= %3 AND qindex <= %4 ORDER BY qindex"))
             .arg(cur_index)
             .arg(new_index)
             .arg(qMin(cur_index, new_index))
@@ -195,6 +195,7 @@ void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, 
                 item.setArtist(artist);
                 item.setAlbum(album);
                 item.setUrl(QUrl::fromLocalFile(query.value(6).toString()));
+                item.setCoverArtUrl(QUrl::fromLocalFile(query.value(7).toString()));
                 list.append(QVariant::fromValue(item));
             }
         } else {
