@@ -177,12 +177,12 @@
     \l{Download Qt} page to find the license that suits your need. The license you
     buy is associated with a Qt Account, which is required to install the product.
 
-    \section1 Development Hosts and their Prerequisites
+    \section1 Prerequisites
 
-    \QAS is based on the \l {Qt for Device Creation} offering so the following
-    prerequisites for \QAS to function as expected are the same. For more
-    information about how to install and configure these prerequisites on your
-    development host, see \e {Host-specific Requirements} section in the
+    \QAS is based on the \l {Qt for Device Creation} offering so the
+    prerequisites are the same for both. For more information about how to install and
+    configure these prerequisites on your development host, see
+    \e {Host-specific Requirements} section in the
     \l {Qt for Device Creation: Installation Guide}.
 
     \section1 Install \QAS
