@@ -110,7 +110,7 @@ void ClimateControlBackend::initializeAttributes()
     emit zoneSynchronizationAttributeChanged(QIviPropertyAttribute<bool>(true));
     emit defrostEnabledChanged(m_defrost);
     emit defrostAttributeChanged(QIviPropertyAttribute<bool>(true));
-    emit steeringWheelHeaterAttributeChanged(QIviPropertyAttribute<int>(false));
+    emit steeringWheelHeaterAttributeChanged(QIviPropertyAttribute<int>(0, 10));
     emit steeringWheelHeaterChanged(m_steeringWheelHeater);
     emit fanSpeedLevelAttributeChanged(QIviPropertyAttribute<int>(0, 10));
     emit fanSpeedLevelChanged(m_fanSpeed);
