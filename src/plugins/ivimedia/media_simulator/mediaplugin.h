@@ -44,6 +44,7 @@
 #define MEDIAPLUGIN_H
 
 #include <QtIviCore/QIviServiceInterface>
+
 #include <QSqlDatabase>
 
 class MediaPlayerBackend;

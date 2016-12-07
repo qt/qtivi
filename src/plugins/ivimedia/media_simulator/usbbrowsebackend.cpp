@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "usbbrowsebackend.h"
+
 #include <QDir>
 #include <QtDebug>
 

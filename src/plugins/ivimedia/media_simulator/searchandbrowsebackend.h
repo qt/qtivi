@@ -42,9 +42,10 @@
 #ifndef SEARCHBACKEND_H
 #define SEARCHBACKEND_H
 
-#include <QtIviCore/QIviSearchAndBrowseModelInterface>
 #include <QtIviCore/QIviSearchAndBrowseModel>
+#include <QtIviCore/QIviSearchAndBrowseModelInterface>
 #include <QtIviMedia/QIviAudioTrackItem>
+
 #include <QSqlDatabase>
 #include <QStack>
 

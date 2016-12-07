@@ -39,15 +39,15 @@
 **
 ****************************************************************************/
 
-
-#include "mediaplugin.h"
-#include "mediaplayerbackend.h"
-#include "searchandbrowsebackend.h"
 #include "mediadiscoverybackend.h"
 #include "mediaindexerbackend.h"
+#include "mediaplayerbackend.h"
+#include "mediaplugin.h"
+#include "searchandbrowsebackend.h"
 
-#include <QtIviMedia/QIviMediaPlayer>
 #include <QtIviCore/QIviSearchAndBrowseModel>
+#include <QtIviMedia/QIviMediaPlayer>
+
 #include <QStringList>
 #include <QtDebug>
 

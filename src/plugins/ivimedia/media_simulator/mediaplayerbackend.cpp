@@ -42,11 +42,12 @@
 #include "mediaplayerbackend.h"
 #include "searchandbrowsebackend.h"
 
-#include <QtMultimedia/QMediaPlayer>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QFuture>
 #include <QtConcurrent/QtConcurrent>
+#include <QtMultimedia/QMediaPlayer>
+
+#include <QFuture>
+#include <QSqlError>
+#include <QSqlQuery>
 #include <QtDebug>
 
 MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *parent)

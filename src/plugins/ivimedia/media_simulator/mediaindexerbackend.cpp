@@ -40,23 +40,25 @@
 ****************************************************************************/
 
 #include "mediaindexerbackend.h"
-#include <QtDebug>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QDirIterator>
-#include <QImage>
+
 #include <QtConcurrent/QtConcurrent>
 
+#include <QDirIterator>
+#include <QImage>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QtDebug>
+
 #ifdef QT_TAGLIB
-#include <taglib.h>
-#include <tag.h>
-#include <tstring.h>
+#include <attachedpictureframe.h>
 #include <fileref.h>
-#include <mpegfile.h>
-#include <id3v2tag.h>
 #include <id3v2frame.h>
 #include <id3v2header.h>
-#include <attachedpictureframe.h>
+#include <id3v2tag.h>
+#include <mpegfile.h>
+#include <tag.h>
+#include <taglib.h>
+#include <tstring.h>
 #endif
 
 MediaIndexerBackend::MediaIndexerBackend(const QSqlDatabase &database, QObject *parent)

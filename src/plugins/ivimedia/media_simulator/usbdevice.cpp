@@ -39,9 +39,11 @@
 **
 ****************************************************************************/
 
-#include "usbdevice.h"
 #include "usbbrowsebackend.h"
+#include "usbdevice.h"
+
 #include <QtIviCore/QIviSearchAndBrowseModel>
+
 #include <QDir>
 
 USBDevice::USBDevice(const QString &folder, QObject *parent)

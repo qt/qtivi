@@ -41,10 +41,11 @@
 
 #include "searchandbrowsebackend.h"
 
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QFuture>
 #include <QtConcurrent/QtConcurrent>
+
+#include <QFuture>
+#include <QSqlError>
+#include <QSqlQuery>
 #include <QtDebug>
 
 SearchAndBrowseBackend::SearchAndBrowseBackend(const QSqlDatabase &database, QObject *parent)

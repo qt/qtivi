@@ -42,8 +42,9 @@
 #ifndef MEDIADISCOVERYBACKEND_H
 #define MEDIADISCOVERYBACKEND_H
 
-#include <QtIviMedia/QIviMediaDeviceDiscoveryModelBackendInterface>
 #include <QtIviMedia/QIviMediaDeviceDiscoveryModel>
+#include <QtIviMedia/QIviMediaDeviceDiscoveryModelBackendInterface>
+
 #include <QFileSystemWatcher>
 
 class MediaDiscoveryBackend : public QIviMediaDeviceDiscoveryModelBackendInterface

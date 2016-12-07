@@ -42,12 +42,12 @@
 #ifndef MEDIAINDEXERBACKEND_H
 #define MEDIAINDEXERBACKEND_H
 
-#include <QtIviMedia/QIviMediaIndexerControlBackendInterface>
 #include <QtIviMedia/QIviMediaIndexerControl>
+#include <QtIviMedia/QIviMediaIndexerControlBackendInterface>
 
-#include <QSqlDatabase>
-#include <QQueue>
 #include <QFutureWatcher>
+#include <QQueue>
+#include <QSqlDatabase>
 
 class MediaIndexerBackend : public QIviMediaIndexerControlBackendInterface
 {

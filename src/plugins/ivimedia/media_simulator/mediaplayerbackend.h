@@ -43,6 +43,7 @@
 #define MEDIAPLAYERBACKEND_H
 
 #include <QtIviMedia/QIviMediaPlayerBackendInterface>
+
 #include <QSqlDatabase>
 
 QT_FORWARD_DECLARE_CLASS(QMediaPlayer);
