@@ -63,7 +63,7 @@ QT_END_NAMESPACE
 
 QDltRegistrationPrivate::QDltRegistrationPrivate(QDltRegistration *parent)
     : q_ptr(parent)
-    , m_defaultContext(nullptr)
+    , m_dltAppRegistered(false)
     , m_registerOnFirstUse(false)
 {
 }
@@ -77,12 +77,7 @@ void QDltRegistrationPrivate::registerCategory(const QLoggingCategory *category,
     info.m_context = dltContext;
 
     if (!m_registerOnFirstUse) {
-        DLT_REGISTER_CONTEXT_LL_TS(*dltContext, dltCtxName, dltCtxDescription, category2dltLevel(category), DLT_TRACE_STATUS_DEFAULT);
-#ifdef DLT_VERSION_2_12
-        //TODO move to lamda once c++11 is ok to be used
-        DLT_REGISTER_LOG_LEVEL_CHANGED_CALLBACK(*dltContext, &qtGeniviLogLevelChangedHandler);
-#endif
-        info.m_registered = true;
+        registerCategory(info);
     } else {
         info.m_registered = false;
     }
@@ -90,21 +85,42 @@ void QDltRegistrationPrivate::registerCategory(const QLoggingCategory *category,
     m_categoryInfoHash.insert(QString::fromLatin1(category->categoryName()), info);
 }
 
-void QDltRegistrationPrivate::setDefaultContext(DltContext *dltContext)
+void QDltRegistrationPrivate::registerCategory(CategoryInfo &info)
 {
-    m_defaultContext = dltContext;
+    Q_ASSERT_X(m_dltAppRegistered, "registerCategory", "A DLT Application needs to be registered before registering a Logging Category");
+
+    DLT_REGISTER_CONTEXT_LL_TS(*info.m_context, info.m_ctxName, info.m_ctxDescription, category2dltLevel(info.m_category), DLT_TRACE_STATUS_DEFAULT);
+#ifdef DLT_VERSION_2_12
+    //TODO move to lamda once c++11 is ok to be used
+    DLT_REGISTER_LOG_LEVEL_CHANGED_CALLBACK(*info.m_context, &qtGeniviLogLevelChangedHandler);
+#endif
+    info.m_registered = true;
+}
+
+void QDltRegistrationPrivate::registerApplication()
+{
+    Q_ASSERT_X(!m_dltAppID.isEmpty(), "registerApplication", "dltAppID needs to be a valid char * on the first call.");
+    DLT_REGISTER_APP(m_dltAppID.toLocal8Bit(), m_dltAppDescription.toLocal8Bit());
+    m_dltAppRegistered = true;
+}
+
+void QDltRegistrationPrivate::setDefaultCategory(const QString &category)
+{
+    Q_ASSERT_X(m_categoryInfoHash.contains(category), "setDefaultContext", "The category needs to be registered as a dlt logging category before it can be set as a default context");
+    m_defaultCategory = category;
 }
 
 DltContext *QDltRegistrationPrivate::context(const char *categoryName)
 {
-    const QString category = QString::fromLatin1(categoryName);
-    if (!m_categoryInfoHash.contains(category) && m_defaultContext)
-        return m_defaultContext;
+    QString category = QString::fromLatin1(categoryName);
+    if (!m_categoryInfoHash.contains(category) && !m_defaultCategory.isEmpty())
+        category = m_defaultCategory;
 
     CategoryInfo info = m_categoryInfoHash.value(category);
     if (info.m_context && !info.m_registered) {
-        DLT_REGISTER_CONTEXT_LL_TS(*info.m_context, info.m_ctxName, info.m_ctxDescription, category2dltLevel(info.m_category), DLT_TRACE_STATUS_DEFAULT);
-        info.m_registered = true;
+        if (!m_dltAppRegistered)
+            registerApplication();
+        registerCategory(info);
     }
 
     return info.m_context;
@@ -218,25 +234,23 @@ void QDltRegistration::registerApplication(const char *dltAppID, const char *dlt
 {
     Q_D(QDltRegistration);
     bool registerCategories = false;
-    if (!d->m_dltAppID.isEmpty()) {
-        DLT_UNREGISTER_APP();
+    if (d->m_dltAppRegistered) {
+        unregisterApplication();
         registerCategories = true;
     }
 
     if (dltAppID)
         d->m_dltAppID = QString::fromLatin1(dltAppID);
+    d->m_dltAppDescription = QString::fromLatin1(dltAppDescription);
 
-    Q_ASSERT_X(!d->m_dltAppID.isEmpty(), "registerApplication", "dltAppID needs to be a valid char * on the first call.");
-
-    DLT_REGISTER_APP(d->m_dltAppID.toLocal8Bit(), dltAppDescription);
+    if (!d->m_registerOnFirstUse)
+        d->registerApplication();
 
     //Register all Contexts which already have been registered again under the new application
     if (registerCategories) {
-        for (auto it = d->m_categoryInfoHash.cbegin(); it != d->m_categoryInfoHash.cend(); ++it) {
-            if (it.value().m_registered) {
-                DLT_REGISTER_CONTEXT_LL_TS(*it.value().m_context, it.value().m_ctxName, it.value().m_ctxDescription, d->category2dltLevel(it.value().m_category), DLT_TRACE_STATUS_DEFAULT);
-                DLT_REGISTER_LOG_LEVEL_CHANGED_CALLBACK(*it.value().m_context, &qtGeniviLogLevelChangedHandler);
-            }
+        for (auto it = d->m_categoryInfoHash.begin(); it != d->m_categoryInfoHash.end(); ++it) {
+            if (it.value().m_registered)
+                d->registerCategory(it.value());
         }
     }
 }
@@ -250,10 +264,8 @@ void QDltRegistration::registerApplication(const char *dltAppID, const char *dlt
 void QDltRegistration::registerCategory(const QLoggingCategory *category, const char *dltCtxName, const char *dltCtxDescription)
 {
     Q_D(QDltRegistration);
-    Q_ASSERT_X(!d->m_dltAppID.isEmpty(), "registerCategory", "A DLT Application needs to be registered before registering a Logging Category");
     Q_ASSERT(category);
     Q_ASSERT(strlen(category->categoryName()) != 0);
-    //TODO memory leak
     d->registerCategory(category, new DltContext, dltCtxName, dltCtxDescription);
 }
 
@@ -269,7 +281,7 @@ void QDltRegistration::registerCategory(const QLoggingCategory *category, const 
 void QDltRegistration::setDefaultContext(const char *categoryName)
 {
     Q_D(QDltRegistration);
-    d->setDefaultContext(d->context(categoryName));
+    d->setDefaultCategory(QString::fromLatin1(categoryName));
 }
 
 void QDltRegistration::setRegisterContextOnFirstUseEnabled(bool enabled)
@@ -285,20 +297,22 @@ void QDltRegistration::setRegisterContextOnFirstUseEnabled(bool enabled)
 void QDltRegistration::registerUnregisteredContexts()
 {
     Q_D(QDltRegistration);
+    if (!d->m_dltAppRegistered)
+        d->registerApplication();
     for (auto it = d->m_categoryInfoHash.begin(); it != d->m_categoryInfoHash.end(); ++it) {
         if (!it.value().m_registered) {
-            DLT_REGISTER_CONTEXT_LL_TS(*it.value().m_context, it.value().m_ctxName, it.value().m_ctxDescription, d->category2dltLevel(it.value().m_category), DLT_TRACE_STATUS_DEFAULT);
-            DLT_REGISTER_LOG_LEVEL_CHANGED_CALLBACK(*it.value().m_context, &qtGeniviLogLevelChangedHandler);
-            it.value().m_registered = true;
-        }
+            d->registerCategory(it.value());
+      }
     }
 }
 
 void QDltRegistration::unregisterApplication()
 {
     Q_D(QDltRegistration);
-    if (!d->m_dltAppID.isEmpty())
+    if (d->m_dltAppRegistered)
         DLT_UNREGISTER_APP();
+
+    d->m_dltAppRegistered = false;
 }
 
 /*!

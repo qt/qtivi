@@ -63,23 +63,7 @@ class QDltRegistration;
 
 class QDltRegistrationPrivate
 {
-public:
-    QDltRegistrationPrivate(QDltRegistration *parent);
-
-    void registerCategory(const QLoggingCategory *category, DltContext *dltContext, const char *dltCtxName, const char *dltCtxDescription);
-    void setDefaultContext(DltContext *dltContext);
-
-    DltContext *context(const char *categoryName);
-    void dltLogLevelChanged(char context_id[], uint8_t log_level, uint8_t trace_status);
-
-    static DltLogLevelType category2dltLevel(const QLoggingCategory *category);
-    static DltLogLevelType severity2dltLevel(QtMsgType type);
-
 private:
-    QDltRegistration *const q_ptr;
-    Q_DECLARE_PUBLIC(QDltRegistration)
-    QString m_dltAppID;
-    DltContext *m_defaultContext;
     struct CategoryInfo {
         CategoryInfo()
             : m_category(nullptr)
@@ -93,6 +77,28 @@ private:
         DltContext *m_context;
         bool m_registered;
     };
+
+public:
+    QDltRegistrationPrivate(QDltRegistration *parent);
+
+    void registerCategory(const QLoggingCategory *category, DltContext *dltContext, const char *dltCtxName, const char *dltCtxDescription);
+    void registerCategory(CategoryInfo &info);
+    void registerApplication();
+    void setDefaultCategory(const QString &category);
+
+    DltContext *context(const char *categoryName);
+    void dltLogLevelChanged(char context_id[], uint8_t log_level, uint8_t trace_status);
+
+    static DltLogLevelType category2dltLevel(const QLoggingCategory *category);
+    static DltLogLevelType severity2dltLevel(QtMsgType type);
+
+private:
+    QDltRegistration *const q_ptr;
+    Q_DECLARE_PUBLIC(QDltRegistration)
+    QString m_dltAppID;
+    QString m_dltAppDescription;
+    bool m_dltAppRegistered;
+    QString m_defaultCategory;
     QHash<QString, CategoryInfo> m_categoryInfoHash;
     bool m_registerOnFirstUse;
 };
