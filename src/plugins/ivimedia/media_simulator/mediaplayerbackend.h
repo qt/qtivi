@@ -58,7 +58,8 @@ public:
         Select,
         Insert,
         Remove,
-        Move
+        Move,
+        SetIndex
     };
     Q_ENUM(OperationType)
 
@@ -82,6 +83,10 @@ public:
 public Q_SLOTS:
     void doSqlOperation(MediaPlayerBackend::OperationType type, const QStringList &queries, int start, int count);
 private:
+    void setCurrentIndex(int index);
+
+    int m_count;
+    int m_currentIndex;
     QMediaPlayer *m_player;
     QSqlDatabase m_db;
 };

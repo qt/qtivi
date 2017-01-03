@@ -52,6 +52,8 @@
 
 MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *parent)
     : QIviMediaPlayerBackendInterface(parent)
+    , m_count(0)
+    , m_currentIndex(-1)
     , m_player(new QMediaPlayer(this))
 {
     connect(m_player, &QMediaPlayer::durationChanged,
@@ -65,10 +67,13 @@ MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *pa
     QSqlQuery query = m_db.exec(QLatin1String("CREATE TABLE IF NOT EXISTS \"queue\" (\"id\" INTEGER PRIMARY KEY, \"qindex\" INTEGER, \"track_index\" INTEGER)"));
     if (query.lastError().isValid())
         qWarning() << query.lastError().text();
+    m_db.commit();
 }
 
 void MediaPlayerBackend::initialize()
 {
+    m_count = 0;
+    m_currentIndex = -1;
 }
 
 void MediaPlayerBackend::play()
@@ -93,15 +98,17 @@ void MediaPlayerBackend::seek(qint64 offset)
 
 void MediaPlayerBackend::next()
 {
+    setCurrentIndex(m_currentIndex + 1);
 }
 
 void MediaPlayerBackend::previous()
 {
+    setCurrentIndex(m_currentIndex - 1);
 }
 
 bool MediaPlayerBackend::canReportCount()
 {
-    return false;
+    return true;
 }
 
 void MediaPlayerBackend::fetchData(int start, int count)
@@ -207,10 +214,47 @@ void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, 
         }
     }
 
-    if (type == MediaPlayerBackend::Select)
+    query.clear();
+    if (query.exec(QLatin1String("SELECT COUNT(*) FROM queue"))) {
+        query.next();
+        m_count = query.value(0).toInt();
+        emit countChanged(m_count);
+    } else {
+        qWarning() << query.lastError().text();
+    }
+
+    if (type == MediaPlayerBackend::Select) {
         emit dataFetched(list, start, list.count() >= count);
-    else
+    } else if (type == MediaPlayerBackend::SetIndex) {
+        QIviAudioTrackItem item = list.at(0).value<QIviAudioTrackItem>();
+        bool playing = m_player->state() == QMediaPlayer::PlayingState;
+        m_player->setMedia(item.url());
+        if (playing)
+            m_player->play();
+        emit currentTrackChanged(list.at(0));
+    } else {
         emit dataChanged(list, start, count);
+    }
 
     m_db.commit();
+}
+
+void MediaPlayerBackend::setCurrentIndex(int index)
+{
+    if (index >= m_count || index < 0)
+        return;
+
+    m_currentIndex = index;
+    QString queryString = QString(QLatin1String("SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id WHERE queue.qindex=%1 ORDER BY queue.qindex"))
+            .arg(m_currentIndex);
+
+    QStringList queries;
+    queries.append(queryString);
+
+    QtConcurrent::run(this,
+                      &MediaPlayerBackend::doSqlOperation,
+                      MediaPlayerBackend::SetIndex,
+                      queries, m_currentIndex, 0);
+
+    emit currentIndexChanged(m_currentIndex);
 }
