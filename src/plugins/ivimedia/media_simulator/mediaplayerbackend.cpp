@@ -180,7 +180,7 @@ void MediaPlayerBackend::move(int cur_index, int new_index)
     QtConcurrent::run(this,
                       &MediaPlayerBackend::doSqlOperation,
                       MediaPlayerBackend::Move,
-                      queries, qMin(cur_index, new_index), qAbs(delta) + 1);
+                      queries, cur_index, new_index);
 }
 
 void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, const QStringList &queries, int start, int count)
@@ -232,6 +232,50 @@ void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, 
         if (playing)
             m_player->play();
         emit currentTrackChanged(list.at(0));
+    } else if (type == MediaPlayerBackend::Insert && start <= m_currentIndex) {
+        // A new Item has been inserted before currentIndex
+        // The currentIndex needs to be incremented to remain valid
+        // It is safe to increment it by one as the backend only supports
+        // adding/removing/moving one item
+        emit currentIndexChanged(++m_currentIndex);
+        emit dataChanged(list, start, count);
+    } else if (type == MediaPlayerBackend::Remove && start <= m_currentIndex) {
+        // A new Item has been removed before currentIndex
+        // The currentIndex needs to be decremented to remain valid
+        // It is safe to increment it by one as the backend only supports
+        // adding/removing/moving one item
+
+        if (start == m_currentIndex) {
+            // If the currentIndex gets removed try updating it to the
+            // Item before the currentIndex. If that is not possible fallback
+            // to the item after it.
+            int new_index = m_currentIndex - 1;
+            if (m_currentIndex == 0 && m_count > 2)
+                new_index = m_currentIndex + 1;
+            setCurrentIndex(new_index);
+            emit dataChanged(list, start, count);
+            m_db.commit();
+            return;
+        }
+
+        emit currentIndexChanged(--m_currentIndex);
+        emit dataChanged(list, start, count);
+    } else if (type == MediaPlayerBackend::Move) {
+        // As we need to know the old index and the new index of the moved item
+        // we reuse start and count as cur_index and new_index instead of their
+        // original meaning
+        int cur_index = start;
+        int new_index = count;
+        int delta = cur_index - new_index;
+
+        //We only need to update the currentIndex if the currentIndex itself has been
+        //moved or a item has changed its position from before the currentIndex to after it or vice-versa.
+        if ((cur_index < m_currentIndex && new_index >= m_currentIndex) || (cur_index == m_currentIndex && delta > 0))
+            emit currentIndexChanged(--m_currentIndex);
+        else if ((cur_index > m_currentIndex && new_index < m_currentIndex) || (cur_index == m_currentIndex && delta < 0))
+            emit currentIndexChanged(++m_currentIndex);
+
+        emit dataChanged(list, qMin(cur_index, new_index), qAbs(delta) + 1);
     } else {
         emit dataChanged(list, start, count);
     }
@@ -241,6 +285,15 @@ void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, 
 
 void MediaPlayerBackend::setCurrentIndex(int index)
 {
+    //If we the list is empty the current Index needs to updated to an invalid track
+    if (m_count == 0 && index == -1) {
+        m_currentIndex = index;
+        m_player->setMedia(QUrl());
+        emit currentTrackChanged(QVariant());
+        emit currentIndexChanged(m_currentIndex);
+        return;
+    }
+
     if (index >= m_count || index < 0)
         return;
 

@@ -120,7 +120,7 @@ ApplicationWindow {
                 delegate: Rectangle {
                     width: ListView.view.width
                     height: column.height
-                    color: "#efefef"
+                    color: mediaPlayer.playQueue.currentIndex == index ? "lightblue" : "#efefef"
 
                     MouseArea {
                         anchors.fill: parent
