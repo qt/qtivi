@@ -80,9 +80,13 @@ void QIviMediaPlayerPrivate::onCurrentTrackChanged(const QVariant &currentTrack)
     if (m_currentTrackData == currentTrack)
         return;
 
-    const QIviPlayableItem *currentItem = qtivi_gadgetFromVariant<QIviPlayableItem>(currentTrack);
-    if (m_currentTrack == currentItem)
-        return;
+    const QIviPlayableItem *currentItem = nullptr;
+
+    if (currentTrack.isValid()) {
+        currentItem = qtivi_gadgetFromVariant<QIviPlayableItem>(currentTrack);
+        if (m_currentTrack == currentItem)
+            return;
+    }
 
     Q_Q(QIviMediaPlayer);
     m_currentTrackData = currentTrack;
