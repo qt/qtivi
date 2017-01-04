@@ -74,17 +74,17 @@ ApplicationWindow {
 
             RowLayout {
                 Label { text: "Artist:" }
-                Label { text: mediaPlayer.currentTrack.artist }
+                Label { text: mediaPlayer.currentTrack ? mediaPlayer.currentTrack.artist : "" }
             }
 
             RowLayout {
                 Label { text: "Album:" }
-                Label { text: mediaPlayer.currentTrack.album }
+                Label { text: mediaPlayer.currentTrack ? mediaPlayer.currentTrack.album : "" }
             }
 
             RowLayout {
                 Label { text: "Title:" }
-                Label { text: mediaPlayer.currentTrack.title }
+                Label { text: mediaPlayer.currentTrack ? mediaPlayer.currentTrack.title : "" }
             }
 
             RowLayout {
