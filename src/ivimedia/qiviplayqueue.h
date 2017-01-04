@@ -54,7 +54,7 @@ class Q_QTIVIMEDIA_EXPORT QIviPlayQueue : public QAbstractListModel
 {
     Q_OBJECT
 
-    Q_PROPERTY(int currentIndex READ currentIndex NOTIFY currentIndexChanged)
+    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
     Q_PROPERTY(int chunkSize READ chunkSize WRITE setChunkSize NOTIFY chunkSizeChanged)
     Q_PROPERTY(int fetchMoreThreshold READ fetchMoreThreshold WRITE setFetchMoreThreshold NOTIFY fetchMoreThresholdChanged)
     Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
@@ -78,6 +78,7 @@ public:
     Q_ENUM(LoadingType)
 
     int currentIndex() const;
+    void setCurrentIndex(int currentIndex);
 
     int chunkSize() const;
     void setChunkSize(int chunkSize);

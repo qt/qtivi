@@ -311,6 +311,18 @@ int QIviPlayQueue::currentIndex() const
     return d->m_currentIndex;
 }
 
+void QIviPlayQueue::setCurrentIndex(int currentIndex)
+{
+    Q_D(QIviPlayQueue);
+    QIviMediaPlayerBackendInterface *backend = d->playerBackend();
+    if (!backend) {
+        qWarning("Can't set the current index without a connected backend");
+        return;
+    }
+
+    backend->setCurrentIndex(currentIndex);
+}
+
 /*!
     \qmlproperty int PlayQueue::chunkSize
     \brief Holds the number of rows which are requested from the backend interface.

@@ -125,7 +125,8 @@ ApplicationWindow {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-
+                            mediaPlayer.playQueue.currentIndex = index
+                            mediaPlayer.play()
                         }
                     }
 

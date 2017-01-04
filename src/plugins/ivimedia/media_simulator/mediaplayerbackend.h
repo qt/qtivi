@@ -72,6 +72,7 @@ public:
     virtual void seek(qint64 offset) Q_DECL_OVERRIDE;
     virtual void next() Q_DECL_OVERRIDE;
     virtual void previous() Q_DECL_OVERRIDE;
+    virtual void setCurrentIndex(int index) Q_DECL_OVERRIDE;
 
     virtual bool canReportCount() Q_DECL_OVERRIDE;
     virtual void fetchData(int start, int count) Q_DECL_OVERRIDE;
@@ -83,7 +84,6 @@ public:
 public Q_SLOTS:
     void doSqlOperation(MediaPlayerBackend::OperationType type, const QStringList &queries, int start, int count);
 private:
-    void setCurrentIndex(int index);
 
     int m_count;
     int m_currentIndex;
