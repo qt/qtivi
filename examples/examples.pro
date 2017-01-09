@@ -1,6 +1,8 @@
 TEMPLATE = subdirs
-SUBDIRS = vehiclefunctions \
-          media
+!geniviextras-only {
+    SUBDIRS = vehiclefunctions \
+              media
+}
 
 config_dlt {
     SUBDIRS += geniviextras
