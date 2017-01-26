@@ -65,8 +65,8 @@ ClimateControlBackend::ClimateControlBackend(QObject *parent) :
     leftZone.seatHeater = 10;
     leftZone.seatHeaterAttribute = QIviPropertyAttribute<int>(0, 10);
     leftZone.targetTemperature = 20;
-    leftZone.targetTemperatureAttribute = QIviPropertyAttribute<int>(0, 10);
-    m_zoneMap.insert("FrontLeft",leftZone);
+    leftZone.targetTemperatureAttribute = QIviPropertyAttribute<int>(16, 28);
+    m_zoneMap.insert("FrontLeft", leftZone);
 
     ZoneBackend rightZone;
     rightZone.seatCooler = 5;
@@ -74,17 +74,17 @@ ClimateControlBackend::ClimateControlBackend(QObject *parent) :
     rightZone.seatHeater = 0;
     rightZone.seatHeaterAttribute = QIviPropertyAttribute<int>(0, 10);
     rightZone.targetTemperature = 20;
-    rightZone.targetTemperatureAttribute = QIviPropertyAttribute<int>(0, 10);
-    m_zoneMap.insert("FrontRight",rightZone);
+    rightZone.targetTemperatureAttribute = QIviPropertyAttribute<int>(16, 28);
+    m_zoneMap.insert("FrontRight", rightZone);
 
     ZoneBackend rearZone;
     rearZone.seatCooler = 0;
     rearZone.seatCoolerAttribute = QIviPropertyAttribute<int>();
     rearZone.seatHeater = 0;
     rearZone.seatHeaterAttribute = QIviPropertyAttribute<int>();
-    rearZone.targetTemperature = 10;
-    rearZone.targetTemperatureAttribute = QIviPropertyAttribute<int>(0, 10);
-    m_zoneMap.insert("Rear",rearZone);
+    rearZone.targetTemperature = 20;
+    rearZone.targetTemperatureAttribute = QIviPropertyAttribute<int>(16, 28);
+    m_zoneMap.insert("Rear", rearZone);
 }
 
 ClimateControlBackend::~ClimateControlBackend()
@@ -110,9 +110,9 @@ void ClimateControlBackend::initializeAttributes()
     emit zoneSynchronizationAttributeChanged(QIviPropertyAttribute<bool>(true));
     emit defrostEnabledChanged(m_defrost);
     emit defrostAttributeChanged(QIviPropertyAttribute<bool>(true));
-    emit steeringWheelHeaterAttributeChanged(QIviPropertyAttribute<int>(false));
+    emit steeringWheelHeaterAttributeChanged(QIviPropertyAttribute<int>(0, 10));
     emit steeringWheelHeaterChanged(m_steeringWheelHeater);
-    emit fanSpeedLevelAttributeChanged(QIviPropertyAttribute<int>(0, 10));
+    emit fanSpeedLevelAttributeChanged(QIviPropertyAttribute<int>(0, 6));
     emit fanSpeedLevelChanged(m_fanSpeed);
 
     QVector<QIviClimateControl::RecirculationMode> recirculation;

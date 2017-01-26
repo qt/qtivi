@@ -42,7 +42,7 @@
 #include <QString>
 #include <QHash>
 
-#include <dlt/dlt.h>
+#include <dlt.h>
 
 //
 //  W A R N I N G
