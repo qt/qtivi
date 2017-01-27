@@ -126,7 +126,7 @@
 
     \section3 QmlLive
 
-    \l{Qt QML Live}{QmlLive} provides a live reloader environment for rapid development of
+    \l{Qt QmlLive}{QmlLive} provides a live reloader environment for rapid development of
     Qt Quick applications, dramatically reducing the time it takes to
     deploy and test changes in the UI design.
 
