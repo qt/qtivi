@@ -1,0 +1,36 @@
+{
+    "module": "ivimedia",
+    "testDir": "../../config.tests",
+
+    "libraries": {
+        "taglib": {
+            "label": "taglib",
+            "test": "taglib",
+            "sources": [
+                { "type": "pkgConfig", "args": "taglib" },
+                "-ltag"
+            ]
+        }
+    },
+
+    "features": {
+        "taglib": {
+            "label": "taglib",
+            "condition": "libs.taglib",
+            "output": [
+                "privateFeature",
+                { "type": "define", "name": "QT_TAGLIB" }
+            ]
+        }
+    },
+
+    "summary": [
+        {
+            "section": "Qt IVI Media",
+            "entries": [
+                "taglib"
+            ]
+        }
+    ]
+}
+

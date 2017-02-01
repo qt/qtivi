@@ -53,6 +53,7 @@
 // We mean it.
 //
 
+#include <private/qtiviglobal_p.h>
 #include <QtIviCore/QIviProperty>
 #include <QtIviCore/QIviPropertyFactory>
 #include <QtIviCore/qiviqmlconversion_helper.h>

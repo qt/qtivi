@@ -56,6 +56,8 @@
 
 
 #include <QtCore/qglobal.h>
+#include <QtIviCore/private/qtivicore-config_p.h>
+#include <QtIviCore/qtiviglobal.h>
 
 QT_BEGIN_NAMESPACE
 

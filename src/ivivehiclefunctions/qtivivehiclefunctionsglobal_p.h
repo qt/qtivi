@@ -39,69 +39,21 @@
 **
 ****************************************************************************/
 
-#include <private/qgeniviextrasglobal_p.h>
-#include <QString>
-#include <QHash>
-
-#include <dlt.h>
+#ifndef QIVIVEHICLEFUNCTIONSGLOBAL_P_H
+#define QIVIVEHICLEFUNCTIONSGLOBAL_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
 // This file is not part of the Qt API.  It exists purely as an
-// implementation detail. This header file may change from version to
+// implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+#include <QtIviVehicleFunctions/private/qtivivehiclefunctions-config_p.h>
+#include <QtIviVehicleFunctions/qtivivehiclefunctionsglobal.h>
 
-void qtGeniviLogLevelChangedHandler(char context_id[], uint8_t log_level, uint8_t trace_status);
-
-class QDltRegistration;
-
-class QDltRegistrationPrivate
-{
-private:
-    struct CategoryInfo {
-        CategoryInfo()
-            : m_category(nullptr)
-            , m_context(nullptr)
-            , m_registered(false)
-        {}
-
-        QByteArray m_ctxName;
-        QByteArray m_ctxDescription;
-        QLoggingCategory *m_category;
-        DltContext *m_context;
-        bool m_registered;
-    };
-
-public:
-    QDltRegistrationPrivate(QDltRegistration *parent);
-
-    void registerCategory(const QLoggingCategory *category, DltContext *dltContext, const char *dltCtxName, const char *dltCtxDescription);
-    void registerCategory(CategoryInfo &info);
-    void registerApplication();
-    void setDefaultCategory(const QString &category);
-
-    DltContext *context(const char *categoryName);
-    void dltLogLevelChanged(char context_id[], uint8_t log_level, uint8_t trace_status);
-
-    static DltLogLevelType category2dltLevel(const QLoggingCategory *category);
-    static DltLogLevelType severity2dltLevel(QtMsgType type);
-
-private:
-    QDltRegistration *const q_ptr;
-    Q_DECLARE_PUBLIC(QDltRegistration)
-    QString m_dltAppID;
-    QString m_dltAppDescription;
-    bool m_dltAppRegistered;
-    QString m_defaultCategory;
-    QHash<QString, CategoryInfo> m_categoryInfoHash;
-    bool m_registerOnFirstUse;
-};
-
-QT_END_NAMESPACE
+#endif // QIVIVEHICLEFUNCTIONSGLOBAL_P_H

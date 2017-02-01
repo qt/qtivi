@@ -1,0 +1,79 @@
+{
+    "module": "geniviextras",
+    "testDir": "../../config.tests",
+
+    "commandline": {
+        "options": {
+            "geniviextras-only": "boolean"
+        }
+    },
+
+    "libraries": {
+        "dlt": {
+            "label": "DLT",
+            "test": "dlt",
+            "sources": [
+                { "type": "pkgConfig", "args": "automotive-dlt" },
+                "-ldlt"
+            ]
+        },
+        "dlt_2_12": {
+            "label": "DLT > 2.12",
+            "test": "dlt",
+            "sources": [
+                { "type": "pkgConfig", "args": "automotive-dlt >= 2.12.0" },
+                "-ldlt"
+            ]
+        }
+    },
+
+    "features": {
+        "dlt": {
+            "label": "DLT",
+            "autoDetect": "config.unix",
+            "condition": "libs.dlt",
+            "output": [ "privateFeature" ]
+        },
+
+        "dlt_2_12": {
+            "label": "DLT > 2.12",
+            "autoDetect": "config.unix",
+            "condition": "libs.dlt_2_12",
+            "output": [ "privateFeature" ]
+        },
+
+        "geniviextras-only": {
+            "label": "Only build Qt GENIVI Extras",
+            "condition": "input.geniviextras-only == 'yes'",
+            "output": [ "privateFeature" ]
+        }
+    },
+
+    "report": [
+        {
+            "type": "note",
+            "condition": "!features.dlt",
+            "message": "No DLT libs found. Disabled building Qt GENIVI Extras."
+        },
+        {
+            "type": "note",
+            "condition": "!features.dlt_2_12",
+            "message": "Old DLT version detected. Not all features of Qt GENIVI Extras can be enabled."
+        },
+        {
+            "type": "error",
+            "condition": "!features.dlt && input.geniviextras-only == 'yes'",
+            "message": "Mandatory dependency missing for only building Qt GENIVI Extras."
+        }
+    ],
+
+    "summary": [
+        {
+            "section": "Qt GENIVI Extras",
+            "entries": [
+                "dlt",
+                "dlt_2_12"
+            ]
+        }
+    ]
+}

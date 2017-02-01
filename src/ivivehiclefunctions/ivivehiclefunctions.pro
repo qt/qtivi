@@ -11,9 +11,10 @@ OTHER_FILES = \
 CMAKE_MODULE_TESTS = '-'
 
 HEADERS += \
+    qtivivehiclefunctionsglobal.h \
+    qtivivehiclefunctionsglobal_p.h \
     qiviclimatecontrol.h \
     qiviclimatecontrolbackendinterface.h \
-    qtivivehiclefunctionsglobal.h \
     qiviclimatecontrol_p.h \
     qiviwindowcontrol.h \
     qiviwindowcontrol_p.h \

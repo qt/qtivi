@@ -53,6 +53,7 @@
 // We mean it.
 //
 
+#include "private/qtivimediaglobal_p.h"
 #include "private/qiviabstractfeature_p.h"
 
 #include "qiviamfmtuner.h"

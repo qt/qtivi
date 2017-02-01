@@ -53,6 +53,7 @@
 // We mean it.
 //
 
+#include <private/qtiviglobal_p.h>
 #include <QtIviCore/QIviServiceObject>
 
 QT_BEGIN_NAMESPACE

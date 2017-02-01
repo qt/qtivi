@@ -11,6 +11,7 @@ CMAKE_MODULE_TESTS = '-'
 
 HEADERS += \
     qtivimediaglobal.h \
+    qtivimediaglobal_p.h \
     qivimediaplayer.h \
     qivimediaplayer_p.h \
     qiviplayableitem.h \

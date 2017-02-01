@@ -60,7 +60,7 @@
 #include <QtCore/QMap>
 #include <QtCore/QSet>
 
-#include <QtIviCore/qtiviglobal.h>
+#include <private/qtiviglobal_p.h>
 #include <QtIviCore/qiviservicemanager.h>
 
 QT_BEGIN_NAMESPACE

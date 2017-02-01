@@ -90,7 +90,7 @@ void QDltRegistrationPrivate::registerCategory(CategoryInfo &info)
     Q_ASSERT_X(m_dltAppRegistered, "registerCategory", "A DLT Application needs to be registered before registering a Logging Category");
 
     DLT_REGISTER_CONTEXT_LL_TS(*info.m_context, info.m_ctxName, info.m_ctxDescription, category2dltLevel(info.m_category), DLT_TRACE_STATUS_DEFAULT);
-#ifdef DLT_VERSION_2_12
+#ifdef QT_FEATURE_dlt_2_12
     //TODO move to lamda once c++11 is ok to be used
     DLT_REGISTER_LOG_LEVEL_CHANGED_CALLBACK(*info.m_context, &qtGeniviLogLevelChangedHandler);
 #endif

@@ -43,6 +43,7 @@
 #define QIVIGLOBAL_H
 
 #include <QtCore/qglobal.h>
+#include <QtIviCore/qtivicore-config.h>
 
 QT_BEGIN_NAMESPACE
 

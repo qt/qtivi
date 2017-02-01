@@ -53,6 +53,7 @@
 // We mean it.
 //
 
+#include <private/qtiviglobal_p.h>
 #include <private/qobject_p.h>
 
 #include "qivisearchandbrowsemodelinterface.h"

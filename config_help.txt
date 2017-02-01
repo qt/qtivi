@@ -1,0 +1,3 @@
+GeniviExtras options:
+
+  -geniviextras-only .......... Only build the genivi extras module

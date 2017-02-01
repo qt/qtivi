@@ -1,5 +1,11 @@
 TEMPLATE = subdirs
-!geniviextras-only {
+
+# Include the config.pri from the build folder as the qtgenivieextras-config.pri is copied
+# while syncqt is running for the module and this is not done yet.
+include($$OUT_PWD/geniviextras/qtgeniviextras-config.pri)
+QT_FOR_CONFIG += geniviextras-private
+
+!qtConfig(geniviextras-only) {
     SUBDIRS = ivicore \
               ivivehiclefunctions \
               ivimedia \
@@ -13,8 +19,4 @@ TEMPLATE = subdirs
     imports.depends = ivivehiclefunctions ivimedia
 }
 
-config_dlt {
-    SUBDIRS += geniviextras
-} else {
-    warning("No dlt found, disabling building geniviextras")
-}
+qtConfig(dlt): SUBDIRS += geniviextras

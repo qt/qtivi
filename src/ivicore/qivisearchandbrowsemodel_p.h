@@ -53,6 +53,7 @@
 // We mean it.
 //
 
+#include <private/qtiviglobal_p.h>
 #include <QtIviCore/private/qiviabstractfeaturelistmodel_p.h>
 
 #include "qivisearchandbrowsemodelinterface.h"

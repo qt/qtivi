@@ -53,6 +53,7 @@
 // We mean it.
 //
 
+#include <private/qtivivehiclefunctionsglobal_p.h>
 #include <QtIviCore/QIviProperty>
 #include "private/qiviabstractzonedfeature_p.h"
 

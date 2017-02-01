@@ -43,6 +43,7 @@
 #define QTIVIMEDIAGLOBAL_H
 
 #include <QtCore/qglobal.h>
+#include <QtIviMedia/qtivimedia-config.h>
 
 QT_BEGIN_NAMESPACE
 

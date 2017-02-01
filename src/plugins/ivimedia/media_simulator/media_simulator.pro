@@ -1,4 +1,5 @@
 TARGET = media_simulator
+QT_FOR_CONFIG += ivimedia-private
 
 PLUGIN_TYPE = qtivi
 PLUGIN_EXTENDS = qtivi
@@ -8,15 +9,7 @@ QT       += core ivicore ivimedia sql multimedia
 
 load(qt_plugin)
 
-config_taglib {
-    DEFINES += QT_TAGLIB
-    !contains(QT_CONFIG, no-pkg-config) {
-        CONFIG += link_pkgconfig
-        PKGCONFIG = taglib
-    } else {
-        LIBS += -ltag
-    }
-}
+qtConfig(taglib): QMAKE_USE += taglib
 
 DISTFILES += media_simulator.json
 

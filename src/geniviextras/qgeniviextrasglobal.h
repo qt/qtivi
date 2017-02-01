@@ -43,6 +43,7 @@
 #define QGENIVIEXTRASGLOBAL_H
 
 #include <QtCore/qglobal.h>
+#include <QtGeniviExtras/qtgeniviextras-config.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -1,9 +1,5 @@
 TEMPLATE = subdirs
 
-!geniviextras-only {
-    SUBDIRS = core vehiclefunctions
-}
-
-config_dlt {
-    SUBDIRS += dlt
-}
+qtHaveModule(ivicore): SUBDIRS += core
+qtHaveModule(ivivehiclefunctions): SUBDIRS += vehiclefunctions
+qtHaveModule(geniviextras): SUBDIRS += dlt

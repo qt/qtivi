@@ -53,7 +53,8 @@
 // We mean it.
 //
 
-#include <private/qabstractitemmodel_p.h>
+#include "private/qtivimediaglobal_p.h"
+#include "private/qabstractitemmodel_p.h"
 
 #include "qiviplayqueue.h"
 #include "qiviplayableitem.h"

@@ -53,6 +53,7 @@
 // We mean it.
 //
 
+#include "private/qtivimediaglobal_p.h"
 #include "private/qiviabstractfeaturelistmodel_p.h"
 
 #include "qivimediadevicediscoverymodel.h"
