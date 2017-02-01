@@ -46,6 +46,7 @@ depends += qtcore qtdoc qtquick qtqml
 
 examplesinstallpath     = vehiclefunctions
 
+navigation.homepage = "Qt Automotive Suite"
 navigation.landingpage = "Qt IVI"
 navigation.cppclassespage = "Qt IVI C++ Classes"
 navigation.qmltypespage = "Qt IVI QML Types"
