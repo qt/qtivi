@@ -34,7 +34,9 @@ qhp.QtGeniviExtras.subprojects.examples.sortPages = true
 
 tagfile                 = qtgeniviextras.tags
 
-depends += qtcore qtdoc
+depends += qtcore qtdoc qtautomotivesuite
 
+navigation.homepage    = "Qt Automotive Suite"
 navigation.landingpage = "Qt GENIVI Extras"
 navigation.cppclassespage = "Qt GENIVI Extras C++ Classes"
+buildversion           = "Qt GENIVI Extras"

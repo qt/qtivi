@@ -42,7 +42,7 @@ qhp.QtIvi.subprojects.examples.sortPages = true
 
 tagfile                 = qtivi.tags
 
-depends += qtcore qtdoc qtquick qtqml
+depends += qtcore qtdoc qtquick qtqml qtautomotivesuite
 
 examplesinstallpath     = vehiclefunctions
 

@@ -1,7 +1,6 @@
 TEMPLATE = aux
 build_online_docs: {
-    QMAKE_DOCS_TARGETDIR = qtautomotivesuite
-    QMAKE_DOCS = $$PWD/qtautomotivesuite-online.qdocconf
+    QMAKE_DOCS = $$PWD/online/qtautomotivesuite.qdocconf
 } else {
     QMAKE_DOCS = $$PWD/qtautomotivesuite.qdocconf
 }

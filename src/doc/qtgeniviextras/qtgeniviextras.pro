@@ -1,7 +1,6 @@
 TEMPLATE = aux
 build_online_docs: {
-    QMAKE_DOCS_TARGETDIR = qtgeniviextras
-    QMAKE_DOCS = $$PWD/qtgeniviextras-online.qdocconf
+    QMAKE_DOCS = $$PWD/online/qtgeniviextras.qdocconf
 } else {
     QMAKE_DOCS = $$PWD/qtgeniviextras.qdocconf
 }

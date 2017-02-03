@@ -3,4 +3,8 @@ include($QT_INSTALL_DOCS/global/qt-module-defaults-online.qdocconf)
 # Add an .html file with sidebar content, used in the online style
 # HTML.stylesheets               += style/qt5-sidebar.html
 
-include(qtivi-project.qdocconf)
+# override defaults for Qt module documentation
+HTML.nosubdirs = "false"
+HTML.outputsubdir = "qtgeniviextras"
+
+include(../qtgeniviextras-project.qdocconf)
