@@ -64,18 +64,18 @@ ApplicationWindow {
     height: 324
     visible: true
 
-//![1]
+    //![1]
     ClimateControl {
         id: climateControl
         discoveryMode: ClimateControl.AutoDiscovery
     }
-//![1]
+    //![1]
 
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 10
 
-//![2]
+        //![2]
         GroupBox {
             title: "Air Flow Direction"
 
@@ -185,9 +185,9 @@ ApplicationWindow {
                 }
             }
         }
-//![2]
+        //![2]
         Row {
-//![3]
+            //![3]
             GroupBox {
                 title: "Front Left Zone"
 
@@ -310,9 +310,9 @@ ApplicationWindow {
                     }
                 }
             }
+            //![3]
         }
     }
-//![3]
 
     MessageDialog {
         id: messageDialog
@@ -321,10 +321,10 @@ ApplicationWindow {
         icon: StandardIcon.Critical
     }
 
-//![4]
+    //![4]
     Component.onCompleted: {
         if (!climateControl.isValid)
             messageDialog.open()
     }
-//![4]
+    //![4]
 }

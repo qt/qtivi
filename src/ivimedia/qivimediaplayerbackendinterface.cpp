@@ -121,6 +121,15 @@ QIviMediaPlayerBackendInterface::QIviMediaPlayerBackendInterface(QObject *parent
 */
 
 /*!
+    \fn QIviMediaPlayerBackendInterface::setCurrentIndex(int currentIndex)
+
+    Sets the \a currentIndex of the play-queue to the given index. If a valid index is passed, the
+    function should update the current playable item and emit the corresponding change signals
+
+    \sa currentIndexChanged currentTrackChanged durationChanged
+*/
+
+/*!
     \fn QIviMediaPlayerBackendInterface::canReportCount()
 
     Returns \e true if the backend can return the final number of items for a specific request. This makes it possible to support the QIviPlayQueue::DataChanged loading

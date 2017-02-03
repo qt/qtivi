@@ -62,6 +62,7 @@ ApplicationWindow {
     height: 500
     title: qsTr("Tuner")
 
+    //![1]
     AmFmTuner {
         id: tuner
 
@@ -75,11 +76,13 @@ ApplicationWindow {
             console.log("A Station SCAN has been stopped")
         }
     }
+    //![1]
 
     SplitView {
         id: splitView1
         anchors.fill: parent
 
+        //![2]
         ColumnLayout {
 
             RowLayout {
@@ -154,8 +157,11 @@ ApplicationWindow {
                     onClicked: tuner.seekUp()
                 }
             }
-        }
 
+        }
+        //![2]
+
+        //![3]
         ListView {
             spacing: 8
             clip: true
@@ -163,22 +169,26 @@ ApplicationWindow {
             width: 300
             Layout.fillHeight: true
 
+            //![4]
             model: SearchAndBrowseModel {
                 serviceObject: tuner.serviceObject
                 contentType: "station"
             }
+            //![4]
 
             delegate: Rectangle {
                 width: ListView.view.width
                 height: column.height
                 color: "#efefef"
 
+                //![5]
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
                         tuner.tune(model.item)
                     }
                 }
+                //![5]
 
                 Row {
                     anchors.fill: parent
@@ -190,6 +200,7 @@ ApplicationWindow {
                         Text { text: "Type: " + model.item.frequency }
                     }
 
+                    //![6]
                     Button {
                         id: addButton
                         text: "+"
@@ -215,10 +226,13 @@ ApplicationWindow {
                             onCountChanged: addButton.checkExists()
                         }
                     }
+                    //![6]
                 }
             }
         }
+        //![3]
 
+        //![7]
         ListView {
             spacing: 8
             clip: true
@@ -288,5 +302,6 @@ ApplicationWindow {
                 }
             }
         }
+        //![7]
     }
 }

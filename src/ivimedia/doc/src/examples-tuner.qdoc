@@ -1,0 +1,124 @@
+/****************************************************************************
+**
+** Copyright (C) 2017 Pelagicore AG
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the QtIvi module of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:BSD-QTAS$
+** Commercial License Usage
+** Licensees holding valid commercial Qt Automotive Suite licenses may use
+** this file in accordance with the commercial license agreement provided
+** with the Software or, alternatively, in accordance with the terms
+** contained in a written agreement between you and The Qt Company.  For
+** licensing terms and conditions see https://www.qt.io/terms-conditions.
+** For further information use the contact form at https://www.qt.io/contact-us.
+**
+** BSD License Usage
+** Alternatively, you may use this file under the terms of the BSD license
+** as follows:
+**
+** "Redistribution and use in source and binary forms, with or without
+** modification, are permitted provided that the following conditions are
+** met:
+**   * Redistributions of source code must retain the above copyright
+**     notice, this list of conditions and the following disclaimer.
+**   * Redistributions in binary form must reproduce the above copyright
+**     notice, this list of conditions and the following disclaimer in
+**     the documentation and/or other materials provided with the
+**     distribution.
+**   * Neither the name of The Qt Company Ltd nor the names of its
+**     contributors may be used to endorse or promote products derived
+**     from this software without specific prior written permission.
+**
+**
+** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
+**
+** $QT_END_LICENSE$
+**
+** SPDX-License-Identifier: BSD-3-Clause
+**
+****************************************************************************/
+
+/*!
+     \example tuner
+     \title QML Tuner Example
+     \ingroup qtivimedia-examples
+
+     \brief This Example shows how to use the Tuner API from QML.
+     \image examples_tuner.png
+
+     This Example shows how to use the Tuner API from QML.
+
+     First an AmFmTuner object is created. By default,
+     the auto discovery is used to search for a plugin that implements QIviAmFmTunerBackendInterface.
+     Depending on the selection of the band radio buttons the tuner band is selected.
+     \snippet tuner/main.qml 1
+
+     \section1 Station Information
+
+     In the left third of the UI we want to display information about the current radio station
+     as well as providing some buttons to change the stations or start a scan through all stations.
+     \snippet tuner/main.qml 2
+
+     The station property of AmFmTuner exposes the station you are currently listening to, which can
+     be empty as well, if the frequency property was manually changed to a frequency no station is
+     broadcasting on.
+
+     \section1 Station List
+
+     The middle part of the UI shows a list of all the available radio stations. Every item of the
+     list shows the name and the frequency of a station. By clicking on one of the list items,
+     the current station will be changed to this station. On the right side of every station is a
+     \c + button which can be used to save this station into the preset list.
+     \snippet tuner/main.qml 3
+
+     To fill the ListView with all available stations, the SearchAndBrowseModel model is used. As
+     the SearchAndBrowseModel is a generic model, it needs to know where the data should come from.
+     This is done by passing the service object of the AmFmTuner to the model. The model will then
+     use the QIviSearchAndBrowseModelInterface exposed by the same backend which is used by AmFmTuner.
+     Because the tuner backend could expose multiple different lists, the contentType needs to be
+     selected: in this case the contentType is set to \c station, which provides all available stations.
+     \snippet tuner/main.qml 4
+
+     To change the currently playing station the AmFmTuner::tune method is used by calling it
+     in an onClicked handler
+     \snippet tuner/main.qml 5
+
+     \section1 Preset List
+
+     The preset list occupies the right third of the UI and shows all favorite stations. This list
+     is sorted and maintained by the user. A press on the \c + button of the station list will
+     add a station to this list, the \c X button will remove the item and the arrow buttons can be
+     used to change the order of the stations.
+     \snippet tuner/main.qml 7
+
+     Similar to the station list, the SearchAndBrowseModel is used as a model, but the contentType
+     was changed to \c presets.
+     For maintaining the list, the move and remove functions of SearchAndBrowseModel are used.
+
+
+     \section1 Favorite Button
+
+     The \c + button of the station list should be enabled if the station is not already part of
+     the preset list. This is done by using the SearchAndBrowseModel::indexOf function which will
+     search for the passed item and call the callback function passed as second argument with the
+     result. Depending on whether the index is valid, the button will be enabled or disabled.
+     This asynchronous approach is needed, as the preset list might be pretty big and the data might
+     come from a different process which maintains the tuner state.
+     \snippet tuner/main.qml 6
+
+     If not already part of the preset list, the station is added to the list by using the
+     SearchAndBrowseModel::insert method, which is passed \c 0 as the first parameter to add it on
+     top of the list.
+*/

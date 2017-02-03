@@ -59,6 +59,7 @@
     \li \l{Using the Qt IVI Reference API}
     \li \l{Extending Qt IVI}
     \li \l{The Qt IVI Attribute System}
+    \li \l{The Qt IVI Query Language}
     \endlist
 
     \section1 Modules
@@ -67,14 +68,17 @@
 
     \annotatedlist qtivi_modules
 
-    \b {Qt IVI Vehicle Functions} provides interfaces to access vehicle
-    features.
-
     \b {Qt IVI Core} provides core base classes for the Qt IVI features,
     and handles the discovery of Qt IVI backend plugins. Application
     developers do not need to use Qt IVI Core directly. It is only needed
     when implementing a new IVI feature, such as Qt IVI Vehicle Functions
     ClimateControl.
+
+    \b {Qt IVI Vehicle Functions} provides interfaces to access vehicle
+    features.
+
+    \b {Qt IVI Media} provides interfaces to access media related APIs e.g.
+    Managing your music playlist or controlling the radio tuner.
 
     The functionality provided by these modules is available to QML
     applications:

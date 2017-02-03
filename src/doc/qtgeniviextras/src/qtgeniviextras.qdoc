@@ -50,9 +50,12 @@
     QT += geniviextras
     \endcode
 
+    See \l {Qt DLT Declarations} for more information about how to use the DLT API.
+
     \section1 Reference
 
     \list
       \li \l {Qt GENIVI Extras C++ Classes}{C++ Classes}
+      \li \l {Qt GENIVI Extras Examples}{Examples}
     \endlist
 */

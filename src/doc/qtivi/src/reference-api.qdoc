@@ -46,7 +46,7 @@ The feature areas covered by the Qt IVI module reference API are:
 \omit
     \li Media Management
     \list
-        \li Search and Browser
+        \li Search and Browse
         \li Playqueue Management
         \li Playback Control
     \endlist

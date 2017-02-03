@@ -180,11 +180,12 @@
 */
 
 /*!
-    \group qtivivehiclefunctions_examples
+    \group qtivivehiclefunctions-examples
     \ingroup all-examples
-    \title Qt IVI Examples
+    \ingroup qtivi-examples
+    \title Qt IVI Vehicle Functions Examples
 
-    \brief Examples for the Qt IVI Vehicle Functions.
+    \brief Examples for the Qt IVI Vehicle Functions module
 
-    \section1 Examples
+    These are the Qt IVI Vehicle Functions examples.
 */

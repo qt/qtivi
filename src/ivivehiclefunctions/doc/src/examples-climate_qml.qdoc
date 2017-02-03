@@ -53,7 +53,7 @@
 /*!
      \example climate_qml
      \title Climate Control QML Example
-     \ingroup qtivivehiclefunctions_examples
+     \ingroup qtivivehiclefunctions-examples
 
      \brief The Example shows how to access the climate control from QML.
      \image examples_climate_qml.png

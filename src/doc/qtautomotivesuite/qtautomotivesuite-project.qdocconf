@@ -33,6 +33,7 @@ tagfile                       = qtautomotivesuite.tags
 depends += \
      qtdoc \
      qtivi \
+     qtgeniviextras \
      applicationmanager \
      qmllive \
      qtquickcontrols2 \

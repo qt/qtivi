@@ -152,3 +152,13 @@
     already mapped to a dlt context by using QDLT_LOGGING_CATEGORY or QDLT_REGISTER_LOGGING_CATEGORY. The fallback
     category is used for all log messages, which are not mapped to dlt contexts or don't use a QLoggingCategory.
 */
+
+/*!
+    \group qtgeniviextras-examples
+    \ingroup all-examples
+    \title Qt GENIVI Extras Examples
+
+    \brief Examples for the Qt GENIVI Extras module
+
+    These are the Qt GENIVI Extras examples.
+*/

@@ -50,36 +50,41 @@
 **
 ****************************************************************************/
 
-#include <QCoreApplication>
-#include <QTimer>
-#include <QtGeniviExtras/QtDlt>
+/*!
+     \example qdlt
+     \title QDlt Example
+     \ingroup qtgeniviextras-examples
 
-#include <iostream>
+     \brief This Example shows how to use DLT.
 
-#include "loggingcategories.h"
+     This Example shows how to use DLT.
 
-int main(int argc, char *argv[])
-{
-//![1]
-    qInstallMessageHandler(QDltRegistration::messageHandler);
-//![1]
+     First we need to register our example application with the dlt-daemon.
+     \snippet qdlt/loggingcategories.cpp 1
+     Our application is now registered under the id \c APP1. All logging
+     categories registered are associated with this id. The description
+     is only used within the dlt-viewer application and is useful to
+     further describe the application as the four byte long id is not
+     very descriptive.
 
-    QCoreApplication a(argc, argv);
+     The next step is to register our logging categories and a fallback
+     category. The fallback category is used for all logs, which are either
+     uncategorized e.g. by using qDebug instead of qCDebug or are using
+     a Qt message category which is not registered as a DLT category.
+     \snippet qdlt/loggingcategories.cpp 2
 
-    QTimer timer;
-    timer.connect(&timer, &QTimer::timeout, [] {
-        static int counter = 0;
-        counter++;
-        qCCritical(FOO) << "FOO CATEGORY" << counter;
-        qCWarning(BAR) << "BAR CATEGORY" << counter;
-        qCritical() << "FALLBACK" << counter;
-        if (FOO().isDebugEnabled()) {
-            std::cout << "LONG TAKING OPERATION ONLY ENABLED IN DEBUG" << std::endl;
-            qCDebug(FOO) << "Debug Statement" << counter;
-        }
-    });
-    timer.setInterval(1000);
-    timer.start();
+     Similar to the Q_LOGGING_CATEGORY macro, the first two arguments define
+     the category's name and the identifier used to control the
+     category. In addition, every DLT logging category needs to have a
+     three byte long id and a description.
+     These last two fields are used to identify the logs in the dlt-viewer.
 
-    return a.exec();
-}
+     The final step to enable DLT logging is to register the special
+     dlt messageHandler.
+     \snippet qdlt/main.cpp 1
+     This handler will pick-up the logs and send it to the dlt-daemon.
+
+     \image dlt-viewer.png
+     \caption {The example application and its logging categories in the
+     dlt-viewer}
+*/

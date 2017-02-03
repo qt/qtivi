@@ -1,3 +1,8 @@
 headerdirs  += .. \
 
 sourcedirs  += .. \
+
+exampledirs += ../../../examples/geniviextras \
+               snippets
+
+imagedirs   += images

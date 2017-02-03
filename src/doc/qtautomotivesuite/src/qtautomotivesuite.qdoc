@@ -54,6 +54,7 @@
 
     \list
         \li \l {Qt for Device Creation}
+        \li \l {Qt GENIVI Extras}{Qt GENIVI Extras Module Reference Documentation}
         \li \l {Qt IVI}{Qt IVI Module Reference Documentation}
         \li \l {Qt Application Manager}
         \li \l {Over-The-Air Update}
@@ -143,6 +144,8 @@
 
     The \l {Qt IVI} module provides C++ and QML interfaces for accessing
     vehicle features, and also enables implementing new IVI features.
+    Already defined interfaces from the GENIVI alliance are exposed in the
+    \l {Qt GENIVI Extras} module.
 
     \section2 Qt Application Manager
 

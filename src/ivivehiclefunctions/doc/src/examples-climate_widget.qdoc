@@ -53,7 +53,7 @@
 /*!
      \example climate_widget
      \title Climate Control Widget Example
-     \ingroup qtivivehiclefunctions_examples
+     \ingroup qtivivehiclefunctions-examples
 
      \brief This example shows how to access the climate control from C++.
      \image examples_climate_widget.png

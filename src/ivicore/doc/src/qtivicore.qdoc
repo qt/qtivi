@@ -34,9 +34,19 @@
 
     \brief C++ classes for the Qt IVI Core API.
 
-    The Qt IVI Core C++ API provides core functions for in-vehicle infotainment C++ types.
+    To include the definitions of the module's classes, use the following directive:
 
-    \section1 C++ Classes
+    \code
+    #include <QtIviCore>
+    \endcode
+
+    To link against the module, add this line to your qmake .pro file:
+
+    \code
+    QT += ivicore
+    \endcode
+
+    For more information, see \l{Using the Qt IVI Reference API}.
 */
 
 /*!
@@ -48,6 +58,13 @@
     \brief QML types for the Qt IVI Core API.
 
     The Qt IVI Core QML API provides core functions for in-vehicle infotainment QML types.
+
+    To import the QML types into your application, use the following import statement
+    in your .qml file:
+
+    \code
+    import QtIvi 1.0
+    \endcode
 
     \section1 QML Types
 */

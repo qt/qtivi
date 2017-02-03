@@ -204,7 +204,10 @@ Item {
 }
 \endqml
 
-Also see the climate_qml example for a complete example.
+The SpinBox is connected to the value property of temperature using a binding. The binding
+will be updated once the value changes. This is handled by the QIviProperty property by telling it
+which signal to relay. For the temperature property, the SimpleControl::temperatureChanged signal
+is forwarded to temperature.valueChanged. See the climate_qml example for a complete example.
 
 In the implementation of the SimpleControl class, the QIviProperty needs to be setup correctly. The
 QIviProperty doesn't store any values and is simply forwarding the function calls and signal
