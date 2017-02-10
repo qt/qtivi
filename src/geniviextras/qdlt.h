@@ -48,10 +48,10 @@
 
 QT_BEGIN_NAMESPACE
 
-#define QDLT_REGISTER_CONTEXT_ON_FIRST_USE(ENABLE) \
+#define QDLT_REGISTER_CONTEXT_ON_FIRST_USE(ENABLED) \
     QT_BEGIN_NAMESPACE \
     struct QDltRegistrator { \
-        QDltRegistrator() { globalDltRegistration()->setRegisterContextOnFirstUseEnabled(ENABLE); } \
+        QDltRegistrator() { globalDltRegistration()->setRegisterContextOnFirstUseEnabled(ENABLED); } \
     }; \
     static QDltRegistrator qdltRegistrator; \
     QT_END_NAMESPACE \

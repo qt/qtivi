@@ -154,6 +154,16 @@
 */
 
 /*!
+    \macro QDLT_REGISTER_CONTEXT_ON_FIRST_USE(ENABLED)
+    \relates <QtDlt>
+
+    When set to \a ENABLED the registration with the dlt-daemon is done on the first use of the category.
+
+    Otherwise the registration is done directly when QDLT_LOGGING_CATEGORY or QDLT_REGISTER_LOGGING_CATEGORY
+    is called.
+*/
+
+/*!
     \group qtgeniviextras-examples
     \ingroup all-examples
     \title Qt GENIVI Extras Examples

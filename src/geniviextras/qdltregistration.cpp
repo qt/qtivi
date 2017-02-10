@@ -284,6 +284,15 @@ void QDltRegistration::setDefaultContext(const char *categoryName)
     d->setDefaultCategory(QString::fromLatin1(categoryName));
 }
 
+/*!
+    When set to \a enabled the registration with the dlt-daemon is done on the first use of the category.
+
+    Otherwise the registration is done directly when QDLT_LOGGING_CATEGORY or QDLT_REGISTER_LOGGING_CATEGORY
+    is called.
+
+    This function shouldn't be used directly, instead use the convenience macro.
+    \sa QDLT_REGISTER_CONTEXT_ON_FIRST_USE
+*/
 void QDltRegistration::setRegisterContextOnFirstUseEnabled(bool enabled)
 {
     Q_D(QDltRegistration);
@@ -291,8 +300,13 @@ void QDltRegistration::setRegisterContextOnFirstUseEnabled(bool enabled)
 }
 
 /*!
-    Unregisters the application with the dlt-daemon.
-    The registered application as well as all registered dlt context will be deleted.
+    Registers all contexts with the dlt-daemon which are not yet registered.
+
+    This function can be used in combination with setRegisterContextOnFirstUseEnabled to delay
+    the registration with the dlt-daemon until it is really needed and once it is safe to register
+    all context which haven't been registered yet, e.g. by using the associated logging category.
+
+    \sa setRegisterContextOnFirstUseEnabled
 */
 void QDltRegistration::registerUnregisteredContexts()
 {
@@ -306,6 +320,10 @@ void QDltRegistration::registerUnregisteredContexts()
     }
 }
 
+/*!
+    Unregisters the application with the dlt-daemon.
+    The registered application as well as all registered dlt context will be deleted.
+*/
 void QDltRegistration::unregisterApplication()
 {
     Q_D(QDltRegistration);
