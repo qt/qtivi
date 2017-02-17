@@ -121,6 +121,15 @@ QIviMediaPlayerBackendInterface::QIviMediaPlayerBackendInterface(QObject *parent
 */
 
 /*!
+    \fn QIviMediaPlayerBackendInterface::setPlayMode(QIviMediaPlayer::PlayMode playMode)
+
+    Sets \a playMode as the new playback mode for the player. If a valid playMode is passed, the
+    function should emit the corresponding change signal.
+
+    \sa playModeChanged
+*/
+
+/*!
     \fn QIviMediaPlayerBackendInterface::setPosition(qint64 position)
 
     Sets the \a position of the currently playing item. If a valid position is passed, the
@@ -179,6 +188,12 @@ QIviMediaPlayerBackendInterface::QIviMediaPlayerBackendInterface(QObject *parent
     Moves the playable item at position \a currentIndex of the play queue to the new position \a newIndex.
 
     \sa dataChanged()
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::playModeChanged(QIviMediaPlayer::PlayMode playMode);
+
+    Emitted when the play mode changed. The new play mode will be passed as \a playMode.
 */
 
 /*!

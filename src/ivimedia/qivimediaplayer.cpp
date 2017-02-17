@@ -51,6 +51,7 @@ QIviMediaPlayerPrivate::QIviMediaPlayerPrivate(const QString &interface, QIviMed
     : QIviAbstractFeaturePrivate(interface, parent)
     , q_ptr(parent)
     , m_playQueue(nullptr)
+    , m_playMode(QIviMediaPlayer::Normal)
     , m_currentTrack(0)
     , m_position(-1)
     , m_duration(-1)
@@ -68,11 +69,22 @@ void QIviMediaPlayerPrivate::initialize()
 
 void QIviMediaPlayerPrivate::clearToDefaults()
 {
+    m_playMode = QIviMediaPlayer::Normal;
     m_currentTrackData = QVariant();
     m_currentTrack = 0;
     m_position = -1;
     m_duration = -1;
     m_playQueue->d_func()->clearToDefaults();
+}
+
+void QIviMediaPlayerPrivate::onPlayModeChanged(QIviMediaPlayer::PlayMode playMode)
+{
+    if (m_playMode == playMode)
+        return;
+
+    Q_Q(QIviMediaPlayer);
+    m_playMode = playMode;
+    emit q->playModeChanged(playMode);
 }
 
 void QIviMediaPlayerPrivate::onCurrentTrackChanged(const QVariant &currentTrack)
@@ -149,6 +161,21 @@ QIviMediaPlayerBackendInterface *QIviMediaPlayerPrivate::playerBackend() const
 */
 
 /*!
+   \enum QIviMediaPlayer::PlayMode
+   \value Normal
+          Each item in the queue is played in sequential order. Usually the playback stops when the end
+          of the queue is reached.
+   \value RepeatTrack
+          Always repeat the current item. It should still be possible to change the current item
+          using next() and previous(), but this depends on the implementation of the backend.
+   \value RepeatAll
+          When the end of the queue is reached, the first item starts to play.
+   \value Shuffle
+          The item in the queue are played in an random order.
+*/
+
+
+/*!
    Constructs a QIviMediaPlayer.
 
    The \a parent argument is passed on to the \l QIviAbstractFeature base class.
@@ -174,6 +201,31 @@ QIviPlayQueue *QIviMediaPlayer::playQueue() const
 {
     Q_D(const QIviMediaPlayer);
     return d->m_playQueue;
+}
+
+/*!
+    \qmlproperty enumeration MediaPlayer::playMode
+    \brief Holds the current playback mode of the media player.
+    Available values are:
+    \value Normal
+           Each item in the queue is played in sequential order. Usually the playback stops when the end
+           of the queue is reached.
+    \value RepeatTrack
+           Always repeat the current item. It should still be possible to change the current item
+           using next() and previous(), but this depends on the implementation of the backend.
+    \value RepeatAll
+           When the end of the queue is reached, the first item starts to play.
+    \value Shuffle
+           The item in the queue are played in an random order.
+ */
+/*!
+    \property QIviMediaPlayer::playMode
+    \brief Holds the current playback mode of the media player.
+ */
+QIviMediaPlayer::PlayMode QIviMediaPlayer::playMode() const
+{
+    Q_D(const QIviMediaPlayer);
+    return d->m_playMode;
 }
 
 /*!
@@ -220,6 +272,18 @@ qint64 QIviMediaPlayer::duration() const
 {
     Q_D(const QIviMediaPlayer);
     return d->m_duration;
+}
+
+void QIviMediaPlayer::setPlayMode(QIviMediaPlayer::PlayMode playMode)
+{
+    Q_D(QIviMediaPlayer);
+    QIviMediaPlayerBackendInterface *backend = d->playerBackend();
+    if (!backend) {
+        qWarning("Can't set the play mode without a connected backend");
+        return;
+    }
+
+    backend->setPlayMode(playMode);
 }
 
 void QIviMediaPlayer::setPosition(qint64 position)
@@ -431,6 +495,8 @@ void QIviMediaPlayer::connectToServiceObject(QIviServiceObject *serviceObject)
     if (!backend)
         return;
 
+    QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::playModeChanged,
+                            d, &QIviMediaPlayerPrivate::onPlayModeChanged);
     QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::positionChanged,
                             d, &QIviMediaPlayerPrivate::onPositionChanged);
     QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::currentTrackChanged,

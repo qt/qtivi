@@ -106,6 +106,12 @@ void MediaPlayerBackend::previous()
     setCurrentIndex(m_currentIndex - 1);
 }
 
+void MediaPlayerBackend::setPlayMode(QIviMediaPlayer::PlayMode playMode)
+{
+    Q_UNUSED(playMode);
+    qWarning("Changing the playMode is currently not supported in the simulation backend");
+}
+
 void MediaPlayerBackend::setPosition(qint64 position)
 {
     m_player->setPosition(position);

@@ -43,6 +43,7 @@
 #define QIVIMEDIAPLAYERBACKENDINTERFACE_H
 
 #include <QtIviMedia/qtivimediaglobal.h>
+#include <QtIviMedia/QIviMediaPlayer>
 #include <QtCore/QObject>
 
 QT_BEGIN_NAMESPACE
@@ -63,6 +64,7 @@ public:
     virtual void seek(qint64 offset) = 0;
     virtual void next() = 0;
     virtual void previous() = 0;
+    virtual void setPlayMode(QIviMediaPlayer::PlayMode playMode) = 0;
     virtual void setPosition(qint64 position) = 0;
     virtual void setCurrentIndex(int currentIndex) = 0;
 
@@ -74,6 +76,7 @@ public:
     virtual void move(int currentIndex, int newIndex) = 0;
 
 Q_SIGNALS:
+    void playModeChanged(QIviMediaPlayer::PlayMode playMode);
     void currentTrackChanged(const QVariant &currentTrack); //TODO Do we need this or is the currentIndex + the playlistdata enough ?
     void positionChanged(qint64 position);
     //TODO do we need durationChanged, we can get that from the currentTrack metadata.

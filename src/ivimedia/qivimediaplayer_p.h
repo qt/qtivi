@@ -68,6 +68,7 @@ public:
 
     virtual void initialize() Q_DECL_OVERRIDE;
     void clearToDefaults();
+    void onPlayModeChanged(QIviMediaPlayer::PlayMode playMode);
     void onCurrentTrackChanged(const QVariant &currentTrack);
     void onPositionChanged(qint64 position);
     void onDurationChanged(qint64 duration);
@@ -76,6 +77,7 @@ public:
 
     QIviMediaPlayer * const q_ptr;
     QIviPlayQueue *m_playQueue;
+    QIviMediaPlayer::PlayMode m_playMode;
     QVariant m_currentTrackData;
     const QIviPlayableItem *m_currentTrack;
     qint64 m_position;
