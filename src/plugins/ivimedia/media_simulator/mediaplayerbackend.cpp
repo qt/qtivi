@@ -106,6 +106,11 @@ void MediaPlayerBackend::previous()
     setCurrentIndex(m_currentIndex - 1);
 }
 
+void MediaPlayerBackend::setPosition(qint64 position)
+{
+    m_player->setPosition(position);
+}
+
 bool MediaPlayerBackend::canReportCount()
 {
     return true;

@@ -59,7 +59,7 @@ class Q_QTIVIMEDIA_EXPORT QIviMediaPlayer : public QIviAbstractFeature
     //TODO Status
     Q_PROPERTY(QIviPlayQueue *playQueue READ playQueue CONSTANT)
     Q_PROPERTY(QVariant currentTrack READ currentTrack NOTIFY currentTrackChanged)
-    Q_PROPERTY(qint64 position READ position NOTIFY positionChanged)
+    Q_PROPERTY(qint64 position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(qint64 duration READ duration NOTIFY durationChanged)
 
 public:
@@ -71,6 +71,7 @@ public:
     qint64 duration() const;
 
 public Q_SLOTS:
+    void setPosition(qint64 position);
     void play();
     void pause();
     void stop();

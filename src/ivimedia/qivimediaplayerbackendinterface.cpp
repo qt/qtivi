@@ -121,6 +121,15 @@ QIviMediaPlayerBackendInterface::QIviMediaPlayerBackendInterface(QObject *parent
 */
 
 /*!
+    \fn QIviMediaPlayerBackendInterface::setPosition(qint64 position)
+
+    Sets the \a position of the currently playing item. If a valid position is passed, the
+    function should emit the corresponding change signals
+
+    \sa positionChanged
+*/
+
+/*!
     \fn QIviMediaPlayerBackendInterface::setCurrentIndex(int currentIndex)
 
     Sets the \a currentIndex of the play-queue to the given index. If a valid index is passed, the

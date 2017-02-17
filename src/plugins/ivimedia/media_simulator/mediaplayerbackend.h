@@ -72,6 +72,7 @@ public:
     virtual void seek(qint64 offset) Q_DECL_OVERRIDE;
     virtual void next() Q_DECL_OVERRIDE;
     virtual void previous() Q_DECL_OVERRIDE;
+    virtual void setPosition(qint64 position) Q_DECL_OVERRIDE;
     virtual void setCurrentIndex(int index) Q_DECL_OVERRIDE;
 
     virtual bool canReportCount() Q_DECL_OVERRIDE;

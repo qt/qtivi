@@ -63,6 +63,7 @@ public:
     virtual void seek(qint64 offset) = 0;
     virtual void next() = 0;
     virtual void previous() = 0;
+    virtual void setPosition(qint64 position) = 0;
     virtual void setCurrentIndex(int currentIndex) = 0;
 
     virtual bool canReportCount() = 0;

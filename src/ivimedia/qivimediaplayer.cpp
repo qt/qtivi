@@ -222,6 +222,18 @@ qint64 QIviMediaPlayer::duration() const
     return d->m_duration;
 }
 
+void QIviMediaPlayer::setPosition(qint64 position)
+{
+    Q_D(QIviMediaPlayer);
+    QIviMediaPlayerBackendInterface *backend = d->playerBackend();
+    if (!backend) {
+        qWarning("Can't set the position without a connected backend");
+        return;
+    }
+
+    backend->setPosition(position);
+}
+
 /*!
     \qmlmethod MediaPlayer::play()
 
