@@ -244,14 +244,6 @@ QIviMediaIndexerControl::QIviMediaIndexerControl(QIviMediaIndexerControlPrivate 
 /*!
     \reimp
 */
-bool QIviMediaIndexerControl::acceptServiceObject(QIviServiceObject *serviceObject)
-{
-    return serviceObject->interfaces().contains(QLatin1String(QIviMediaIndexer_iid));
-}
-
-/*!
-    \reimp
-*/
 void QIviMediaIndexerControl::connectToServiceObject(QIviServiceObject *serviceObject)
 {
     Q_UNUSED(serviceObject);
@@ -268,17 +260,6 @@ void QIviMediaIndexerControl::connectToServiceObject(QIviServiceObject *serviceO
                             d, &QIviMediaIndexerControlPrivate::onStateChanged);
 
     backend->initialize();
-}
-
-/*!
-    \reimp
-*/
-void QIviMediaIndexerControl::disconnectFromServiceObject(QIviServiceObject *serviceObject)
-{
-    QIviMediaIndexerControlBackendInterface *backend = qobject_cast<QIviMediaIndexerControlBackendInterface*>(serviceObject->interfaceInstance(QLatin1String(QIviMediaIndexer_iid)));
-
-    if (backend)
-        disconnect(backend, 0, this, 0);
 }
 
 /*!

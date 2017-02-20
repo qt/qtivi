@@ -535,14 +535,6 @@ QIviAmFmTuner::QIviAmFmTuner(QIviAmFmTunerPrivate &dd, QObject *parent)
 /*!
     \reimp
  */
-bool QIviAmFmTuner::acceptServiceObject(QIviServiceObject *serviceObject)
-{
-    return serviceObject->interfaces().contains(QLatin1String(QIviAmFmTuner_iid));
-}
-
-/*!
-    \reimp
- */
 void QIviAmFmTuner::connectToServiceObject(QIviServiceObject *serviceObject)
 {
     Q_UNUSED(serviceObject);
@@ -568,17 +560,6 @@ void QIviAmFmTuner::connectToServiceObject(QIviServiceObject *serviceObject)
     QObjectPrivate::connect(backend, &QIviAmFmTunerBackendInterface::scanStatusChanged,
                             d, &QIviAmFmTunerPrivate::onScanStatusChanged);
     backend->initialize();
-}
-
-/*!
-    \reimp
- */
-void QIviAmFmTuner::disconnectFromServiceObject(QIviServiceObject *serviceObject)
-{
-    QIviAmFmTunerBackendInterface *backend = qobject_cast<QIviAmFmTunerBackendInterface*>(serviceObject->interfaceInstance(QLatin1String(QIviAmFmTuner_iid)));
-
-    if (backend)
-        disconnect(backend, 0, this, 0);
 }
 
 /*!

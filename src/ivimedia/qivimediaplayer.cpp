@@ -477,14 +477,6 @@ QIviMediaPlayer::QIviMediaPlayer(QIviMediaPlayerPrivate &dd, QObject *parent)
 /*!
     \reimp
  */
-bool QIviMediaPlayer::acceptServiceObject(QIviServiceObject *serviceObject)
-{
-    return serviceObject->interfaces().contains(QLatin1String(QIviMediaPlayer_iid));
-}
-
-/*!
-    \reimp
- */
 void QIviMediaPlayer::connectToServiceObject(QIviServiceObject *serviceObject)
 {
     Q_UNUSED(serviceObject);
@@ -514,17 +506,6 @@ void QIviMediaPlayer::connectToServiceObject(QIviServiceObject *serviceObject)
 
     backend->initialize();
     d->m_playQueue->d_func()->resetModel();
-}
-
-/*!
-    \reimp
- */
-void QIviMediaPlayer::disconnectFromServiceObject(QIviServiceObject *serviceObject)
-{
-    QIviMediaPlayerBackendInterface *backend = qobject_cast<QIviMediaPlayerBackendInterface*>(serviceObject->interfaceInstance(QLatin1String(QIviMediaPlayer_iid)));
-
-    if (backend)
-        disconnect(backend, 0, this, 0);
 }
 
 /*!

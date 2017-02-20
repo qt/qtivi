@@ -304,14 +304,6 @@ QIviMediaDeviceDiscoveryModel::QIviMediaDeviceDiscoveryModel(QIviMediaDeviceDisc
 /*!
     \reimp
 */
-bool QIviMediaDeviceDiscoveryModel::acceptServiceObject(QIviServiceObject *serviceObject)
-{
-    return serviceObject->interfaces().contains(QLatin1String(QIviMediaDeviceDiscovery_iid));
-}
-
-/*!
-    \reimp
-*/
 void QIviMediaDeviceDiscoveryModel::connectToServiceObject(QIviServiceObject *serviceObject)
 {
     Q_UNUSED(serviceObject)
@@ -329,17 +321,6 @@ void QIviMediaDeviceDiscoveryModel::connectToServiceObject(QIviServiceObject *se
                             d, &QIviMediaDeviceDiscoveryModelPrivate::onDeviceRemoved);
 
     backend->initialize();
-}
-
-/*!
-    \reimp
-*/
-void QIviMediaDeviceDiscoveryModel::disconnectFromServiceObject(QIviServiceObject *serviceObject)
-{
-    QIviMediaDeviceDiscoveryModelBackendInterface *backend = qobject_cast<QIviMediaDeviceDiscoveryModelBackendInterface*>(serviceObject->interfaceInstance(QLatin1String(QIviMediaDeviceDiscovery_iid)));
-
-    if (backend)
-        disconnect(backend, 0, this, 0);
 }
 
 /*!

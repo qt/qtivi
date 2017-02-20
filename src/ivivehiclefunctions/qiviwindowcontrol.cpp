@@ -345,17 +345,6 @@ void QIviWindowControl::connectToServiceObject(QIviServiceObject *serviceObject)
 /*!
    \reimp
 */
-void QIviWindowControl::disconnectFromServiceObject(QIviServiceObject *serviceObject)
-{
-    QIviWindowControlBackendInterface *backend = qobject_cast<QIviWindowControlBackendInterface*>(serviceObject->interfaceInstance(QLatin1String(QIviWindowControl_iid)));
-
-    if (backend)
-        disconnect(backend, 0, this, 0);
-}
-
-/*!
-   \reimp
-*/
 void QIviWindowControl::clearServiceObject()
 {
     Q_D(QIviWindowControl);

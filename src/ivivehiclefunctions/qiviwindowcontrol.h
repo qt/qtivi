@@ -126,7 +126,6 @@ protected:
     virtual QIviAbstractZonedFeature *createZoneFeature(const QString &zone) Q_DECL_OVERRIDE;
 
     virtual void connectToServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
-    virtual void disconnectFromServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
     virtual void clearServiceObject() Q_DECL_OVERRIDE;
 
 private:

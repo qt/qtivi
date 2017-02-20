@@ -738,17 +738,6 @@ void QIviClimateControl::connectToServiceObject(QIviServiceObject *serviceObject
 /*!
    \reimp
 */
-void QIviClimateControl::disconnectFromServiceObject(QIviServiceObject *serviceObject)
-{
-    QIviClimateControlBackendInterface *backend = qobject_cast<QIviClimateControlBackendInterface*>(serviceObject->interfaceInstance(QLatin1String(QIviClimateControl_iid)));
-
-    if (backend)
-        disconnect(backend, 0, this, 0);
-}
-
-/*!
-   \reimp
-*/
 void QIviClimateControl::clearServiceObject()
 {
     Q_D(QIviClimateControl);

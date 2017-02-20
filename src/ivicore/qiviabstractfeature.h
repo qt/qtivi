@@ -116,9 +116,9 @@ Q_SIGNALS:
 protected:
     QIviAbstractFeature(QIviAbstractFeaturePrivate &dd, QObject *parent = Q_NULLPTR);
 
-    virtual bool acceptServiceObject(QIviServiceObject*) = 0;
+    virtual bool acceptServiceObject(QIviServiceObject*);
     virtual void connectToServiceObject(QIviServiceObject*) = 0;
-    virtual void disconnectFromServiceObject(QIviServiceObject*) = 0;
+    virtual void disconnectFromServiceObject(QIviServiceObject*);
     virtual void clearServiceObject() = 0;
 
     virtual void classBegin();

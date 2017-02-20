@@ -176,20 +176,6 @@ void QIviAbstractFeaturePrivate::setDiscoveryResult(QIviAbstractFeature::Discove
 */
 
 /*!
- * \fn bool QIviAbstractFeature::acceptServiceObject(QIviServiceObject *serviceObject)
- *
- * This method is expected to be implemented by any class subclassing QIviAbstractFeature.
- *
- * The method should return \c true if the given \a serviceObject is accepted and
- * can be used, otherwise \c false.
- *
- * If the object is accepted, \l connectToServiceObject is called to actually connect to the
- * service object.
- *
- * \sa connectToServiceObject(), disconnectFromServiceObject(), clearServiceObject()
- */
-
-/*!
  * \fn void QIviAbstractFeature::connectToServiceObject(QIviServiceObject *serviceObject)
  *
  * This method is expected to be implemented by any class subclassing QIviAbstractFeature.
@@ -204,19 +190,6 @@ void QIviAbstractFeaturePrivate::setDiscoveryResult(QIviAbstractFeature::Discove
  * \l acceptServiceObject method prior to being passed to this method.
  *
  * \sa acceptServiceObject(), disconnectFromServiceObject(), clearServiceObject()
- */
-
-/*!
- * \fn void QIviAbstractFeature::disconnectFromServiceObject(QIviServiceObject *serviceObject)
- *
- * This method is expected to be implemented by any class subclassing QIviAbstractFeature.
- *
- * The implementation should disconnect all connections to the \a serviceObject.
- *
- * There is no need to reset internal variables to safe defaults. A call to this function is
- * always followed by a call to \l connectToServiceObject or \l clearServiceObject.
- *
- * \sa acceptServiceObject(), connectToServiceObject(), clearServiceObject()
  */
 
 /*!
@@ -600,6 +573,46 @@ QIviAbstractFeature::QIviAbstractFeature(QIviAbstractFeaturePrivate &dd, QObject
 {
     Q_D(QIviAbstractFeature);
     d->initialize();
+}
+
+/*!
+ * This method is expected to be implemented by any class subclassing QIviAbstractFeature.
+ *
+ * The method should return \c true if the given \a serviceObject is accepted and
+ * can be used, otherwise \c false.
+ *
+ * If the object is accepted, \l connectToServiceObject is called to actually connect to the
+ * service object.
+ *
+ * The default implementation accepts the \a serviceObject if it implements the interface
+ * returned by interfaceName();
+ *
+ * \sa connectToServiceObject(), disconnectFromServiceObject(), clearServiceObject()
+ */
+bool QIviAbstractFeature::acceptServiceObject(QIviServiceObject *serviceObject)
+{
+    return serviceObject->interfaces().contains(interfaceName());
+}
+
+/*!
+ * This method is expected to be implemented by any class subclassing QIviAbstractFeature.
+ *
+ * The implementation should disconnect all connections to the \a serviceObject.
+ *
+ * There is no need to reset internal variables to safe defaults. A call to this function is
+ * always followed by a call to \l connectToServiceObject or \l clearServiceObject.
+ *
+ * The default implementation disconnects all signals from the serviceObject to this instance.
+ *
+ * \sa acceptServiceObject(), connectToServiceObject(), clearServiceObject()
+ */
+void QIviAbstractFeature::disconnectFromServiceObject(QIviServiceObject *serviceObject)
+{
+    Q_ASSERT(serviceObject);
+    QObject *backend = serviceObject->interfaceInstance(interfaceName());
+
+    if (backend)
+        disconnect(backend, 0, this, 0);
 }
 
 /*!

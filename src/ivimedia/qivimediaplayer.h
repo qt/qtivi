@@ -98,9 +98,7 @@ Q_SIGNALS:
 protected:
     QIviMediaPlayer(QIviMediaPlayerPrivate &dd, QObject *parent = Q_NULLPTR);
 
-    virtual bool acceptServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
     virtual void connectToServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
-    virtual void disconnectFromServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
     virtual void clearServiceObject() Q_DECL_OVERRIDE;
 
 private:
