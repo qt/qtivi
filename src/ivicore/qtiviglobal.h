@@ -57,6 +57,14 @@ QT_BEGIN_NAMESPACE
 #  define Q_QTIVICORE_EXPORT
 #endif
 
+#define Q_IVI_BACKEND(c, b_f, err) \
+Q_D(c); \
+auto *backend = b_f; \
+if (!backend) { \
+    qWarning(err); \
+    return; \
+} \
+
 QT_END_NAMESPACE
 
 #endif // QIVIGLOBAL_H

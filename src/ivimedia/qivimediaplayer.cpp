@@ -317,12 +317,7 @@ void QIviMediaPlayer::setPosition(qint64 position)
 */
 void QIviMediaPlayer::play()
 {
-    Q_D(QIviMediaPlayer);
-    QIviMediaPlayerBackendInterface *backend = d->playerBackend();
-    if (!backend) {
-        qWarning("Can't start playing without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviMediaPlayer, d->playerBackend(), "Can't start playing without a connected backend");
 
     backend->play();
 }
@@ -344,12 +339,7 @@ void QIviMediaPlayer::play()
 */
 void QIviMediaPlayer::pause()
 {
-    Q_D(QIviMediaPlayer);
-    QIviMediaPlayerBackendInterface *backend = d->playerBackend();
-    if (!backend) {
-        qWarning("Can't pause playing without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviMediaPlayer, d->playerBackend(), "Can't pause playing without a connected backend");
 
     backend->pause();
 }
@@ -371,12 +361,7 @@ void QIviMediaPlayer::pause()
 */
 void QIviMediaPlayer::stop()
 {
-    Q_D(QIviMediaPlayer);
-    QIviMediaPlayerBackendInterface *backend = d->playerBackend();
-    if (!backend) {
-        qWarning("Can't stop playing without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviMediaPlayer, d->playerBackend(), "Can't stop playing without a connected backend");
 
     backend->stop();
 }
@@ -402,12 +387,7 @@ void QIviMediaPlayer::stop()
 */
 void QIviMediaPlayer::seek(qint64 offset)
 {
-    Q_D(QIviMediaPlayer);
-    QIviMediaPlayerBackendInterface *backend = d->playerBackend();
-    if (!backend) {
-        qWarning("Can't seek without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviMediaPlayer, d->playerBackend(), "Can't seek without a connected backend");
 
     backend->seek(offset);
 }
@@ -429,12 +409,7 @@ void QIviMediaPlayer::seek(qint64 offset)
 */
 void QIviMediaPlayer::next()
 {
-    Q_D(QIviMediaPlayer);
-    QIviMediaPlayerBackendInterface *backend = d->playerBackend();
-    if (!backend) {
-        qWarning("Can't skip to the next track without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviMediaPlayer, d->playerBackend(), "Can't skip to the next track without a connected backend");
 
     backend->next();
 }
@@ -456,12 +431,7 @@ void QIviMediaPlayer::next()
 */
 void QIviMediaPlayer::previous()
 {
-    Q_D(QIviMediaPlayer);
-    QIviMediaPlayerBackendInterface *backend = d->playerBackend();
-    if (!backend) {
-        qWarning("Can't skip to the next track without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviMediaPlayer, d->playerBackend(), "Can't skip to the previous track without a connected backend");
 
     backend->previous();
 }

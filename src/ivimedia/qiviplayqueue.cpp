@@ -313,12 +313,7 @@ int QIviPlayQueue::currentIndex() const
 
 void QIviPlayQueue::setCurrentIndex(int currentIndex)
 {
-    Q_D(QIviPlayQueue);
-    QIviMediaPlayerBackendInterface *backend = d->playerBackend();
-    if (!backend) {
-        qWarning("Can't set the current index without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviPlayQueue, d->playerBackend(), "Can't set the current index without a connected backend");
 
     backend->setCurrentIndex(currentIndex);
 }
@@ -520,16 +515,11 @@ QVariant QIviPlayQueue::get(int i) const
 */
 void QIviPlayQueue::insert(int index, const QVariant &variant)
 {
-    Q_D(QIviPlayQueue);
     const QIviPlayableItem *item = qtivi_gadgetFromVariant<QIviPlayableItem>(variant);
     if (!item)
         return;
 
-    QIviMediaPlayerBackendInterface *backend = d->playerBackend();
-    if (!backend) {
-        qWarning("Can't insert itmes without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviPlayQueue, d->playerBackend(), "Can't insert itmes without a connected backend");
 
     backend->insert(index, item);
 }
@@ -547,12 +537,7 @@ void QIviPlayQueue::insert(int index, const QVariant &variant)
 */
 void QIviPlayQueue::remove(int index)
 {
-    Q_D(QIviPlayQueue);
-    QIviMediaPlayerBackendInterface *backend = d->playerBackend();
-    if (!backend) {
-        qWarning("Can't remove itmes without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviPlayQueue, d->playerBackend(), "Can't remove itmes without a connected backend");
 
     backend->remove(index);
 }
@@ -570,12 +555,7 @@ void QIviPlayQueue::remove(int index)
 */
 void QIviPlayQueue::move(int cur_index, int new_index)
 {
-    Q_D(QIviPlayQueue);
-    QIviMediaPlayerBackendInterface *backend = d->playerBackend();
-    if (!backend) {
-        qWarning("Can't move itmes without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviPlayQueue, d->playerBackend(), "Can't move itmes without a connected backend");
 
     backend->move(cur_index, new_index);
 }

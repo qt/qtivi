@@ -196,12 +196,7 @@ QIviMediaIndexerControl::State QIviMediaIndexerControl::state() const
 */
 void QIviMediaIndexerControl::pause()
 {
-    Q_D(QIviMediaIndexerControl);
-    QIviMediaIndexerControlBackendInterface *backend = d->indexerBackend();
-    if (!backend) {
-        qWarning("Can't pause without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviMediaIndexerControl, d->indexerBackend(), "Can't pause without a connected backend");
 
     backend->pause();
 }
@@ -223,12 +218,7 @@ void QIviMediaIndexerControl::pause()
 */
 void QIviMediaIndexerControl::resume()
 {
-    Q_D(QIviMediaIndexerControl);
-    QIviMediaIndexerControlBackendInterface *backend = d->indexerBackend();
-    if (!backend) {
-        qWarning("Can't resume without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviMediaIndexerControl, d->indexerBackend(), "Can't resume without a connected backend");
 
     backend->resume();
 }

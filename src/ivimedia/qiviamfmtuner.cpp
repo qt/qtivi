@@ -328,12 +328,7 @@ void QIviAmFmTuner::tune(const QIviAmFmTunerStation &station)
 
 void QIviAmFmTuner::setFrequency(int frequency)
 {
-    Q_D(QIviAmFmTuner);
-    QIviAmFmTunerBackendInterface *backend = d->tunerBackend();
-    if (!backend) {
-        qWarning("Can't set the frequency without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviAmFmTuner, d->tunerBackend(), "Can't set the frequency without a connected backend");
 
     //TODO Check the minimum/maximum Frequency here ? Add a convention how things like this are done this is also used in the vehicle functions module.
 
@@ -342,12 +337,7 @@ void QIviAmFmTuner::setFrequency(int frequency)
 
 void QIviAmFmTuner::setBand(QIviAmFmTuner::Band band)
 {
-    Q_D(QIviAmFmTuner);
-    QIviAmFmTunerBackendInterface *backend = d->tunerBackend();
-    if (!backend) {
-        qWarning("Can't set the band without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviAmFmTuner, d->tunerBackend(), "Can't set the band without a connected backend");
 
     //TODO Check the minimum/maximum Frequency here ? Add a convention how things like this are done this is also used in the vehicle functions module.
 
@@ -367,12 +357,7 @@ void QIviAmFmTuner::setBand(QIviAmFmTuner::Band band)
 */
 void QIviAmFmTuner::stepUp()
 {
-    Q_D(QIviAmFmTuner);
-    QIviAmFmTunerBackendInterface *backend = d->tunerBackend();
-    if (!backend) {
-        qWarning("Can't step up without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviAmFmTuner, d->tunerBackend(), "Can't step up without a connected backend");
 
     //TODO Should we pass this down or use setFrequency instead ?
     backend->stepUp();
@@ -391,12 +376,7 @@ void QIviAmFmTuner::stepUp()
 */
 void QIviAmFmTuner::stepDown()
 {
-    Q_D(QIviAmFmTuner);
-    QIviAmFmTunerBackendInterface *backend = d->tunerBackend();
-    if (!backend) {
-        qWarning("Can't step down without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviAmFmTuner, d->tunerBackend(), "Can't step down without a connected backend");
 
     //TODO Should we pass this down or use setFrequency instead ?
     backend->stepDown();
@@ -419,12 +399,7 @@ void QIviAmFmTuner::stepDown()
 */
 void QIviAmFmTuner::seekUp()
 {
-    Q_D(QIviAmFmTuner);
-    QIviAmFmTunerBackendInterface *backend = d->tunerBackend();
-    if (!backend) {
-        qWarning("Can't seek up without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviAmFmTuner, d->tunerBackend(), "Can't seek up without a connected backend");
 
     backend->seekUp();
 }
@@ -446,12 +421,7 @@ void QIviAmFmTuner::seekUp()
 */
 void QIviAmFmTuner::seekDown()
 {
-    Q_D(QIviAmFmTuner);
-    QIviAmFmTunerBackendInterface *backend = d->tunerBackend();
-    if (!backend) {
-        qWarning("Can't seek down without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviAmFmTuner, d->tunerBackend(), "Can't seek down without a connected backend");
 
     backend->seekDown();
 }
@@ -477,12 +447,7 @@ void QIviAmFmTuner::seekDown()
 */
 void QIviAmFmTuner::startScan()
 {
-    Q_D(QIviAmFmTuner);
-    QIviAmFmTunerBackendInterface *backend = d->tunerBackend();
-    if (!backend) {
-        qWarning("Can't start scanning without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviAmFmTuner, d->tunerBackend(), "Can't start scanning without a connected backend");
 
     if (d->m_scanRunning) {
         qWarning("A scan is already in progress");
@@ -509,12 +474,7 @@ void QIviAmFmTuner::startScan()
 */
 void QIviAmFmTuner::stopScan()
 {
-    Q_D(QIviAmFmTuner);
-    QIviAmFmTunerBackendInterface *backend = d->tunerBackend();
-    if (!backend) {
-        qWarning("Can't stop scanning without a connected backend");
-        return;
-    }
+    Q_IVI_BACKEND(QIviAmFmTuner, d->tunerBackend(), "Can't stop scanning without a connected backend");
 
     if (!d->m_scanRunning) {
         qWarning("Currently no scan is active which can be stopped");
