@@ -48,6 +48,7 @@
 
 QT_FORWARD_DECLARE_CLASS(QMediaPlayer);
 QT_FORWARD_DECLARE_CLASS(QMediaPlaylist);
+QT_FORWARD_DECLARE_CLASS(QThreadPool);
 
 class MediaPlayerBackend : public QIviMediaPlayerBackendInterface
 {
@@ -89,6 +90,7 @@ private:
 
     int m_count;
     int m_currentIndex;
+    QThreadPool *m_threadPool;
     QMediaPlayer *m_player;
     QSqlDatabase m_db;
 };

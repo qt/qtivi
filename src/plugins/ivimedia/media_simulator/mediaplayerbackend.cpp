@@ -45,6 +45,7 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QtMultimedia/QMediaPlayer>
 
+#include <QThreadPool>
 #include <QFuture>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -54,8 +55,11 @@ MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *pa
     : QIviMediaPlayerBackendInterface(parent)
     , m_count(0)
     , m_currentIndex(-1)
+    , m_threadPool(new QThreadPool(this))
     , m_player(new QMediaPlayer(this))
 {
+    m_threadPool->setMaxThreadCount(1);
+
     connect(m_player, &QMediaPlayer::durationChanged,
             this, &MediaPlayerBackend::durationChanged);
     connect(m_player, &QMediaPlayer::positionChanged,
@@ -130,7 +134,7 @@ void MediaPlayerBackend::fetchData(int start, int count)
 
     QStringList queries;
     queries.append(queryString);
-    QtConcurrent::run(this,
+    QtConcurrent::run(m_threadPool, this,
                       &MediaPlayerBackend::doSqlOperation,
                       MediaPlayerBackend::Select,
                       queries,
@@ -152,7 +156,7 @@ void MediaPlayerBackend::insert(int index, const QIviPlayableItem *item)
             .arg(track_index);
     QStringList queries = queryString.split(';');
 
-    QtConcurrent::run(this,
+    QtConcurrent::run(m_threadPool, this,
                       &MediaPlayerBackend::doSqlOperation,
                       MediaPlayerBackend::Insert,
                       queries, index, 0);
@@ -165,7 +169,7 @@ void MediaPlayerBackend::remove(int index)
             .arg(index);
     QStringList queries = queryString.split(';');
 
-    QtConcurrent::run(this,
+    QtConcurrent::run(m_threadPool, this,
                       &MediaPlayerBackend::doSqlOperation,
                       MediaPlayerBackend::Remove,
                       queries, index, 1);
@@ -188,7 +192,7 @@ void MediaPlayerBackend::move(int cur_index, int new_index)
             .arg(delta > 0 ? "-" : "+");
     QStringList queries = queryString.split(';');
 
-    QtConcurrent::run(this,
+    QtConcurrent::run(m_threadPool, this,
                       &MediaPlayerBackend::doSqlOperation,
                       MediaPlayerBackend::Move,
                       queries, cur_index, new_index);
@@ -315,7 +319,7 @@ void MediaPlayerBackend::setCurrentIndex(int index)
     QStringList queries;
     queries.append(queryString);
 
-    QtConcurrent::run(this,
+    QtConcurrent::run(m_threadPool, this,
                       &MediaPlayerBackend::doSqlOperation,
                       MediaPlayerBackend::SetIndex,
                       queries, m_currentIndex, 0);
