@@ -152,7 +152,7 @@ void SearchAndBrowseBackend::search(const QUuid &identifier, const QString &quer
                 item.setArtist(artist);
                 item.setAlbum(album);
                 item.setUrl(QUrl::fromLocalFile(query.value(5).toString()));
-                item.setCoverArtUrl(QUrl::fromLocalFile(query.value(6).toString()));
+                item.setCoverArtUrl(QUrl::fromLocalFile(query.value(7).toString()));
                 list.append(QVariant::fromValue(item));
             } else {
                 SearchAndBrowseItem item;
