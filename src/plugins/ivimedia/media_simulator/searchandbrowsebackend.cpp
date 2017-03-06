@@ -91,12 +91,16 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &t
         order = QString(QLatin1String("ORDER BY %1")).arg(createSortOrder(current_type, orderTerms));
 
     QString columns;
-    if (current_type == QLatin1String("artist"))
-        columns = QLatin1String("DISTINCT artistName");
-    else if (current_type == QLatin1String("album"))
-        columns = QLatin1String("DISTINCT artistName, albumName");
-    else
+    QString groupBy;
+    if (current_type == QLatin1String("artist")) {
+        columns = QLatin1String("artistName, coverArtUrl");
+        groupBy = QLatin1String("artistName");
+    } else if (current_type == QLatin1String("album")) {
+        columns = QLatin1String("artistName, albumName, coverArtUrl");
+        groupBy = QLatin1String("artistName, albumName");
+    } else {
         columns = QLatin1String("artistName, albumName, trackName, genre, number, file, id, coverArtUrl");
+    }
 
     QString filterClause = createWhereClause(current_type, term);
     if (!filterClause.isEmpty())
@@ -104,13 +108,13 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &t
 
     QString whereClause = where_clauses.join(" AND ");
 
-    QString countQuery = QString(QLatin1String("SELECT count() FROM (SELECT %1 FROM track %2)"))
+    QString countQuery = QString(QLatin1String("SELECT count() FROM (SELECT %1 FROM track %2 %3)"))
             .arg(columns)
-            .arg(whereClause.isEmpty() ? QString() : QLatin1String("WHERE ") + whereClause);
+            .arg(whereClause.isEmpty() ? QString() : QLatin1String("WHERE ") + whereClause)
+            .arg(groupBy.isEmpty() ? QString() : QLatin1String("GROUP BY ") + groupBy);
 
     QSqlQuery query(m_db);
 
-    qDebug() << countQuery;
     if (query.exec(countQuery)) {
         while (query.next()) {
             emit countChanged(identifier, query.value(0).toInt());
@@ -119,10 +123,11 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &t
         qDebug() << query.lastError().text();
     }
 
-    QString queryString = QString(QLatin1String("SELECT %1 FROM track %2 %3 LIMIT %4, %5"))
+    QString queryString = QString(QLatin1String("SELECT %1 FROM track %2 %3 %4 LIMIT %5, %6"))
             .arg(columns)
             .arg(whereClause.isEmpty() ? QString() : QLatin1String("WHERE ") + whereClause)
             .arg(order)
+            .arg(groupBy.isEmpty() ? QString() : QLatin1String("GROUP BY ") + groupBy)
             .arg(start)
             .arg(count);
 
@@ -159,8 +164,12 @@ void SearchAndBrowseBackend::search(const QUuid &identifier, const QString &quer
                 item.setType(type);
                 if (type == QLatin1String("artist")) {
                     item.setName(artist);
+                    item.setData(QVariantMap{{"coverArtUrl", QUrl::fromLocalFile(query.value(1).toString())}});
                 } else if (type == QLatin1String("album")) {
                     item.setName(album);
+                    item.setData(QVariantMap{{"artist", artist},
+                                             {"coverArtUrl", QUrl::fromLocalFile(query.value(2).toString())}
+                                             });
                 }
                 list.append(QVariant::fromValue(item));
             }
