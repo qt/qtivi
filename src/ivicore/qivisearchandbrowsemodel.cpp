@@ -658,10 +658,7 @@ void QIviSearchAndBrowseModel::setContentType(const QString &contentType)
     if (d->m_contentType == contentType)
         return;
 
-    d->m_contentType = contentType;
-    d->resetModel();
-
-    emit contentTypeChanged(contentType);
+    d->updateContentType(contentType);
 }
 
 /*!
