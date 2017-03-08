@@ -197,6 +197,12 @@ QIviMediaPlayerBackendInterface::QIviMediaPlayerBackendInterface(QObject *parent
 */
 
 /*!
+    \fn QIviMediaPlayerBackendInterface::playStateChanged(QIviMediaPlayer::PlayState playState);
+
+    Emitted when the play state changed. The new play state will be passed as \a playState.
+*/
+
+/*!
     \fn QIviMediaPlayerBackendInterface::currentTrackChanged(const QVariant &currentTrack)
 
     Emitted when the currently played playable item changed. The new playable item will be passed as \a currentTrack.

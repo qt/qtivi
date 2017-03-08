@@ -43,7 +43,6 @@
 #include "searchandbrowsebackend.h"
 
 #include <QtConcurrent/QtConcurrent>
-#include <QtMultimedia/QMediaPlayer>
 
 #include <QThreadPool>
 #include <QFuture>
@@ -64,6 +63,8 @@ MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *pa
             this, &MediaPlayerBackend::durationChanged);
     connect(m_player, &QMediaPlayer::positionChanged,
             this, &MediaPlayerBackend::positionChanged);
+    connect(m_player, &QMediaPlayer::stateChanged,
+            this, &MediaPlayerBackend::onStateChanged);
 
     m_db = database;
     m_db.open();
@@ -325,4 +326,15 @@ void MediaPlayerBackend::setCurrentIndex(int index)
                       queries, m_currentIndex, 0);
 
     emit currentIndexChanged(m_currentIndex);
+}
+
+void MediaPlayerBackend::onStateChanged(QMediaPlayer::State state)
+{
+    QIviMediaPlayer::PlayState iviState = QIviMediaPlayer::Stopped;
+    if (state == QMediaPlayer::PlayingState)
+        iviState = QIviMediaPlayer::Playing;
+    else if (state == QMediaPlayer::PausedState)
+        iviState = QIviMediaPlayer::Paused;
+
+    emit playStateChanged(iviState);
 }

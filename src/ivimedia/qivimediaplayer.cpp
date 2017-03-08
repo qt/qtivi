@@ -52,6 +52,7 @@ QIviMediaPlayerPrivate::QIviMediaPlayerPrivate(const QString &interface, QIviMed
     , q_ptr(parent)
     , m_playQueue(nullptr)
     , m_playMode(QIviMediaPlayer::Normal)
+    , m_playState(QIviMediaPlayer::Stopped)
     , m_currentTrack(0)
     , m_position(-1)
     , m_duration(-1)
@@ -85,6 +86,16 @@ void QIviMediaPlayerPrivate::onPlayModeChanged(QIviMediaPlayer::PlayMode playMod
     Q_Q(QIviMediaPlayer);
     m_playMode = playMode;
     emit q->playModeChanged(playMode);
+}
+
+void QIviMediaPlayerPrivate::onPlayStateChanged(QIviMediaPlayer::PlayState playState)
+{
+    if (m_playState == playState)
+        return;
+
+    Q_Q(QIviMediaPlayer);
+    m_playState = playState;
+    emit q->playStateChanged(playState);
 }
 
 void QIviMediaPlayerPrivate::onCurrentTrackChanged(const QVariant &currentTrack)
@@ -174,6 +185,15 @@ QIviMediaPlayerBackendInterface *QIviMediaPlayerPrivate::playerBackend() const
           The item in the queue are played in an random order.
 */
 
+/*!
+   \enum QIviMediaPlayer::PlayState
+   \value Playing
+          The media player is currently playing an item.
+   \value Paused
+          The playback is paused and can be continued at the same position.
+   \value Stopped
+          The playback hasn't been started yet. Starting it, will always start from the beginning.
+*/
 
 /*!
    Constructs a QIviMediaPlayer.
@@ -226,6 +246,27 @@ QIviMediaPlayer::PlayMode QIviMediaPlayer::playMode() const
 {
     Q_D(const QIviMediaPlayer);
     return d->m_playMode;
+}
+
+/*!
+    \qmlproperty enumeration MediaPlayer::playState
+    \brief Holds the current playback state of the media player.
+    Available values are:
+    \value Playing
+           The media player is currently playing an item.
+    \value Paused
+           The playback is paused and can be continued at the same position.
+    \value Stopped
+           The playback hasn't been started yet. Starting it, will always start from the beginning.
+ */
+/*!
+    \property QIviMediaPlayer::playState
+    \brief Holds the current playback state of the media player.
+ */
+QIviMediaPlayer::PlayState QIviMediaPlayer::playState() const
+{
+    Q_D(const QIviMediaPlayer);
+    return d->m_playState;
 }
 
 /*!
@@ -459,6 +500,8 @@ void QIviMediaPlayer::connectToServiceObject(QIviServiceObject *serviceObject)
 
     QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::playModeChanged,
                             d, &QIviMediaPlayerPrivate::onPlayModeChanged);
+    QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::playStateChanged,
+                            d, &QIviMediaPlayerPrivate::onPlayStateChanged);
     QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::positionChanged,
                             d, &QIviMediaPlayerPrivate::onPositionChanged);
     QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::currentTrackChanged,

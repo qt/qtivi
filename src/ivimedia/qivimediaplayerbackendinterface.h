@@ -77,6 +77,7 @@ public:
 
 Q_SIGNALS:
     void playModeChanged(QIviMediaPlayer::PlayMode playMode);
+    void playStateChanged(QIviMediaPlayer::PlayState playState);
     void currentTrackChanged(const QVariant &currentTrack); //TODO Do we need this or is the currentIndex + the playlistdata enough ?
     void positionChanged(qint64 position);
     //TODO do we need durationChanged, we can get that from the currentTrack metadata.

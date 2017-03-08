@@ -45,8 +45,8 @@
 #include <QtIviMedia/QIviMediaPlayerBackendInterface>
 
 #include <QSqlDatabase>
+#include <QtMultimedia/QMediaPlayer>
 
-QT_FORWARD_DECLARE_CLASS(QMediaPlayer);
 QT_FORWARD_DECLARE_CLASS(QMediaPlaylist);
 QT_FORWARD_DECLARE_CLASS(QThreadPool);
 
@@ -86,6 +86,9 @@ public:
 
 public Q_SLOTS:
     void doSqlOperation(MediaPlayerBackend::OperationType type, const QStringList &queries, int start, int count);
+
+private Q_SLOTS:
+    void onStateChanged(QMediaPlayer::State state);
 private:
 
     int m_count;

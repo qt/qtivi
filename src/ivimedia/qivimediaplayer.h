@@ -58,6 +58,7 @@ class Q_QTIVIMEDIA_EXPORT QIviMediaPlayer : public QIviAbstractFeature
     //TODO Status
     Q_PROPERTY(QIviPlayQueue *playQueue READ playQueue CONSTANT)
     Q_PROPERTY(QIviMediaPlayer::PlayMode playMode READ playMode WRITE setPlayMode NOTIFY playModeChanged)
+    Q_PROPERTY(QIviMediaPlayer::PlayState playState READ playState NOTIFY playStateChanged)
     Q_PROPERTY(QVariant currentTrack READ currentTrack NOTIFY currentTrackChanged)
     Q_PROPERTY(qint64 position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(qint64 duration READ duration NOTIFY durationChanged)
@@ -71,10 +72,18 @@ public:
     };
     Q_ENUM(PlayMode)
 
+    enum PlayState {
+        Playing,
+        Paused,
+        Stopped
+    };
+    Q_ENUM(PlayState)
+
     explicit QIviMediaPlayer(QObject *parent = Q_NULLPTR);
 
     QIviPlayQueue *playQueue() const;
     PlayMode playMode() const;
+    PlayState playState() const;
     QVariant currentTrack() const;
     qint64 position() const;
     qint64 duration() const;
@@ -91,6 +100,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void playModeChanged(QIviMediaPlayer::PlayMode playMode);
+    void playStateChanged(QIviMediaPlayer::PlayState playState);
     void currentTrackChanged(const QVariant &currentTrack);
     void positionChanged(qint64 position);
     void durationChanged(qint64 duration);
@@ -104,6 +114,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QIviMediaPlayer)
     Q_PRIVATE_SLOT(d_func(), void onPlayModeChanged(QIviMediaPlayer::PlayMode playMode))
+    Q_PRIVATE_SLOT(d_func(), void onPlayStateChanged(QIviMediaPlayer::PlayState playState))
     Q_PRIVATE_SLOT(d_func(), void onCurrentTrackChanged(const QVariant &currentTrack))
     Q_PRIVATE_SLOT(d_func(), void onPositionChanged(qint64 position))
     Q_PRIVATE_SLOT(d_func(), void onDurationChanged(qint64 duration))
