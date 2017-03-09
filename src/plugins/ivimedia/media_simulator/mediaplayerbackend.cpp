@@ -77,8 +77,8 @@ MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *pa
 
 void MediaPlayerBackend::initialize()
 {
-    m_count = 0;
-    m_currentIndex = -1;
+    emit durationChanged(0);
+    emit positionChanged(0);
 }
 
 void MediaPlayerBackend::play()
@@ -314,6 +314,8 @@ void MediaPlayerBackend::setCurrentIndex(int index)
         m_player->setMedia(QUrl());
         emit currentTrackChanged(QVariant());
         emit currentIndexChanged(m_currentIndex);
+        emit durationChanged(0);
+        emit positionChanged(0);
         return;
     }
 
