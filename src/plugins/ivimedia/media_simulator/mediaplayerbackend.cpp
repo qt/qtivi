@@ -54,6 +54,7 @@ MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *pa
     : QIviMediaPlayerBackendInterface(parent)
     , m_count(0)
     , m_currentIndex(-1)
+    , m_playMode(QIviMediaPlayer::Normal)
     , m_threadPool(new QThreadPool(this))
     , m_player(new QMediaPlayer(this))
 {
@@ -65,6 +66,8 @@ MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *pa
             this, &MediaPlayerBackend::positionChanged);
     connect(m_player, &QMediaPlayer::stateChanged,
             this, &MediaPlayerBackend::onStateChanged);
+    connect(m_player, &QMediaPlayer::mediaStatusChanged,
+            this, &MediaPlayerBackend::onMediaStatusChanged);
 
     m_db = database;
     m_db.open();
@@ -103,18 +106,34 @@ void MediaPlayerBackend::seek(qint64 offset)
 
 void MediaPlayerBackend::next()
 {
-    setCurrentIndex(m_currentIndex + 1);
+    int nextIndex = m_currentIndex + 1;
+    if (m_playMode == QIviMediaPlayer::Shuffle)
+        nextIndex = qrand() % m_count;
+    else if (m_playMode == QIviMediaPlayer::RepeatTrack)
+        nextIndex = m_currentIndex;
+    else if (m_playMode == QIviMediaPlayer::RepeatAll && nextIndex >= m_count)
+        nextIndex = 0;
+
+    setCurrentIndex(nextIndex);
 }
 
 void MediaPlayerBackend::previous()
 {
-    setCurrentIndex(m_currentIndex - 1);
+    int nextIndex = m_currentIndex - 1;
+    if (m_playMode == QIviMediaPlayer::Shuffle)
+        nextIndex = qrand() % m_count;
+    else if (m_playMode == QIviMediaPlayer::RepeatTrack)
+        nextIndex = m_currentIndex;
+    else if (m_playMode == QIviMediaPlayer::RepeatAll && nextIndex < 0)
+        nextIndex = m_count - 1;
+
+    setCurrentIndex(nextIndex);
 }
 
 void MediaPlayerBackend::setPlayMode(QIviMediaPlayer::PlayMode playMode)
 {
-    Q_UNUSED(playMode);
-    qWarning("Changing the playMode is currently not supported in the simulation backend");
+    m_playMode = playMode;
+    emit playModeChanged(m_playMode);
 }
 
 void MediaPlayerBackend::setPosition(qint64 position)
@@ -248,7 +267,7 @@ void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, 
         }
 
         QIviAudioTrackItem item = list.at(0).value<QIviAudioTrackItem>();
-        bool playing = m_player->state() == QMediaPlayer::PlayingState;
+        bool playing = m_player->state() == QMediaPlayer::PlayingState || m_player->mediaStatus() == QMediaPlayer::EndOfMedia;
         m_player->setMedia(item.url());
         if (playing)
             m_player->play();
@@ -344,4 +363,10 @@ void MediaPlayerBackend::onStateChanged(QMediaPlayer::State state)
         iviState = QIviMediaPlayer::Paused;
 
     emit playStateChanged(iviState);
+}
+
+void MediaPlayerBackend::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
+{
+    if (status == QMediaPlayer::EndOfMedia)
+        next();
 }
