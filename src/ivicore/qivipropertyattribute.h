@@ -114,6 +114,10 @@ public:
     T maximumValue() const { return m_maximumValue; }
     QVector<T> availableValues() const { return m_availableValues; }
 
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_CLANG("-Wfloat-equal")
+QT_WARNING_DISABLE_GCC("-Wfloat-equal")
+
     bool operator==(const QIviPropertyAttribute &other) const
     {
         return (m_available == other.m_available) &&
@@ -122,6 +126,8 @@ public:
                (m_maximumValue == other.m_maximumValue) &&
                (m_availableValues == other.m_availableValues);
     }
+
+QT_WARNING_POP
 
     bool operator!=(const QIviPropertyAttribute &other) const
     {
