@@ -242,11 +242,18 @@ void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, 
     if (type == MediaPlayerBackend::Select) {
         emit dataFetched(list, start, list.count() >= count);
     } else if (type == MediaPlayerBackend::SetIndex) {
+        if (list.isEmpty()) {
+            qWarning() << "SIMULATION: Can't set index in an empty queue";
+            return;
+        }
+
         QIviAudioTrackItem item = list.at(0).value<QIviAudioTrackItem>();
         bool playing = m_player->state() == QMediaPlayer::PlayingState;
         m_player->setMedia(item.url());
         if (playing)
             m_player->play();
+
+        emit currentIndexChanged(start);
         emit currentTrackChanged(list.at(0));
     } else if (type == MediaPlayerBackend::Insert && start <= m_currentIndex) {
         // A new Item has been inserted before currentIndex
@@ -324,8 +331,6 @@ void MediaPlayerBackend::setCurrentIndex(int index)
                       &MediaPlayerBackend::doSqlOperation,
                       MediaPlayerBackend::SetIndex,
                       queries, m_currentIndex, 0);
-
-    emit currentIndexChanged(m_currentIndex);
 }
 
 void MediaPlayerBackend::onStateChanged(QMediaPlayer::State state)
