@@ -121,21 +121,21 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
     emit stateChanged(QIviMediaIndexerControl::Active);
 
     if (removeData) {
-        qWarning() << "Removing content: " << mediaDir;
+        qInfo() << "Removing content: " << mediaDir;
         QSqlQuery query(m_db);
 
         bool ret = query.exec(QString("DELETE from track WHERE file LIKE '%1%'").arg(mediaDir));
 
         if (!ret) {
             emit stateChanged(QIviMediaIndexerControl::Error);
-            qWarning() << "remove query:" << query.lastError().text();
+            qInfo() << "remove query:" << query.lastError().text();
             return false;
         }
 
         return true;
     }
 
-    qWarning() << "Scanning path: " << mediaDir;
+    qInfo() << "Scanning path: " << mediaDir;
 
     QSqlQuery query(m_db);
 
@@ -152,7 +152,7 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
 
     if (!ret) {
         emit stateChanged(QIviMediaIndexerControl::Error);
-        qWarning() << "create query:" << query.lastError().text();
+        qInfo() << "create query:" << query.lastError().text();
         return false;
     }
 
@@ -161,17 +161,20 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
 
     QVector<QString> files;
     QDirIterator it(mediaDir, mediaFiles, QDir::Files, QDirIterator::Subdirectories);
-    qWarning() << "Calculating total file count";
+    qInfo() << "Calculating total file count";
 
     int totalFileCount = 0;
     while (it.hasNext()) {
         files.append(it.next());
         totalFileCount++;
     }
-    qWarning() << "total files: " << totalFileCount;
+    qInfo() << "total files: " << totalFileCount;
     int currentFileIndex = 0;
     for (const QString &fileName : files) {
-        qWarning() << "Processing file:" << fileName;
+        qInfo() << "Processing file:" << fileName;
+
+        if (qApp->closingDown())
+            return false;
 
 #ifdef QT_TAGLIB
         TagLib::FileRef f(fileName.toLocal8Bit());
@@ -236,8 +239,12 @@ void MediaIndexerBackend::onScanFinished()
         return;
     }
 
-    qDebug() << "Scanning done";
+    qInfo() << "Scanning done";
     emit indexingDone();
+
+#ifndef QT_TAGLIB
+    qWarning() << "No tracks have been added as the simulation was compiled without taglib";
+#endif
 
     //If the last run didn't succeed we will stay in the Error state
     if (m_watcher.future().result())
