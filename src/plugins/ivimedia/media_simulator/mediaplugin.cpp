@@ -49,6 +49,8 @@
 #include <QtIviMedia/QIviMediaPlayer>
 
 #include <QStringList>
+#include <QTemporaryFile>
+#include <QCoreApplication>
 #include <QtDebug>
 
 MediaPlugin::MediaPlugin(QObject *parent)
@@ -58,9 +60,14 @@ MediaPlugin::MediaPlugin(QObject *parent)
     m_db = QSqlDatabase::addDatabase("QSQLITE");
     const QByteArray database = qgetenv("QTIVIMEDIA_SIMULATOR_DATABASE");
     if (database.isEmpty()) {
-        qCritical() << "QTIVIMEDIA_SIMULATOR_DATABASE environment variable needs to be set to a valid database file location.";
+        QTemporaryFile *tempFile = new QTemporaryFile(qApp);
+        tempFile->open();
+        m_db.setDatabaseName(tempFile->fileName());
+        qCritical() << "QTIVIMEDIA_SIMULATOR_DATABASE environment variable isn't set.\n"
+                    << "Using the temporary database: " << tempFile->fileName();
+    } else {
+        m_db.setDatabaseName(database);
     }
-    m_db.setDatabaseName(database);
 
     m_player = new MediaPlayerBackend(m_db, this);
     m_browse = new SearchAndBrowseBackend(m_db, this);
