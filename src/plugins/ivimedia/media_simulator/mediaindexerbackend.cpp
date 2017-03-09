@@ -64,6 +64,7 @@
 MediaIndexerBackend::MediaIndexerBackend(const QSqlDatabase &database, QObject *parent)
     : QIviMediaIndexerControlBackendInterface(parent)
     , m_db(database)
+    , m_state(QIviMediaIndexerControl::Idle)
 {
     connect(&m_watcher, SIGNAL(finished()), this, SLOT(onScanFinished()));
 
@@ -84,6 +85,7 @@ MediaIndexerBackend::MediaIndexerBackend(const QSqlDatabase &database, QObject *
 
 void MediaIndexerBackend::initialize()
 {
+    emit stateChanged(m_state);
 }
 
 void MediaIndexerBackend::pause()
@@ -118,7 +120,7 @@ void MediaIndexerBackend::removeMediaFolder(const QString &path)
 
 bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
 {
-    emit stateChanged(QIviMediaIndexerControl::Active);
+    setState(QIviMediaIndexerControl::Active);
 
     if (removeData) {
         qInfo() << "Removing content: " << mediaDir;
@@ -127,7 +129,7 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
         bool ret = query.exec(QString("DELETE from track WHERE file LIKE '%1%'").arg(mediaDir));
 
         if (!ret) {
-            emit stateChanged(QIviMediaIndexerControl::Error);
+            setState(QIviMediaIndexerControl::Error);
             qInfo() << "remove query:" << query.lastError().text();
             return false;
         }
@@ -151,7 +153,7 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
                      "UNIQUE(file))");
 
     if (!ret) {
-        emit stateChanged(QIviMediaIndexerControl::Error);
+        setState(QIviMediaIndexerControl::Error);
         qInfo() << "create query:" << query.lastError().text();
         return false;
     }
@@ -216,14 +218,14 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
         bool ret = query.exec();
 
         if (!ret) {
-            emit stateChanged(QIviMediaIndexerControl::Error);
+            setState(QIviMediaIndexerControl::Error);
             qWarning() << "insert query:" << query.lastQuery() << query.lastError().text();
             return false;
         } else {
-            emit progressChanged(currentFileIndex/totalFileCount);
+            emit progressChanged(qreal(currentFileIndex)/qreal(totalFileCount));
         }
 #else
-        emit progressChanged(currentFileIndex/totalFileCount);
+        emit progressChanged(qreal(currentFileIndex)/qreal(totalFileCount));
 #endif
         currentFileIndex++;
 
@@ -240,6 +242,7 @@ void MediaIndexerBackend::onScanFinished()
     }
 
     qInfo() << "Scanning done";
+    emit progressChanged(1);
     emit indexingDone();
 
 #ifndef QT_TAGLIB
@@ -248,7 +251,7 @@ void MediaIndexerBackend::onScanFinished()
 
     //If the last run didn't succeed we will stay in the Error state
     if (m_watcher.future().result())
-        emit stateChanged(QIviMediaIndexerControl::Idle);
+        setState(QIviMediaIndexerControl::Idle);
 }
 
 void MediaIndexerBackend::scanNext()
@@ -259,4 +262,10 @@ void MediaIndexerBackend::scanNext()
     ScanData data = m_folderQueue.dequeue();
     m_currentFolder = data.folder;
     m_watcher.setFuture(QtConcurrent::run(this, &MediaIndexerBackend::scanWorker, m_currentFolder, data.remove));
+}
+
+void MediaIndexerBackend::setState(QIviMediaIndexerControl::State state)
+{
+    m_state = state;
+    emit stateChanged(state);
 }

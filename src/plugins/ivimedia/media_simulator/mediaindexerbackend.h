@@ -72,6 +72,7 @@ private slots:
 
 private:
     void scanNext();
+    void setState(QIviMediaIndexerControl::State state);
 
     QSqlDatabase m_db;
     struct ScanData {
@@ -79,6 +80,7 @@ private:
         QString folder;
     };
 
+    QIviMediaIndexerControl::State m_state;
     QQueue<ScanData> m_folderQueue;
     QString m_currentFolder;
     QFutureWatcher<bool> m_watcher;
