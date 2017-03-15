@@ -196,7 +196,7 @@ private:
     template <typename F=T> Q_INLINE_TEMPLATE typename QtPrivate::QEnableIf<QtPrivate::is_flag<F>::value, void>::Type registerConverters()
     {
         if (!QMetaType::hasRegisteredConverterFunction<F, int>())
-            QMetaType::registerConverter<F, int>(&F::operator int);
+            QMetaType::registerConverter<F, int>([](const F & f){return int(f);});
     }
 
     friend struct PropertyTestData;
