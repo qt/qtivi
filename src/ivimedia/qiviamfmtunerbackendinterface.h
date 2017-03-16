@@ -42,15 +42,15 @@
 #ifndef QIVIAMFMTUNERBACKENDINTERFACE_H
 #define QIVIAMFMTUNERBACKENDINTERFACE_H
 
+#include <QtIviCore/QIviFeatureInterface>
 #include <QtIviMedia/qtivimediaglobal.h>
 #include <QtIviMedia/QIviAmFmTuner>
-#include <QtCore/QObject>
 
 QT_BEGIN_NAMESPACE
 
 class QIviPlayableItem;
 
-class Q_QTIVIMEDIA_EXPORT QIviAmFmTunerBackendInterface : public QObject
+class Q_QTIVIMEDIA_EXPORT QIviAmFmTunerBackendInterface : public QIviFeatureInterface
 {
     Q_OBJECT
 

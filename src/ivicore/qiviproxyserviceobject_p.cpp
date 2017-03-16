@@ -58,7 +58,7 @@ QStringList QIviProxyServiceObject::interfaces() const
     return m_interface->interfaces();
 }
 
-QObject *QIviProxyServiceObject::interfaceInstance(const QString &interface) const
+QIviFeatureInterface *QIviProxyServiceObject::interfaceInstance(const QString &interface) const
 {
     return m_interface->interfaceInstance(interface);
 }

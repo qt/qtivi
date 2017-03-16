@@ -50,12 +50,13 @@
 #include <QtIviCore/QIviSearchAndBrowseModelItem>
 #include <QtIviCore/QIviSearchAndBrowseModel>
 #include <QtIviCore/QIviAbstractQueryTerm>
+#include <QtIviCore/QIviFeatureInterface>
 
 QT_BEGIN_NAMESPACE
 
 class QIviSearchAndBrowseModelInterfacePrivate;
 
-class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModelInterface : public QObject
+class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModelInterface : public QIviFeatureInterface
 {
     Q_OBJECT
 

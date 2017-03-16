@@ -70,7 +70,7 @@ QStringList USBDevice::interfaces() const
     return list;
 }
 
-QObject *USBDevice::interfaceInstance(const QString &interface) const
+QIviFeatureInterface *USBDevice::interfaceInstance(const QString &interface) const
 {
     if (interface == QIviSearchAndBrowseModel_iid)
         return m_browseModel;

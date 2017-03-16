@@ -517,6 +517,8 @@ void QIviMediaPlayer::connectToServiceObject(QIviServiceObject *serviceObject)
     QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::currentIndexChanged,
                             d->m_playQueue->d_func(), &QIviPlayQueuePrivate::onCurrentIndexChanged);
 
+    QIviAbstractFeature::connectToServiceObject(serviceObject);
+
     backend->initialize();
     d->m_playQueue->d_func()->resetModel();
 }

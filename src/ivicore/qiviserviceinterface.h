@@ -43,6 +43,7 @@
 #define QIVISERVICEINTERFACE_H
 
 #include <QtIviCore/qtiviglobal.h>
+#include <QtIviCore/qivifeatureinterface.h>
 
 #include <QtCore/QtPlugin>
 
@@ -54,7 +55,7 @@ public:
     virtual ~QIviServiceInterface();
 
     virtual QStringList interfaces() const = 0;
-    virtual QObject *interfaceInstance(const QString &interface) const = 0;
+    virtual QIviFeatureInterface *interfaceInstance(const QString &interface) const = 0;
 };
 
 #define QIviServiceInterface_iid "org.qt-project.qtivi.QIviServiceInterface/1.0"

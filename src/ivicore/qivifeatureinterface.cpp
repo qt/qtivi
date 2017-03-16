@@ -70,6 +70,11 @@ QIviFeatureInterface::~QIviFeatureInterface()
 {
 }
 
+QIviFeatureInterface::QIviFeatureInterface(QObjectPrivate &dd, QObject *parent)
+    : QObject(dd, parent)
+{
+}
+
 /*!
  * \fn void errorChanged(QIviAbstractFeature::Error error, const QString &message = QString())
  *

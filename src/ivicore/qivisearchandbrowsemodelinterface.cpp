@@ -76,7 +76,7 @@ QIviSearchAndBrowseModelInterfacePrivate::QIviSearchAndBrowseModelInterfacePriva
     The \a parent is sent to the QObject constructor.
 */
 QIviSearchAndBrowseModelInterface::QIviSearchAndBrowseModelInterface(QObject *parent)
-    : QObject(*new QIviSearchAndBrowseModelInterfacePrivate(), parent)
+    : QIviFeatureInterface(*new QIviSearchAndBrowseModelInterfacePrivate(), parent)
 {}
 
 QIviSearchAndBrowseModelInterface::~QIviSearchAndBrowseModelInterface()

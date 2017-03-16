@@ -42,13 +42,13 @@
 #ifndef QIVIMEDIAINDEXERCONTROLBACKENDINTERFACE_H
 #define QIVIMEDIAINDEXERCONTROLBACKENDINTERFACE_H
 
-#include <QObject>
+#include <QtIviCore/QIviFeatureInterface>
 #include <QtIviMedia/qtivimediaglobal.h>
 #include <QtIviMedia/QIviMediaIndexerControl>
 
 QT_BEGIN_NAMESPACE
 
-class Q_QTIVIMEDIA_EXPORT QIviMediaIndexerControlBackendInterface : public QObject
+class Q_QTIVIMEDIA_EXPORT QIviMediaIndexerControlBackendInterface : public QIviFeatureInterface
 {
     Q_OBJECT
 public:

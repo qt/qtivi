@@ -56,7 +56,7 @@ public:
     virtual void eject() Q_DECL_OVERRIDE;
 
     virtual QStringList interfaces() const Q_DECL_OVERRIDE;
-    virtual QObject *interfaceInstance(const QString &interface) const Q_DECL_OVERRIDE;
+    virtual QIviFeatureInterface *interfaceInstance(const QString &interface) const Q_DECL_OVERRIDE;
 
 private:
     UsbBrowseBackend *m_browseModel;

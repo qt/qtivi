@@ -65,7 +65,7 @@ public:
     virtual ~QIviProxyServiceObject();
 
     virtual QStringList interfaces() const;
-    virtual QObject *interfaceInstance(const QString &interface) const;
+    virtual QIviFeatureInterface *interfaceInstance(const QString &interface) const;
 
 private:
 

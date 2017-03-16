@@ -63,7 +63,7 @@
     The \a parent is sent to the QObject constructor.
 */
 QIviAmFmTunerBackendInterface::QIviAmFmTunerBackendInterface(QObject *parent)
-    : QObject(parent)
+    : QIviFeatureInterface(parent)
 {
 }
 

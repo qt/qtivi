@@ -42,15 +42,15 @@
 #ifndef QIVIMEDIAPLAYERBACKENDINTERFACE_H
 #define QIVIMEDIAPLAYERBACKENDINTERFACE_H
 
+#include <QtIviCore/QIviFeatureInterface>
 #include <QtIviMedia/qtivimediaglobal.h>
 #include <QtIviMedia/QIviMediaPlayer>
-#include <QtCore/QObject>
 
 QT_BEGIN_NAMESPACE
 
 class QIviPlayableItem;
 
-class Q_QTIVIMEDIA_EXPORT QIviMediaPlayerBackendInterface : public QObject
+class Q_QTIVIMEDIA_EXPORT QIviMediaPlayerBackendInterface : public QIviFeatureInterface
 {
     Q_OBJECT
 

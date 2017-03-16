@@ -238,7 +238,7 @@ public:
 
     QString name() const { return m_name; }
     QStringList interfaces() const { return m_interfaces; }
-    QObject *interfaceInstance(const QString& interface) const
+    QIviFeatureInterface *interfaceInstance(const QString& interface) const
     {
         if (interface == QIviWindowControl_iid)
             return testBackend();
@@ -261,19 +261,19 @@ class WindowControlInvalidServiceObject : public QIviServiceObject {
 
 public:
     explicit WindowControlInvalidServiceObject(QObject *parent=0) :
-        QIviServiceObject(parent), m_name(QLatin1String("")), m_dummyBackend(new QObject(this))
+        QIviServiceObject(parent), m_name(QLatin1String("")), m_dummyBackend(new QIviFeatureInterface(this))
     {
         m_interfaces << QIviWindowControl_iid;
     }
 
     QString name() const { return m_name; }
     QStringList interfaces() const { return m_interfaces; }
-    QObject *interfaceInstance(const QString& ) const { return m_dummyBackend; }
+    QIviFeatureInterface *interfaceInstance(const QString& ) const { return m_dummyBackend; }
 
 private:
     QString m_name;
     QStringList m_interfaces;
-    QObject *m_dummyBackend;
+    QIviFeatureInterface *m_dummyBackend;
 };
 
 class WindowControlTest : public QObject

@@ -1155,8 +1155,6 @@ bool QIviSearchAndBrowseModel::acceptServiceObject(QIviServiceObject *serviceObj
 */
 void QIviSearchAndBrowseModel::connectToServiceObject(QIviServiceObject *serviceObject)
 {
-    Q_UNUSED(serviceObject);
-
     Q_D(QIviSearchAndBrowseModel);
 
     QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
@@ -1174,6 +1172,8 @@ void QIviSearchAndBrowseModel::connectToServiceObject(QIviServiceObject *service
     QObjectPrivate::connect(backend, &QIviSearchAndBrowseModelInterface::indexOfCallResult,
                             d, &QIviSearchAndBrowseModelPrivate::onIndexOfCallResult,
                             Qt::QueuedConnection);
+
+    QIviAbstractFeatureListModel::connectToServiceObject(serviceObject);
 
     d->setCanGoBack(backend->canGoBack(d->m_identifier, d->m_contentType));
 

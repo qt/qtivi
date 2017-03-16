@@ -306,7 +306,7 @@ public:
     }
 
     QStringList interfaces() const { return m_interfaces; }
-    QObject *interfaceInstance(const QString &interface) const
+    QIviFeatureInterface *interfaceInstance(const QString &interface) const
     {
         if (interface == QIviSearchAndBrowseModel_iid)
             return testBackend();

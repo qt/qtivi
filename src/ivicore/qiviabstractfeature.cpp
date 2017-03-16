@@ -596,6 +596,15 @@ bool QIviAbstractFeature::acceptServiceObject(QIviServiceObject *serviceObject)
     return serviceObject->interfaces().contains(interfaceName());
 }
 
+void QIviAbstractFeature::connectToServiceObject(QIviServiceObject *serviceObject)
+{
+    Q_ASSERT(serviceObject);
+    QIviFeatureInterface *backend = serviceObject->interfaceInstance(interfaceName());
+
+    if (backend)
+        connect(backend, &QIviFeatureInterface::errorChanged, this, &QIviAbstractFeature::onErrorChanged);
+}
+
 /*!
  * This method is expected to be implemented by any class subclassing QIviAbstractFeature.
  *

@@ -320,6 +320,8 @@ void QIviMediaDeviceDiscoveryModel::connectToServiceObject(QIviServiceObject *se
     QObjectPrivate::connect(backend, &QIviMediaDeviceDiscoveryModelBackendInterface::deviceRemoved,
                             d, &QIviMediaDeviceDiscoveryModelPrivate::onDeviceRemoved);
 
+    QIviAbstractFeatureListModel::connectToServiceObject(serviceObject);
+
     backend->initialize();
 }
 

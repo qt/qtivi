@@ -732,6 +732,8 @@ void QIviClimateControl::connectToServiceObject(QIviServiceObject *serviceObject
     QObjectPrivate::connect(backend, &QIviClimateControlBackendInterface::automaticClimateFanIntensityLevelAttributeChanged,
             d, &QIviClimateControlPrivate::onAutomaticClimateFanIntensityLevelAttributeChanged);
 
+    QIviAbstractFeature::connectToServiceObject(serviceObject);
+
     backend->initializeAttributes();
 }
 

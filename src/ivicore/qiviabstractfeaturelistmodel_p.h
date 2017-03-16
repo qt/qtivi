@@ -68,6 +68,7 @@ public:
     bool acceptServiceObject(QIviServiceObject *so);
     bool acceptServiceObjectDefaultImpl(QIviServiceObject *so);
     void connectToServiceObject(QIviServiceObject *so);
+    void connectToServiceObjectDefaultImpl(QIviServiceObject *so);
     void disconnectFromServiceObject(QIviServiceObject *so);
     void clearServiceObject();
 

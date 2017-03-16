@@ -61,7 +61,7 @@ QStringList VehiclePlugin::interfaces() const
     return list;
 }
 
-QObject *VehiclePlugin::interfaceInstance(const QString &interface) const
+QIviFeatureInterface *VehiclePlugin::interfaceInstance(const QString &interface) const
 {
     if (interface == QIviClimateControl_iid)
         return m_climate;

@@ -63,7 +63,7 @@
     The \a parent is sent to the QObject constructor.
 */
 QIviMediaPlayerBackendInterface::QIviMediaPlayerBackendInterface(QObject *parent)
-    : QObject(parent)
+    : QIviFeatureInterface(parent)
 {
 
 }

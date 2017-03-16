@@ -63,7 +63,7 @@ public:
     explicit MediaPlugin(QObject *parent = Q_NULLPTR);
 
     QStringList interfaces() const;
-    QObject *interfaceInstance(const QString &interface) const;
+    QIviFeatureInterface *interfaceInstance(const QString &interface) const;
 
 private:
     MediaPlayerBackend *m_player;

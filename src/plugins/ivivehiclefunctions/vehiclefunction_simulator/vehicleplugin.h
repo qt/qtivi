@@ -57,7 +57,7 @@ public:
     VehiclePlugin(QObject *parent = 0);
 
     QStringList interfaces() const;
-    QObject *interfaceInstance(const QString& interface) const;
+    QIviFeatureInterface *interfaceInstance(const QString& interface) const;
 
 private:
     ClimateControlBackend *m_climate;

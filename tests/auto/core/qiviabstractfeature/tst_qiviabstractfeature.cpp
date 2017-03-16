@@ -40,13 +40,13 @@
 
 int acceptCounter = 100;
 
-class TestFeatureInterface : public QObject
+class TestFeatureInterface : public QIviFeatureInterface
 {
     Q_OBJECT
 
 public:
     TestFeatureInterface(QObject *parent = 0)
-        : QObject(parent)
+        : QIviFeatureInterface(parent)
     {}
 
     virtual ~TestFeatureInterface() {}
@@ -87,6 +87,8 @@ public:
             return;
         TestFeatureInterface* testInterface = qobject_cast<TestFeatureInterface*>(serviceObject->interfaceInstance(interfaceName()));
         connect(testInterface, &TestFeatureInterface::errorChanged, this, &TestFeature::onErrorChanged);
+
+        QIviAbstractFeature::connectToServiceObject(serviceObject);
     }
 
     virtual void disconnectFromServiceObject(QIviServiceObject*)
@@ -134,6 +136,8 @@ public:
             return;
         TestFeatureInterface* testInterface = qobject_cast<TestFeatureInterface*>(serviceObject->interfaceInstance(interfaceName()));
         connect(testInterface, &TestFeatureInterface::errorChanged, this, &TestFeatureListModel::onErrorChanged);
+
+        QIviAbstractFeatureListModel::connectToServiceObject(serviceObject);
     }
 
     virtual void disconnectFromServiceObject(QIviServiceObject*)
@@ -193,7 +197,7 @@ public:
         return QStringList(QString("testFeature"));
     }
 
-    QObject* interfaceInstance(const QString& interface) const
+    QIviFeatureInterface* interfaceInstance(const QString& interface) const
     {
         if (interface == "testFeature")
             return m_testBackend;

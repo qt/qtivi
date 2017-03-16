@@ -47,7 +47,7 @@ public:
         return QStringList() << "simple_plugin";
     }
 
-    QObject *interfaceInstance(const QString &interface) const {
+    QIviFeatureInterface *interfaceInstance(const QString &interface) const {
         Q_UNUSED(interface)
         return 0;
     }

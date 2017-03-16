@@ -57,7 +57,7 @@ public:
     explicit TunerPlugin(QObject *parent = Q_NULLPTR);
 
     QStringList interfaces() const;
-    QObject *interfaceInstance(const QString &interface) const;
+    QIviFeatureInterface *interfaceInstance(const QString &interface) const;
 
 private:
     AmFmTunerBackend *m_amfmtuner;

@@ -63,6 +63,11 @@ void QIviHelperFeature::connectToServiceObject(QIviServiceObject *so)
     m_model->connectToServiceObject(so);
 }
 
+void QIviHelperFeature::connectToServiceObjectDefaultImpl(QIviServiceObject *so)
+{
+    QIviAbstractFeature::connectToServiceObject(so);
+}
+
 void QIviHelperFeature::disconnectFromServiceObject(QIviServiceObject *so)
 {
     m_model->disconnectFromServiceObject(so);
@@ -380,6 +385,12 @@ bool QIviAbstractFeatureListModel::acceptServiceObject(QIviServiceObject *servic
 {
     Q_D(QIviAbstractFeatureListModel);
     return d->m_feature->acceptServiceObjectDefaultImpl(serviceObject);
+}
+
+void QIviAbstractFeatureListModel::connectToServiceObject(QIviServiceObject *serviceObject)
+{
+    Q_D(QIviAbstractFeatureListModel);
+    return d->m_feature->connectToServiceObjectDefaultImpl(serviceObject);
 }
 
 /*!

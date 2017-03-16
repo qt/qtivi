@@ -249,6 +249,8 @@ void QIviMediaIndexerControl::connectToServiceObject(QIviServiceObject *serviceO
     QObjectPrivate::connect(backend, &QIviMediaIndexerControlBackendInterface::stateChanged,
                             d, &QIviMediaIndexerControlPrivate::onStateChanged);
 
+    QIviAbstractFeature::connectToServiceObject(serviceObject);
+
     backend->initialize();
 }
 

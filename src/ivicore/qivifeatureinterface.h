@@ -55,6 +55,9 @@ public:
     explicit QIviFeatureInterface(QObject *parent = Q_NULLPTR);
     ~QIviFeatureInterface();
 
+protected:
+    QIviFeatureInterface(QObjectPrivate &dd, QObject *parent = Q_NULLPTR);
+
 Q_SIGNALS:
     void errorChanged(QIviAbstractFeature::Error error, const QString &message = QString());
 };

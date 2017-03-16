@@ -117,7 +117,7 @@ protected:
     QIviAbstractFeature(QIviAbstractFeaturePrivate &dd, QObject *parent = Q_NULLPTR);
 
     virtual bool acceptServiceObject(QIviServiceObject*);
-    virtual void connectToServiceObject(QIviServiceObject*) = 0;
+    virtual void connectToServiceObject(QIviServiceObject*);
     virtual void disconnectFromServiceObject(QIviServiceObject*);
     virtual void clearServiceObject() = 0;
 

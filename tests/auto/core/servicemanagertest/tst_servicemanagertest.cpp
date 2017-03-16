@@ -48,11 +48,11 @@ public:
         return m_serviceObjects.keys();
     }
 
-    QObject *interfaceInstance(const QString &interface) const {
+    QIviFeatureInterface *interfaceInstance(const QString &interface) const {
         return m_serviceObjects.value(interface);
     }
 
-    void addServiceObject(const QString &interface, QObject *serviceObject) {
+    void addServiceObject(const QString &interface, QIviFeatureInterface *serviceObject) {
         if (!serviceObject->parent())
             serviceObject->setParent(this);
 
@@ -60,7 +60,7 @@ public:
     }
 
 private:
-    QMap<QString, QObject *> m_serviceObjects;
+    QMap<QString, QIviFeatureInterface *> m_serviceObjects;
 };
 
 class ServiceManagerTest : public QObject
@@ -168,7 +168,7 @@ void ServiceManagerTest::testFindServiceObjects()
         type = QIviServiceManager::SimulationBackend;
     bool regResult = manager->registerService(backend, QStringList() << "TestInterface", type);
     QCOMPARE(regResult, true);
-    QObject *testObject = new QObject();
+    QIviFeatureInterface *testObject = new QIviFeatureInterface();
     backend->addServiceObject("TestInterface", testObject);
 
     QList<QIviServiceObject*> list = manager->findServiceByInterface("TestInterface", searchFlags);
