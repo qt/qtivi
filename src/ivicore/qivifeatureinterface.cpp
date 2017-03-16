@@ -39,28 +39,40 @@
 **
 ****************************************************************************/
 
-#ifndef QIVIZONEDFEATUREINTERFACE_H
-#define QIVIZONEDFEATUREINTERFACE_H
+#include "qivifeatureinterface.h"
 
-#include <QtIviCore/QIviAbstractZonedFeature>
-#include <QtIviCore/QIviFeatureInterface>
+/*!
+   \class QIviFeatureInterface
+   \inmodule QtIviCore
+   \ingroup backends
 
-QT_BEGIN_NAMESPACE
+   \brief QIviFeatureInterface defines the base class for all backends.
 
-class Q_QTIVICORE_EXPORT QIviZonedFeatureInterface : public QIviFeatureInterface
+   To implement a backend for a specific feature you need to derive from this class.
+   There's a one-to-one mapping between a spezialized feature API and its corresponding feature interface
+   class.
+
+   The feature interface class specifies which functions and signals need to be implemented by a backend
+   to work with a specific feature.
+
+   This base class contains the generic error handling, which is common between all interfaces.
+
+   See the full example backend implementation from \c {src/plugins/ivivehiclefunctions/climate_simulator}.
+   \sa QIviAbstractFeature, QIviServiceInterface
+ */
+
+QIviFeatureInterface::QIviFeatureInterface(QObject *parent)
+    : QObject(parent)
 {
-    Q_OBJECT
+}
 
-public:
-    explicit QIviZonedFeatureInterface(QObject *parent = Q_NULLPTR);
-    virtual ~QIviZonedFeatureInterface();
+QIviFeatureInterface::~QIviFeatureInterface()
+{
+}
 
-    virtual QStringList availableZones() const = 0;
-
-    virtual void initializeAttributes() = 0;
-};
-
-QT_END_NAMESPACE
-
-#endif // QIVIZONEDFEATUREINTERFACE_H
-
+/*!
+ * \fn void errorChanged(QIviAbstractFeature::Error error, const QString &message = QString())
+ *
+ * The signal is emitted when \a error occurs in the backend.
+ * Error \a message is optional.
+ */

@@ -39,28 +39,26 @@
 **
 ****************************************************************************/
 
-#ifndef QIVIZONEDFEATUREINTERFACE_H
-#define QIVIZONEDFEATUREINTERFACE_H
+#ifndef QIVIFEATUREINTERFACE_H
+#define QIVIFEATUREINTERFACE_H
 
-#include <QtIviCore/QIviAbstractZonedFeature>
-#include <QtIviCore/QIviFeatureInterface>
+#include <QtIviCore/QIviAbstractFeature>
+#include <QtIviCore/qtiviglobal.h>
 
 QT_BEGIN_NAMESPACE
 
-class Q_QTIVICORE_EXPORT QIviZonedFeatureInterface : public QIviFeatureInterface
+class Q_QTIVICORE_EXPORT QIviFeatureInterface : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit QIviZonedFeatureInterface(QObject *parent = Q_NULLPTR);
-    virtual ~QIviZonedFeatureInterface();
+    explicit QIviFeatureInterface(QObject *parent = Q_NULLPTR);
+    ~QIviFeatureInterface();
 
-    virtual QStringList availableZones() const = 0;
-
-    virtual void initializeAttributes() = 0;
+Q_SIGNALS:
+    void errorChanged(QIviAbstractFeature::Error error, const QString &message = QString());
 };
 
 QT_END_NAMESPACE
 
-#endif // QIVIZONEDFEATUREINTERFACE_H
-
+#endif // QIVIFEATUREINTERFACE_H

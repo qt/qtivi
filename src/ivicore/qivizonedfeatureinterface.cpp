@@ -162,7 +162,11 @@
  * The \a parent is sent to the QObject constructor.
  */
 QIviZonedFeatureInterface::QIviZonedFeatureInterface(QObject *parent)
-    : QObject(parent)
+    : QIviFeatureInterface(parent)
+{
+}
+
+QIviZonedFeatureInterface::~QIviZonedFeatureInterface()
 {
 }
 
@@ -187,12 +191,5 @@ QIviZonedFeatureInterface::QIviZonedFeatureInterface(QObject *parent)
  * the initialized value.
  *
  * \sa {Initializing Attributes}
- */
-
-/*!
- * \fn void errorChanged(QIviAbstractFeature::Error error, const QString &message = QString())
- *
- * The signal is emitted when \a error occurs in the backend.
- * Error \a message is optional.
  */
 
