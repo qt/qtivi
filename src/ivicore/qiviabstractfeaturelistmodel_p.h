@@ -66,6 +66,7 @@ public:
     QIviHelperFeature(const QString &interface, QIviAbstractFeatureListModel *model);
 
     bool acceptServiceObject(QIviServiceObject *so);
+    bool acceptServiceObjectDefaultImpl(QIviServiceObject *so);
     void connectToServiceObject(QIviServiceObject *so);
     void disconnectFromServiceObject(QIviServiceObject *so);
     void clearServiceObject();
