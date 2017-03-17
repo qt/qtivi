@@ -60,8 +60,9 @@ class TestFeature : public QIviAbstractFeature
     Q_OBJECT
 
 public:
-    TestFeature(QObject *parent = 0)
+    TestFeature(bool testBaseFunctions = false, QObject *parent = 0)
         : QIviAbstractFeature("testFeature", parent)
+        , m_testBaseFunctions(testBaseFunctions)
     {}
 
     QString errorText() const
@@ -71,6 +72,9 @@ public:
 
     virtual bool acceptServiceObject(QIviServiceObject *serviceObject)
     {
+        if (m_testBaseFunctions)
+            return QIviAbstractFeature::acceptServiceObject(serviceObject);
+
         if (serviceObject && acceptCounter > 0)
             return serviceObject->interfaces().contains(interfaceName());
         acceptCounter++;
@@ -93,6 +97,9 @@ public:
     virtual void clearServiceObject()
     {
     }
+
+private:
+    bool m_testBaseFunctions;
 };
 
 class TestFeatureListModel : public QIviAbstractFeatureListModel
@@ -100,8 +107,9 @@ class TestFeatureListModel : public QIviAbstractFeatureListModel
     Q_OBJECT
 
 public:
-    TestFeatureListModel(QObject *parent = 0)
+    TestFeatureListModel(bool testBaseFunctions = false, QObject *parent = 0)
         : QIviAbstractFeatureListModel("testFeature", parent)
+        , m_testBaseFunctions(testBaseFunctions)
     {}
 
     QString errorText() const
@@ -111,6 +119,9 @@ public:
 
     virtual bool acceptServiceObject(QIviServiceObject *serviceObject)
     {
+        if (m_testBaseFunctions)
+            return QIviAbstractFeatureListModel::acceptServiceObject(serviceObject);
+
         if (serviceObject && acceptCounter > 0)
             return serviceObject->interfaces().contains(interfaceName());
         acceptCounter++;
@@ -146,6 +157,9 @@ public:
         Q_UNUSED(role)
         return QVariant();
     }
+
+private:
+    bool m_testBaseFunctions;
 };
 
 class TestFeatureBackend : public TestFeatureInterface
@@ -223,12 +237,12 @@ private Q_SLOTS:
     void testResetServiceObject();
 
 private:
-    QIviFeatureTester *createTester()
+    QIviFeatureTester *createTester(bool testBaseFunctions = false)
     {
         if (m_isModel)
-            return new QIviFeatureTester(new TestFeatureListModel());
+            return new QIviFeatureTester(new TestFeatureListModel(testBaseFunctions));
         else
-            return new QIviFeatureTester(new TestFeature());
+            return new QIviFeatureTester(new TestFeature(testBaseFunctions));
     }
 
     QIviServiceManager *m_manager;
@@ -326,10 +340,13 @@ void BaseTest::testAutoDiscovery_data()
     QTest::addColumn<QIviAbstractFeature::DiscoveryMode>("mode");
     QTest::addColumn<QIviAbstractFeature::DiscoveryResult>("result");
     QTest::addColumn<bool>("registerProduction");
-    QTest::newRow("Production") << QIviAbstractFeature::LoadOnlyProductionBackends << QIviAbstractFeature::ProductionBackendLoaded << true;
-    QTest::newRow("Simulation") << QIviAbstractFeature::LoadOnlySimulationBackends << QIviAbstractFeature::SimulationBackendLoaded << true;
-    QTest::newRow("Auto") << QIviAbstractFeature::AutoDiscovery << QIviAbstractFeature::ProductionBackendLoaded << true;
-    QTest::newRow("Auto fallback") << QIviAbstractFeature::AutoDiscovery << QIviAbstractFeature::SimulationBackendLoaded << false;
+    QTest::addColumn<bool>("testBaseFunctions");
+
+    QTest::newRow("Production") << QIviAbstractFeature::LoadOnlyProductionBackends << QIviAbstractFeature::ProductionBackendLoaded << true << false;
+    QTest::newRow("Simulation") << QIviAbstractFeature::LoadOnlySimulationBackends << QIviAbstractFeature::SimulationBackendLoaded << true << false;
+    QTest::newRow("Auto") << QIviAbstractFeature::AutoDiscovery << QIviAbstractFeature::ProductionBackendLoaded << true << false;
+    QTest::newRow("Auto Base Functions") << QIviAbstractFeature::AutoDiscovery << QIviAbstractFeature::ProductionBackendLoaded << true << true;
+    QTest::newRow("Auto fallback") << QIviAbstractFeature::AutoDiscovery << QIviAbstractFeature::SimulationBackendLoaded << false << false;
 }
 
 void BaseTest::testAutoDiscovery()
@@ -337,6 +354,7 @@ void BaseTest::testAutoDiscovery()
     QFETCH(QIviAbstractFeature::DiscoveryMode, mode);
     QFETCH(QIviAbstractFeature::DiscoveryResult, result);
     QFETCH(bool, registerProduction);
+    QFETCH(bool, testBaseFunctions);
 
     TestBackend* backend = new TestBackend();
     if (mode == QIviAbstractFeature::LoadOnlySimulationBackends || !registerProduction) {
@@ -348,7 +366,7 @@ void BaseTest::testAutoDiscovery()
         TestBackend* backend2 = new TestBackend();
         m_manager->registerService(backend2, backend2->interfaces(), QIviServiceManager::SimulationBackend);
     }
-    QIviFeatureTester *f = createTester();
+    QIviFeatureTester *f = createTester(testBaseFunctions);
     QVERIFY(!f->serviceObject());
     QVERIFY(!f->isValid());
     f->setDiscoveryMode(mode);
