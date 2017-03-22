@@ -1,0 +1,113 @@
+<node>
+    <interface name="org.mpris.MediaPlayer2.Player">
+        <method name="Next"/>
+        <method name="Previous"/>
+        <method name="Pause"/>
+        <method name="PlayPause"/>
+        <method name="Stop"/>
+        <method name="Play"/>
+        <method name="Seek">
+            <arg direction="in" type="x" name="Offset"/>
+        </method>
+        <method name="SetPosition">
+            <arg direction="in" type="o" name="TrackId"/>
+            <arg direction="in" type="x" name="Position"/>
+        </method>
+        <method name="OpenUri">
+            <arg direction="in" type="s"/>
+        </method>
+        <!-- Signals -->
+        <signal name="Seeked">
+            <arg type="x" name="Position"/>
+        </signal>
+        <!-- Properties -->
+        <property access="read" type="s" name="PlaybackStatus"/>
+        <property access="readwrite" type="s" name="LoopStatus"/>
+        <property access="readwrite" type="d" name="Rate"/>
+        <property access="readwrite" type="b" name="Shuffle"/>
+        <property access="read" type="a{sv}" name="Metadata">
+            <annotation value="QVariantMap" name="org.qtproject.QtDBus.QtTypeName"/>
+        </property>
+        <property access="readwrite" type="d" name="Volume"/>
+        <property access="read" type="x" name="Position"/>
+        <property access="read" type="d" name="MinimumRate"/>
+        <property access="read" type="d" name="MaximumRate"/>
+        <property access="read" type="b" name="CanGoNext"/>
+        <property access="read" type="b" name="CanGoPrevious"/>
+        <property access="read" type="b" name="CanPlay"/>
+        <property access="read" type="b" name="CanPause"/>
+        <property access="read" type="b" name="CanSeek"/>
+        <property access="read" type="b" name="CanControl"/>
+    </interface>
+    <interface name="org.freedesktop.DBus.Properties">
+        <method name="Get">
+            <arg name="interface_name" type="s" direction="in"/>
+            <arg name="property_name" type="s" direction="in"/>
+            <arg name="value" type="v" direction="out"/>
+        </method>
+        <method name="Set">
+            <arg name="interface_name" type="s" direction="in"/>
+            <arg name="property_name" type="s" direction="in"/>
+            <arg name="value" type="v" direction="in"/>
+        </method>
+        <method name="GetAll">
+            <arg name="interface_name" type="s" direction="in"/>
+            <arg name="values" type="a{sv}" direction="out"/>
+            <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="QVariantMap"/>
+        </method>
+        <signal name="PropertiesChanged">
+            <arg name="interface" type="s"/>
+            <arg name="changed_properties" type="a{sv}"/>
+            <annotation name="org.qtproject.QtDBus.QtTypeName.Out1" value="QVariantMap"/>
+            <arg name="invalidated_properties" type="as"/>
+        </signal>
+    </interface>
+    <interface name="org.freedesktop.DBus.Introspectable">
+        <method name="Introspect">
+            <arg name="xml_data" type="s" direction="out"/>
+        </method>
+    </interface>
+    <interface name="org.freedesktop.DBus.Peer">
+        <method name="Ping"/>
+        <method name="GetMachineId">
+            <arg name="machine_uuid" type="s" direction="out"/>
+        </method>
+    </interface>
+    <interface name="org.mpris.MediaPlayer2.TrackList">
+        <method name="GetTracksMetadata">
+            <arg direction="in" name="TrackIds" type="ao"/>
+            <arg direction="out" name="Metadata" type="aa{sv}" />
+            <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="QList&lt;QVariantMap&gt;" />
+        </method>
+        <method name="AddTrack">
+            <arg direction="in" name="Uri" type="s"/>
+            <arg direction="in" name="AfterTrack" type="o"/>
+            <arg direction="in" name="SetAsCurrent" type="b"/>
+        </method>
+        <method name="RemoveTrack">
+            <arg direction="in" name="TrackId" type="o"/>
+        </method>
+        <method name="GoTo">
+            <arg direction="in" name="TrackId" type="o"/>
+        </method>
+        <signal name="TrackListReplaced">
+            <arg name="Tracks" type="ao"/>
+            <arg name="CurrentTrack" type="o"/>
+        </signal>
+        <signal name="TrackAdded">
+            <arg name="Metadata" type="a{sv}" />
+            <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="QList&lt;QVariantMap&gt;"/>
+            <arg name="AfterTrack" type="o"/>
+        </signal>
+        <signal name="TrackRemoved">
+            <arg name="TrackId" type="o"/>
+        </signal>
+        <signal name="TrackMetadataChanged">
+            <arg name="TrackId" type="o"/>
+            <arg name="Metadata" type="a{sv}" />
+            <annotation name="org.qtproject.QtDBus.QtTypeName.Out1" value="QList&lt;QVariantMap&gt;"/>
+        </signal>
+        <property name="Tracks" type="ao" access="read"/>
+        <property name="CanEditTracks" type="b" access="read"/>
+    </interface>
+</node>
