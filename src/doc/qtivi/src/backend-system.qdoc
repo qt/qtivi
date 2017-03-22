@@ -1,0 +1,137 @@
+/****************************************************************************
+**
+** Copyright (C) 2017 Pelagicore AG
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL-QTAS$
+** Commercial License Usage
+** Licensees holding valid commercial Qt Automotive Suite licenses may use
+** this file in accordance with the commercial license agreement provided
+** with the Software or, alternatively, in accordance with the terms
+** contained in a written agreement between you and The Qt Company.  For
+** licensing terms and conditions see https://www.qt.io/terms-conditions.
+** For further information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+/*!
+\page backend-system.html
+\title Dynamic Backend System
+\nextpage The Qt IVI Attribute System
+\contentspage Concepts
+
+\section1 What's a Feature
+
+Modern automotive systems are very complex and are developed in a tight timeframe. Because of that,
+it often makes sense to reuse parts of previously developed systems. At the same time, the main
+development is done by independent companies (tier-1). To make it possible to reuse code from
+previous project, but at the same time also make it possible to use parts the tier-1 can offer, it
+makes sense to split the APIs into two layers: a frontend and a backend. In QtIvi, the frontend API
+is called a \b feature, as usually a specific class is responsible for a specific feature area,
+e.g. QIviClimateControl, for controlling the climate feature area.
+
+\section1 What's a Backend
+
+To function correctly, every feature needs to have a connected backend. This backend needs to
+implement the corresponding feature backend interface. Only then a valid connection between the
+feature and its backend can be created.
+
+Usually every feature has exactly one backend interface class, which needs to be implemented by the
+backend for this feature to work. Every backend interface is derived from QIviFeatureInterface,
+which provides generic functions and signals needed by every feature, e.g. for error handling.
+
+The backend implementations are grouped together and are implemented inside a Qt plugin. This makes
+it easy to provide multiple backends at the same time and switch the backend at runtime. Those
+backend plugins are loaded through \l{qtivicore - the Glue}{qtivicore}. A plugin can provide
+implementations for multiple features. There is no need to create a separate plugin for every
+feature. QtIvi also distinguishes between two types of backends: production and simulation. While
+on a production system, you only want to have production backends running. But during the
+development phase, it might be useful to have a simulation backend available, which can be used for
+frontend development until the backend services are in an usable state. QtIvi uses a simple naming
+scheme to identify whether a plugin provides simulation or production backends. Every simulation
+plugin needs to have either "simulation" or "simulator" in its name.
+
+\image backendtypes.jpg "Backend types"
+
+\section1 ServiceObjects
+
+To keep the features very flexible and to make it possible to change the backends at runtime, we
+introduced a concept called ServiceObject. A QIviServiceObject is a handle, which is used by the
+feature to connect to the correct backend interface. It provides methods to query the available
+backend interfaces that the ServiceObject is implementing. Plugins are automatically wrapped by
+ServiceObjects. This makes it possible to share the ServiceObject between multiple features and to
+explicltly select which backend should be used for your feature instance.
+
+\section1 qtivicore - the Glue
+
+The qtivicore module provides all the classes that are needed to glue the parts together. In
+addition to providing the base classes like QIviAbstractFeature or QIviServiceObject, it also
+provides the QIviServiceManager, responsible for loading the needed backend plugins.
+
+\image feature_backend.jpg "Feature backend relation"
+
+\section1 QIviServiceManager
+
+The QIviServiceManager is the central part of qtivicore, keeping book on all the available backends
+and their exported interfaces. For this, the manager scans through all available plugins and their
+accompanying metadata. This gives the QIviServiceManager the ability to only load the plugins,
+which are actually needed by a Feature in order to reduce the startup time. All these information
+is collected in the manager in form of a model, which enables the user to pick and choose the
+plugin he wants to use.
+
+\section1 How a Feature Finds its Backend
+
+Usually every Feature is using the so called auto discovery mode. From QML, you can set the
+QIviAbstractFeature::discoveryMode property; from the C++ side, this can be started using
+QIviAbstractFeature::startAutoDiscovery(). This will ask the QIviServiceManager for all the
+available backends implementing the required interface for your feature. The manager will then
+choose the first matching backend and will connect the feature to it. QIviAbstractFeature will
+first ask for production backends and only if none are available, fall back to a simulation
+backend. This behavior can be controlled using the QIviAbstractFeature::discoveryMode (defaults to
+QIviAbstractFeature::AutoDiscovery). The resulting backend type can be retrieved via
+QIviAbstractFeature::discoveryResult. After the feature has successfully loaded a backend, the
+QIviAbstractFeature::serviceObject property holds the loaded ServiceObject and
+QIviAbstractFeature::isValid returns \c true.
+
+\section2 Manual Assignment
+
+If a feature does not want not use the auto discovery mechanism, it can simply set the
+discoveryMode to QIviAbstractFeature::NoAutoDiscovery. After that, the feature won't search for a
+backend itself anymore, so the user needs to assign a ServiceObject manually.
+
+\section2 DiscoveryModels
+
+For features like QIviClimateControl the auto discovery is fitting, as there is usually a 1:1
+mapping between a feature and a backend providing the implementation for the feature. For more
+generic interfaces like a media player, this might not be sufficient: you could control a built-in
+media player backend with this, but you might also want to control the media player running on your
+mobile phone over bluetooth. For this to work, you first would need to discovery the available
+devices and then pass the ServiceObject of the selected device to the media player interface. The
+discovery of the available mobile phones can be done using a DiscoveryModel. This provides you with
+a ServiceObject for every device found. The concept of a discovery model is not limited to mobile
+phones, it can be used for all backends that are not hard-wired to the system, like internet
+services or controlling multiple rearseat systems.
+
+\section2 Detailed connection order
+
+\list 1
+    \li A ClimateControl element is created in QML.
+    \li ClimateControl will call QIviAbstractFeature::startAutoDiscovery on its completion.
+    \li QIviAbstractFeature::startAutoDiscovery will ask QIviServiceManager for all backends.
+    \li QIviServiceManager searches for all available plugins and the interfaces they are implementing
+        (this happens only once).
+    \li QIviAbstractFeature will accept the first QIviServiceObject and connect to the
+        corresponding interface.
+    \li The ClimateControl element is ready to be used.
+\endlist
+*/

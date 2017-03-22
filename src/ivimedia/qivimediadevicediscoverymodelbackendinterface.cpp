@@ -46,6 +46,7 @@
     \inmodule QtIviMedia
     \ingroup backends
     \inherits QObject
+    \keyword org.qt-project.qtivi.MediaDiscovery/1.0
     \brief The QIviMediaDeviceDiscoveryModelBackendInterface defines the interface for backends to the
     QIviMediaDeviceDiscoveryModel feature class.
 

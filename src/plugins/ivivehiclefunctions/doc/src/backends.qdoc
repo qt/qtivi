@@ -24,32 +24,47 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+
 /*!
-\page reference-api.html
-\title Using the Qt IVI Reference API
+\page qtivivehiclefunctions-backends.html
+\title QtIviVehicleFunctions Backends
+\ingroup qtivi_backend_groups
 
-\section1 Overview
+All backends supporting interfaces from QtIviVehicleFunctions
 
-The Qt IVI module contains a reference API providing interfaces to common automotive
-functionality. These APIs rely on the separation of the front-end API and the backend
-implementation. The Qt IVI module also introduces a set of concepts used in the APIs:
-zones and property attributes.
+\annotatedlist qtivivehiclefunctions_backend
+*/
 
-The feature areas covered by the Qt IVI module reference API are:
+/*!
+\page qtivivehiclefunctions-simulation-backend.html
+\title QtIviVehicleFunctions Simulation Backend
+\ingroup qtivivehiclefunctions_backend
+\ingroup qtivi_backend
 
+\brief Provides a static vehicle functions simulation.
+
+\section1 Supported interfaces
 \list
-    \li Vehicle Functions
+    \li \l{org.qt-project.qtivi.ClimateControl/1.0}
+    \li \l{org.qt-project.qtivi.WindowControl/1.0}
+\endlist
+
+\section1 Supported Zones
+\list
+    \li ClimateControl
     \list
-        \li \l {QIviClimateControl} {Climate Control}
-        \li \l {QIviWindowControl} {Window Control}
+        \li FrontLeft
+        \li FrontRight
+        \li Rear
     \endlist
-\omit
-    \li Media Management
+    \li WindowControl
     \list
-        \li Search and Browse
-        \li Playqueue Management
-        \li Playback Control
+        \li FrontLeft
+        \li FrontRight
+        \li RearLeft
+        \li RearRight
+        \li Rear
+        \li Roof
     \endlist
-\endomit
 \endlist
 */

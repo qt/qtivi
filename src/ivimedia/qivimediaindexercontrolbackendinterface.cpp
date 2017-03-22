@@ -46,6 +46,7 @@
     \inmodule QtIviMedia
     \ingroup backends
     \inherits QObject
+    \keyword org.qt-project.qtivi.MediaIndexer/1.0
     \brief The QIviMediaIndexerControlBackendInterface defines the interface for backends to the
     QIviMediaIndexerControl feature class.
 

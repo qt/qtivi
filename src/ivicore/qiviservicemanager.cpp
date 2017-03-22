@@ -265,6 +265,14 @@ QIviServiceInterface *QIviServiceManagerPrivate::loadServiceBackendInterface(str
  * a plugin.
  *
  * The service manager is a process wide singleton and can be accessed through the \l instance method.
+ *
+ * For more detailed information on which plugins are recognized, enable the "qt.ivi.servicemanagement"
+ * logging category.
+ *
+ * See \l {Dynamic Backend System} for more information about how backend loading works.
+ *
+ * \note The QIviServiceManager will only accept plugins, which match the build configuration used
+ * for building qtivicore. This means qtivicore "release" build, doesn't accept plugins from a "debug" build.
  */
 
 /*!

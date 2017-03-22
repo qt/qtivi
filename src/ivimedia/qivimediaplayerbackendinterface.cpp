@@ -46,6 +46,7 @@
     \inmodule QtIviMedia
     \ingroup backends
     \inherits QObject
+    \keyword org.qt-project.qtivi.MediaPlayer/1.0
     \brief The QIviMediaPlayerBackendInterface defines the interface for backends to the
     QIviMediaPlayer feature class.
 

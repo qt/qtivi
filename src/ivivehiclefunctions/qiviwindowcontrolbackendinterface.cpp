@@ -46,6 +46,7 @@
  * \inmodule QtIviVehicleFunctions
  * \ingroup backends
  * \inherits QIviZonedFeatureInterface
+ * \keyword org.qt-project.qtivi.WindowControl/1.0
  * \brief The QIviWindowControlBackendInterface defines the interface for backends to the
  * QIviWindowControl feature class.
  *

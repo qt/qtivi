@@ -25,31 +25,16 @@
 **
 ****************************************************************************/
 /*!
-\page reference-api.html
-\title Using the Qt IVI Reference API
+\page concepts.html
+\title Concepts
 
-\section1 Overview
-
-The Qt IVI module contains a reference API providing interfaces to common automotive
-functionality. These APIs rely on the separation of the front-end API and the backend
-implementation. The Qt IVI module also introduces a set of concepts used in the APIs:
-zones and property attributes.
-
-The feature areas covered by the Qt IVI module reference API are:
+All Qt IVI feature APIs depend on a set of key concepts. These are explained in the
+following sections.
 
 \list
-    \li Vehicle Functions
-    \list
-        \li \l {QIviClimateControl} {Climate Control}
-        \li \l {QIviWindowControl} {Window Control}
-    \endlist
-\omit
-    \li Media Management
-    \list
-        \li Search and Browse
-        \li Playqueue Management
-        \li Playback Control
-    \endlist
-\endomit
+    \li \l {Dynamic Backend System}
+    \li \l {The Qt IVI Attribute System}
+    \li \l {Models}
+    \li \l {The Qt IVI Query Language}
 \endlist
 */

@@ -56,10 +56,9 @@
     automotive features to Qt-based applications in a structured manner.
 
     \list
+    \li \l{Concepts}
     \li \l{Using the Qt IVI Reference API}
-    \li \l{Extending Qt IVI}
-    \li \l{The Qt IVI Attribute System}
-    \li \l{The Qt IVI Query Language}
+    \li \l{QtIvi Backends}{Available Backends}
     \endlist
 
     \section1 Modules

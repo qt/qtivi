@@ -488,6 +488,8 @@ QString QIviAbstractFeature::errorText() const
  *         As a result of the auto discovery a production backend was loaded.
  *  \value SimulationBackendLoaded
  *         As a result of the auto discovery a simulation backend was loaded.
+ *
+ * \sa {Dynamic Backend System} QIviServiceManager
  */
 
 /*!
@@ -503,7 +505,7 @@ QString QIviAbstractFeature::errorText() const
  * If the discoveryMode is set to QIviAbstractFeature::NoAutoDiscovery this function will
  * do nothing and return QIviAbstractFeature::NoResult.
  *
- * \sa discoveryMode()
+ * \sa discoveryMode() {Dynamic Backend System}
  */
 QIviAbstractFeature::DiscoveryResult QIviAbstractFeature::startAutoDiscovery()
 {

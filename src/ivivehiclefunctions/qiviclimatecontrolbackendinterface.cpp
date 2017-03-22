@@ -46,6 +46,7 @@
  * \inmodule QtIviVehicleFunctions
  * \ingroup backends
  * \inherits QIviZonedFeatureInterface
+ * \keyword org.qt-project.qtivi.ClimateControl/1.0
  * \brief The QIviClimateControlBackendInterface defines the interface for backends to the
  * QIviClimateControl feature class.
  *

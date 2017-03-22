@@ -5,11 +5,16 @@ url                           = http://doc.qt.io/QtIVI
 
 sourcedirs                   += .
 headerdirs                   += .
+imagedirs                    += images
 
 # include sub-modules' sources and headers
 include(../../ivicore/doc/qtivicore.qdocconf)
 include(../../ivivehiclefunctions/doc/qtivivehiclefunctions.qdocconf)
 include(../../ivimedia/doc/qtivimedia.qdocconf)
+
+# include the backend plugins documentation
+include(../../plugins/ivimedia/doc/qtivimedia_plugins.qdocconf)
+include(../../plugins/ivivehiclefunctions/doc/qtivivehiclefunctions_plugins.qdocconf)
 
 qhp.projects                  = QtIvi
 

@@ -46,6 +46,7 @@
     \inmodule QtIviMedia
     \ingroup backends
     \inherits QObject
+    \keyword org.qt-project.qtivi.AmFmTuner/1.0
     \brief The QIviAmFmTunerBackendInterface defines the interface for backends to the
     QIviAmFmTuner feature class.
 

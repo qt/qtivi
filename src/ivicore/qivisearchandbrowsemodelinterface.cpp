@@ -51,6 +51,7 @@ QIviSearchAndBrowseModelInterfacePrivate::QIviSearchAndBrowseModelInterfacePriva
     \inmodule QtIviCore
     \ingroup backends
     \inherits QObject
+    \keyword org.qt-project.qtivi.SearchAndBrowseModel/1.0
     \brief The QIviSearchAndBrowseModelInterface defines the interface for backends to the
     QIviSearchAndBrowseModel feature class.
 
