@@ -106,7 +106,10 @@ protected:
     void clearServiceObject() Q_DECL_OVERRIDE;
 
 private:
-    Q_DECLARE_PRIVATE({{class}})
+{% if module.tags.config.disablePrivateIVI %}
+    friend class {{class}}Private;
+    {{class}}Private *m_helper;
+{% else %}
 {% for property in interface.properties %}
 {%   if interface.tags.config.zoned %}
     Q_PRIVATE_SLOT(d_func(), void on{{property|upperfirst}}Changed({{property|parameterType}}, const QString &))
@@ -114,6 +117,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void on{{property|upperfirst}}Changed({{property|parameterType}}))
 {%   endif %}
 {% endfor %}
+    Q_DECLARE_PRIVATE({{class}})
+{% endif %}
 };
 
 QT_END_NAMESPACE

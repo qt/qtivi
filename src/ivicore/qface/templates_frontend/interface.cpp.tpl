@@ -48,14 +48,19 @@
 
 QT_BEGIN_NAMESPACE
 
-{% if interface.tags.config.zoned %}
+{% if module.tags.config.disablePrivateIVI %}
+{{class}}Private::{{class}}Private({{class}} *q)
+    : QObject(q)
+{% else %}
+{%   if interface.tags.config.zoned %}
 {{class}}Private::{{class}}Private(const QString &interface, const QString &zone, {{class}} *parent)
     : QIviAbstractZonedFeaturePrivate(interface, zone, parent)
-{% else %}
+{%   else %}
 {{class}}Private::{{class}}Private(const QString &interface, {{class}} *parent)
     : QIviAbstractFeaturePrivate(interface, parent)
-{% endif %}
+{%   endif %}
     , q_ptr(parent)
+{% endif %}
 {% for property in interface.properties %}
     , m_{{property}}({{property|defaultValue}})
 {% endfor %}
@@ -64,12 +69,29 @@ QT_BEGIN_NAMESPACE
 
 {{class}}Private *{{class}}Private::get({{class}} *v)
 {
+{% if module.tags.config.disablePrivateIVI %}
+    return v->m_helper;
+{% else %}
     return ({{class}}Private *) v->d_ptr.data();
+{% endif %}
 }
 
 const {{class}}Private *{{class}}Private::get(const {{class}} *v)
 {
+{% if module.tags.config.disablePrivateIVI %}
+    return v->m_helper;
+{% else %}
     return (const {{class}}Private *) v->d_ptr.data();
+{% endif %}
+}
+
+{{class}} *{{class}}Private::getParent()
+{
+{% if module.tags.config.disablePrivateIVI %}
+    return qobject_cast<{{class}} *>(parent());
+{% else %}
+    return q_ptr;
+{% endif %}
 }
 
 void {{class}}Private::clearToDefaults()
@@ -83,7 +105,7 @@ void {{class}}Private::clearToDefaults()
 {% if interface.tags.config.zoned %}
 void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameterType}}, const QString &zone)
 {
-    Q_Q({{class}});
+    auto q = getParent();
     auto f = qobject_cast<{{class}}*>(q->zoneAt(zone));
     if (!f)
         f = q;
@@ -96,26 +118,41 @@ void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameterType
 void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameterType}})
 {
     if (m_{{property}} != {{property}}) {
-        Q_Q({{class}});
+        auto q = getParent();
         m_{{property}} = {{property}};
         emit q->{{property}}Changed({{property}});
     }
 }
 {% endif %}
+
 {% endfor %}
 
-{% if interface.tags.config.zoned %}
+{% if module.tags.config.disablePrivateIVI %}
+{%   if interface.tags.config.zoned %}
+{{class}}::{{class}}(const QString &zone, QObject *parent)
+    : QIviAbstractZonedFeature({{module.module_name}}_{{interface}}_iid, zone, parent)
+{%   else %}
+{{class}}::{{class}}(QObject *parent)
+    : QIviAbstractFeature({{module.module_name}}_{{interface}}_iid, parent)
+{%   endif %}
+    , m_helper(new {{class}}Private(this))
+{% else %}
+{%   if interface.tags.config.zoned %}
 {{class}}::{{class}}(const QString &zone, QObject *parent)
     : QIviAbstractZonedFeature(*new {{class}}Private({{module.module_name}}_{{interface}}_iid, zone, this), parent)
-{% else %}
+{%   else %}
 {{class}}::{{class}}(QObject *parent)
     : QIviAbstractFeature(*new {{class}}Private({{module.module_name}}_{{interface}}_iid, this), parent)
+{%   endif %}
 {% endif %}
 {
 }
 
 {{class}}::~{{class}}()
 {
+{% if module.tags.config.disablePrivateIVI %}
+    delete m_helper;
+{% endif %}
 }
 
 void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minorVersion)
@@ -182,8 +219,10 @@ void {{class}}::connectToServiceObject(QIviServiceObject *serviceObject)
         return;
 
 {% for property in interface.properties %}
-    QObjectPrivate::connect(backend, &{{class}}BackendInterface::{{property}}Changed,
-            d, &{{class}}Private::on{{property|upperfirst}}Changed);
+{% if module.tags.config.disablePrivateIVI %}{% set Connect = 'QObject::connect' %}
+{% else %}{% set Connect = 'QObjectPrivate::connect' %}{% endif %}
+    {{Connect}}(backend, &{{class}}BackendInterface::{{property}}Changed,
+        d, &{{class}}Private::on{{property|upperfirst}}Changed);
 {% endfor %}
 }
 

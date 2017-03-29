@@ -56,31 +56,44 @@
 
 #include "{{module.module_name|lower}}module.h"
 
-{% if interface.tags.config.zoned %}
-#include <QtIviCore/private/qiviabstractzonedfeature_p.h>
+{% if module.tags.config.disablePrivateIVI %}
+#include <QObject>
 {% else %}
+{%   if interface.tags.config.zoned %}
+#include <QtIviCore/private/qiviabstractzonedfeature_p.h>
+{%   else %}
 #include <QtIviCore/private/qiviabstractfeature_p.h>
+{%   endif %}
 {% endif %}
 
 QT_BEGIN_NAMESPACE
 
 class {{class}};
 
-{% if interface.tags.config.zoned %}
-class {{class}}Private : public QIviAbstractZonedFeaturePrivate
+{% if module.tags.config.disablePrivateIVI %}
+class {{class}}Private : public QObject
 {% else %}
+{%   if interface.tags.config.zoned %}
+class {{class}}Private : public QIviAbstractZonedFeaturePrivate
+{%   else %}
 class {{class}}Private : public QIviAbstractFeaturePrivate
+{%   endif %}
 {% endif %}
 {
 public:
-{% if interface.tags.config.zoned %}
-    {{class}}Private(const QString &interface, const QString &zone, {{class}} *parent);
+{% if module.tags.config.disablePrivateIVI %}
+    {{class}}Private({{class}} *parent);
 {% else %}
+{%   if interface.tags.config.zoned %}
+    {{class}}Private(const QString &interface, const QString &zone, {{class}} *parent);
+{%   else %}
     {{class}}Private(const QString &interface, {{class}} *parent);
+{%   endif %}
 {% endif %}
 
     static {{class}}Private *get({{class}} *p);
     static const {{class}}Private *get(const {{class}} *p);
+    {{class}} *getParent();
 
     void clearToDefaults();
 
@@ -92,12 +105,16 @@ public:
 {%   endif %}
 {% endfor %}
 
+{% if not module.tags.config.disablePrivateIVI %}
     {{class}} * const q_ptr;
+{% endif %}
 {% for property in interface.properties %}
     {{property|returnType}} m_{{property}};
 {% endfor %}
 
+{% if not module.tags.config.disablePrivateIVI %}
     Q_DECLARE_PUBLIC({{class}})
+{% endif %}
 };
 
 QT_END_NAMESPACE

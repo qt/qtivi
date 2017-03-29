@@ -42,7 +42,10 @@
 #############################################################################
 
 TEMPLATE = lib
-QT += qml quick ivicore ivicore-private
+QT += qml quick ivicore
+{% if module.tags.config.disablePrivateIVI != True %}
+QT += ivicore-private
+{% endif %}
 CONFIG += qt plugin
 TARGET = $$qtLibraryTarget({{module|lower}})
 
