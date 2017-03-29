@@ -88,6 +88,7 @@ void AmFmTunerBackend::initialize()
     emit stepSizeChanged(m_bandHash[m_band].m_stepSize);
     emit frequencyChanged(m_bandHash[m_band].m_frequency);
     emit stationChanged(m_bandHash[m_band].m_stations.at(0));
+    emit initializationDone();
 }
 
 void AmFmTunerBackend::setFrequency(int frequency)

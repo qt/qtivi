@@ -90,7 +90,7 @@ public:
         return m_zones;
     }
 
-    void initializeAttributes() Q_DECL_OVERRIDE
+    void initialize() Q_DECL_OVERRIDE
     {
         emit airflowDirectionsChanged(m_airflowDirections);
         emit airflowDirectionsAttributeChanged(m_airflowDirectionsAttribute);
@@ -537,11 +537,24 @@ private:
     ClimateControlTestBackend *m_backend;
 };
 
+class InvalidInterface : public QIviFeatureInterface
+{
+public:
+    InvalidInterface(QObject *parent)
+        : QIviFeatureInterface(parent)
+    {}
+
+    void initialize() Q_DECL_OVERRIDE
+    {
+        emit initializationDone();
+    }
+};
+
 class ClimateControlInvalidServiceObject : public QIviServiceObject {
 
 public:
     explicit ClimateControlInvalidServiceObject(QObject *parent=0) :
-        QIviServiceObject(parent), m_name(QLatin1String("")), m_dummyBackend(new QIviFeatureInterface(this))
+        QIviServiceObject(parent), m_name(QLatin1String("")), m_dummyBackend(new InvalidInterface(this))
     {
         m_interfaces << QIviClimateControl_iid;
     }

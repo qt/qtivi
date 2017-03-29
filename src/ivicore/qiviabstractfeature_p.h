@@ -68,6 +68,7 @@ public:
     virtual void initialize();
 
     void setDiscoveryResult(QIviAbstractFeature::DiscoveryResult discoveryResult);
+    void onInitializationDone();
 
     QIviAbstractFeature * const q_ptr;
     Q_DECLARE_PUBLIC(QIviAbstractFeature)
@@ -79,6 +80,7 @@ public:
     QString m_errorMessage;
     QIviAbstractFeature::Error m_error;
     bool m_qmlCreation;
+    bool m_isInitialized;
 };
 
 QT_END_NAMESPACE

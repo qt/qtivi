@@ -59,7 +59,7 @@
 
    See the full example backend implementation from \c {src/plugins/ivivehiclefunctions/climate_simulator}.
    \sa QIviAbstractFeature, QIviServiceInterface
- */
+*/
 
 QIviFeatureInterface::QIviFeatureInterface(QObject *parent)
     : QObject(parent)
@@ -76,8 +76,29 @@ QIviFeatureInterface::QIviFeatureInterface(QObjectPrivate &dd, QObject *parent)
 }
 
 /*!
- * \fn void errorChanged(QIviAbstractFeature::Error error, const QString &message = QString())
- *
- * The signal is emitted when \a error occurs in the backend.
- * Error \a message is optional.
- */
+    \fn void QIviFeatureInterface::initialize()
+
+    Initializes the backend. This function is called after a feature connected to the backend.
+    It is expected that this function will inform about the current state of the backend by
+    emitting signals with the current status.
+
+    The last signal which needs to be sent is the initializationDone() signal.
+
+    \sa initializationDone()
+*/
+
+/*!
+    \fn void QIviFeatureInterface::errorChanged(QIviAbstractFeature::Error error, const QString &message = QString())
+
+    The signal is emitted when \a error occurs in the backend.
+    Error \a message is optional.
+*/
+
+/*!
+    \fn void QIviFeatureInterface::initializationDone()
+
+    The signal is emitted  once the current backend state has been sent to the feature after
+    a call to initialize()
+
+    \sa initialize
+*/

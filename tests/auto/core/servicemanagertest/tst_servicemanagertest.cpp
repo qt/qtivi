@@ -63,6 +63,18 @@ private:
     QMap<QString, QIviFeatureInterface *> m_serviceObjects;
 };
 
+class TestInterface : public QIviFeatureInterface
+{
+public:
+    TestInterface(QObject *parent)
+        : QIviFeatureInterface(parent)
+    {}
+
+    void initialize() Q_DECL_OVERRIDE
+    {
+    }
+};
+
 class ServiceManagerTest : public QObject
 {
     Q_OBJECT
@@ -168,7 +180,7 @@ void ServiceManagerTest::testFindServiceObjects()
         type = QIviServiceManager::SimulationBackend;
     bool regResult = manager->registerService(backend, QStringList() << "TestInterface", type);
     QCOMPARE(regResult, true);
-    QIviFeatureInterface *testObject = new QIviFeatureInterface();
+    QIviFeatureInterface *testObject = new TestInterface(backend);
     backend->addServiceObject("TestInterface", testObject);
 
     QList<QIviServiceObject*> list = manager->findServiceByInterface("TestInterface", searchFlags);

@@ -340,8 +340,6 @@ void QIviWindowControl::connectToServiceObject(QIviServiceObject *serviceObject)
                             d, &QIviWindowControlPrivate::onStateAttributeChanged);
 
     QIviAbstractFeature::connectToServiceObject(serviceObject);
-
-    backend->initializeAttributes();
 }
 
 /*!

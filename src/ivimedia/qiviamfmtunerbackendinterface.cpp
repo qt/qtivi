@@ -68,13 +68,6 @@ QIviAmFmTunerBackendInterface::QIviAmFmTunerBackendInterface(QObject *parent)
 }
 
 /*!
-    \fn QIviAmFmTunerBackendInterface::initialize()
-
-    Initializes the backend. This function is called, after a feature connected to the backend.
-    It is expected that this function will inform about the current state of the backend by emitting signals with the current status.
-*/
-
-/*!
     \fn QIviAmFmTunerBackendInterface::setFrequency(int frequency)
 
     Changes the frequency to the new value passed as \a frequency.

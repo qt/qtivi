@@ -175,6 +175,11 @@ public:
         : TestFeatureInterface(parent)
     {}
 
+    void initialize() Q_DECL_OVERRIDE
+    {
+        emit initializationDone();
+    }
+
     void emitError(QIviAbstractFeature::Error error, const QString &message)
     {
         emit errorChanged(error, message);
@@ -267,6 +272,7 @@ void BaseTest::testAutoDiscoveryFailure()
     QIviAbstractFeature::DiscoveryResult result = f->startAutoDiscovery();
     QVERIFY(!f->serviceObject());
     QVERIFY(!f->isValid());
+    QVERIFY(!f->isInitialized());
     QCOMPARE(result, QIviAbstractFeature::ErrorWhileLoading);
 
     QTest::ignoreMessage(QtWarningMsg, "There is no production backend implementing \"testFeature\" .");
@@ -275,6 +281,7 @@ void BaseTest::testAutoDiscoveryFailure()
     result = f->startAutoDiscovery();
     QVERIFY(!f->serviceObject());
     QVERIFY(!f->isValid());
+    QVERIFY(!f->isInitialized());
     QCOMPARE(result, QIviAbstractFeature::ErrorWhileLoading);
 
     TestBackend* backend1 = new TestBackend();
@@ -336,6 +343,7 @@ void BaseTest::testAutoDiscoveryWithMultipleBackends()
     QIviAbstractFeature::DiscoveryResult res = f->startAutoDiscovery();
     QVERIFY(f->serviceObject());
     QVERIFY(f->isValid());
+    QVERIFY(f->isInitialized());
     QCOMPARE(res, result);
 }
 
@@ -375,6 +383,7 @@ void BaseTest::testAutoDiscovery()
     QVERIFY(!f->isValid());
     f->setDiscoveryMode(mode);
     QSignalSpy validSpy(f, &QIviFeatureTester::isValidChanged);
+    QSignalSpy initializedSpy(f, &QIviFeatureTester::isInitializedChanged);
     if (!registerProduction)
         QTest::ignoreMessage(QtWarningMsg, "There is no production backend implementing \"testFeature\" .");
     QIviAbstractFeature::DiscoveryResult res = f->startAutoDiscovery();
@@ -385,6 +394,9 @@ void BaseTest::testAutoDiscovery()
     QCOMPARE(validSpy.at(0).at(0).toBool(), true);
     QCOMPARE(res, result);
     QCOMPARE(f->discoveryResult(), result);
+    QVERIFY(f->isInitialized());
+    QCOMPARE(initializedSpy.count(), 1);
+    QCOMPARE(initializedSpy.at(0).at(0).toBool(), true);
 }
 
 void BaseTest::testAutoDiscovery_qml()

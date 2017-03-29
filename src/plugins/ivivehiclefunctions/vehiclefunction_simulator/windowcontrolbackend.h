@@ -78,7 +78,7 @@ public:
     ~WindowControlBackend();
 
     QStringList availableZones() const;
-    void initializeAttributes();
+    void initialize();
 
     void setHeaterMode(QIviWindowControl::HeaterMode value, const QString &zone);
     void setBlindMode(QIviWindowControl::BlindMode value, const QString &zone);

@@ -214,7 +214,7 @@ QStringList WindowControlBackend::availableZones() const
     return m_zoneMap.keys();
 }
 
-void WindowControlBackend::initializeAttributes()
+void WindowControlBackend::initialize()
 {
     const auto zones = availableZones();
     for (const QString &zone : zones) {
@@ -229,6 +229,8 @@ void WindowControlBackend::initializeAttributes()
         emit stateChanged(m_zoneMap[zone].state, zone);
         emit stateAttributeChanged(m_zoneMap[zone].stateAttribute, zone);
     }
+
+    emit initializationDone();
 }
 
 void WindowControlBackend::setHeaterMode(QIviWindowControl::HeaterMode value, const QString &zone)

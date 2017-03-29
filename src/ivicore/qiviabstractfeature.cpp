@@ -59,6 +59,7 @@ QIviAbstractFeaturePrivate::QIviAbstractFeaturePrivate(const QString &interface,
     , m_discoveryResult(QIviAbstractFeature::NoResult)
     , m_error(QIviAbstractFeature::NoError)
     , m_qmlCreation(false)
+    , m_isInitialized(false)
 {
 }
 
@@ -74,6 +75,16 @@ void QIviAbstractFeaturePrivate::setDiscoveryResult(QIviAbstractFeature::Discove
     m_discoveryResult = discoveryResult;
     Q_Q(QIviAbstractFeature);
     emit q->discoveryResultChanged(discoveryResult);
+}
+
+void QIviAbstractFeaturePrivate::onInitializationDone()
+{
+    if (m_isInitialized)
+        return;
+
+    m_isInitialized = true;
+    Q_Q(QIviAbstractFeature);
+    emit q->isInitializedChanged(true);
 }
 
 /*!
@@ -174,23 +185,6 @@ void QIviAbstractFeaturePrivate::setDiscoveryResult(QIviAbstractFeature::Discove
     Once the AbstractFeature is instantiated by QML the autoDiscovery will be started automatically.
     To disable this behavior the discoveryMode can be set to \c NoDiscovery;
 */
-
-/*!
- * \fn void QIviAbstractFeature::connectToServiceObject(QIviServiceObject *serviceObject)
- *
- * This method is expected to be implemented by any class subclassing QIviAbstractFeature.
- *
- * The implementation should connect to the \a serviceObject, and set up all
- * properties to reflect the state of the service object.
- *
- * There is no previous service object connected, as this function call is always preceded by a call to
- * \l disconnectFromServiceObject or \l clearServiceObject.
- *
- * It is safe to assume that the \a serviceObject, has always been accepted through the
- * \l acceptServiceObject method prior to being passed to this method.
- *
- * \sa acceptServiceObject(), disconnectFromServiceObject(), clearServiceObject()
- */
 
 /*!
  * \fn void QIviAbstractFeature::clearServiceObject()
@@ -596,13 +590,55 @@ bool QIviAbstractFeature::acceptServiceObject(QIviServiceObject *serviceObject)
     return serviceObject->interfaces().contains(interfaceName());
 }
 
+/*!
+ * This method is expected to be implemented by any class subclassing QIviAbstractFeature.
+ *
+ * The implementation should connect to the \a serviceObject, and set up all
+ * properties to reflect the state of the service object.
+ *
+ * There is no previous service object connected, as this function call is always preceded by a call to
+ * \l disconnectFromServiceObject or \l clearServiceObject.
+ *
+ * It is safe to assume that the \a serviceObject, has always been accepted through the
+ * \l acceptServiceObject method prior to being passed to this method.
+ *
+ * The default implementation connects to the signals offered by QIviFeatureInterface and calls
+ * QIviFeatureInterface::initialize() afterwards.
+ *
+ * When reimplementing please keep in mind to connect all signals before calling this function. e.g.
+ *
+ * /code
+ * void SimpleFeature::connectToServiceObject(QIviServiceObject *serviceObject)
+ * {
+ *      SimpleFeatureBackendInterface *backend = backend(serviceObject);
+ *      if (!backend)
+ *          return;
+ *
+ *      // connect your signals
+ *      connect(backend, &SimpleFeatureBackendInterface::propertyChanged,
+ *              this, &SimpleFeature::onPropertyChanged);
+ *
+ *      // connects the base signals and call initialize()
+ *      QIviAbstractFeature::connectToServiceObject(serviceObject);
+ *
+ *      // Additional initialization functions can be added here
+ * }
+ * /endcode
+ *
+ * \sa acceptServiceObject(), disconnectFromServiceObject(), clearServiceObject()
+ */
 void QIviAbstractFeature::connectToServiceObject(QIviServiceObject *serviceObject)
 {
+    Q_D(QIviAbstractFeature);
     Q_ASSERT(serviceObject);
     QIviFeatureInterface *backend = serviceObject->interfaceInstance(interfaceName());
 
-    if (backend)
+    if (backend) {
         connect(backend, &QIviFeatureInterface::errorChanged, this, &QIviAbstractFeature::onErrorChanged);
+        QObjectPrivate::connect(backend, &QIviFeatureInterface::initializationDone,
+                                d, &QIviAbstractFeaturePrivate::onInitializationDone);
+        backend->initialize();
+    }
 }
 
 /*!
@@ -634,7 +670,10 @@ void QIviAbstractFeature::disconnectFromServiceObject(QIviServiceObject *service
  * ready usually indicates that no suitable service object could be found, or that automatic
  * discovery has not been triggered.
  *
- * \sa QIviServiceObject, discoveryMode
+ * The backend still might not have sent all properties yet and is not fully initialized.
+ * Use isInitialized instead to know when the feature holds all correct values.
+ *
+ * \sa QIviServiceObject, discoveryMode, isInitialized
  */
 /*!
  * \property QIviAbstractFeature::isValid
@@ -644,12 +683,39 @@ void QIviAbstractFeature::disconnectFromServiceObject(QIviServiceObject *service
  * ready usually indicates that no suitable service object could be found, or that automatic
  * discovery has not been triggered.
  *
- * \sa QIviServiceObject, discoveryMode
+ * The backend still might not have sent all properties yet and is not fully initialized.
+ * Use isInitialized instead to know when the feature holds all correct values.
+ *
+ * \sa QIviServiceObject, discoveryMode, isInitialized
  */
 bool QIviAbstractFeature::isValid() const
 {
     Q_D(const QIviAbstractFeature);
     return d->m_serviceObject != 0;
+}
+
+/*!
+ * \qmlproperty bool AbstractFeature::isInitialized
+ * \brief Indicates whether the feature has been initialized with all the values from the backend.
+ *
+ * The property is \c true once the backend sends the QIviFeatureInterface::initializationDone signal
+ * to indicate that all values have now been initialized with values from the backend.
+ *
+ * \sa isValid, QIviFeatureInterface::initializationDone
+ */
+/*!
+ * \property QIviAbstractFeature::isInitialized
+ * \brief Indicates whether the feature has been initialized with all the values from the backend.
+ *
+ * The property is \c true once the backend sends the QIviFeatureInterface::initializationDone signal
+ * to indicate that all values have now been initialized with values from the backend.
+ *
+ * \sa isValid, QIviFeatureInterface::initializationDone
+ */
+bool QIviAbstractFeature::isInitialized() const
+{
+    Q_D(const QIviAbstractFeature);
+    return d->m_isInitialized;
 }
 
 /*!
@@ -669,3 +735,5 @@ void QIviAbstractFeature::serviceObjectDestroyed()
     clearServiceObject();
     emit serviceObjectChanged();
 }
+
+#include "moc_qiviabstractfeature.cpp"

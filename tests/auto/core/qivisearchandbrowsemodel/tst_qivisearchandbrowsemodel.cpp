@@ -105,6 +105,11 @@ public:
         return list;
     }
 
+    void initialize() Q_DECL_OVERRIDE
+    {
+        emit initializationDone();
+    }
+
     virtual void fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count) Q_DECL_OVERRIDE
     {
         emit supportedCapabilitiesChanged(identifier, m_caps);

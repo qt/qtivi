@@ -70,6 +70,7 @@ public:
     void connectToServiceObject(QIviServiceObject *so);
     void connectToServiceObjectDefaultImpl(QIviServiceObject *so);
     void disconnectFromServiceObject(QIviServiceObject *so);
+    void disconnectFromServiceObjectDefaultImpl(QIviServiceObject *so);
     void clearServiceObject();
 
     using QIviAbstractFeature::interfaceName;

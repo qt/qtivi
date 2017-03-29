@@ -57,7 +57,6 @@ class Q_QTIVIMEDIA_EXPORT QIviAmFmTunerBackendInterface : public QIviFeatureInte
 public:
     explicit QIviAmFmTunerBackendInterface(QObject *parent = Q_NULLPTR);
 
-    virtual void initialize() = 0;
     virtual void setFrequency(int frequency) = 0;
     virtual void setBand(QIviAmFmTuner::Band band) = 0;
     virtual void stepUp() = 0;

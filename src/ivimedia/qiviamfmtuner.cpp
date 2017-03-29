@@ -521,8 +521,6 @@ void QIviAmFmTuner::connectToServiceObject(QIviServiceObject *serviceObject)
                             d, &QIviAmFmTunerPrivate::onScanStatusChanged);
 
     QIviAbstractFeature::connectToServiceObject(serviceObject);
-
-    backend->initialize();
 }
 
 /*!

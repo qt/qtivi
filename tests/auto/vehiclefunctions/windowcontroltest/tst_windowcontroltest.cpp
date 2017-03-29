@@ -62,7 +62,7 @@ public:
         return m_zoneMap.keys();
     }
 
-    void initializeAttributes() Q_DECL_OVERRIDE
+    void initialize() Q_DECL_OVERRIDE
     {
         const QStringList zones = availableZones();
         //zones.removeLast(); // Do not init zone "Dummy"
@@ -257,11 +257,24 @@ private:
     WindowControlTestBackend *m_backend;
 };
 
+class InvalidInterface : public QIviFeatureInterface
+{
+public:
+    InvalidInterface(QObject *parent)
+        : QIviFeatureInterface(parent)
+    {}
+
+    void initialize() Q_DECL_OVERRIDE
+    {
+        emit initializationDone();
+    }
+};
+
 class WindowControlInvalidServiceObject : public QIviServiceObject {
 
 public:
     explicit WindowControlInvalidServiceObject(QObject *parent=0) :
-        QIviServiceObject(parent), m_name(QLatin1String("")), m_dummyBackend(new QIviFeatureInterface(this))
+        QIviServiceObject(parent), m_name(QLatin1String("")), m_dummyBackend(new InvalidInterface(this))
     {
         m_interfaces << QIviWindowControl_iid;
     }

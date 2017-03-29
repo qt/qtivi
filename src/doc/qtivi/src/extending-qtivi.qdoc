@@ -147,7 +147,7 @@ is to be used in a climate control API, while the zoned interface provides per-z
 Building a zoned feature requires the backend interface to be derived from
 QIviZonedFeatureInterface. This provides the backend an interface for enumerating the
 available zones. This interface also includes the necessary
-QIviZonedFeatureInterface::initializeAttributes method to initialize any
+QIviZonedFeatureInterface::initialize method to initialize any
 \l {Extending Qt IVI#property-attributes} {property attributes}.
 
 \section2 Property Attributes

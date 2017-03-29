@@ -53,6 +53,11 @@ SearchAndBrowseBackend::SearchAndBrowseBackend(AmFmTunerBackend *tunerBackend, Q
     registerContentType<QIviAmFmTunerStation>("presets");
 }
 
+void SearchAndBrowseBackend::initialize()
+{
+    emit initializationDone();
+}
+
 void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count)
 {
     emit supportedCapabilitiesChanged(identifier, QIviSearchAndBrowseModel::Capabilities(

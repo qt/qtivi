@@ -96,7 +96,7 @@ QStringList ClimateControlBackend::availableZones() const
     return m_zoneMap.keys();
 }
 
-void ClimateControlBackend::initializeAttributes()
+void ClimateControlBackend::initialize()
 {
     QVector<QIviClimateControl::AirflowDirections> airflow;
     airflow << (QIviClimateControl::Floor | QIviClimateControl::Dashboard) << QIviClimateControl::Floor << QIviClimateControl::Dashboard;
@@ -140,6 +140,8 @@ void ClimateControlBackend::initializeAttributes()
         emit seatHeaterAttributeChanged(m_zoneMap[zone].seatHeaterAttribute, zone);
         emit seatHeaterChanged(m_zoneMap[zone].seatHeater, zone);
     }
+
+    emit initializationDone();
 }
 
 void ClimateControlBackend::setTargetTemperature(int val, const QString &zone)

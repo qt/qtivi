@@ -58,6 +58,7 @@ class Q_QTIVICORE_EXPORT QIviAbstractFeatureListModel : public QAbstractListMode
     Q_PROPERTY(QIviAbstractFeature::DiscoveryResult discoveryResult READ discoveryResult NOTIFY discoveryResultChanged)
     Q_PROPERTY(QIviServiceObject *serviceObject READ serviceObject WRITE setServiceObject NOTIFY serviceObjectChanged)
     Q_PROPERTY(bool isValid READ isValid NOTIFY isValidChanged)
+    Q_PROPERTY(bool isInitialized READ isInitialized NOTIFY isInitializedChanged)
     Q_PROPERTY(QString error READ errorMessage NOTIFY errorChanged)
 
 public:
@@ -69,6 +70,7 @@ public:
     QIviAbstractFeature::DiscoveryMode discoveryMode() const;
     QIviAbstractFeature::DiscoveryResult discoveryResult() const;
     bool isValid() const;
+    bool isInitialized() const;
     QIviAbstractFeature::Error error() const;
     QString errorMessage() const;
 
@@ -82,6 +84,7 @@ Q_SIGNALS:
     void discoveryModeChanged(QIviAbstractFeature::DiscoveryMode discoveryMode);
     void discoveryResultChanged(QIviAbstractFeature::DiscoveryResult discoveryResult);
     void isValidChanged(bool arg);
+    void isInitializedChanged(bool isInitialized);
     void errorChanged(QIviAbstractFeature::Error error, const QString &message);
 
 protected:

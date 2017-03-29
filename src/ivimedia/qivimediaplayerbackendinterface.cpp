@@ -69,13 +69,6 @@ QIviMediaPlayerBackendInterface::QIviMediaPlayerBackendInterface(QObject *parent
 }
 
 /*!
-    \fn QIviMediaPlayerBackendInterface::initialize()
-
-    Initializes the backend. This function is called, after a feature connected to the backend.
-    It is expected that this function will inform about the current state of the backend by emitting signals with the current status.
-*/
-
-/*!
     \fn QIviMediaPlayerBackendInterface::play()
 
     Starts playing the current playable item.

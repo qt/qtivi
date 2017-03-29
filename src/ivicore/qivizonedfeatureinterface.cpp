@@ -85,12 +85,13 @@
    zone as a parameter. Zone is not needed if attribute is generic.
 
    Initialization signals are emitted in the
-   \l {QIviZonedFeatureInterface::}{initializeAttributes}:
+   \l {QIviZonedFeatureInterface::}{initialize}:
    \code
-   void backend::initializeAttributes() {
+   void backend::initialize() {
         emit fanSpeedLevelChanged(2, "Front");
         emit fanSpeedLevelChanged(2, "Rear");
         emit steeringWheelHeaterChanged(0); // Generic, no zone specified
+        emit initializationDone();
    }
    \endcode
 
@@ -180,16 +181,3 @@ QIviZonedFeatureInterface::~QIviZonedFeatureInterface()
  *
  * \sa {Providing Available Zones}
  */
-
-/*!
- * \fn void QIviZonedFeatureInterface::initializeAttributes()
- *
- * Called from the client to initialize attributes. This is called after
- * client is connected and available zones are fetched.
- *
- * In this function all supported attributes for each zone need to be emitted with
- * the initialized value.
- *
- * \sa {Initializing Attributes}
- */
-

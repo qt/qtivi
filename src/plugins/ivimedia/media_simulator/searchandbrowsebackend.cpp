@@ -60,6 +60,11 @@ SearchAndBrowseBackend::SearchAndBrowseBackend(const QSqlDatabase &database, QOb
     m_db.open();
 }
 
+void SearchAndBrowseBackend::initialize()
+{
+    emit initializationDone();
+}
+
 void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count)
 {
     emit supportedCapabilitiesChanged(identifier, QIviSearchAndBrowseModel::Capabilities(

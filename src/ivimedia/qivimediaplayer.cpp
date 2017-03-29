@@ -519,7 +519,6 @@ void QIviMediaPlayer::connectToServiceObject(QIviServiceObject *serviceObject)
 
     QIviAbstractFeature::connectToServiceObject(serviceObject);
 
-    backend->initialize();
     d->m_playQueue->d_func()->resetModel();
 }
 

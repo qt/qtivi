@@ -86,6 +86,7 @@ MediaIndexerBackend::MediaIndexerBackend(const QSqlDatabase &database, QObject *
 void MediaIndexerBackend::initialize()
 {
     emit stateChanged(m_state);
+    emit initializationDone();
 }
 
 void MediaIndexerBackend::pause()

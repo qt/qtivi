@@ -54,6 +54,7 @@ class SearchAndBrowseBackend : public QIviSearchAndBrowseModelInterface
 public:
     explicit SearchAndBrowseBackend(AmFmTunerBackend *tunerBackend, QObject *parent = Q_NULLPTR);
 
+    virtual void initialize() Q_DECL_OVERRIDE;
     virtual void fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count) Q_DECL_OVERRIDE;
     virtual bool canGoBack(const QUuid &identifier, const QString &type) Q_DECL_OVERRIDE;
     virtual QString goBack(const QUuid &identifier, const QString &type) Q_DECL_OVERRIDE;

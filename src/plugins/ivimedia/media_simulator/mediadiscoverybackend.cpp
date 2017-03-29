@@ -70,6 +70,7 @@ void MediaDiscoveryBackend::initialize()
         m_deviceMap.insert(folder, new USBDevice(deviceFolder.absoluteFilePath(folder)));
     }
     emit availableDevices(m_deviceMap.values());
+    emit initializationDone();
 }
 
 void MediaDiscoveryBackend::onDirectoryChanged(const QString &path)

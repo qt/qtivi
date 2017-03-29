@@ -55,11 +55,14 @@ public:
     explicit QIviFeatureInterface(QObject *parent = Q_NULLPTR);
     ~QIviFeatureInterface();
 
+    virtual void initialize() = 0;
+
 protected:
     QIviFeatureInterface(QObjectPrivate &dd, QObject *parent = Q_NULLPTR);
 
 Q_SIGNALS:
     void errorChanged(QIviAbstractFeature::Error error, const QString &message = QString());
+    void initializationDone();
 };
 
 QT_END_NAMESPACE

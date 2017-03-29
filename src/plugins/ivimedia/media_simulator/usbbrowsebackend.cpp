@@ -52,6 +52,11 @@ UsbBrowseBackend::UsbBrowseBackend(const QString &path, QObject *parent)
     registerContentType<SearchAndBrowseItem>("file");
 }
 
+void UsbBrowseBackend::initialize()
+{
+    emit initializationDone();
+}
+
 void UsbBrowseBackend::fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count)
 {
     emit supportedCapabilitiesChanged(identifier, QIviSearchAndBrowseModel::Capabilities(

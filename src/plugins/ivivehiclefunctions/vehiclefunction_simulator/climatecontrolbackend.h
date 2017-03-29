@@ -54,7 +54,7 @@ public:
 public:
     QStringList availableZones() const;
 
-    void initializeAttributes();
+    void initialize();
 
     void setTargetTemperature(int val, const QString &zone);
     void setSeatCooler(int val, const QString &zone);

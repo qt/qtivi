@@ -56,8 +56,6 @@ public:
     virtual ~QIviZonedFeatureInterface();
 
     virtual QStringList availableZones() const = 0;
-
-    virtual void initializeAttributes() = 0;
 };
 
 QT_END_NAMESPACE
