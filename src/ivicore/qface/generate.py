@@ -54,48 +54,72 @@ log = logging.getLogger(__file__)
 
 Filters.classPrefix = ''
 
-def run_cpp(src, dst):
+def simulator_default(symbol):
+    sym_default_value = Filters.defaultValue(symbol)
+    if 'config_sym' in symbol.tags:
+        sym_default_value = symbol.tags['config_sym']['default']
+        t = symbol.type
+        if t.is_enum:
+            sym_default_value = sym_default_value.rsplit('.', 1)[-1]
+            module_name = t.reference.module.module_name
+            return '{0}{1}Module::{2}'.format(Filters.classPrefix, module_name, sym_default_value)
+    return sym_default_value
+
+
+def lower_first_filter(s):
+    s = str(s)
+    return s[0].lower() + s[1:]
+
+
+def generate(tplconfig, src, dst):
     log.debug('run {0} {1}'.format(src, dst))
     system = FileSystem.parse(src)
-    generator = Generator(search_path=here / 'templates_frontend')
+    generator = Generator(search_path=here / tplconfig)
     generator.register_filter('returnType', Filters.returnType)
     generator.register_filter('parameterType', Filters.parameterType)
     generator.register_filter('defaultValue', Filters.defaultValue)
     generator.register_filter('parse_doc', parse_doc)
+    generator.register_filter('defaultSimulatorValue', simulator_default)
+    generator.register_filter('lowerfirst', lower_first_filter)
     ctx = {'dst': dst, 'qtASVersion': 1.2}
+    gen_config = yaml.load(open(here / '{0}.yaml'.format(tplconfig)))
     for module in system.modules:
         log.debug('generate code for module %s', module)
         module.add_tag('config')
         ctx.update({'module': module})
+        #TODO: refine that, probably just use plain output folder
         dst = generator.apply('{{dst}}/{{module|lower|replace(".", "-")}}', ctx)
         generator.destination = dst
-        generator.write('{{module.module_name|lower}}global.h', 'global.h.tpl', ctx)
-        generator.write('{{module.module_name|lower}}module.cpp', 'module.cpp.tpl', ctx)
-        generator.write('{{module.module_name|lower}}module.h', 'module.h.tpl', ctx)
-        generator.write('{{module|lower|replace(".", "-")}}.pri', 'module.pri.tpl', ctx)
+        for rule in gen_config['generate_rules']['module_rules']:
+            generator.write(rule['dest_file'], rule['template_file'], ctx)
         for interface in module.interfaces:
-            log.debug('generate code for interface %s', interface)
+            log.debug('generate backend code for interface %s', interface)
             interface.add_tag('config')
             ctx.update({'interface': interface})
-            generator.write('{{interface|lower}}.h', 'interface.h.tpl', ctx)
-            generator.write('{{interface|lower}}_p.h', 'interface_p.h.tpl', ctx)
-            generator.write('{{interface|lower}}.cpp', 'interface.cpp.tpl', ctx)
-            generator.write('{{interface|lower}}backendinterface.h', 'backendinterface.h.tpl', ctx)
-            generator.write('{{interface|lower}}backendinterface.cpp', 'backendinterface.cpp.tpl', ctx)
+            for rule in gen_config['generate_rules']['interface_rules']:
+                generator.write(rule['dest_file'], rule['template_file'], ctx)
+        for struct in module.structs:
+            log.debug('generate code for struct %s', struct)
+            struct.add_tag('config')
+            for rule in gen_config['generate_rules']['struct_rules']:
+                generator.write(rule['dest_file'], rule['template_file'], ctx)
 
-def wrong_format(src, dst):
-    log.debug('run {0} {1}'.format(src, dst))
+
 def run(formats, src, dst):
     for f in formats:
         switcher = {
-            'cpp': run_cpp,
+            'frontend': 'templates_frontend',
         }
-        funct = switcher.get(f, wrong_format)
-        funct(src, dst)
+        tplconfig = switcher.get(f, 'unknown')
+        if tplconfig == 'unknown':
+            log.debug('unknown format {0}'.format(f))
+        else:
+            generate(tplconfig, src, dst)
+
 
 @click.command()
 @click.option('--reload/--no-reload', default=False)
-@click.option('--format', '-f', multiple=True, type=click.Choice(['cpp']))
+@click.option('--format', '-f', multiple=True, type=click.Choice(['frontend']))
 @click.argument('src', nargs=-1, type=click.Path(exists=True))
 @click.argument('dst', nargs=1, type=click.Path(exists=True))
 def app(src, dst, format, reload):
