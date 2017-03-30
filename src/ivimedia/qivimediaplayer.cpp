@@ -47,13 +47,15 @@
 #include <QtIviCore/QIviServiceObject>
 #include <QtDebug>
 
+QT_BEGIN_NAMESPACE
+
 QIviMediaPlayerPrivate::QIviMediaPlayerPrivate(const QString &interface, QIviMediaPlayer *parent)
     : QIviAbstractFeaturePrivate(interface, parent)
     , q_ptr(parent)
     , m_playQueue(nullptr)
     , m_playMode(QIviMediaPlayer::Normal)
     , m_playState(QIviMediaPlayer::Stopped)
-    , m_currentTrack(0)
+    , m_currentTrack(nullptr)
     , m_position(-1)
     , m_duration(-1)
 {
@@ -530,5 +532,7 @@ void QIviMediaPlayer::clearServiceObject()
     Q_D(QIviMediaPlayer);
     d->clearToDefaults();
 }
+
+QT_END_NAMESPACE
 
 #include "moc_qivimediaplayer.cpp"

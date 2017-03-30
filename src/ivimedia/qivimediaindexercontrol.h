@@ -65,7 +65,7 @@ public:
     };
     Q_ENUM(State)
 
-    explicit QIviMediaIndexerControl(QObject *parent = Q_NULLPTR);
+    explicit QIviMediaIndexerControl(QObject *parent = nullptr);
 
     qreal progress() const;
     QIviMediaIndexerControl::State state() const;
@@ -79,10 +79,10 @@ Q_SIGNALS:
     void stateChanged(QIviMediaIndexerControl::State state);
 
 protected:
-    QIviMediaIndexerControl(QIviMediaIndexerControlPrivate &dd, QObject *parent = Q_NULLPTR);
+    QIviMediaIndexerControl(QIviMediaIndexerControlPrivate &dd, QObject *parent = nullptr);
 
-    virtual void connectToServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
-    virtual void clearServiceObject() Q_DECL_OVERRIDE;
+    virtual void connectToServiceObject(QIviServiceObject *serviceObject) override;
+    virtual void clearServiceObject() override;
 
 private:
     Q_DECLARE_PRIVATE(QIviMediaIndexerControl)

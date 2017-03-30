@@ -42,6 +42,8 @@
 #include "qivisearchandbrowsemodelinterface.h"
 #include "qivisearchandbrowsemodelinterface_p.h"
 
+QT_BEGIN_NAMESPACE
+
 QIviSearchAndBrowseModelInterfacePrivate::QIviSearchAndBrowseModelInterfacePrivate()
 {
 }
@@ -69,7 +71,7 @@ QIviSearchAndBrowseModelInterfacePrivate::QIviSearchAndBrowseModelInterfacePriva
 */
 
 /*!
-    \fn QIviSearchAndBrowseModelInterface::QIviSearchAndBrowseModelInterface(QObject *parent=0)
+    \fn QIviSearchAndBrowseModelInterface::QIviSearchAndBrowseModelInterface(QObject *parent = nullptr)
 
     Constructs a backend interface.
 
@@ -289,3 +291,5 @@ void QIviSearchAndBrowseModelInterface::registerContentType(const QMetaObject &o
 
     \sa indexOf()
 */
+
+QT_END_NAMESPACE

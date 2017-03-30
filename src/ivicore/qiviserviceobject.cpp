@@ -43,6 +43,8 @@
 
 #include <QUuid>
 
+QT_BEGIN_NAMESPACE
+
 /*!
  * \class QIviServiceObject
  * \inmodule QtIviCore
@@ -126,3 +128,5 @@ QString QIviServiceObject::id() const
  *
  * Returns an object implementing the service interface requested through \a interface.
  */
+
+QT_END_NAMESPACE

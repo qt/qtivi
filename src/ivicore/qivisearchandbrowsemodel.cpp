@@ -49,6 +49,8 @@
 #include <QMetaObject>
 #include <QDebug>
 
+QT_BEGIN_NAMESPACE
+
 QIviSearchAndBrowseModelPrivate::QIviSearchAndBrowseModelPrivate(const QString &interface, QIviSearchAndBrowseModel *model)
     : QIviAbstractFeatureListModelPrivate(interface, model)
     , q_ptr(model)
@@ -1211,5 +1213,7 @@ void QIviSearchAndBrowseModel::clearServiceObject()
 
     This signal is emitted whenever the fetchMoreThreshold is reached and new data is requested from the backend.
 */
+
+QT_END_NAMESPACE
 
 #include "moc_qivisearchandbrowsemodel.cpp"

@@ -55,7 +55,7 @@ class Q_QTIVIMEDIA_EXPORT QIviMediaPlayerBackendInterface : public QIviFeatureIn
     Q_OBJECT
 
 public:
-    explicit QIviMediaPlayerBackendInterface(QObject *parent = Q_NULLPTR);
+    explicit QIviMediaPlayerBackendInterface(QObject *parent = nullptr);
 
     virtual void play() = 0;
     virtual void pause() = 0;

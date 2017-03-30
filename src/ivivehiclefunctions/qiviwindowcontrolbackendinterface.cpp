@@ -41,6 +41,8 @@
 
 #include "qiviwindowcontrolbackendinterface.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
  * \class QIviWindowControlBackendInterface
  * \inmodule QtIviVehicleFunctions
@@ -59,7 +61,7 @@
  */
 
 /*!
- * \fn QIviWindowControlBackendInterface::QIviWindowControlBackendInterface(QObject *parent=0)
+ * \fn QIviWindowControlBackendInterface::QIviWindowControlBackendInterface(QObject *parent = nullptr)
  *
  * Constructs a backend interface.
  *
@@ -173,3 +175,5 @@ QIviWindowControlBackendInterface::QIviWindowControlBackendInterface(QObject *pa
  *
  * The signal is emitted when the state attribute for \a zone is changed to \a attribute.
  */
+
+QT_END_NAMESPACE

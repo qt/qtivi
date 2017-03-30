@@ -94,7 +94,7 @@ public:
     };
     Q_ENUM(ClimateMode)
 
-    QIviClimateControl(const QString &zone = QString(), QObject *parent = Q_NULLPTR);
+    QIviClimateControl(const QString &zone = QString(), QObject *parent = nullptr);
     ~QIviClimateControl();
 
     bool isAirConditioningEnabled() const;
@@ -197,11 +197,11 @@ Q_SIGNALS:
     void automaticClimateFanIntensityLevelAttributeChanged(const QIviPropertyAttribute<int> &attribute);
 
 protected:
-    QIviClimateControl(QIviClimateControlPrivate &dd, QObject *parent = Q_NULLPTR);
-    virtual QIviAbstractZonedFeature *createZoneFeature(const QString &zone) Q_DECL_OVERRIDE;
+    QIviClimateControl(QIviClimateControlPrivate &dd, QObject *parent = nullptr);
+    virtual QIviAbstractZonedFeature *createZoneFeature(const QString &zone) override;
 
-    virtual void connectToServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
-    virtual void clearServiceObject() Q_DECL_OVERRIDE;
+    virtual void connectToServiceObject(QIviServiceObject *serviceObject) override;
+    virtual void clearServiceObject() override;
 
 private:
     Q_DECLARE_PRIVATE(QIviClimateControl)

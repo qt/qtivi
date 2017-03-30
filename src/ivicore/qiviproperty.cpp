@@ -48,11 +48,13 @@
 #include <private/qv8engine_p.h>
 #include <private/qv4engine_p.h>
 
+QT_BEGIN_NAMESPACE
+
 QIviPropertyPrivate::QIviPropertyPrivate(int userType, QtPrivate::QSlotObjectBase *attributeGetter, QtPrivate::QSlotObjectBase *valueGetter)
     : m_type(userType)
     , m_attributeGetter(attributeGetter)
     , m_valueGetter(valueGetter)
-    , m_valueSetter(Q_NULLPTR)
+    , m_valueSetter(nullptr)
 {}
 
 void QIviPropertyPrivate::throwError(QObject *object, const QString &error)
@@ -159,7 +161,7 @@ void QIviProperty::setValue(const QVariant &value)
         return;
     }
 
-    void *args[] = { Q_NULLPTR, var.data() };
+    void *args[] = { nullptr, var.data() };
     d->m_valueSetter->call(parent(), args);
 }
 
@@ -198,3 +200,5 @@ QtPrivate::QSlotObjectBase *QIviProperty::valueGetter() const
     Q_D(const QIviProperty);
     return d->m_valueGetter;
 }
+
+QT_END_NAMESPACE

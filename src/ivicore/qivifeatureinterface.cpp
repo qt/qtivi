@@ -41,6 +41,8 @@
 
 #include "qivifeatureinterface.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
    \class QIviFeatureInterface
    \inmodule QtIviCore
@@ -102,3 +104,5 @@ QIviFeatureInterface::QIviFeatureInterface(QObjectPrivate &dd, QObject *parent)
 
     \sa initialize
 */
+
+QT_END_NAMESPACE

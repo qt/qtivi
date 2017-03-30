@@ -45,6 +45,8 @@
 #include <QIviServiceObject>
 #include <QtDebug>
 
+QT_BEGIN_NAMESPACE
+
 QIviMediaIndexerControlPrivate::QIviMediaIndexerControlPrivate(const QString &interface, QIviMediaIndexerControl *parent)
     : QIviAbstractFeaturePrivate(interface, parent)
     , q_ptr(parent)
@@ -262,5 +264,7 @@ void QIviMediaIndexerControl::clearServiceObject()
     Q_D(QIviMediaIndexerControl);
     d->clearToDefaults();
 }
+
+QT_END_NAMESPACE
 
 #include "moc_qivimediaindexercontrol.cpp"

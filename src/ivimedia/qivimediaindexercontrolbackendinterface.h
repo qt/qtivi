@@ -52,7 +52,7 @@ class Q_QTIVIMEDIA_EXPORT QIviMediaIndexerControlBackendInterface : public QIviF
 {
     Q_OBJECT
 public:
-    explicit QIviMediaIndexerControlBackendInterface(QObject *parent = Q_NULLPTR);
+    explicit QIviMediaIndexerControlBackendInterface(QObject *parent = nullptr);
 
     virtual void initialize() = 0;
     virtual void pause() = 0;

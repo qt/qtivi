@@ -55,7 +55,7 @@ class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QIviWindowControlBackendInterface : public 
     Q_OBJECT
 
 public:
-    QIviWindowControlBackendInterface(QObject *parent = Q_NULLPTR);
+    QIviWindowControlBackendInterface(QObject *parent = nullptr);
 
     virtual void setHeaterMode(QIviWindowControl::HeaterMode value, const QString &zone) = 0;
     virtual void setBlindMode(QIviWindowControl::BlindMode value, const QString &zone) = 0;

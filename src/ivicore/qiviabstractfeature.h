@@ -92,8 +92,8 @@ public:
     };
     Q_ENUM(DiscoveryResult)
 
-    explicit QIviAbstractFeature(const QString &interface, QObject *parent = Q_NULLPTR);
-    virtual ~QIviAbstractFeature();
+    explicit QIviAbstractFeature(const QString &interface, QObject *parent = nullptr);
+    ~QIviAbstractFeature();
 
     QIviServiceObject *serviceObject() const;
     QIviAbstractFeature::DiscoveryMode discoveryMode() const;
@@ -117,7 +117,7 @@ Q_SIGNALS:
     void errorChanged(QIviAbstractFeature::Error error, const QString &message);
 
 protected:
-    QIviAbstractFeature(QIviAbstractFeaturePrivate &dd, QObject *parent = Q_NULLPTR);
+    QIviAbstractFeature(QIviAbstractFeaturePrivate &dd, QObject *parent = nullptr);
 
     virtual bool acceptServiceObject(QIviServiceObject*);
     virtual void connectToServiceObject(QIviServiceObject*);

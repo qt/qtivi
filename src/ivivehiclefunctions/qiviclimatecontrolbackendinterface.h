@@ -55,7 +55,7 @@ class Q_QTIVIVEHICLEFUNCTIONS_EXPORT QIviClimateControlBackendInterface : public
     Q_OBJECT
 
 public:
-    QIviClimateControlBackendInterface(QObject *parent = Q_NULLPTR);
+    QIviClimateControlBackendInterface(QObject *parent = nullptr);
 
     virtual void setTargetTemperature(int value, const QString &zone) = 0;
     virtual void setSeatCooler(int value, const QString &zone) = 0;

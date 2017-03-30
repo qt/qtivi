@@ -41,6 +41,8 @@
 
 #include "qiviamfmtunerbackendinterface.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QIviAmFmTunerBackendInterface
     \inmodule QtIviMedia
@@ -193,3 +195,5 @@ QIviAmFmTunerBackendInterface::QIviAmFmTunerBackendInterface(QObject *parent)
 
     \sa startScan() stopScan()
 */
+
+QT_END_NAMESPACE

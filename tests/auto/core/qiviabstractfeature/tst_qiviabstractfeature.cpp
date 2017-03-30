@@ -45,11 +45,11 @@ class TestFeatureInterface : public QIviFeatureInterface
     Q_OBJECT
 
 public:
-    TestFeatureInterface(QObject *parent = 0)
+    explicit TestFeatureInterface(QObject *parent = nullptr)
         : QIviFeatureInterface(parent)
     {}
 
-    virtual ~TestFeatureInterface() {}
+    ~TestFeatureInterface() {}
 
 Q_SIGNALS:
     void errorChanged(QIviAbstractFeature::Error error, const QString &message = QString());
@@ -60,7 +60,7 @@ class TestFeature : public QIviAbstractFeature
     Q_OBJECT
 
 public:
-    TestFeature(bool testBaseFunctions = false, QObject *parent = 0)
+    TestFeature(bool testBaseFunctions = false, QObject *parent = nullptr)
         : QIviAbstractFeature("testFeature", parent)
         , m_testBaseFunctions(testBaseFunctions)
     {}
@@ -109,7 +109,7 @@ class TestFeatureListModel : public QIviAbstractFeatureListModel
     Q_OBJECT
 
 public:
-    TestFeatureListModel(bool testBaseFunctions = false, QObject *parent = 0)
+    TestFeatureListModel(bool testBaseFunctions = false, QObject *parent = nullptr)
         : QIviAbstractFeatureListModel("testFeature", parent)
         , m_testBaseFunctions(testBaseFunctions)
     {}
@@ -171,11 +171,11 @@ class TestFeatureBackend : public TestFeatureInterface
     Q_OBJECT
 
 public:
-    TestFeatureBackend(QObject *parent = 0)
+    TestFeatureBackend(QObject *parent = nullptr)
         : TestFeatureInterface(parent)
     {}
 
-    void initialize() Q_DECL_OVERRIDE
+    void initialize() override
     {
         emit initializationDone();
     }
@@ -192,7 +192,7 @@ class TestBackend : public QObject, QIviServiceInterface
     Q_INTERFACES(QIviServiceInterface)
 
 public:
-    TestBackend(QObject *parent = 0)
+    TestBackend(QObject *parent = nullptr)
         : QObject(parent)
         , m_testBackend(new TestFeatureBackend(this))
     {}
@@ -300,7 +300,7 @@ void BaseTest::testAutoDiscoveryFailure()
     f->setServiceObject(list.at(0));
     result = f->startAutoDiscovery();
     QCOMPARE(result, QIviAbstractFeature::NoResult);
-    f->setServiceObject(0);
+    f->setServiceObject(nullptr);
 
     TestBackend* backend2 = new TestBackend();
     m_manager->registerService(backend2, backend2->interfaces());
@@ -515,7 +515,7 @@ void BaseTest::testResetServiceObject()
     serviceObjectChangedSpy.clear();
 
     //Reset the ServiceObject of the Feature and verify that the feature doesn't have a connection to the ServiceObject anymore
-    f->setServiceObject(0);
+    f->setServiceObject(nullptr);
 
     m_manager->unloadAllBackends();
     QCOMPARE(soDestroyedSpy.count(), 1);

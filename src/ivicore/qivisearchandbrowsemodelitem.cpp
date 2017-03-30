@@ -59,8 +59,6 @@ public:
     QVariantMap m_data;
 };
 
-QT_END_NAMESPACE
-
 /*!
     \class QIviSearchAndBrowseModelItem
     \inmodule QtIviCore
@@ -197,3 +195,5 @@ bool QIviSearchAndBrowseModelItem::operator==(const QIviSearchAndBrowseModelItem
 
     \sa operator==()
 */
+
+QT_END_NAMESPACE

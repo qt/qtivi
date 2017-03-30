@@ -41,6 +41,8 @@
 
 #include "qivizonedfeatureinterface.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
    \class QIviZonedFeatureInterface
    \inmodule QtIviCore
@@ -156,7 +158,7 @@
  */
 
 /*!
- * \fn QIviZonedFeatureInterface::QIviZonedFeatureInterface(QObject *parent=0)
+ * \fn QIviZonedFeatureInterface::QIviZonedFeatureInterface(QObject *parent = nullptr)
  *
  * Constructs a backend base interface.
  *
@@ -181,3 +183,5 @@ QIviZonedFeatureInterface::~QIviZonedFeatureInterface()
  *
  * \sa {Providing Available Zones}
  */
+
+QT_END_NAMESPACE

@@ -54,7 +54,7 @@ class VehiclePlugin : public QObject, QIviServiceInterface
     Q_INTERFACES(QIviServiceInterface)
 
 public:
-    VehiclePlugin(QObject *parent = 0);
+    VehiclePlugin(QObject *parent = nullptr);
 
     QStringList interfaces() const;
     QIviFeatureInterface *interfaceInstance(const QString& interface) const;

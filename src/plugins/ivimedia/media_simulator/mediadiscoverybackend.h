@@ -52,9 +52,9 @@ class MediaDiscoveryBackend : public QIviMediaDeviceDiscoveryModelBackendInterfa
     Q_OBJECT
 
 public:
-    MediaDiscoveryBackend(QObject *parent = 0);
+    MediaDiscoveryBackend(QObject *parent = nullptr);
 
-    void initialize() Q_DECL_OVERRIDE;
+    void initialize() override;
 
 private slots:
     void onDirectoryChanged(const QString &path);

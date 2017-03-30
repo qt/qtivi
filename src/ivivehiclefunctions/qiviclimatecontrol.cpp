@@ -45,6 +45,8 @@
 #include <QtIviCore/QIviServiceObject>
 #include <QtIviCore/QIviPropertyFactory>
 
+QT_BEGIN_NAMESPACE
+
 QIviClimateControlPrivate::QIviClimateControlPrivate(const QString &interface, const QString &zone, QIviClimateControl *parent)
     : QIviAbstractZonedFeaturePrivate(interface, zone, parent)
     , m_airflowDirections(0)
@@ -1840,4 +1842,6 @@ void QIviClimateControl::setAutomaticClimateFanIntensityLevel(int value)
  * \sa automaticClimateFanIntensityLevelAttribute() automaticClimateFanIntensityLevel()
  */
 
- #include "moc_qiviclimatecontrol.cpp"
+QT_END_NAMESPACE
+
+#include "moc_qiviclimatecontrol.cpp"

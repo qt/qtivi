@@ -70,19 +70,19 @@ class SearchAndBrowseBackend : public QIviSearchAndBrowseModelInterface
 {
     Q_OBJECT
 public:
-    explicit SearchAndBrowseBackend(const QSqlDatabase &database, QObject *parent = Q_NULLPTR);
+    explicit SearchAndBrowseBackend(const QSqlDatabase &database, QObject *parent = nullptr);
 
-    virtual void initialize() Q_DECL_OVERRIDE;
-    virtual void fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count) Q_DECL_OVERRIDE;
-    virtual bool canGoBack(const QUuid &identifier, const QString &type) Q_DECL_OVERRIDE;
-    virtual QString goBack(const QUuid &identifier, const QString &type) Q_DECL_OVERRIDE;
-    virtual bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) Q_DECL_OVERRIDE;
-    virtual QString goForward(const QUuid &identifier, const QString &type, const QString &itemId) Q_DECL_OVERRIDE;
+    virtual void initialize() override;
+    virtual void fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count) override;
+    virtual bool canGoBack(const QUuid &identifier, const QString &type) override;
+    virtual QString goBack(const QUuid &identifier, const QString &type) override;
+    virtual bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) override;
+    virtual QString goForward(const QUuid &identifier, const QString &type, const QString &itemId) override;
 
-    virtual void insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item) Q_DECL_OVERRIDE;
-    virtual void remove(const QUuid &identifier, const QString &type, int index) Q_DECL_OVERRIDE;
-    virtual void move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) Q_DECL_OVERRIDE;
-    virtual int indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item) Q_DECL_OVERRIDE;
+    virtual void insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item) override;
+    virtual void remove(const QUuid &identifier, const QString &type, int index) override;
+    virtual void move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) override;
+    virtual int indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item) override;
 
 private slots:
     void search(const QUuid &identifier, const QString &queryString, const QString &type, int start, int count);

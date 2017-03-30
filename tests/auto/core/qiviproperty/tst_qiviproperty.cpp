@@ -86,7 +86,7 @@ public:
     QIVIPROPERTY(TestObject::TestFlags, flagsAttribute)
 
 public:
-    TestObject(QObject *parent = Q_NULLPTR)
+    TestObject(QObject *parent = nullptr)
       : QObject(parent)
       , m_intAttributeProperty(QIviPropertyFactory<int>::create(this,
                                                                  &TestObject::intAttribute,

@@ -42,6 +42,8 @@
 #include "qiviabstractfeaturelistmodel.h"
 #include "qiviabstractfeaturelistmodel_p.h"
 
+QT_BEGIN_NAMESPACE
+
 QIviHelperFeature::QIviHelperFeature(const QString &interface, QIviAbstractFeatureListModel *model)
     : QIviAbstractFeature(interface)
     , m_model(model)
@@ -531,3 +533,5 @@ void QIviAbstractFeatureListModel::onErrorChanged(QIviAbstractFeature::Error err
 {
     setError(error, message);
 }
+
+QT_END_NAMESPACE

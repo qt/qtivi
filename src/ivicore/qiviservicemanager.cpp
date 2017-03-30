@@ -59,8 +59,6 @@ QT_BEGIN_NAMESPACE
 
 Q_LOGGING_CATEGORY(qLcIviServiceManagement, "qt.ivi.servicemanagement");
 
-QT_END_NAMESPACE
-
 namespace qtivi_helper {
 #ifdef QT_DEBUG
     static const bool loadDebug = true;
@@ -158,10 +156,10 @@ void QIviServiceManagerPrivate::registerBackend(const QString &fileName, const Q
 
     Backend* backend = new Backend;
     backend->metaData = backendMetaData;
-    backend->interface = 0;
-    backend->interfaceObject = 0;
-    backend->loader = 0;
-    backend->proxyServiceObject = 0;
+    backend->interface = nullptr;
+    backend->interfaceObject = nullptr;
+    backend->loader = nullptr;
+    backend->proxyServiceObject = nullptr;
     addBackend(backend);
 }
 
@@ -187,8 +185,8 @@ bool QIviServiceManagerPrivate::registerBackend(QObject *serviceBackendInterface
     backend->metaData = metaData;
     backend->interface = interface;
     backend->interfaceObject = serviceBackendInterface;
-    backend->loader = 0;
-    backend->proxyServiceObject = 0;
+    backend->loader = nullptr;
+    backend->proxyServiceObject = nullptr;
 
     addBackend(backend);
     return true;
@@ -242,7 +240,7 @@ static QIviServiceInterface *warn(const char *what, const QPluginLoader *loader)
     qWarning("ServiceManager::serviceObjects - failed to %s '%s'",
              what, qPrintable(loader->fileName()));
     delete loader;
-    return Q_NULLPTR;
+    return nullptr;
 }
 } // unnamed namespace
 
@@ -313,7 +311,7 @@ QIviServiceInterface *QIviServiceManagerPrivate::loadServiceBackendInterface(str
  */
 
 QIviServiceManager::QIviServiceManager()
-    : QAbstractListModel(0)
+    : QAbstractListModel(nullptr)
     , d_ptr(new QIviServiceManagerPrivate(this))
 {
     d_ptr->searchPlugins();
@@ -415,3 +413,5 @@ QVariant QIviServiceManager::data(const QModelIndex &index, int role) const
 
     return QVariant();
 }
+
+QT_END_NAMESPACE

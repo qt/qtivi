@@ -61,8 +61,8 @@ class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModelInterface : public QIviFeatureI
     Q_OBJECT
 
 public:
-    QIviSearchAndBrowseModelInterface(QObject *parent = Q_NULLPTR);
-    virtual ~QIviSearchAndBrowseModelInterface();
+    explicit QIviSearchAndBrowseModelInterface(QObject *parent = nullptr);
+    ~QIviSearchAndBrowseModelInterface();
 
     virtual QSet<QString> availableContentTypes() const;
     virtual QSet<QString> supportedIdentifiers(const QString &contentType) const;

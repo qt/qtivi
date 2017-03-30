@@ -52,7 +52,7 @@ class Q_QTIVIMEDIA_EXPORT QIviMediaDeviceDiscoveryModelBackendInterface : public
 {
     Q_OBJECT
 public:
-    explicit QIviMediaDeviceDiscoveryModelBackendInterface(QObject *parent = Q_NULLPTR);
+    explicit QIviMediaDeviceDiscoveryModelBackendInterface(QObject *parent = nullptr);
 
     virtual void initialize() = 0;
 

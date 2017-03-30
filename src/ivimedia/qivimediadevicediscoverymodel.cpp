@@ -46,6 +46,8 @@
 #include <QtIviMedia/QIviMediaDevice>
 #include <QtDebug>
 
+QT_BEGIN_NAMESPACE
+
 QIviMediaDeviceDiscoveryModelPrivate::QIviMediaDeviceDiscoveryModelPrivate(const QString &interface, QIviMediaDeviceDiscoveryModel *parent)
     : QIviAbstractFeatureListModelPrivate(interface, parent)
     , q_ptr(parent)
@@ -359,5 +361,7 @@ void QIviMediaDeviceDiscoveryModel::clearServiceObject()
     This signal is emitted whenever a media device got removed. The device which got removed is passed as \a device.
     Afterwards the device will be deleted.
 */
+
+QT_END_NAMESPACE
 
 #include "moc_qivimediadevicediscoverymodel.cpp"

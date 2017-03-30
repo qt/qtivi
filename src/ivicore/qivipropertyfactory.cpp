@@ -41,6 +41,8 @@
 
 #include "qivipropertyfactory.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
  * \class QIviPropertyFactory
  * \inmodule QtIviCore
@@ -121,3 +123,5 @@
  *
  * \reimp
  */
+
+QT_END_NAMESPACE

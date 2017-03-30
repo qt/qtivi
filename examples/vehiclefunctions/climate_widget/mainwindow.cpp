@@ -61,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_buttonGroup(new QButtonGroup(this)),
-    m_climateControl(0)
+    m_climateControl(nullptr)
 {
     ui->setupUi(this);
 

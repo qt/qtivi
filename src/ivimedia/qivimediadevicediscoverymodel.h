@@ -64,14 +64,14 @@ public:
         ServiceObjectRole = Qt::UserRole + 1
     };
 
-    explicit QIviMediaDeviceDiscoveryModel(QObject *parent = Q_NULLPTR);
+    explicit QIviMediaDeviceDiscoveryModel(QObject *parent = nullptr);
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
-    virtual QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    virtual QVariant data(const QModelIndex &index, int role) const override;
     Q_INVOKABLE QIviMediaDevice *get(int i) const;
     QIviMediaDevice *at(int i) const;
 
-    virtual QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
+    virtual QHash<int, QByteArray> roleNames() const override;
 
 Q_SIGNALS:
     void countChanged();
@@ -79,10 +79,10 @@ Q_SIGNALS:
     void deviceRemoved(QIviMediaDevice *device);
 
 protected:
-    QIviMediaDeviceDiscoveryModel(QIviMediaDeviceDiscoveryModelPrivate &dd, QObject *parent = Q_NULLPTR);
+    QIviMediaDeviceDiscoveryModel(QIviMediaDeviceDiscoveryModelPrivate &dd, QObject *parent = nullptr);
 
-    virtual void connectToServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
-    virtual void clearServiceObject() Q_DECL_OVERRIDE;
+    virtual void connectToServiceObject(QIviServiceObject *serviceObject) override;
+    virtual void clearServiceObject() override;
 
 private:
     Q_DECLARE_PRIVATE(QIviMediaDeviceDiscoveryModel)

@@ -46,6 +46,8 @@
 
 #include <QtDebug>
 
+QT_BEGIN_NAMESPACE
+
 QIviPlayQueuePrivate::QIviPlayQueuePrivate(QIviMediaPlayer *player, QIviPlayQueue *model)
     : QAbstractItemModelPrivate()
     , q_ptr(model)
@@ -623,5 +625,7 @@ QIviPlayQueue::QIviPlayQueue(QIviMediaPlayer *parent)
 
     This signal is emitted whenever the fetchMoreThreshold is reached and new data is requested from the backend.
 */
+
+QT_END_NAMESPACE
 
 #include "moc_qiviplayqueue.cpp"

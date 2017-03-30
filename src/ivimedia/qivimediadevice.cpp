@@ -41,6 +41,8 @@
 
 #include "qivimediadevice.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QIviMediaDevice
     \inmodule QtIviMedia
@@ -162,3 +164,5 @@ QString QIviMediaUsbDevice::type() const
 
     Ejects the USB media device and makes sure all data is written to the thumb-drive so it can safely be removed.
 */
+
+QT_END_NAMESPACE

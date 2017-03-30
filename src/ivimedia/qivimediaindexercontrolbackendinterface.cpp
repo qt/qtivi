@@ -41,6 +41,8 @@
 
 #include "qivimediaindexercontrolbackendinterface.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QIviMediaIndexerControlBackendInterface
     \inmodule QtIviMedia
@@ -107,3 +109,5 @@ QIviMediaIndexerControlBackendInterface::QIviMediaIndexerControlBackendInterface
     This signal is emitted whenever the indexing state changed. The \a state argument holds the new state
     of the indexer.
 */
+
+QT_END_NAMESPACE

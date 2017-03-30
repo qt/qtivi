@@ -44,6 +44,8 @@
 #include <QtIviCore/QIviServiceObject>
 #include <QtDebug>
 
+QT_BEGIN_NAMESPACE
+
 QIviAmFmTunerPrivate::QIviAmFmTunerPrivate(const QString &interface, QIviAmFmTuner *parent)
     : QIviAbstractFeaturePrivate(interface, parent)
     , q_ptr(parent)
@@ -563,5 +565,7 @@ void QIviAmFmTuner::clearServiceObject()
 
     \sa startScan stopScan scanRunning scanStarted
 */
+
+QT_END_NAMESPACE
 
 #include "moc_qiviamfmtuner.cpp"

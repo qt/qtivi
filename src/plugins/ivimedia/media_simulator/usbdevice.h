@@ -50,13 +50,13 @@ class USBDevice : public QIviMediaUsbDevice
 {
     Q_OBJECT
 public:
-    explicit USBDevice(const QString &folder, QObject *parent = 0);
+    explicit USBDevice(const QString &folder, QObject *parent = nullptr);
 
-    virtual QString name() const Q_DECL_OVERRIDE;
-    virtual void eject() Q_DECL_OVERRIDE;
+    virtual QString name() const override;
+    virtual void eject() override;
 
-    virtual QStringList interfaces() const Q_DECL_OVERRIDE;
-    virtual QIviFeatureInterface *interfaceInstance(const QString &interface) const Q_DECL_OVERRIDE;
+    virtual QStringList interfaces() const override;
+    virtual QIviFeatureInterface *interfaceInstance(const QString &interface) const override;
 
 private:
     UsbBrowseBackend *m_browseModel;

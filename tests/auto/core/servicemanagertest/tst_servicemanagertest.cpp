@@ -70,7 +70,7 @@ public:
         : QIviFeatureInterface(parent)
     {}
 
-    void initialize() Q_DECL_OVERRIDE
+    void initialize() override
     {
     }
 };

@@ -41,6 +41,8 @@
 
 #include "qivimediadevicediscoverymodelbackendinterface.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QIviMediaDeviceDiscoveryModelBackendInterface
     \inmodule QtIviMedia
@@ -103,3 +105,5 @@ QIviMediaDeviceDiscoveryModelBackendInterface::QIviMediaDeviceDiscoveryModelBack
 
     This signal is emitted when a \a device has been removed from the system and cannot be used anymore.
 */
+
+QT_END_NAMESPACE

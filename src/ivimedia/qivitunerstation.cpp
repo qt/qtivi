@@ -84,8 +84,6 @@ public:
     QIviAmFmTuner::Band m_band;
 };
 
-QT_END_NAMESPACE
-
 /*!
     \class QIviTunerStation
     \inmodule QtIviMedia
@@ -414,3 +412,5 @@ bool QIviAmFmTunerStation::operator==(const QIviAmFmTunerStation &other)
 
     \sa operator==()
 */
+
+QT_END_NAMESPACE

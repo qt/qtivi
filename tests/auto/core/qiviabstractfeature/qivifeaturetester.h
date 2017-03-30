@@ -46,10 +46,10 @@ class QIviFeatureTester : public QObject
     Q_PROPERTY(QString error READ errorMessage NOTIFY errorChanged)
 
 public:
-    explicit QIviFeatureTester(QIviAbstractFeature *feature, QObject *parent = Q_NULLPTR)
+    explicit QIviFeatureTester(QIviAbstractFeature *feature, QObject *parent = nullptr)
         : QObject(parent)
         , m_feature(feature)
-        , m_featureListModel(0)
+        , m_featureListModel(nullptr)
     {
         connect(m_feature, &QIviAbstractFeature::discoveryModeChanged, this, &QIviFeatureTester::discoveryModeChanged);
         connect(m_feature, &QIviAbstractFeature::discoveryResultChanged, this, &QIviFeatureTester::discoveryResultChanged);
@@ -59,9 +59,9 @@ public:
         connect(m_feature, &QIviAbstractFeature::errorChanged, this, &QIviFeatureTester::errorChanged);
     }
 
-    explicit QIviFeatureTester(QIviAbstractFeatureListModel *featureModel, QObject *parent = Q_NULLPTR)
+    explicit QIviFeatureTester(QIviAbstractFeatureListModel *featureModel, QObject *parent = nullptr)
         : QObject(parent)
-        , m_feature(0)
+        , m_feature(nullptr)
         , m_featureListModel(featureModel)
     {
         connect(m_featureListModel, &QIviAbstractFeatureListModel::discoveryModeChanged, this, &QIviFeatureTester::discoveryModeChanged);

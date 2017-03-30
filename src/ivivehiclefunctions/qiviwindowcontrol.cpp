@@ -45,6 +45,8 @@
 #include <QtIviCore/QIviPropertyFactory>
 #include <QtIviCore/QIviServiceObject>
 
+QT_BEGIN_NAMESPACE
+
 QIviWindowControlPrivate::QIviWindowControlPrivate(const QString &interface, const QString &zone, QIviWindowControl *parent)
     : QIviAbstractZonedFeaturePrivate(interface, zone, parent)
     , m_heaterMode(QIviWindowControl::HeaterOff)
@@ -744,6 +746,6 @@ void QIviWindowControl::close()
  * \sa stateAttribute() state()
  */
 
-
+QT_END_NAMESPACE
 
 #include "moc_qiviwindowcontrol.cpp"

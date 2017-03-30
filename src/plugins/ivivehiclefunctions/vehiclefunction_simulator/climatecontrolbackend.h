@@ -48,7 +48,7 @@
 class ClimateControlBackend : public QIviClimateControlBackendInterface
 {
 public:
-    ClimateControlBackend(QObject *parent = 0);
+    ClimateControlBackend(QObject *parent = nullptr);
     ~ClimateControlBackend();
 
 public:

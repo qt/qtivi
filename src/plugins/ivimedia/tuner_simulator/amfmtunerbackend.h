@@ -50,23 +50,23 @@ class AmFmTunerBackend : public QIviAmFmTunerBackendInterface
 {
     Q_OBJECT
 public:
-    explicit AmFmTunerBackend(QObject *parent = 0);
+    explicit AmFmTunerBackend(QObject *parent = nullptr);
 
-    virtual void initialize() Q_DECL_OVERRIDE;
-    virtual void setFrequency(int frequency) Q_DECL_OVERRIDE;
-    virtual void setBand(QIviAmFmTuner::Band band) Q_DECL_OVERRIDE;
-    virtual void stepUp() Q_DECL_OVERRIDE;
-    virtual void stepDown() Q_DECL_OVERRIDE;
-    virtual void seekUp() Q_DECL_OVERRIDE;
-    virtual void seekDown() Q_DECL_OVERRIDE;
-    virtual void startScan() Q_DECL_OVERRIDE;
-    virtual void stopScan() Q_DECL_OVERRIDE;
+    virtual void initialize() override;
+    virtual void setFrequency(int frequency) override;
+    virtual void setBand(QIviAmFmTuner::Band band) override;
+    virtual void stepUp() override;
+    virtual void stepDown() override;
+    virtual void seekUp() override;
+    virtual void seekDown() override;
+    virtual void startScan() override;
+    virtual void stopScan() override;
 
 private:
     void setCurrentStation(const QIviAmFmTunerStation &station);
     int stationIndexFromFrequency(int frequency) const;
     QIviAmFmTunerStation stationAt(int frequency) const;
-    void timerEvent(QTimerEvent *event) Q_DECL_OVERRIDE;
+    void timerEvent(QTimerEvent *event) override;
 
     QIviAmFmTuner::Band m_band;
     struct BandData {

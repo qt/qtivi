@@ -50,11 +50,13 @@
 #include <QMetaEnum>
 #include <QDebug>
 
+QT_BEGIN_NAMESPACE
+
 QIviAbstractFeaturePrivate::QIviAbstractFeaturePrivate(const QString &interface, QIviAbstractFeature *parent)
     : QObjectPrivate()
     , q_ptr(parent)
     , m_interface(interface)
-    , m_serviceObject(0)
+    , m_serviceObject(nullptr)
     , m_discoveryMode(QIviAbstractFeature::AutoDiscovery)
     , m_discoveryResult(QIviAbstractFeature::NoResult)
     , m_error(QIviAbstractFeature::NoError)
@@ -261,7 +263,7 @@ bool QIviAbstractFeature::setServiceObject(QIviServiceObject *so)
         disconnect(d->m_serviceObject, SIGNAL(destroyed()), this, SLOT(serviceObjectDestroyed()));
     }
 
-    d->m_serviceObject = 0;
+    d->m_serviceObject = nullptr;
 
     //We only want to call clearServiceObject if we are sure that the serviceObject changes
     if (!so) {
@@ -731,9 +733,11 @@ void QIviAbstractFeature::onErrorChanged(QIviAbstractFeature::Error error, const
 void QIviAbstractFeature::serviceObjectDestroyed()
 {
     Q_D(QIviAbstractFeature);
-    d->m_serviceObject = 0;
+    d->m_serviceObject = nullptr;
     clearServiceObject();
     emit serviceObjectChanged();
 }
+
+QT_END_NAMESPACE
 
 #include "moc_qiviabstractfeature.cpp"

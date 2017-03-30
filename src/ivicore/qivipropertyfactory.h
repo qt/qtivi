@@ -130,25 +130,25 @@ public:
         return prop;
     }
 
-    bool isAvailable() const Q_DECL_OVERRIDE
+    bool isAvailable() const override
     {
         return callAttributeGetter().isAvailable();
     }
 
-    QVariant minimumValue() const Q_DECL_OVERRIDE
+    QVariant minimumValue() const override
     {
         return QVariant::fromValue<T>(callAttributeGetter().minimumValue());
     }
-    QVariant maximumValue() const Q_DECL_OVERRIDE
+    QVariant maximumValue() const override
     {
         return QVariant::fromValue<T>(callAttributeGetter().maximumValue());
     }
-    QVariantList availableValues() const Q_DECL_OVERRIDE
+    QVariantList availableValues() const override
     {
         return qtivi_convertAvailableValues(callAttributeGetter().availableValues());
     }
 
-    QVariant value() const Q_DECL_OVERRIDE
+    QVariant value() const override
     {
         T val;
         void *args[] = { reinterpret_cast<void*>(&val), QVariant().data() };

@@ -41,6 +41,8 @@
 
 #include "qivimediaplayerbackendinterface.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QIviMediaPlayerBackendInterface
     \inmodule QtIviMedia
@@ -268,3 +270,5 @@ QIviMediaPlayerBackendInterface::QIviMediaPlayerBackendInterface(QObject *parent
 
     \sa insert() remove() move()
 */
+
+QT_END_NAMESPACE

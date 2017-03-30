@@ -52,13 +52,13 @@ class Q_QTIVICORE_EXPORT QIviFeatureInterface : public QObject
     Q_OBJECT
 
 public:
-    explicit QIviFeatureInterface(QObject *parent = Q_NULLPTR);
+    explicit QIviFeatureInterface(QObject *parent = nullptr);
     ~QIviFeatureInterface();
 
     virtual void initialize() = 0;
 
 protected:
-    QIviFeatureInterface(QObjectPrivate &dd, QObject *parent = Q_NULLPTR);
+    QIviFeatureInterface(QObjectPrivate &dd, QObject *parent = nullptr);
 
 Q_SIGNALS:
     void errorChanged(QIviAbstractFeature::Error error, const QString &message = QString());

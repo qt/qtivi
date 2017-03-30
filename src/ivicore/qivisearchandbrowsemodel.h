@@ -105,8 +105,8 @@ public:
     Q_DECLARE_FLAGS(Capabilities, Capability)
     Q_FLAG(Capabilities)
 
-    QIviSearchAndBrowseModel(QObject *parent = Q_NULLPTR);
-    virtual ~QIviSearchAndBrowseModel();
+    explicit QIviSearchAndBrowseModel(QObject *parent = nullptr);
+    ~QIviSearchAndBrowseModel();
 
     Capabilities capabilities() const;
 
@@ -129,13 +129,13 @@ public:
     QIviSearchAndBrowseModel::LoadingType loadingType() const;
     void setLoadingType(QIviSearchAndBrowseModel::LoadingType loadingType);
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
-    QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role) const override;
 
-    bool canFetchMore(const QModelIndex &parent) const Q_DECL_OVERRIDE;
-    void fetchMore(const QModelIndex &parent) Q_DECL_OVERRIDE;
+    bool canFetchMore(const QModelIndex &parent) const override;
+    void fetchMore(const QModelIndex &parent) override;
 
-    QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
+    QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE QVariant get(int index) const;
     Q_INVOKABLE void goBack();
@@ -164,12 +164,12 @@ Q_SIGNALS:
     void loadingTypeChanged(QIviSearchAndBrowseModel::LoadingType loadingType);
 
 protected:
-    QIviSearchAndBrowseModel(QIviServiceObject *serviceObject, const QString &contentType, QObject *parent = Q_NULLPTR);
+    QIviSearchAndBrowseModel(QIviServiceObject *serviceObject, const QString &contentType, QObject *parent = nullptr);
     QIviSearchAndBrowseModel(QIviSearchAndBrowseModelPrivate &dd, QObject *parent);
-    virtual bool acceptServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
-    virtual void connectToServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
-    virtual void disconnectFromServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
-    virtual void clearServiceObject() Q_DECL_OVERRIDE;
+    virtual bool acceptServiceObject(QIviServiceObject *serviceObject) override;
+    virtual void connectToServiceObject(QIviServiceObject *serviceObject) override;
+    virtual void disconnectFromServiceObject(QIviServiceObject *serviceObject) override;
+    virtual void clearServiceObject() override;
 
 private:
     Q_DECLARE_PRIVATE(QIviSearchAndBrowseModel)

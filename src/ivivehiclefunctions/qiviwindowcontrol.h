@@ -84,7 +84,7 @@ public:
     };
     Q_ENUM(State)
 
-    QIviWindowControl(const QString &zone = QString(), QObject *parent = Q_NULLPTR);
+    QIviWindowControl(const QString &zone = QString(), QObject *parent = nullptr);
     ~QIviWindowControl();
 
     QIviWindowControl::HeaterMode heaterMode() const;
@@ -122,11 +122,11 @@ Q_SIGNALS:
     void stateAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::State> &attribute);
 
 protected:
-    QIviWindowControl(QIviWindowControlPrivate &dd, QObject *parent = Q_NULLPTR);
-    virtual QIviAbstractZonedFeature *createZoneFeature(const QString &zone) Q_DECL_OVERRIDE;
+    QIviWindowControl(QIviWindowControlPrivate &dd, QObject *parent = nullptr);
+    virtual QIviAbstractZonedFeature *createZoneFeature(const QString &zone) override;
 
-    virtual void connectToServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
-    virtual void clearServiceObject() Q_DECL_OVERRIDE;
+    virtual void connectToServiceObject(QIviServiceObject *serviceObject) override;
+    virtual void clearServiceObject() override;
 
 private:
     Q_DECLARE_PRIVATE(QIviWindowControl)

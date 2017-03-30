@@ -64,25 +64,25 @@ public:
     };
     Q_ENUM(OperationType)
 
-    MediaPlayerBackend(const QSqlDatabase &database, QObject *parent = Q_NULLPTR);
+    MediaPlayerBackend(const QSqlDatabase &database, QObject *parent = nullptr);
 
-    virtual void initialize() Q_DECL_OVERRIDE;
-    virtual void play() Q_DECL_OVERRIDE;
-    virtual void pause() Q_DECL_OVERRIDE;
-    virtual void stop() Q_DECL_OVERRIDE;
-    virtual void seek(qint64 offset) Q_DECL_OVERRIDE;
-    virtual void next() Q_DECL_OVERRIDE;
-    virtual void previous() Q_DECL_OVERRIDE;
-    virtual void setPlayMode(QIviMediaPlayer::PlayMode playMode) Q_DECL_OVERRIDE;
-    virtual void setPosition(qint64 position) Q_DECL_OVERRIDE;
-    virtual void setCurrentIndex(int index) Q_DECL_OVERRIDE;
+    virtual void initialize() override;
+    virtual void play() override;
+    virtual void pause() override;
+    virtual void stop() override;
+    virtual void seek(qint64 offset) override;
+    virtual void next() override;
+    virtual void previous() override;
+    virtual void setPlayMode(QIviMediaPlayer::PlayMode playMode) override;
+    virtual void setPosition(qint64 position) override;
+    virtual void setCurrentIndex(int index) override;
 
-    virtual bool canReportCount() Q_DECL_OVERRIDE;
-    virtual void fetchData(int start, int count) Q_DECL_OVERRIDE;
+    virtual bool canReportCount() override;
+    virtual void fetchData(int start, int count) override;
 
-    virtual void insert(int index, const QIviPlayableItem *item) Q_DECL_OVERRIDE;
-    virtual void remove(int index) Q_DECL_OVERRIDE;
-    virtual void move(int cur_index, int new_index) Q_DECL_OVERRIDE;
+    virtual void insert(int index, const QIviPlayableItem *item) override;
+    virtual void remove(int index) override;
+    virtual void move(int cur_index, int new_index) override;
 
 public Q_SLOTS:
     void doSqlOperation(MediaPlayerBackend::OperationType type, const QStringList &queries, int start, int count);

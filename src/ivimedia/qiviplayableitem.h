@@ -59,14 +59,14 @@ class Q_QTIVIMEDIA_EXPORT QIviPlayableItem : public QIviSearchAndBrowseModelItem
     Q_PROPERTY(QUrl url READ url WRITE setUrl)
 
 public:
-    QIviPlayableItem();
-    QIviPlayableItem(const QIviPlayableItem &);
+    explicit QIviPlayableItem();
+    explicit QIviPlayableItem(const QIviPlayableItem &);
     QIviPlayableItem &operator=(const QIviPlayableItem &);
-    virtual ~QIviPlayableItem();
+    ~QIviPlayableItem();
 
     virtual QUrl url() const;
     virtual void setUrl(const QUrl &url);
-    virtual QString type() const Q_DECL_OVERRIDE;
+    virtual QString type() const override;
 
     bool operator==(const QIviPlayableItem &other);
     inline bool operator!=(const QIviPlayableItem &other) { return !(*this == other); }
@@ -94,7 +94,7 @@ public:
     QIviAudioTrackItem();
     QIviAudioTrackItem(const QIviAudioTrackItem &);
     QIviAudioTrackItem &operator=(const QIviAudioTrackItem &);
-    virtual ~QIviAudioTrackItem();
+    ~QIviAudioTrackItem();
 
     virtual QString title();
     virtual void setTitle(const QString &title);
@@ -114,8 +114,8 @@ public:
     virtual void setCoverArtUrl(const QUrl &url);
     virtual int rating();
     virtual void setRating(int rating);
-    virtual QString name() const Q_DECL_OVERRIDE;
-    virtual QString type() const Q_DECL_OVERRIDE;
+    virtual QString name() const override;
+    virtual QString type() const override;
 
     bool operator==(const QIviAudioTrackItem &other);
     inline bool operator!=(const QIviAudioTrackItem &other) { return !(*this == other); }

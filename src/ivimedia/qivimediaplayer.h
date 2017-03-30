@@ -79,7 +79,7 @@ public:
     };
     Q_ENUM(PlayState)
 
-    explicit QIviMediaPlayer(QObject *parent = Q_NULLPTR);
+    explicit QIviMediaPlayer(QObject *parent = nullptr);
 
     QIviPlayQueue *playQueue() const;
     PlayMode playMode() const;
@@ -106,10 +106,10 @@ Q_SIGNALS:
     void durationChanged(qint64 duration);
 
 protected:
-    QIviMediaPlayer(QIviMediaPlayerPrivate &dd, QObject *parent = Q_NULLPTR);
+    QIviMediaPlayer(QIviMediaPlayerPrivate &dd, QObject *parent = nullptr);
 
-    virtual void connectToServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
-    virtual void clearServiceObject() Q_DECL_OVERRIDE;
+    virtual void connectToServiceObject(QIviServiceObject *serviceObject) override;
+    virtual void clearServiceObject() override;
 
 private:
     Q_DECLARE_PRIVATE(QIviMediaPlayer)

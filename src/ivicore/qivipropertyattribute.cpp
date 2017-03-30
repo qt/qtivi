@@ -41,6 +41,8 @@
 
 #include "qivipropertyattribute.h"
 
+QT_BEGIN_NAMESPACE
+
 QIviPropertyAttributeBase::QIviPropertyAttributeBase()
 {
     registerTypes();
@@ -172,3 +174,5 @@ void QIviPropertyAttributeBase::registerTypes()
  *
  * All elements of QIviPropertyAttribute are used for the comparison.
  */
+
+QT_END_NAMESPACE

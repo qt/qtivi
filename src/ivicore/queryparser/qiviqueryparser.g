@@ -91,8 +91,8 @@
 QT_BEGIN_NAMESPACE
 
 //TODO Find a better way of doing it, this is not reentrant
-QString* currentQuery = 0;
-unsigned int *currentOffset = 0;
+QString* currentQuery = nullptr;
+unsigned int *currentOffset = nullptr;
 void readQueryBuffer(char *buffer, unsigned int &numBytesRead,int maxBytesToRead)
 {
     if (!currentQuery) {
@@ -126,7 +126,7 @@ public:
 
 public:
     QIviQueryParser();
-    virtual ~QIviQueryParser();
+    ~QIviQueryParser();
 
     QIviAbstractQueryTerm *parse();
 
@@ -227,11 +227,11 @@ typedef int yy_size_t;
 
 QIviQueryParser::~QIviQueryParser()
 {
-    currentOffset = 0;
-    currentQuery = 0;
+    currentOffset = nullptr;
+    currentQuery = nullptr;
 
     //We need to reset the lexer to reinitialize it when needed
-    yy_init = 0;
+    yy_init = nullptr;
 
     //Get rid of the unused warning
     if (0)
@@ -266,8 +266,8 @@ void QIviQueryParser::handleConjunction(bool bangOperator)
     list.prepend(m_termStack.pop());
     list.prepend(m_termStack.pop());
 
-    QIviConjunctionTerm *conjunction1 = 0;
-    QIviConjunctionTerm *conjunction2 = 0;
+    QIviConjunctionTerm *conjunction1 = nullptr;
+    QIviConjunctionTerm *conjunction2 = nullptr;
     int i = 0;
     for (QIviAbstractQueryTerm *term : list) {
         if (term->type() == QIviAbstractQueryTerm::ConjunctionTerm) {

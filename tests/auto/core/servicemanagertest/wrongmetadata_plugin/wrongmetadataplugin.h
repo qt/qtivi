@@ -39,8 +39,8 @@ class WrongMetadataPlugin : public QObject, public QIviServiceInterface
     Q_OBJECT
     Q_INTERFACES(QIviServiceInterface)
 public:
-    WrongMetadataPlugin();
-    virtual ~WrongMetadataPlugin() {}
+    explicit WrongMetadataPlugin();
+    ~WrongMetadataPlugin() {}
 
     QStringList interfaces() const {
         return QStringList() << "wrongmetadata";

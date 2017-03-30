@@ -41,6 +41,8 @@
 
 #include "qiviclimatecontrolbackendinterface.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
  * \class QIviClimateControlBackendInterface
  * \inmodule QtIviVehicleFunctions
@@ -59,7 +61,7 @@
  */
 
 /*!
- * \fn QIviClimateControlBackendInterface::QIviClimateControlBackendInterface(QObject *parent=0)
+ * \fn QIviClimateControlBackendInterface::QIviClimateControlBackendInterface(QObject *parent = nullptr)
  *
  * Constructs a backend interface.
  *
@@ -455,3 +457,5 @@ QIviClimateControlBackendInterface::QIviClimateControlBackendInterface(QObject *
  *
  * The signal is emitted when the fan intensity level for the AutomaticClimate mode for \a zone is changed to \a attribute.
  */
+
+QT_END_NAMESPACE

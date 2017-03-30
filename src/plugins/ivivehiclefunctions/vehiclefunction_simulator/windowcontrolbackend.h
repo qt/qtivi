@@ -74,7 +74,7 @@ private:
 class WindowControlBackend : public QIviWindowControlBackendInterface
 {
 public:
-    WindowControlBackend(QObject *parent = 0);
+    WindowControlBackend(QObject *parent = nullptr);
     ~WindowControlBackend();
 
     QStringList availableZones() const;

@@ -46,6 +46,8 @@
 #include "qiviabstractzonedfeature_p.h"
 #include "qivizonedfeatureinterface.h"
 
+QT_BEGIN_NAMESPACE
+
 QIviAbstractZonedFeaturePrivate::QIviAbstractZonedFeaturePrivate(const QString &interface, const QString &zone, QIviAbstractFeature *parent)
     : QIviAbstractFeaturePrivate(interface, parent)
     , m_zone(zone)
@@ -113,7 +115,7 @@ bool QIviAbstractZonedFeature::acceptServiceObject(QIviServiceObject *serviceObj
 */
 void QIviAbstractZonedFeature::connectToServiceObject(QIviServiceObject *serviceObject)
 {
-    QIviZonedFeatureInterface *backend(0);
+    QIviZonedFeatureInterface *backend = nullptr;
     if (QIviAbstractZonedFeature* parentFeature = qobject_cast<QIviAbstractZonedFeature*>(parent()))
         backend = parentFeature->backend();
     else if (serviceObject)
@@ -331,3 +333,5 @@ QVariantList QIviAbstractZonedFeature::zoneFeatureList() const
     Q_D(const QIviAbstractZonedFeature);
     return d->m_zoneFeatureList;
 }
+
+QT_END_NAMESPACE
