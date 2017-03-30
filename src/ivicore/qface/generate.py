@@ -72,7 +72,7 @@ def run_cpp(src, dst):
         generator.write('{{module.module_name|lower}}global.h', 'global.h.tpl', ctx)
         generator.write('{{module.module_name|lower}}module.cpp', 'module.cpp.tpl', ctx)
         generator.write('{{module.module_name|lower}}module.h', 'module.h.tpl', ctx)
-        generator.write('{{module|lower|replace(".", "-")}}.pro', 'module.pro.tpl', ctx)
+        generator.write('{{module|lower|replace(".", "-")}}.pri', 'module.pri.tpl', ctx)
         for interface in module.interfaces:
             log.debug('generate code for interface %s', interface)
             interface.add_tag('config')

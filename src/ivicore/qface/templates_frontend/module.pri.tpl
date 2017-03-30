@@ -41,28 +41,18 @@
 ## Do not edit! All changes made to it will be lost.
 #############################################################################
 
-TEMPLATE = lib
-QT += qml quick ivicore
-{% if module.tags.config.disablePrivateIVI != True %}
-QT += ivicore-private
-{% endif %}
-CONFIG += qt plugin
-TARGET = $$qtLibraryTarget({{module|lower}})
-
-uri = {{module}}
-
 HEADERS += \
 {% for interface in module.interfaces %}
-    {{interface|lower}}.h \
-    {{interface|lower}}_p.h \
-    {{interface|lower}}backendinterface.h \
+    $$PWD/{{interface|lower}}.h \
+    $$PWD/{{interface|lower}}_p.h \
+    $$PWD/{{interface|lower}}backendinterface.h \
 {% endfor %}
-    {{module.module_name|lower}}module.h \
-    {{module.module_name|lower}}global.h
+    $$PWD/{{module.module_name|lower}}module.h \
+    $$PWD/{{module.module_name|lower}}global.h
 
 SOURCES += \
 {% for interface in module.interfaces %}
-    {{interface|lower}}.cpp \
-    {{interface|lower}}backendinterface.cpp \
+    $$PWD/{{interface|lower}}.cpp \
+    $$PWD/{{interface|lower}}backendinterface.cpp \
 {% endfor %}
-    {{module.module_name|lower}}module.cpp
+    $$PWD/{{module.module_name|lower}}module.cpp

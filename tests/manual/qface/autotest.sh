@@ -48,21 +48,19 @@ die() {
 WORKDIR=$(dirname $0)
 GENERATOR=${WORKDIR}/../../../src/ivicore/qface/generate.py
 test -x ${GENERATOR} || die "${GENERATOR} does not exists or can't be executed" 1
-mkdir -p out || die "Cannot create 'out' folder" 1
 for idlfile in org.example.echo org.example.echo.noprivate
 do
     echo "Testing '$idlfile' ================"
     idldir=$(echo $idlfile | tr . -)
-    echo "> ${idldir}"
-    test -d out/${idldir} && /bin/rm -rf out/${idldir}
-    test -d out/${idldir} && die "Cannot remove existing output folder" 1
-    ${GENERATOR} --format=cpp ${WORKDIR}/${idlfile}.qface ./out || die "Generator failed" 1
+    /bin/rm -rf projects/${idldir}/*.{h,cpp,pri}
+    ${GENERATOR} --format=cpp ${WORKDIR}/${idlfile}.qface ./projects || die "Generator failed" 1
     test -d build/${idldir} && /bin/rm -rf build/${idldir}
     test -d build/${idldir} && die "Cannot remove existing build folder" 1
     mkdir -p build/${idldir} || die "Cannot create build folder" 1
     pushd build/${idldir}
-    qmake ../../out/${idldir}/${idldir}.pro || die "Failed to run qmake" 1
+    qmake ../../projects/${idldir}/${idldir}.pro || die "Failed to run qmake" 1
     make || die "Failed to build" 1
     popd
+    echo "Done '$idlfile' ================"
 done
 die "All OK" 0
