@@ -100,7 +100,7 @@ void QIviSearchAndBrowseModelPrivate::onCapabilitiesChanged(const QUuid &identif
 
     Q_Q(QIviSearchAndBrowseModel);
     m_capabilities = capabilities;
-    q->capabilitiesChanged(capabilities);
+    emit q->capabilitiesChanged(capabilities);
 }
 
 void QIviSearchAndBrowseModelPrivate::onDataFetched(const QUuid &identifer, const QList<QVariant> &items, int start, bool moreAvailable)
@@ -126,7 +126,7 @@ void QIviSearchAndBrowseModelPrivate::onDataFetched(const QUuid &identifer, cons
 
         for (int i = 0; i < items.count(); i++)
             m_itemList.replace(start + i, items.at(i));
-        q->dataChanged(q->index(start), q->index(start + items.count() -1));
+        emit q->dataChanged(q->index(start), q->index(start + items.count() -1));
     }
 }
 
@@ -172,7 +172,7 @@ void QIviSearchAndBrowseModelPrivate::onDataChanged(const QUuid &identifier, con
     if (updateCount > 0) {
         for (int i = start, j=0; j < updateCount; i++, j++)
             m_itemList.replace(i, data.at(j));
-        q->dataChanged(q->index(start), q->index(start + updateCount -1));
+        emit q->dataChanged(q->index(start), q->index(start + updateCount -1));
     }
 
     if (delta < 0) { //Remove
@@ -259,7 +259,7 @@ void QIviSearchAndBrowseModelPrivate::checkType()
 
     if (!m_availableContentTypes.contains(m_contentType)) {
         QString error = QString(QLatin1String("Unsupported type: \"%1\" \n Supported types are: \n")).arg(m_contentType);
-        for (const QString &type : m_availableContentTypes)
+        for (const QString &type : qAsConst(m_availableContentTypes))
             error.append(type + QLatin1String("\n"));
         qWarning("%s", qPrintable(error));
     }

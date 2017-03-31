@@ -65,7 +65,8 @@ void MediaDiscoveryBackend::initialize()
 #endif
 
     QDir deviceFolder(m_deviceFolder);
-    for (const QString &folder : deviceFolder.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
+    const QStringList folders = deviceFolder.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    for (const QString &folder : folders) {
         qDebug() << "Adding USB Device for: " << folder;
         m_deviceMap.insert(folder, new USBDevice(deviceFolder.absoluteFilePath(folder)));
     }
@@ -79,7 +80,10 @@ void MediaDiscoveryBackend::onDirectoryChanged(const QString &path)
     QDir deviceFolder(m_deviceFolder);
 
     //Check for removed Devices
-    for (const QString &folder : m_deviceMap.keys()) {
+    QMapIterator<QString, QIviServiceObject*> i(m_deviceMap);
+    while (i.hasNext()) {
+        i.next();
+        const QString &folder = i.key();
         if (!deviceFolder.exists(folder)) {
             qDebug() << "Removing USB Device for: " << folder;
             QIviServiceObject *device = m_deviceMap.take(folder);
@@ -89,7 +93,8 @@ void MediaDiscoveryBackend::onDirectoryChanged(const QString &path)
     }
 
     //Check for newly added Devices
-    for (const QString &folder : deviceFolder.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
+    const QStringList folders = deviceFolder.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    for (const QString &folder : folders) {
         if (m_deviceMap.contains(folder))
             continue;
 

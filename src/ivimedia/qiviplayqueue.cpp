@@ -112,7 +112,7 @@ void QIviPlayQueuePrivate::onDataFetched(const QList<QVariant> &items, int start
 
         for (int i = 0; i < items.count(); i++)
             m_itemList.replace(start + i, items.at(i));
-        q->dataChanged(q->index(start), q->index(start + items.count() -1));
+        emit q->dataChanged(q->index(start), q->index(start + items.count() -1));
     }
 }
 
@@ -155,7 +155,7 @@ void QIviPlayQueuePrivate::onDataChanged(const QList<QVariant> &data, int start,
     if (updateCount > 0) {
         for (int i = start, j=0; j < updateCount; i++, j++)
             m_itemList.replace(i, data.at(j));
-        q->dataChanged(q->index(start), q->index(start + updateCount -1));
+        emit q->dataChanged(q->index(start), q->index(start + updateCount -1));
     }
 
     if (delta < 0) { //Remove

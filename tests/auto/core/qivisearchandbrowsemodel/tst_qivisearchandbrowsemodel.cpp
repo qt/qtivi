@@ -39,6 +39,7 @@
 
 class TestBackend : public QIviSearchAndBrowseModelInterface
 {
+    Q_OBJECT
 
 public:
 
@@ -301,6 +302,7 @@ private:
 
 class TestServiceObject : public QIviServiceObject
 {
+    Q_OBJECT
 
 public:
     explicit TestServiceObject(QObject *parent = nullptr) :

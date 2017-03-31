@@ -36,6 +36,8 @@
 
 class WindowControlTestBackend : public QIviWindowControlBackendInterface
 {
+    Q_OBJECT
+
 public:
     WindowControlTestBackend()
         : QIviWindowControlBackendInterface()
@@ -226,7 +228,9 @@ private:
 typedef QIviPropertyTestData<QIviWindowControl, WindowControlTestBackend, QIviWindowControl::State> WindowControlTestDataState;
 Q_DECLARE_METATYPE(WindowControlTestDataState)
 
-class WindowControlTestServiceObject : public QIviServiceObject {
+class WindowControlTestServiceObject : public QIviServiceObject
+{
+    Q_OBJECT
 
 public:
     explicit WindowControlTestServiceObject(QObject *parent = nullptr) :
@@ -259,6 +263,8 @@ private:
 
 class InvalidInterface : public QIviFeatureInterface
 {
+    Q_OBJECT
+
 public:
     InvalidInterface(QObject *parent)
         : QIviFeatureInterface(parent)
@@ -270,7 +276,9 @@ public:
     }
 };
 
-class WindowControlInvalidServiceObject : public QIviServiceObject {
+class WindowControlInvalidServiceObject : public QIviServiceObject
+{
+    Q_OBJECT
 
 public:
     explicit WindowControlInvalidServiceObject(QObject *parent = nullptr) :

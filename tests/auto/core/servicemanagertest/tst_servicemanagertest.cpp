@@ -65,6 +65,7 @@ private:
 
 class TestInterface : public QIviFeatureInterface
 {
+    Q_OBJECT
 public:
     TestInterface(QObject *parent)
         : QIviFeatureInterface(parent)

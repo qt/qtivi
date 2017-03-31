@@ -173,7 +173,7 @@ void QDltRegistrationPrivate::dltLogLevelChanged(char context_id[], uint8_t log_
             QLoggingCategory* category = it.value().m_category;
             if (category->isEnabled(type) != enabled) {
                 category->setEnabled(type, enabled);
-                q->logLevelChanged(category);
+                emit q->logLevelChanged(category);
             }
         }
     }
@@ -209,8 +209,9 @@ DltLogLevelType QDltRegistrationPrivate::category2dltLevel(const QLoggingCategor
     types of a QLoggingCategory whenever the log level of a dlt context changes.
 */
 
-QDltRegistration::QDltRegistration()
-    : d_ptr(new QDltRegistrationPrivate(this))
+QDltRegistration::QDltRegistration(QObject *parent)
+    : QObject(parent)
+    , d_ptr(new QDltRegistrationPrivate(this))
 {
 }
 

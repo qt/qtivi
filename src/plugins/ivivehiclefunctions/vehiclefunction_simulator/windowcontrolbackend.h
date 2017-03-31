@@ -73,6 +73,8 @@ private:
 
 class WindowControlBackend : public QIviWindowControlBackendInterface
 {
+    Q_OBJECT
+
 public:
     WindowControlBackend(QObject *parent = nullptr);
     ~WindowControlBackend();

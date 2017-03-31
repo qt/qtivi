@@ -114,9 +114,9 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &t
     QString whereClause = where_clauses.join(" AND ");
 
     QString countQuery = QString(QLatin1String("SELECT count() FROM (SELECT %1 FROM track %2 %3)"))
-            .arg(columns)
-            .arg(whereClause.isEmpty() ? QString() : QLatin1String("WHERE ") + whereClause)
-            .arg(groupBy.isEmpty() ? QString() : QLatin1String("GROUP BY ") + groupBy);
+            .arg(columns,
+                 whereClause.isEmpty() ? QString() : QLatin1String("WHERE ") + whereClause,
+                 groupBy.isEmpty() ? QString() : QLatin1String("GROUP BY ") + groupBy);
 
     QSqlQuery query(m_db);
 
@@ -129,12 +129,12 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &t
     }
 
     QString queryString = QString(QLatin1String("SELECT %1 FROM track %2 %3 %4 LIMIT %5, %6"))
-            .arg(columns)
-            .arg(whereClause.isEmpty() ? QString() : QLatin1String("WHERE ") + whereClause)
-            .arg(order)
-            .arg(groupBy.isEmpty() ? QString() : QLatin1String("GROUP BY ") + groupBy)
-            .arg(start)
-            .arg(count);
+            .arg(columns,
+            whereClause.isEmpty() ? QString() : QLatin1String("WHERE ") + whereClause,
+            order,
+            groupBy.isEmpty() ? QString() : QLatin1String("GROUP BY ") + groupBy)
+            .arg(start,
+            count);
 
     QtConcurrent::run(this,
                       &SearchAndBrowseBackend::search,

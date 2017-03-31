@@ -60,6 +60,8 @@ QT_BEGIN_NAMESPACE
 
 class QIviProxyServiceObject : public QIviServiceObject
 {
+    Q_OBJECT
+
 public:
     explicit QIviProxyServiceObject(QIviServiceInterface *interface);
     ~QIviProxyServiceObject();

@@ -124,7 +124,7 @@ void SearchAndBrowseBackend::insert(const QUuid &identifier, const QString &type
     if (type != "presets" || item->type() != "amfmtunerstation")
         return;
 
-    QIviAmFmTunerStation station = *static_cast<const QIviAmFmTunerStation*>(item);
+    const QIviAmFmTunerStation &station = *static_cast<const QIviAmFmTunerStation*>(item);
     m_presets.insert(index, station);
     QVariantList stations = { QVariant::fromValue(station) };
     emit dataChanged(identifier, stations, index, 0);

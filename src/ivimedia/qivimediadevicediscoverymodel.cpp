@@ -96,7 +96,7 @@ void QIviMediaDeviceDiscoveryModelPrivate::onDeviceAdded(QIviServiceObject *devi
     m_deviceList += device;
     q->endInsertRows();
 
-    q->deviceAdded(mdevice);
+    emit q->deviceAdded(mdevice);
 }
 
 void QIviMediaDeviceDiscoveryModelPrivate::onDeviceRemoved(QIviServiceObject *device)
@@ -117,7 +117,7 @@ void QIviMediaDeviceDiscoveryModelPrivate::onDeviceRemoved(QIviServiceObject *de
     m_deviceList.takeAt(index);
     q->endRemoveRows();
 
-    q->deviceRemoved(mdevice);
+    emit q->deviceRemoved(mdevice);
 
     delete device;
 }

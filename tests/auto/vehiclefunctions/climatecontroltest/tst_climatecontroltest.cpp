@@ -37,6 +37,8 @@
 
 class ClimateControlTestBackend : public QIviClimateControlBackendInterface
 {
+    Q_OBJECT
+
 public:
     ClimateControlTestBackend()
         : QIviClimateControlBackendInterface()
@@ -506,7 +508,9 @@ Q_DECLARE_METATYPE(ClimateControlTestDataInt)
 typedef QIviPropertyTestData<QIviClimateControl, ClimateControlTestBackend, bool> ClimateControlTestDataBool;
 Q_DECLARE_METATYPE(ClimateControlTestDataBool)
 
-class ClimateControlTestServiceObject : public QIviServiceObject {
+class ClimateControlTestServiceObject : public QIviServiceObject
+{
+    Q_OBJECT
 
 public:
     explicit ClimateControlTestServiceObject(QObject *parent = nullptr) :
@@ -539,6 +543,7 @@ private:
 
 class InvalidInterface : public QIviFeatureInterface
 {
+    Q_OBJECT
 public:
     InvalidInterface(QObject *parent)
         : QIviFeatureInterface(parent)
@@ -550,7 +555,9 @@ public:
     }
 };
 
-class ClimateControlInvalidServiceObject : public QIviServiceObject {
+class ClimateControlInvalidServiceObject : public QIviServiceObject
+{
+    Q_OBJECT
 
 public:
     explicit ClimateControlInvalidServiceObject(QObject *parent = nullptr) :

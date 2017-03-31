@@ -139,7 +139,7 @@ void QDltTest::testLogging()
     registration->registerCategory(&TEST1(), "TES1", "Test Category One");
 
     QString msg = QLatin1Literal("TEST");
-    QString expectedMsg = QString("%1: \"%2\"").arg(TEST1().categoryName()).arg(msg);
+    QString expectedMsg = QString("%1: \"%2\"").arg(TEST1().categoryName(), msg);
 
     qWarning(TEST1) << msg;
 

@@ -62,6 +62,8 @@ QT_BEGIN_NAMESPACE
 
 class QIviHelperFeature : public QIviAbstractFeature
 {
+    Q_OBJECT
+
 public:
     QIviHelperFeature(const QString &interface, QIviAbstractFeatureListModel *model);
 

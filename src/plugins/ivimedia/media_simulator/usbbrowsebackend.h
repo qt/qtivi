@@ -46,6 +46,8 @@
 
 class UsbBrowseBackend : public QIviSearchAndBrowseModelInterface
 {
+    Q_OBJECT
+
 public:
     UsbBrowseBackend(const QString &path, QObject *parent = nullptr);
 
