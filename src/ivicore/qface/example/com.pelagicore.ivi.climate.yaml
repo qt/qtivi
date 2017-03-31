@@ -1,0 +1,67 @@
+com.pelagicore.ivi.climate.ClimateControl:
+    config_simulator:
+        zones: left_FrontLeft.right_FrontRight.rear_Rear
+
+com.pelagicore.ivi.climate.ClimateControl#airConditioning:
+    config_simulator:
+        default_value: true
+
+com.pelagicore.ivi.climate.ClimateControl#heater:
+    config_simulator:
+        default_value: true
+
+com.pelagicore.ivi.climate.ClimateControl#recirculation:
+    config_simulator:
+        default_value: false
+
+com.pelagicore.ivi.climate.ClimateControl#zoneSynchronization:
+    config_simulator:
+        default_value: false
+
+com.pelagicore.ivi.climate.ClimateControl#defrost:
+    config_simulator:
+        default_value: false
+
+com.pelagicore.ivi.climate.ClimateControl#steeringWheelHeater:
+    config_simulator:
+        default_value: 0
+
+com.pelagicore.ivi.climate.ClimateControl#fanSpeedLevel:
+    config_simulator:
+        default_value: 2
+        range_high: 50
+        range_low: 0
+
+com.pelagicore.ivi.climate.ClimateControl#recirculationMode:
+    config_simulator:
+        default_value: RecirculationMode.RecirculationOff
+
+com.pelagicore.ivi.climate.ClimateControl#recirculationSensitivityLevel:
+    config_simulator:
+        unsupported: true
+        default_value: 0
+
+com.pelagicore.ivi.climate.ClimateControl#climateMode:
+    config_simulator:
+        unsupported: true
+        default_value: ClimateMode.ClimateOn
+
+com.pelagicore.ivi.climate.ClimateControl#automaticClimateFanIntensityLevel:
+    config_simulator:
+        unsupported: true
+        default_value: 0
+
+com.pelagicore.ivi.climate.ClimateControl#targetTemperature:
+    config_simulator:
+        default_value: 0
+        zoned: true
+
+com.pelagicore.ivi.climate.ClimateControl#seatCooler:
+    config_simulator:
+        default_value: 0
+        zoned: true
+
+com.pelagicore.ivi.climate.ClimateControl#seatHeater:
+    config_simulator:
+        default_value: 0
+        zoned: true

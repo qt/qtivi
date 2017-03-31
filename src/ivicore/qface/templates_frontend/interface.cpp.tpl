@@ -62,7 +62,7 @@ QT_BEGIN_NAMESPACE
     , q_ptr(parent)
 {% endif %}
 {% for property in interface.properties %}
-    , m_{{property}}({{property|defaultValue}})
+    , m_{{property}}({{property|default_value}})
 {% endfor %}
 {
 }
@@ -97,13 +97,13 @@ const {{class}}Private *{{class}}Private::get(const {{class}} *v)
 void {{class}}Private::clearToDefaults()
 {
 {% for property in interface.properties %}
-    m_{{property}} = {{property|defaultValue}};
+    m_{{property}} = {{property|default_value}};
 {% endfor %}
 }
 
 {% for property in interface.properties %}
 {% if interface.tags.config.zoned %}
-void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameterType}}, const QString &zone)
+void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_type}}, const QString &zone)
 {
     auto q = getParent();
     auto f = qobject_cast<{{class}}*>(q->zoneAt(zone));
@@ -115,7 +115,7 @@ void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameterType
     emit f->{{property}}Changed({{property}});
 }
 {% else %}
-void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameterType}})
+void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_type}})
 {
     if (m_{{property}} != {{property}}) {
         auto q = getParent();
@@ -165,7 +165,7 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 }
 
 {% for property in interface.properties %}
-void {{class}}::set{{property|upperfirst}}({{ property|parameterType }})
+void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {
     auto d = {{class}}Private::get(this);
     if (d->m_{{property}} == {{property}})
@@ -174,7 +174,7 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameterType }})
     emit {{property}}Changed({{property}});
 }
 
-{{property|returnType}} {{class}}::{{property}}() const
+{{property|return_type}} {{class}}::{{property}}() const
 {
     const auto d = {{class}}Private::get(this);
     return d->m_{{property}};
@@ -182,7 +182,7 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameterType }})
 {% endfor %}
 
 {%- for operation in interface.operations %}
-{{operation|returnType}} {{class}}::{{operation}}({{operation.parameters|map('parameterType')|join(', ')}})
+{{operation|return_type}} {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}})
 {
     if ({{class}}BackendInterface *backend = ({{class}}BackendInterface *) this->backend())
 {% if interface.tags.config.zoned %}
@@ -194,7 +194,7 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameterType }})
 {% else %}
         return backend->{{operation}}({{operation.parameters|join(', ')}});
 {% endif %}
-    return {{operation|defaultValue}};
+    return {{operation|default_value}};
 }
 {% endfor %}
 

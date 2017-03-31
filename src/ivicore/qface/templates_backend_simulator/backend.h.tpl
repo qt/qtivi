@@ -1,5 +1,6 @@
 {#
 # Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+# Copyright (C) 2017 Pelagicore AG
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -36,76 +37,64 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% set class = '{0}BackendInterface'.format(interface) %}
+{% include "generated_comment.cpp.tpl" %}
+{% set class = '{0}Backend'.format(interface) %}
 {% set oncedefine = '{0}_{1}_H_'.format(module.module_name|upper, class|upper) %}
-{% include 'generated_comment.cpp.tpl' %}
-
 #ifndef {{oncedefine}}
 #define {{oncedefine}}
 
-#include "{{module.module_name|lower}}module.h"
-
-{% if interface.tags.config.zoned %}
-#include <QtIviCore/QIviZonedFeatureInterface>
-{% else %}
 #include <QObject>
-{% endif %}
+#include <{{class}}Interface>
 
-QT_BEGIN_NAMESPACE
-
-{% if interface.tags.config.zoned %}
-class {{class}} : public QIviZonedFeatureInterface
-{% else %}
-class {{class}} : public QObject
-{% endif %}
+class {{class}} : public {{class}}Interface
 {
-    Q_OBJECT
 public:
     explicit {{class}}(QObject *parent = nullptr);
     ~{{class}}();
 
+public:
+    QStringList availableZones() const;
+
+    void initializeAttributes();
 {% for property in interface.properties %}
-{%   if interface.tags.config.zoned %}
-    virtual void set{{property|upperfirst}}({{ property|parameter_type }}, const QString &zone) = 0;
+{%   if interface.tags.config and interface.tags.config.zoned %}
+    virtual void set{{property|upperfirst}}({{ property|parameter_type }}, const QString &zone) override;
 {%   else %}
-    virtual void set{{property|upperfirst}}({{ property|parameter_type }}) = 0;
+    virtual void set{{property|upperfirst}}({{ property|parameter_type }}) override;
 {%   endif %}
 {% endfor %}
+
 {% for operation in interface.operations %}
-{%   if interface.tags.config.zoned %}
+{%   if interface.tags.config_simulator and interface.tags.config_simulator.zoned %}
 {%     if operation.parameters|length %}
-    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}, const QString &zone) = 0;
+    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}, const QString &zone) override;
 {%     else %}
-    virtual {{operation|return_type}} {{operation}}(const QString &zone) = 0;
+    virtual {{operation|return_type}} {{operation}}(const QString &zone) override;
 {%     endif %}
 {%   else %}
-    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}) = 0;
+    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}) override;
 {%   endif %}
 {% endfor %}
 
-Q_SIGNALS:
-{% for signal in interface.signals %}
-{%   if interface.tags.config.zoned %}
-{%     if signal.parameters|length %}
-    void {{signal}}({{signal.parameters|map('parameter_type')|join(', ')}}, const QString &zone = QString());
-{%     else %}
-    void {{signal}}(const QString &zone = QString());
-{%     endif %}
-{%   else %}
-    void {{signal}}({{signal.parameters|map('parameter_type')|join(', ')}});
-{%   endif %}
-{% endfor %}
+private:
 {% for property in interface.properties %}
-{%   if interface.tags.config.zoned %}
-    void {{property}}Changed({{ property|parameter_type }}, const QString &zone);
-{%   else %}
-    void {{property}}Changed({{ property|parameter_type }});
+{%   if not property.tags.config_simulator or not property.tags.config_simulator.zoned %}
+    {{ property|return_type }} m_{{ property }};
 {%   endif %}
 {% endfor %}
+
+{% if interface.tags.config_simulator and interface.tags.config_simulator.zoned %}
+    struct ZoneBackend {
+{%   for property in interface.properties %}
+{%     if property.tags.config and property.tags.config.zoned %}
+        {{ property|return_type }} {{ property }};
+{%     endif %}
+{%   endfor %}
+    };
+
+    QMap<QString,ZoneBackend> m_zoneMap;
+{% endif %}
+
 };
-
-#define {{module.module_name}}_{{interface}}_iid ("{{interface.tags.config.id}}")
-
-QT_END_NAMESPACE
 
 #endif // {{oncedefine}}

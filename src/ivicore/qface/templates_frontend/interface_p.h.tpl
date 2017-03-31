@@ -99,9 +99,9 @@ public:
 
 {% for property in interface.properties %}
 {%   if interface.tags.config.zoned %}
-    void on{{property|upperfirst}}Changed({{property|parameterType}}, const QString &zone);
+    void on{{property|upperfirst}}Changed({{property|parameter_type}}, const QString &zone);
 {%   else %}
-    void on{{property|upperfirst}}Changed({{property|parameterType}});
+    void on{{property|upperfirst}}Changed({{property|parameter_type}});
 {%   endif %}
 {% endfor %}
 
@@ -109,7 +109,7 @@ public:
     {{class}} * const q_ptr;
 {% endif %}
 {% for property in interface.properties %}
-    {{property|returnType}} m_{{property}};
+    {{property|return_type}} m_{{property}};
 {% endfor %}
 
 {% if not module.tags.config.disablePrivateIVI %}

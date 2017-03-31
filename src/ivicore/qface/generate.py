@@ -47,6 +47,7 @@ from qface.generator import FileSystem, Generator
 from qface.helper.qtcpp import Filters
 from qface.helper.doc import parse_doc
 from qface.watch import monitor
+from qface.idl.domain import Property
 
 here = Path(__file__).dirname()
 
@@ -54,16 +55,36 @@ log = logging.getLogger(__file__)
 
 Filters.classPrefix = ''
 
-def simulator_default(symbol):
-    sym_default_value = Filters.defaultValue(symbol)
-    if 'config_sym' in symbol.tags:
-        sym_default_value = symbol.tags['config_sym']['default']
+def simulator_default_value(symbol):
+    sim_default_value = Filters.defaultValue(symbol)
+    if 'config_simulator' in symbol.tags:
+        sim_default_value = symbol.tags['config_simulator']['default_value']
         t = symbol.type
         if t.is_enum:
-            sym_default_value = sym_default_value.rsplit('.', 1)[-1]
+            sim_default_value = sim_default_value.rsplit('.', 1)[-1]
             module_name = t.reference.module.module_name
-            return '{0}{1}Module::{2}'.format(Filters.classPrefix, module_name, sym_default_value)
-    return sym_default_value
+            return '{0}{1}Module::{2}'.format(Filters.classPrefix, module_name, sim_default_value)
+    return sim_default_value
+
+
+def range(symbol, what):
+    """
+    Check in the tags if range_[high|low] specified and return it.
+    Returns None if no range has been specified
+    """
+    if type(symbol) is Property and symbol.type.is_int or symbol.type.is_real:
+        what_range = 'range_' + what
+        if 'config_simulator' in symbol.tags and what_range in symbol.tags["config_simulator"]:
+            return symbol.tags["config_simulator"][what_range]
+    return None
+
+
+def range_high(symbol):
+    return range(symbol, "high")
+
+
+def range_low(symbol):
+    return range(symbol, "low")
 
 
 def lower_first_filter(s):
@@ -75,12 +96,14 @@ def generate(tplconfig, src, dst):
     log.debug('run {0} {1}'.format(src, dst))
     system = FileSystem.parse(src)
     generator = Generator(search_path=here / tplconfig)
-    generator.register_filter('returnType', Filters.returnType)
-    generator.register_filter('parameterType', Filters.parameterType)
-    generator.register_filter('defaultValue', Filters.defaultValue)
+    generator.register_filter('return_type', Filters.returnType)
+    generator.register_filter('parameter_type', Filters.parameterType)
+    generator.register_filter('default_value', Filters.defaultValue)
     generator.register_filter('parse_doc', parse_doc)
-    generator.register_filter('defaultSimulatorValue', simulator_default)
+    generator.register_filter('sim_default_value', simulator_default_value)
     generator.register_filter('lowerfirst', lower_first_filter)
+    generator.register_filter('range_low', range_low)
+    generator.register_filter('range_high', range_high)
     ctx = {'dst': dst, 'qtASVersion': 1.2}
     gen_config = yaml.load(open(here / '{0}.yaml'.format(tplconfig)))
     for module in system.modules:
@@ -90,7 +113,9 @@ def generate(tplconfig, src, dst):
         #TODO: refine that, probably just use plain output folder
         dst = generator.apply('{{dst}}/{{module|lower|replace(".", "-")}}', ctx)
         generator.destination = dst
-        for rule in gen_config['generate_rules']['module_rules']:
+        module_rules = gen_config['generate_rules']['module_rules']
+        if module_rules is None: module_rules = []
+        for rule in module_rules:
             generator.write(rule['dest_file'], rule['template_file'], ctx)
         for interface in module.interfaces:
             log.debug('generate backend code for interface %s', interface)
@@ -109,6 +134,8 @@ def run(formats, src, dst):
     for f in formats:
         switcher = {
             'frontend': 'templates_frontend',
+            'backend_simulator': 'templates_backend_simulator',
+            'test': 'templates_test',
         }
         tplconfig = switcher.get(f, 'unknown')
         if tplconfig == 'unknown':
@@ -119,7 +146,7 @@ def run(formats, src, dst):
 
 @click.command()
 @click.option('--reload/--no-reload', default=False)
-@click.option('--format', '-f', multiple=True, type=click.Choice(['frontend']))
+@click.option('--format', '-f', multiple=True, type=click.Choice(['frontend', 'backend_simulator', 'test']))
 @click.argument('src', nargs=-1, type=click.Path(exists=True))
 @click.argument('dst', nargs=1, type=click.Path(exists=True))
 def app(src, dst, format, reload):

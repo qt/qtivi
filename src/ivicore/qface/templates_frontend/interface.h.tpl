@@ -64,7 +64,7 @@ class {{exportsymbol}} {{class}} : public QIviAbstractFeature {
 {% endif %}
     Q_OBJECT
 {% for property in interface.properties %}
-    Q_PROPERTY({{property|returnType}} {{property}} READ {{property}} {% if not property.is_readonly %} WRITE set{{property|upperfirst}} {% endif %}NOTIFY {{property}}Changed)
+    Q_PROPERTY({{property|return_type}} {{property}} READ {{property}} {% if not property.is_readonly %} WRITE set{{property|upperfirst}} {% endif %}NOTIFY {{property}}Changed)
 {% endfor %}
 public:
 {% if interface.tags.config.zoned %}
@@ -77,23 +77,23 @@ public:
     static void registerQmlTypes(const QString& uri, int majorVersion=1, int minorVersion=0);
 
 {% for property in interface.properties %}
-    {{property|returnType}} {{property}}() const;
+    {{property|return_type}} {{property}}() const;
 {% endfor %}
 
 public Q_SLOTS:
 {% for operation in interface.operations %}
-    {{operation|returnType}} {{operation}}({{operation.parameters|map('parameterType')|join(', ')}});
+    {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}});
 {% endfor %}
 {% for property in interface.properties %}
-    void set{{property|upperfirst}}({{property|parameterType}});
+    void set{{property|upperfirst}}({{property|parameter_type}});
 {% endfor %}
 
 Q_SIGNALS:
 {% for signal in interface.signals %}
-    void {{signal}}({{signal.parameters|map('parameterType')|join(', ')}});
+    void {{signal}}({{signal.parameters|map('parameter_type')|join(', ')}});
 {% endfor %}
 {% for property in interface.properties %}
-    void {{property}}Changed({{property|parameterType}});
+    void {{property}}Changed({{property|parameter_type}});
 {% endfor %}
 
 protected:
@@ -112,9 +112,9 @@ private:
 {% else %}
 {% for property in interface.properties %}
 {%   if interface.tags.config.zoned %}
-    Q_PRIVATE_SLOT(d_func(), void on{{property|upperfirst}}Changed({{property|parameterType}}, const QString &))
+    Q_PRIVATE_SLOT(d_func(), void on{{property|upperfirst}}Changed({{property|parameter_type}}, const QString &))
 {%   else %}
-    Q_PRIVATE_SLOT(d_func(), void on{{property|upperfirst}}Changed({{property|parameterType}}))
+    Q_PRIVATE_SLOT(d_func(), void on{{property|upperfirst}}Changed({{property|parameter_type}}))
 {%   endif %}
 {% endfor %}
     Q_DECLARE_PRIVATE({{class}})
