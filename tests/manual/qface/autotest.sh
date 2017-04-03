@@ -53,12 +53,12 @@ do
     echo "Testing '$idlfile' ================"
     idldir=$(echo $idlfile | tr . -)
     /bin/rm -rf projects/${idldir}/*.{h,cpp,pri}
-    ${GENERATOR} --format=frontend ${WORKDIR}/${idlfile}.qface ./projects || die "Generator failed" 1
+    ${GENERATOR} --format=frontend ${WORKDIR}/${idlfile}.qface ${WORKDIR}/projects || die "Generator failed" 1
     test -d build/${idldir} && /bin/rm -rf build/${idldir}
     test -d build/${idldir} && die "Cannot remove existing build folder" 1
     mkdir -p build/${idldir} || die "Cannot create build folder" 1
     pushd build/${idldir}
-    qmake ../../projects/${idldir}/${idldir}.pro || die "Failed to run qmake" 1
+    qmake ${WORKDIR}/projects/${idldir}/${idldir}.pro || die "Failed to run qmake" 1
     make || die "Failed to build" 1
     popd
     echo "Done '$idlfile' ================"
