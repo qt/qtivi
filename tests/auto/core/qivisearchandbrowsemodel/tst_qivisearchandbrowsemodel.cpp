@@ -33,7 +33,9 @@
 #include <QIviSearchAndBrowseModelInterface>
 #include <QIviSearchAndBrowseModelItem>
 #include <QQmlEngine>
+#include <QQmlContext>
 #include <QQmlComponent>
+#include <QScopedPointer>
 
 class TestBackend : public QIviSearchAndBrowseModelInterface
 {
@@ -322,6 +324,14 @@ private:
     TestBackend *m_backend;
 };
 
+void verifyQml(QQmlEngine *engine, const QByteArray &qml)
+{
+    QQmlComponent component(engine);
+    component.setData(qml, QUrl());
+    QScopedPointer<QObject> obj(component.create());
+    QVERIFY2(obj, qPrintable(component.errorString()));
+}
+
 class tst_QIviSearchAndBrowseModel : public QObject
 {
     Q_OBJECT
@@ -335,6 +345,7 @@ private Q_SLOTS:
     void testWithoutBackend();
     void testClearServiceObject();
 
+    void testBasic_qml();
     void testGetAt();
     void testFetchMore_data();
     void testFetchMore();
@@ -426,6 +437,24 @@ void tst_QIviSearchAndBrowseModel::testClearServiceObject()
     QVERIFY(model.capabilities() == defaultModel.capabilities());
     QVERIFY(model.loadingType() == defaultModel.loadingType());
     QVERIFY(model.rowCount() == defaultModel.rowCount());
+}
+
+void tst_QIviSearchAndBrowseModel::testBasic_qml()
+{
+    TestServiceObject *service = new TestServiceObject();
+    manager->registerService(service, service->interfaces());
+    service->testBackend()->initializeSimpleData();
+
+    QQmlEngine engine;
+    engine.rootContext()->setContextProperty("testBackend", service);
+    verifyQml(&engine, "import QtQuick 2.0; import QtIvi 1.0; SearchAndBrowseModel{}");
+    verifyQml(&engine, "import QtQuick 2.0; import QtIvi 1.0; SearchAndBrowseModel{ \
+                            serviceObject: testBackend \n\
+                        }");
+    verifyQml(&engine, "import QtQuick 2.0; import QtIvi 1.0; SearchAndBrowseModel{ \
+                            serviceObject: testBackend \n\
+                            contentType: 'simple' \n\
+                        }");
 }
 
 void tst_QIviSearchAndBrowseModel::testGetAt()

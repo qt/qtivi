@@ -61,6 +61,14 @@ Q_LOGGING_CATEGORY(qLcIviServiceManagement, "qt.ivi.servicemanagement");
 
 QT_END_NAMESPACE
 
+namespace qtivi_helper {
+#ifdef QT_DEBUG
+    static const bool loadDebug = true;
+#else
+    static const bool loadDebug = false;
+#endif
+}
+
 QIviServiceManagerPrivate::QIviServiceManagerPrivate(QIviServiceManager *parent) : QObject(parent), q_ptr(parent)
 {
 }
@@ -80,7 +88,7 @@ QList<QIviServiceObject *> QIviServiceManagerPrivate::findServiceByInterface(con
 
         if (backend->metaData[QLatin1String("interfaces")].toStringList().contains(interface)) {
             const QString& fileName = backend->metaData[QLatin1String("fileName")].toString();
-            bool isSimulation = fileName.contains(QLatin1String("_simulation.")) || fileName.contains(QLatin1String("_simulator."));
+            bool isSimulation = fileName.contains(QLatin1String("_simulation")) || fileName.contains(QLatin1String("_simulator"));
             if ((searchFlags & QIviServiceManager::IncludeSimulationBackends && isSimulation) ||
                 (searchFlags & QIviServiceManager::IncludeProductionBackends && !isSimulation)) {
                 if (!backend->proxyServiceObject) {
@@ -115,8 +123,10 @@ void QIviServiceManagerPrivate::searchPlugins()
         for (const QString &pluginPath : plugins) {
             if (!QLibrary::isLibrary(pluginPath))
                 continue;
-            QString fileName = QDir::cleanPath(path + QLatin1Char('/') + pluginPath);
-            QPluginLoader loader(dir.absoluteFilePath(fileName));
+            const QString fileName = QDir::cleanPath(path + QLatin1Char('/') + pluginPath);
+            const QString absFileName = dir.absoluteFilePath(fileName);
+            QPluginLoader loader(absFileName);
+
             registerBackend(loader.fileName(), loader.metaData());
             found = true;
         }
@@ -132,6 +142,13 @@ void QIviServiceManagerPrivate::registerBackend(const QString &fileName, const Q
     if (Q_UNLIKELY(backendMetaData[QLatin1String("interfaces")].isNull() ||
                    backendMetaData[QLatin1String("interfaces")].toList().isEmpty())) {
         qCWarning(qLcIviServiceManagement, "PluginManager - Malformed metaData in '%s'. MetaData must contain a list of interfaces", qPrintable(fileName));
+        return;
+    }
+
+    if (Q_UNLIKELY(metaData.value(QLatin1String("debug")).toBool() != qtivi_helper::loadDebug)) {
+        qCWarning(qLcIviServiceManagement, "Skipping incompatible plugin %s. "
+                                           "Expected build configuration '%s'",
+                                            qPrintable(fileName), qtivi_helper::loadDebug ? "debug" : "release");
         return;
     }
 

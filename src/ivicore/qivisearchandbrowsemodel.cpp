@@ -316,7 +316,9 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
     emit q->queryChanged(m_query);
     m_contentType = contentType;
     emit q->contentTypeChanged(m_contentType);
-    setCanGoBack(searchBackend()->canGoBack(m_identifier, m_contentType));
+
+    if (searchBackend())
+        setCanGoBack(searchBackend()->canGoBack(m_identifier, m_contentType));
 
     resetModel();
 }
