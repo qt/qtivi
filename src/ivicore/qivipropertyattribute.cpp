@@ -61,118 +61,118 @@ void QIviPropertyAttributeBase::registerTypes()
 
 
 /*!
- * \class QIviPropertyAttribute
- * \inmodule QtIviCore
- * \brief The QIviPropertyAttribute encapsulates the attributes of a property
- *
- * QIviPropertyAttribute sets the boundaries for a property in Qt IVI. In a
- * Qt IVI backend interface, the QIviPropertyAttributes are used to control
- * which properties are implemented by a backend and to set the boundaries like
- * the minimum or the maximum value of a property.
- *
- * By default a QIviPropertyAttribute is initialized with the "Invalid" type,
- * which indicates that this property is not available. This could be the case
- * when the backend doesn't support this property or the property is not available
- * because the current backend configuration does not support it.
- * For example, a property can be supported by a specific car configuration,
- * but is not part of another.
- */
+    \class QIviPropertyAttribute
+    \inmodule QtIviCore
+    \brief The QIviPropertyAttribute encapsulates the attributes of a property
+
+    QIviPropertyAttribute sets the boundaries for a property in Qt IVI. In a
+    Qt IVI backend interface, the QIviPropertyAttributes are used to control
+    which properties are implemented by a backend and to set the boundaries like
+    the minimum or the maximum value of a property.
+
+    By default a QIviPropertyAttribute is initialized with the "Invalid" type,
+    which indicates that this property is not available. This could be the case
+    when the backend doesn't support this property or the property is not available
+    because the current backend configuration does not support it.
+    For example, a property can be supported by a specific car configuration,
+    but is not part of another.
+*/
 
 /*!
- * \enum QIviPropertyAttributeBase::AttributeType
- *
- * \value Invalid
- *        The attribute is invalid and is not available.
- * \value NoAttributes
- *        No additional attributes for the property are provided.
- * \value MinimumMaximum
- *        The attribute defines the minimum and the maximum value of the property.
- * \value AvailableValues
- *        The attribute defines a list of values that are available for the property.
- */
+    \enum QIviPropertyAttributeBase::AttributeType
+
+    \value Invalid
+          The attribute is invalid and is not available.
+    \value NoAttributes
+          No additional attributes for the property are provided.
+    \value MinimumMaximum
+          The attribute defines the minimum and the maximum value of the property.
+    \value AvailableValues
+          The attribute defines a list of values that are available for the property.
+*/
 
 /*!
- * \fn QIviPropertyAttribute::QIviPropertyAttribute()
- * Constructs an invalid QIviPropertyAttribute.
- *
- * This constructor can be used to indicate that the property is not available.
- * For example, because the backend doesn't support this property.
- */
+    \fn QIviPropertyAttribute::QIviPropertyAttribute()
+    Constructs an invalid QIviPropertyAttribute.
+
+    This constructor can be used to indicate that the property is not available.
+    For example, because the backend doesn't support this property.
+*/
 
 /*!
- * \fn QIviPropertyAttribute::QIviPropertyAttribute(bool available)
- * Constructs an QIviPropertyAttribute of type NoAttributes.
- *
- * The argument \a available defines whether the property is supported by the backend.
- */
+    \fn QIviPropertyAttribute::QIviPropertyAttribute(bool available)
+    Constructs an QIviPropertyAttribute of type NoAttributes.
+
+    The argument \a available defines whether the property is supported by the backend.
+*/
 
 /*!
- * \fn QIviPropertyAttribute::QIviPropertyAttribute(const T &minValue, const T &maxValue)
- * Constructs an QIviPropertyAttribute of type MinimumMaximum.
- *
- * The arguments \a minValue and \a maxValue define the boundaries the value of the property.
- */
+    \fn QIviPropertyAttribute::QIviPropertyAttribute(const T &minValue, const T &maxValue)
+    Constructs an QIviPropertyAttribute of type MinimumMaximum.
+
+    The arguments \a minValue and \a maxValue define the boundaries the value of the property.
+*/
 
 /*!
- * \fn QIviPropertyAttribute::QIviPropertyAttribute(const QVector<T> &avValues)
- * Constructs an QIviPropertyAttribute of type AvailableValues.
- *
- * The argument \a avValues defines the valid values for the property.
- */
+    \fn QIviPropertyAttribute::QIviPropertyAttribute(const QVector<T> &avValues)
+    Constructs an QIviPropertyAttribute of type AvailableValues.
+
+    The argument \a avValues defines the valid values for the property.
+*/
 
 /*!
- * \fn AttributeType QIviPropertyAttribute::type() const
- *
- * Returns the type of the attribute.
- */
+    \fn AttributeType QIviPropertyAttribute::type() const
+
+    Returns the type of the attribute.
+*/
 
 /*!
- * \fn bool QIviPropertyAttribute::isAvailable() const
- *
- * Returns true if the property is available for this backend.
- */
+    \fn bool QIviPropertyAttribute::isAvailable() const
+
+    Returns true if the property is available for this backend.
+*/
 
 /*!
- * \fn T QIviPropertyAttribute::minimumValue() const
- *
- * Returns the minimum value of the property.
- * If the attributeType is not MinimumMaximum, a default constructed value is returned.
- */
+    \fn T QIviPropertyAttribute::minimumValue() const
+
+    Returns the minimum value of the property.
+    If the attributeType is not MinimumMaximum, a default constructed value is returned.
+*/
 
 /*!
- * \fn T QIviPropertyAttribute::maximumValue() const
- *
- * Returns the maximum value of the property.
- * If the attributeType is not MinimumMaximum, a default constructed value is returned.
- */
+    \fn T QIviPropertyAttribute::maximumValue() const
+
+    Returns the maximum value of the property.
+    If the attributeType is not MinimumMaximum, a default constructed value is returned.
+*/
 
 /*!
- * \fn QList<T> QIviPropertyAttribute::availableValues() const
- *
- * Returns a list of valid values for this property.
- * If the attributeType is not AvailableValues an empty list is returned.
- */
+    \fn QList<T> QIviPropertyAttribute::availableValues() const
+
+    Returns a list of valid values for this property.
+    If the attributeType is not AvailableValues an empty list is returned.
+*/
 
 /*!
- * \fn QString QIviPropertyAttribute::toString() const
- *
- * Returns a QString with a string representation of the attribute.
- */
+    \fn QString QIviPropertyAttribute::toString() const
+
+    Returns a QString with a string representation of the attribute.
+*/
 
 /*!
- * \fn bool QIviPropertyAttribute::operator==(const QIviPropertyAttribute& other) const
- *
- * Returns \c true if this QIviPropertyAttribute is equal to the \a other QIviPropertyAttribute; otherwise returns \c false.
- *
- * All elements of QIviPropertyAttribute are used for the comparison.
- */
+    \fn bool QIviPropertyAttribute::operator==(const QIviPropertyAttribute& other) const
+
+    Returns \c true if this QIviPropertyAttribute is equal to the \a other QIviPropertyAttribute; otherwise returns \c false.
+
+    All elements of QIviPropertyAttribute are used for the comparison.
+*/
 
 /*!
- * \fn bool QIviPropertyAttribute::operator!=(const QIviPropertyAttribute& other) const
- *
- * Returns \c true if this QIviPropertyAttribute is NOT equal to the \a other QIviPropertyAttribute; otherwise returns \c false.
- *
- * All elements of QIviPropertyAttribute are used for the comparison.
- */
+    \fn bool QIviPropertyAttribute::operator!=(const QIviPropertyAttribute& other) const
+
+    Returns \c true if this QIviPropertyAttribute is NOT equal to the \a other QIviPropertyAttribute; otherwise returns \c false.
+
+    All elements of QIviPropertyAttribute are used for the comparison.
+*/
 
 QT_END_NAMESPACE

@@ -44,136 +44,136 @@
 QT_BEGIN_NAMESPACE
 
 /*!
- * \class QIviWindowControlBackendInterface
- * \inmodule QtIviVehicleFunctions
- * \ingroup backends
- * \inherits QIviZonedFeatureInterface
- * \keyword org.qt-project.qtivi.WindowControl/1.0
- * \brief The QIviWindowControlBackendInterface defines the interface for backends to the
- * QIviWindowControl feature class.
- *
- * The QIviWindowControlBackendInterface is the interface used by \l QIviWindowControl
- *
- * The interface is discovered by a \l QIviWindowControl object, which connects to it and sets up
- * the connections to it.
- *
- * \sa QIviWindowControl
- */
+    \class QIviWindowControlBackendInterface
+    \inmodule QtIviVehicleFunctions
+    \ingroup backends
+    \inherits QIviZonedFeatureInterface
+    \keyword org.qt-project.qtivi.WindowControl/1.0
+    \brief The QIviWindowControlBackendInterface defines the interface for backends to the
+    QIviWindowControl feature class.
+
+    The QIviWindowControlBackendInterface is the interface used by \l QIviWindowControl
+
+    The interface is discovered by a \l QIviWindowControl object, which connects to it and sets up
+    the connections to it.
+
+    \sa QIviWindowControl
+*/
 
 /*!
- * \fn QIviWindowControlBackendInterface::QIviWindowControlBackendInterface(QObject *parent = nullptr)
- *
- * Constructs a backend interface.
- *
- * The \a parent is sent to the QObject constructor.
- */
+    \fn QIviWindowControlBackendInterface::QIviWindowControlBackendInterface(QObject *parent = nullptr)
+
+    Constructs a backend interface.
+
+    The \a parent is sent to the QObject constructor.
+*/
 QIviWindowControlBackendInterface::QIviWindowControlBackendInterface(QObject *parent)
     : QIviZonedFeatureInterface(parent)
 {
 }
 
 /*!
- * \fn virtual void QIviWindowControlBackendInterface::setHeaterMode(QIviWindowControl::HeaterMode value, const QString &zone) = 0
- *
- * Sets the heater mode of \a zone to \a value. The available modes can be defined using the attribute system.
- *
- * This method is expected to emit a \l heaterModeChanged() signal when the internal state changes
- * due to this function call. The signal is even expected to be emitted if the given \a value is not supported and no
- * actual change takes place.
- *
- * \sa heaterModeChanged()
- */
+    \fn virtual void QIviWindowControlBackendInterface::setHeaterMode(QIviWindowControl::HeaterMode value, const QString &zone) = 0
+
+    Sets the heater mode of \a zone to \a value. The available modes can be defined using the attribute system.
+
+    This method is expected to emit a \l heaterModeChanged() signal when the internal state changes
+    due to this function call. The signal is even expected to be emitted if the given \a value is not supported and no
+    actual change takes place.
+
+    \sa heaterModeChanged()
+*/
 
 /*!
- * \fn virtual void QIviWindowControlBackendInterface::setBlindMode(QIviWindowControl::BlindMode value, const QString &zone) = 0
- *
- * Sets the blind mode of \a zone to \a value.  The available modes can be defined using the attribute system.
- *
- * This method is expected to emit a \l blindModeChanged() signal when the internal state changes
- * due to this function call. The signal is even expected to be emitted if the given \a value is not supported and no
- * actual change takes place.
- *
- * \sa blindModeChanged()
- */
+    \fn virtual void QIviWindowControlBackendInterface::setBlindMode(QIviWindowControl::BlindMode value, const QString &zone) = 0
+
+    Sets the blind mode of \a zone to \a value.  The available modes can be defined using the attribute system.
+
+    This method is expected to emit a \l blindModeChanged() signal when the internal state changes
+    due to this function call. The signal is even expected to be emitted if the given \a value is not supported and no
+    actual change takes place.
+
+    \sa blindModeChanged()
+*/
 
 /*!
- * \fn virtual void QIviWindowControlBackendInterface::open(const QString &zone) = 0
- *
- * Opens the window identified by \a zone. Whether the window can be opened is controlled by the attribute system.
- *
- * \sa stateChanged()
- */
+    \fn virtual void QIviWindowControlBackendInterface::open(const QString &zone) = 0
+
+    Opens the window identified by \a zone. Whether the window can be opened is controlled by the attribute system.
+
+    \sa stateChanged()
+*/
 
 /*!
- * \fn virtual void QIviWindowControlBackendInterface::close(const QString &zone) = 0
- *
- * Closes the window identified by \a zone. Whether the window can be closed is controlled by the attribute system.
- *
- * \sa stateChanged()
- */
+    \fn virtual void QIviWindowControlBackendInterface::close(const QString &zone) = 0
+
+    Closes the window identified by \a zone. Whether the window can be closed is controlled by the attribute system.
+
+    \sa stateChanged()
+*/
 
 /*!
- * \fn virtual void QIviWindowControlBackendInterface::heaterModeChanged(QIviWindowControl::HeaterMode value, const QString &zone = QString())
- *
- * The signal is emitted when the heater mode is changed for \a zone to \a value. The available modes can be defined using the attribute system.
- *
- * \sa setHeaterMode()
- */
+    \fn virtual void QIviWindowControlBackendInterface::heaterModeChanged(QIviWindowControl::HeaterMode value, const QString &zone = QString())
+
+    The signal is emitted when the heater mode is changed for \a zone to \a value. The available modes can be defined using the attribute system.
+
+    \sa setHeaterMode()
+*/
 
 /*!
- * \fn void QIviWindowControlBackendInterface::heaterModeAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::HeaterMode> &attribute, const QString &zone = QString())
- *
- * The signal is emitted when the heater mode attribute for \a zone is changed to \a attribute.
- */
+    \fn void QIviWindowControlBackendInterface::heaterModeAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::HeaterMode> &attribute, const QString &zone = QString())
+
+    The signal is emitted when the heater mode attribute for \a zone is changed to \a attribute.
+*/
 
 /*!
- * \fn virtual void QIviWindowControlBackendInterface::heaterEnabledChanged(bool enabled, const QString &zone = QString())
- *
- * The signal is emitted when the \a zone heater state is changed to \a enabled.
- */
+    \fn virtual void QIviWindowControlBackendInterface::heaterEnabledChanged(bool enabled, const QString &zone = QString())
+
+    The signal is emitted when the \a zone heater state is changed to \a enabled.
+*/
 
 /*!
- * \fn void QIviWindowControlBackendInterface::heaterAttributeChanged(const QIviPropertyAttribute<bool> &attribute, const QString &zone = QString())
- *
- * The signal is emitted when the heater attribute for \a zone is changed to \a attribute.
- */
+    \fn void QIviWindowControlBackendInterface::heaterAttributeChanged(const QIviPropertyAttribute<bool> &attribute, const QString &zone = QString())
+
+    The signal is emitted when the heater attribute for \a zone is changed to \a attribute.
+*/
 
 /*!
- * \fn virtual void QIviWindowControlBackendInterface::blindModeChanged(QIviWindowControl::BlindMode value, const QString &zone = QString())
- *
- * The signal is emitted when the blind mode is changed for \a zone to \a value. The available modes can be defined using the attribute system.
- *
- * \sa setBlindMode()
- */
+    \fn virtual void QIviWindowControlBackendInterface::blindModeChanged(QIviWindowControl::BlindMode value, const QString &zone = QString())
+
+    The signal is emitted when the blind mode is changed for \a zone to \a value. The available modes can be defined using the attribute system.
+
+    \sa setBlindMode()
+*/
 
 /*!
- * \fn void QIviWindowControlBackendInterface::blindModeAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::BlindMode> &attribute, const QString &zone = QString())
- *
- * The signal is emitted when the blind mode attribute for \a zone is changed to \a attribute.
- */
+    \fn void QIviWindowControlBackendInterface::blindModeAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::BlindMode> &attribute, const QString &zone = QString())
+
+    The signal is emitted when the blind mode attribute for \a zone is changed to \a attribute.
+*/
 
 /*!
- * \fn virtual void QIviWindowControlBackendInterface::blindStateChanged(QIviWindowControl::State value, const QString &zone = QString())
- *
- * The signal is emitted when the blind state is changed for \a zone to \a value. The available states can be defined using the attribute system.
- */
+    \fn virtual void QIviWindowControlBackendInterface::blindStateChanged(QIviWindowControl::State value, const QString &zone = QString())
+
+    The signal is emitted when the blind state is changed for \a zone to \a value. The available states can be defined using the attribute system.
+*/
 
 /*!
- * \fn void QIviWindowControlBackendInterface::blindStateAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::State> &attribute, const QString &zone = QString())
- *
- * The signal is emitted when the blind state attribute for \a zone is changed to \a attribute.
- */
+    \fn void QIviWindowControlBackendInterface::blindStateAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::State> &attribute, const QString &zone = QString())
+
+    The signal is emitted when the blind state attribute for \a zone is changed to \a attribute.
+*/
 
 /*!
- * \fn virtual void QIviWindowControlBackendInterface::stateChanged(QIviWindowControl::State value, const QString &zone = QString())
- *
- * The signal is emitted when the state is changed for \a zone to \a value. The available states can be defined using the attribute system.
- */
+    \fn virtual void QIviWindowControlBackendInterface::stateChanged(QIviWindowControl::State value, const QString &zone = QString())
+
+    The signal is emitted when the state is changed for \a zone to \a value. The available states can be defined using the attribute system.
+*/
 
 /*!
- * \fn void QIviWindowControlBackendInterface::stateAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::State> &attribute, const QString &zone = QString())
- *
- * The signal is emitted when the state attribute for \a zone is changed to \a attribute.
- */
+    \fn void QIviWindowControlBackendInterface::stateAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::State> &attribute, const QString &zone = QString())
+
+    The signal is emitted when the state attribute for \a zone is changed to \a attribute.
+*/
 
 QT_END_NAMESPACE

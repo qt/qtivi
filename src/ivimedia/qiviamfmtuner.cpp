@@ -174,19 +174,19 @@ QIviAmFmTunerBackendInterface *QIviAmFmTunerPrivate::tunerBackend() const
 */
 
 /*!
-   \enum QIviAmFmTuner::Band
-   \value AMBand
+    \enum QIviAmFmTuner::Band
+    \value AMBand
           The AM Band is based on the Amplitude Modulation technique and can range from 520 to 1610 kHz (1710 kHz).
           The step size is usually between 9 or 10 kHz.
-   \value FMBand
+    \value FMBand
           The FM Band is based on the Frequency Modulation technique and can range from 87.5 to 108.0 MHz.
           The step size is usually 100 kHz.
 */
 
 /*!
-   Constructs a QIviAmFmTuner.
+    Constructs a QIviAmFmTuner.
 
-   The \a parent argument is passed on to the \l QIviAbstractFeature base class.
+    The \a parent argument is passed on to the \l QIviAbstractFeature base class.
 */
 QIviAmFmTuner::QIviAmFmTuner(QObject *parent)
     : QIviAbstractFeature(*new QIviAmFmTunerPrivate(QLatin1String(QIviAmFmTuner_iid), this), parent)
@@ -196,11 +196,11 @@ QIviAmFmTuner::QIviAmFmTuner(QObject *parent)
 /*!
     \qmlproperty int AmFmTuner::frequency
     \brief The current frequency of the tuner.
- */
+*/
 /*!
     \property QIviAmFmTuner::frequency
     \brief The current frequency of the tuner.
- */
+*/
 int QIviAmFmTuner::frequency() const
 {
     Q_D(const QIviAmFmTuner);
@@ -210,11 +210,11 @@ int QIviAmFmTuner::frequency() const
 /*!
     \qmlproperty int AmFmTuner::minimumFrequency
     \brief The minimum frequency of the current band.
- */
+*/
 /*!
     \property QIviAmFmTuner::minimumFrequency
     \brief The minimum frequency of the current band.
- */
+*/
 int QIviAmFmTuner::minimumFrequency() const
 {
     Q_D(const QIviAmFmTuner);
@@ -224,11 +224,11 @@ int QIviAmFmTuner::minimumFrequency() const
 /*!
     \qmlproperty int AmFmTuner::maximumFrequency
     \brief The maximum frequency of the current band.
- */
+*/
 /*!
     \property QIviAmFmTuner::maximumFrequency
     \brief The maximum frequency of the current band.
- */
+*/
 int QIviAmFmTuner::maximumFrequency() const
 {
     Q_D(const QIviAmFmTuner);
@@ -240,13 +240,13 @@ int QIviAmFmTuner::maximumFrequency() const
     \brief The frequency step size of the current band.
 
     \sa stepUp() stepDown()
- */
+*/
 /*!
     \property QIviAmFmTuner::stepSize
     \brief The frequency step size of the current band.
 
     \sa stepUp() stepDown()
- */
+*/
 int QIviAmFmTuner::stepSize() const
 {
     Q_D(const QIviAmFmTuner);
@@ -264,11 +264,11 @@ int QIviAmFmTuner::stepSize() const
     \value FMBand
            The FM Band is based on the Frequency Modulation technique and can range from 87.5 to 108.0 MHz.
            The step size is usually 100 kHz.
- */
+*/
 /*!
     \property QIviAmFmTuner::band
     \brief The current band of the tuner.
- */
+*/
 QIviAmFmTuner::Band QIviAmFmTuner::band() const
 {
     Q_D(const QIviAmFmTuner);
@@ -278,11 +278,11 @@ QIviAmFmTuner::Band QIviAmFmTuner::band() const
 /*!
     \qmlproperty AmFmTunerStation AmFmTuner::station
     \brief The currently tuned station.
- */
+*/
 /*!
     \property QIviAmFmTuner::station
     \brief The currently tuned station.
- */
+*/
 QIviAmFmTunerStation QIviAmFmTuner::station() const
 {
     Q_D(const QIviAmFmTuner);
@@ -294,13 +294,13 @@ QIviAmFmTunerStation QIviAmFmTuner::station() const
     \c true while a scan is in progress, \c false otherwise.
 
     \sa startScan() stopScan() scanStarted() scanStopped()
- */
+*/
 /*!
     \property QIviAmFmTuner::scanRunning
     \c true while a scan is in progress, \c false otherwise.
 
     \sa startScan() stopScan() scanStarted() scanStopped()
- */
+*/
 bool QIviAmFmTuner::isScanRunning() const
 {
     Q_D(const QIviAmFmTuner);
@@ -488,7 +488,7 @@ void QIviAmFmTuner::stopScan()
 
 /*!
     \internal
- */
+*/
 QIviAmFmTuner::QIviAmFmTuner(QIviAmFmTunerPrivate &dd, QObject *parent)
     : QIviAbstractFeature(dd, parent)
 {
@@ -496,7 +496,7 @@ QIviAmFmTuner::QIviAmFmTuner(QIviAmFmTunerPrivate &dd, QObject *parent)
 
 /*!
     \reimp
- */
+*/
 void QIviAmFmTuner::connectToServiceObject(QIviServiceObject *serviceObject)
 {
     Q_UNUSED(serviceObject);
@@ -527,7 +527,7 @@ void QIviAmFmTuner::connectToServiceObject(QIviServiceObject *serviceObject)
 
 /*!
     \reimp
- */
+*/
 void QIviAmFmTuner::clearServiceObject()
 {
     Q_D(QIviAmFmTuner);

@@ -69,59 +69,59 @@ void QIviPropertyPrivate::throwError(QObject *object, const QString &error)
 }
 
 /*!
- * \class QIviProperty
- * \inmodule QtIviCore
- * \brief The QIviProperty combines a normal property and a QIviPropertyAttribute
- *
- * The QIviProperty is used to retrieve the value of a property and its corresponding
- * QIviPropertyAttribute in an easy way. It's designed for QML (but is not limited to)
- * and acts as a Grouped Property.
- *
- * Although the QIviProperty only contains QVariant properties, it still stores
- * the real type of the value and checks that only values of the correct type can be
- * stored in it.
- * The QIviProperty doesn't store a copy of the values, instead it just acts as a
- * forwarder which calls the respective getters and forwards the notification signals.
- *
- * By default a QIviProperty is also able to write a value change back to its origin,
- * but it also supports read-only properties which don't provide a setter for the value.
- *
- * QIviProperty is an abstract class and can only be created by using the QIviPropertyFactory
- * class.
- */
+    \class QIviProperty
+    \inmodule QtIviCore
+    \brief The QIviProperty combines a normal property and a QIviPropertyAttribute
+
+    The QIviProperty is used to retrieve the value of a property and its corresponding
+    QIviPropertyAttribute in an easy way. It's designed for QML (but is not limited to)
+    and acts as a Grouped Property.
+
+    Although the QIviProperty only contains QVariant properties, it still stores
+    the real type of the value and checks that only values of the correct type can be
+    stored in it.
+    The QIviProperty doesn't store a copy of the values, instead it just acts as a
+    forwarder which calls the respective getters and forwards the notification signals.
+
+    By default a QIviProperty is also able to write a value change back to its origin,
+    but it also supports read-only properties which don't provide a setter for the value.
+
+    QIviProperty is an abstract class and can only be created by using the QIviPropertyFactory
+    class.
+*/
 /*!
- * \property QIviProperty::available
- * True if this property is available.
- * \sa QIviPropertyAttribute::isAvailable()
- */
+    \property QIviProperty::available
+    True if this property is available.
+    \sa QIviPropertyAttribute::isAvailable()
+*/
 /*!
- * \property QIviProperty::minimumValue
- * The minimum value of the property.
- * \sa QIviPropertyAttribute::minimumValue()
- */
+    \property QIviProperty::minimumValue
+    The minimum value of the property.
+    \sa QIviPropertyAttribute::minimumValue()
+*/
 /*!
- * \property QIviProperty::maximumValue
- * The maximum value of the property.
- * \sa QIviPropertyAttribute::maximumValue()
- */
+    \property QIviProperty::maximumValue
+    The maximum value of the property.
+    \sa QIviPropertyAttribute::maximumValue()
+*/
 /*!
- * \property QIviProperty::availableValues
- * All available Values for this property.
- * This can be used when exposing for example an enum and the backend only supports some of the values.
- * \sa QIviPropertyAttribute::availableValues()
- */
+    \property QIviProperty::availableValues
+    All available Values for this property.
+    This can be used when exposing for example an enum and the backend only supports some of the values.
+    \sa QIviPropertyAttribute::availableValues()
+*/
 
 /*!
- * Destructor.
- */
+    Destructor.
+*/
 QIviProperty::~QIviProperty()
 {
 }
 
 /*!
- * \property QIviProperty::value
- * Stores the value of the property as a QVariant
- */
+    \property QIviProperty::value
+    Stores the value of the property as a QVariant
+*/
 void QIviProperty::setValue(const QVariant &value)
 {
     Q_D(QIviProperty);
@@ -166,8 +166,8 @@ void QIviProperty::setValue(const QVariant &value)
 }
 
 /*!
- * \internal
- */
+    \internal
+*/
 QIviProperty::QIviProperty(int userType, const QObject *receiver,  QtPrivate::QSlotObjectBase *attributeGetter, QtPrivate::QSlotObjectBase *valueGetter)
     : QObject(const_cast<QObject*>(receiver))
     , d_ptr(new QIviPropertyPrivate(userType, attributeGetter, valueGetter))
@@ -175,8 +175,8 @@ QIviProperty::QIviProperty(int userType, const QObject *receiver,  QtPrivate::QS
 }
 
 /*!
- * \internal
- */
+    \internal
+*/
 void QIviProperty::setValueSetter(QtPrivate::QSlotObjectBase *valueSetter)
 {
     Q_D(QIviProperty);
@@ -184,8 +184,8 @@ void QIviProperty::setValueSetter(QtPrivate::QSlotObjectBase *valueSetter)
 }
 
 /*!
- * \internal
- */
+    \internal
+*/
 QtPrivate::QSlotObjectBase *QIviProperty::attributeGetter() const
 {
     Q_D(const QIviProperty);
@@ -193,8 +193,8 @@ QtPrivate::QSlotObjectBase *QIviProperty::attributeGetter() const
 }
 
 /*!
- * \internal
- */
+    \internal
+*/
 QtPrivate::QSlotObjectBase *QIviProperty::valueGetter() const
 {
     Q_D(const QIviProperty);

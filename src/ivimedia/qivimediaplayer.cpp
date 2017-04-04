@@ -174,33 +174,33 @@ QIviMediaPlayerBackendInterface *QIviMediaPlayerPrivate::playerBackend() const
 */
 
 /*!
-   \enum QIviMediaPlayer::PlayMode
-   \value Normal
+    \enum QIviMediaPlayer::PlayMode
+    \value Normal
           Each item in the queue is played in sequential order. Usually the playback stops when the end
           of the queue is reached.
-   \value RepeatTrack
+    \value RepeatTrack
           Always repeat the current item. It should still be possible to change the current item
           using next() and previous(), but this depends on the implementation of the backend.
-   \value RepeatAll
+    \value RepeatAll
           When the end of the queue is reached, the first item starts to play.
-   \value Shuffle
+    \value Shuffle
           The item in the queue are played in an random order.
 */
 
 /*!
-   \enum QIviMediaPlayer::PlayState
-   \value Playing
+    \enum QIviMediaPlayer::PlayState
+    \value Playing
           The media player is currently playing an item.
-   \value Paused
+    \value Paused
           The playback is paused and can be continued at the same position.
-   \value Stopped
+    \value Stopped
           The playback hasn't been started yet. Starting it, will always start from the beginning.
 */
 
 /*!
-   Constructs a QIviMediaPlayer.
+    Constructs a QIviMediaPlayer.
 
-   The \a parent argument is passed on to the \l QIviAbstractFeature base class.
+    The \a parent argument is passed on to the \l QIviAbstractFeature base class.
 */
 QIviMediaPlayer::QIviMediaPlayer(QObject *parent)
     : QIviAbstractFeature(*new QIviMediaPlayerPrivate(QLatin1String(QIviMediaPlayer_iid), this), parent)
@@ -212,13 +212,13 @@ QIviMediaPlayer::QIviMediaPlayer(QObject *parent)
     \brief Holds the play queue of this media player.
 
     \sa PlayQueue
- */
+*/
 /*!
     \property QIviMediaPlayer::playQueue
     \brief Holds the play queue of this media player.
 
     \sa QIviPlayQueue
- */
+*/
 QIviPlayQueue *QIviMediaPlayer::playQueue() const
 {
     Q_D(const QIviMediaPlayer);
@@ -239,11 +239,11 @@ QIviPlayQueue *QIviMediaPlayer::playQueue() const
            When the end of the queue is reached, the first item starts to play.
     \value Shuffle
            The item in the queue are played in an random order.
- */
+*/
 /*!
     \property QIviMediaPlayer::playMode
     \brief Holds the current playback mode of the media player.
- */
+*/
 QIviMediaPlayer::PlayMode QIviMediaPlayer::playMode() const
 {
     Q_D(const QIviMediaPlayer);
@@ -260,11 +260,11 @@ QIviMediaPlayer::PlayMode QIviMediaPlayer::playMode() const
            The playback is paused and can be continued at the same position.
     \value Stopped
            The playback hasn't been started yet. Starting it, will always start from the beginning.
- */
+*/
 /*!
     \property QIviMediaPlayer::playState
     \brief Holds the current playback state of the media player.
- */
+*/
 QIviMediaPlayer::PlayState QIviMediaPlayer::playState() const
 {
     Q_D(const QIviMediaPlayer);
@@ -276,13 +276,13 @@ QIviMediaPlayer::PlayState QIviMediaPlayer::playState() const
     \brief Holds the current track represented as QVariant.
 
     \note This will be replaced by soon.
- */
+*/
 /*!
     \property QIviMediaPlayer::currentTrack
     \brief Holds the current track represented as QVariant.
 
     \note This will be replaced by soon.
- */
+*/
 QVariant QIviMediaPlayer::currentTrack() const
 {
     Q_D(const QIviMediaPlayer);
@@ -292,11 +292,11 @@ QVariant QIviMediaPlayer::currentTrack() const
 /*!
     \qmlproperty int MediaPlayer::position
     \brief Holds the position of the current song of the media player in seconds.
- */
+*/
 /*!
     \property QIviMediaPlayer::position
     \brief Holds the position of the current song of the media player in seconds.
- */
+*/
 qint64 QIviMediaPlayer::position() const
 {
     Q_D(const QIviMediaPlayer);
@@ -306,11 +306,11 @@ qint64 QIviMediaPlayer::position() const
 /*!
     \qmlproperty int MediaPlayer::duration
     \brief Holds the total duration of the current song in seconds.
- */
+*/
 /*!
     \property QIviMediaPlayer::duration
     \brief Holds the total duration of the current song in seconds.
- */
+*/
 qint64 QIviMediaPlayer::duration() const
 {
     Q_D(const QIviMediaPlayer);
@@ -481,7 +481,7 @@ void QIviMediaPlayer::previous()
 
 /*!
     \internal
- */
+*/
 QIviMediaPlayer::QIviMediaPlayer(QIviMediaPlayerPrivate &dd, QObject *parent)
     : QIviAbstractFeature(dd, parent)
 {
@@ -489,7 +489,7 @@ QIviMediaPlayer::QIviMediaPlayer(QIviMediaPlayerPrivate &dd, QObject *parent)
 
 /*!
     \reimp
- */
+*/
 void QIviMediaPlayer::connectToServiceObject(QIviServiceObject *serviceObject)
 {
     Q_UNUSED(serviceObject);
@@ -526,7 +526,7 @@ void QIviMediaPlayer::connectToServiceObject(QIviServiceObject *serviceObject)
 
 /*!
     \reimp
- */
+*/
 void QIviMediaPlayer::clearServiceObject()
 {
     Q_D(QIviMediaPlayer);

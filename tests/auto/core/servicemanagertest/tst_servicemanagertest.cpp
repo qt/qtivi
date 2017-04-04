@@ -145,17 +145,17 @@ do { \
 } while (0)
 
 /*
- * Test the hasInterface method
- */
+    Test the hasInterface method
+*/
 void ServiceManagerTest::testHasInterface()
 {
-   QCOMPARE(manager->hasInterface("Foo"), false);
+    QCOMPARE(manager->hasInterface("Foo"), false);
 
-   MockServiceBackend *backend0 = new MockServiceBackend(manager);
-   bool regResult = manager->registerService(backend0, QStringList() << "Foo" << "Bar");
-   QCOMPARE(regResult, true);
-   QCOMPARE(manager->hasInterface("Foo"), true);
-   QCOMPARE(manager->hasInterface("Bar"), true);
+    MockServiceBackend *backend0 = new MockServiceBackend(manager);
+    bool regResult = manager->registerService(backend0, QStringList() << "Foo" << "Bar");
+    QCOMPARE(regResult, true);
+    QCOMPARE(manager->hasInterface("Foo"), true);
+    QCOMPARE(manager->hasInterface("Bar"), true);
 }
 
 void ServiceManagerTest::testFindServiceObjectsReturnInValidInstance()
@@ -192,9 +192,9 @@ void ServiceManagerTest::testFindServiceObjects()
 }
 
 /*
- * Test that the registerService method returns false if the user tries
- * to register a service with an empty list of interfaces.
- */
+    Test that the registerService method returns false if the user tries
+    to register a service with an empty list of interfaces.
+*/
 void ServiceManagerTest::testRegisterWithNoInterfaces()
 {
     MockServiceBackend *backend = new MockServiceBackend(manager);
@@ -203,9 +203,9 @@ void ServiceManagerTest::testRegisterWithNoInterfaces()
 }
 
 /*
- * Test that the registerService method returns false if the user tries
- * to register a service which doesn't implement the ServiceBackendInterface.
- */
+    Test that the registerService method returns false if the user tries
+    to register a service which doesn't implement the ServiceBackendInterface.
+*/
 void ServiceManagerTest::testRegisterNonServiceBackendInterfaceObject()
 {
     QObject *anyObject = new QObject(manager);
@@ -215,8 +215,8 @@ void ServiceManagerTest::testRegisterNonServiceBackendInterfaceObject()
 }
 
 /*
- * Test typical QAbstractListModel behavior
- */
+    Test typical QAbstractListModel behavior
+*/
 void ServiceManagerTest::testManagerListModel()
 {
     QSignalSpy managerModelSpy(manager, SIGNAL(rowsInserted(QModelIndex,int,int)));

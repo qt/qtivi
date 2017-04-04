@@ -143,14 +143,14 @@ void QIviAbstractFeatureListModelPrivate::initialize()
     that \l disconnectFromServiceObject is called first.
 
     \sa acceptServiceObject(), connectToServiceObject(), disconnectFromServiceObject()
- */
+*/
 
 /*!
-   Constructs a QIviAbstractFeatureListModel.
+    Constructs a QIviAbstractFeatureListModel.
 
-   The \a parent argument is passed on to the \l QAbstractListModel base class.
+    The \a parent argument is passed on to the \l QAbstractListModel base class.
 
-   The \a interface argument is used to locate suitable service objects.
+    The \a interface argument is used to locate suitable service objects.
 */
 QIviAbstractFeatureListModel::QIviAbstractFeatureListModel(const QString &interface, QObject *parent)
     : QAbstractListModel(*new QIviAbstractFeatureListModelPrivate(interface, this), parent)
@@ -181,7 +181,7 @@ QIviAbstractFeatureListModel::~QIviAbstractFeatureListModel()
     or the \e {Service Object} doesn't get accepted by the feature.
 
     \sa discoveryMode
- */
+*/
 
 /*!
     \property QIviAbstractFeatureListModel::serviceObject
@@ -194,7 +194,7 @@ QIviAbstractFeatureListModel::~QIviAbstractFeatureListModel()
     or the \e {Service Object} doesn't get accepted by the feature.
 
     \sa discoveryMode
- */
+*/
 QIviServiceObject *QIviAbstractFeatureListModel::serviceObject() const
 {
     Q_D(const QIviAbstractFeatureListModel);
@@ -219,7 +219,7 @@ QIviServiceObject *QIviAbstractFeatureListModel::serviceObject() const
 
     \note If you change this property after the Feature is instantiated you need to call startAutoDiscovery() to search for
     a new Service Object
- */
+*/
 
 /*!
     \property QIviAbstractFeatureListModel::discoveryMode
@@ -227,7 +227,7 @@ QIviServiceObject *QIviAbstractFeatureListModel::serviceObject() const
 
     \note If you change this property after the Feature is instantiated you need to call startAutoDiscovery() to search for
     a new Service Object
- */
+*/
 QIviAbstractFeature::DiscoveryMode QIviAbstractFeatureListModel::discoveryMode() const
 {
     Q_D(const QIviAbstractFeatureListModel);
@@ -247,14 +247,14 @@ QIviAbstractFeature::DiscoveryMode QIviAbstractFeatureListModel::discoveryMode()
            As a result of the auto discovery a production backend was loaded.
     \value SimulationBackendLoaded
            As a result of the auto discovery a simulation backend was loaded.
- */
+*/
 
 /*!
     \property QIviAbstractFeatureListModel::discoveryResult
     \brief The result of the last autoDiscovery attempt
 
     \sa startAutoDiscovery()
- */
+*/
 QIviAbstractFeature::DiscoveryResult QIviAbstractFeatureListModel::discoveryResult() const
 {
     Q_D(const QIviAbstractFeatureListModel);
@@ -273,7 +273,7 @@ QIviAbstractFeature::DiscoveryResult QIviAbstractFeatureListModel::discoveryResu
     Use isInitialized instead to know when the feature holds all correct values.
 
     \sa QIviServiceObject, discoveryMode, isInitialized
- */
+*/
 /*!
     \property QIviAbstractFeatureListModel::isValid
     \brief Indicates whether the feature is ready to use.
@@ -286,7 +286,7 @@ QIviAbstractFeature::DiscoveryResult QIviAbstractFeatureListModel::discoveryResu
     Use isInitialized instead to know when the feature holds all correct values.
 
     \sa QIviServiceObject, discoveryMode, isInitialized
- */
+*/
 bool QIviAbstractFeatureListModel::isValid() const
 {
     Q_D(const QIviAbstractFeatureListModel);
@@ -301,7 +301,7 @@ bool QIviAbstractFeatureListModel::isValid() const
     to indicate that all values have now been initialized with values from the backend.
 
     \sa isValid, QIviFeatureInterface::initializationDone
- */
+*/
 /*!
     \property QIviAbstractFeatureListModel::isInitialized
     \brief Indicates whether the feature has been initialized with all the values from the backend.
@@ -310,7 +310,7 @@ bool QIviAbstractFeatureListModel::isValid() const
     to indicate that all values have now been initialized with values from the backend.
 
     \sa isValid, QIviFeatureInterface::initializationDone
- */
+*/
 bool QIviAbstractFeatureListModel::isInitialized() const
 {
     Q_D(const QIviAbstractFeatureListModel);
@@ -318,10 +318,10 @@ bool QIviAbstractFeatureListModel::isInitialized() const
 }
 
 /*!
-   Returns the last error code.
+    Returns the last error code.
 
-   \sa QIviAbstractFeature::Error
- */
+    \sa QIviAbstractFeature::Error
+*/
 QIviAbstractFeature::Error QIviAbstractFeatureListModel::error() const
 {
     Q_D(const QIviAbstractFeatureListModel);
@@ -329,15 +329,15 @@ QIviAbstractFeature::Error QIviAbstractFeatureListModel::error() const
 }
 
 /*!
-   \qmlproperty string AbstractFeatureListModel::error
+    \qmlproperty string AbstractFeatureListModel::error
 
-   Last error message of the feature. Empty if no error.
- */
+    Last error message of the feature. Empty if no error.
+*/
 /*!
-   \property QIviAbstractFeatureListModel::error
+    \property QIviAbstractFeatureListModel::error
 
-   Last error message of the feature. Empty if no error.
- */
+    Last error message of the feature. Empty if no error.
+*/
 QString QIviAbstractFeatureListModel::errorMessage() const
 {
     Q_D(const QIviAbstractFeatureListModel);
@@ -362,11 +362,11 @@ void QIviAbstractFeatureListModel::setDiscoveryMode(QIviAbstractFeature::Discove
     Performs an automatic discovery attempt.
 
     See AbstractFeature::startAutoDiscovery() for more information
- */
+*/
 
 /*!
     \brief Performs an automatic discovery attempt.
- */
+*/
 QIviAbstractFeature::DiscoveryResult QIviAbstractFeatureListModel::startAutoDiscovery()
 {
     Q_D(QIviAbstractFeatureListModel);
@@ -402,7 +402,7 @@ QIviAbstractFeatureListModel::QIviAbstractFeatureListModel(QIviAbstractFeatureLi
     returned by interfaceName();
 
     \sa connectToServiceObject(), disconnectFromServiceObject(), clearServiceObject()
- */
+*/
 bool QIviAbstractFeatureListModel::acceptServiceObject(QIviServiceObject *serviceObject)
 {
     Q_D(QIviAbstractFeatureListModel);
@@ -501,9 +501,9 @@ QString QIviAbstractFeatureListModel::interfaceName() const
 }
 
 /*!
-   Returns the current error code converted from QIviAbstractFeature::Error to QString
+    Returns the current error code converted from QIviAbstractFeature::Error to QString
 
-   \sa error
+    \sa error
 */
 QString QIviAbstractFeatureListModel::errorText() const
 {
@@ -512,12 +512,12 @@ QString QIviAbstractFeatureListModel::errorText() const
 }
 
 /*!
-   Sets \a error with the \a message.
+    Sets \a error with the \a message.
 
-   Emits errorChanged() signal.
+    Emits errorChanged() signal.
 
-   \sa QIviAbstractFeature::Error
- */
+    \sa QIviAbstractFeature::Error
+*/
 void QIviAbstractFeatureListModel::setError(QIviAbstractFeature::Error error, const QString &message)
 {
     Q_D(QIviAbstractFeatureListModel);
@@ -525,9 +525,9 @@ void QIviAbstractFeatureListModel::setError(QIviAbstractFeature::Error error, co
 }
 
 /*!
-   Updates \a error and \a message from the backend.
+    Updates \a error and \a message from the backend.
 
-   This slot can be used when implementing a new Feature to report generic errors.
+    This slot can be used when implementing a new Feature to report generic errors.
 */
 void QIviAbstractFeatureListModel::onErrorChanged(QIviAbstractFeature::Error error, const QString &message)
 {

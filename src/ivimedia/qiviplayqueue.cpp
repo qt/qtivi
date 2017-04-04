@@ -250,12 +250,12 @@ QIviMediaPlayerBackendInterface *QIviPlayQueuePrivate::playerBackend() const
 */
 
 /*!
-   \enum QIviPlayQueue::Roles
-   \value NameRole
+    \enum QIviPlayQueue::Roles
+    \value NameRole
           The name of the playable item. E.g. The track name or the name of the web-stream.
-   \value TypeRole
+    \value TypeRole
           The type of the playable item. E.g. \e "track" or \e "web-stream"
-   \value ItemRole
+    \value ItemRole
           The playable item instance. This can be used to access type specific properties like the artist.
 */
 
@@ -299,14 +299,14 @@ QIviPlayQueue::~QIviPlayQueue()
     \brief Holds the index of the currently active track.
 
     Use the get() method to retrieve more information about the active track.
- */
+*/
 
 /*!
     \property QIviPlayQueue::currentIndex
     \brief Holds the index of the currently active track.
 
     Use the get() method to retrieve more information about the active track.
- */
+*/
 int QIviPlayQueue::currentIndex() const
 {
     Q_D(const QIviPlayQueue);
@@ -328,7 +328,7 @@ void QIviPlayQueue::setCurrentIndex(int currentIndex)
 
     Bigger chunks means less calls to the backend and to a potential IPC underneath, but more data
     to be transferred and probably longer waiting time until the request was finished.
- */
+*/
 
 /*!
     \property QIviPlayQueue::chunkSize
@@ -338,7 +338,7 @@ void QIviPlayQueue::setCurrentIndex(int currentIndex)
 
     Bigger chunks means less calls to the backend and to a potential IPC underneath, but more data
     to be transferred and probably longer waiting time until the request was finished.
- */
+*/
 int QIviPlayQueue::chunkSize() const
 {
     Q_D(const QIviPlayQueue);
@@ -366,7 +366,7 @@ void QIviPlayQueue::setChunkSize(int chunkSize)
     The threshold defines the number of rows before the cached rows ends.
 
     \note This property is only used when loadingType is set to FetchMore.
- */
+*/
 
 /*!
     \property QIviPlayQueue::fetchMoreThreshold
@@ -379,7 +379,7 @@ void QIviPlayQueue::setChunkSize(int chunkSize)
     The threshold defines the number of rows before the cached rows ends.
 
     \note This property is only used when loadingType is set to FetchMore.
- */
+*/
 int QIviPlayQueue::fetchMoreThreshold() const
 {
     Q_D(const QIviPlayQueue);
@@ -401,14 +401,14 @@ void QIviPlayQueue::setFetchMoreThreshold(int fetchMoreThreshold)
     \brief Holds the currently used loading type used for loading the data.
 
     \note When changing this property the content will be reset.
- */
+*/
 
 /*!
     \property QIviPlayQueue::loadingType
     \brief Holds the currently used loading type used for loading the data.
 
     \note When changing this property the content will be reset.
- */
+*/
 QIviPlayQueue::LoadingType QIviPlayQueue::loadingType() const
 {
     Q_D(const QIviPlayQueue);
@@ -435,11 +435,11 @@ void QIviPlayQueue::setLoadingType(QIviPlayQueue::LoadingType loadingType)
 /*!
     \qmlproperty int PlayQueue::count
     \brief Holds the current number of rows in this model.
- */
+*/
 /*!
     \property QIviPlayQueue::count
     \brief Holds the current number of rows in this model.
- */
+*/
 int QIviPlayQueue::rowCount(const QModelIndex &parent) const
 {
     Q_D(const QIviPlayQueue);
@@ -451,7 +451,7 @@ int QIviPlayQueue::rowCount(const QModelIndex &parent) const
 
 /*!
     \reimp
- */
+*/
 QVariant QIviPlayQueue::data(const QModelIndex &index, int role) const
 {
     Q_D(const QIviPlayQueue);
@@ -488,7 +488,7 @@ QVariant QIviPlayQueue::data(const QModelIndex &index, int role) const
     \qmlmethod object PlayQueue::get(i)
 
     Returns the item at index \a i.
- */
+*/
 /*!
     Returns the item at index \a i.
 
@@ -564,7 +564,7 @@ void QIviPlayQueue::move(int cur_index, int new_index)
 
 /*!
     \reimp
- */
+*/
 bool QIviPlayQueue::canFetchMore(const QModelIndex &parent) const
 {
     Q_D(const QIviPlayQueue);
@@ -576,7 +576,7 @@ bool QIviPlayQueue::canFetchMore(const QModelIndex &parent) const
 
 /*!
     \reimp
- */
+*/
 void QIviPlayQueue::fetchMore(const QModelIndex &parent)
 {
     Q_D(QIviPlayQueue);
@@ -592,7 +592,7 @@ void QIviPlayQueue::fetchMore(const QModelIndex &parent)
 
 /*!
     \reimp
- */
+*/
 QHash<int, QByteArray> QIviPlayQueue::roleNames() const
 {
     static QHash<int, QByteArray> roles;
@@ -606,7 +606,7 @@ QHash<int, QByteArray> QIviPlayQueue::roleNames() const
 
 /*!
     Creates a play queue for the QIviMediaPlayer instance \a parent.
- */
+*/
 QIviPlayQueue::QIviPlayQueue(QIviMediaPlayer *parent)
     : QAbstractListModel(*new QIviPlayQueuePrivate(parent, this), parent)
 {

@@ -140,10 +140,10 @@ void QIviAbstractZonedFeature::clearServiceObject()
 }
 
 /*!
-   Returns pointer to the backend \a interface
+    Returns pointer to the backend \a interface
 
-   Returns parent backend if parent is QIviAbstractZonedFeature type.
-   Returns zero if no backend connected.
+    Returns parent backend if parent is QIviAbstractZonedFeature type.
+    Returns zero if no backend connected.
 */
 QIviZonedFeatureInterface *QIviAbstractZonedFeature::backend(const QString &interface) const
 {
@@ -161,54 +161,54 @@ QIviZonedFeatureInterface *QIviAbstractZonedFeature::backend(const QString &inte
 
 
 /*!
-   \fn virtual QIviAbstractZonedFeature *QIviAbstractZonedFeature::createZoneFeature(const QString &zone) = 0
+    \fn virtual QIviAbstractZonedFeature *QIviAbstractZonedFeature::createZoneFeature(const QString &zone) = 0
 
-   Create new child feature to the given \a zone.
+    Create new child feature to the given \a zone.
 
-   Returns zero if feature can't be created for the given feature and zone.
+    Returns zero if feature can't be created for the given feature and zone.
 */
 
 /*!
-   \qmlproperty QString AbstractZonedFeature::zone
+    \qmlproperty QString AbstractZonedFeature::zone
 
-   \brief Name of the zone of this zoned feature.
+    \brief Name of the zone of this zoned feature.
 
-   The zone can be given in the feature initialization. With this property it's
-   possible to control only a single specific feature zone.
+    The zone can be given in the feature initialization. With this property it's
+    possible to control only a single specific feature zone.
 
-   This property is writable only before the backend is connected. When the backend is
-   discovered and the component is verified to be valid, zone is not writable anymore.
-   It's not recommended to change the zone after the initialization.
+    This property is writable only before the backend is connected. When the backend is
+    discovered and the component is verified to be valid, zone is not writable anymore.
+    It's not recommended to change the zone after the initialization.
 
-   \qml
-   ClimateControl {
+    \qml
+    ClimateControl {
         zone: "FrontLeft"
         onAirConditioningChanged: {
             // Take action on front left A/C changes.
         }
    }
-   \endqml
- */
+    \endqml
+*/
 /*!
-   \property QIviAbstractZonedFeature::zone
+    \property QIviAbstractZonedFeature::zone
 
-   \brief Name of the zone of this zoned feature.
+    \brief Name of the zone of this zoned feature.
 
-   The zone can be given in the feature initialization. With this property it's
-   possible to control only a single specific feature zone.
+    The zone can be given in the feature initialization. With this property it's
+    possible to control only a single specific feature zone.
 
-   This property is writable only before the backend is connected. When the backend is
-   discovered and the component is verified to be valid, zone is not writable anymore.
-   It's not recommended to change the zone after the initialization.
+    This property is writable only before the backend is connected. When the backend is
+    discovered and the component is verified to be valid, zone is not writable anymore.
+    It's not recommended to change the zone after the initialization.
 
-   It's recommended to initialize the zone in the feature constructor:
+    It's recommended to initialize the zone in the feature constructor:
 
-   \code
-   QIviClimateControl *climateControl = new QIviClimateControl("FrontLeft", this);
-   climateControl->startAutoDiscovery();
-   QString zone = climateControl->zone();
-   \endcode
- */
+    \code
+    QIviClimateControl *climateControl = new QIviClimateControl("FrontLeft", this);
+    climateControl->startAutoDiscovery();
+    QString zone = climateControl->zone();
+    \endcode
+*/
 QString QIviAbstractZonedFeature::zone() const
 {
     Q_D(const QIviAbstractZonedFeature);
@@ -250,15 +250,15 @@ void QIviAbstractZonedFeature::initializeZones()
 }
 
 /*!
-   \qmlproperty QStringList AbstractZonedFeature::availableZones
+    \qmlproperty QStringList AbstractZonedFeature::availableZones
 
-   List of the available zones.
- */
+    List of the available zones.
+*/
 /*!
-   \property QIviAbstractZonedFeature::availableZones
+    \property QIviAbstractZonedFeature::availableZones
 
-   List of the available zones.
- */
+    List of the available zones.
+*/
 QStringList QIviAbstractZonedFeature::availableZones() const
 {
     if (backend()) {
@@ -269,7 +269,7 @@ QStringList QIviAbstractZonedFeature::availableZones() const
 
 
 /*!
-   Returns the given \a zone instance of the feature.
+    Returns the given \a zone instance of the feature.
 */
 QIviAbstractZonedFeature *QIviAbstractZonedFeature::zoneAt(const QString &zone) const
 {
@@ -281,7 +281,7 @@ QIviAbstractZonedFeature *QIviAbstractZonedFeature::zoneAt(const QString &zone) 
 }
 
 /*!
-   Returns all zone instances of the feature.
+    Returns all zone instances of the feature.
 */
 QList<QIviAbstractZonedFeature*> QIviAbstractZonedFeature::zones() const
 {
@@ -295,19 +295,19 @@ QIviAbstractZonedFeature::QIviAbstractZonedFeature(QIviAbstractZonedFeaturePriva
 }
 
 /*!
-   \qmlproperty QVariantMap AbstractZonedFeature::zoneAt
+    \qmlproperty QVariantMap AbstractZonedFeature::zoneAt
 
-   Direct feature access to the given zone.
+    Direct feature access to the given zone.
 
-   \code
-   feature.zoneAt.FrontLeft
-   \endcode
- */
+    \code
+    feature.zoneAt.FrontLeft
+    \endcode
+*/
 /*!
-   \property QIviAbstractZonedFeature::zoneAt
+    \property QIviAbstractZonedFeature::zoneAt
 
-   Direct feature access to the given zone.
- */
+    Direct feature access to the given zone.
+*/
 QVariantMap QIviAbstractZonedFeature::zoneFeatureMap() const
 {
     Q_D(const QIviAbstractZonedFeature);
@@ -315,19 +315,19 @@ QVariantMap QIviAbstractZonedFeature::zoneFeatureMap() const
 }
 
 /*!
-   \qmlproperty QVariantList AbstractZonedFeature::zones
+    \qmlproperty QVariantList AbstractZonedFeature::zones
 
-   Access to the feature zones model.
+    Access to the feature zones model.
 
-   \code
-   model: feature.zones
-   \endcode
- */
+    \code
+    model: feature.zones
+    \endcode
+*/
 /*!
-   \property QIviAbstractZonedFeature::zones
+    \property QIviAbstractZonedFeature::zones
 
-   Access to the feature zones model.
- */
+    Access to the feature zones model.
+*/
 QVariantList QIviAbstractZonedFeature::zoneFeatureList() const
 {
     Q_D(const QIviAbstractZonedFeature);

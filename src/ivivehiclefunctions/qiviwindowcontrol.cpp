@@ -241,16 +241,16 @@ QIviWindowControlBackendInterface *QIviWindowControlPrivate::windowControlBacken
 }
 
 /*!
-   \class QIviWindowControl
-   \inmodule QtIviVehicleFunctions
-   \brief Provides an interface to the window control.
+    \class QIviWindowControl
+    \inmodule QtIviVehicleFunctions
+    \brief Provides an interface to the window control.
 
-   The QIviWindowControl provides an interface to control the physical windows of the vehicle.
+    The QIviWindowControl provides an interface to control the physical windows of the vehicle.
 
-   All properties are exposed through zone objects. The zones are retrieved using the \l zoneAt method.
+    All properties are exposed through zone objects. The zones are retrieved using the \l zoneAt method.
 
-   The QIviWindowControl expects a single backend to be available. It is recommended to use it
-   with \l {QIviAbstractFeature::}{discoveryMode} set to \l AutoDiscovery.
+    The QIviWindowControl expects a single backend to be available. It is recommended to use it
+    with \l {QIviAbstractFeature::}{discoveryMode} set to \l AutoDiscovery.
 */
 
 /*!
@@ -262,39 +262,39 @@ QIviWindowControlBackendInterface *QIviWindowControlPrivate::windowControlBacken
 */
 
 /*!
-   \enum QIviWindowControl::HeaterMode
-   \value HeaterOn
+    \enum QIviWindowControl::HeaterMode
+    \value HeaterOn
           The window heater is turned on.
-   \value HeaterOff
+    \value HeaterOff
           The window heater is turned off.
-   \value AutoHeater
+    \value AutoHeater
           The window heater is turning off and on automatically.
 */
 
 /*!
-   \enum QIviWindowControl::BlindMode
-   \value BlindOpen
+    \enum QIviWindowControl::BlindMode
+    \value BlindOpen
           The blind will be opened.
-   \value BlindClosed
+    \value BlindClosed
           The blind will be closed.
-   \value AutoBlind
+    \value AutoBlind
           The blind is opened or closed automatically.
 */
 
 /*!
-   \enum QIviWindowControl::State
-   \value FullyOpen
+    \enum QIviWindowControl::State
+    \value FullyOpen
           The object is fully open.
-   \value Open
+    \value Open
           The object is open, but not fully open yet.
-   \value Closed
+    \value Closed
           The object is closed.
 */
 
 /*!
-   Constructs a window control object to the given \a zone.
+    Constructs a window control object to the given \a zone.
 
-   The \a parent argument is passed on to the \l QIviAbstractZonedFeature base class.
+    The \a parent argument is passed on to the \l QIviAbstractZonedFeature base class.
 */
 QIviWindowControl::QIviWindowControl(const QString &zone, QObject *parent)
     : QIviAbstractZonedFeature(*new QIviWindowControlPrivate(QLatin1String(QIviWindowControl_iid), zone, this), parent)
@@ -309,7 +309,7 @@ QIviWindowControl::~QIviWindowControl()
 }
 
 /*!
-   \reimp
+    \reimp
 */
 void QIviWindowControl::connectToServiceObject(QIviServiceObject *serviceObject)
 {
@@ -345,7 +345,7 @@ void QIviWindowControl::connectToServiceObject(QIviServiceObject *serviceObject)
 }
 
 /*!
-   \reimp
+    \reimp
 */
 void QIviWindowControl::clearServiceObject()
 {
@@ -360,7 +360,7 @@ QIviWindowControl::QIviWindowControl(QIviWindowControlPrivate &dd, QObject *pare
 }
 
 /*!
-   \reimp
+    \reimp
 */
 QIviAbstractZonedFeature *QIviWindowControl::createZoneFeature(const QString &zone)
 {
@@ -368,30 +368,30 @@ QIviAbstractZonedFeature *QIviWindowControl::createZoneFeature(const QString &zo
 }
 
 /*!
-   \qmlqtivipropertyEnum {QtIvi.VehicleFunctions::WindowControl::heaterMode}
+    \qmlqtivipropertyEnum {QtIvi.VehicleFunctions::WindowControl::heaterMode}
 
-   \e value holds the heater mode.
-   Available values are:
-   \value HeaterOn
+    \e value holds the heater mode.
+    Available values are:
+    \value HeaterOn
           The window heater is turned on.
-   \value HeaterOff
+    \value HeaterOff
           The window heater is turned off.
-   \value AutoHeater
+    \value AutoHeater
           The window heater is turning off and on automatically.
- */
+*/
 /*!
-   \property QIviWindowControl::heaterMode
+    \property QIviWindowControl::heaterMode
 
-   Holds a QIviProperty of type \e QIviWindowControl::HeaterMode where the QIviProperty::value() function returns the current heaterMode.
+    Holds a QIviProperty of type \e QIviWindowControl::HeaterMode where the QIviProperty::value() function returns the current heaterMode.
 
-   \sa AttributeSystem
-   \sa heaterMode() setHeaterMode() heaterModeAttribute()
- */
+    \sa AttributeSystem
+    \sa heaterMode() setHeaterMode() heaterModeAttribute()
+*/
 /*!
- * Returns the current heaterMode.
- *
- * \sa setHeaterMode() heaterModeChanged() heaterModeAttribute()
- */
+    Returns the current heaterMode.
+
+    \sa setHeaterMode() heaterModeChanged() heaterModeAttribute()
+*/
 QIviWindowControl::HeaterMode QIviWindowControl::heaterMode() const
 
 {
@@ -399,10 +399,10 @@ QIviWindowControl::HeaterMode QIviWindowControl::heaterMode() const
     return d->m_heaterMode;
 }
 /*!
- * Returns the attribute defining the boundaries and availability of the heaterMode property.
- *
- * \sa setHeaterMode() heaterMode() heaterModeChanged()
- */
+    Returns the attribute defining the boundaries and availability of the heaterMode property.
+
+    \sa setHeaterMode() heaterMode() heaterModeChanged()
+*/
 QIviPropertyAttribute<QIviWindowControl::HeaterMode> QIviWindowControl::heaterModeAttribute() const
 {
     Q_D(const QIviWindowControl);
@@ -416,23 +416,23 @@ QIviProperty *QIviWindowControl::heaterModeProperty() const
 }
 
 /*!
-   \qmlqtivipropertyBool {QtIvi.VehicleFunctions::WindowControl::heater}
+    \qmlqtivipropertyBool {QtIvi.VehicleFunctions::WindowControl::heater}
 
-   \e value is true if the heater is currently running.
- */
+    \e value is true if the heater is currently running.
+*/
 /*!
-   \property QIviWindowControl::heater
+    \property QIviWindowControl::heater
 
-   Holds a QIviProperty of type \e bool where the QIviProperty::value() function indicates if the heater is running.
+    Holds a QIviProperty of type \e bool where the QIviProperty::value() function indicates if the heater is running.
 
-   \sa AttributeSystem
-   \sa isHeaterEnabled() heaterAttribute()
- */
+    \sa AttributeSystem
+    \sa isHeaterEnabled() heaterAttribute()
+*/
 /*!
- * Returns true if heater is currently enabled(running).
- *
- * \sa heaterEnabledChanged() heaterAttribute()
- */
+    Returns true if heater is currently enabled(running).
+
+    \sa heaterEnabledChanged() heaterAttribute()
+*/
 bool QIviWindowControl::isHeaterEnabled() const
 
 {
@@ -440,10 +440,10 @@ bool QIviWindowControl::isHeaterEnabled() const
     return d->m_heater;
 }
 /*!
- * Returns the attribute defining the boundaries and availability of the heater property.
- *
- * \sa isHeaterEnabled() heaterEnabledChanged()
- */
+    Returns the attribute defining the boundaries and availability of the heater property.
+
+    \sa isHeaterEnabled() heaterEnabledChanged()
+*/
 QIviPropertyAttribute<bool> QIviWindowControl::heaterAttribute() const
 {
     Q_D(const QIviWindowControl);
@@ -457,30 +457,30 @@ QIviProperty *QIviWindowControl::heaterProperty() const
 }
 
 /*!
-   \qmlqtivipropertyEnum {QtIvi.VehicleFunctions::WindowControl::blindMode}
+    \qmlqtivipropertyEnum {QtIvi.VehicleFunctions::WindowControl::blindMode}
 
-   \e value holds the blind mode.
-   Available values are:
-   \value BlindOpen
+    \e value holds the blind mode.
+    Available values are:
+    \value BlindOpen
           The blind will be opened.
-   \value BlindClosed
+    \value BlindClosed
           The blind will be closed.
-   \value AutoBlind
+    \value AutoBlind
           The blind is opened or closed automatically.
- */
+*/
 /*!
-   \property QIviWindowControl::blindMode
+    \property QIviWindowControl::blindMode
 
-   Holds a QIviProperty of type \e QIviWindowControl::BlindMode where the QIviProperty::value() function returns the current blind mode.
+    Holds a QIviProperty of type \e QIviWindowControl::BlindMode where the QIviProperty::value() function returns the current blind mode.
 
-   \sa AttributeSystem
-   \sa blindMode() setBlindMode() blindModeAttribute()
- */
+    \sa AttributeSystem
+    \sa blindMode() setBlindMode() blindModeAttribute()
+*/
 /*!
- * Returns the current blind mode.
- *
- * \sa setBlindMode() blindModeChanged() blindModeAttribute()
- */
+    Returns the current blind mode.
+
+    \sa setBlindMode() blindModeChanged() blindModeAttribute()
+*/
 QIviWindowControl::BlindMode QIviWindowControl::blindMode() const
 
 {
@@ -488,10 +488,10 @@ QIviWindowControl::BlindMode QIviWindowControl::blindMode() const
     return d->m_blindMode;
 }
 /*!
- * Returns the attribute defining the boundaries and availability of the blindMode property.
- *
- * \sa setBlindMode() blindMode() blindModeChanged()
- */
+    Returns the attribute defining the boundaries and availability of the blindMode property.
+
+    \sa setBlindMode() blindMode() blindModeChanged()
+*/
 QIviPropertyAttribute<QIviWindowControl::BlindMode> QIviWindowControl::blindModeAttribute() const
 {
     Q_D(const QIviWindowControl);
@@ -505,30 +505,30 @@ QIviProperty *QIviWindowControl::blindModeProperty() const
 }
 
 /*!
-   \qmlqtivipropertyEnum {QtIvi.VehicleFunctions::WindowControl::blindState}
+    \qmlqtivipropertyEnum {QtIvi.VehicleFunctions::WindowControl::blindState}
 
-   \e value holds the current blind state.
-   Available values are:
-   \value FullyOpen
+    \e value holds the current blind state.
+    Available values are:
+    \value FullyOpen
           The object is fully open.
-   \value Open
+    \value Open
           The object is open, but not fully open yet.
-   \value Closed
+    \value Closed
           The object is closed.
- */
+*/
 /*!
-   \property QIviWindowControl::blindState
+    \property QIviWindowControl::blindState
 
-   Holds a QIviProperty of type \e QIviWindowControl::State where the QIviProperty::value() function returns the current blind state.
+    Holds a QIviProperty of type \e QIviWindowControl::State where the QIviProperty::value() function returns the current blind state.
 
-   \sa AttributeSystem
-   \sa blindState() blindStateAttribute()
- */
+    \sa AttributeSystem
+    \sa blindState() blindStateAttribute()
+*/
 /*!
- * Returns the current blind state.
- *
- * \sa blindStateChanged() blindStateAttribute()
- */
+    Returns the current blind state.
+
+    \sa blindStateChanged() blindStateAttribute()
+*/
 QIviWindowControl::State QIviWindowControl::blindState() const
 
 {
@@ -536,10 +536,10 @@ QIviWindowControl::State QIviWindowControl::blindState() const
     return d->m_blindState;
 }
 /*!
- * Returns the attribute defining the boundaries and availability of the blindState property.
- *
- * \sa blindState() blindStateChanged()
- */
+    Returns the attribute defining the boundaries and availability of the blindState property.
+
+    \sa blindState() blindStateChanged()
+*/
 QIviPropertyAttribute<QIviWindowControl::State> QIviWindowControl::blindStateAttribute() const
 {
     Q_D(const QIviWindowControl);
@@ -553,32 +553,32 @@ QIviProperty *QIviWindowControl::blindStateProperty() const
 }
 
 /*!
-   \qmlqtivipropertyEnum {QtIvi.VehicleFunctions::WindowControl::state}
+    \qmlqtivipropertyEnum {QtIvi.VehicleFunctions::WindowControl::state}
 
-   \e value holds the current window state.
-   Available values are:
-   \value FullyOpen
+    \e value holds the current window state.
+    Available values are:
+    \value FullyOpen
           The object is fully open.
-   \value Open
+    \value Open
           The object is open, but not fully open yet.
-   \value Closed
+    \value Closed
           The object is closed.
 
-   \sa open() close()
- */
+    \sa open() close()
+*/
 /*!
-   \property QIviWindowControl::state
+    \property QIviWindowControl::state
 
-   Holds a QIviProperty of type \e QIviWindowControl::State where the QIviProperty::value() function returns the current window state.
+    Holds a QIviProperty of type \e QIviWindowControl::State where the QIviProperty::value() function returns the current window state.
 
-   \sa AttributeSystem
-   \sa state() stateAttribute() open() close()
- */
+    \sa AttributeSystem
+    \sa state() stateAttribute() open() close()
+*/
 /*!
- * Returns the current window state.
- *
- * \sa stateChanged() stateAttribute()
- */
+    Returns the current window state.
+
+    \sa stateChanged() stateAttribute()
+*/
 QIviWindowControl::State QIviWindowControl::state() const
 
 {
@@ -586,10 +586,10 @@ QIviWindowControl::State QIviWindowControl::state() const
     return d->m_state;
 }
 /*!
- * Returns the attribute defining the boundaries and availability of the state property.
- *
- * \sa state() stateChanged()
- */
+    Returns the attribute defining the boundaries and availability of the state property.
+
+    \sa state() stateChanged()
+*/
 QIviPropertyAttribute<QIviWindowControl::State> QIviWindowControl::stateAttribute() const
 {
     Q_D(const QIviWindowControl);
@@ -603,10 +603,10 @@ QIviProperty *QIviWindowControl::stateProperty() const
 }
 
 /*!
- * Sets the current heater mode to \a value.
- *
- * \sa heaterMode() heaterModeChanged() heaterModeAttribute()
- */
+    Sets the current heater mode to \a value.
+
+    \sa heaterMode() heaterModeChanged() heaterModeAttribute()
+*/
 void QIviWindowControl::setHeaterMode(QIviWindowControl::HeaterMode value)
 {
     Q_D(QIviWindowControl);
@@ -615,10 +615,10 @@ void QIviWindowControl::setHeaterMode(QIviWindowControl::HeaterMode value)
 }
 
 /*!
- * Sets the current blind mode to \a value.
- *
- * \sa blindMode() blindModeChanged() blindModeAttribute()
- */
+    Sets the current blind mode to \a value.
+
+    \sa blindMode() blindModeChanged() blindModeAttribute()
+*/
 void QIviWindowControl::setBlindMode(QIviWindowControl::BlindMode value)
 {
     Q_D(QIviWindowControl);
@@ -627,18 +627,18 @@ void QIviWindowControl::setBlindMode(QIviWindowControl::BlindMode value)
 }
 
 /*!
- * \qmlmethod WindowControl::open()
- *
- * Opens the window, if not already in the QIviWindowControl::FullyOpen state.
- *
- * \sa WindowControl::state
- */
+    \qmlmethod WindowControl::open()
+
+    Opens the window, if not already in the QIviWindowControl::FullyOpen state.
+
+    \sa WindowControl::state
+*/
 
 /*!
- * Opens the window, if not already in the QIviWindowControl::FullyOpen state.
- *
- * \sa state() close()
- */
+    Opens the window, if not already in the QIviWindowControl::FullyOpen state.
+
+    \sa state() close()
+*/
 void QIviWindowControl::open()
 {
     Q_D(QIviWindowControl);
@@ -647,18 +647,18 @@ void QIviWindowControl::open()
 }
 
 /*!
- * \qmlmethod WindowControl::close()
- *
- * Closes the window, if not already in the QIviWindowControl::Closed state.
- *
- * \sa WindowControl::state
- */
+    \qmlmethod WindowControl::close()
+
+    Closes the window, if not already in the QIviWindowControl::Closed state.
+
+    \sa WindowControl::state
+*/
 
 /*!
- * Closes the window, if not already in the QIviWindowControl::Closed state.
- *
- * \sa state() open()
- */
+    Closes the window, if not already in the QIviWindowControl::Closed state.
+
+    \sa state() open()
+*/
 void QIviWindowControl::close()
 {
     Q_D(QIviWindowControl);
@@ -667,84 +667,84 @@ void QIviWindowControl::close()
 }
 
 /*!
- * \fn void QIviWindowControl::heaterModeChanged(QIviWindowControl::HeaterMode value);
- *
- * This signal is emitted whenever the heater mode changed. The new value is passed as \a value.
- *
- * \sa heaterMode() setHeaterMode() heaterModeAttribute()
- */
+    \fn void QIviWindowControl::heaterModeChanged(QIviWindowControl::HeaterMode value);
+
+    This signal is emitted whenever the heater mode changed. The new value is passed as \a value.
+
+    \sa heaterMode() setHeaterMode() heaterModeAttribute()
+*/
 
 /*!
- * \fn void QIviWindowControl::heaterModeAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::HeaterMode> &attribute);
- *
- * This signal is emitted whenever the attribute for the heaterMode property changes. The new attribute is passed as \a attribute.
- *
- * \sa heaterModeAttribute() heaterMode()
- */
+    \fn void QIviWindowControl::heaterModeAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::HeaterMode> &attribute);
+
+    This signal is emitted whenever the attribute for the heaterMode property changes. The new attribute is passed as \a attribute.
+
+    \sa heaterModeAttribute() heaterMode()
+*/
 
 /*!
- * \fn void QIviWindowControl::heaterEnabledChanged(bool enabled);
- *
- * This signal is emitted whenever the heater is turned \e on or \e off. The new value is passed as \a enabled.
- *
- * \sa isHeaterEnabled() heaterAttribute()
- */
+    \fn void QIviWindowControl::heaterEnabledChanged(bool enabled);
+
+    This signal is emitted whenever the heater is turned \e on or \e off. The new value is passed as \a enabled.
+
+    \sa isHeaterEnabled() heaterAttribute()
+*/
 
 /*!
- * \fn void QIviWindowControl::heaterAttributeChanged(const QIviPropertyAttribute<bool> &attribute);
- *
- * This signal is emitted whenever the attribute for the heater property changes. The new attribute is passed as \a attribute.
- *
- * \sa heaterAttribute() isHeaterEnabled()
- */
+    \fn void QIviWindowControl::heaterAttributeChanged(const QIviPropertyAttribute<bool> &attribute);
+
+    This signal is emitted whenever the attribute for the heater property changes. The new attribute is passed as \a attribute.
+
+    \sa heaterAttribute() isHeaterEnabled()
+*/
 
 /*!
- * \fn void QIviWindowControl::blindModeChanged(QIviWindowControl::BlindMode value);
- *
- * This signal is emitted whenever the blind mode changed. The new value is passed as \a value.
- *
- * \sa blindMode() setBlindMode() blindModeAttribute()
- */
+    \fn void QIviWindowControl::blindModeChanged(QIviWindowControl::BlindMode value);
+
+    This signal is emitted whenever the blind mode changed. The new value is passed as \a value.
+
+    \sa blindMode() setBlindMode() blindModeAttribute()
+*/
 
 /*!
- * \fn void QIviWindowControl::blindModeAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::BlindMode> &attribute);
- *
- * This signal is emitted whenever the attribute for the blindMode property changes. The new attribute is passed as \a attribute.
- *
- * \sa blindModeAttribute() blindMode()
- */
+    \fn void QIviWindowControl::blindModeAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::BlindMode> &attribute);
+
+    This signal is emitted whenever the attribute for the blindMode property changes. The new attribute is passed as \a attribute.
+
+    \sa blindModeAttribute() blindMode()
+*/
 
 /*!
- * \fn void QIviWindowControl::blindStateChanged(QIviWindowControl::State value);
- *
- * This signal is emitted whenever the blind state changed. The new value is passed as \a value.
- *
- * \sa blindState() blindStateAttribute()
- */
+    \fn void QIviWindowControl::blindStateChanged(QIviWindowControl::State value);
+
+    This signal is emitted whenever the blind state changed. The new value is passed as \a value.
+
+    \sa blindState() blindStateAttribute()
+*/
 
 /*!
- * \fn void QIviWindowControl::blindStateAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::State> &attribute);
- *
- * This signal is emitted whenever the attribute for the blindState property changes. The new attribute is passed as \a attribute.
- *
- * \sa blindStateAttribute() blindState()
- */
+    \fn void QIviWindowControl::blindStateAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::State> &attribute);
+
+    This signal is emitted whenever the attribute for the blindState property changes. The new attribute is passed as \a attribute.
+
+    \sa blindStateAttribute() blindState()
+*/
 
 /*!
- * \fn void QIviWindowControl::stateChanged(QIviWindowControl::State value);
- *
- * This signal is emitted whenever the state changed. The new value is passed as \a value.
- *
- * \sa state() stateAttribute()
- */
+    \fn void QIviWindowControl::stateChanged(QIviWindowControl::State value);
+
+    This signal is emitted whenever the state changed. The new value is passed as \a value.
+
+    \sa state() stateAttribute()
+*/
 
 /*!
- * \fn void QIviWindowControl::stateAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::State> &attribute);
- *
- * This signal is emitted whenever the attribute for the state property changes. The new attribute is passed as \a attribute.
- *
- * \sa stateAttribute() state()
- */
+    \fn void QIviWindowControl::stateAttributeChanged(const QIviPropertyAttribute<QIviWindowControl::State> &attribute);
+
+    This signal is emitted whenever the attribute for the state property changes. The new attribute is passed as \a attribute.
+
+    \sa stateAttribute() state()
+*/
 
 QT_END_NAMESPACE
 

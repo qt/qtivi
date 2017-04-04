@@ -44,23 +44,23 @@
 QT_BEGIN_NAMESPACE
 
 /*!
-   \class QIviFeatureInterface
-   \inmodule QtIviCore
-   \ingroup backends
+    \class QIviFeatureInterface
+    \inmodule QtIviCore
+    \ingroup backends
 
-   \brief QIviFeatureInterface defines the base class for all backends.
+    \brief QIviFeatureInterface defines the base class for all backends.
 
-   To implement a backend for a specific feature you need to derive from this class.
-   There's a one-to-one mapping between a spezialized feature API and its corresponding feature interface
-   class.
+    To implement a backend for a specific feature you need to derive from this class.
+    There's a one-to-one mapping between a spezialized feature API and its corresponding feature interface
+    class.
 
-   The feature interface class specifies which functions and signals need to be implemented by a backend
-   to work with a specific feature.
+    The feature interface class specifies which functions and signals need to be implemented by a backend
+    to work with a specific feature.
 
-   This base class contains the generic error handling, which is common between all interfaces.
+    This base class contains the generic error handling, which is common between all interfaces.
 
-   See the full example backend implementation from \c {src/plugins/ivivehiclefunctions/climate_simulator}.
-   \sa QIviAbstractFeature, QIviServiceInterface
+    See the full example backend implementation from \c {src/plugins/ivivehiclefunctions/climate_simulator}.
+    \sa QIviAbstractFeature, QIviServiceInterface
 */
 
 QIviFeatureInterface::QIviFeatureInterface(QObject *parent)
