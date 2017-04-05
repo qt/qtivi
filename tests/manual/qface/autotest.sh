@@ -45,6 +45,16 @@ die() {
     exit ${2}
 }
 
+checkFileCount() {
+    if [ "$#" -eq 3 ]; then
+        FILECOUNT=$(find "." -type f -name "${3}" | wc -l)
+    else
+        FILECOUNT=$(find "." -type f | wc -l)
+    fi
+    echo "${1} generated: " ${FILECOUNT}
+    test ${FILECOUNT} -eq ${2} || die "Not a correct number of files (${2} expected)" 1
+}
+
 WORKDIR=$(dirname $0)
 GENERATOR=${WORKDIR}/../../../src/ivicore/qface/generate.py
 test -x ${GENERATOR} || die "${GENERATOR} does not exists or can't be executed" 1
@@ -63,4 +73,24 @@ do
     popd
     echo "Done '$idlfile' ================"
 done
+
+for idlfile in org.example.echo org.example.echo.noprivate
+do
+    echo "Testing '$idlfile' backend-simulator ================"
+    idldir=$(echo $idlfile | tr . -)
+    bdir=${WORKDIR}/projects/${idldir}/backend-simulator
+    /bin/rm -rf ${bdir}
+    mkdir -p ${bdir}
+
+    ${GENERATOR} --format=backend_simulator ${WORKDIR}/${idlfile}.qface ${bdir} || die "Generator failed" 1
+
+    pushd ${bdir}
+    checkFileCount "Total files" 8
+    checkFileCount "Plugins" 1 "*plugin.*"
+    checkFileCount "Backends" 4 "*backend.*"
+    popd
+
+    echo "Done '$idlfile' ================"
+done
+
 die "All OK" 0
