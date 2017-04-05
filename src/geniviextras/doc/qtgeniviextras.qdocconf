@@ -1,6 +1,6 @@
-headerdirs  += .. \
+headerdirs  += ..
 
-sourcedirs  += .. \
+sourcedirs  += ..
 
 exampledirs += ../../../examples/geniviextras \
                snippets
