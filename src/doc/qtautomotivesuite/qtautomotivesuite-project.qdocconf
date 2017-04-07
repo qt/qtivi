@@ -1,6 +1,6 @@
 project                       = QtAutomotiveSuite
 description                   = Qt Automotive Suite Documentation
-version                       = 1.0.0
+version                       = 1.1.0
 url                           = http://doc.qt.io/QtAutomotiveSuite
 
 sourcedirs                   += src
@@ -9,14 +9,14 @@ imagedirs                    += src/images
 qhp.projects                  = QtAutomotiveSuite
 
 qhp.QtAutomotiveSuite.file                = qtautomotivesuite.qhp
-qhp.QtAutomotiveSuite.namespace           = org.qt-project.qtautomotivesuite.100
+qhp.QtAutomotiveSuite.namespace           = org.qt-project.qtautomotivesuite.$QT_VERSION_TAG
 qhp.QtAutomotiveSuite.virtualFolder       = qtautomotivesuite
 qhp.QtAutomotiveSuite.indexTitle          = Qt Automotive Suite
 qhp.QtAutomotiveSuite.indexRoot           =
 
-qhp.QtAutomotiveSuite.filterAttributes    = qtautomotivesuite 1.0.0 qtrefdoc
-qhp.QtAutomotiveSuite.customFilters.Qt.name = QtAutomotiveSuite 1.0.0
-qhp.QtAutomotiveSuite.customFilters.Qt.filterAttributes = qtautomotivesuite 1.0.0
+qhp.QtAutomotiveSuite.filterAttributes    = qtautomotivesuite $QT_VERSION qtrefdoc
+qhp.QtAutomotiveSuite.customFilters.Qt.name = QtAutomotiveSuite $QT_VERSION
+qhp.QtAutomotiveSuite.customFilters.Qt.filterAttributes = qtautomotivesuite $QT_VERSION
 
 qhp.QtAutomotiveSuite.subprojects                     = overview install
 qhp.QtAutomotiveSuite.subprojects.overview.title      = Overview
@@ -44,7 +44,7 @@ depends += \
      qtquick \
      neptuneui
 
-buildversion = "Qt Automotive Suite 1.0"
+buildversion = "Qt Automotive Suite 1.1"
 
 macro.QAS = "Qt Automotive Suite"
 navigation.homepage = "Qt Automotive Suite"
