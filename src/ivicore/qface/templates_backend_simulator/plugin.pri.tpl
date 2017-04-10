@@ -1,7 +1,5 @@
-
 {#
-# Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
-# Copyright (C) 2017 Pelagicore AG
+# Copyright (C) 2017 Pelagicore AG.
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -38,36 +36,19 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% include "generated_comment.cpp.tpl" %}
-{% set class = '{0}Plugin'.format(module.module_name) %}
-{% set oncedefine = '{0}_{1}_H_'.format(module.module_name|upper, class|upper) %}
+#############################################################################
+## This is an auto-generated file.
+## Do not edit! All changes made to it will be lost.
+#############################################################################
 
-#ifndef {{oncedefine}}
-#define {{oncedefine}}
-
-#include <QtIviCore/QIviServiceInterface>
-
+HEADERS += \
 {% for interface in module.interfaces %}
-class {{interface}}Backend;
+    $$PWD/{{interface|lower}}backend.h \
 {% endfor %}
+    $$PWD/{{module.module_name|lower}}plugin.h
 
-class {{class}} : public QObject, QIviServiceInterface
-{
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID QIviServiceInterface_iid FILE "{{module.module_name|lower}}.json")
-    Q_INTERFACES(QIviServiceInterface)
-
-public:
-    explicit {{class}}(QObject *parent = nullptr);
-
-    QStringList interfaces() const;
-    QIviFeatureInterface* interfaceInstance(const QString& interface) const;
-
-private:
+SOURCES += \
 {% for interface in module.interfaces %}
-    {{interface}}Backend *m_{{interface|lowerfirst}}Backend;
+    $$PWD/{{interface|lower}}backend.cpp \
 {% endfor %}
-
-};
-
-#endif // {{oncedefine}}
+    $$PWD/{{module.module_name|lower}}plugin.cpp

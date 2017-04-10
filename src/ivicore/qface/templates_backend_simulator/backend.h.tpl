@@ -39,12 +39,13 @@
 #}
 {% include "generated_comment.cpp.tpl" %}
 {% set class = '{0}Backend'.format(interface) %}
+{% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
 {% set oncedefine = '{0}_{1}_H_'.format(module.module_name|upper, class|upper) %}
 #ifndef {{oncedefine}}
 #define {{oncedefine}}
 
 #include <QObject>
-#include <{{class}}Interface>
+#include "{{class|lower}}interface.h"
 
 class {{class}} : public {{class}}Interface
 {
@@ -53,11 +54,13 @@ public:
     ~{{class}}();
 
 public:
-    QStringList availableZones() const;
+{%   if interface_zoned %}
+    QStringList availableZones() const override;
+{%   endif %}
 
-    void initializeAttributes();
+    void initialize() override;
 {% for property in interface.properties %}
-{%   if interface.tags.config and interface.tags.config.zoned %}
+{%   if interface_zoned %}
     virtual void set{{property|upperfirst}}({{ property|parameter_type }}, const QString &zone) override;
 {%   else %}
     virtual void set{{property|upperfirst}}({{ property|parameter_type }}) override;
@@ -65,7 +68,7 @@ public:
 {% endfor %}
 
 {% for operation in interface.operations %}
-{%   if interface.tags.config_simulator and interface.tags.config_simulator.zoned %}
+{%   if interface_zoned %}
 {%     if operation.parameters|length %}
     virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}, const QString &zone) override;
 {%     else %}
@@ -83,7 +86,7 @@ private:
 {%   endif %}
 {% endfor %}
 
-{% if interface.tags.config_simulator and interface.tags.config_simulator.zoned %}
+{% if interface_zoned %}
     struct ZoneBackend {
 {%   for property in interface.properties %}
 {%     if property.tags.config and property.tags.config.zoned %}
@@ -91,7 +94,6 @@ private:
 {%     endif %}
 {%   endfor %}
     };
-
     QMap<QString,ZoneBackend> m_zoneMap;
 {% endif %}
 

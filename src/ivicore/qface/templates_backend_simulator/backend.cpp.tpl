@@ -39,7 +39,7 @@
 #}
 {% include "generated_comment.cpp.tpl" %}
 {% set class = '{0}Backend'.format(interface) %}
-
+{% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
 #include "{{class|lower}}.h"
 
 #include <QDebug>
@@ -53,9 +53,8 @@
 {% endfor %}
 {
 
-{% set zones = interface.tags.config_simulator.zones.split('.') if interface.tags.config_simulator else [] %}
-{% for zone in zones %}
-{%   set zone_name, zone_id = zone.split('_')%}
+{% set zones = interface.tags.config_simulator.zones if interface.tags.config_simulator else {} %}
+{% for zone_name, zone_id in zones.items() %}
     ZoneBackend {{zone_name}}Zone;
 {%   for property in interface.properties %}
 {%     if property.tags.config_simulator and property.tags.config_simulator.zoned %}
@@ -71,16 +70,24 @@
 {
 }
 
+{% if interface_zoned %}
 QStringList {{class}}::availableZones() const
 {
+{%   if interface.tags.config_simulator and interface.tags.config_simulator.zoned %}
     return m_zoneMap.keys();
+{%   else %}
+    return QStringList();
+{%   endif%}
 }
+{% endif %}
 
-void {{class}}::initializeAttributes()
+void {{class}}::initialize()
 {
 {% for property in interface.properties %}
-{%   if not interface.tags.config.zoned or not property.tags.config_simulator or not property.tags.config_simulator.zoned %}
+{%   if not interface_zoned  %}
     emit {{property}}Changed(m_{{property}});
+{%   elif not property.tags.config_simulator or not property.tags.config_simulator.zoned%}
+    emit {{property}}Changed(m_{{property}}, QString());
 {%   endif %}
 {% endfor %}
 
@@ -97,56 +104,58 @@ void {{class}}::initializeAttributes()
 }
 
 {% for property in interface.properties %}
-{%   if interface.tags.config and interface.tags.config.zoned %}
-void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }}, const QString &zone);
+{%   if interface_zoned %}
+void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }}, const QString &zone)
 {%   else %}
-void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }});
+void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {%   endif %}
 {
 {%   if property.tags.config_simulator and property.tags.config_simulator.unsupported %}
     Q_UNUSED({ property|parameter_type }});
+{%     if interface_zoned %}
     Q_UNUSED(zone);
+{%     endif %}
     qWarning() << "SIMULATION Setting {{ property | upperfirst }} is not supported!";
 
 {%   else %}
 {%     set range_low_val = property|range_low %}
 {%     set range_high_val = property|range_high %}
 {%     set zoned = property.tags.config and property.tags.config.zoned %}
-{%     if zoned %}
+{%     if zoned and interface_zoned %}
     if (!m_zoneMap.contains(zone))
         return;
 
-    if (m_zoneMap[zone].m_{{property}} == val)
+    if (m_zoneMap[zone].m_{{property}} == {{property}})
         return;
 {%       if range_low_val and range_high_val %}
 
-    if (val < {{range_low}} || val > {{range_high}}) {
-        qWarning() << "SIMULATION {{ property | upperfirst }} change out of range ({{range_low}}-{{range_high}})" << val;
+    if ({{property}} < {{range_low}} || {{property}} > {{range_high}}) {
+        qWarning() << "SIMULATION {{ property | upperfirst }} change out of range ({{range_low}}-{{range_high}})" << {{property}};
         emit {{property}}Changed(m_{{property, zone}});
         return;
     }
 {%       endif %}
 
-    qWarning() << "SIMULATION {{ property | upperfirst }} for Zone" << zone << "changed to" << val;
+    qWarning() << "SIMULATION {{ property | upperfirst }} for Zone" << zone << "changed to" << {{property}};
 
-    m_zoneMap[zone].m_{{property}} = val;
+    m_zoneMap[zone].m_{{property}} = {{property}};
     emit {{ property }}Changed(val, zone);
 
 {%     else %}
-    if (!zone.isEmpty() || m_{{ property }} == val)
+    if ({% if interface_zoned %}!zone.isEmpty() || {%endif%}m_{{ property }} == {{property}})
         return;
 
 {%       if range_low_val != None and range_high_val != None %}
-    if (val < {{range_low_val}} || val > {{range_high_val}}) {
-        qWarning() << "SIMULATION {{ property | upperfirst }} change out of range ({{range_low}}-{{range_high}})" << val;
-        emit {{property}}Changed(m_{{property}});
+    if ({{property}} < {{range_low_val}} || {{property}} > {{range_high_val}}) {
+        qWarning() << "SIMULATION {{ property | upperfirst }} change out of range ({{range_low}}-{{range_high}})" << {{property}};
+        emit {{property}}Changed(m_{{property}}{% if interface_zoned%}, QString(){% endif %});
         return;
     }
 {%       endif %}
-    qWarning() << "SIMULATION {{ property | upperfirst }} changed to" << val;
+    qWarning() << "SIMULATION {{ property | upperfirst }} changed to" << {{property}};
 
-    m_{{property}} = val;
-    emit {{property}}Changed(val);
+    m_{{property}} = {{property}};
+    emit {{property}}Changed(m_{{property}}{% if interface_zoned%}, QString(){% endif %});
 {%     endif %}
 {%   endif %}
 }
@@ -154,16 +163,18 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }});
 {% endfor %}
 
 {% for operation in interface.operations %}
-{%   if interface.tags.config and interface.tags.config.zoned == 'true' %}
+{%   if interface_zoned %}
 {%     if operation.parameters|length %}
-    {{operation|return_type}} {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}, const QString &zone)
+{{operation|return_type}} {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}, const QString &zone)
 {%     else %}
-    {{operation|return_type}} {{class}}::{{operation}}(const QString &zone)
+{{operation|return_type}} {{class}}::{{operation}}(const QString &zone)
 {%     endif %}
 {%   else %}
-    {{operation|return_type}} {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}})
+{{operation|return_type}} {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}})
 {%   endif %}
-    {
-        qWarning() << "Not implemented!";
-    }
+{
+    qWarning() << "Not implemented!";
+    return {{operation|default_value}};
+}
+
 {% endfor %}

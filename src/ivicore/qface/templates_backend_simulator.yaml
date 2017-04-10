@@ -4,10 +4,10 @@ generate_rules:
             template_file:  "plugin.h.tpl"
         -   dest_file:  "{{module.module_name|lower}}plugin.cpp"
             template_file:  "plugin.cpp.tpl"
-        -   dest_file:  "{{module|lower|replace('.', '-')}}.pro"
-            template_file:  "plugin.pro"
         -   dest_file:  "{{module.module_name|lower}}.json"
             template_file:  "plugin.json"
+        -   dest_file:  "{{module|lower|replace('.', '-')}}.pri"
+            template_file:  "plugin.pri.tpl"
     interface_rules:
         -   dest_file: '{{interface|lower}}backend.h'
             template_file: 'backend.h.tpl'

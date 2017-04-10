@@ -1,6 +1,6 @@
 com.pelagicore.ivi.climate.ClimateControl:
     config_simulator:
-        zones: left_FrontLeft.right_FrontRight.rear_Rear
+        zones: { left : FrontLeft, right : FrontRight, rear: Rear }
 
 com.pelagicore.ivi.climate.ClimateControl#airConditioning:
     config_simulator:

@@ -47,7 +47,7 @@ QT_BEGIN_NAMESPACE
 {% if interface.tags.config.zoned %}
     : QIviZonedFeatureInterface(parent)
 {% else %}
-    : QObject(parent)
+    : QIviFeatureInterface(parent)
 {% endif %}
 {
 }

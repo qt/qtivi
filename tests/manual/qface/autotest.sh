@@ -62,13 +62,16 @@ for idlfile in org.example.echo org.example.echo.noprivate
 do
     echo "Testing '$idlfile' ================"
     idldir=$(echo $idlfile | tr . -)
-    /bin/rm -rf projects/${idldir}/*.{h,cpp,pri}
-    ${GENERATOR} --format=frontend ${WORKDIR}/${idlfile}.qface ${WORKDIR}/projects || die "Generator failed" 1
+    out_dir=${WORKDIR}/projects/${idldir}
+    /bin/rm -rf ${out_dir}/*.{h,cpp,pri}
+    ${GENERATOR} --format=frontend ${WORKDIR}/${idlfile}.qface ${out_dir}/frontend || die "Generator failed" 1
+    ${GENERATOR} --format=backend_simulator ${WORKDIR}/${idlfile}.qface ${out_dir}/backend_simulator || die "Generator for backend failed" 1
     test -d build/${idldir} && /bin/rm -rf build/${idldir}
     test -d build/${idldir} && die "Cannot remove existing build folder" 1
     mkdir -p build/${idldir} || die "Cannot create build folder" 1
     pushd build/${idldir}
-    qmake ${WORKDIR}/projects/${idldir}/${idldir}.pro || die "Failed to run qmake" 1
+    project_dir=../../projects/${idldir}
+    qmake ${project_dir}/${idldir}-project.pro || die "Failed to run qmake" 1
     make || die "Failed to build" 1
     popd
     echo "Done '$idlfile' ================"
@@ -76,17 +79,17 @@ done
 
 for idlfile in org.example.echo org.example.echo.noprivate
 do
-    echo "Testing '$idlfile' backend-simulator ================"
+    echo "Testing '$idlfile' backend_simulator ================"
     idldir=$(echo $idlfile | tr . -)
-    bdir=${WORKDIR}/projects/${idldir}/backend-simulator
-    /bin/rm -rf ${bdir}
+    bdir=${WORKDIR}/projects/${idldir}/backend_simulator
+    /bin/rm -rf ${bdir}/*.{h,cpp,pri}
     mkdir -p ${bdir}
 
     ${GENERATOR} --format=backend_simulator ${WORKDIR}/${idlfile}.qface ${bdir} || die "Generator failed" 1
 
     pushd ${bdir}
     checkFileCount "Total files" 8
-    checkFileCount "Plugins" 1 "*plugin.*"
+    checkFileCount "Plugins" 2 "*plugin.*"
     checkFileCount "Backends" 4 "*backend.*"
     popd
 

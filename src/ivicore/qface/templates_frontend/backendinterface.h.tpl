@@ -48,7 +48,7 @@
 {% if interface.tags.config.zoned %}
 #include <QtIviCore/QIviZonedFeatureInterface>
 {% else %}
-#include <QObject>
+#include <QtIviCore/QIviFeatureInterface>
 {% endif %}
 
 QT_BEGIN_NAMESPACE
@@ -56,7 +56,7 @@ QT_BEGIN_NAMESPACE
 {% if interface.tags.config.zoned %}
 class {{class}} : public QIviZonedFeatureInterface
 {% else %}
-class {{class}} : public QObject
+class {{class}} : public QIviFeatureInterface
 {% endif %}
 {
     Q_OBJECT

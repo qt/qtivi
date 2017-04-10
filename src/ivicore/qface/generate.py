@@ -38,7 +38,6 @@
 # SPDX-License-Identifier: LGPL-3.0
 
 import click
-import logging
 import logging.config
 import yaml
 from path import Path
@@ -55,19 +54,57 @@ log = logging.getLogger(__file__)
 
 Filters.classPrefix = ''
 
+
+def tag_by_path(symbol, path, default_value=False):
+    """
+    Find the tag given by its full path in the object hierarchy,
+    like "property.config_sim.zones.right". If some part of the
+    path is missing, return None
+    """
+    path_parts = path.split(".")
+    cur_level_obj = symbol.tags
+    for path_part in path_parts:
+        if path_part in cur_level_obj:
+            cur_level_obj = cur_level_obj[path_part]
+        else:
+            cur_level_obj = None
+            break
+    if cur_level_obj is None:
+        cur_level_obj = default_value
+    return cur_level_obj
+
+
+def conf_sim_tag(symbol, path, default_value=False):
+    """
+    Find tag, given by its path, located under "config_simulator" sub-object.
+    Returns None, of any of the path parts is missing
+    """
+    return tag_by_path(symbol, "config_simulator." + path, default_value)
+
+
+def enum_value_to_cppliteral(value, module_name):
+    value = value.strip().rsplit('.', 1)[-1]
+    return '{0}{1}Module::{2}'.format(Filters.classPrefix, module_name, value)
+
+
+def enum_value(value, module_name):
+    sub_values = value.split('|')
+    sub_values = [enum_value_to_cppliteral(v, module_name) for v in sub_values]
+    return "|".join(sub_values)
+
+
 def simulator_default_value(symbol):
     sim_default_value = Filters.defaultValue(symbol)
     if 'config_simulator' in symbol.tags:
         sim_default_value = symbol.tags['config_simulator']['default_value']
         t = symbol.type
         if t.is_enum:
-            sim_default_value = sim_default_value.rsplit('.', 1)[-1]
             module_name = t.reference.module.module_name
-            return '{0}{1}Module::{2}'.format(Filters.classPrefix, module_name, sim_default_value)
+            return enum_value(sim_default_value, module_name)
     return sim_default_value
 
 
-def range(symbol, what):
+def value_range(symbol, what):
     """
     Check in the tags if range_[high|low] specified and return it.
     Returns None if no range has been specified
@@ -80,11 +117,11 @@ def range(symbol, what):
 
 
 def range_high(symbol):
-    return range(symbol, "high")
+    return value_range(symbol, "high")
 
 
 def range_low(symbol):
-    return range(symbol, "low")
+    return value_range(symbol, "low")
 
 
 def lower_first_filter(s):
@@ -104,6 +141,10 @@ def generate(tplconfig, src, dst):
     generator.register_filter('lowerfirst', lower_first_filter)
     generator.register_filter('range_low', range_low)
     generator.register_filter('range_high', range_high)
+    generator.register_filter("enum_value", enum_value)
+    generator.register_filter("tag_by_path", tag_by_path)
+    generator.register_filter("conf_sim_tag", conf_sim_tag)
+
     ctx = {'dst': dst, 'qtASVersion': 1.2}
     gen_config = yaml.load(open(here / '{0}.yaml'.format(tplconfig)))
     for module in system.modules:

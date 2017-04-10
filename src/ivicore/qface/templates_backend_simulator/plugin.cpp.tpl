@@ -60,13 +60,13 @@ QStringList {{class}}::interfaces() const
 {
     QStringList list;
 {% for iface in module.interfaces %}
-    list << {{module.module_name}}_{{iface}}_iid {% if loop.last %};{% endif %}
+{%   if loop.first %}    list{% endif %} << {{module.module_name}}_{{iface}}_iid{% if loop.last %};{% endif %}
 {% endfor %}
 
     return list;
 }
 
-QObject *{{class}}::interfaceInstance(const QString &interface) const
+QIviFeatureInterface *{{class}}::interfaceInstance(const QString &interface) const
 {
 {% for iface in module.interfaces %}
 {%   if loop.index > 1 %}    else {%else%}    {%endif%}if (interface == {{module.module_name}}_{{iface}}_iid)
