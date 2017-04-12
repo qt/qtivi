@@ -94,3 +94,13 @@
     \externalpage https://www.qt.io/download/
     \title Download Qt
 */
+
+/*!
+    \externalpage https://doc.qt.io/QtQmlLive/index.html
+    \title Qt QmlLive
+*/
+
+/*!
+    \externalpage https://doc.qt.io/NeptuneUI/index.html
+    \title Neptune UI
+*/
