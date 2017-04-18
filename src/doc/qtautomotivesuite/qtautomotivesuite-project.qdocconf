@@ -44,9 +44,6 @@ depends += \
      qtquick \
      neptuneui
 
-indexes += ../../../doc/qtgeniviextras/qtgeniviextras.index \
-           ../../../doc/qtivi/qtivi.index
-
 buildversion = "Qt Automotive Suite 1.1"
 
 macro.QAS = "Qt Automotive Suite"

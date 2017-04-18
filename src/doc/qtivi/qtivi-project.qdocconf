@@ -44,8 +44,6 @@ tagfile                 = qtivi.tags
 
 depends += qtcore qtdoc qtquick qtqml qtautomotivesuite
 
-indexes += ../../../doc/qtautomotivesuite/qtautomotivesuite.index
-
 examplesinstallpath     = vehiclefunctions
 
 navigation.homepage = "Qt Automotive Suite"

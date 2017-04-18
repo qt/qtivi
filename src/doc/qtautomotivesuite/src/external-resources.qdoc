@@ -104,3 +104,13 @@
     \externalpage https://doc.qt.io/NeptuneUI/index.html
     \title Neptune UI
 */
+
+/*!
+    \externalpage https://doc.qt.io/QtIVI/index.html
+    \title Qt IVI
+*/
+
+/*!
+    \externalpage https://doc.qt.io/QtGENIVIExtras/index.html
+    \title Qt GENIVI Extras
+*/
