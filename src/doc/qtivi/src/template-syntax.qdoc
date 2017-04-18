@@ -1,0 +1,474 @@
+/****************************************************************************
+**
+** Copyright (C) 2017 Pelagicore AG
+** Copyright (C) 2017 Jinja Team.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL-QTAS$
+** Commercial License Usage
+** Licensees holding valid commercial Qt Automotive Suite licenses may use
+** this file in accordance with the commercial license agreement provided
+** with the Software or, alternatively, in accordance with the terms
+** contained in a written agreement between you and The Qt Company.  For
+** licensing terms and conditions see https://www.qt.io/terms-conditions.
+** For further information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+/*
+  NOTE: Some content in this file was copied from the Jinja Template Engine Documentation
+*/
+/*!
+\page template-syntax.html
+\title Jinja template syntax
+\previouspage QFace IDL syntax
+\nextpage AutoGenerator usage
+
+This page is about the Jinja template engine. While the most detailed description of the template
+language can be found at \l {http://jinja.pocoo.org/docs/dev/templates/}{Jinja documentation},
+some basic concepts are given in this article.
+
+
+\section1 Code Generation Principle
+
+The code generation is driven by a small script which iterates over the domain model and writes
+files using the Python Jinja template language.
+
+
+Given that generator script has read and parsed the IDL file into a domain model, this latter one
+is then used as the root object for the code generation inside the template language. Below is an
+example of the code traversing the domain model:
+
+\code
+{% for module in system.modules %}
+    {%- for interface in module.interfaces -%}
+    SERVICE, {{module}}.{{interface}}
+    {% endfor -%}
+    {%- for struct in module.structs -%}
+    STRUCT , {{module}}.{{struct}}
+    {% endfor -%}
+    {%- for enum in module.enums -%}
+    ENUM   , {{module}}.{{enum}}
+    {% endfor -%}
+{% endfor %}
+\endcode
+
+The template iterates over the domain objects and generates text which is written into a file.
+
+\section1 Laguage constructs
+\section2 Synopsis
+
+A template contains variables and/or expressions, which get replaced with values when a template
+is rendered; and tags, which control the logic of the template.
+
+There are a few kinds of delimiters. The default Jinja delimiters are configured as follows:
+
+\list
+    \li {% ... %} for Statements
+    \li {{ ... }} for Expressions to print to the template output
+    \li {# ... #} for Comments not included in the template output
+    \li #  ... ## for \l {line_statements}{Line Statements}
+\endlist
+
+\section2 Control structures
+
+A control structure refers to all those things that control the flow of a program - conditionals
+(i.e. if/elif/else), for-loops, as well as things like macros and blocks. With the default syntax,
+control structures appear inside {% ... %} blocks.
+
+\section3 For
+
+Loop over each item in a sequence. For example, to display a list of users provided in a variable
+called users:
+
+\code
+<h1>Members</h1>
+<ul>
+{% for user in users %}
+    <li>{{ user.username|e }}</li>
+{% endfor %}
+</ul>
+\endcode
+
+As variables in templates retain their object properties, it is possible to iterate over
+containers like dict:
+
+\code
+<dl>
+{% for key, value in my_dict.iteritems() %}
+    <dt>{{ key|e }}</dt>
+    <dd>{{ value|e }}</dd>
+{% endfor %}
+</dl>
+\endcode
+
+Inside of a for-loop block some special variables are available:
+
+\table
+    \header
+        \li Variable
+        \li Description
+    \row
+        \li loop.index
+        \li The current iteration of the loop. (starting with \e 1)
+    \row
+        \li loop.index0
+        \li The current iteration of the loop. (starting with \e 0)
+    \row
+        \li loop.revindex
+        \li The number of iterations from the end of the loop (starting with \e 1)
+    \row
+        \li loop.revindex0
+        \li The number of iterations from the end of the loop (starting with \e 0)
+    \row
+        \li loop.first
+        \li True if first iteration.
+    \row
+        \li loop.last
+        \li True if last iteration.
+    \row
+        \li loop.length
+        \li The number of items in the sequence.
+\endtable
+
+See for more \l{http://jinja.pocoo.org/docs/2.9/templates/#list-of-control-structures}{Jinja
+documentation}
+
+
+Unlike in Python, it’s not possible to break or continue in a loop. One can, however, filter the
+sequence during iteration, which allows one to skip items. The following example skips all the
+users which are hidden:
+
+\code
+{% for user in users if not user.hidden %}
+    <li>{{ user.username|e }}</li>
+{% endfor %}
+\endcode
+
+The advantage is that the special loop variable will count correctly; thus not counting the users
+not iterated over.
+
+If no iteration took place because the sequence was empty or the filtering removed all the items
+from the sequence, one can render a default block by using else:
+
+\code
+<ul>
+{% for user in users %}
+    <li>{{ user.username|e }}</li>
+{% else %}
+    <li><em>no users found</em></li>
+{% endfor %}
+</ul>
+\endcode
+
+In Python, \e {else} blocks are executed whenever the corresponding loop did not break. Since
+Jinja loops cannot break anyway, a slightly different behavior of the \e {else} keyword was chosen.
+
+It is also possible to use loops recursively. This is useful when dealing with recursive data such
+as sitemaps or RDFa. To use loops recursively, one basically has to add the recursive modifier to
+the loop definition and call the loop variable with the new iterable where recursion is needed.
+
+The following example implements a sitemap with recursive loops:
+
+\code
+<ul class="sitemap">
+{%- for item in sitemap recursive %}
+    <li><a href="{{ item.href|e }}">{{ item.title }}</a>
+    {%- if item.children -%}
+        <ul class="submenu">{{ loop(item.children) }}</ul>
+    {%- endif %}</li>
+{%- endfor %}
+</ul>
+\endcode
+
+The loop variable always refers to the closest (innermost) loop. If we there is more than one
+level of loops, we can rebind the variable loop by writing {% set outer_loop = loop %} after the
+loop that we want to use recursively. Then, we can call it using {{ outer_loop(...) }}
+
+Please note that assignments in loops will be cleared at the end of the iteration and cannot
+outlive the loop scope. Older versions of Jinja2 had a bug where in some circumstances it appeared
+that assignments would work. This is not supported.
+
+\section3 If
+
+The if statement in Jinja is comparable with the Python if statement. In the simplest form, one
+can use it to test if a variable is defined, not empty and not false:
+
+\code
+{% if users %}
+<ul>
+{% for user in users %}
+    <li>{{ user.username|e }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+\endcode
+
+For multiple branches, elif and else can be used like in Python. One can use more complex
+Expressions there, too:
+
+\code
+{% if kenny.sick %}
+    Kenny is sick.
+{% elif kenny.dead %}
+    You killed Kenny!  You bastard!!!
+{% else %}
+    Kenny looks okay --- so far
+{% endif %}
+\endcode
+
+\section2 Tests
+Beside filters, there are also so-called “tests” available. Tests can be used to test a variable
+against a common expression. To test a variable or expression, its name is used followed by the
+name of the test. For example, to find out if a variable is defined, one can try \e {name is
+defined}, which will then return true or false depending on whether name is defined in the current
+template context.
+
+Tests can accept arguments, too. If the test only takes one argument, one can leave out the
+parentheses. For example, the following two expressions do the same thing:
+
+\code
+{% if loop.index is divisibleby 3 %}
+{% if loop.index is divisibleby(3) %}
+\endcode
+
+The List of builtin tests can be found on the \l{http://jinja.pocoo.org/docs/2.9/
+templates/#builtin-tests}{Jinja documentation page}.
+\section2 Filters
+
+Variables can be modified by functions called filters. Filters are separated from the variable by
+a pipe symbol (|) and may have optional arguments in parentheses. Multiple filters can be chained.
+The output of one filter is applied to the next.
+
+For example, {{ name|striptags|title }} will remove all HTML Tags from variable name and
+title-case the output (title(striptags(name))).
+
+Filters that accept arguments have parentheses around the arguments, just like a function call.
+For example: \code {{ listx|join(', ') }}\endcode will join a list with commas (equivalent to
+\code str.join(', ', listx)\endcode). Nevertheless, the variable filter is applying to is always
+passed as a first argument to the filter function.
+
+One can define custom filters by registering a Python function as a new filter with the
+Environment object:
+
+\code
+def lower_first_filter(s):
+    s = str(s)
+    return s[0].lower() + s[1:]
+
+
+env = Environment(
+              loader=FileSystemLoader(search_path),
+              trim_blocks=True,
+              lstrip_blocks=True
+          )
+env.filters['lowerfirst'] = lower_first_filter
+\endcode
+
+After that filter called lower first will be available from the template:
+\code
+{{ var | lowerfirst }}
+\endcode
+
+
+\section2 Variables
+Template variables are defined by the context dictionary passed to the template. Variables can be
+complex object having their own attributes.
+
+One can use a dot (.) to access attributes of a variable in addition to the standard Python
+__getitem__ “subscript” syntax ([]).
+
+The following lines are equivalent:
+
+\code
+{{ foo.bar }}
+{{ foo['bar'] }}
+\endcode
+
+If a variable or attribute does not exist, its value will result to undefined value. The
+interpretation of that kind of value depends on the application configuration: the default
+behavior is to evaluate to an empty string if printed or iterated over, and to fail for every
+other operation.
+
+\section2 Comments
+
+To comment-out part of a line in a template, use the comment syntax which is by default set to {#
+... #}. This is useful to comment out parts of the template for debugging or to add information
+for other template designers or yourself:
+
+\code
+{# note: commented-out template because we no longer use this
+    {% for user in users %}
+        ...
+    {% endfor %}
+#}
+\endcode
+
+\section2 Line Statements
+\target line_statements
+
+If line statements are enabled by the application, it’s possible to mark a line as a statement.
+For example, if the line statement prefix is configured to #, the following two examples are
+equivalent:
+
+\code
+<ul>
+# for item in seq
+    <li>{{ item }}</li>
+# endfor
+</ul>
+\endcode
+
+\code
+<ul>
+{% for item in seq %}
+    <li>{{ item }}</li>
+{% endfor %}
+</ul>
+\endcode
+
+The line statement prefix can appear anywhere on the line as long as no text precedes it. For
+better readability, statements that start a block (such as for, if, elif etc.) may end with a
+colon:
+
+\code
+# for item in seq:
+    ...
+# endfor
+\endcode
+
+Line statements can span multiple lines if there are open parentheses, braces or brackets:
+
+\code
+<ul>
+# for href, caption in [('index.html', 'Index'),
+                        ('about.html', 'About')]:
+    <li><a href="{{ href }}">{{ caption }}</a></li>
+# endfor
+</ul>
+\endcode
+
+Since Jinja 2.2, line-based comments are available as well. For example, if the line-comment
+prefix is configured to be ##, everything from ## to the end of the line is ignored (excluding the
+newline sign):
+
+\code
+# for item in seq:
+    <li>{{ item }}</li>     ## this comment is ignored
+# endfor
+\endcode
+
+\section2 Assignments
+
+Inside code blocks, you can also assign values to variables. Assignments at top level (outside of
+blocks, macros or loops) are exported from the template like top level macros and can be imported
+by other templates.
+
+Assignments use the set tag and can have multiple targets:
+
+\code
+{% set navigation = [('index.html', 'Index'), ('about.html', 'About')] %}
+{% set key, value = call_something() %}
+\endcode
+
+It is not possible to set variables inside a block and have them show up outside of it. This also
+applies to loops. The only exception to that rule are if statements which do not introduce a scope.
+
+
+\section2 Whitespace Control
+
+In the default configuration:
+
+\list
+    \li a single trailing newline is stripped if present
+    \li other whitespace (spaces, tabs, newlines etc.) is returned unchanged
+\endlist
+
+If an application configures Jinja to trim_blocks, the first newline after a template tag is
+removed automatically (like in PHP). The lstrip_blocks option can also be set to strip tabs and
+spaces from the beginning of a line to the start of a block. (Nothing will be stripped if there
+are other characters before the start of the block)
+
+With both trim_blocks and lstrip_blocks enabled, you can put block tags on their own lines, and
+the entire block line will be removed when rendered, preserving the whitespace of the contents.
+For example, without the trim_blocks and lstrip_blocks options, this template:
+
+\code
+<div>
+    {% if True %}
+        yay
+    {% endif %}
+</div>
+\endcode
+
+gets rendered with blank lines inside the div:
+
+\code
+<div>
+
+      yay
+
+</div>
+\endcode
+
+But with both trim_blocks and lstrip_blocks enabled, the template block lines are removed and
+other whitespace is preserved:
+
+\code
+<div>
+        yay
+</div>
+\endcode
+
+One can manually disable the lstrip_blocks behavior by putting a plus sign (+) at the start of a
+block:
+
+\code
+<div>
+        {%+ if something %}yay{% endif %}
+</div>
+\endcode
+
+It's also possible to strip whitespace in templates by hand. With a minus sign (-) at the start or
+end of a block (e.g. a For tag), a comment, or a variable expression, the whitespaces before or
+after that block will be removed:
+
+\code
+{% for item in seq -%}
+    {{ item }}
+{%- endfor %}
+\endcode
+
+This will yield all elements without whitespace between them. If seq was a list of numbers from 1
+to 9, the output would be 123456789.
+
+If Line Statements are enabled, they strip leading whitespace automatically up to the beginning of
+the line.
+
+By default, Jinja2 also removes trailing newlines. To keep single trailing newlines, configure
+Jinja to keep_trailing_newline.
+
+\note
+
+One must not add whitespace between the tag and the minus sign.
+
+valid:
+\code
+{%- if foo -%}...{% endif %}
+\endcode
+invalid:
+\code
+{% - if foo - %}...{% endif %}
+\endcode
+
+*/
