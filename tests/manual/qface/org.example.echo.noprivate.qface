@@ -1,5 +1,5 @@
 /** module */
-@config(disablePrivateIVI)
+@config: {"disablePrivateIVI": true}
 module org.example.echo.noprivate 1.0
 
 /**
@@ -12,7 +12,7 @@ module org.example.echo.noprivate 1.0
  * @see http://qt.io
  * @anything hello
  */
-@config(id=org.foo.id.1.0)
+@config: {"id": "org.foo.id.1.0"}
 interface Echo {
     /**
      * @brief brief message
@@ -29,8 +29,7 @@ interface Echo {
     string id();
 }
 
-@config(id=org.foo.idz.1.0)
-@config(zoned)
+@config: {"id": "org.foo.idz.1.0", "zoned": true}
 interface EchoZoned {
     /**
      * @brief brief message
