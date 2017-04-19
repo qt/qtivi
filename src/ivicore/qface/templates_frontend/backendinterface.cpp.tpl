@@ -43,6 +43,13 @@
 
 QT_BEGIN_NAMESPACE
 
+/*!
+ * \class {{class}}
+ * \inmodule {{module}}
+ *
+ * \brief Abstract backend interface for {{interface}}.
+ * \sa {{interface}}.
+ */
 {{class}}::{{class}}(QObject *parent)
 {% if interface.tags.config.zoned %}
     : QIviZonedFeatureInterface(parent)

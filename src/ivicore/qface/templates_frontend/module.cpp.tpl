@@ -38,6 +38,7 @@
 #}
 {% set class = '{0}Module'.format(module.module_name) %}
 {% include 'generated_comment.cpp.tpl' %}
+{% import 'utils.tpl' as utils %}
 
 #include "{{class|lower}}.h"
 
@@ -49,29 +50,24 @@
 
 QT_BEGIN_NAMESPACE
 
-/*!
-   \qmlmodule {{module}} 1.0
- */
-
-
-/*!
-   \qmltype {{module.module_name}}Module
-   \inqmlmodule {{module}}
-   \brief API to access module functionality
-
-   Provides the enumerations and data type factories for
-   this module.
-*/
+/*! \internal */
 QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
 {
     return new {{class}}();
 }
 
+/*!
+    \class {{class}}
+    \inmodule {{module}}
+
+{{ utils.format_comments(module.comment) }}
+*/
 {{class}}::{{class}}(QObject *parent)
     : QObject(parent)
 {
 }
 
+/*! \internal */
 void {{class}}::registerTypes()
 {
 {% for enum in module.enums %}
@@ -79,9 +75,12 @@ void {{class}}::registerTypes()
 {% endfor %}
 }
 
+/*! \internal */
 void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minorVersion)
 {
-    qmlRegisterSingletonType<{{class}}>(uri.toLatin1(), majorVersion, minorVersion, "{{module.module_name}}Module", {{class|lower}}_singletontype_provider);
+    qmlRegisterSingletonType<{{class}}>(uri.toLatin1(), majorVersion, minorVersion,
+                                        "{{module.module_name}}Module",
+                                        {{class|lower}}_singletontype_provider);
 {% for interface in module.interfaces %}
     {{interface}}::registerQmlTypes(uri, majorVersion, minorVersion);
 {% endfor %}

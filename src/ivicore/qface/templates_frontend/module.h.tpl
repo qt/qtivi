@@ -40,6 +40,7 @@
 {% set class = '{0}Module'.format(module.module_name) %}
 {% set oncedefine = '{0}_H_'.format(class|upper) %}
 {% include 'generated_comment.cpp.tpl' %}
+{% import 'utils.tpl' as utils %}
 
 #ifndef {{oncedefine}}
 #define {{oncedefine}}
@@ -55,13 +56,15 @@ public:
     {{class}}(QObject *parent=0);
 
 {% for enum in module.enums %}
-    {% set comma = joiner(",") %}
+{% if enum.comment %}
+    /*!
+ {{ utils.format_comments(enum.comment) }}
+     */
+{% endif %}
     enum {{enum}} {
-        {%- for member in enum.members -%}
-        {{ comma() }}
-        {{member.name}} = {{member.value}}
-        {%- endfor %}
-
+        {% for member in enum.members %}
+        {{member.name}} = {{member.value}}, {{member.comment}}
+        {% endfor %}
     };
     Q_ENUM({{enum}})
 {% endfor %}

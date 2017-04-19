@@ -1,4 +1,6 @@
-/** module */
+/**
+ * module
+ */
 module org.example.echo 1.0
 
 /**
@@ -46,4 +48,22 @@ interface EchoZoned {
 
     string echo(string msg);
     string id();
+}
+
+/**
+ * @brief Control where the airflow goes
+ */
+flag AirflowDirection {
+    /**
+     * @brief Airflow to the windshield
+     */
+    Windshield = 1,
+    /**
+     * @brief Airflow to the dashboard
+     */
+    Dashboard = 2,
+    /**
+     * @brief Airflow to the floor
+     */
+    Floor = 4
 }

@@ -1,3 +1,6 @@
+/**
+ * Test module
+ */
 module example.ivi.climate 1.0;
 
 /**
@@ -20,7 +23,7 @@ interface ClimateControl {
      */
     int fanSpeedLevel;
     /**
-     * @brief  value holds the steering wheel heater level, where the level can
+     * @brief value holds the steering wheel heater level, where the level can
      * be between minimumValue(off) to maximumValue (warmest).
      */
     int steeringWheelHeater;
@@ -91,19 +94,19 @@ interface ClimateControl {
 }
 
 /**
- * Control where the airflow goes
+ * @brief Control where the airflow goes
  */
 flag AirflowDirection {
     /**
-     * Airflow to the windshield
+     * @brief Airflow to the windshield
      */
     Windshield = 1,
     /**
-     * Airflow to the dashboard
+     * @brief Airflow to the dashboard
      */
     Dashboard = 2,
     /**
-     * Airflow to the floor
+     * @brief Airflow to the floor
      */
     Floor = 4
 }

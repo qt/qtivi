@@ -38,6 +38,7 @@
 # SPDX-License-Identifier: LGPL-3.0
 #}
 {% include "generated_comment.cpp.tpl" %}
+{% import 'utils.tpl' as utils %}
 {% set class = '{0}Backend'.format(interface) %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
 #include "{{class|lower}}.h"
@@ -47,11 +48,7 @@
 /*!
    \class {{class}}
    \inmodule {{module}}
-{% with doc = interface.comment|parse_doc %}
-   \brief {{doc.brief}}
-
-   {{doc.description}}
-{% endwith %}
+{{ utils.format_comments(interface.comment) }}
 */
 {{class}}::{{class}}(QObject *parent) :
     {{class}}Interface(parent)
@@ -133,11 +130,7 @@ void {{class}}::initialize()
 /*!
     \fn virtual void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }}{% if interface_zoned %}, const QString &zone){%endif%})
 
-{% with doc = property.comment|parse_doc %}
-    \brief {{doc.brief}}
-
-    {{doc.description}}
-{% endwith %}
+{{ utils.format_comments(property.comment) }}
 */
 {%   if interface_zoned %}
 void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }}, const QString &zone)
@@ -208,11 +201,7 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 /*!
     \fn virtual void {{class}}::{{operation}}({{operation_parameters}})
 
-{%   with doc = operation.comment|parse_doc %}
-    \brief {{doc.brief}}
-
-    {{doc.description}}
-{%   endwith %}
+{{ utils.format_comments(operation.comment) }}
 */
 {{operation|return_type}} {{class}}::{{operation}}({{operation_parameters}})
 {

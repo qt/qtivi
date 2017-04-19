@@ -38,6 +38,7 @@
 #}
 {% set class = '{0}'.format(interface) %}
 {% include 'generated_comment.cpp.tpl' %}
+{% import 'utils.tpl' as utils %}
 
 #include "{{class|lower}}.h"
 #include "{{class|lower}}_p.h"
@@ -48,6 +49,13 @@
 
 QT_BEGIN_NAMESPACE
 
+/*!
+    \class {{interface}}
+    \inmodule {{module}}
+{{ utils.format_comments(interface.comment) }}
+*/
+
+/*! \internal */
 {% if module.tags.config.disablePrivateIVI %}
 {{class}}Private::{{class}}Private({{class}} *q)
     : QObject(q)
@@ -67,6 +75,7 @@ QT_BEGIN_NAMESPACE
 {
 }
 
+/*! \internal */
 {{class}}Private *{{class}}Private::get({{class}} *v)
 {
 {% if module.tags.config.disablePrivateIVI %}
@@ -76,6 +85,7 @@ QT_BEGIN_NAMESPACE
 {% endif %}
 }
 
+/*! \internal */
 const {{class}}Private *{{class}}Private::get(const {{class}} *v)
 {
 {% if module.tags.config.disablePrivateIVI %}
@@ -85,6 +95,7 @@ const {{class}}Private *{{class}}Private::get(const {{class}} *v)
 {% endif %}
 }
 
+/*! \internal */
 {{class}} *{{class}}Private::getParent()
 {
 {% if module.tags.config.disablePrivateIVI %}
@@ -94,6 +105,7 @@ const {{class}}Private *{{class}}Private::get(const {{class}} *v)
 {% endif %}
 }
 
+/*! \internal */
 void {{class}}Private::clearToDefaults()
 {
 {% for property in interface.properties %}
@@ -102,6 +114,7 @@ void {{class}}Private::clearToDefaults()
 }
 
 {% for property in interface.properties %}
+/*! \internal */
 {% if interface.tags.config.zoned %}
 void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_type}}, const QString &zone)
 {
@@ -148,6 +161,7 @@ void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_typ
 {
 }
 
+/*! \internal */
 {{class}}::~{{class}}()
 {
 {% if module.tags.config.disablePrivateIVI %}
@@ -155,6 +169,7 @@ void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_typ
 {% endif %}
 }
 
+/*! \internal */
 void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minorVersion)
 {
 {% if 'singleton' in interface.tags %}
@@ -165,6 +180,17 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 }
 
 {% for property in interface.properties %}
+
+/*!
+    \property {{class}}::{{property}}
+{{ utils.format_comments(property.comment) }}
+*/
+{{property|return_type}} {{class}}::{{property}}() const
+{
+    const auto d = {{class}}Private::get(this);
+    return d->m_{{property}};
+}
+
 void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {
     auto d = {{class}}Private::get(this);
@@ -174,15 +200,12 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
     emit {{property}}Changed({{property}});
 }
 
-{{property|return_type}} {{class}}::{{property}}() const
-{
-    const auto d = {{class}}Private::get(this);
-    return d->m_{{property}};
-}
-
 {% endfor %}
 
 {%- for operation in interface.operations %}
+/*!
+{{ utils.format_comments(operation.comment) }}
+*/
 {{operation|return_type}} {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}})
 {
     if ({{class}}BackendInterface *backend = ({{class}}BackendInterface *) this->backend())
@@ -197,15 +220,18 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {% endif %}
     return {{operation|default_value}};
 }
+
 {% endfor %}
 
 {% if interface.tags.config.zoned %}
+/*! \internal */
 QIviAbstractZonedFeature *{{class}}::createZoneFeature(const QString &zone)
 {
     return new {{class}}(zone, this);
 }
 {% endif %}
 
+/*! \internal */
 void {{class}}::connectToServiceObject(QIviServiceObject *serviceObject)
 {
 {% if interface.tags.config.zoned %}
@@ -229,6 +255,7 @@ void {{class}}::connectToServiceObject(QIviServiceObject *serviceObject)
     backend->initialize();
 }
 
+/*! \internal */
 void {{class}}::clearServiceObject()
 {
     auto d = {{class}}Private::get(this);
@@ -239,6 +266,7 @@ void {{class}}::clearServiceObject()
 }
 
 {% if interface.tags.config.zoned != True %}
+/*! \internal */
 {{class}}BackendInterface *{{class}}::backend() const
 {
     if (QIviServiceObject *so = serviceObject())
