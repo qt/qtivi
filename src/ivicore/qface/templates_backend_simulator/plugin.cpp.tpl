@@ -48,6 +48,12 @@
 
 #include <QStringList>
 
+/*!
+   \class {{class}}
+   \inmodule {{module}}
+
+*/
+/*! \internal */
 {{class}}::{{class}}(QObject *parent) :
     QObject(parent)
 {% for interface in module.interfaces %}
@@ -56,6 +62,7 @@
 {
 }
 
+/*! \internal */
 QStringList {{class}}::interfaces() const
 {
     QStringList list;
@@ -66,6 +73,7 @@ QStringList {{class}}::interfaces() const
     return list;
 }
 
+/*! \internal */
 QIviFeatureInterface *{{class}}::interfaceInstance(const QString &interface) const
 {
 {% for iface in module.interfaces %}

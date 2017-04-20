@@ -44,6 +44,15 @@
 
 #include <QDebug>
 
+/*!
+   \class {{class}}
+   \inmodule {{module}}
+{% with doc = interface.comment|parse_doc %}
+   \brief {{doc.brief}}
+
+   {{doc.description}}
+{% endwith %}
+*/
 {{class}}::{{class}}(QObject *parent) :
     {{class}}Interface(parent)
 {% for property in interface.properties %}
@@ -71,6 +80,16 @@
 }
 
 {% if interface_zoned %}
+/*!
+    \fn QStringList {{class}}::availableZones() const
+
+    Returns a list of supported zone names. This is called from the client
+    after having connected.
+
+    The returned names must be valid QML property names, i.e. \c {[a-z_][A-Za-z0-9_]*}.
+
+    \sa {Providing Available Zones}
+*/
 QStringList {{class}}::availableZones() const
 {
 {%   if interface.tags.config_simulator and interface.tags.config_simulator.zoned %}
@@ -81,6 +100,13 @@ QStringList {{class}}::availableZones() const
 }
 {% endif %}
 
+/*!
+    \fn void {{class}}::initialize()
+
+    Initializes the backend and informs about its current state by
+    emitting signals with the current status (property values).
+
+*/
 void {{class}}::initialize()
 {
 {% for property in interface.properties %}
@@ -104,6 +130,15 @@ void {{class}}::initialize()
 }
 
 {% for property in interface.properties %}
+/*!
+    \fn virtual void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }}{% if interface_zoned %}, const QString &zone){%endif%})
+
+{% with doc = property.comment|parse_doc %}
+    \brief {{doc.brief}}
+
+    {{doc.description}}
+{% endwith %}
+*/
 {%   if interface_zoned %}
 void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }}, const QString &zone)
 {%   else %}
@@ -163,15 +198,23 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {% endfor %}
 
 {% for operation in interface.operations %}
+{%   set operation_parameters = operation.parameters|map('parameter_type')|join(', ') %}
 {%   if interface_zoned %}
 {%     if operation.parameters|length %}
-{{operation|return_type}} {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}, const QString &zone)
-{%     else %}
-{{operation|return_type}} {{class}}::{{operation}}(const QString &zone)
+{%       set operation_parameters = operation_parameters + ', ' %}
 {%     endif %}
-{%   else %}
-{{operation|return_type}} {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}})
-{%   endif %}
+{%     set operation_parameters = operation_parameters + 'const QString &zone' %}
+{%   endif%}
+/*!
+    \fn virtual void {{class}}::{{operation}}({{operation_parameters}})
+
+{% with doc = operation.comment|parse_doc %}
+    \brief {{doc.brief}}
+
+    {{doc.description}}
+{% endwith %}
+*/
+{{operation|return_type}} {{class}}::{{operation}}({{operation_parameters}})
 {
     qWarning() << "Not implemented!";
     return {{operation|default_value}};
