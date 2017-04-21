@@ -63,7 +63,8 @@ do
     echo "Testing '$idlfile' ================"
     idldir=$(echo $idlfile | tr . -)
     out_dir=${WORKDIR}/projects/${idldir}
-    /bin/rm -rf ${out_dir}/*.{h,cpp,pri}
+    /bin/rm -rf ${out_dir}/frontend/${idldir}/*.{h,cpp,pri}
+    /bin/rm -rf ${out_dir}/backend_simulator/${idldir}/*.{h,cpp,pri}
     ${GENERATOR} --format=frontend ${WORKDIR}/${idlfile}.qface ${out_dir}/frontend || die "Generator failed" 1
     ${GENERATOR} --format=backend_simulator ${WORKDIR}/${idlfile}.qface ${out_dir}/backend_simulator || die "Generator for backend failed" 1
     test -d build/${idldir} && /bin/rm -rf build/${idldir}

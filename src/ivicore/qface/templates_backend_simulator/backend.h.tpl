@@ -45,7 +45,11 @@
 #define {{oncedefine}}
 
 #include <QObject>
+{% if module.tags.config.module %}
+#include <{{module.tags.config.module}}/{{class}}Interface>
+{% else %}
 #include "{{class|lower}}interface.h"
+{% endif %}
 
 class {{class}} : public {{class}}Interface
 {

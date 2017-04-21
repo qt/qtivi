@@ -129,7 +129,7 @@ def lower_first_filter(s):
     return s[0].lower() + s[1:]
 
 
-def generate(tplconfig, src, dst):
+def generate(tplconfig, moduleConfig, src, dst):
     log.debug('run {0} {1}'.format(src, dst))
     system = FileSystem.parse(src)
     generator = Generator(search_path=here / tplconfig)
@@ -150,6 +150,8 @@ def generate(tplconfig, src, dst):
     for module in system.modules:
         log.debug('generate code for module %s', module)
         module.add_tag('config')
+        for val, key in moduleConfig.items():
+            module.add_attribute('config', val, key)
         ctx.update({'module': module})
         #TODO: refine that, probably just use plain output folder
         dst = generator.apply('{{dst}}/{{module|lower|replace(".", "-")}}', ctx)
@@ -171,33 +173,37 @@ def generate(tplconfig, src, dst):
                 generator.write(rule['dest_file'], rule['template_file'], ctx)
 
 
-def run(formats, src, dst):
+def run(formats, moduleConfig, src, dst):
     for f in formats:
         switcher = {
             'frontend': 'templates_frontend',
             'backend_simulator': 'templates_backend_simulator',
             'test': 'templates_test',
         }
-        tplconfig = switcher.get(f, 'unknown')
-        if tplconfig == 'unknown':
+        tplConfig = switcher.get(f, 'unknown')
+        if tplConfig == 'unknown':
             log.debug('unknown format {0}'.format(f))
         else:
-            generate(tplconfig, src, dst)
+            generate(tplConfig, moduleConfig, src, dst)
 
 
 @click.command()
 @click.option('--reload/--no-reload', default=False)
 @click.option('--format', '-f', multiple=True, type=click.Choice(['frontend', 'backend_simulator', 'test']))
+@click.option('--module', default=False)
 @click.argument('src', nargs=-1, type=click.Path(exists=True))
 @click.argument('dst', nargs=1, type=click.Path(exists=True))
-def app(src, dst, format, reload):
+def app(src, dst, format, reload, module):
     """Takes several files or directories as src and generates the code
     in the given dst directory."""
     if reload:
         script = '{0} {1} {2}'.format(Path(__file__).abspath(), ' '.join(src), dst)
         monitor(src, script)
     else:
-        run(format, src, dst)
+        moduleConfig = {
+            "module": module
+        }
+        run(format, moduleConfig, src, dst)
 
 
 if __name__ == '__main__':
