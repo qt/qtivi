@@ -39,6 +39,7 @@
         \list
             \li \l {Qt Automotive Suite Overview}{Overview}
             \li \l {Installing Qt Automotive Suite}{Install Instructions}
+            \li \l {Supported Platforms}
             \li \l {Related Information}
         \endlist
     \endlist
