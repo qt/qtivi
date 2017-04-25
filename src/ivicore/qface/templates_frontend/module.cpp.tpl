@@ -43,6 +43,10 @@
 
 #include <QQmlEngine>
 
+{% for interface in module.interfaces %}
+#include "{{interface|lower}}.h"
+{% endfor %}
+
 QT_BEGIN_NAMESPACE
 
 /*!
@@ -78,6 +82,9 @@ void {{class}}::registerTypes()
 void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minorVersion)
 {
     qmlRegisterSingletonType<{{class}}>(uri.toLatin1(), majorVersion, minorVersion, "{{module.module_name}}Module", {{class|lower}}_singletontype_provider);
+{% for interface in module.interfaces %}
+    {{interface}}::registerQmlTypes(uri, majorVersion, minorVersion);
+{% endfor %}
 }
 
 QT_END_NAMESPACE

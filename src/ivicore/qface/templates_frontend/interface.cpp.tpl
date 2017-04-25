@@ -130,7 +130,7 @@ void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_typ
 {% if module.tags.config.disablePrivateIVI %}
 {%   if interface.tags.config.zoned %}
 {{class}}::{{class}}(const QString &zone, QObject *parent)
-    : QIviAbstractZonedFeature({{module.module_name}}_{{interface}}_iid, zone, parent)
+    : QIviAbstractZonedFeature(QLatin1String({{module.module_name}}_{{interface}}_iid), zone, parent)
 {%   else %}
 {{class}}::{{class}}(QObject *parent)
     : QIviAbstractFeature({{module.module_name}}_{{interface}}_iid, parent)
@@ -139,10 +139,10 @@ void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_typ
 {% else %}
 {%   if interface.tags.config.zoned %}
 {{class}}::{{class}}(const QString &zone, QObject *parent)
-    : QIviAbstractZonedFeature(*new {{class}}Private({{module.module_name}}_{{interface}}_iid, zone, this), parent)
+    : QIviAbstractZonedFeature(*new {{class}}Private(QLatin1String({{module.module_name}}_{{interface}}_iid), zone, this), parent)
 {%   else %}
 {{class}}::{{class}}(QObject *parent)
-    : QIviAbstractFeature(*new {{class}}Private({{module.module_name}}_{{interface}}_iid, this), parent)
+    : QIviAbstractFeature(*new {{class}}Private(QLatin1String({{module.module_name}}_{{interface}}_iid), this), parent)
 {%   endif %}
 {% endif %}
 {
@@ -179,6 +179,7 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
     const auto d = {{class}}Private::get(this);
     return d->m_{{property}};
 }
+
 {% endfor %}
 
 {%- for operation in interface.operations %}
@@ -224,6 +225,8 @@ void {{class}}::connectToServiceObject(QIviServiceObject *serviceObject)
     {{Connect}}(backend, &{{class}}BackendInterface::{{property}}Changed,
         d, &{{class}}Private::on{{property|upperfirst}}Changed);
 {% endfor %}
+
+    backend->initialize();
 }
 
 void {{class}}::clearServiceObject()
