@@ -89,7 +89,7 @@ do
     ${GENERATOR} --format=backend_simulator ${WORKDIR}/${idlfile}.qface ${bdir} || die "Generator failed" 1
 
     pushd ${bdir}
-    checkFileCount "Total files" 8
+    checkFileCount "Total files" 9
     checkFileCount "Plugins" 2 "*plugin.*"
     checkFileCount "Backends" 4 "*backend.*"
     popd

@@ -95,12 +95,18 @@ def enum_value(value, module_name):
 
 def simulator_default_value(symbol):
     sim_default_value = Filters.defaultValue(symbol)
-    if 'config_simulator' in symbol.tags:
+    if 'config_simulator' in symbol.tags and 'default_value' in symbol.tags['config_simulator']:
         sim_default_value = symbol.tags['config_simulator']['default_value']
         t = symbol.type
         if t.is_enum:
             module_name = t.reference.module.module_name
             return enum_value(sim_default_value, module_name)
+        # in case it's bool, Python True is sent to the C++ as "True", let's take care of that
+        if t.is_bool:
+            if sim_default_value:
+                sim_default_value = 'true'
+            else:
+                sim_default_value = 'false'
     return sim_default_value
 
 

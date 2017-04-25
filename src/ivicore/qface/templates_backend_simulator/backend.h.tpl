@@ -93,7 +93,7 @@ private:
 {% if interface_zoned %}
     struct ZoneBackend {
 {%   for property in interface.properties %}
-{%     if property.tags.config and property.tags.config.zoned %}
+{%     if property.tags.config_simulator and property.tags.config_simulator.zoned %}
         {{ property|return_type }} {{ property }};
 {%     endif %}
 {%   endfor %}

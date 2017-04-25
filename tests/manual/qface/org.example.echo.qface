@@ -40,6 +40,9 @@ interface EchoZoned {
     readonly string lastMessage;
     int intValue;
     string stringValue;
+    string unsupportedValue;
+    bool zonedValue;
+    bool valueWithDefault;
 
     string echo(string msg);
     string id();

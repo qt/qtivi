@@ -1,0 +1,14 @@
+
+org.example.echo.EchoZoned#zonedValue:
+    config_simulator:
+        default_value: true
+        zoned: true
+
+org.example.echo.EchoZoned#valueWithDefault:
+    config_simulator:
+        default_value: true
+
+
+org.example.echo.EchoZoned#unsupportedValue:
+    config_simulator:
+        unsupported: true

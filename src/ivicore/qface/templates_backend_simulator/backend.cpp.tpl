@@ -56,7 +56,7 @@
 {{class}}::{{class}}(QObject *parent) :
     {{class}}Interface(parent)
 {% for property in interface.properties %}
-{%   if not property.tags.config or not property.tags.config.zoned %}
+{%   if not property.tags.config_simulator or not property.tags.config_simulator.zoned %}
     , m_{{ property }}({{property|sim_default_value}})
 {%   endif %}
 {% endfor %}
@@ -146,7 +146,7 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {%   endif %}
 {
 {%   if property.tags.config_simulator and property.tags.config_simulator.unsupported %}
-    Q_UNUSED({ property|parameter_type }});
+    Q_UNUSED({{ property }});
 {%     if interface_zoned %}
     Q_UNUSED(zone);
 {%     endif %}
@@ -155,26 +155,26 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {%   else %}
 {%     set range_low_val = property|range_low %}
 {%     set range_high_val = property|range_high %}
-{%     set zoned = property.tags.config and property.tags.config.zoned %}
+{%     set zoned = property.tags.config_simulator and property.tags.config_simulator.zoned %}
 {%     if zoned and interface_zoned %}
     if (!m_zoneMap.contains(zone))
         return;
 
-    if (m_zoneMap[zone].m_{{property}} == {{property}})
+    if (m_zoneMap[zone].{{property}} == {{property}})
         return;
 {%       if range_low_val and range_high_val %}
 
     if ({{property}} < {{range_low}} || {{property}} > {{range_high}}) {
         qWarning() << "SIMULATION {{ property | upperfirst }} change out of range ({{range_low}}-{{range_high}})" << {{property}};
-        emit {{property}}Changed(m_{{property, zone}});
+        emit {{property}}Changed({{property}}, zone);
         return;
     }
 {%       endif %}
 
     qWarning() << "SIMULATION {{ property | upperfirst }} for Zone" << zone << "changed to" << {{property}};
 
-    m_zoneMap[zone].m_{{property}} = {{property}};
-    emit {{ property }}Changed(val, zone);
+    m_zoneMap[zone].{{property}} = {{property}};
+    emit {{ property }}Changed({{property}}, zone);
 
 {%     else %}
     if ({% if interface_zoned %}!zone.isEmpty() || {%endif%}m_{{ property }} == {{property}})
@@ -208,11 +208,11 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 /*!
     \fn virtual void {{class}}::{{operation}}({{operation_parameters}})
 
-{% with doc = operation.comment|parse_doc %}
+{%   with doc = operation.comment|parse_doc %}
     \brief {{doc.brief}}
 
     {{doc.description}}
-{% endwith %}
+{%   endwith %}
 */
 {{operation|return_type}} {{class}}::{{operation}}({{operation_parameters}})
 {
