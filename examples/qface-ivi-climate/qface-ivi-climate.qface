@@ -1,10 +1,10 @@
-module com.pelagicore.ivi.climate 1.0;
+module example.ivi.climate 1.0;
 
 /**
  * The ClimateControl provides a QML interface to the climate control
  * of the vehicle.
  */
-@config: {zoned: true, id: "org.qt-project.qtivi.ClimateControl/1.2" }
+@config: { zoned: true, id: "example.qtivi.ClimateControl/1.0" }
 interface ClimateControl {
     /**
      * @brief Value is true if the air conditioning is enabled.
