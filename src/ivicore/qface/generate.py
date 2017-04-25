@@ -160,23 +160,26 @@ def generate(tplconfig, moduleConfig, src, dst):
             module.add_attribute('config', val, key)
         ctx.update({'module': module})
         #TODO: refine that, probably just use plain output folder
-        dst = generator.apply('{{dst}}/{{module|lower|replace(".", "-")}}', ctx)
+        dst = generator.apply('{{dst}}', ctx)
         generator.destination = dst
         module_rules = gen_config['generate_rules']['module_rules']
         if module_rules is None: module_rules = []
         for rule in module_rules:
-            generator.write(rule['dest_file'], rule['template_file'], ctx)
+            preserve = rule['preserve'] if 'preserve' in rule else False
+            generator.write(rule['dest_file'], rule['template_file'], ctx, preserve)
         for interface in module.interfaces:
             log.debug('generate backend code for interface %s', interface)
             interface.add_tag('config')
             ctx.update({'interface': interface})
             for rule in gen_config['generate_rules']['interface_rules']:
-                generator.write(rule['dest_file'], rule['template_file'], ctx)
+                preserve = rule['preserve'] if 'preserve' in rule else False
+                generator.write(rule['dest_file'], rule['template_file'], ctx, preserve)
         for struct in module.structs:
             log.debug('generate code for struct %s', struct)
             struct.add_tag('config')
             for rule in gen_config['generate_rules']['struct_rules']:
-                generator.write(rule['dest_file'], rule['template_file'], ctx)
+                preserve = rule['preserve'] if 'preserve' in rule else False
+                generator.write(rule['dest_file'], rule['template_file'], ctx, preserve)
 
 
 def run(formats, moduleConfig, src, dst):
