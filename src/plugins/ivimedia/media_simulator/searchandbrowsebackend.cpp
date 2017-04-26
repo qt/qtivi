@@ -132,9 +132,9 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &t
             .arg(columns,
             whereClause.isEmpty() ? QString() : QLatin1String("WHERE ") + whereClause,
             order,
-            groupBy.isEmpty() ? QString() : QLatin1String("GROUP BY ") + groupBy)
-            .arg(start,
-            count);
+            groupBy.isEmpty() ? QString() : QLatin1String("GROUP BY ") + groupBy,
+            QString::number(start),
+            QString::number(count));
 
     QtConcurrent::run(this,
                       &SearchAndBrowseBackend::search,
