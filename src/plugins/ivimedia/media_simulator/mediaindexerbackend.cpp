@@ -49,6 +49,9 @@
 #include <QSqlQuery>
 #include <QtDebug>
 
+#include <QMediaPlayer>
+#include <QMediaMetaData>
+
 #ifdef QT_TAGLIB
 #include <attachedpictureframe.h>
 #include <fileref.h>
@@ -140,6 +143,7 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
 
     qInfo() << "Scanning path: " << mediaDir;
 
+    QMediaPlayer player;
     QSqlQuery query(m_db);
 
     bool ret = query.exec("CREATE TABLE IF NOT EXISTS track "
@@ -179,21 +183,15 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
         if (qApp->closingDown())
             return false;
 
+        QString defaultCoverArtUrl = fileName + QLatin1Literal(".png");
+        QString coverArtUrl;
 #ifdef QT_TAGLIB
         TagLib::FileRef f(fileName.toLocal8Bit());
-        QString coverArtUrl;
-
-        QSqlQuery query(m_db);
-
-        query.prepare("INSERT OR IGNORE INTO track (trackName, albumName, artistName, genre, number, file, coverArtUrl) "
-                      "VALUES (:trackName, :albumName, :artistName, :genre, :number, :file, :coverArtUrl)");
-
-        query.bindValue(":trackName", QLatin1String(f.tag()->title().toCString()));
-        query.bindValue(":albumName", QLatin1String(f.tag()->album().toCString()));
-        query.bindValue(":artistName", QLatin1String(f.tag()->artist().toCString()));
-        query.bindValue(":genre", QLatin1String(f.tag()->genre().toCString()));
-        query.bindValue(":number", f.tag()->track());
-        query.bindValue(":file", fileName);
+        QString trackName = QLatin1String(f.tag()->title().toCString());
+        QString albumName = QLatin1String(f.tag()->album().toCString());
+        QString artistName = QLatin1String(f.tag()->artist().toCString());
+        QString genre = QLatin1String(f.tag()->genre().toCString());
+        int number = f.tag()->track();
 
         // Extract cover art
         TagLib::MPEG::File file(fileName.toLocal8Bit());
@@ -206,15 +204,66 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
             TagLib::ID3v2::AttachedPictureFrame *coverImage =
                 static_cast<TagLib::ID3v2::AttachedPictureFrame *>(frameList.front());
 
-            coverArtUrl = fileName + QLatin1Literal(".png");
-
             QImage coverQImg;
+            coverArtUrl = defaultCoverArtUrl;
 
             coverQImg.loadFromData((const uchar *)coverImage->picture().data(), coverImage->picture().size());
             coverQImg.save(coverArtUrl, "PNG");
-
-            query.bindValue(":coverArtUrl", coverArtUrl);
         }
+#else
+        player.setMedia(QUrl::fromLocalFile(fileName));
+        // Evil hack to wait until the media is loaded
+        while (player.mediaStatus() != QMediaPlayer::LoadedMedia) {
+            QThread::msleep(100);
+            qApp->processEvents();
+        }
+
+        if (!QFile::exists(defaultCoverArtUrl)) {
+            QImage coverArt = player.metaData(QMediaMetaData::CoverArtImage).value<QImage>();
+            if (coverArt.isNull()) {
+                // Either there is no coverArt information available, or QtMultimedia cannot read it.
+                // We try to be smart and see whether we can find a cover file where the music is located.
+                QFileInfo info(fileName);
+                QString coverPath = info.absoluteDir().absoluteFilePath(QLatin1String("cover.png"));
+                if (QFile::exists(coverPath))
+                    coverArtUrl = coverPath;
+            } else {
+                coverArt.save(defaultCoverArtUrl, "PNG");
+                coverArtUrl = defaultCoverArtUrl;
+            }
+        } else {
+            coverArtUrl = defaultCoverArtUrl;
+        }
+
+        if (coverArtUrl.isEmpty())
+            qWarning() << "No cover art was found";
+
+        QString trackName = player.metaData(QMediaMetaData::Title).toString();
+        QString albumName = player.metaData(QMediaMetaData::AlbumTitle).toString();
+        QString artistName = player.metaData(QMediaMetaData::AlbumArtist).toString();
+        if (artistName.isEmpty())
+            artistName = player.metaData(QMediaMetaData::Author).toString();
+        if (artistName.isEmpty())
+            artistName = player.metaData(QMediaMetaData::ContributingArtist).toString();
+        QString genre;
+        QStringList genres = player.metaData(QMediaMetaData::Genre).toStringList();
+        if (genres.count())
+            genre = genres.first();
+        int number = player.metaData(QMediaMetaData::TrackNumber).toInt();
+#endif // QT_TAGLIB
+
+        QSqlQuery query(m_db);
+
+        query.prepare("INSERT OR IGNORE INTO track (trackName, albumName, artistName, genre, number, file, coverArtUrl) "
+                      "VALUES (:trackName, :albumName, :artistName, :genre, :number, :file, :coverArtUrl)");
+
+        query.bindValue(":trackName", trackName);
+        query.bindValue(":albumName", albumName);
+        query.bindValue(":artistName", artistName);
+        query.bindValue(":genre", genre);
+        query.bindValue(":number", number);
+        query.bindValue(":file", fileName);
+        query.bindValue(":coverArtUrl", coverArtUrl);
 
         bool ret = query.exec();
 
@@ -225,11 +274,8 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
         } else {
             emit progressChanged(qreal(currentFileIndex)/qreal(totalFileCount));
         }
-#else
-        emit progressChanged(qreal(currentFileIndex)/qreal(totalFileCount));
-#endif
-        currentFileIndex++;
 
+        currentFileIndex++;
     }
 
     return true;
@@ -245,10 +291,6 @@ void MediaIndexerBackend::onScanFinished()
     qInfo() << "Scanning done";
     emit progressChanged(1);
     emit indexingDone();
-
-#ifndef QT_TAGLIB
-    qWarning() << "No tracks have been added as the simulation was compiled without taglib";
-#endif
 
     //If the last run didn't succeed we will stay in the Error state
     if (m_watcher.future().result())
