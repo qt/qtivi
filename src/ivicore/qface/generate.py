@@ -37,9 +37,11 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 
+import re
 import click
 import logging.config
 import yaml
+import json
 from path import Path
 
 from qface.generator import FileSystem, Generator
@@ -93,41 +95,88 @@ def enum_value(value, module_name):
     return "|".join(sub_values)
 
 
-def simulator_default_value(symbol):
-    sim_default_value = Filters.defaultValue(symbol)
-    if 'config_simulator' in symbol.tags and 'default_value' in symbol.tags['config_simulator']:
-        sim_default_value = symbol.tags['config_simulator']['default_value']
+def default_value(symbol):
+    res = Filters.defaultValue(symbol)
+    if 'config_simulator' in symbol.tags and 'default' in symbol.tags['config_simulator']:
+        res = symbol.tags['config_simulator']['default']
         t = symbol.type
         if t.is_enum:
             module_name = t.reference.module.module_name
-            return enum_value(sim_default_value, module_name)
+            return enum_value(res, module_name)
         # in case it's bool, Python True is sent to the C++ as "True", let's take care of that
         if t.is_bool:
-            if sim_default_value:
-                sim_default_value = 'true'
+            if res:
+                return 'true'
             else:
-                sim_default_value = 'false'
-    return sim_default_value
+                return 'false'
+        if t.is_string:
+            return '"{0}"'.format(re.escape(res))
+    return res
 
 
-def value_range(symbol, what):
+def domain_values(symbol):
     """
-    Check in the tags if range_[high|low] specified and return it.
-    Returns None if no range has been specified
+    Returns domain values for property (if defined by @domain)
+    """
+    if type(symbol) is Property:
+        if 'config_simulator' in symbol.tags:
+            if 'domain' in symbol.tags['config_simulator']:
+                return symbol.tags['config_simulator']['domain']
+    return None
+
+
+def range_value(symbol, index, key):
+    """
+    Returns value for property (if defined by @range index or key)
     """
     if type(symbol) is Property and symbol.type.is_int or symbol.type.is_real:
-        what_range = 'range_' + what
-        if 'config_simulator' in symbol.tags and what_range in symbol.tags["config_simulator"]:
-            return symbol.tags["config_simulator"][what_range]
+        if 'config_simulator' in symbol.tags:
+            if 'range' in symbol.tags['config_simulator']:
+                return symbol.tags['config_simulator']['range'][index]
+            if key in symbol.tags['config_simulator']:
+                return symbol.tags['config_simulator'][key]
     return None
 
 
 def range_high(symbol):
-    return value_range(symbol, "high")
+    """
+    Returns maximum value for property (if defined by @range or @maximum)
+    """
+    return range_value(symbol, 1, 'maximum')
 
 
 def range_low(symbol):
-    return value_range(symbol, "low")
+    """
+    Returns minimum value for property (if defined by @range or @minimum)
+    """
+    return range_value(symbol, 0, 'minimum')
+
+
+def has_domains(properties):
+    """
+    Returns true if any property has range or domain tags
+    """
+    for property in properties:
+        if 'config_simulator' in property.tags:
+            for p in ['range', 'domain', 'minimum', 'maximum']:
+                if p in property.tags['config_simulator']:
+                    return True
+    return False
+
+
+def json_domain(properties):
+    """
+    Returns property domains formated in json
+    """
+    data = {}
+    for property in properties:
+        if 'config_simulator' in property.tags:
+            for p in ['range', 'domain', 'minimum', 'maximum']:
+                if p in property.tags['config_simulator']:
+                    if not property.name in data:
+                        data[property.name] = {}
+                    data[property.name][p] = property.tags['config_simulator'][p]
+    return json.dumps(data, separators=(',',':'))
 
 
 def lower_first_filter(s):
@@ -141,15 +190,18 @@ def generate(tplconfig, moduleConfig, src, dst):
     generator = Generator(search_path=here / tplconfig)
     generator.register_filter('return_type', Filters.returnType)
     generator.register_filter('parameter_type', Filters.parameterType)
-    generator.register_filter('default_value', Filters.defaultValue)
+    generator.register_filter('default_type_value', Filters.defaultValue)
+    generator.register_filter('default_value', default_value)
     generator.register_filter('parse_doc', parse_doc)
-    generator.register_filter('sim_default_value', simulator_default_value)
     generator.register_filter('lowerfirst', lower_first_filter)
     generator.register_filter('range_low', range_low)
     generator.register_filter('range_high', range_high)
+    generator.register_filter('domain_values', domain_values)
     generator.register_filter("enum_value", enum_value)
     generator.register_filter("tag_by_path", tag_by_path)
     generator.register_filter("conf_sim_tag", conf_sim_tag)
+    generator.register_filter('has_domains', has_domains)
+    generator.register_filter('json_domain', json_domain)
 
     ctx = {'dst': dst, 'qtASVersion': 1.2}
     gen_config = yaml.load(open(here / '{0}.yaml'.format(tplconfig)))

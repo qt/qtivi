@@ -13,7 +13,7 @@ module org.example.echo 1.0
  * @see http://qt.io
  * @anything hello
  */
-@config: {"id": "org.foo.id.1.0"}
+@config: {id: "org.foo.id.1.0"}
 interface Echo {
     /**
      * @brief brief message
@@ -24,13 +24,17 @@ interface Echo {
      */
     readonly string lastMessage;
     int intValue;
-    const string stringValue;
+    @config_simulator: {minimum: 10.}
+    real floatValue1;
+    @config_simulator: {maximum: 10.}
+    real floatValue2;
+    string stringValue;
 
     string echo(string msg);
     string id() const;
 }
 
-@config: {"id": "org.foo.idz.1.0", "zoned": true}
+@config: {id: "org.foo.idz.1.0", zoned: true}
 interface EchoZoned {
     /**
      * @brief brief message
@@ -41,6 +45,7 @@ interface EchoZoned {
      */
     readonly string lastMessage;
     int intValue;
+    @config_simulator: {domain: ["one", "two", "three"]}
     string stringValue;
     string unsupportedValue;
     bool zonedValue;

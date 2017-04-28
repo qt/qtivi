@@ -70,7 +70,7 @@ QT_BEGIN_NAMESPACE
     , q_ptr(parent)
 {% endif %}
 {% for property in interface.properties %}
-    , m_{{property}}({{property|default_value}})
+    , m_{{property}}({{property|default_type_value}})
 {% endfor %}
 {
 }
@@ -109,7 +109,7 @@ const {{class}}Private *{{class}}Private::get(const {{class}} *v)
 void {{class}}Private::clearToDefaults()
 {
 {% for property in interface.properties %}
-    m_{{property}} = {{property|default_value}};
+    m_{{property}} = {{property|default_type_value}};
 {% endfor %}
 }
 
@@ -226,7 +226,7 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {% else %}
         return backend->{{operation}}({{operation.parameters|join(', ')}});
 {% endif %}
-    return {{operation|default_value}};
+    return {{operation|default_type_value}};
 }
 
 {% endfor %}

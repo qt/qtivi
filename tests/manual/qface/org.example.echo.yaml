@@ -1,13 +1,24 @@
+org.example.echo.EchoZoned:
+    config_simulator:
+        zones: { left : FrontLeft, right : FrontRight, rear: Rear }
+
+org.example.echo.EchoZoned#stringValue:
+    config_simulator:
+        default: "two"
+
+org.example.echo.EchoZoned#intValue:
+    config_simulator:
+        default: 11
+        range: [10, 33]
 
 org.example.echo.EchoZoned#zonedValue:
     config_simulator:
-        default_value: true
+        default: true
         zoned: true
 
 org.example.echo.EchoZoned#valueWithDefault:
     config_simulator:
-        default_value: true
-
+        default: true
 
 org.example.echo.EchoZoned#unsupportedValue:
     config_simulator:

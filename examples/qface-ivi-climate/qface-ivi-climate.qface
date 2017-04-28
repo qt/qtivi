@@ -21,17 +21,20 @@ interface ClimateControl {
      * @brief value holds the fan speed level, where the level can be between
      * minimumValue(off) to maximumValue (strongest).
      */
+    @config_simulator: { range:[0, 50] }
     int fanSpeedLevel;
     /**
      * @brief value holds the steering wheel heater level, where the level can
      * be between minimumValue(off) to maximumValue (warmest).
      */
+    @config_simulator: { minimum: 0 }
     int steeringWheelHeater;
     /**
      * @brief value holds the target temperature of the zone expressed
      * in centigrades, where the temperature can be between
      * minimumValue(coolest) to maximumValue (warmest).
      */
+    @config_simulator: { maximum: 30 }
     int targetTemperature;
     /**
      * @brief value holds the seat cooler level, where the level can be
@@ -49,6 +52,11 @@ interface ClimateControl {
      * minimumValue(coolest) to maximumValue (warmest).
      */
     int outsideTemperature;
+    /**
+     * @brief outside temp lable
+     */
+    @config_simulator: { domain: ["cold", "mild", "warm" ] }
+    string outsideTemperatureLabel;
     /**
      * @brief value is true if the zone synchronization is enabled.
      *

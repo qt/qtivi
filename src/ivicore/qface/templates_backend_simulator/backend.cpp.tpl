@@ -50,11 +50,11 @@
    \inmodule {{module}}
 {{ utils.format_comments(interface.comment) }}
 */
-{{class}}::{{class}}(QObject *parent) :
-    {{class}}Interface(parent)
+{{class}}::{{class}}(QObject *parent)
+    : {{class}}Interface(parent)
 {% for property in interface.properties %}
 {%   if not property.tags.config_simulator or not property.tags.config_simulator.zoned %}
-    , m_{{ property }}({{property|sim_default_value}})
+    , m_{{ property }}({{property|default_value}})
 {%   endif %}
 {% endfor %}
 {
@@ -64,7 +64,7 @@
     ZoneBackend {{zone_name}}Zone;
 {%   for property in interface.properties %}
 {%     if property.tags.config_simulator and property.tags.config_simulator.zoned %}
-    {{zone_name}}Zone.{{property}} = {{property|sim_default_value}};
+    {{zone_name}}Zone.{{property}} = {{property|default_value}};
 {%     endif %}
 {%   endfor %}
     m_zoneMap.insert("{{zone_id}}", {{zone_name}}Zone);
@@ -147,8 +147,6 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
     qWarning() << "SIMULATION Setting {{ property | upperfirst }} is not supported!";
 
 {%   else %}
-{%     set range_low_val = property|range_low %}
-{%     set range_high_val = property|range_high %}
 {%     set zoned = property.tags.config_simulator and property.tags.config_simulator.zoned %}
 {%     if zoned and interface_zoned %}
     if (!m_zoneMap.contains(zone))
@@ -156,15 +154,7 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 
     if (m_zoneMap[zone].{{property}} == {{property}})
         return;
-{%       if range_low_val and range_high_val %}
-
-    if ({{property}} < {{range_low}} || {{property}} > {{range_high}}) {
-        qWarning() << "SIMULATION {{ property | upperfirst }} change out of range ({{range_low}}-{{range_high}})" << {{property}};
-        emit {{property}}Changed({{property}}, zone);
-        return;
-    }
-{%       endif %}
-
+{% include "backend_range.cpp.tpl" %}
     qWarning() << "SIMULATION {{ property | upperfirst }} for Zone" << zone << "changed to" << {{property}};
 
     m_zoneMap[zone].{{property}} = {{property}};
@@ -173,14 +163,7 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {%     else %}
     if ({% if interface_zoned %}!zone.isEmpty() || {%endif%}m_{{ property }} == {{property}})
         return;
-
-{%       if range_low_val != None and range_high_val != None %}
-    if ({{property}} < {{range_low_val}} || {{property}} > {{range_high_val}}) {
-        qWarning() << "SIMULATION {{ property | upperfirst }} change out of range ({{range_low}}-{{range_high}})" << {{property}};
-        emit {{property}}Changed(m_{{property}}{% if interface_zoned%}, QString(){% endif %});
-        return;
-    }
-{%       endif %}
+{% include "backend_range.cpp.tpl" %}
     qWarning() << "SIMULATION {{ property | upperfirst }} changed to" << {{property}};
 
     m_{{property}} = {{property}};
