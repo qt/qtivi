@@ -24,10 +24,10 @@ interface Echo {
      */
     readonly string lastMessage;
     int intValue;
-    string stringValue;
+    const string stringValue;
 
     string echo(string msg);
-    string id();
+    string id() const;
 }
 
 @config: {"id": "org.foo.idz.1.0", "zoned": true}

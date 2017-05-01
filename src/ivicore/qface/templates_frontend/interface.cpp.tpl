@@ -115,7 +115,7 @@ void {{class}}Private::clearToDefaults()
 
 {% for property in interface.properties %}
 /*! \internal */
-{% if interface.tags.config.zoned %}
+{%   if interface.tags.config.zoned %}
 void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_type}}, const QString &zone)
 {
     auto q = getParent();
@@ -127,7 +127,7 @@ void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_typ
     {{class}}Private::get(f)->m_{{property}} = {{property}};
     emit f->{{property}}Changed({{property}});
 }
-{% else %}
+{%   else %}
 void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_type}})
 {
     if (m_{{property}} != {{property}}) {
@@ -136,7 +136,7 @@ void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_typ
         emit q->{{property}}Changed({{property}});
     }
 }
-{% endif %}
+{%   endif %}
 
 {% endfor %}
 
@@ -184,12 +184,16 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 /*!
     \property {{class}}::{{property}}
 {{ utils.format_comments(property.comment) }}
+{% if property.const %}
+    \note This property is constant and the value will not change once the plugin is initialized.
+{% endif %}
 */
 {{property|return_type}} {{class}}::{{property}}() const
 {
     const auto d = {{class}}Private::get(this);
     return d->m_{{property}};
 }
+{%   if not property.readonly and not property.const %}
 
 void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {
@@ -199,6 +203,7 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
     d->m_{{property}} = {{property}};
     emit {{property}}Changed({{property}});
 }
+{%   endif %}
 
 {% endfor %}
 
@@ -206,15 +211,16 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 /*!
 {{ utils.format_comments(operation.comment) }}
 */
-{{operation|return_type}} {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}})
+{{operation|return_type}} {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){% if operation.const %} const{% endif %}
+
 {
     if ({{class}}BackendInterface *backend = ({{class}}BackendInterface *) this->backend())
 {% if interface.tags.config.zoned %}
-{% if operation.parameters|length %}
+{%   if operation.parameters|length %}
         return backend->{{operation}}({{operation.parameters|join(', ')}}, zone());
-{% else %}
+{%   else %}
         return backend->{{operation}}(zone());
-{% endif %}
+{%   endif %}
 {% else %}
         return backend->{{operation}}({{operation.parameters|join(', ')}});
 {% endif %}

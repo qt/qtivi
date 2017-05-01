@@ -127,6 +127,7 @@ void {{class}}::initialize()
 }
 
 {% for property in interface.properties %}
+{%   if not property.readonly and not property.const %}
 /*!
     \fn virtual void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }}{% if interface_zoned %}, const QString &zone){%endif%})
 
@@ -188,6 +189,7 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {%   endif %}
 }
 
+{% endif %}
 {% endfor %}
 
 {% for operation in interface.operations %}
@@ -203,7 +205,8 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 
 {{ utils.format_comments(operation.comment) }}
 */
-{{operation|return_type}} {{class}}::{{operation}}({{operation_parameters}})
+{{operation|return_type}} {{class}}::{{operation}}({{operation_parameters}}){%if operation.const %} const{% endif %}
+
 {
     qWarning() << "Not implemented!";
     return {{operation|default_value}};

@@ -64,22 +64,24 @@ public:
 
     void initialize() override;
 {% for property in interface.properties %}
-{%   if interface_zoned %}
+{%   if not property.readonly and not property.const %}
+{%     if interface_zoned %}
     virtual void set{{property|upperfirst}}({{ property|parameter_type }}, const QString &zone) override;
-{%   else %}
+{%     else %}
     virtual void set{{property|upperfirst}}({{ property|parameter_type }}) override;
+{%     endif %}
 {%   endif %}
 {% endfor %}
 
 {% for operation in interface.operations %}
 {%   if interface_zoned %}
 {%     if operation.parameters|length %}
-    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}, const QString &zone) override;
+    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}, const QString &zone){%if operation.const %} const{% endif %} override;
 {%     else %}
-    virtual {{operation|return_type}} {{operation}}(const QString &zone) override;
+    virtual {{operation|return_type}} {{operation}}(const QString &zone){%if operation.const %} const{% endif %} override;
 {%     endif %}
 {%   else %}
-    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}) override;
+    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){%if operation.const %} const{% endif %} override;
 {%   endif %}
 {% endfor %}
 

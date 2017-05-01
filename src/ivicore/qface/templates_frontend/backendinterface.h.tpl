@@ -65,21 +65,23 @@ public:
     ~{{class}}();
 
 {% for property in interface.properties %}
-{%   if interface.tags.config.zoned %}
+{%   if not property.readonly and not property.const %}
+{%     if interface.tags.config.zoned %}
     virtual void set{{property|upperfirst}}({{ property|parameter_type }}, const QString &zone) = 0;
-{%   else %}
+{%     else %}
     virtual void set{{property|upperfirst}}({{ property|parameter_type }}) = 0;
+{%     endif %}
 {%   endif %}
 {% endfor %}
 {% for operation in interface.operations %}
 {%   if interface.tags.config.zoned %}
 {%     if operation.parameters|length %}
-    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}, const QString &zone) = 0;
+    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}, const QString &zone){%if operation.const %} const{% endif %} = 0;
 {%     else %}
-    virtual {{operation|return_type}} {{operation}}(const QString &zone) = 0;
+    virtual {{operation|return_type}} {{operation}}(const QString &zone){%if operation.const %} const{% endif %} = 0;
 {%     endif %}
 {%   else %}
-    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}) = 0;
+    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){%if operation.const %} const{% endif %} = 0;
 {%   endif %}
 {% endfor %}
 

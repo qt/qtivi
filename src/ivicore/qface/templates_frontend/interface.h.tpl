@@ -64,7 +64,7 @@ class {{exportsymbol}} {{class}} : public QIviAbstractFeature {
 {% endif %}
     Q_OBJECT
 {% for property in interface.properties %}
-    Q_PROPERTY({{property|return_type}} {{property}} READ {{property}} {% if not property.is_readonly %} WRITE set{{property|upperfirst}} {% endif %}NOTIFY {{property}}Changed)
+    Q_PROPERTY({{property|return_type}} {{property}} READ {{property}}{% if not property.readonly and not property.const %} WRITE set{{property|upperfirst}}{% endif %} NOTIFY {{property}}Changed)
 {% endfor %}
 public:
 {% if interface.tags.config.zoned %}
@@ -82,10 +82,12 @@ public:
 
 public Q_SLOTS:
 {% for operation in interface.operations %}
-    {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}});
+    {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){% if operation.const %} const{% endif %};
 {% endfor %}
 {% for property in interface.properties %}
+{%   if not property.readonly and not property.const %}
     void set{{property|upperfirst}}({{property|parameter_type}});
+{%   endif %}
 {% endfor %}
 
 Q_SIGNALS:
