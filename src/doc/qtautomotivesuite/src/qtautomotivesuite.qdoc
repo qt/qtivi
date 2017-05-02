@@ -57,8 +57,10 @@
         \li \l {Qt GENIVI Extras}{Qt GENIVI Extras Module Reference Documentation}
         \li \l {Qt IVI}{Qt IVI Module Reference Documentation}
         \li \l {Qt Application Manager}
+        \li \l {Qt QmlLive}
         \li \l {Over-The-Air Update}
         \li \l {Qt Web Browser}
+        \li \l {Neptune UI}{Reference UI}
         \li \l {GammaRay}
     \endlist
 */

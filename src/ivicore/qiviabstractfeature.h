@@ -57,8 +57,8 @@ class Q_QTIVICORE_EXPORT QIviAbstractFeature : public QObject, public QQmlParser
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
 
-    Q_PROPERTY(DiscoveryMode discoveryMode READ discoveryMode WRITE setDiscoveryMode NOTIFY discoveryModeChanged)
-    Q_PROPERTY(DiscoveryResult discoveryResult READ discoveryResult NOTIFY discoveryResultChanged)
+    Q_PROPERTY(QIviAbstractFeature::DiscoveryMode discoveryMode READ discoveryMode WRITE setDiscoveryMode NOTIFY discoveryModeChanged)
+    Q_PROPERTY(QIviAbstractFeature::DiscoveryResult discoveryResult READ discoveryResult NOTIFY discoveryResultChanged)
     Q_PROPERTY(QIviServiceObject *serviceObject READ serviceObject WRITE setServiceObject NOTIFY serviceObjectChanged)
     Q_PROPERTY(bool isValid READ isValid NOTIFY isValidChanged)
     Q_PROPERTY(bool isInitialized READ isInitialized NOTIFY isInitializedChanged)

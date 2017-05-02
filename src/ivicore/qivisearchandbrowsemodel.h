@@ -54,7 +54,7 @@ class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModel : public QIviAbstractFeatureLi
 {
     Q_OBJECT
 
-    Q_PROPERTY(Capabilities capabilities READ capabilities NOTIFY capabilitiesChanged)
+    Q_PROPERTY(QIviSearchAndBrowseModel::Capabilities capabilities READ capabilities NOTIFY capabilitiesChanged)
     Q_PROPERTY(QString query READ query WRITE setQuery NOTIFY queryChanged)
     Q_PROPERTY(QString contentType READ contentType WRITE setContentType NOTIFY contentTypeChanged)
     Q_PROPERTY(QStringList availableContentTypes READ availableContentTypes NOTIFY availableContentTypesChanged)
@@ -108,7 +108,7 @@ public:
     explicit QIviSearchAndBrowseModel(QObject *parent = nullptr);
     ~QIviSearchAndBrowseModel();
 
-    Capabilities capabilities() const;
+    QIviSearchAndBrowseModel::Capabilities capabilities() const;
 
     QString query() const;
     void setQuery(const QString &query);
@@ -140,7 +140,7 @@ public:
     Q_INVOKABLE QVariant get(int index) const;
     Q_INVOKABLE void goBack();
     Q_INVOKABLE bool canGoForward(int index) const;
-    Q_INVOKABLE QIviSearchAndBrowseModel *goForward(int index, NavigationType navigationType);
+    Q_INVOKABLE QIviSearchAndBrowseModel *goForward(int index, QIviSearchAndBrowseModel::NavigationType navigationType);
     Q_INVOKABLE void insert(int index, const QVariant &variant);
     Q_INVOKABLE void remove(int index);
     Q_INVOKABLE void move(int cur_index, int new_index);
@@ -152,7 +152,7 @@ public:
     }
 
 Q_SIGNALS:
-    void capabilitiesChanged(Capabilities capabilities);
+    void capabilitiesChanged(QIviSearchAndBrowseModel::Capabilities capabilities);
     void queryChanged(const QString &query);
     void chunkSizeChanged(int chunkSize);
     void countChanged();
