@@ -55,8 +55,6 @@ SOURCES += \
     qivisearchandbrowsemodelitem.cpp \
     qivifeatureinterface.cpp
 
-!contains(CONFIG, no_internal_qface): include(qface/qface_internal_build.pri)
-include(qface/qface.pri)
 include(queryparser/queryparser.pri)
 
 load(qt_module)

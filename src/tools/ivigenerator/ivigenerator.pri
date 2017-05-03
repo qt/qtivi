@@ -2,4 +2,4 @@
 QFACE_SOURCES = $$PWD/example/com.pelagicore.ivi.climate.qface
 QFACE_MODULE_NAME = "climate"
 
-include(qface.prf)
+include(ivigenerator.prf)

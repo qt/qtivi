@@ -11,9 +11,10 @@ QT_FOR_CONFIG += geniviextras-private
               ivimedia \
               plugins \
               imports \
-              doc
+              doc \
+              tools
 
-    ivivehiclefunctions.depends = ivicore
+    ivivehiclefunctions.depends = ivicore tools
     ivimedia.depends = ivicore
     plugins.depends = ivivehiclefunctions ivimedia
     imports.depends = ivivehiclefunctions ivimedia

@@ -55,7 +55,7 @@ checkFileCount() {
     test ${FILECOUNT} -eq ${2} || die "Not a correct number of files (${2} expected)" 1
 }
 
-QFACE_INIT_SCRIPT="src/ivicore/qtivi_qface_virtualenv/bin/activate"
+QFACE_INIT_SCRIPT="src/tools/ivigenerator/qtivi_qface_virtualenv/bin/activate"
 # Load virtualenv where qface is installed to
 if [ -f $QFACE_INIT_SCRIPT ]; then
     . $QFACE_INIT_SCRIPT
@@ -64,7 +64,7 @@ else
 fi
 
 WORKDIR=$(dirname $0)
-GENERATOR=${WORKDIR}/../../../src/ivicore/qface/generate.py
+GENERATOR=${WORKDIR}/../../../src/tools/ivigenerator/generate.py
 test -x ${GENERATOR} || die "${GENERATOR} does not exists or can't be executed" 1
 for idlfile in org.example.echo org.example.echo.noprivate
 do
