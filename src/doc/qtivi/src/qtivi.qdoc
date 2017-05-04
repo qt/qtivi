@@ -100,4 +100,19 @@
       \li \l {Qt IVI QML Types}
       \li \l {Qt IVI Examples}
     \endlist
+
+    \section1 Licenses and Attributions
+
+    Qt IVI is available under commercial Qt Automotive Suite licenses.
+    In addition, it is available under the \l{GNU Lesser General Public License, version 3}, or
+    See \l{Qt Licensing} for further details.
+
+    Executables on Windows potentially link against \l{The qtmain Library}. This library is available
+    under commercial licenses, and in addition under the \l{BSD 3-clause "New" or "Revised" License}.
+
+    Furthermore Qt IVI potentially contains third party modules under following
+    permissive licenses:
+
+    \generatelist{groupsbymodule attributions-qtivi}
+
 */
