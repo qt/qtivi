@@ -201,6 +201,8 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
     if (d->m_{{property}} == {{property}})
         return;
     d->m_{{property}} = {{property}};
+    if ({{class}}BackendInterface *backend = dynamic_cast<{{class}}BackendInterface *>(this->backend()))
+        backend->set{{property|upperfirst}}({{property}}{% if interface.tags.config.zoned %}, zone(){% endif %});
     emit {{property}}Changed({{property}});
 }
 {%   endif %}
