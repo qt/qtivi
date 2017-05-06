@@ -62,11 +62,17 @@ QIviAbstractFeaturePrivate::QIviAbstractFeaturePrivate(const QString &interface,
     , m_error(QIviAbstractFeature::NoError)
     , m_qmlCreation(false)
     , m_isInitialized(false)
+    , m_propertyOverride(nullptr)
 {
 }
 
 void QIviAbstractFeaturePrivate::initialize()
 {
+}
+
+QIviAbstractFeaturePrivate *QIviAbstractFeaturePrivate::get(QIviAbstractFeature *q)
+{
+    return static_cast<QIviAbstractFeaturePrivate *>(q->d_ptr.data());
 }
 
 void QIviAbstractFeaturePrivate::setDiscoveryResult(QIviAbstractFeature::DiscoveryResult discoveryResult)

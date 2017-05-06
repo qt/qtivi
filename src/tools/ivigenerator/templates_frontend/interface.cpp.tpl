@@ -191,6 +191,8 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 {{property|return_type}} {{class}}::{{property}}() const
 {
     const auto d = {{class}}Private::get(this);
+    if (Q_UNLIKELY(d->m_propertyOverride))
+        return d->m_propertyOverride->property(metaObject()->indexOfProperty("{{property}}")).value<{{property|return_type}}>();
     return d->m_{{property}};
 }
 {%   if not property.readonly and not property.const %}
@@ -200,9 +202,14 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
     auto d = {{class}}Private::get(this);
     if (d->m_{{property}} == {{property}})
         return;
-    d->m_{{property}} = {{property}};
-    if ({{class}}BackendInterface *backend = dynamic_cast<{{class}}BackendInterface *>(this->backend()))
-        backend->set{{property|upperfirst}}({{property}}{% if interface.tags.config.zoned %}, zone(){% endif %});
+    if (Q_UNLIKELY(d->m_propertyOverride)) {
+        QVariant v = qVariantFromValue<{{property|return_type}}>({{property}});
+        d->m_propertyOverride->setProperty(metaObject()->indexOfProperty("{{property}}"), v);
+    } else {
+        if ({{class}}BackendInterface *backend = qobject_cast<{{class}}BackendInterface *>(this->backend()))
+            backend->set{{property|upperfirst}}({{property}}{% if interface.tags.config.zoned %}, zone(){% endif %});
+        d->m_{{property}} = {{property}};
+    }
     emit {{property}}Changed({{property}});
 }
 {%   endif %}
