@@ -58,3 +58,9 @@ qtivi_qface_install.commands = $$VIRTUALENV_ACTIVATION \
 QMAKE_EXTRA_TARGETS += qtivi_qface_install
 
 PRE_TARGETDEPS += $${qtivi_qface_install.target}
+
+virtualenv.files = $$OUT_PWD/qtivi_qface_virtualenv
+virtualenv.path = $$[QT_HOST_BINS]/ivigenerator
+virtualenv.CONFIG = no_check_exist directory no_build
+
+INSTALLS += virtualenv
