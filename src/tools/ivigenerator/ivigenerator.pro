@@ -44,3 +44,17 @@ generator.files += \
 generator.path = $$[QT_HOST_BINS]/ivigenerator
 
 INSTALLS += templates_frontend templates_backend_simulator generator
+
+# Ensure files are installed to qtbase for non-prefixed builds
+!force_independent:if(!debug_and_release|!build_all|CONFIG(release, debug|release)) {
+    for (install_target, INSTALLS) {
+        path = $$eval($${install_target}.path)
+        $${install_target}_copy.input = $${install_target}.files
+        $${install_target}_copy.output = $$path/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+        contains($${install_target}.CONFIG, directory): $${install_target}_copy.commands = $$QMAKE_COPY_DIR ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
+        else: $${install_target}_copy.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
+        $${install_target}_copy.name = COPY ${QMAKE_FILE_IN}
+        $${install_target}_copy.CONFIG = no_link target_predeps no_clean
+        QMAKE_EXTRA_COMPILERS += $${install_target}_copy
+    }
+}
