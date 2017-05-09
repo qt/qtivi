@@ -13,10 +13,16 @@ isEmpty(QFACE_SOURCES): error("QFACE_SOURCES must be set!")
 # TODO get rid of this, and use the qface file name without extension by default
 isEmpty(QFACE_MODULE_NAME): error("QFACE_MODULE_NAME must be set!")
 
-IVI_GENERATOR_PATH = $$[QT_HOST_BINS]/ivigenerator
-win32: VIRTUALENV_ACTIVATION =  $$IVI_GENERATOR_PATH/qtivi_qface_virtualenv/Scripts/activate &&
-else: VIRTUALENV_ACTIVATION = . $$IVI_GENERATOR_PATH/qtivi_qface_virtualenv/bin/activate &&
-IVI_GENERATOR = $$VIRTUALENV_ACTIVATION python3 $$[QT_HOST_BINS]/ivigenerator/generate.py
+# Detect whether we are using the feature inside the qtivi repository
+isEmpty(QTIVI_BUILD_ROOT): VIRTUALENV_PATH = $$[QT_HOST_BINS]/ivigenerator/qtivi_qface_virtualenv
+else: VIRTUALENV_PATH = $$QTIVI_BUILD_ROOT/src/tools/ivigenerator/qtivi_qface_virtualenv
+
+isEmpty(QTIVI_ROOT): IVI_GENERATOR_PATH = $$[QT_HOST_BINS]/ivigenerator
+else: IVI_GENERATOR_PATH = $$QTIVI_ROOT/src/tools/ivigenerator
+
+win32: VIRTUALENV_ACTIVATION =  $$VIRTUALENV_PATH/Scripts/activate &&
+else: VIRTUALENV_ACTIVATION = . $$VIRTUALENV_PATH/bin/activate &&
+IVI_GENERATOR = $$VIRTUALENV_ACTIVATION python3 $$IVI_GENERATOR_PATH/generate.py
 
 # TODO make this work with multiple input files, or only support one QFACE_SOURCE
 qface_sources.output = $$QFACE_OUTPUT_DIR/$${QFACE_MODULE_NAME}.pri
