@@ -1,5 +1,6 @@
 {#
 # Copyright (C) 2017 Pelagicore AG.
+# Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB)
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -36,79 +37,59 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% set class = '{0}Module'.format(module.module_name) %}
+{% set class = '{0}'.format(struct) %}
 {% include 'generated_comment.cpp.tpl' %}
 {% import 'utils.tpl' as utils %}
 
 #include "{{class|lower}}.h"
 
-#include <QQmlEngine>
-
-{% for interface in module.interfaces %}
-#include "{{interface|lower}}.h"
-{% endfor %}
-
 QT_BEGIN_NAMESPACE
 
-/*! \internal */
-QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
-{
-    return new {{class}}();
-}
-
 /*!
-    \class {{class}}
+    \class {{struct}}
     \inmodule {{module}}
-
-{{ utils.format_comments(module.comment) }}
+{{ utils.format_comments(struct.comment) }}
 */
-{{class}}::{{class}}(QObject *parent)
-    : Abstract{{class}}(parent)
+
+{{class}}::{{class}}()
+{% for field in struct.fields %}
+    {% if loop.first %}:{% else %},{% endif %} m_{{field}}({{field|default_type_value}})
+{% endfor %}
+{
+}
+
+{{class}}::{{class}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %})
+{% for field in struct.fields %}
+    {% if loop.first %}:{% else %},{% endif %} m_{{field}}({{field}})
+{% endfor %}
 {
 }
 
 /*! \internal */
-void {{class}}::registerTypes()
+{{class}}::~{{class}}()
 {
-{% for enum in module.enums %}
-    qRegisterMetaType<{{class}}::{{enum}}>();
-{% endfor %}
-{% for struct in module.structs %}
-    qRegisterMetaType<{{struct}}>();
-{% endfor %}
 }
 
-/*! \internal */
-void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minorVersion)
-{
-    qmlRegisterSingletonType<{{class}}>(uri.toLatin1(), majorVersion, minorVersion,
-                                        "{{module.module_name}}Module",
-                                        {{class|lower}}_singletontype_provider);
-{% for interface in module.interfaces %}
-    {{interface}}::registerQmlTypes(uri, majorVersion, minorVersion);
-{% endfor %}
-}
-
-{% for struct in module.structs %}
-/*!
-    \brief Generate default instance of {{struct}}.
-
-    \sa {{struct}}
-*/
-{{struct}} {{class}}::{{struct|lowerfirst}}() const
-{
-    return {{struct}}();
-}
+{% for field in struct.fields %}
 
 /*!
-    \brief Generate instance of {{struct}} using attributes.
-
-    \sa {{struct}}
+    \property {{class}}::{{field}}
+{{ utils.format_comments(field.comment) }}
+{% if field.const %}
+    \note This property is constant and the value will not change once an instance has been created.
+{% endif %}
 */
-{{struct}} {{class}}::{{struct|lowerfirst}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %}) const
+{{field|return_type}} {{class}}::{{field}}() const
 {
-    return {{struct}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field}}{% endfor %});
+    return m_{{field}};
 }
+{%   if not field.readonly and not field.const %}
+
+void {{class}}::set{{field|upperfirst}}({{ field|parameter_type }})
+{
+    m_{{field}} = {{field}};
+}
+{%   endif %}
 
 {% endfor %}
 

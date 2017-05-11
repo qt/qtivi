@@ -47,6 +47,10 @@ HEADERS += \
     $$PWD/{{interface|lower}}_p.h \
     $$PWD/{{interface|lower}}backendinterface.h \
 {% endfor %}
+{% for struct in module.structs %}
+    $$PWD/{{struct|lower}}.h \
+{% endfor %}
+    $$PWD/abstract{{module.module_name|lower}}module.h \
     $$PWD/{{module.module_name|lower}}module.h \
     $$PWD/{{module.module_name|lower}}global.h
 
@@ -55,4 +59,8 @@ SOURCES += \
     $$PWD/{{interface|lower}}.cpp \
     $$PWD/{{interface|lower}}backendinterface.cpp \
 {% endfor %}
+{% for struct in module.structs %}
+    $$PWD/{{struct|lower}}.cpp \
+{% endfor %}
+    $$PWD/abstract{{module.module_name|lower}}module.cpp \
     $$PWD/{{module.module_name|lower}}module.cpp

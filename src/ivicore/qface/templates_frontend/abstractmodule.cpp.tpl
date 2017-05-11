@@ -36,25 +36,13 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% set class = '{0}Module'.format(module.module_name) %}
+{% set class = 'Abstract{0}Module'.format(module.module_name) %}
 {% include 'generated_comment.cpp.tpl' %}
 {% import 'utils.tpl' as utils %}
 
 #include "{{class|lower}}.h"
 
-#include <QQmlEngine>
-
-{% for interface in module.interfaces %}
-#include "{{interface|lower}}.h"
-{% endfor %}
-
 QT_BEGIN_NAMESPACE
-
-/*! \internal */
-QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
-{
-    return new {{class}}();
-}
 
 /*!
     \class {{class}}
@@ -63,53 +51,8 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
 {{ utils.format_comments(module.comment) }}
 */
 {{class}}::{{class}}(QObject *parent)
-    : Abstract{{class}}(parent)
+    : QObject(parent)
 {
 }
-
-/*! \internal */
-void {{class}}::registerTypes()
-{
-{% for enum in module.enums %}
-    qRegisterMetaType<{{class}}::{{enum}}>();
-{% endfor %}
-{% for struct in module.structs %}
-    qRegisterMetaType<{{struct}}>();
-{% endfor %}
-}
-
-/*! \internal */
-void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minorVersion)
-{
-    qmlRegisterSingletonType<{{class}}>(uri.toLatin1(), majorVersion, minorVersion,
-                                        "{{module.module_name}}Module",
-                                        {{class|lower}}_singletontype_provider);
-{% for interface in module.interfaces %}
-    {{interface}}::registerQmlTypes(uri, majorVersion, minorVersion);
-{% endfor %}
-}
-
-{% for struct in module.structs %}
-/*!
-    \brief Generate default instance of {{struct}}.
-
-    \sa {{struct}}
-*/
-{{struct}} {{class}}::{{struct|lowerfirst}}() const
-{
-    return {{struct}}();
-}
-
-/*!
-    \brief Generate instance of {{struct}} using attributes.
-
-    \sa {{struct}}
-*/
-{{struct}} {{class}}::{{struct|lowerfirst}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %}) const
-{
-    return {{struct}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field}}{% endfor %});
-}
-
-{% endfor %}
 
 QT_END_NAMESPACE

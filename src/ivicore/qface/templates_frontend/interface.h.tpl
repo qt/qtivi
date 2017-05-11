@@ -44,7 +44,7 @@
 #ifndef {{oncedefine}}
 #define {{oncedefine}}
 
-#include "{{module.module_name|lower}}module.h"
+#include "abstract{{module.module_name|lower}}module.h"
 
 {% if interface.tags.config.zoned %}
 #include <QtIviCore/QIviAbstractZonedFeature>

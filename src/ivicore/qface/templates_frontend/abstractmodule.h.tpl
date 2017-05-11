@@ -36,80 +36,42 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% set class = '{0}Module'.format(module.module_name) %}
+{% set exportsymbol = 'Q_QT{0}_EXPORT'.format(module.module_name|upper) %}
+{% set class = 'Abstract{0}Module'.format(module.module_name) %}
+{% set oncedefine = '{0}_H_'.format(class|upper) %}
 {% include 'generated_comment.cpp.tpl' %}
 {% import 'utils.tpl' as utils %}
 
-#include "{{class|lower}}.h"
+#ifndef {{oncedefine}}
+#define {{oncedefine}}
 
-#include <QQmlEngine>
-
-{% for interface in module.interfaces %}
-#include "{{interface|lower}}.h"
-{% endfor %}
+#include "{{module.module_name|lower}}global.h"
+#include <QObject>
 
 QT_BEGIN_NAMESPACE
 
-/*! \internal */
-QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
-{
-    return new {{class}}();
-}
+class {{exportsymbol}} {{class}} : public QObject {
+    Q_OBJECT
+public:
 
-/*!
-    \class {{class}}
-    \inmodule {{module}}
-
-{{ utils.format_comments(module.comment) }}
-*/
-{{class}}::{{class}}(QObject *parent)
-    : Abstract{{class}}(parent)
-{
-}
-
-/*! \internal */
-void {{class}}::registerTypes()
-{
 {% for enum in module.enums %}
-    qRegisterMetaType<{{class}}::{{enum}}>();
+{% if enum.comment %}
+    /*!
+ {{ utils.format_comments(enum.comment) }}
+     */
+{% endif %}
+    enum {{enum}} {
+        {% for member in enum.members %}
+        {{member.name}} = {{member.value}}, {{member.comment}}
+        {% endfor %}
+    };
+    Q_ENUM({{enum}})
 {% endfor %}
-{% for struct in module.structs %}
-    qRegisterMetaType<{{struct}}>();
-{% endfor %}
-}
 
-/*! \internal */
-void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minorVersion)
-{
-    qmlRegisterSingletonType<{{class}}>(uri.toLatin1(), majorVersion, minorVersion,
-                                        "{{module.module_name}}Module",
-                                        {{class|lower}}_singletontype_provider);
-{% for interface in module.interfaces %}
-    {{interface}}::registerQmlTypes(uri, majorVersion, minorVersion);
-{% endfor %}
-}
-
-{% for struct in module.structs %}
-/*!
-    \brief Generate default instance of {{struct}}.
-
-    \sa {{struct}}
-*/
-{{struct}} {{class}}::{{struct|lowerfirst}}() const
-{
-    return {{struct}}();
-}
-
-/*!
-    \brief Generate instance of {{struct}} using attributes.
-
-    \sa {{struct}}
-*/
-{{struct}} {{class}}::{{struct|lowerfirst}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %}) const
-{
-    return {{struct}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field}}{% endfor %});
-}
-
-{% endfor %}
+protected:
+    {{class}}(QObject *parent=nullptr);
+};
 
 QT_END_NAMESPACE
+
+#endif // {{oncedefine}}

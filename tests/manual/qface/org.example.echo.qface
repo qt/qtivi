@@ -72,3 +72,12 @@ flag AirflowDirection {
      */
     Floor = 4
 }
+
+/**
+ * The contact information
+ */
+struct Contact {
+    string name;
+    int age;
+    bool isMarried;
+}

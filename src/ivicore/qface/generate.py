@@ -226,12 +226,14 @@ def generate(tplconfig, moduleConfig, src, dst):
             for rule in gen_config['generate_rules']['interface_rules']:
                 preserve = rule['preserve'] if 'preserve' in rule else False
                 generator.write(rule['dest_file'], rule['template_file'], ctx, preserve)
-        for struct in module.structs:
-            log.debug('generate code for struct %s', struct)
-            struct.add_tag('config')
-            for rule in gen_config['generate_rules']['struct_rules']:
-                preserve = rule['preserve'] if 'preserve' in rule else False
-                generator.write(rule['dest_file'], rule['template_file'], ctx, preserve)
+        if 'struct_rules' in gen_config['generate_rules'] and isinstance(gen_config['generate_rules']['struct_rules'], list):
+            for struct in module.structs:
+                log.debug('generate code for struct %s', struct)
+                struct.add_tag('config')
+                ctx.update({'struct': struct})
+                for rule in gen_config['generate_rules']['struct_rules']:
+                    preserve = rule['preserve'] if 'preserve' in rule else False
+                    generator.write(rule['dest_file'], rule['template_file'], ctx, preserve)
 
 
 def run(formats, moduleConfig, src, dst):

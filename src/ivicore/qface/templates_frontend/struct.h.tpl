@@ -1,5 +1,6 @@
 {#
 # Copyright (C) 2017 Pelagicore AG.
+# Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB)
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -36,80 +37,46 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% set class = '{0}Module'.format(module.module_name) %}
+{% set class = '{0}'.format(struct) %}
+{% set oncedefine = '{0}_{1}_H_'.format(module.module_name|upper, class|upper) %}
+{% set exportsymbol = 'Q_QT{0}_EXPORT'.format(module.module_name|upper) %}
 {% include 'generated_comment.cpp.tpl' %}
-{% import 'utils.tpl' as utils %}
 
-#include "{{class|lower}}.h"
+#ifndef {{oncedefine}}
+#define {{oncedefine}}
 
-#include <QQmlEngine>
-
-{% for interface in module.interfaces %}
-#include "{{interface|lower}}.h"
-{% endfor %}
+#include "abstract{{module.module_name|lower}}module.h"
+#include <QObject>
 
 QT_BEGIN_NAMESPACE
 
-/*! \internal */
-QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
+class  {{exportsymbol}} {{class}}
 {
-    return new {{class}}();
-}
-
-/*!
-    \class {{class}}
-    \inmodule {{module}}
-
-{{ utils.format_comments(module.comment) }}
-*/
-{{class}}::{{class}}(QObject *parent)
-    : Abstract{{class}}(parent)
-{
-}
-
-/*! \internal */
-void {{class}}::registerTypes()
-{
-{% for enum in module.enums %}
-    qRegisterMetaType<{{class}}::{{enum}}>();
+    Q_GADGET
+{% for field in struct.fields %}
+    Q_PROPERTY({{field|return_type}} {{field}} READ {{field}}{% if not field.readonly and not field.const %} WRITE set{{field|upperfirst}}{% endif %})
 {% endfor %}
-{% for struct in module.structs %}
-    qRegisterMetaType<{{struct}}>();
+    Q_CLASSINFO("IviPropertyDomains", "{{ struct.fields|json_domain|replace("\"", "\\\"") }}")
+public:
+    {{class}}();
+    {{class}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %});
+    ~{{class}}();
+
+{% for field in struct.fields %}
+    {{field|return_type}} {{field}}() const;
+{%   if not field.readonly and not field.const %}
+    void set{{field|upperfirst}}({{field|parameter_type}});
+{%   endif %}
 {% endfor %}
-}
 
-/*! \internal */
-void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minorVersion)
-{
-    qmlRegisterSingletonType<{{class}}>(uri.toLatin1(), majorVersion, minorVersion,
-                                        "{{module.module_name}}Module",
-                                        {{class|lower}}_singletontype_provider);
-{% for interface in module.interfaces %}
-    {{interface}}::registerQmlTypes(uri, majorVersion, minorVersion);
+private:
+{% for field in struct.fields %}
+    {{field|return_type}} m_{{field}};
 {% endfor %}
-}
-
-{% for struct in module.structs %}
-/*!
-    \brief Generate default instance of {{struct}}.
-
-    \sa {{struct}}
-*/
-{{struct}} {{class}}::{{struct|lowerfirst}}() const
-{
-    return {{struct}}();
-}
-
-/*!
-    \brief Generate instance of {{struct}} using attributes.
-
-    \sa {{struct}}
-*/
-{{struct}} {{class}}::{{struct|lowerfirst}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %}) const
-{
-    return {{struct}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field}}{% endfor %});
-}
-
-{% endfor %}
+};
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE({{class}})
+
+#endif // {{oncedefine}}
