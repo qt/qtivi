@@ -65,16 +65,18 @@ fi
 
 WORKDIR=$(dirname $0)
 GENERATOR=${WORKDIR}/../../../../src/tools/ivigenerator/generate.py
+TEST_FILES=(org.example.echo) # org.example.echo.noprivate)
 test -x ${GENERATOR} || die "${GENERATOR} does not exists or can't be executed" 1
-for idlfile in org.example.echo org.example.echo.noprivate
+for idlfile in "${TEST_FILES[@]}"
 do
     echo "Testing '$idlfile' ================"
     idldir=$(echo $idlfile | tr . -)
     out_dir=${WORKDIR}/projects/${idldir}
     /bin/rm -rf ${out_dir}/frontend/*.{h,cpp,pri}
     /bin/rm -rf ${out_dir}/backend_simulator/*.{h,cpp,pri}
-    ${GENERATOR} --format=frontend ${WORKDIR}/${idlfile}.qface ${out_dir}/frontend || die "Generator failed" 1
+    ${GENERATOR} --format=frontend --validation_info=True ${WORKDIR}/${idlfile}.qface ${out_dir}/frontend || die "Generator failed" 1
     ${GENERATOR} --format=backend_simulator ${WORKDIR}/${idlfile}.qface ${out_dir}/backend_simulator || die "Generator for backend failed" 1
+    ${GENERATOR} --format=generation_validator ${WORKDIR}/${idlfile}.qface ${out_dir}/ui || die "Generator for validator failed" 1
     test -d build/${idldir} && /bin/rm -rf build/${idldir}
     test -d build/${idldir} && die "Cannot remove existing build folder" 1
     mkdir -p build/${idldir} || die "Cannot create build folder" 1
@@ -82,11 +84,24 @@ do
     project_dir=../../projects/${idldir}
     qmake ${project_dir}/${idldir}-project.pro || die "Failed to run qmake" 1
     make || die "Failed to build" 1
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    OLD_LD_PATH=$LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=./out:$LD_LIBRARY_PATH
+    #./out/ui || die "Test failed"
+    export LD_LIBRARY_PATH=${OLD_LD_PATH}
+
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    OLD_DYLD_PATH=$DYLD_LIBRARY_PATH
+    export DYLD_LIBRARY_PATH=./out:$DYLD_LIBRARY_PATH
+    #./out/ui.app/Contents/MacOS/ui || die "Test failed"
+    export DYLD_LIBRARY_PATH=${OLD_DYLD_PATH}
+fi
+
     popd
     echo "Done '$idlfile' ================"
 done
 
-for idlfile in org.example.echo org.example.echo.noprivate
+for idlfile in "${TEST_FILES[@]}"
 do
     echo "Testing '$idlfile' backend_simulator ================"
     idldir=$(echo $idlfile | tr . -)

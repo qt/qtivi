@@ -67,6 +67,9 @@ class {{exportsymbol}} {{class}} : public QIviAbstractFeature {
     Q_PROPERTY({{property|return_type}} {{property}} READ {{property}}{% if not property.readonly and not property.const %} WRITE set{{property|upperfirst}}{% endif %} NOTIFY {{property}}Changed)
 {% endfor %}
     Q_CLASSINFO("IviPropertyDomains", "{{ interface.properties|json_domain|replace("\"", "\\\"") }}")
+{% if interface.module.tags.config.validation_info %}
+    Q_CLASSINFO("IviJson", "{{ module|jsonify|replace("\"", "\\\"")|replace("\n", " \\\n") }}")
+{% endif %}
 public:
 {% if interface.tags.config.zoned %}
     explicit {{class}}(const QString &zone = QString(), QObject *parent = nullptr);

@@ -43,6 +43,7 @@ import logging.config
 import yaml
 import json
 from path import Path
+from qface.filters import jsonify
 
 from qface.generator import FileSystem, Generator
 from qface.helper.qtcpp import Filters
@@ -242,6 +243,7 @@ def generate(tplconfig, moduleConfig, src, dst):
     generator.register_filter("enum_value", enum_value)
     generator.register_filter("tag_by_path", tag_by_path)
     generator.register_filter("conf_sim_tag", conf_sim_tag)
+    generator.register_filter('jsonify', jsonify)
     generator.register_filter('has_domains', has_domains)
     generator.register_filter('json_domain', json_domain)
     generator.register_filter('qml_type', qml_type)
@@ -266,7 +268,9 @@ def generate(tplconfig, moduleConfig, src, dst):
             log.debug('generate backend code for interface %s', interface)
             interface.add_tag('config')
             ctx.update({'interface': interface})
-            for rule in gen_config['generate_rules']['interface_rules']:
+            interface_rules = gen_config['generate_rules']['interface_rules']
+            if interface_rules is None: interface_rules = []
+            for rule in interface_rules:
                 preserve = rule['preserve'] if 'preserve' in rule else False
                 generator.write(rule['dest_file'], rule['template_file'], ctx, preserve)
         if 'struct_rules' in gen_config['generate_rules'] and isinstance(gen_config['generate_rules']['struct_rules'], list):
@@ -284,7 +288,7 @@ def run(formats, moduleConfig, src, dst):
         switcher = {
             'frontend': 'templates_frontend',
             'backend_simulator': 'templates_backend_simulator',
-            'test': 'templates_test',
+            'generation_validator': 'templates_generation_validator'
         }
         tplConfig = switcher.get(f, 'unknown')
         if tplConfig == 'unknown':
@@ -295,11 +299,12 @@ def run(formats, moduleConfig, src, dst):
 
 @click.command()
 @click.option('--reload/--no-reload', default=False)
-@click.option('--format', '-f', multiple=True, type=click.Choice(['frontend', 'backend_simulator', 'test']))
+@click.option('--format', '-f', multiple=True, type=click.Choice(['frontend', 'backend_simulator', 'generation_validator']))
 @click.option('--module', default=False)
+@click.option('--validation_info', default=False)
 @click.argument('src', nargs=-1, type=click.Path(exists=True))
 @click.argument('dst', nargs=1, type=click.Path(exists=True))
-def app(src, dst, format, reload, module):
+def app(src, dst, format, reload, module, validation_info):
     """Takes several files or directories as src and generates the code
     in the given dst directory."""
     if reload:
@@ -307,7 +312,8 @@ def app(src, dst, format, reload, module):
         monitor(src, script)
     else:
         moduleConfig = {
-            "module": module
+            "module": module,
+            "validation_info": validation_info
         }
         run(format, moduleConfig, src, dst)
 
