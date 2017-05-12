@@ -10,8 +10,17 @@
 isEmpty(QFACE_FORMAT): QFACE_FORMAT = frontend
 isEmpty(QFACE_OUTPUT_DIR): QFACE_OUTPUT_DIR = $$OUT_PWD
 isEmpty(QFACE_SOURCES): error("QFACE_SOURCES must be set!")
-# TODO get rid of this, and use the qface file name without extension by default
-isEmpty(QFACE_MODULE_NAME): error("QFACE_MODULE_NAME must be set!")
+
+!contains(QFACE_SOURCES, .+\\.qface$) {
+    error("Invalid qface file provided: The file needs to end with .qface")
+}
+
+QFACE_BASE_NAME = $$replace(QFACE_SOURCES, .qface, )
+isEmpty(QFACE_MODULE_NAME): QFACE_MODULE_NAME = $$QFACE_BASE_NAME
+
+exists($$_PRO_FILE_PWD_/$${QFACE_BASE_NAME}.yaml) {
+    OTHER_FILES += $$_PRO_FILE_PWD_/$${QFACE_BASE_NAME}.yaml
+}
 
 # Detect whether we are using the feature inside the qtivi repository
 isEmpty(QTIVI_BUILD_ROOT): VIRTUALENV_PATH = $$[QT_HOST_BINS]/ivigenerator/qtivi_qface_virtualenv
