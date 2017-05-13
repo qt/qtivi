@@ -15,7 +15,9 @@ isEmpty(QFACE_SOURCES): error("QFACE_SOURCES must be set!")
     error("Invalid qface file provided: The file needs to end with .qface")
 }
 
-QFACE_BASE_NAME = $$replace(QFACE_SOURCES, .qface, )
+QFACE_PWD = $$dirname(QFACE_SOURCES)
+QFACE_FILE = $$basename(QFACE_SOURCES)
+QFACE_BASE_NAME = $$replace(QFACE_FILE, .qface, )
 isEmpty(QFACE_MODULE_NAME): QFACE_MODULE_NAME = $$QFACE_BASE_NAME
 
 exists($$_PRO_FILE_PWD_/$${QFACE_BASE_NAME}.yaml) {

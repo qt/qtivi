@@ -46,14 +46,13 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-TEMPLATE = subdirs
+TARGET = QtIviClimateExample
+TEMPLATE = lib
+CONFIG += ivigenerator
 
-SUBDIRS = frontend \
-          backend_simulator \
-          demo
+QT += ivicore ivicore-private qml quick
 
-CONFIG += ordered
+QFACE_SOURCES = ../example-ivi-climate.qface
 
-OTHER_FILES += \
-    qface-ivi-climate.qface \
-    qface-ivi-climate.yaml
+target.path = $$[QT_INSTALL_EXAMPLES]/core/qface-ivi-climate/frontend
+INSTALLS += target

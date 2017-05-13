@@ -46,9 +46,14 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-TARGET = QtIviClimateExample
-TEMPLATE = lib
+TEMPLATE = subdirs
 
-QT += ivicore ivicore-private qml quick
+SUBDIRS = frontend \
+          backend_simulator \
+          demo
 
-include(example-ivi-climate.pri)
+CONFIG += ordered
+
+OTHER_FILES += \
+    example-ivi-climate.qface \
+    example-ivi-climate.yaml
