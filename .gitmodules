@@ -1,0 +1,4 @@
+[submodule "src/3rdparty/qface"]
+	path = src/3rdparty/qface
+	url = ../qtivi-qface.git
+	branch = upstream/master

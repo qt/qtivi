@@ -55,6 +55,14 @@ checkFileCount() {
     test ${FILECOUNT} -eq ${2} || die "Not a correct number of files (${2} expected)" 1
 }
 
+QFACE_INIT_SCRIPT="src/ivicore/qtivi_qface_virtualenv/bin/activate"
+# Load virtualenv where qface is installed to
+if [ -f $QFACE_INIT_SCRIPT ]; then
+    . $QFACE_INIT_SCRIPT
+else
+    echo "Warning: Can't find qface virtualenv activate script: $QFACE_INIT_SCRIPT"
+fi
+
 WORKDIR=$(dirname $0)
 GENERATOR=${WORKDIR}/../../../src/ivicore/qface/generate.py
 test -x ${GENERATOR} || die "${GENERATOR} does not exists or can't be executed" 1
