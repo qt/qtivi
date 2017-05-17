@@ -13,7 +13,7 @@ module org.example.echo 1.0
  * @see http://qt.io
  * @anything hello
  */
-@config: {id: "org.foo.id.1.0"}
+@config: {id: "org.foo.id.1.0", qml_class_name: "UiEcho"}
 interface Echo {
     /**
      * @brief brief message

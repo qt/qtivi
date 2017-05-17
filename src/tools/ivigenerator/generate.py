@@ -204,6 +204,19 @@ def lower_first_filter(s):
     return s[0].lower() + s[1:]
 
 
+def qml_type(interface):
+    """
+    :param interface:
+    :return: Returns the name of the interface for using in QML. This name is defined in the IDL under
+    the "config" tag as "qml_type". This annotation is optional, if not provided, the interface name is
+    used.
+    """
+    result = interface.name
+    if 'qml_type' in interface.tags['config']:
+        result = interface.tags['config']['qml_type']
+    return result
+
+
 def model_type(symbol):
     module_name = symbol.module.module_name
     if symbol.type.is_model:
@@ -231,6 +244,7 @@ def generate(tplconfig, moduleConfig, src, dst):
     generator.register_filter("conf_sim_tag", conf_sim_tag)
     generator.register_filter('has_domains', has_domains)
     generator.register_filter('json_domain', json_domain)
+    generator.register_filter('qml_type', qml_type)
 
     ctx = {'dst': dst, 'qtASVersion': QT_AS_VERSION}
     gen_config = yaml.load(open(here / '{0}.yaml'.format(tplconfig)))

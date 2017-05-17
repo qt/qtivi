@@ -181,7 +181,7 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 {% if 'singleton' in interface.tags %}
     qmlRegisterSingletonType<{{class}}>(uri.toLatin1(), majorVersion, minorVersion, "{{interface}}", {{class|lower}}_singletontype_provider);
 {% else %}
-    qmlRegisterType<{{class}}>(uri.toLatin1(), majorVersion, minorVersion, "{{interface}}");
+    qmlRegisterType<{{class}}>(uri.toLatin1(), majorVersion, minorVersion, "{{interface|qml_type}}");
 {% endif %}
 }
 
