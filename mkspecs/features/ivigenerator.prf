@@ -2,7 +2,7 @@
 #
 # Example input:
 #   QFACE_SOURCES += my.foo.qface [required]
-#   QFACE_MODULE_NAME = my_module_name [required]
+#   QFACE_MODULE_NAME = my_module_name
 #   QFACE_FORMAT = frontend (or backend, simulator... -- defaults to "frontend")
 #   QFACE_OUTPUT_DIR = my_output_dir (defaults to current build dir)
 #
@@ -16,13 +16,11 @@ isEmpty(QFACE_SOURCES): error("QFACE_SOURCES must be set!")
 }
 
 QFACE_PWD = $$dirname(QFACE_SOURCES)
+QFACE_ABS_PWD = $$absolute_path($$QFACE_PWD, $$_PRO_FILE_PWD_)
 QFACE_FILE = $$basename(QFACE_SOURCES)
 QFACE_BASE_NAME = $$replace(QFACE_FILE, .qface, )
+QFACE_YAML = $$QFACE_ABS_PWD/$${QFACE_BASE_NAME}.yaml
 isEmpty(QFACE_MODULE_NAME): QFACE_MODULE_NAME = $$QFACE_BASE_NAME
-
-exists($$_PRO_FILE_PWD_/$${QFACE_BASE_NAME}.yaml) {
-    OTHER_FILES += $$_PRO_FILE_PWD_/$${QFACE_BASE_NAME}.yaml
-}
 
 # Detect whether we are using the feature inside the qtivi repository
 isEmpty(QTIVI_BUILD_ROOT): VIRTUALENV_PATH = $$[QT_HOST_BINS]/ivigenerator/qtivi_qface_virtualenv
@@ -39,10 +37,25 @@ IVI_GENERATOR = $$VIRTUALENV_ACTIVATION python3 $$IVI_GENERATOR_PATH/generate.py
 qface_sources.output = $$QFACE_OUTPUT_DIR/$${QFACE_MODULE_NAME}.pri
 qface_sources.commands = $$IVI_GENERATOR -f $$QFACE_FORMAT ${QMAKE_FILE_NAME} $$QFACE_OUTPUT_DIR
 qface_sources.input = QFACE_SOURCES
+qface_sources.depends = $$IVI_GENERATOR_PATH/generate.py
 qface_sources.CONFIG += target_predeps no_link
+
+# Add all templates of the generator format as dependency
+QFACE_TEMPLATE_PWD = $$IVI_GENERATOR_PATH/templates_$${QFACE_FORMAT}
+exists($$QFACE_TEMPLATE_PWD) {
+    qface_sources.depends += $$files($${QFACE_TEMPLATE_PWD}/*)
+}
+
+# Add the configuration yaml as dependency and to other files
+exists($$QFACE_YAML) {
+    qface_sources.depends += $$QFACE_YAML
+    OTHER_FILES += $$QFACE_YAML
+}
 
 # Reevaluate the Makefile after the generation has finished
 Makefile.target = $$MAKEFILE
+# The relative_path is needed here as qmake will use a relative_path for the output files
+# when using a QMAKE_EXTRA_COMPILER
 Makefile.depends = $$relative_path($$qface_sources.output, $$OUT_PWD)
 
 # After the generation, this should exists and qmake can create the correct build tree
