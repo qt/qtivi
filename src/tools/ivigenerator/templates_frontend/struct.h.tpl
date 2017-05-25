@@ -45,7 +45,7 @@
 #ifndef {{oncedefine}}
 #define {{oncedefine}}
 
-#include "abstract{{module.module_name|lower}}module.h"
+#include "{{module.module_name|lower}}module.h"
 #include <QObject>
 
 QT_BEGIN_NAMESPACE

@@ -45,21 +45,29 @@
 #ifndef {{oncedefine}}
 #define {{oncedefine}}
 
-#include "abstract{{module.module_name|lower}}module.h"
-{% for struct in module.structs %}
-#include "{{struct|lower}}.h"
-{% endfor %}
+#include "{{module.module_name|lower}}global.h"
+#include <QObject>
 
 QT_BEGIN_NAMESPACE
 
-class {{exportsymbol}} {{class}} : public Abstract{{class}} {
+class {{exportsymbol}} {{class}} : public QObject {
     Q_OBJECT
 public:
-    {{class}}(QObject *parent=0);
+{{class}}(QObject *parent=0);
 
-{% for struct in module.structs %}
-    Q_INVOKABLE {{struct}} {{struct|lowerfirst}}() const;
-    Q_INVOKABLE {{struct}} {{struct|lowerfirst}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %}) const;
+{% for enum in module.enums %}
+{% if enum.comment %}
+    /*!
+ {{ utils.format_comments(enum.comment) }}
+     */
+{% endif %}
+    enum {{enum}} {
+        {% for member in enum.members %}
+        {{member.name}} = {{member.value}}, {{member.comment}}
+        {% endfor %}
+    };
+    Q_ENUM({{enum}})
+
 {% endfor %}
 
     static void registerTypes();

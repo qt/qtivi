@@ -50,6 +50,7 @@ interface EchoZoned {
     string unsupportedValue;
     bool zonedValue;
     bool valueWithDefault;
+    AirflowDirection airflowDirection;
 
     string echo(string msg);
     string id();

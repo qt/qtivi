@@ -41,19 +41,18 @@
 {% import 'utils.tpl' as utils %}
 
 #include "{{class|lower}}.h"
-
-#include <QQmlEngine>
-
+#include "{{class|lower}}factory.h"
 {% for interface in module.interfaces %}
 #include "{{interface|lower}}.h"
 {% endfor %}
+#include <QQmlEngine>
 
 QT_BEGIN_NAMESPACE
 
 /*! \internal */
 QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
 {
-    return new {{class}}();
+    return new {{class}}Factory();
 }
 
 /*!
@@ -63,7 +62,7 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
 {{ utils.format_comments(module.comment) }}
 */
 {{class}}::{{class}}(QObject *parent)
-    : Abstract{{class}}(parent)
+    : QObject(parent)
 {
 }
 
@@ -88,28 +87,5 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
     {{interface}}::registerQmlTypes(uri, majorVersion, minorVersion);
 {% endfor %}
 }
-
-{% for struct in module.structs %}
-/*!
-    \brief Generate default instance of {{struct}}.
-
-    \sa {{struct}}
-*/
-{{struct}} {{class}}::{{struct|lowerfirst}}() const
-{
-    return {{struct}}();
-}
-
-/*!
-    \brief Generate instance of {{struct}} using attributes.
-
-    \sa {{struct}}
-*/
-{{struct}} {{class}}::{{struct|lowerfirst}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %}) const
-{
-    return {{struct}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field}}{% endfor %});
-}
-
-{% endfor %}
 
 QT_END_NAMESPACE

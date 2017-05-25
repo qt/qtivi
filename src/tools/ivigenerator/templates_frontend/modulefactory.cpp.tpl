@@ -36,7 +36,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% set class = 'Abstract{0}Module'.format(module.module_name) %}
+{% set class = '{0}ModuleFactory'.format(module.module_name) %}
 {% include 'generated_comment.cpp.tpl' %}
 {% import 'utils.tpl' as utils %}
 
@@ -51,8 +51,31 @@ QT_BEGIN_NAMESPACE
 {{ utils.format_comments(module.comment) }}
 */
 {{class}}::{{class}}(QObject *parent)
-    : QObject(parent)
+    : {{module.module_name}}Module(parent)
 {
 }
+
+{% for struct in module.structs %}
+/*!
+    \brief Generate default instance of {{struct}}.
+
+    \sa {{struct}}
+*/
+{{struct}} {{class}}::{{struct|lowerfirst}}() const
+{
+    return {{struct}}();
+}
+
+/*!
+    \brief Generate instance of {{struct}} using attributes.
+
+    \sa {{struct}}
+*/
+{{struct}} {{class}}::{{struct|lowerfirst}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %}) const
+{
+    return {{struct}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field}}{% endfor %});
+}
+
+{% endfor %}
 
 QT_END_NAMESPACE

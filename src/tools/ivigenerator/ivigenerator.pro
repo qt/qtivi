@@ -7,8 +7,6 @@ TEMPLATE = aux
 CONFIG = release
 
 templates_frontend.files +=  \
-    templates_frontend/abstractmodule.cpp.tpl \
-    templates_frontend/abstractmodule.h.tpl \
     templates_frontend/backendinterface.cpp.tpl \
     templates_frontend/backendinterface.h.tpl \
     templates_frontend/generated_comment.cpp.tpl \
@@ -19,6 +17,8 @@ templates_frontend.files +=  \
     templates_frontend/module.cpp.tpl \
     templates_frontend/module.h.tpl \
     templates_frontend/module.pri.tpl \
+    templates_frontend/modulefactory.cpp.tpl \
+    templates_frontend/modulefactory.h.tpl \
     templates_frontend/struct.cpp.tpl \
     templates_frontend/struct.h.tpl \
     templates_frontend/utils.tpl

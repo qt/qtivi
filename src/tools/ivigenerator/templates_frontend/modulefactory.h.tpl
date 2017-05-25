@@ -37,7 +37,7 @@
 # SPDX-License-Identifier: LGPL-3.0
 #}
 {% set exportsymbol = 'Q_QT{0}_EXPORT'.format(module.module_name|upper) %}
-{% set class = 'Abstract{0}Module'.format(module.module_name) %}
+{% set class = '{0}ModuleFactory'.format(module.module_name) %}
 {% set oncedefine = '{0}_H_'.format(class|upper) %}
 {% include 'generated_comment.cpp.tpl' %}
 {% import 'utils.tpl' as utils %}
@@ -48,28 +48,21 @@
 #include "{{module.module_name|lower}}global.h"
 #include <QObject>
 
-QT_BEGIN_NAMESPACE
-
-class {{exportsymbol}} {{class}} : public QObject {
-    Q_OBJECT
-public:
-
-{% for enum in module.enums %}
-{% if enum.comment %}
-    /*!
- {{ utils.format_comments(enum.comment) }}
-     */
-{% endif %}
-    enum {{enum}} {
-        {% for member in enum.members %}
-        {{member.name}} = {{member.value}}, {{member.comment}}
-        {% endfor %}
-    };
-    Q_ENUM({{enum}})
+{% for struct in module.structs %}
+#include "{{struct|lower}}.h"
 {% endfor %}
 
-protected:
-    {{class}}(QObject *parent=nullptr);
+QT_BEGIN_NAMESPACE
+
+class {{exportsymbol}} {{class}} : public {{module.module_name}}Module {
+    Q_OBJECT
+public:
+    {{class}}(QObject *parent = nullptr);
+
+{% for struct in module.structs %}
+    Q_INVOKABLE {{struct}} {{struct|lowerfirst}}() const;
+    Q_INVOKABLE {{struct}} {{struct|lowerfirst}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %}) const;
+{% endfor %}
 };
 
 QT_END_NAMESPACE
