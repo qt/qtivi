@@ -64,7 +64,7 @@ else
 fi
 
 WORKDIR=$(dirname $0)
-GENERATOR=${WORKDIR}/../../../src/tools/ivigenerator/generate.py
+GENERATOR=${WORKDIR}/../../../../src/tools/ivigenerator/generate.py
 test -x ${GENERATOR} || die "${GENERATOR} does not exists or can't be executed" 1
 for idlfile in org.example.echo org.example.echo.noprivate
 do
