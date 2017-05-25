@@ -56,6 +56,7 @@ log = logging.getLogger(__file__)
 
 Filters.classPrefix = ''
 
+QT_AS_VERSION = 1.2
 
 def tag_by_path(symbol, path, default_value=False):
     """
@@ -169,6 +170,8 @@ def json_domain(properties):
     Returns property domains formated in json
     """
     data = {}
+    if len(properties):
+        data["iviVersion"] = QT_AS_VERSION
     for property in properties:
         if 'config_simulator' in property.tags:
             for p in ['range', 'domain', 'minimum', 'maximum']:
@@ -203,7 +206,7 @@ def generate(tplconfig, moduleConfig, src, dst):
     generator.register_filter('has_domains', has_domains)
     generator.register_filter('json_domain', json_domain)
 
-    ctx = {'dst': dst, 'qtASVersion': 1.2}
+    ctx = {'dst': dst, 'qtASVersion': QT_AS_VERSION}
     gen_config = yaml.load(open(here / '{0}.yaml'.format(tplconfig)))
     for module in system.modules:
         log.debug('generate code for module %s', module)
