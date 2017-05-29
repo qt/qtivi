@@ -43,6 +43,12 @@
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
 #include "{{class|lower}}.h"
 
+{% for property in interface.properties %}
+{% if property.type.is_model %}
+#include "{{property|model_type|lower}}.h"
+{% endif %}
+{% endfor %}
+
 #include <QDebug>
 
 /*!

@@ -96,8 +96,25 @@ def enum_value(value, module_name):
     return "|".join(sub_values)
 
 
-def default_value(symbol):
+def default_type_value(symbol):
+    """
+    Find the default value for the type. Models are initialized as nullptr
+    """
     res = Filters.defaultValue(symbol)
+    if symbol.type.is_model:
+        return 'nullptr'
+    return res
+
+
+def default_value(symbol):
+    """
+    Find the default value used by the simulator backend
+    """
+    res = default_type_value(symbol)
+    if symbol.type.is_model:
+        nested = symbol.type.nested
+        # TODO: find a way of passing parent object
+        return 'new {0}Model(parent)'.format(nested)
     if 'config_simulator' in symbol.tags and 'default' in symbol.tags['config_simulator']:
         res = symbol.tags['config_simulator']['default']
         t = symbol.type
@@ -187,14 +204,23 @@ def lower_first_filter(s):
     return s[0].lower() + s[1:]
 
 
+def model_type(symbol):
+    module_name = symbol.module.module_name
+    if symbol.type.is_model:
+        nested = symbol.type.nested
+        return '{0}Model'.format(nested)
+    return None
+
+
 def generate(tplconfig, moduleConfig, src, dst):
     log.debug('run {0} {1}'.format(src, dst))
     system = FileSystem.parse(src)
     generator = Generator(search_path=here / tplconfig)
     generator.register_filter('return_type', Filters.returnType)
     generator.register_filter('parameter_type', Filters.parameterType)
-    generator.register_filter('default_type_value', Filters.defaultValue)
+    generator.register_filter('default_type_value', default_type_value)
     generator.register_filter('default_value', default_value)
+    generator.register_filter('model_type', model_type)
     generator.register_filter('parse_doc', parse_doc)
     generator.register_filter('lowerfirst', lower_first_filter)
     generator.register_filter('range_low', range_low)

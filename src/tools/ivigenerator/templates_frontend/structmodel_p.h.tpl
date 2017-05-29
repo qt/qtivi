@@ -1,5 +1,5 @@
 {#
-# Copyright (C) 2017 Pelagicore AG.
+# Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -36,34 +36,44 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-#############################################################################
-## This is an auto-generated file.
-## Do not edit! All changes made to it will be lost.
-#############################################################################
+{% set class = '{0}Model'.format(struct) %}
+{% set oncedefine = '{0}_{1}PRIVATE_H_'.format(module.module_name|upper, class|upper) %}
+{% include 'generated_comment.cpp.tpl' %}
 
-HEADERS += \
-{% for interface in module.interfaces %}
-    $$PWD/{{interface|lower}}.h \
-    $$PWD/{{interface|lower}}_p.h \
-    $$PWD/{{interface|lower}}backendinterface.h \
-{% endfor %}
-{% for struct in module.structs %}
-    $$PWD/{{struct|lower}}.h \
-    $$PWD/{{struct|lower}}model.h \
-    $$PWD/{{struct|lower}}model_p.h \
-{% endfor %}
-    $$PWD/{{module.module_name|lower}}module.h \
-    $$PWD/{{module.module_name|lower}}modulefactory.h \
-    $$PWD/{{module.module_name|lower}}global.h
+#ifndef {{oncedefine}}
+#define {{oncedefine}}
 
-SOURCES += \
-{% for interface in module.interfaces %}
-    $$PWD/{{interface|lower}}.cpp \
-    $$PWD/{{interface|lower}}backendinterface.cpp \
-{% endfor %}
-{% for struct in module.structs %}
-    $$PWD/{{struct|lower}}.cpp \
-    $$PWD/{{struct|lower}}model.cpp \
-{% endfor %}
-    $$PWD/{{module.module_name|lower}}module.cpp \
-    $$PWD/{{module.module_name|lower}}modulefactory.cpp
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail. This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include "{{struct|lower}}.h"
+
+#include <QtCore/private/qabstractitemmodel_p.h>
+#include <QVector>
+
+QT_BEGIN_NAMESPACE
+
+class {{class}};
+
+class {{class}}Private : public QAbstractItemModelPrivate
+{
+public:
+    {{class}}Private();
+    ~{{class}}Private();
+
+    QVector<{{struct}}> m_data;
+
+    Q_DECLARE_PUBLIC({{class}})
+};
+
+QT_END_NAMESPACE
+
+#endif // {{oncedefine}}

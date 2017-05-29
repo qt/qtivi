@@ -44,6 +44,12 @@
 #include "{{class|lower}}_p.h"
 #include "{{class|lower}}backendinterface.h"
 
+{% for property in interface.properties %}
+{% if property.type.is_model %}
+#include "{{property|model_type|lower}}.h"
+{% endif %}
+{% endfor %}
+
 #include <QQmlEngine>
 #include <QIviServiceObject>
 

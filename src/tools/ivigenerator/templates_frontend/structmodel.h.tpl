@@ -1,5 +1,6 @@
 {#
 # Copyright (C) 2017 Pelagicore AG.
+# Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB)
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -36,48 +37,59 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
+{% set class = '{0}Model'.format(struct) %}
+{% set oncedefine = '{0}_{1}_H_'.format(module.module_name|upper, class|upper) %}
 {% set exportsymbol = 'Q_QT{0}_EXPORT'.format(module.module_name|upper) %}
-{% set class = '{0}Module'.format(module.module_name) %}
-{% set oncedefine = '{0}_H_'.format(class|upper) %}
 {% include 'generated_comment.cpp.tpl' %}
-{% import 'utils.tpl' as utils %}
 
 #ifndef {{oncedefine}}
 #define {{oncedefine}}
 
-#include "{{module.module_name|lower}}global.h"
-#include <QObject>
+#include "{{struct|lower}}.h"
+#include <QAbstractListModel>
 
 QT_BEGIN_NAMESPACE
 
-{% for struct in module.structs %}
-class {{struct}}Model;
-{% endfor %}
+class {{class}}Private;
 
-class {{exportsymbol}} {{class}} : public QObject {
+class  {{exportsymbol}} {{class}} : public QAbstractListModel
+{
     Q_OBJECT
+    Q_PROPERTY(int count READ count NOTIFY countChanged)
 public:
-{{class}}(QObject *parent=0);
-
-{% for enum in module.enums %}
-{% if enum.comment %}
-    /*!
- {{ utils.format_comments(enum.comment) }}
-     */
-{% endif %}
-    enum {{enum}} {
-        {% for member in enum.members %}
-        {{member.name}} = {{member.value}}, {{member.comment}}
+    enum Roles {
+        {% for field in struct.fields %}
+            {{field|upperfirst}}{% if loop.first %} = Qt::UserRole{% endif %},
         {% endfor %}
     };
-    Q_ENUM({{enum}})
+    Q_ENUM(Roles);
 
-{% endfor %}
+    explicit {{class}}(QObject *parent = nullptr);
+    ~{{class}}();
 
-    static void registerTypes();
-    static void registerQmlTypes(const QString& uri, int majorVersion = 1, int minorVersion = 0);
+    int count() const;
+
+    QHash<int, QByteArray> roleNames() const override;
+    int rowCount(const QModelIndex& parent) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::DisplayRole) override;
+    bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+    bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+    bool moveRows(const QModelIndex &sourceParent, int sourceRow, int count, const QModelIndex &destinationParent, int destinationChild) override;
+
+    Q_INVOKABLE {{struct}} at(int index) const;
+    Q_INVOKABLE void append(const {{struct}}& data);
+    Q_INVOKABLE {{struct}} append({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %});
+    Q_INVOKABLE void remove(int index);
+
+Q_SIGNALS:
+    void countChanged(int count);
+
+private:
+    Q_DECLARE_PRIVATE({{class}})
 };
 
 QT_END_NAMESPACE
+
 
 #endif // {{oncedefine}}

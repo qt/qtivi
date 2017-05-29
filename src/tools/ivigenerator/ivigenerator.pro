@@ -21,6 +21,9 @@ templates_frontend.files +=  \
     templates_frontend/modulefactory.h.tpl \
     templates_frontend/struct.cpp.tpl \
     templates_frontend/struct.h.tpl \
+    templates_frontend/structmodel.cpp.tpl \
+    templates_frontend/structmodel.h.tpl \
+    templates_frontend/structmodel_p.h.tpl \
     templates_frontend/utils.tpl
 templates_frontend.path = $$[QT_HOST_BINS]/ivigenerator/templates_frontend
 

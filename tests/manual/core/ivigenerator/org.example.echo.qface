@@ -29,6 +29,7 @@ interface Echo {
     @config_simulator: {maximum: 10.}
     real floatValue2;
     string stringValue;
+    model<Contact> contactList;
 
     string echo(string msg);
     string id() const;
