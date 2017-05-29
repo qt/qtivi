@@ -45,7 +45,7 @@
 #ifndef {{oncedefine}}
 #define {{oncedefine}}
 
-#include "{{module.module_name|lower}}global.h"
+#include "{{module.module_name|lower}}module.h"
 #include <QObject>
 
 {% for struct in module.structs %}
