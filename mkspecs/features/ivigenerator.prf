@@ -58,6 +58,16 @@ Makefile.target = $$MAKEFILE
 # when using a QMAKE_EXTRA_COMPILER
 Makefile.depends = $$relative_path($$qface_sources.output, $$OUT_PWD)
 
+# Make the qmake_all target work for usage inside QtCreator
+# Because of the Makefile target the generator is called before the actual Makefile
+# is evaluated. This is a problem if the virtualenv is not created yet.
+# In this case we create the target with a dependency to the forceRebuild file.
+# This file is created during the qmake run and updated once the virtualenv is ready
+# and will then cause a rerun of qmake
+!isEmpty(QTIVI_ROOT):!exists($$VIRTUALENV_PATH): {
+    Makefile.depends = $$shadowed($$IVI_GENERATOR_PATH)/forceRebuild
+}
+
 # After the generation, this should exists and qmake can create the correct build tree
 exists($$qface_sources.output) {
     include($$qface_sources.output)

@@ -48,6 +48,12 @@ QMAKE_EXTRA_TARGETS += qtivi_qface_virtualenv
 win32: VIRTUALENV_ACTIVATION = $${qtivi_qface_virtualenv.target}\Scripts\activate &&
 else: VIRTUALENV_ACTIVATION = . $${qtivi_qface_virtualenv.target}/bin/activate &&
 
+# Create the forceRebuild file during the qmake run.
+# This file is used as a dependency in other Makefiles.
+# Once the virtualenv is created and setup the file will
+# be touched to recreate theses Makefiles.
+write_file($$OUT_PWD/forceRebuild)
+
 # Always run this target
 qtivi_qface_install.target = qtivi_qface_virtualenv/pip-selfcheck.json
 qtivi_qface_install.depends = qtivi_qface_virtualenv
@@ -55,7 +61,9 @@ qtivi_qface_install.depends += $$QFACE_SOURCE_DIR/setup.py
 qtivi_qface_install.depends += $$QFACE_SOURCE_DIR/requirements.txt
 qtivi_qface_install.commands = $$VIRTUALENV_ACTIVATION \
         $$PIP3_EXE install -e $$QFACE_SOURCE_DIR $$escape_expand(\n\t) \
-    @echo "Installed qface development version into qtivi_qface_install.target"
+        @echo "Installed qface development version into qtivi_qface_install.target" $$escape_expand(\n\t)
+win32: qtivi_qface_install.commands += @COPY /B $$shell_path($$OUT_PWD/forceRebuild)+,, $$shell_path($$OUT_PWD/forceRebuild)
+else: qtivi_qface_install.commands += @touch $$OUT_PWD/forceRebuild
 QMAKE_EXTRA_TARGETS += qtivi_qface_install
 
 PRE_TARGETDEPS += $${qtivi_qface_install.target}
