@@ -4,7 +4,7 @@ TEMPLATE = aux
 
 # Make sure to only build this once in a debug_and_release config
 # This needs to be the last step as it unsets other configs and may have side effects
-CONFIG = release
+CONFIG -= debug_and_release
 
 templates_frontend.files +=  \
     templates_frontend/backendinterface.cpp.tpl \
