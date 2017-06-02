@@ -31,7 +31,7 @@ else: IVI_GENERATOR_PATH = $$QTIVI_ROOT/src/tools/ivigenerator
 
 win32: VIRTUALENV_ACTIVATION =  $$VIRTUALENV_PATH/Scripts/activate &&
 else: VIRTUALENV_ACTIVATION = . $$VIRTUALENV_PATH/bin/activate &&
-IVI_GENERATOR = $$VIRTUALENV_ACTIVATION python3 $$IVI_GENERATOR_PATH/generate.py
+IVI_GENERATOR = $$VIRTUALENV_ACTIVATION python $$IVI_GENERATOR_PATH/generate.py
 
 # TODO make this work with multiple input files, or only support one QFACE_SOURCE
 qface_sources.output = $$QFACE_OUTPUT_DIR/$${QFACE_MODULE_NAME}.pri

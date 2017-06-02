@@ -5,6 +5,8 @@ debug_and_release:build_pass:CONFIG(release, debug|release) {
     return();
 }
 
+!exists($$QFACE_SOURCE_DIR): error("Couldn't find $$QFACE_SOURCE_DIR: Please make sure all submodules are initialized")
+
 message("Checking for a valid python & pip installation")
 
 PYTHON3_PATH = $$(PYTHON3_PATH)
@@ -21,17 +23,13 @@ for (python3_exe, PYTHON3_NAMES) {
 }
 
 isEmpty(PYTHON3_EXE) {
-    error("You need to have python (Python version >=3.x) in your PATH to install qface.")
+    error("Didn't find a valid python3 installation in PATH or PYTHON3_PATH $$escape_expand(\n)Please make sure it is setup accordingly.")
 }
 
-PIP3_PATH = $$(PIP3_PATH)
-PIP3_EXE = "pip3" # even normal Python installs on Windows use 'pip3'
-!isEmpty(PIP3_PATH): PIP3_EXE = $$shell_path($$PIP3_PATH/$$PIP3_EXE)
-win32: PIP3_EXE = $${PIP3_EXE}.exe
-message("Checking for pip executable: $$PIP3_EXE")
-pip_version = $$system("$$PIP3_EXE --version")
+message("Checking for pip installation")
+pip_version = $$system("$$PYTHON3_EXE -m pip --version")
 isEmpty(pip_version) {
-    error("You need to have $${PIP3_EXE} (Python version >=3.x) in your PATH to install qface")
+    error("Didn't find pip with your python installation at: $$PYTHON3_EXE $$escape_expand(\n)Please make sure it is installed.")
 }
 
 VIRTUALENV_EXE = "$$PYTHON3_EXE -m virtualenv"
@@ -60,8 +58,8 @@ qtivi_qface_install.depends = qtivi_qface_virtualenv
 qtivi_qface_install.depends += $$QFACE_SOURCE_DIR/setup.py
 qtivi_qface_install.depends += $$QFACE_SOURCE_DIR/requirements.txt
 qtivi_qface_install.commands = $$VIRTUALENV_ACTIVATION \
-        $$PIP3_EXE install -e $$QFACE_SOURCE_DIR $$escape_expand(\n\t) \
-        @echo "Installed qface development version into qtivi_qface_install.target" $$escape_expand(\n\t)
+        pip3 install -e $$QFACE_SOURCE_DIR $$escape_expand(\n\t) \
+        @echo "Installed qface development version into qtivi_qface_virtualenv" $$escape_expand(\n\t)
 win32: qtivi_qface_install.commands += @COPY /B $$shell_path($$OUT_PWD/forceRebuild)+,, $$shell_path($$OUT_PWD/forceRebuild)
 else: qtivi_qface_install.commands += @touch $$OUT_PWD/forceRebuild
 QMAKE_EXTRA_TARGETS += qtivi_qface_install
