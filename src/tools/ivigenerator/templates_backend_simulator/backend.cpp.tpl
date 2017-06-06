@@ -197,6 +197,9 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {{operation|return_type}} {{class}}::{{operation}}({{operation_parameters}}){%if operation.const %} const{% endif %}
 
 {
+{% for operation_parameter in operation.parameters %}
+    Q_UNUSED({{operation_parameter.name}});
+{% endfor %}
     qWarning() << "Not implemented!";
     return {{operation|default_value}};
 }

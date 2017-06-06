@@ -49,7 +49,8 @@ from qface.generator import FileSystem, Generator
 from qface.helper.qtcpp import Filters
 from qface.helper.doc import parse_doc
 from qface.watch import monitor
-from qface.idl.domain import Property
+from qface.idl.domain import Property, Parameter, Field, Struct
+from qface.filters import jsonify
 
 here = Path(__file__).dirname()
 
@@ -197,12 +198,152 @@ def json_domain(properties):
                     if not property.name in data:
                         data[property.name] = {}
                     data[property.name][p] = property.tags['config_simulator'][p]
-    return json.dumps(data, separators=(',',':'))
+    return json.dumps(data, separators=(',', ':'))
 
 
 def lower_first_filter(s):
     s = str(s)
     return s[0].lower() + s[1:]
+
+
+def qml_control_properties(symbol, backend_object):
+    """
+    Returns properties of the QML control matching to this
+    IDL type (e.g. min/max properties)
+    """
+    prop_str = lower_first_filter(symbol)
+    if isinstance(symbol, Property):
+        top = range_high(symbol)
+        bottom = range_low(symbol)
+        binding = "value: {0}.{1};".format(backend_object, symbol.name)
+        if top is not None and bottom is not None:
+            return 'id: {0};  from: {1}; to: {2}; {3}'.format(prop_str, bottom, top, binding)
+
+        if top is not None or bottom is not None:
+            if top is None:
+                return 'id: {0};  from: {1}; to:100000; {2}'.format(prop_str, bottom, binding)
+            elif bottom is None:
+                return 'id: {0};  from:-100000; to: {1}; {2}'.format(prop_str, top, binding)
+
+        values = domain_values(symbol)
+        if values is None and symbol.type.is_enum:
+            values = symbol.type.reference.members
+        if values is not None:
+            values_string = ','.join('"'+str(e)+'"' for e in values)
+            return 'id: {0}; model: [ {1} ]; '.format(prop_str, values_string)
+        if symbol.type.is_bool:
+            binding = "checked: {0}.{1};".format(backend_object, symbol.name)
+            return 'id: {0}; {1}'.format(prop_str, binding)
+        if symbol.type.is_real or symbol.type.is_int or symbol.type.is_string:
+            binding = "text: {0}.{1};".format(backend_object, symbol.name)
+            return 'id: {0}; {1}'.format(prop_str, binding)
+
+    if isinstance(symbol, Parameter):
+        return 'id: {1}Param{0}'.format(prop_str, symbol.operation)
+    if isinstance(symbol, Field):
+        return 'id: {1}_{0}'.format(prop_str, lower_first_filter(symbol.struct))
+
+
+def qml_meta_control_name(symbol):
+    """
+    Returns name of the QML control needed to display this type based on the meta
+    data of  the symbol -- if symbol has some meta data (e.g. value limits or domain)
+    then control name is taken based on these constraints. Otherwise returns None.
+    """
+    top = range_high(symbol)
+    bottom = range_low(symbol)
+    if top is not None and bottom is not None:
+        return 'Slider'
+
+    if top is not None or bottom is not None:
+        return 'SpinBox'
+
+    values = domain_values(symbol)
+    if values is not None:
+        return "ComboBox"
+
+
+def qml_flag_control(symbol):
+    """
+    Returns QML code for creation of group of check-boxes for
+    the flag property
+    """
+    # First try to calculate control name based on the tags
+    result = qml_meta_control_name(symbol)
+    # If nothing is defined, calculate it based on its type
+    if result is None and symbol.type.reference.members:
+        # form a group of checkboxes
+        values = symbol.type.reference.members
+        result = ""
+        for value in values:
+            result+="Text{{ text:'{0}'}} CheckBox {{ id: flag{0}; }}\n".format(value)
+    return result
+
+
+def qml_type_control_name(symbol):
+    """
+    Returns name of the QML control inferred based on the type of the symbol.
+    """
+    t = symbol.type
+    if t.is_string or t.is_int or t.is_real:
+        return "TextField"
+    elif t.is_bool:
+        return "CheckBox"
+    elif t.is_enum:
+        if t.reference.is_enum:
+            return "ComboBox"
+        elif t.reference.is_flag:
+            return qml_flag_control(symbol)
+    return "TextField"
+
+
+def qml_control_name(symbol):
+    """
+    Returns name of the QML control for the symbol. First it checks meta data (as it may
+    influence the control type) and if nothing is  defined there, it falls back to the
+    symbol actual type.
+    """
+    # First try to calculate control name based on the tags
+    control_name = qml_meta_control_name(symbol)
+    # If nothing is defined, calculate it based on its type
+    if control_name is None:
+        control_name = qml_type_control_name(symbol)
+    return control_name
+
+
+def qml_control(symbol, backend_object):
+    """
+    Returns QML code for the control (or group of controls) to represent the editing UI for the symbol.
+    """
+
+    if symbol.type.is_enum and symbol.type.reference.is_flag:
+        return qml_flag_control(symbol)
+    if symbol.type.is_struct:
+        return qml_struct_control(symbol)
+
+    return "{0} {{ {1} }}".format(qml_control_name(symbol), qml_control_properties(symbol, backend_object))
+
+
+def qml_binding_property(symbol):
+    """
+    :param symbol: property which is being bound by the control
+    :return: name of the property of the QML control to be bound with
+    """
+    control_name = qml_control_name(symbol)
+    if control_name == "CheckBox":
+        return "checked"
+    elif control_name == "Slider" or control_name == "TextField" or control_name == "SpinBox":
+        return "value"
+    elif control_name == "ComboBox":
+        return "currentText"
+
+def qml_struct_control(symbol):
+    if symbol.type.is_struct and symbol.type.reference.fields:
+        result = "Rectangle { ColumnLayout { "
+        for field in symbol.type.reference.fields:
+            result += qml_control(field)
+        result += "}}"
+        return result
 
 
 def qml_type(interface):
@@ -247,6 +388,9 @@ def generate(tplconfig, moduleConfig, src, dst):
     generator.register_filter('has_domains', has_domains)
     generator.register_filter('json_domain', json_domain)
     generator.register_filter('qml_type', qml_type)
+    generator.register_filter('qml_control', qml_control)
+    generator.register_filter('qml_binding_property', qml_binding_property)
+
 
     ctx = {'dst': dst, 'qtASVersion': QT_AS_VERSION}
     gen_config = yaml.load(open(here / '{0}.yaml'.format(tplconfig)))
@@ -256,7 +400,7 @@ def generate(tplconfig, moduleConfig, src, dst):
         for val, key in moduleConfig.items():
             module.add_attribute('config', val, key)
         ctx.update({'module': module})
-        #TODO: refine that, probably just use plain output folder
+        # TODO: refine that, probably just use plain output folder
         dst = generator.apply('{{dst}}', ctx)
         generator.destination = dst
         module_rules = gen_config['generate_rules']['module_rules']
@@ -288,7 +432,8 @@ def run(formats, moduleConfig, src, dst):
         switcher = {
             'frontend': 'templates_frontend',
             'backend_simulator': 'templates_backend_simulator',
-            'generation_validator': 'templates_generation_validator'
+            'generation_validator': 'templates_generation_validator',
+            'control_panel': 'templates_control_panel'
         }
         tplConfig = switcher.get(f, 'unknown')
         if tplConfig == 'unknown':
@@ -299,7 +444,8 @@ def run(formats, moduleConfig, src, dst):
 
 @click.command()
 @click.option('--reload/--no-reload', default=False)
-@click.option('--format', '-f', multiple=True, type=click.Choice(['frontend', 'backend_simulator', 'generation_validator']))
+@click.option('--format', '-f', multiple=True,
+              type=click.Choice(['frontend', 'backend_simulator', 'generation_validator', 'ui', 'control_panel']))
 @click.option('--module', default=False)
 @click.option('--validation_info', default=False)
 @click.argument('src', nargs=-1, type=click.Path(exists=True))

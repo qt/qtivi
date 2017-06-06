@@ -52,6 +52,9 @@ interface EchoZoned {
     bool zonedValue;
     bool valueWithDefault;
     AirflowDirection airflowDirection;
+    @config_simulator: {minimum: 10., maximum: 15.}
+    int rangedValue;
+    int rangedValueWithDefault;
 
     string echo(string msg);
     string id();

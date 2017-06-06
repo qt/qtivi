@@ -120,4 +120,38 @@ do
     echo "Done '$idlfile' ================"
 done
 
+# Test control panel generation
+for idlfile in "${TEST_FILES[@]}"
+do
+    echo "Testing '$idlfile' backend_simulator ================"
+    idldir=$(echo $idlfile | tr . -)
+    bdir=${WORKDIR}/projects/${idldir}/control_panel
+    /bin/rm -rf ${bdir}/*.{h,cpp,pri}
+    mkdir -p ${bdir}
+
+    ${GENERATOR} --format=control_panel ${WORKDIR}/${idlfile}.qface ${bdir} || die "Generator failed" 1
+    test -d build/${idldir} && /bin/rm -rf build/${idldir}
+    test -d build/${idldir} && die "Cannot remove existing build folder" 1
+    mkdir -p build/${idldir} || die "Cannot create build folder" 1
+    pushd build/${idldir}
+    project_dir=../../projects/${idldir}/control_panel
+    qmake ${project_dir}/control_panel.pro || die "Failed to run qmake" 1
+    make || die "Failed to build" 1
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    OLD_LD_PATH=$LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=./out:$LD_LIBRARY_PATH
+    ./out/control_panel || die "Test failed"
+    export LD_LIBRARY_PATH=${OLD_LD_PATH}
+
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    OLD_DYLD_PATH=$DYLD_LIBRARY_PATH
+    export DYLD_LIBRARY_PATH=./out:$DYLD_LIBRARY_PATH
+    ./out/control_panel.app/Contents/MacOS/control_panel || die "Test failed"
+    export DYLD_LIBRARY_PATH=${OLD_DYLD_PATH}
+fi
+    popd
+
+    echo "Done '$idlfile' ================"
+done
+
 die "All OK" 0
