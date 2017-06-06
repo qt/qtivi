@@ -38,11 +38,13 @@ win32: ENV = chcp 65001 &&
 else: ENV = LC_ALL="utf-8"
 
 # TODO make this work with multiple input files, or only support one QFACE_SOURCE
-qface_sources.output = $$QFACE_OUTPUT_DIR/$${QFACE_MODULE_NAME}.pri
-qface_sources.commands = $$IVI_GENERATOR -f $$QFACE_FORMAT ${QMAKE_FILE_NAME} $$QFACE_OUTPUT_DIR
-qface_sources.input = QFACE_SOURCES
+# Although this could be extra_compiler it is a normal EXTRA_TARGET for a reason.
+# In the debug_and_release configuration, we want to have the generator executed
+# during the run of the meta Makefile to only generate the code once.
+PRI = $$QFACE_OUTPUT_DIR/$${QFACE_MODULE_NAME}.pri
+qface_sources.target = $$relative_path($$PRI, $$OUT_PWD)
+qface_sources.commands = $$ENV $$IVI_GENERATOR -f $$QFACE_FORMAT $$QFACE_ABS_PWD/$${QFACE_FILE} $$QFACE_OUTPUT_DIR
 qface_sources.depends = $$IVI_GENERATOR_PATH/generate.py
-qface_sources.CONFIG += target_predeps no_link
 
 # Add all templates of the generator format as dependency
 QFACE_TEMPLATE_PWD = $$IVI_GENERATOR_PATH/templates_$${QFACE_FORMAT}
@@ -57,10 +59,10 @@ exists($$QFACE_YAML) {
 }
 
 # Reevaluate the Makefile after the generation has finished
-Makefile.target = $$MAKEFILE
+Makefile.target = Makefile
 # The relative_path is needed here as qmake will use a relative_path for the output files
 # when using a QMAKE_EXTRA_COMPILER
-Makefile.depends = $$relative_path($$qface_sources.output, $$OUT_PWD)
+Makefile.depends = $$relative_path($$PRI, $$OUT_PWD)
 
 # Make the qmake_all target work for usage inside QtCreator
 # Because of the Makefile target the generator is called before the actual Makefile
@@ -73,9 +75,8 @@ Makefile.depends = $$relative_path($$qface_sources.output, $$OUT_PWD)
 }
 
 # After the generation, this should exists and qmake can create the correct build tree
-exists($$qface_sources.output) {
-    include($$qface_sources.output)
+exists($$PRI) {
+    include($$PRI)
 }
 
-QMAKE_EXTRA_COMPILERS += qface_sources
-QMAKE_EXTRA_TARGETS += Makefile
+QMAKE_EXTRA_TARGETS += Makefile qface_sources
