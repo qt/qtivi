@@ -33,6 +33,10 @@ win32: VIRTUALENV_ACTIVATION =  $$VIRTUALENV_PATH/Scripts/activate &&
 else: VIRTUALENV_ACTIVATION = . $$VIRTUALENV_PATH/bin/activate &&
 IVI_GENERATOR = $$VIRTUALENV_ACTIVATION python $$IVI_GENERATOR_PATH/generate.py
 
+# The 'click' library used by the generator needs to have a utf8 locale setup.
+win32: ENV = chcp 65001 &&
+else: ENV = LC_ALL="utf-8"
+
 # TODO make this work with multiple input files, or only support one QFACE_SOURCE
 qface_sources.output = $$QFACE_OUTPUT_DIR/$${QFACE_MODULE_NAME}.pri
 qface_sources.commands = $$IVI_GENERATOR -f $$QFACE_FORMAT ${QMAKE_FILE_NAME} $$QFACE_OUTPUT_DIR
