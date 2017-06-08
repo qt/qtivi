@@ -47,9 +47,12 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 TEMPLATE=lib
-TARGET = example_ivi_climate
-CONFIG += ivigenerator
+TARGET = $$qtLibraryTarget(example_ivi_climate)
+CONFIG += ivigenerator plugin
+macos: CONFIG += debug_and_release build_all
+
 LIBS += -L$$OUT_PWD/../frontend -lQtIviClimateExample
+DESTDIR = qtivi
 
 CONFIG += warn_off
 INCLUDEPATH += $$OUT_PWD/../frontend

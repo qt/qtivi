@@ -50,6 +50,7 @@ TEMPLATE = app
 
 QT += qml quick
 CONFIG += c++11
+CONFIG -= app_bundle
 
 LIBS += -L$$OUT_PWD/../frontend -lQtIviClimateExample
 INCLUDEPATH += $$OUT_PWD/../frontend
