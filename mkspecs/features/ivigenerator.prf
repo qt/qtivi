@@ -15,6 +15,11 @@ isEmpty(QFACE_SOURCES): error("QFACE_SOURCES must be set!")
     error("Invalid qface file provided: The file needs to end with .qface")
 }
 
+# See the win32 section, why this is needed
+win32:!contains(CONFIG, debug_and_release) {
+    error("The ivigenerator works only in the debug_and_release configuration on windows")
+}
+
 QFACE_PWD = $$dirname(QFACE_SOURCES)
 QFACE_ABS_PWD = $$absolute_path($$QFACE_PWD, $$_PRO_FILE_PWD_)
 QFACE_FILE = $$basename(QFACE_SOURCES)
@@ -80,3 +85,24 @@ exists($$PRI) {
 }
 
 QMAKE_EXTRA_TARGETS += Makefile qface_sources
+
+# NMAKE doesn't support the Makefile target to call qmake and reevaluate itself
+# Because of that, the autogeneration is not started at all and if started
+# qmake is not run and the Makefile revaluated...
+# To workaround this, we depend on debug_and_release as a meta Makefile is generated
+# where we can envorce the run of the generator and qmake.
+# Afterwards the sub makefiles are read (Makefile.debug/release), which have been
+# regenerated before starting NMAKE on them.
+win32 {
+    qmake.depends = $$relative_path($$PRI, $$OUT_PWD)
+
+    debug.depends = qmake
+    debug-make_first.depends = qmake
+    debug-all.depends = qmake
+    release.depends = qmake
+    release-make_first.depends = qmake
+    release-all.depends = qmake
+    QMAKE_EXTRA_TARGETS += debug debug-make_first debug-all \
+                           release release-make_first release-all \
+                           qmake
+}
