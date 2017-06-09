@@ -52,3 +52,6 @@ SOURCES += \
     $$PWD/{{interface|lower}}backend.cpp \
 {% endfor %}
     $$PWD/{{module.module_name|lower}}plugin.cpp
+
+OTHER_FILES += \
+    $$PWD/{{module.module_name|lower}}.json
