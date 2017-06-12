@@ -46,7 +46,9 @@ else: ENV = LC_ALL="utf-8"
 # Although this could be extra_compiler it is a normal EXTRA_TARGET for a reason.
 # In the debug_and_release configuration, we want to have the generator executed
 # during the run of the meta Makefile to only generate the code once.
-PRI = $$QFACE_OUTPUT_DIR/$${QFACE_MODULE_NAME}.pri
+PRI_NAME = $$replace(QFACE_MODULE_NAME, "\." , "-")
+PRI = $$QFACE_OUTPUT_DIR/$${PRI_NAME}.pri
+
 qface_sources.target = $$relative_path($$PRI, $$OUT_PWD)
 qface_sources.commands = $$ENV $$IVI_GENERATOR -f $$QFACE_FORMAT $$QFACE_ABS_PWD/$${QFACE_FILE} $$QFACE_OUTPUT_DIR
 qface_sources.depends = $$IVI_GENERATOR_PATH/generate.py
