@@ -1,6 +1,7 @@
 TEMPLATE = subdirs
 
-SUBDIRS = servicemanagertest \
+SUBDIRS = ivigenerator \
+          servicemanagertest \
           qivipropertyattribute \
           qiviproperty \
           qiviabstractfeature \

@@ -42,9 +42,8 @@
 #ifndef VALIDATIONSTATUS_H_
 #define VALIDATIONSTATUS_H_
 
-class QMetaProperty;
-class QObject;
-class QString;
+#include <QObject>
+#include <QString>
 
 bool checkGeneration(QString& errorMessage, QObject& obj);
 
