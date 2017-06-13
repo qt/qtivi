@@ -1,7 +1,7 @@
 # This is just a temporary workaround until the CI issue has been fixed
-# Disable building on suse, win7(144), win8(160) and win8.1(176) or 6.3.9600
+# Disable building on win7(144), win8(160) and win8.1(176) or 6.3.9600
 computer_name = $$lower($$QMAKE_HOST.name)
-requires(!win32-g++:!contains(computer_name, .*suse.*):!equals(QMAKE_HOST.version,144):!equals(QMAKE_HOST.version,160):!equals(QMAKE_HOST.version,176):!equals(QMAKE_HOST.version,6.3.9600)))
+requires(!win32-g++:!equals(QMAKE_HOST.version,144):!equals(QMAKE_HOST.version,160):!equals(QMAKE_HOST.version,176):!equals(QMAKE_HOST.version,6.3.9600)))
 
 enable-examples {
     QTIVI_BUILD_PARTS = $$QT_BUILD_PARTS
