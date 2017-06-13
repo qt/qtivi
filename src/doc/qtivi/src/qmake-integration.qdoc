@@ -29,6 +29,42 @@
 \title Qmake integration
 \previouspage AutoGenerator usage
 
+Qt IVI Generator has been integrated with QMake to generate all or part of projects.
 
+In it's simplest form, QMake can generate all the source code and the project only
+need to configure what type of project is built.
+
+For complex setups, generated code can be combined with application specific code
+which can extend and use it.
+
+Example:
+\code
+CONFIG += ivigenerator
+
+QFACE_FORMAT = frontend
+QFACE_SOURCES = example.qface
+QFACE_MODULE_NAME = myModule
+QFACE_OUTPUT_DIR = myOutputDir
+\endcode
+
+Available QMake Variables:
+\table
+    \row
+        \li QFACE_FORMAT
+        \li frontend (default), simulator_backend
+    \row
+        \li QFACE_SOURCES
+        \li list of .qface input files
+    \row
+        \li QFACE_MODULE_NAME
+        \li The (optional) name of the module that is using the generated code
+    \row
+        \li QFACE_OUTPUT_DIR
+        \li Output folder where the generated code will be created. The default
+            is to use the current build folder
+\endtable
+
+
+See \l {AutoGenerator usage} for more details on the generator command line arguments.
 
 */

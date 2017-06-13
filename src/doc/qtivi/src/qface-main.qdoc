@@ -37,6 +37,6 @@ library, which provides a generic autogeneration framework.
     \li \l {QFace IDL syntax}
     \li \l {Jinja template syntax}
     \li \l {AutoGenerator Usage}
-    \li \l {qmake integration}
+    \li \l {Qmake integration}
 \endlist
 */
