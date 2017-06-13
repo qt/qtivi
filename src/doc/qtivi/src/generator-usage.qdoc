@@ -42,7 +42,7 @@ Depending on the type of the generated project, different \e{formats} are specif
 \section1 Command line parameters
 The generation is run using the following command:
 \code
-${QTIVI_REPO_PATH}/src/ivicore/qface/generate.py interface.qface out_dir --format=backend_simulator
+$$[QT_HOST_BINS]/ivigenerator/generate.py interface.qface out_dir --format=backend_simulator
 \endcode
 
 The options and parameters are:
