@@ -6,6 +6,7 @@ url                           = http://doc.qt.io/QtIVI
 sourcedirs                   += .
 headerdirs                   += .
 imagedirs                    += images
+exampledirs                  += ../../examples/core
 
 # include sub-modules' sources and headers
 include(../../ivicore/doc/qtivicore.qdocconf)
