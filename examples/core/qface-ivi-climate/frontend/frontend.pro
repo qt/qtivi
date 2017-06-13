@@ -46,11 +46,15 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-TARGET = QtIviClimateExample
+TARGET = $$qtLibraryTarget(QtIviClimateExample)
 TEMPLATE = lib
 CONFIG += ivigenerator
+DESTDIR = ..
+macos: CONFIG += debug_and_release build_all
 
 QT += ivicore ivicore-private qml quick
+
+DEFINES += QT_BUILD_CLIMATE_LIB
 
 QFACE_SOURCES = ../example-ivi-climate.qface
 

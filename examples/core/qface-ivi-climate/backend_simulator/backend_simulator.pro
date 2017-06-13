@@ -51,8 +51,8 @@ TARGET = $$qtLibraryTarget(example_ivi_climate)
 CONFIG += ivigenerator plugin
 macos: CONFIG += debug_and_release build_all
 
-LIBS += -L$$OUT_PWD/../frontend -lQtIviClimateExample
-DESTDIR = qtivi
+LIBS += -L$$OUT_PWD/../ -l$$qtLibraryTarget(QtIviClimateExample)
+DESTDIR = ../qtivi
 
 CONFIG += warn_off
 INCLUDEPATH += $$OUT_PWD/../frontend

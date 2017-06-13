@@ -52,14 +52,12 @@
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QDir>
 
 #include <climatemodule.h>
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
-    QCoreApplication::addLibraryPath(QDir::current().absoluteFilePath("../backend_simulator"));
 
     ClimateModule::registerTypes();
     ClimateModule::registerQmlTypes(QLatin1String("IviClimate"), 1, 0);

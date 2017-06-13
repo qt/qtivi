@@ -46,13 +46,15 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
+TARGET = qface-ivi-climate
 TEMPLATE = app
 
 QT += qml quick
 CONFIG += c++11
 CONFIG -= app_bundle
+DESTDIR = ../
 
-LIBS += -L$$OUT_PWD/../frontend -lQtIviClimateExample
+LIBS += -L$$OUT_PWD/../ -l$$qtLibraryTarget(QtIviClimateExample)
 INCLUDEPATH += $$OUT_PWD/../frontend
 
 SOURCES += main.cpp

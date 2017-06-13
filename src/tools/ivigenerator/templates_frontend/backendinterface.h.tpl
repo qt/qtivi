@@ -38,6 +38,7 @@
 #}
 {% set class = '{0}BackendInterface'.format(interface) %}
 {% set oncedefine = '{0}_{1}_H_'.format(module.module_name|upper, class|upper) %}
+{% set exportsymbol = 'Q_QT{0}_EXPORT'.format(module.module_name|upper) %}
 {% include 'generated_comment.cpp.tpl' %}
 
 #ifndef {{oncedefine}}
@@ -54,9 +55,9 @@
 QT_BEGIN_NAMESPACE
 
 {% if interface.tags.config.zoned %}
-class {{class}} : public QIviZonedFeatureInterface
+class {{exportsymbol}} {{class}} : public QIviZonedFeatureInterface
 {% else %}
-class {{class}} : public QIviFeatureInterface
+class {{exportsymbol}} {{class}} : public QIviFeatureInterface
 {% endif %}
 {
     Q_OBJECT
