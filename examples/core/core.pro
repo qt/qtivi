@@ -1,2 +1,4 @@
 TEMPLATE = subdirs
-SUBDIRS = qface-ivi-climate
+
+QT_FOR_CONFIG += ivicore
+qtConfig(ivigenerator): SUBDIRS = qface-ivi-climate

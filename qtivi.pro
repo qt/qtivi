@@ -16,5 +16,6 @@ MIN_MINOR = 8 # b/c we need the new Qt configuration system
 load(qt_parts)
 
 SUBDIRS += mkspecs
+mkspecs.depends = sub_src
 
 OTHER_FILES += sync.profile

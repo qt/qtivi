@@ -14,10 +14,11 @@ QT_FOR_CONFIG += geniviextras-private
               doc \
               tools
 
-    ivivehiclefunctions.depends = ivicore tools
+    ivivehiclefunctions.depends = ivicore
     ivimedia.depends = ivicore
     plugins.depends = ivivehiclefunctions ivimedia
     imports.depends = ivivehiclefunctions ivimedia
+    tools.depends = ivicore
 }
 
 qtConfig(dlt): SUBDIRS += geniviextras

@@ -5,40 +5,14 @@ debug_and_release:build_pass:CONFIG(release, debug|release) {
     return();
 }
 
-!exists($$QFACE_SOURCE_DIR): error("Couldn't find $$QFACE_SOURCE_DIR: Please make sure all submodules are initialized")
+!exists($$QFACE_SOURCE_DIR/setup.py): error("Couldn't find $$QFACE_SOURCE_DIR: Please make sure all submodules are initialized")
 
-message("Checking for a valid python & pip installation")
+include($$shadowed($$PWD/../../ivicore/qtivicore-config.pri))
 
-PYTHON3_PATH = $$(PYTHON3_PATH)
-PYTHON3_NAMES = "python3" "python"
-for (python3_exe, PYTHON3_NAMES) {
-    !isEmpty(PYTHON3_PATH): python3_exe = $$shell_path($$PYTHON3_PATH/$$python3_exe)
-    win32: python3_exe = $${python3_exe}.exe
-    message("Checking for python executable: $$python3_exe")
-    py_major_version = $$system("$$python3_exe -c \"import platform; print(platform.python_version_tuple()[0])\"")
-    equals(py_major_version, 3) {
-        PYTHON3_EXE = $$python3_exe
-        break()
-    }
-}
-
-isEmpty(PYTHON3_EXE) {
-    error("Didn't find a valid python3 installation in PATH or PYTHON3_PATH $$escape_expand(\n)Please make sure it is setup accordingly.")
-}
-
-message("Checking for pip installation")
-pip_version = $$system("$$PYTHON3_EXE -m pip --version")
-isEmpty(pip_version) {
-    error("Didn't find pip with your python installation at: $$PYTHON3_EXE $$escape_expand(\n)Please make sure it is installed.")
-}
-
-VIRTUALENV_EXE = "$$PYTHON3_EXE -m virtualenv"
-!isEmpty(PIP3_PATH): VIRTUALENV_EXE = $$shell_path($$PIP3_PATH/virtualenv)
-!isEmpty(PIP3_PATH):win32: VIRTUALENV_EXE = $${VIRTUALENV_EXE}.exe
-
+VIRTUALENV_EXE = $$QMAKE_PYTHON3_LOCATION -m virtualenv
 # virtualenv is always using the default interpreter, which is python2 on many systems"
 # by adding -p we enforce that the python3 interpreter is used and make sure python3 is installed in the virtualenv
-VIRTUALENV_EXE += " -p $$PYTHON3_EXE"
+VIRTUALENV_EXE += " -p $$QMAKE_PYTHON3_LOCATION"
 
 # Use a Python virtualenv for installing qface, so we don't pollute the user environment
 qtivi_qface_virtualenv.target = qtivi_qface_virtualenv

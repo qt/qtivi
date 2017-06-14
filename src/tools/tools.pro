@@ -1,2 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS = ivigenerator
+
+QT_FOR_CONFIG += ivicore
+
+qtConfig(ivigenerator): SUBDIRS = ivigenerator

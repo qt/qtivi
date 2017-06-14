@@ -1,3 +1,4 @@
 TEMPLATE = subdirs
 
-SUBDIRS += features
+QT_FOR_CONFIG += ivicore
+qtConfig(ivigenerator): SUBDIRS += features
