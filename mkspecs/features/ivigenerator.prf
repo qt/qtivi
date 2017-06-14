@@ -40,7 +40,7 @@ IVI_GENERATOR = $$VIRTUALENV_ACTIVATION python $$IVI_GENERATOR_PATH/generate.py
 
 # The 'click' library used by the generator needs to have a utf8 locale setup.
 win32: ENV = chcp 65001 &&
-else: ENV = LC_ALL="utf-8"
+else: ENV = LC_ALL="en_US.UTF-8"
 
 # TODO make this work with multiple input files, or only support one QFACE_SOURCE
 # Although this could be extra_compiler it is a normal EXTRA_TARGET for a reason.
