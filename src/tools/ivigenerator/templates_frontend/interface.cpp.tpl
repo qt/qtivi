@@ -79,6 +79,9 @@ QT_BEGIN_NAMESPACE
     , m_{{property}}({{property|default_type_value}})
 {% endfor %}
 {
+{% if not module.tags.config.disablePrivateIVI %}
+    m_supportsPropertyOverriding = true;
+{% endif %}
 }
 
 /*! \internal */

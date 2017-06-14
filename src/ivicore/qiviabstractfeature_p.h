@@ -93,6 +93,7 @@ public:
     bool m_qmlCreation;
     bool m_isInitialized;
 
+    bool m_supportsPropertyOverriding;
     QIviPropertyOverrider *m_propertyOverride;
 };
 

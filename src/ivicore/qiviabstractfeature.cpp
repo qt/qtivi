@@ -62,6 +62,7 @@ QIviAbstractFeaturePrivate::QIviAbstractFeaturePrivate(const QString &interface,
     , m_error(QIviAbstractFeature::NoError)
     , m_qmlCreation(false)
     , m_isInitialized(false)
+    , m_supportsPropertyOverriding(false)
     , m_propertyOverride(nullptr)
 {
 }
