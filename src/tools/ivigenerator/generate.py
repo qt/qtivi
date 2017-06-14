@@ -43,14 +43,12 @@ import logging.config
 import yaml
 import json
 from path import Path
-from qface.filters import jsonify
 
 from qface.generator import FileSystem, Generator
 from qface.helper.qtcpp import Filters
 from qface.helper.doc import parse_doc
 from qface.watch import monitor
 from qface.idl.domain import Property, Parameter, Field, Struct
-from qface.filters import jsonify
 
 here = Path(__file__).dirname()
 
@@ -199,6 +197,19 @@ def json_domain(properties):
                         data[property.name] = {}
                     data[property.name][p] = property.tags['config_simulator'][p]
     return json.dumps(data, separators=(',', ':'))
+
+
+def jsonify(obj):
+    """
+    This is copied from QFace (qface/filters.py), should be replaced with
+    original when it's released
+    """
+    try:
+        # all symbols have a toJson method, try it
+        return json.dumps(obj.toJson(), indent='  ')
+    except AttributeError:
+        pass
+    return json.dumps(obj, indent='  ')
 
 
 def lower_first_filter(s):
