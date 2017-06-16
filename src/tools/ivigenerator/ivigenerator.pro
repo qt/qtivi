@@ -40,13 +40,25 @@ templates_backend_simulator.files += \
     templates_backend_simulator/utils.tpl
 templates_backend_simulator.path = $$[QT_HOST_BINS]/ivigenerator/templates_backend_simulator
 
+templates_generation_validator.files += \
+    templates_generation_validator/generated_comment.cpp.tpl \
+    templates_generation_validator/generationstatusitem.cpp.tpl \
+    templates_generation_validator/generationstatusitem.h.tpl \
+    templates_generation_validator/main.cpp.tpl \
+    templates_generation_validator/main.qml.tpl \
+    templates_generation_validator/qml.qrc.tpl \
+    templates_generation_validator/ui.pri.json \
+    templates_generation_validator/validationstatus.cpp.tpl \
+    templates_generation_validator/validationstatus.h.tpl
+templates_generation_validator.path = $$[QT_HOST_BINS]/ivigenerator/templates_generation_validator
+
 generator.files += \
     generate.py \
     templates_frontend.yaml \
     templates_backend_simulator.yaml
 generator.path = $$[QT_HOST_BINS]/ivigenerator
 
-INSTALLS += templates_frontend templates_backend_simulator generator
+INSTALLS += templates_frontend templates_backend_simulator templates_generation_validator generator
 
 # Ensure files are installed to qtbase for non-prefixed builds
 !force_independent:if(!debug_and_release|!build_all|CONFIG(release, debug|release)) {
