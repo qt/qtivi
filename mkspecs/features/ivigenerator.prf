@@ -28,11 +28,16 @@ QFACE_YAML = $$QFACE_ABS_PWD/$${QFACE_BASE_NAME}.yaml
 isEmpty(QFACE_MODULE_NAME): QFACE_MODULE_NAME = $$QFACE_BASE_NAME
 
 # Detect whether we are using the feature inside the qtivi repository
-isEmpty(QTIVI_BUILD_ROOT): VIRTUALENV_PATH = $$[QT_HOST_BINS]/ivigenerator/qtivi_qface_virtualenv
-else: VIRTUALENV_PATH = $$QTIVI_BUILD_ROOT/src/tools/ivigenerator/qtivi_qface_virtualenv
+VIRTUALENV_PATH = $$[QT_HOST_BINS]/ivigenerator/qtivi_qface_virtualenv
+INTERNAL_VIRTUALENV_PATH = $$QTIVI_BUILD_ROOT/src/tools/ivigenerator/qtivi_qface_virtualenv
+IVI_GENERATOR_PATH = $$[QT_HOST_BINS]/ivigenerator
 
-isEmpty(QTIVI_ROOT): IVI_GENERATOR_PATH = $$[QT_HOST_BINS]/ivigenerator
-else: IVI_GENERATOR_PATH = $$QTIVI_ROOT/src/tools/ivigenerator
+# Try to use the internal virtualenv when building qtivi
+# Because of the two stage build of COIN, it might not exist, but the installed version should still be there
+!isEmpty(QTIVI_BUILD_ROOT):exists(INTERNAL_VIRTUALENV_PATH) {
+    VIRTUALENV_PATH = $$INTERNAL_VIRTUALENV_PATH
+    IVI_GENERATOR_PATH = $$QTIVI_ROOT/src/tools/ivigenerator
+}
 
 win32: VIRTUALENV_ACTIVATION =  $$VIRTUALENV_PATH/Scripts/activate &&
 else: VIRTUALENV_ACTIVATION = . $$VIRTUALENV_PATH/bin/activate &&
