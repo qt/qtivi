@@ -21,7 +21,7 @@ interface ClimateControl {
      * @brief value holds the fan speed level, where the level can be between
      * minimumValue(off) to maximumValue (strongest).
      */
-    @config_simulator: { range:[0, 50] }
+    @config_simulator: { range: [0, 50] }
     int fanSpeedLevel;
     /**
      * @brief value holds the steering wheel heater level, where the level can
