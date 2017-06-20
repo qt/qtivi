@@ -39,9 +39,9 @@ IVI_GENERATOR_PATH = $$[QT_HOST_BINS]/ivigenerator
     IVI_GENERATOR_PATH = $$QTIVI_ROOT/src/tools/ivigenerator
 }
 
-win32: VIRTUALENV_ACTIVATION =  $$VIRTUALENV_PATH/Scripts/activate &&
-else: VIRTUALENV_ACTIVATION = . $$VIRTUALENV_PATH/bin/activate &&
-IVI_GENERATOR = $$VIRTUALENV_ACTIVATION python $$IVI_GENERATOR_PATH/generate.py
+win32: VIRTUALENV_PYTHON = $$VIRTUALENV_PATH/Scripts/python.exe
+else: VIRTUALENV_PYTHON = $$VIRTUALENV_PATH/bin/python
+IVI_GENERATOR = $$VIRTUALENV_PYTHON $$IVI_GENERATOR_PATH/generate.py
 
 # The 'click' library used by the generator needs to have a utf8 locale setup.
 win32: ENV = chcp 65001 &&

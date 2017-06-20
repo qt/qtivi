@@ -40,6 +40,7 @@ VIRTUALENV_EXE = "$$PYTHON3_EXE -m virtualenv"
 qtivi_qface_virtualenv.target = qtivi_qface_virtualenv
 qtivi_qface_virtualenv.commands = \
     $$VIRTUALENV_EXE $${qtivi_qface_virtualenv.target} $$escape_expand(\n\t) \
+    $$VIRTUALENV_EXE --relocatable $${qtivi_qface_virtualenv.target} $$escape_expand(\n\t) \
     @echo "Set up virtualenv for qface, name: $$qtivi_qface_virtualenv.target"
 QMAKE_EXTRA_TARGETS += qtivi_qface_virtualenv
 
@@ -58,7 +59,7 @@ qtivi_qface_install.depends = qtivi_qface_virtualenv
 qtivi_qface_install.depends += $$QFACE_SOURCE_DIR/setup.py
 qtivi_qface_install.depends += $$QFACE_SOURCE_DIR/requirements.txt
 qtivi_qface_install.commands = $$VIRTUALENV_ACTIVATION \
-        pip3 install -e $$QFACE_SOURCE_DIR $$escape_expand(\n\t) \
+        pip3 install $$shell_path($$QFACE_SOURCE_DIR) $$escape_expand(\n\t) \
         @echo "Installed qface development version into qtivi_qface_virtualenv" $$escape_expand(\n\t)
 win32: qtivi_qface_install.commands += @COPY /B $$shell_path($$OUT_PWD/forceRebuild)+,, $$shell_path($$OUT_PWD/forceRebuild)
 else: qtivi_qface_install.commands += @touch $$OUT_PWD/forceRebuild
