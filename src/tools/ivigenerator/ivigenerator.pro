@@ -47,7 +47,7 @@ templates_generation_validator.files += \
     templates_generation_validator/main.cpp.tpl \
     templates_generation_validator/main.qml.tpl \
     templates_generation_validator/qml.qrc.tpl \
-    templates_generation_validator/ui.pri.json \
+    templates_generation_validator/ui.pri.tpl \
     templates_generation_validator/validationstatus.cpp.tpl \
     templates_generation_validator/validationstatus.h.tpl
 templates_generation_validator.path = $$[QT_HOST_BINS]/ivigenerator/templates_generation_validator
