@@ -1,5 +1,7 @@
 # Custom compiler for qface:
 #
+# If building a module, use load(ivigenerator_qt_module) instead
+#
 # Example input:
 #   QFACE_SOURCES += my.foo.qface [required]
 #   QFACE_MODULE_NAME = my_module_name
@@ -25,7 +27,6 @@ QFACE_ABS_PWD = $$absolute_path($$QFACE_PWD, $$_PRO_FILE_PWD_)
 QFACE_FILE = $$basename(QFACE_SOURCES)
 QFACE_BASE_NAME = $$replace(QFACE_FILE, .qface, )
 QFACE_YAML = $$QFACE_ABS_PWD/$${QFACE_BASE_NAME}.yaml
-isEmpty(QFACE_MODULE_NAME): QFACE_MODULE_NAME = $$QFACE_BASE_NAME
 
 # Detect whether we are using the feature inside the qtivi repository
 VIRTUALENV_PATH = $$[QT_HOST_BINS]/ivigenerator/qtivi_qface_virtualenv
@@ -54,11 +55,12 @@ else: ENV = LC_ALL="en_US.UTF-8"
 # Although this could be extra_compiler it is a normal EXTRA_TARGET for a reason.
 # In the debug_and_release configuration, we want to have the generator executed
 # during the run of the meta Makefile to only generate the code once.
-PRI_NAME = $$replace(QFACE_MODULE_NAME, "\." , "-")
-PRI = $$QFACE_OUTPUT_DIR/$${PRI_NAME}.pri
+PRI = $$QFACE_OUTPUT_DIR/$$lower($${QFACE_BASE_NAME}).pri
+IVI_GENERATOR_OPTIONS = --format=$$QFACE_FORMAT
+!isEmpty(QFACE_MODULE_NAME): IVI_GENERATOR_OPTIONS += --module=$$QFACE_MODULE
 
 qface_sources.target = $$relative_path($$PRI, $$OUT_PWD)
-qface_sources.commands = $$ENV $$shell_path($$IVI_GENERATOR) -f $$QFACE_FORMAT $$shell_path($$QFACE_ABS_PWD/$${QFACE_FILE}) $$shell_path($$QFACE_OUTPUT_DIR)
+qface_sources.commands = $$ENV $$shell_path($$IVI_GENERATOR) $$IVI_GENERATOR_OPTIONS $$shell_path($$QFACE_ABS_PWD/$${QFACE_FILE}) $$shell_path($$QFACE_OUTPUT_DIR)
 qface_sources.depends = $$IVI_GENERATOR_PATH/generate.py
 
 # Add all templates of the generator format as dependency
@@ -71,6 +73,13 @@ exists($$QFACE_TEMPLATE_PWD) {
 exists($$QFACE_YAML) {
     qface_sources.depends += $$QFACE_YAML
     OTHER_FILES += $$QFACE_YAML
+}
+
+!isEmpty(QFACE_HEADERS_OUTPUT_DIR) {
+    QFACE_HEADERS_OUTPUT_TARGET = $${QFACE_HEADERS_OUTPUT_DIR}/$$lower($${QFACE_MODULE_NAME})module.h
+    qface_headers.target = $$relative_path($$QFACE_HEADERS_OUTPUT_TARGET, $$OUT_PWD)
+    qface_headers.commands = $${QMAKE_COPY_FILE} $${QFACE_OUTPUT_DIR}/*.h $${QFACE_HEADERS_OUTPUT_DIR}
+    qface_headers.depends = $$relative_path($$PRI, $$OUT_PWD) $$IVI_GENERATOR_PATH/generate.py
 }
 
 # Reevaluate the Makefile after the generation has finished
@@ -87,6 +96,11 @@ Makefile.depends = $$relative_path($$PRI, $$OUT_PWD)
 # and will then cause a rerun of qmake
 !isEmpty(QTIVI_ROOT):!exists($$VIRTUALENV_PATH): {
     Makefile.depends = $$shadowed($$IVI_GENERATOR_PATH)/forceRebuild
+}
+
+!isEmpty(QFACE_HEADERS_OUTPUT_TARGET) {
+    Makefile.depends += $$relative_path($$QFACE_HEADERS_OUTPUT_TARGET, $$OUT_PWD)
+    QMAKE_EXTRA_TARGETS += qface_headers
 }
 
 # After the generation, this should exists and qmake can create the correct build tree

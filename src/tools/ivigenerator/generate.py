@@ -38,6 +38,7 @@
 # SPDX-License-Identifier: LGPL-3.0
 
 import re
+import os
 import click
 import logging.config
 import yaml
@@ -56,7 +57,7 @@ log = logging.getLogger(__file__)
 
 Filters.classPrefix = ''
 
-QT_AS_VERSION = 1.2
+QT_AS_VERSION = 2.0
 
 def tag_by_path(symbol, path, default_value=False):
     """
@@ -402,8 +403,9 @@ def generate(tplconfig, moduleConfig, src, dst):
     generator.register_filter('qml_control', qml_control)
     generator.register_filter('qml_binding_property', qml_binding_property)
 
-
-    ctx = {'dst': dst, 'qtASVersion': QT_AS_VERSION}
+    srcFile = os.path.basename(src[0])
+    srcBase = os.path.splitext(srcFile)[0]
+    ctx = {'dst': dst, 'qtASVersion': QT_AS_VERSION, 'srcFile':srcFile, 'srcBase':srcBase}
     gen_config = yaml.load(open(here / '{0}.yaml'.format(tplconfig)))
     for module in system.modules:
         log.debug('generate code for module %s', module)

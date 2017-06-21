@@ -6,7 +6,7 @@ generate_rules:
           template_file:  'main.qml.tpl'
         - dest_file:  'qml.qrc'
           template_file:  'qml.qrc.tpl'
-        - dest_file:  "{{module|lower|replace('.', '-')}}.pri"
+        - dest_file:  "{{srcBase|lower}}.pri"
           template_file:  "ui.pri.tpl"
         - dest_file:  "{{module.module_name|lower}}global.h"
           template_file:  "global.h.tpl"

@@ -1,0 +1,29 @@
+# Custom compiler for qface base modules
+#
+# If not building a module, use CONFIG += ivigenerator instead
+#
+# Example input:
+#   QFACE_SOURCES += my.foo.qface [required]
+#   QFACE_MODULE_NAME = my_module_name
+#   QFACE_FORMAT = frontend (or backend, simulator... -- defaults to "frontend")
+#   QFACE_OUTPUT_DIR = my_output_dir (defaults to current build dir)
+#
+
+!contains(QFACE_SOURCES, .+\\.qface$) {
+    error("Invalid qface file provided: The file needs to end with .qface")
+}
+
+QFACE_PWD = $$dirname(QFACE_SOURCES)
+QFACE_ABS_PWD = $$absolute_path($$QFACE_PWD, $$_PRO_FILE_PWD_)
+
+load(qt_build_paths)
+!force_independent {
+    QFACE_HEADERS_REL_DIR = $$relative_path($$QFACE_ABS_PWD, $$QTIVI_ROOT)
+    QFACE_HEADERS_OUTPUT_DIR = $${MODULE_BASE_OUTDIR}/$${QFACE_HEADERS_REL_DIR}
+    !exists(QFACE_HEADERS_OUTPUT_DIR) {
+        mkpath($${QFACE_HEADERS_OUTPUT_DIR})
+    }
+}
+
+load(qt_module)
+load(ivigenerator)

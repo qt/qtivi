@@ -6,7 +6,7 @@ generate_rules:
             template_file:  "plugin.cpp.tpl"
         -   dest_file:  "{{module.module_name|lower}}.json"
             template_file:  "plugin.json"
-        -   dest_file:  "{{module|lower|replace('.', '-')}}.pri"
+        -   dest_file:  "{{srcBase|lower}}.pri"
             template_file:  "plugin.pri.tpl"
     interface_rules:
         -   dest_file: '{{interface|lower}}backend.h'

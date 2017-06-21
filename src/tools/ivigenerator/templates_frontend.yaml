@@ -10,7 +10,7 @@ generate_rules:
           template_file:  "modulefactory.h.tpl"
         - dest_file:  "{{module.module_name|lower}}modulefactory.cpp"
           template_file:  "modulefactory.cpp.tpl"
-        - dest_file:  "{{module|lower|replace('.', '-')}}.pri"
+        - dest_file:  "{{srcBase|lower}}.pri"
           template_file:  "module.pri.tpl"
     interface_rules:
         - dest_file: '{{interface|lower}}backendinterface.h'
