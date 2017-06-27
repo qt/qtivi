@@ -34,8 +34,11 @@ IVI_GENERATOR_PATH = $$[QT_HOST_BINS]/ivigenerator
 
 # Try to use the internal virtualenv when building qtivi
 # Because of the two stage build of COIN, it might not exist, but the installed version should still be there
-!isEmpty(QTIVI_BUILD_ROOT):exists(INTERNAL_VIRTUALENV_PATH) {
+!isEmpty(QTIVI_BUILD_ROOT):exists($$INTERNAL_VIRTUALENV_PATH) {
     VIRTUALENV_PATH = $$INTERNAL_VIRTUALENV_PATH
+}
+
+!isEmpty(QTIVI_BUILD_ROOT):exists($$QTIVI_ROOT/src/tools/ivigenerator) {
     IVI_GENERATOR_PATH = $$QTIVI_ROOT/src/tools/ivigenerator
 }
 
