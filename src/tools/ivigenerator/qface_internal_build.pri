@@ -36,6 +36,10 @@ VIRTUALENV_EXE = "$$PYTHON3_EXE -m virtualenv"
 !isEmpty(PIP3_PATH): VIRTUALENV_EXE = $$shell_path($$PIP3_PATH/virtualenv)
 !isEmpty(PIP3_PATH):win32: VIRTUALENV_EXE = $${VIRTUALENV_EXE}.exe
 
+# virtualenv is always using the default interpreter, which is python2 on many systems"
+# by adding -p we enforce that the python3 interpreter is used and make sure python3 is installed in the virtualenv
+VIRTUALENV_EXE += " -p $$PYTHON3_EXE"
+
 # Use a Python virtualenv for installing qface, so we don't pollute the user environment
 qtivi_qface_virtualenv.target = qtivi_qface_virtualenv
 qtivi_qface_virtualenv.commands = \
