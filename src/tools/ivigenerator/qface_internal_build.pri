@@ -15,10 +15,14 @@ VIRTUALENV_EXE = $$QMAKE_PYTHON3_LOCATION -m virtualenv
 VIRTUALENV_EXE += " -p $$QMAKE_PYTHON3_LOCATION"
 
 # Use a Python virtualenv for installing qface, so we don't pollute the user environment
+# On some systems virtualenv --always-copy doesn't work (https://github.com/pypa/virtualenv/issues/565).
+# To workaround the problem, we need to manually create the folder and create the virtualenv from
+# inside
 qtivi_qface_virtualenv.target = qtivi_qface_virtualenv
 qtivi_qface_virtualenv.commands = \
-    $$VIRTUALENV_EXE $${qtivi_qface_virtualenv.target} $$escape_expand(\n\t) \
-    $$VIRTUALENV_EXE --relocatable $${qtivi_qface_virtualenv.target} $$escape_expand(\n\t) \
+    $(MKDIR) $${qtivi_qface_virtualenv.target} $$escape_expand(\n\t) \
+    cd $${qtivi_qface_virtualenv.target} && $$VIRTUALENV_EXE --always-copy . $$escape_expand(\n\t) \
+    cd $${qtivi_qface_virtualenv.target} && $$VIRTUALENV_EXE --relocatable . $$escape_expand(\n\t) \
     @echo "Set up virtualenv for qface, name: $$qtivi_qface_virtualenv.target"
 QMAKE_EXTRA_TARGETS += qtivi_qface_virtualenv
 
@@ -43,7 +47,13 @@ win32: qtivi_qface_install.commands += @COPY /B $$shell_path($$OUT_PWD/forceRebu
 else: qtivi_qface_install.commands += @touch $$OUT_PWD/forceRebuild
 QMAKE_EXTRA_TARGETS += qtivi_qface_install
 
-PRE_TARGETDEPS += $${qtivi_qface_install.target}
+# We need to make the virtualenv first deployable
+# Otherwise it still needs some modules from the system
+unix: deploy-virtualenv.commands = $$PWD/deploy-virtualenv.sh qtivi_qface_virtualenv
+else: deploy-virtualenv.commands = $$PWD/deploy-virtualenv.bat qtivi_qface_virtualenv
+deploy-virtualenv.depends = $${qtivi_qface_install.target}
+QMAKE_EXTRA_TARGETS += deploy-virtualenv
+PRE_TARGETDEPS += deploy-virtualenv
 
 virtualenv.files = $$OUT_PWD/qtivi_qface_virtualenv
 virtualenv.path = $$[QT_HOST_BINS]/ivigenerator
