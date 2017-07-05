@@ -2,6 +2,13 @@
     "module": "ivicore",
     "testDir": "../../config.tests",
 
+    "commandline": {
+        "options": {
+            "ivigenerator": { "type": "enum", "values": [ "no", "qt", "system" ] },
+            "host-tools-only": "boolean"
+        }
+    },
+
     "tests": {
         "python3": {
             "label": "Python3",
@@ -30,13 +37,23 @@
             "condition": "features.python3 && tests.virtualenv",
             "output": [ "privateFeature" ]
         },
+        "system-ivigenerator": {
+            "label": "System IVI Generator",
+            "enable": "input.ivigenerator == 'system'",
+            "disable": "input.ivigenerator != 'system'",
+            "output": [ "privateFeature" ]
+        },
         "ivigenerator": {
             "label": "IVI Generator",
-            "condition": [
-                "features.python3",
-                "features.python3-virtualenv"
-            ],
+            "enable": "input.ivigenerator == 'qt' || input.ivigenerator == 'system'",
+            "disable": "input.ivigenerator == 'no'",
+            "condition": "features.python3.&& features.python3-virtualenv || features.system-ivigenerator",
             "output": [ "publicFeature" ]
+        },
+        "host-tools-only": {
+            "label": "Only build the host tools",
+            "condition": "input.host-tools-only == 'yes'",
+            "output": [ "privateFeature" ]
         }
      },
 
