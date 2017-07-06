@@ -8,11 +8,6 @@
             "type": "python3",
             "files": [ "python3" ]
         },
-        "pip": {
-            "label": "pip",
-            "type": "python3_package",
-            "package": "pip"
-        },
         "virtualenv": {
             "label": "virtualenv",
             "type": "python3_package",
@@ -30,11 +25,6 @@
                 { "type": "varAssign", "name": "QMAKE_PYTHON3_LOCATION", "value": "tests.python3.value" }
             ]
         },
-        "python3-pip": {
-            "label": "pip",
-            "condition": "features.python3 && tests.pip",
-            "output": [ "privateFeature" ]
-        },
         "python3-virtualenv": {
             "label": "virtualenv",
             "condition": "features.python3 && tests.virtualenv",
@@ -44,7 +34,6 @@
             "label": "IVI Generator",
             "condition": [
                 "features.python3",
-                "features.python3-pip",
                 "features.python3-virtualenv"
             ],
             "output": [ "publicFeature" ]
@@ -57,7 +46,7 @@
             "condition": "!features.ivigenerator",
             "message": "Cannot build the IVI Generator because its dependencies are not satisfied.
 The IVI Generator provides tooling to generate source code out of IDL files.
-Make sure that python3 and its 'pip' and 'virtualenv' packages are installed."
+Make sure that python3 and its 'virtualenv' packages are installed."
         }
     ],
 
@@ -71,8 +60,7 @@ Make sure that python3 and its 'pip' and 'virtualenv' packages are installed."
                         {
                             "type": "python3"
                         },
-                        "python3-virtualenv",
-                        "python3-pip"
+                        "python3-virtualenv"
                     ]
                },
                "ivigenerator"
