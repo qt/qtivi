@@ -114,3 +114,13 @@
     \externalpage https://doc.qt.io/QtGENIVIExtras/index.html
     \title Qt GENIVI Extras
 */
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-supported-platforms.html#supported-target-device-groups
+    \title Supported Target Devices
+*/
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-supported-platforms.html#supported-development-hosts
+    \title Supported Development Hosts
+*/

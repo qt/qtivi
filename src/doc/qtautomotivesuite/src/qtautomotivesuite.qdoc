@@ -47,7 +47,6 @@
     \list
         \li \l {Qt Automotive Suite Overview}{Overview}
         \li \l {Installing Qt Automotive Suite}{Install Instructions}
-        \li \l {Supported Platforms}
         \li \l {Related Information}
     \endlist
 
@@ -177,12 +176,17 @@
     \page qtas-install.html
     \title Installing Qt Automotive Suite
     \previouspage {Qt Automotive Suite Overview}{Overview}
-    \nextpage {Supported Platforms}
 
     \QAS is a commercial product and requires a license to install and
     explore its possibilities. Use the guide on the
     \l{Download Qt} page to find the license that suits your need. The license you
     buy is associated with a Qt Account, which is required to install the product.
+
+    \section1 Supported Target Devices and Development Hosts
+
+    \l {Supported Target Devices} lists the target devices supported by \QAS.
+
+    \l {Supported Development Hosts} lists the development hosts supported by \QAS.
 
     \section1 Prerequisites
 
@@ -219,79 +223,4 @@
 
     Once the installation is complete, start Qt Creator and try running one of the
     examples against an automotive target or the Qt Automotive emulator.
-*/
-
-/*!
-    \page qtas-supported-platforms.html
-    \title Supported Platforms
-    \previouspage {Installing Qt Automotive Suite}
-
-    \section1 Supported Reference Devices
-
-    Pre-compiled embedded Linux and Windows images for \QAS devices
-    are available via the Qt online installer. \QAS supports the following devices:
-
-    \table
-    \header
-        \li Device
-        \li Features
-    \row
-        \li \l{http://www.nvidia.com/object/drive-cx.html} {NVIDIA DRIVE CX}
-        \li Tegra X1 mobile processor
-    \row
-        \li \l{http://boundarydevices.com/product/sabre-lite-imx6-sbc/} {Boundary Devices BD-SL-i.MX6}
-        \li NXP/Freescale i.MX6 ARM Development Board
-    \endtable
-
-    \section1 Supported Features on Reference Devices
-
-    The following features are supported without any modification on the
-    pre-built images:
-
-    \table
-    \header \li Device
-            \li Touchscreen
-            \li ADB via Network
-            \li ADB via USB
-            \li HDMI
-            \li HW Accelerated \br Video Playback
-            \li Virtual Keyboard
-            \li B2Qt WiFi Module
-            \li B2Qt Utils Module
-            \li OpenGL ES 2.0
-            \li Qt OTA Update Module
-    \row    \li NVIDIA DRIVE CX
-            \li \image ok
-            \li \image ok
-            \li \image ok
-            \li \image ok
-            \li \image ok
-            \li \image ok
-            \li \image ok
-            \li \image ok
-            \li \image ok
-            \li
-    \row    \li Boundary Devices i.MX6 Boards
-            \li \image ok
-            \li \image ok
-            \li \image ok
-            \li \image ok
-            \li \image ok
-            \li \image ok
-            \li \image ok
-            \li \image ok
-            \li \image ok
-            \li \image ok
-    \endtable
-
-    \section1 Supported Development Environment
-
-    The development environments supported by \QAS:
-
-    \list
-        \li Ubuntu Linux 64-bit (12.04 LTS or later)
-        \li Windows 7 32-bit and 64-bit
-        \li Windows 10 32-bit and 64-bit
-    \endlist
-
 */
