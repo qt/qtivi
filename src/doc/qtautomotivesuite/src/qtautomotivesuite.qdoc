@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the documentation of the Qt Automotive Suite.
@@ -47,6 +47,9 @@
     \list
         \li \l {Qt Automotive Suite Overview}{Overview}
         \li \l {Installing Qt Automotive Suite}{Install Instructions}
+        \list
+            \li \l{NVIDIA DRIVE CX Guide}
+        \endlist
         \li \l {Related Information}
     \endlist
 
@@ -193,10 +196,14 @@
     \QAS is based on the \l {Qt for Device Creation} offering so the
     prerequisites are the same for both. For more information about how to install and
     configure these prerequisites on your development host, see
-    \e {Host-specific Requirements} section in the
-    \l {Qt for Device Creation: Installation Guide}.
+    \l {Requirements for Linux/X11} and \l {Requirements for Windows}.
 
-    \section1 Install \QAS
+    \section2 \QAS Prerequisites
+
+    The DriveCX support in \B2Q requires Vibrante 4.1 Linux Drive CX2
+    PDK version 4.1.4.0.
+
+    \section1 Installing \QAS
 
     \list 1
      \li Download the \l{Qt Online Installer Download}{Qt online installer}.
@@ -219,6 +226,16 @@
      the installation.
 
      \borderedimage qtinstaller-qas.png
+    \endlist
+
+    \section1 Installing \B2Q on Target Devices
+
+    Before you can test \QAS applications on the target device, you must
+    flash the target device with an image containing the \B2Q stack. Follow the
+    steps in the target device guide:
+
+    \list
+        \li \l{NVIDIA DRIVE CX Guide}
     \endlist
 
     Once the installation is complete, start Qt Creator and try running one of the

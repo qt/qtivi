@@ -43,4 +43,5 @@ depends += \
 buildversion = "Qt Automotive Suite 1.1"
 
 macro.QAS = "Qt Automotive Suite"
+macro.B2Q = "Boot to Qt"
 navigation.homepage = "Qt Automotive Suite"

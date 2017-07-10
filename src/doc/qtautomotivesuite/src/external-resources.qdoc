@@ -124,3 +124,18 @@
     \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-supported-platforms.html#supported-development-hosts
     \title Supported Development Hosts
 */
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-requirements-x11.html
+    \title Requirements for Linux/X11
+*/
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-requirements-windows.html
+    \title Requirements for Windows
+*/
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-building-and-running.html#building-and-running-an-example
+    \title Building and Running an Example
+*/
