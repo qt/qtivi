@@ -2,6 +2,8 @@
 defineTest(qtConfTest_python3) {
 
     PYTHON3_PATH = $$(PYTHON3_PATH)
+    # include binaries installed from homebrew
+    osx: PYTHON3_PATH += /usr/local/bin
     PYTHON3_NAMES = "python3" "python"
     for (python3_exe_name, PYTHON3_NAMES) {
         equals(QMAKE_HOST.os, Windows): python3_exe_name = $${python3_exe_name}.exe
