@@ -57,6 +57,7 @@ PRE_TARGETDEPS += deploy-virtualenv
 
 virtualenv.files = $$OUT_PWD/qtivi_qface_virtualenv
 virtualenv.path = $$[QT_HOST_BINS]/ivigenerator
+virtualenv.depends = deploy-virtualenv
 virtualenv.CONFIG = no_check_exist directory no_build
 
 INSTALLS += virtualenv
