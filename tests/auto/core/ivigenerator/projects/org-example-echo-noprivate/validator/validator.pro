@@ -3,7 +3,7 @@ TEMPLATE = app
 
 DESTDIR = ..
 
-QT += qml quick core
+QT += qml quick core ivicore
 CONFIG += c++11 ivigenerator
 CONFIG -= app_bundle
 
