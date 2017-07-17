@@ -60,7 +60,7 @@ Window {
     height: 480
     title: qsTr("QtIVI Climate")
 
-    ClimateControl {
+    UiClimateControl {
         id: climateCtrl
     }
 
