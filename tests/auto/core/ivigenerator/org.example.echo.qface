@@ -30,6 +30,7 @@ interface Echo {
     real floatValue2;
     string stringValue;
     model<Contact> contactList;
+    WeekDay weekDay;
 
     string echo(string msg);
     string id() const;
@@ -76,6 +77,15 @@ flag AirflowDirection {
      * @brief Airflow to the floor
      */
     Floor = 4
+}
+
+@config: { type: "DaysOfTheWeek" }
+flag WeekDay {
+    Monday = 1,
+    Tuesday = 2,
+    Wednesday = 3,
+    Thursday = 4,
+    Friday = 5
 }
 
 /**

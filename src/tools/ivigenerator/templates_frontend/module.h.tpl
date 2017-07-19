@@ -70,7 +70,12 @@ public:
         {{member.name}} = {{member.value}}, {{member.comment}}
         {% endfor %}
     };
+{% if enum.is_flag %}
+    Q_DECLARE_FLAGS({{enum|flag_type}}, {{enum}})
+    Q_FLAG({{enum|flag_type}})
+{% else %}
     Q_ENUM({{enum}})
+{% endif %}
 
 {% endfor %}
 

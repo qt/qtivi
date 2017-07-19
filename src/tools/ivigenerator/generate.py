@@ -133,6 +133,78 @@ def default_value(symbol):
     return res
 
 
+def parameter_type(symbol):
+    """
+    Return the parameter declaration for properties, handle camel case module name
+    """
+    prefix = Filters.classPrefix
+    if symbol.type.is_enum:
+        return '{0}{1}Module::{2} {3}'.format(prefix, symbol.module.module_name, flag_type(symbol), symbol)
+    if symbol.type.is_void or symbol.type.is_primitive:
+        if symbol.type.name == 'string':
+            return 'const QString &{0}'.format(symbol)
+        if symbol.type.name == 'var':
+            return 'const QVariant &{0}'.format(symbol)
+        if symbol.type.name == 'real':
+            return 'qreal {0}'.format(symbol)
+        return '{0} {1}'.format(symbol.type, symbol)
+    elif symbol.type.is_list:
+        nested = return_type(symbol.type.nested)
+        return 'const QVariantList &{1}'.format(nested, symbol)
+    elif symbol.type.is_model:
+        nested = symbol.type.nested
+        if nested.is_primitive:
+            return '{0}VariantModel *{1}'.format(prefix, symbol)
+        elif nested.is_complex:
+            return '{0}{1}Model *{2}'.format(prefix, nested, symbol)
+    else:
+        return 'const {0}{1} &{2}'.format(prefix, symbol.type, symbol)
+    return 'QFace Error: Unknown parameter {0} of type {1}'.format(symbol, symbol.type)
+
+
+def return_type(symbol):
+    """
+    Return the type declaration for properties, handle camel case module name
+    """
+    prefix = Filters.classPrefix
+    if symbol.type.is_enum:
+        return '{0}{1}Module::{2}'.format(prefix, symbol.module.module_name, flag_type(symbol))
+    if symbol.type.is_void or symbol.type.is_primitive:
+        if symbol.type.name == 'string':
+            return 'QString'
+        if symbol.type.name == 'var':
+            return 'QVariant'
+        if symbol.type.name == 'real':
+            return 'qreal'
+        return symbol.type.name
+    elif symbol.type.is_list:
+        nested = return_type(symbol.type.nested)
+        return 'QVariantList'.format(nested)
+    elif symbol.type.is_model:
+        nested = symbol.type.nested
+        if nested.is_primitive:
+            return '{0}VariantModel *'.format(prefix)
+        elif nested.is_complex:
+            return '{0}{1}Model *'.format(prefix, nested)
+    else:
+        return '{0}{1}'.format(prefix, symbol.type)
+    return 'QFace Error: Unknown symbol {0} of type {1}'.format(symbol, symbol.type)
+
+
+def flag_type(symbol):
+    """
+    Return the annotation for the flag type if available, the plural otherwise
+    """
+    actualType = symbol
+    if symbol.type.reference:
+        actualType = symbol.type.reference
+    if actualType.is_flag:
+        if 'config' in actualType.tags and 'type' in actualType.tags['config']:
+            return actualType.tags['config']['type']
+        return '{0}s'.format(actualType)
+    return actualType
+
+
 def domain_values(symbol):
     """
     Returns domain values for property (if defined by @domain)
@@ -372,7 +444,6 @@ def qml_type(interface):
 
 
 def model_type(symbol):
-    module_name = symbol.module.module_name
     if symbol.type.is_model:
         nested = symbol.type.nested
         return '{0}Model'.format(nested)
@@ -383,11 +454,12 @@ def generate(tplconfig, moduleConfig, src, dst):
     log.debug('run {0} {1}'.format(src, dst))
     system = FileSystem.parse(src)
     generator = Generator(search_path=here / tplconfig)
-    generator.register_filter('return_type', Filters.returnType)
-    generator.register_filter('parameter_type', Filters.parameterType)
+    generator.register_filter('return_type', return_type)
+    generator.register_filter('parameter_type', parameter_type)
     generator.register_filter('default_type_value', default_type_value)
     generator.register_filter('default_value', default_value)
     generator.register_filter('model_type', model_type)
+    generator.register_filter('flag_type', flag_type)
     generator.register_filter('parse_doc', parse_doc)
     generator.register_filter('lowerfirst', lower_first_filter)
     generator.register_filter('range_low', range_low)
