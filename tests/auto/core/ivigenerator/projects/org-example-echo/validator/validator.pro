@@ -1,14 +1,15 @@
+TEMPLATE=app
 TARGET = validator-check
-TEMPLATE = app
+LIBS += -L$$OUT_PWD/.. -l$$qtLibraryTarget(echo_frontend)
 
 DESTDIR = ..
 
-QT += qml quick core ivicore
 CONFIG += c++11 ivigenerator
 CONFIG -= app_bundle
 
-LIBS += -L$$OUT_PWD/.. -l$$qtLibraryTarget(echo_frontend)
 INCLUDEPATH += $$OUT_PWD/../frontend
+
+QT += qml quick core ivicore
 
 QFACE_FORMAT = generation_validator
 QFACE_SOURCES = ../../../org.example.echo.qface
