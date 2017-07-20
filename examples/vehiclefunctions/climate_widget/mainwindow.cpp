@@ -81,42 +81,30 @@ MainWindow::MainWindow(QWidget *parent) :
 //![2]
     //Air Flow Direction
     setupFlowDirectionRadioButtons(m_climateControl->airflowDirections());
-    setupFlowDirectionAttribute(m_climateControl->airflowDirectionsAttribute());
     connect(m_buttonGroup, static_cast<void (QButtonGroup::*)(QAbstractButton *, bool)>(&QButtonGroup::buttonToggled),
             this, &MainWindow::onFlowDirectionButtonToggled);
 
     connect(m_climateControl, &QIviClimateControl::airflowDirectionsChanged,
             this, &MainWindow::setupFlowDirectionRadioButtons);
-    connect(m_climateControl, &QIviClimateControl::airflowDirectionsAttributeChanged,
-            this, &MainWindow::setupFlowDirectionAttribute);
 
     //Air Condition
     ui->cb_airCondition->setChecked(m_climateControl->isAirConditioningEnabled());
-    ui->cb_airCondition->setEnabled(m_climateControl->airConditioningAttribute().isAvailable());
     connect(m_climateControl, &QIviClimateControl::airConditioningEnabledChanged,
             ui->cb_airCondition, &QCheckBox::setChecked);
-    connect(m_climateControl, &QIviClimateControl::airConditioningAttributeChanged,
-            this, &MainWindow::onAirConditioningAttributeChanged);
     connect(ui->cb_airCondition, &QCheckBox::clicked,
             m_climateControl, &QIviClimateControl::setAirConditioningEnabled);
 
     //Air Recirculation
-    ui->cb_airRecirculation->setChecked(m_climateControl->recirculationMode() == QIviClimateControl::RecirculationOn);
-    ui->cb_airRecirculation->setEnabled(m_climateControl->recirculationModeAttribute().isAvailable());
+    ui->cb_airRecirculation->setChecked(m_climateControl->recirculationMode() == QtIviVehicleFunctionsModule::RecirculationOn);
     connect(m_climateControl, &QIviClimateControl::recirculationModeChanged,
             this, &MainWindow::onAirRecirculationModeChanged);
-    connect(m_climateControl, &QIviClimateControl::recirculationModeAttributeChanged,
-            this, &MainWindow::onAirRecirculationAttributeChanged);
     connect(ui->cb_airRecirculation, &QCheckBox::clicked,
             this, &MainWindow::setAirRecirculationEnabled);
 
     //Heater
     ui->cb_heater->setChecked(m_climateControl->isHeaterEnabled());
-    ui->cb_heater->setEnabled(m_climateControl->heaterAttribute().isAvailable());
     connect(m_climateControl, &QIviClimateControl::heaterEnabledChanged,
             ui->cb_heater, &QCheckBox::setChecked);
-    connect(m_climateControl, &QIviClimateControl::heaterAttributeChanged,
-            this, &MainWindow::onHeaterAttributeChanged);
     connect(ui->cb_heater, &QCheckBox::clicked,
             m_climateControl, &QIviClimateControl::setHeaterEnabled);
 }
@@ -130,44 +118,22 @@ MainWindow::~MainWindow()
 void MainWindow::setAirRecirculationEnabled(bool enabled)
 {
     if (enabled)
-        m_climateControl->setRecirculationMode(QIviClimateControl::RecirculationOn);
+        m_climateControl->setRecirculationMode(QtIviVehicleFunctionsModule::RecirculationOn);
     else
-        m_climateControl->setRecirculationMode(QIviClimateControl::RecirculationOff);
+        m_climateControl->setRecirculationMode(QtIviVehicleFunctionsModule::RecirculationOff);
 }
 
-void MainWindow::onAirRecirculationModeChanged(QIviClimateControl::RecirculationMode mode)
+void MainWindow::onAirRecirculationModeChanged(QtIviVehicleFunctionsModule::RecirculationMode mode)
 {
-    ui->cb_airRecirculation->setChecked(mode == QIviClimateControl::RecirculationOn);
-}
-
-void MainWindow::onAirRecirculationAttributeChanged(const QIviPropertyAttribute<QIviClimateControl::RecirculationMode> &attribute)
-{
-    ui->cb_airRecirculation->setEnabled(attribute.isAvailable());
-}
-
-void MainWindow::onHeaterAttributeChanged(const QIviPropertyAttribute<bool> &attribute)
-{
-    ui->cb_heater->setEnabled(attribute.isAvailable());
-}
-
-void MainWindow::onAirConditioningAttributeChanged(const QIviPropertyAttribute<bool> & attribute)
-{
-    ui->cb_airCondition->setEnabled(attribute.isAvailable());
+    ui->cb_airRecirculation->setChecked(mode == QtIviVehicleFunctionsModule::RecirculationOn);
 }
 
 //![3]
-void MainWindow::setupFlowDirectionRadioButtons(QIviClimateControl::AirflowDirections direction)
+void MainWindow::setupFlowDirectionRadioButtons(QtIviVehicleFunctionsModule::AirflowDirections direction)
 {
-    ui->cb_windshield->setChecked(direction.testFlag(QIviClimateControl::Windshield));
-    ui->cb_dashboard->setChecked(direction.testFlag(QIviClimateControl::Dashboard));
-    ui->cb_floor->setChecked(direction.testFlag(QIviClimateControl::Floor));
-}
-
-void MainWindow::setupFlowDirectionAttribute(const QIviPropertyAttribute<QIviClimateControl::AirflowDirections> &attribute)
-{
-    ui->cb_windshield->setEnabled(attribute.availableValues().contains(QIviClimateControl::Windshield));
-    ui->cb_dashboard->setEnabled(attribute.availableValues().contains(QIviClimateControl::Dashboard));
-    ui->cb_floor->setEnabled(attribute.availableValues().contains(QIviClimateControl::Floor));
+    ui->cb_windshield->setChecked(direction.testFlag(QtIviVehicleFunctionsModule::Windshield));
+    ui->cb_dashboard->setChecked(direction.testFlag(QtIviVehicleFunctionsModule::Dashboard));
+    ui->cb_floor->setChecked(direction.testFlag(QtIviVehicleFunctionsModule::Floor));
 }
 
 void MainWindow::onFlowDirectionButtonToggled(QAbstractButton *button, bool checked)
@@ -175,14 +141,14 @@ void MainWindow::onFlowDirectionButtonToggled(QAbstractButton *button, bool chec
     Q_UNUSED(button)
     Q_UNUSED(checked)
 
-    QIviClimateControl::AirflowDirections direction;
+    QtIviVehicleFunctionsModule::AirflowDirections direction;
 
     if (ui->cb_windshield->isChecked())
-        direction |= QIviClimateControl::Windshield;
+        direction |= QtIviVehicleFunctionsModule::Windshield;
     if (ui->cb_dashboard->isChecked())
-        direction |= QIviClimateControl::Dashboard;
+        direction |= QtIviVehicleFunctionsModule::Dashboard;
     if (ui->cb_floor->isChecked())
-        direction |= QIviClimateControl::Floor;
+        direction |= QtIviVehicleFunctionsModule::Floor;
 
     m_climateControl->setAirflowDirections(direction);
 }

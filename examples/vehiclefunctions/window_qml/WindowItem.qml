@@ -73,25 +73,22 @@ GroupBox {
     ColumnLayout {
         RowLayout {
 
-            enabled: zone.state.available
             Label {
                 text: "Window state: "
             }
 
             Label {
-                text: stateToString(zone.state.value)
+                text: stateToString(zone.state)
             }
         }
 
         Button {
             text: "open"
-            enabled: zone.state.available
             onClicked: zone.open()
         }
 
         Button {
             text: "close"
-            enabled: zone.state.available
             onClicked: zone.close()
         }
 
@@ -101,14 +98,13 @@ GroupBox {
 
                 ColumnLayout {
                     RowLayout {
-                        enabled: zone.blindState.available
 
                         Label {
                             text: "State: "
                         }
 
                         Label {
-                            text: stateToString(zone.blindState.value)
+                            text: stateToString(zone.blindState)
                         }
                     }
 
@@ -119,33 +115,30 @@ GroupBox {
                     RadioButton {
                         text: "Open"
                         exclusiveGroup: blindGroup
-                        enabled: zone.blindMode.availableValues.indexOf(WindowControl.BlindOpen) !== -1
-                        checked: zone.blindMode.value === WindowControl.BlindOpen
+                        checked: zone.blindMode === WindowControl.BlindOpen
                         onCheckedChanged: {
                             if (checked)
-                                zone.blindMode.value = WindowControl.BlindOpen
+                                zone.blindMode = WindowControl.BlindOpen
                         }
                     }
 
                     RadioButton {
                         text: "Closed"
                         exclusiveGroup: blindGroup
-                        enabled: zone.blindMode.availableValues.indexOf(WindowControl.BlindClosed) !== -1
-                        checked: zone.blindMode.value === WindowControl.BlindClosed
+                        checked: zone.blindMode === WindowControl.BlindClosed
                         onCheckedChanged: {
                             if (checked)
-                                zone.blindMode.value = WindowControl.BlindClosed
+                                zone.blindMode = WindowControl.BlindClosed
                         }
                     }
 
                     RadioButton {
                         text: "Automatic"
                         exclusiveGroup: blindGroup
-                        enabled: zone.blindMode.availableValues.indexOf(WindowControl.AutoBlind) !== -1
-                        checked: zone.blindMode.value === WindowControl.AutoBlind
+                        checked: zone.blindMode === WindowControl.AutoBlind
                         onCheckedChanged: {
                             if (checked)
-                                zone.blindMode.value = WindowControl.AutoBlind
+                                zone.blindMode = WindowControl.AutoBlind
                         }
                     }
                 }
@@ -157,14 +150,13 @@ GroupBox {
                 ColumnLayout {
 
                     RowLayout {
-                        enabled: zone.heater.available
 
                         Label {
                             text: "Running: "
                         }
 
                         Label {
-                            text: zone.heater.value
+                            text: zone.heater
                         }
                     }
 
@@ -175,33 +167,30 @@ GroupBox {
                     RadioButton {
                         text: "On"
                         exclusiveGroup: heaterGroup
-                        enabled: zone.heaterMode.availableValues.indexOf(WindowControl.HeaterOn) !== -1
-                        checked: zone.heaterMode.value === WindowControl.HeaterOn
+                        checked: zone.heaterMode === WindowControl.HeaterOn
                         onCheckedChanged: {
                             if (checked)
-                                zone.heaterMode.value = WindowControl.HeaterOn
+                                zone.heaterMode = WindowControl.HeaterOn
                         }
                     }
 
                     RadioButton {
                         text: "Off"
                         exclusiveGroup: heaterGroup
-                        enabled: zone.heaterMode.availableValues.indexOf(WindowControl.HeaterOff) !== -1
-                        checked: zone.heaterMode.value === WindowControl.HeaterOff
+                        checked: zone.heaterMode === WindowControl.HeaterOff
                         onCheckedChanged: {
                             if (checked)
-                                zone.heaterMode.value = WindowControl.HeaterOff
+                                zone.heaterMode = WindowControl.HeaterOff
                         }
                     }
 
                     RadioButton {
                         text: "Automatic"
                         exclusiveGroup: heaterGroup
-                        enabled: zone.heaterMode.availableValues.indexOf(WindowControl.AutoHeater) !== -1
-                        checked: zone.heaterMode.value === WindowControl.AutoHeater
+                        checked: zone.heaterMode === WindowControl.AutoHeater
                         onCheckedChanged: {
                             if (checked)
-                                zone.heaterMode.value = WindowControl.AutoHeater
+                                zone.heaterMode = WindowControl.AutoHeater
                         }
                     }
                 }
