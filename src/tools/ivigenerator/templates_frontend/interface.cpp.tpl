@@ -191,13 +191,13 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 {% for property in interface.properties %}
 
 /*!
-    \property {{class}}::{{property}}
+    \property {{class}}::{{property|getter_name}}
 {{ utils.format_comments(property.comment) }}
 {% if property.const %}
     \note This property is constant and the value will not change once the plugin is initialized.
 {% endif %}
 */
-{{property|return_type}} {{class}}::{{property}}() const
+{{property|return_type}} {{class}}::{{property|getter_name}}() const
 {
     const auto d = {{class}}Private::get(this);
 {% if not module.tags.config.disablePrivateIVI %}
@@ -208,7 +208,7 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 }
 {%   if not property.readonly and not property.const %}
 
-void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
+void {{class}}::{{property|setter_name}}({{ property|parameter_type }})
 {
     auto d = {{class}}Private::get(this);
     if (d->m_{{property}} == {{property}})
@@ -222,7 +222,7 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
     {
 {% endif %}
         if ({{class}}BackendInterface *backend = qobject_cast<{{class}}BackendInterface *>(this->backend()))
-            backend->set{{property|upperfirst}}({{property}}{% if interface.tags.config.zoned %}, zone(){% endif %});
+            backend->{{property|setter_name}}({{property}}{% if interface.tags.config.zoned %}, zone(){% endif %});
         d->m_{{property}} = {{property}};
     }
     emit {{property}}Changed({{property}});

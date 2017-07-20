@@ -64,7 +64,7 @@ class {{exportsymbol}} {{class}} : public QIviAbstractFeature {
 {% endif %}
     Q_OBJECT
 {% for property in interface.properties %}
-    Q_PROPERTY({{property|return_type}} {{property}} READ {{property}}{% if not property.readonly and not property.const %} WRITE set{{property|upperfirst}}{% endif %} NOTIFY {{property}}Changed)
+    Q_PROPERTY({{property|return_type}} {{property}} READ {{property|getter_name}}{% if not property.readonly and not property.const %} WRITE {{property|setter_name}}{% endif %} NOTIFY {{property}}Changed)
 {% endfor %}
     Q_CLASSINFO("IviPropertyDomains", "{{ interface.properties|json_domain|replace("\"", "\\\"") }}")
 {% if interface.module.tags.config.validation_info %}
@@ -81,7 +81,7 @@ public:
     static void registerQmlTypes(const QString& uri, int majorVersion=1, int minorVersion=0);
 
 {% for property in interface.properties %}
-    {{property|return_type}} {{property}}() const;
+    {{property|return_type}} {{property|getter_name}}() const;
 {% endfor %}
 
 public Q_SLOTS:
@@ -90,7 +90,7 @@ public Q_SLOTS:
 {% endfor %}
 {% for property in interface.properties %}
 {%   if not property.readonly and not property.const %}
-    void set{{property|upperfirst}}({{property|parameter_type}});
+    void {{property|setter_name}}({{property|parameter_type}});
 {%   endif %}
 {% endfor %}
 

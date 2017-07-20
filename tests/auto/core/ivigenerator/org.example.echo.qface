@@ -52,6 +52,8 @@ interface EchoZoned {
     string unsupportedValue;
     bool zonedValue;
     bool valueWithDefault;
+    @config: { getter_name: "isEchoEnabled" }
+    bool echoEnabled;
     AirflowDirection airflowDirection;
     @config_simulator: {minimum: 10., maximum: 15.}
     int rangedValue;

@@ -68,9 +68,9 @@ public:
 {% for property in interface.properties %}
 {%   if not property.readonly and not property.const %}
 {%     if interface.tags.config.zoned %}
-    virtual void set{{property|upperfirst}}({{ property|parameter_type }}, const QString &zone) = 0;
+    virtual void {{property|setter_name}}({{ property|parameter_type }}, const QString &zone) = 0;
 {%     else %}
-    virtual void set{{property|upperfirst}}({{ property|parameter_type }}) = 0;
+    virtual void {{property|setter_name}}({{ property|parameter_type }}) = 0;
 {%     endif %}
 {%   endif %}
 {% endfor %}

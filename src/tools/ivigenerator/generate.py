@@ -215,6 +215,23 @@ def domain_values(symbol):
                 return symbol.tags['config_simulator']['domain']
     return None
 
+def getter_name(symbol):
+    """
+    Returns the getter name of the property
+    """
+    if type(symbol) is Property:
+        if 'config' in symbol.tags and 'getter_name' in symbol.tags['config']:
+                return symbol.tags['config']['getter_name']
+    return symbol
+
+def setter_name(symbol):
+    """
+    Returns the setter name of the property
+    """
+    if type(symbol) is Property:
+        if 'config' in symbol.tags and 'setter_name' in symbol.tags['config']:
+                return symbol.tags['config']['setter_name']
+    return 'set' + symbol.name[0].upper() + symbol.name[1:]
 
 def range_value(symbol, index, key):
     """
@@ -456,6 +473,8 @@ def generate(tplconfig, moduleConfig, src, dst):
     generator = Generator(search_path=here / tplconfig)
     generator.register_filter('return_type', return_type)
     generator.register_filter('parameter_type', parameter_type)
+    generator.register_filter('getter_name', getter_name)
+    generator.register_filter('setter_name', setter_name)
     generator.register_filter('default_type_value', default_type_value)
     generator.register_filter('default_value', default_value)
     generator.register_filter('model_type', model_type)
