@@ -27,6 +27,7 @@ QFACE_ABS_PWD = $$absolute_path($$QFACE_PWD, $$_PRO_FILE_PWD_)
 QFACE_FILE = $$basename(QFACE_SOURCES)
 QFACE_BASE_NAME = $$replace(QFACE_FILE, .qface, )
 QFACE_YAML = $$QFACE_ABS_PWD/$${QFACE_BASE_NAME}.yaml
+OTHER_FILES += $$QFACE_FILE
 
 # Detect whether we are using the feature inside the qtivi repository
 VIRTUALENV_PATH = $$[QT_HOST_BINS]/ivigenerator/qtivi_qface_virtualenv
