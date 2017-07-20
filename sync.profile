@@ -1,6 +1,6 @@
 %modules = ( # path to module name map
     "QtIviCore" => "$basedir/src/ivicore",
-    "QtIviVehicleFunctions" => "$basedir/src/ivivehiclefunctions",
+    "QtIviVehicleFunctions" => "$basedir/src/ivivehiclefunctions;$out_basedir/src/ivivehiclefunctions",
     "QtIviMedia" => "$basedir/src/ivimedia",
     "QtGeniviExtras" => "$basedir/src/geniviextras",
 );

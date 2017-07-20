@@ -57,7 +57,7 @@ class {{struct}}Model;
 class {{exportsymbol}} {{class}} : public QObject {
     Q_OBJECT
 public:
-{{class}}(QObject *parent=0);
+    {{class}}(QObject *parent=nullptr);
 
 {% for enum in module.enums %}
 {% if enum.comment %}

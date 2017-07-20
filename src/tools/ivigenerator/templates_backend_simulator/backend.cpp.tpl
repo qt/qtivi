@@ -202,6 +202,9 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {% for operation_parameter in operation.parameters %}
     Q_UNUSED({{operation_parameter.name}});
 {% endfor %}
+{% if interface_zoned %}
+    Q_UNUSED(zone);
+{% endif %}
     qWarning() << "Not implemented!";
     return {{operation|default_value}};
 }

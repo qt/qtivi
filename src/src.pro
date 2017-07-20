@@ -16,6 +16,7 @@ QT_FOR_CONFIG += geniviextras-private ivicore ivicore-private
                   doc \
 
         ivivehiclefunctions.depends = ivicore
+        !qtConfig(system-ivigenerator): ivivehiclefunctions.depends += sub-ivigenerator
         ivimedia.depends = ivicore
         plugins.depends = ivivehiclefunctions ivimedia
         imports.depends = ivivehiclefunctions ivimedia
