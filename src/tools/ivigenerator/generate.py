@@ -138,7 +138,7 @@ def parameter_type(symbol):
     Return the parameter declaration for properties, handle camel case module name
     """
     prefix = Filters.classPrefix
-    if symbol.type.is_enum:
+    if symbol.type.is_enum or symbol.type.is_flag:
         return '{0}{1}Module::{2} {3}'.format(prefix, symbol.module.module_name, flag_type(symbol), symbol)
     if symbol.type.is_void or symbol.type.is_primitive:
         if symbol.type.name == 'string':
@@ -167,8 +167,8 @@ def return_type(symbol):
     Return the type declaration for properties, handle camel case module name
     """
     prefix = Filters.classPrefix
-    if symbol.type.is_enum:
-        return '{0}{1}Module::{2}'.format(prefix, symbol.module.module_name, flag_type(symbol))
+    if symbol.type.is_enum or symbol.type.is_flag:
+        return('{0}{1}Module::{2}'.format(prefix, symbol.module.module_name, flag_type(symbol)))
     if symbol.type.is_void or symbol.type.is_primitive:
         if symbol.type.name == 'string':
             return 'QString'
