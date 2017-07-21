@@ -60,11 +60,6 @@ public:
     {{class}}(QObject *parent=nullptr);
 
 {% for enum in module.enums %}
-{% if enum.comment %}
-    /*!
- {{ utils.format_comments(enum.comment) }}
-     */
-{% endif %}
     enum {{enum}} {
         {% for member in enum.members %}
         {{member.name}} = {{member.value}}, {{member.comment}}

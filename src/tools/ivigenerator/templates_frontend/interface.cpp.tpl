@@ -61,6 +61,19 @@ QT_BEGIN_NAMESPACE
 {{ utils.format_comments(interface.comment) }}
 */
 
+/*!
+    \qmltype {{interface|qml_type}}
+    \instantiates {{interface}}
+    \inqmlmodule {{module.tags.config.qml_name}}
+{% if interface.tags.config.zoned %}
+    \inherits AbstractZonedFeature
+{% else %}
+    \inherits AbstractFeature
+{% endif %}
+
+{{ utils.format_comments(interface.comment) }}
+*/
+
 /*! \internal */
 {% if module.tags.config.disablePrivateIVI %}
 {{class}}Private::{{class}}Private({{class}} *q)
@@ -151,18 +164,38 @@ void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_typ
 
 {% if module.tags.config.disablePrivateIVI %}
 {%   if interface.tags.config.zoned %}
+/*!
+   Default constructs an instance of {{class}} to the given \a zone.
+
+   If \a zone is not provided the General zone will be created.
+
+   The \a parent argument is passed on to the \l QIviAbstractZonedFeature base class.
+*/
 {{class}}::{{class}}(const QString &zone, QObject *parent)
     : QIviAbstractZonedFeature(QLatin1String({{module.module_name}}_{{interface}}_iid), zone, parent)
 {%   else %}
+/*!
+    Default constructs an instance of {{class}}.
+*/
 {{class}}::{{class}}(QObject *parent)
     : QIviAbstractFeature({{module.module_name}}_{{interface}}_iid, parent)
 {%   endif %}
     , m_helper(new {{class}}Private(this))
 {% else %}
 {%   if interface.tags.config.zoned %}
+/*!
+   Default constructs an instance of {{class}} to the given \a zone.
+
+   If \a zone is not provided the General zone will be created.
+
+   The \a parent argument is passed on to the \l QIviAbstractZonedFeature base class.
+*/
 {{class}}::{{class}}(const QString &zone, QObject *parent)
     : QIviAbstractZonedFeature(*new {{class}}Private(QLatin1String({{module.module_name}}_{{interface}}_iid), zone, this), parent)
 {%   else %}
+/*!
+    Default constructs an instance of {{class}}.
+*/
 {{class}}::{{class}}(QObject *parent)
     : QIviAbstractFeature(*new {{class}}Private(QLatin1String({{module.module_name}}_{{interface}}_iid), this), parent)
 {%   endif %}
@@ -191,7 +224,15 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 {% for property in interface.properties %}
 
 /*!
-    \property {{class}}::{{property|getter_name}}
+    \property {{class}}::{{property}}
+{{ utils.format_comments(property.comment) }}
+{% if property.const %}
+    \note This property is constant and the value will not change once the plugin is initialized.
+{% endif %}
+*/
+
+/*!
+    \qmlproperty {{property|return_type}} {{interface|qml_type}}::{{property}}
 {{ utils.format_comments(property.comment) }}
 {% if property.const %}
     \note This property is constant and the value will not change once the plugin is initialized.
@@ -232,6 +273,10 @@ void {{class}}::{{property|setter_name}}({{ property|parameter_type }})
 {% endfor %}
 
 {%- for operation in interface.operations %}
+/*!
+    \qmlmethod {{interface|qml_type}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}})
+{{ utils.format_comments(operation.comment) }}
+*/
 /*!
 {{ utils.format_comments(operation.comment) }}
 */

@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
     \class {{class}}
     \inmodule {{module}}
 
-{{ utils.format_comments(module.comment) }}
+    \brief The {{class}} class provides factory methods for all structs defined in the {{module}} module.
 */
 {{class}}::{{class}}(QObject *parent)
     : {{module.module_name}}Module(parent)

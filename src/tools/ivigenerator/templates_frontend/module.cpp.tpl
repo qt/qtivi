@@ -59,8 +59,20 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
     \class {{class}}
     \inmodule {{module}}
 
-{{ utils.format_comments(module.comment) }}
+    \brief The {{class}} class holds all the enums defined in the {{module}} module.
 */
+
+{% for enum in module.enums %}
+/*!
+    \enum {{class}}::{{enum}}
+    {{ utils.format_comments(enum.comment) }}
+
+{%  for member in enum.members %}
+    \value {{member}}
+    {{ utils.format_comments(member.comment) }}
+{%  endfor %}
+*/
+{% endfor %}
 {{class}}::{{class}}(QObject *parent)
     : QObject(parent)
 {

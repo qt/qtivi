@@ -38,17 +38,29 @@
 #}
 {% set class = '{0}BackendInterface'.format(interface) %}
 {% include 'generated_comment.cpp.tpl' %}
+{% import 'utils.tpl' as utils %}
 
 #include "{{class|lower}}.h"
 
 QT_BEGIN_NAMESPACE
 
 /*!
- * \class {{class}}
- * \inmodule {{module}}
- *
- * \brief Abstract backend interface for {{interface}}.
- * \sa {{interface}}.
+    \class {{class}}
+    \inmodule {{module}}
+    \ingroup backends
+{% if interface.tags.config.zoned %}
+    \inherits QIviZonedFeatureInterface
+{% else %}
+    \inherits QIviFeatureInterface
+{% endif %}
+
+    \brief Backend interface for {{interface}}.
+    The {{class}} is the interface used by \l {{interface}}
+
+    The interface is discovered by a \l {{interface}} object, which connects to it and sets up
+    the connections to it.
+
+    \sa {{interface}}
  */
 {{class}}::{{class}}(QObject *parent)
 {% if interface.tags.config.zoned %}
@@ -62,5 +74,88 @@ QT_BEGIN_NAMESPACE
 {{class}}::~{{class}}()
 {
 }
+
+{% for property in interface.properties %}
+{%   if not property.readonly and not property.const %}
+/*!
+{%     if interface.tags.config.zoned %}
+    \fn void {{class}}::{{property|setter_name}}({{ property|parameter_type }}, const QString &zone);
+{%     else %}
+    \fn void {{class}}::{{property|setter_name}}({{ property|parameter_type }});
+{%     endif %}
+
+    Setter for {{interface}}::{{property}}.
+    Sets the property \e {{property}} to the new value passed by \a {{property}}.
+
+{%     if interface.tags.config.zoned %}
+    The value of \a zone indicates the zone this property should be changed in.
+{%     endif %}
+
+    This method is expected to emit a \l {{property}}Changed() signal when the internal state changes
+    due to this function call. The signal is even expected to be emitted if the given \a {{property}} is out of range and no
+    actual change takes place.
+
+    \sa {{property}}Changed()
+*/
+{%   endif %}
+{% endfor %}
+{% for operation in interface.operations %}
+/*!
+{%   if interface.tags.config.zoned %}
+{%     if operation.parameters|length %}
+    \fn {{operation|return_type}} {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}, const QString &zone){%if operation.const %} const{% endif %};
+{%     else %}
+    \fn {{operation|return_type}} {{class}}::{{operation}}(const QString &zone){%if operation.const %} const{% endif %};
+{%     endif %}
+{%   else %}
+    \fn {{operation|return_type}} {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){%if operation.const %} const{% endif %};
+{%   endif %}
+
+{{ utils.format_comments(operation.comment) }}
+
+{%   if interface.tags.config.zoned %}
+    The value of \a zone indicates the zone this operation should be done in.
+{%   endif %}
+*/
+{% endfor %}
+
+{% for signal in interface.signals %}
+/*!
+{%   if interface.tags.config.zoned %}
+{%     if signal.parameters|length %}
+    \fn void {{class}}::{{signal}}({{signal.parameters|map('parameter_type')|join(', ')}}, const QString &zone = QString());
+{%     else %}
+    \fn void {{class}}::{{signal}}(const QString &zone = QString());
+{%     endif %}
+{%   else %}
+    \fn void {{class}}::{{signal}}({{signal.parameters|map('parameter_type')|join(', ')}});
+{%   endif %}
+{{ utils.format_comments(signal.comment) }}
+
+{%   if interface.tags.config.zoned %}
+    The value of \a zone indicates the zone this operation should be done in.
+{%   endif %}
+*/
+{% endfor %}
+{% for property in interface.properties %}
+/*!
+{%   if interface.tags.config.zoned %}
+    \fn void {{class}}::{{property}}Changed({{ property|parameter_type }}, const QString &zone);
+{%   else %}
+    \fn void {{class}}::{{property}}Changed({{ property|parameter_type }});
+{%   endif %}
+
+    The signal is emitted when the \e {{property}} property changed to \a {{property}}.
+
+{%   if interface.tags.config.zoned %}
+    The value of \a zone indicates the zone this property should be changed in.
+{%   endif %}
+
+{%   if not property.readonly and not property.const %}
+    \sa {{property|setter_name}}
+{%   endif %}
+    \sa {{interface}}::{{property}}
+*/
+{% endfor %}
 
 QT_END_NAMESPACE
