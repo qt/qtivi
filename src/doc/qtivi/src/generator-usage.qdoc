@@ -157,6 +157,17 @@ For QtIvi there are following annotations used for the IDL definition:
         \li defines the interface id. The id is a string used by the QtIvi service manager to glue
         frontend interface and backend implementation together. See \l {Dynamic Backend System}
         for more details.
+    \row
+        \li @config(getter_name)
+        \li Main IDL file
+        \li Property
+        \li Overrides the default getter method name. Useful for boolean properties (for example, getter
+        for property 'enabled', should be 'isEnabled' rather than the default).
+    \row
+        \li @config(setter_name)
+        \li Main IDL file
+        \li Property
+        \li Overrides the default setter method name.
 \endtable
 
 The annotations that are not logically part of the interface description but rather the ones used
