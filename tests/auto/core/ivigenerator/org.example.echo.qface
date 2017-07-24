@@ -1,6 +1,7 @@
 /**
  * module
  */
+@config: { interfaceBuilder: "echoInterfaceBuilder" }
 module org.example.echo 1.0
 
 /**

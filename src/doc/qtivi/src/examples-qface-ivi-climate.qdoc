@@ -47,6 +47,12 @@ The complete reference for the IDL syntax is available
 \l {QFace IDL syntax}{here}. In particular:
 \table
 \row
+    \li \code {@config: {interfaceBuilder: "echoInterfaceBuilder"}} \endcode
+    \li indicates the plugin should use a custom function to generate the backend instances.
+\row
+    \li \code {@config: {zoned: true}} \endcode
+    \li indicates the interface supports different zones
+\row
     \li \code {@config: {zoned: true}} \endcode
     \li indicates the interface supports different zones
 \row

@@ -1,4 +1,3 @@
-
 {#
 # Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 # Copyright (C) 2017 Pelagicore AG
@@ -45,13 +44,10 @@
 #ifndef {{oncedefine}}
 #define {{oncedefine}}
 
+#include <QVector>
 #include <QtIviCore/QIviServiceInterface>
 
 QT_BEGIN_NAMESPACE
-
-{% for interface in module.interfaces %}
-class {{interface}}Backend;
-{% endfor %}
 
 class {{class}} : public QObject, QIviServiceInterface
 {
@@ -60,16 +56,15 @@ class {{class}} : public QObject, QIviServiceInterface
     Q_INTERFACES(QIviServiceInterface)
 
 public:
+    typedef QVector<QIviFeatureInterface *> (InterfaceBuilder)({{class}} *);
+
     explicit {{class}}(QObject *parent = nullptr);
 
     QStringList interfaces() const;
     QIviFeatureInterface* interfaceInstance(const QString& interface) const;
 
 private:
-{% for interface in module.interfaces %}
-    {{interface}}Backend *m_{{interface|lowerfirst}}Backend;
-{% endfor %}
-
+    QVector<QIviFeatureInterface *> m_interfaces;
 };
 
 QT_END_NAMESPACE

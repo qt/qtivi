@@ -144,6 +144,15 @@ For QtIvi there are following annotations used for the IDL definition:
         \li Object type
         \li Purpose
     \row
+        \li @config(interfaceBuilder: "FunctionName")
+        \li Main IDL file
+        \li Module
+        \li Declares a function which will be called in the plugin to generate the instances for every interface.
+        The function takes a pointer to the plugin instance and returns a \code {QVector<QIviFeatureInterface *>}.
+        Interfaces should be generated in the same order as defined by \code {Plugin::interfaces()}.
+
+        This can be used to instanciate classes derived from the generated plugin interfaces classes.
+    \row
         \li @config(zoned)
         \li Main IDL file
         \li Interface

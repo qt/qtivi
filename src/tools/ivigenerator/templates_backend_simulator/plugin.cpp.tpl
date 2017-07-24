@@ -50,18 +50,27 @@
 
 QT_BEGIN_NAMESPACE
 
+{% if module.tags.config.interfaceBuilder %}
+extern {{class}}::InterfaceBuilder {{module.tags.config.interfaceBuilder}};
+{% endif %}
+
 /*!
    \class {{class}}
    \inmodule {{module}}
 
 */
 /*! \internal */
-{{class}}::{{class}}(QObject *parent) :
-    QObject(parent)
-{% for interface in module.interfaces %}
-    , m_{{interface|lowerfirst}}Backend(new {{interface}}Backend(this))
-{% endfor %}
+{{class}}::{{class}}(QObject *parent)
+    : QObject(parent)
 {
+{% if module.tags.config.interfaceBuilder %}
+    m_interfaces = {{module.tags.config.interfaceBuilder}}(this);
+    Q_ASSERT(m_interfaces.size() == interfaces().size());
+{% else %}
+{%   for interface in module.interfaces %}
+    m_interfaces << new {{interface}}Backend(this);
+{%   endfor %}
+{% endif %}
 }
 
 /*! \internal */
@@ -78,12 +87,8 @@ QStringList {{class}}::interfaces() const
 /*! \internal */
 QIviFeatureInterface *{{class}}::interfaceInstance(const QString &interface) const
 {
-{% for iface in module.interfaces %}
-{%   if loop.index > 1 %}    else {%else%}    {%endif%}if (interface == {{module.module_name}}_{{iface}}_iid)
-        return m_{{iface|lowerfirst}}Backend;
-{% endfor %}
-
-    return nullptr;
+     int index = interfaces().indexOf(interface);
+     return index < 0 ? nullptr : m_interfaces.at(index);
 }
 
 QT_END_NAMESPACE

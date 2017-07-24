@@ -14,3 +14,5 @@ QT += core ivicore
 
 QFACE_FORMAT = backend_simulator
 QFACE_SOURCES = ../../../org.example.echo.qface
+
+SOURCES += backend_simulator.cpp
