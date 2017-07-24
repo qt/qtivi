@@ -47,6 +47,8 @@
 
 #include <QtIviCore/QIviServiceInterface>
 
+QT_BEGIN_NAMESPACE
+
 {% for interface in module.interfaces %}
 class {{interface}}Backend;
 {% endfor %}
@@ -69,5 +71,7 @@ private:
 {% endfor %}
 
 };
+
+QT_END_NAMESPACE
 
 #endif // {{oncedefine}}

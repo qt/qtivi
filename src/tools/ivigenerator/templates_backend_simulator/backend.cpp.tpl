@@ -51,6 +51,8 @@
 
 #include <QDebug>
 
+QT_BEGIN_NAMESPACE
+
 /*!
    \class {{class}}
    \inmodule {{module}}
@@ -205,3 +207,5 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 }
 
 {% endfor %}
+
+QT_END_NAMESPACE

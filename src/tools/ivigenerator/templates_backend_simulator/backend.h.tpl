@@ -51,6 +51,8 @@
 #include "{{class|lower}}interface.h"
 {% endif %}
 
+QT_BEGIN_NAMESPACE
+
 class {{class}} : public {{class}}Interface
 {
 public:
@@ -104,5 +106,7 @@ private:
 {% endif %}
 
 };
+
+QT_END_NAMESPACE
 
 #endif // {{oncedefine}}

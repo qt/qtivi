@@ -48,6 +48,8 @@
 
 #include <QStringList>
 
+QT_BEGIN_NAMESPACE
+
 /*!
    \class {{class}}
    \inmodule {{module}}
@@ -83,3 +85,5 @@ QIviFeatureInterface *{{class}}::interfaceInstance(const QString &interface) con
 
     return nullptr;
 }
+
+QT_END_NAMESPACE
