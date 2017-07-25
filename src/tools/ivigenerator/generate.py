@@ -96,15 +96,39 @@ def enum_value(value, module_name):
     sub_values = [enum_value_to_cppliteral(v, module_name) for v in sub_values]
     return "|".join(sub_values)
 
-
 def default_type_value(symbol):
     """
     Find the default value for the type. Models are initialized as nullptr
     """
-    res = Filters.defaultValue(symbol)
-    if symbol.type.is_model:
+    prefix = Filters.classPrefix
+    t = symbol.type  # type: qface.domain.TypeSymbol
+    if t.is_primitive:
+        if t.is_int:
+            return 'int(0)'
+        if t.is_bool:
+            return 'bool(false)'
+        if t.is_string:
+            return 'QString()'
+        if t.is_real:
+            return 'qreal(0.0)'
+        if t.is_variant:
+            return 'QVariant()'
+    elif t.is_void:
+        return ''
+    elif t.is_enum:
+        module_name = t.reference.module.module_name
+        value = next(iter(t.reference.members))
+        return '{0}{1}Module::{2}'.format(prefix, module_name, value)
+    elif t.is_flag:
+        return '0'
+    elif symbol.type.is_list:
+        nested = Filters.returnType(symbol.type.nested)
+        return 'QVariantList()'.format(nested)
+    elif symbol.type.is_struct:
+        return '{0}{1}()'.format(prefix, symbol.type)
+    elif symbol.type.is_model:
         return 'nullptr'
-    return res
+    return 'XXX'
 
 
 def default_value(symbol):
