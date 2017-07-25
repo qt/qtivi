@@ -1,7 +1,7 @@
 /**
  * Test module
  */
-module example.ivi.climate 1.0;
+module Example.IVI.Climate 1.0;
 
 /**
  * The ClimateControl provides a QML interface to the climate control

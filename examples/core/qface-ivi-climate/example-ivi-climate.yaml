@@ -1,62 +1,62 @@
-example.ivi.climate.ClimateControl:
+Example.IVI.Climate.ClimateControl:
     config_simulator:
         zones: { left : FrontLeft, right : FrontRight, rear: Rear }
 
-example.ivi.climate.ClimateControl#airConditioning:
+Example.IVI.Climate.ClimateControl#airConditioning:
     config_simulator:
         default: true
 
-example.ivi.climate.ClimateControl#heater:
+Example.IVI.Climate.ClimateControl#heater:
     config_simulator:
         default: true
 
-example.ivi.climate.ClimateControl#recirculation:
+Example.IVI.Climate.ClimateControl#recirculation:
     config_simulator:
         default: false
 
-example.ivi.climate.ClimateControl#zoneSynchronization:
+Example.IVI.Climate.ClimateControl#zoneSynchronization:
     config_simulator:
         default: false
 
-example.ivi.climate.ClimateControl#defrost:
+Example.IVI.Climate.ClimateControl#defrost:
     config_simulator:
         default: false
 
-example.ivi.climate.ClimateControl#steeringWheelHeater:
+Example.IVI.Climate.ClimateControl#steeringWheelHeater:
     config_simulator:
         default: 0
 
-example.ivi.climate.ClimateControl#fanSpeedLevel:
+Example.IVI.Climate.ClimateControl#fanSpeedLevel:
     config_simulator:
         default: 2
 
-example.ivi.climate.ClimateControl#recirculationMode:
+Example.IVI.Climate.ClimateControl#recirculationMode:
     config_simulator:
         default: RecirculationMode.RecirculationOff
 
-example.ivi.climate.ClimateControl#recirculationSensitivityLevel:
+Example.IVI.Climate.ClimateControl#recirculationSensitivityLevel:
     config_simulator:
         unsupported: true
         default: 0
 
-example.ivi.climate.ClimateControl#climateMode:
+Example.IVI.Climate.ClimateControl#climateMode:
     config_simulator:
         unsupported: true
         default: ClimateMode.ClimateOn
 
-example.ivi.climate.ClimateControl#automaticClimateFanIntensityLevel:
+Example.IVI.Climate.ClimateControl#automaticClimateFanIntensityLevel:
     config_simulator:
         unsupported: true
         default: 0
 
-example.ivi.climate.ClimateControl#targetTemperature:
+Example.IVI.Climate.ClimateControl#targetTemperature:
     config_simulator:
         default: 0
 
-example.ivi.climate.ClimateControl#seatCooler:
+Example.IVI.Climate.ClimateControl#seatCooler:
     config_simulator:
         default: 0
 
-example.ivi.climate.ClimateControl#seatHeater:
+Example.IVI.Climate.ClimateControl#seatHeater:
     config_simulator:
         default: 0

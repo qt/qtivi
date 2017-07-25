@@ -81,7 +81,7 @@ Highlights:
 \row
     \li
     \code
-    example.ivi.climate.ClimateControl:
+    Example.IVI.Climate.ClimateControl:
         config_simulator:
             zones: { left : FrontLeft, right : FrontRight, rear: Rear }
     \endcode
@@ -89,7 +89,7 @@ Highlights:
 \row
     \li
     \code
-    example.ivi.climate.ClimateControl#recirculationMode:
+    Example.IVI.Climate.ClimateControl#recirculationMode:
         config_simulator:
             default: RecirculationMode.RecirculationOff
     \endcode
