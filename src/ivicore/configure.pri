@@ -8,7 +8,7 @@ defineTest(qtConfTest_python3) {
     for (python3_exe_name, PYTHON3_NAMES) {
         equals(QMAKE_HOST.os, Windows): python3_exe_name = $${python3_exe_name}.exe
 
-        python3_exe = $$qtConfFindInPath($$python3_exe_name, $$PYTHON3_PATH)
+        python3_exe = $$shell_path($$qtConfFindInPath($$python3_exe_name, $$PYTHON3_PATH))
         isEmpty(python3_exe): \
             next();
 
