@@ -271,6 +271,14 @@ def has_domains(properties):
                     return True
     return False
 
+def strip_QT(s):
+    """
+    If the given string starts with QT, stip it away.
+    """
+    s = str(s)
+    if s.startswith('QT'):
+        return s[2:]
+    return s
 
 def json_domain(properties):
     """
@@ -305,7 +313,6 @@ def jsonify(obj):
 def lower_first_filter(s):
     s = str(s)
     return s[0].lower() + s[1:]
-
 
 def qml_control_properties(symbol, backend_object):
     """
@@ -483,6 +490,7 @@ def generate(tplconfig, moduleConfig, src, dst):
     generator.register_filter('lowerfirst', lower_first_filter)
     generator.register_filter('range_low', range_low)
     generator.register_filter('range_high', range_high)
+    generator.register_filter('strip_QT', strip_QT)
     generator.register_filter('domain_values', domain_values)
     generator.register_filter("enum_value", enum_value)
     generator.register_filter("tag_by_path", tag_by_path)

@@ -48,13 +48,13 @@
 QT_BEGIN_NAMESPACE
 
 #ifndef QT_STATIC
-#  if defined(QT_BUILD_{{exportsymbol}}_LIB)
-#    define Q_QT{{exportsymbol}}_EXPORT Q_DECL_EXPORT
+#  if defined(QT_BUILD_{{exportsymbol|strip_QT}}_LIB)
+#    define Q_{{exportsymbol}}_EXPORT Q_DECL_EXPORT
 #  else
-#    define Q_QT{{exportsymbol}}_EXPORT Q_DECL_IMPORT
+#    define Q_{{exportsymbol}}_EXPORT Q_DECL_IMPORT
 #  endif
 #else
-#  define Q_QT{{exportsymbol}}_EXPORT
+#  define Q_{{exportsymbol}}_EXPORT
 #endif
 
 QT_END_NAMESPACE
