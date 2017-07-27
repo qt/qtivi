@@ -29,7 +29,8 @@
             "condition": "tests.python3",
             "output": [
                 "privateFeature",
-                { "type": "varAssign", "name": "QMAKE_PYTHON3_LOCATION", "value": "tests.python3.value" }
+                { "type": "varAssign", "name": "QMAKE_PYTHON3_LOCATION", "value": "tests.python3.value" },
+                { "type": "varAssign", "name": "QMAKE_PYTHON3_VERSION", "value": "tests.python3.version" }
             ]
         },
         "python3-virtualenv": {

@@ -18,16 +18,17 @@ VIRTUALENV_EXE += " -p $$QMAKE_PYTHON3_LOCATION"
 # On some systems virtualenv --always-copy doesn't work (https://github.com/pypa/virtualenv/issues/565).
 # To workaround the problem, we need to manually create the folder and create the virtualenv from
 # inside
-qtivi_qface_virtualenv.target = qtivi_qface_virtualenv
+win32: qtivi_qface_virtualenv.target = qtivi_qface_virtualenv/Scripts/python.exe
+else:  qtivi_qface_virtualenv.target = qtivi_qface_virtualenv/bin/python
 qtivi_qface_virtualenv.commands = \
-    $(MKDIR) $${qtivi_qface_virtualenv.target} $$escape_expand(\n\t) \
-    cd $${qtivi_qface_virtualenv.target} && $$VIRTUALENV_EXE --always-copy . $$escape_expand(\n\t) \
-    cd $${qtivi_qface_virtualenv.target} && $$VIRTUALENV_EXE --relocatable . $$escape_expand(\n\t) \
-    @echo "Set up virtualenv for qface, name: $$qtivi_qface_virtualenv.target"
+    $(MKDIR) qtivi_qface_virtualenv $$escape_expand(\n\t) \
+    cd qtivi_qface_virtualenv && $$VIRTUALENV_EXE --always-copy . $$escape_expand(\n\t) \
+    cd qtivi_qface_virtualenv && $$VIRTUALENV_EXE --relocatable . $$escape_expand(\n\t) \
+    @echo "Set up virtualenv for qface, name: qtivi_qface_virtualenv"
 QMAKE_EXTRA_TARGETS += qtivi_qface_virtualenv
 
-win32: VIRTUALENV_ACTIVATION = $${qtivi_qface_virtualenv.target}\Scripts\activate &&
-else: VIRTUALENV_ACTIVATION = . $${qtivi_qface_virtualenv.target}/bin/activate &&
+win32: VIRTUALENV_ACTIVATION = qtivi_qface_virtualenv\Scripts\activate &&
+else: VIRTUALENV_ACTIVATION = . qtivi_qface_virtualenv/bin/activate &&
 
 # Create the forceRebuild file during the qmake run.
 # This file is used as a dependency in other Makefiles.
@@ -35,11 +36,15 @@ else: VIRTUALENV_ACTIVATION = . $${qtivi_qface_virtualenv.target}/bin/activate &
 # be touched to recreate theses Makefiles.
 write_file($$OUT_PWD/forceRebuild)
 
+PYTHON3_SHORT_VERSION_SPLITTED = $$split(QMAKE_PYTHON3_VERSION, .)
+PYTHON3_SHORT_VERSION = $$member(PYTHON3_SHORT_VERSION_SPLITTED, 0).$$member(PYTHON3_SHORT_VERSION_SPLITTED, 1)
 # Always run this target
-qtivi_qface_install.target = qtivi_qface_virtualenv/pip-selfcheck.json
-qtivi_qface_install.depends = qtivi_qface_virtualenv
+win32: qtivi_qface_install.target = qtivi_qface_virtualenv/Lib/site-packages/qface
+else: qtivi_qface_install.target = qtivi_qface_virtualenv/lib/python$${PYTHON3_SHORT_VERSION}/site-packages/qface
+qtivi_qface_install.depends = $${qtivi_qface_virtualenv.target}
 qtivi_qface_install.depends += $$QFACE_SOURCE_DIR/setup.py
 qtivi_qface_install.depends += $$QFACE_SOURCE_DIR/requirements.txt
+qtivi_qface_install.depends += $$QFACE_SOURCE_DIR/qface/__about__.py
 qtivi_qface_install.commands = $$VIRTUALENV_ACTIVATION \
         pip3 install --upgrade $$shell_path($$QFACE_SOURCE_DIR) $$escape_expand(\n\t) \
         @echo "Installed qface development version into qtivi_qface_virtualenv" $$escape_expand(\n\t)
@@ -49,15 +54,21 @@ QMAKE_EXTRA_TARGETS += qtivi_qface_install
 
 # We need to make the virtualenv first deployable
 # Otherwise it still needs some modules from the system
-unix: deploy-virtualenv.commands = $$PWD/deploy-virtualenv.sh qtivi_qface_virtualenv
-else: deploy-virtualenv.commands = $$PWD/deploy-virtualenv.bat qtivi_qface_virtualenv
-deploy-virtualenv.depends = $${qtivi_qface_install.target}
-QMAKE_EXTRA_TARGETS += deploy-virtualenv
-PRE_TARGETDEPS += deploy-virtualenv
+deploy_virtualenv.target = .stamp-deploy_virtualenv
+win32 {
+    deploy_virtualenv.commands = $$PWD/deploy-virtualenv.bat qtivi_qface_virtualenv $$escape_expand(\n\t)
+    deploy_virtualenv.commands += @type nul > $$shell_path($$OUT_PWD/.stamp-deploy_virtualenv)
+} else {
+    deploy_virtualenv.commands = $$PWD/deploy-virtualenv.sh qtivi_qface_virtualenv $$escape_expand(\n\t)
+    deploy_virtualenv.commands += @touch $$OUT_PWD/.stamp-deploy_virtualenv
+}
+deploy_virtualenv.depends = $${qtivi_qface_install.target}
+QMAKE_EXTRA_TARGETS += deploy_virtualenv
+PRE_TARGETDEPS += $${deploy_virtualenv.target}
 
 virtualenv.files = $$OUT_PWD/qtivi_qface_virtualenv
 virtualenv.path = $$[QT_HOST_BINS]/ivigenerator
-virtualenv.depends = deploy-virtualenv
+virtualenv.depends = deploy_virtualenv
 virtualenv.CONFIG = no_check_exist directory no_build
 
 INSTALLS += virtualenv
