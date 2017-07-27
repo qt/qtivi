@@ -1,6 +1,7 @@
 TEMPLATE = aux
 
-prf.files = ivigenerator.prf
+prf.files = ivigenerator.prf \
+            ivigenerator_qt_module.prf
 prf.path = $$[QT_HOST_DATA]/mkspecs/features
 INSTALLS += prf
 

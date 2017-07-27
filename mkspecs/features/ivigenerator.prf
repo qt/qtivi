@@ -33,14 +33,15 @@ OTHER_FILES += $$QFACE_FILE
 VIRTUALENV_PATH = $$[QT_HOST_BINS]/ivigenerator/qtivi_qface_virtualenv
 INTERNAL_VIRTUALENV_PATH = $$QTIVI_BUILD_ROOT/src/tools/ivigenerator/qtivi_qface_virtualenv
 IVI_GENERATOR_PATH = $$[QT_HOST_BINS]/ivigenerator
+QTEST_ENVIRONMENT = $$upper($$(QTEST_ENVIRONMENT))
 
 # Try to use the internal virtualenv when building qtivi
 # Because of the two stage build of COIN, it might not exist, but the installed version should still be there
-!isEmpty(QTIVI_BUILD_ROOT):exists($$INTERNAL_VIRTUALENV_PATH) {
+!isEmpty(QTIVI_BUILD_ROOT):!equals(QTEST_ENVIRONMENT, CI) {
     VIRTUALENV_PATH = $$INTERNAL_VIRTUALENV_PATH
 }
 
-!isEmpty(QTIVI_BUILD_ROOT):exists($$QTIVI_ROOT/src/tools/ivigenerator) {
+!isEmpty(QTIVI_BUILD_ROOT):!equals(QTEST_ENVIRONMENT, CI) {
     IVI_GENERATOR_PATH = $$QTIVI_ROOT/src/tools/ivigenerator
 }
 
@@ -95,14 +96,15 @@ Makefile.depends = $$relative_path($$PRI, $$OUT_PWD)
 # In this case we create the target with a dependency to the forceRebuild file.
 # This file is created during the qmake run and updated once the virtualenv is ready
 # and will then cause a rerun of qmake
-!isEmpty(QTIVI_ROOT):!exists($$VIRTUALENV_PATH): {
+!isEmpty(QTIVI_BUILD_ROOT):!exists($$VIRTUALENV_PATH): {
     Makefile.depends = $$shadowed($$IVI_GENERATOR_PATH)/forceRebuild
+} else {
+    !isEmpty(QFACE_HEADERS_OUTPUT_TARGET) {
+        Makefile.depends += $$relative_path($$QFACE_HEADERS_OUTPUT_TARGET, $$OUT_PWD)
+        QMAKE_EXTRA_TARGETS += qface_headers
+    }
 }
 
-!isEmpty(QFACE_HEADERS_OUTPUT_TARGET) {
-    Makefile.depends += $$relative_path($$QFACE_HEADERS_OUTPUT_TARGET, $$OUT_PWD)
-    QMAKE_EXTRA_TARGETS += qface_headers
-}
 
 # After the generation, this should exists and qmake can create the correct build tree
 exists($$PRI) {

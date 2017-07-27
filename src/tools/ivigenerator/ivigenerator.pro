@@ -55,7 +55,8 @@ templates_generation_validator.path = $$[QT_HOST_BINS]/ivigenerator/templates_ge
 generator.files += \
     generate.py \
     templates_frontend.yaml \
-    templates_backend_simulator.yaml
+    templates_backend_simulator.yaml \
+    templates_generation_validator.yaml
 generator.path = $$[QT_HOST_BINS]/ivigenerator
 
 INSTALLS += templates_frontend templates_backend_simulator templates_generation_validator generator
