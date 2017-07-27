@@ -59,7 +59,6 @@ public:
     explicit {{class}}(QObject *parent = nullptr);
     ~{{class}}();
 
-public:
 {%   if interface_zoned %}
     QStringList availableZones() const override;
 {%   endif %}
@@ -87,7 +86,7 @@ public:
 {%   endif %}
 {% endfor %}
 
-private:
+protected:
 {% for property in interface.properties %}
 {%   if not property.tags.config_simulator or not property.tags.config_simulator.zoned %}
     {{ property|return_type }} m_{{ property }};
@@ -104,7 +103,6 @@ private:
     };
     QMap<QString,ZoneBackend> m_zoneMap;
 {% endif %}
-
 };
 
 QT_END_NAMESPACE

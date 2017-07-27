@@ -13,6 +13,13 @@ QFACE_FORMAT = backend_simulator
 QFACE_MODULE_NAME = QtIviVehicleFunctions
 QFACE_SOURCES += ../../ivivehiclefunctions/ivivehiclefunctions.qface
 
+SOURCES += \
+    ivivehiclefunctions.cpp \
+    qiviconcretewindowcontrolbackend.cpp
+
+HEADERS += \
+    qiviconcretewindowcontrolbackend.h
+
 OTHER_FILES += \
     $$PWD/doc/*.qdocconf \
     $$PWD/doc/src/*.qdoc
