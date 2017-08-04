@@ -67,6 +67,8 @@ public:
 
     virtual QVariant property(int propertyIndex) const = 0;
     virtual void setProperty(int propertyIndex, const QVariant &value) = 0;
+private:
+    Q_DISABLE_COPY(QIviPropertyOverrider)
 };
 
 class Q_QTIVICORE_EXPORT QIviAbstractFeaturePrivate : public QObjectPrivate
