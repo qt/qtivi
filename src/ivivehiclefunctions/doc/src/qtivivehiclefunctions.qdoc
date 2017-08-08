@@ -95,7 +95,7 @@
     You can use QIviAbstractZonedFeature::zoneAt() to access zone functions:
 
     \code
-    m_climateControl->zoneAt("FrontSeat")->setSeatHeater(false);
+    m_climateControl->zoneAt("FrontLeft")->setSeatHeater(false);
     \endcode
 
     Looping zones is done with QIviAbstractZonedFeature::zones():
@@ -103,7 +103,7 @@
     \code
     const auto zones = m_climateControl->zones();
     for (QClimateControl *z : zones)
-        if (z->zone() == "FrontSeat")
+        if (z->zone() == "FrontLeft")
             z->setSeatHeater(true);
     \endcode
 */
@@ -162,7 +162,7 @@
 
     With the AbstractZonedFeature::zoneAt property you can access the climate control zone-specific functions.
     \code
-    climateControl.zoneAt.FrontSeat.seatheater = true
+    climateControl.zoneAt.FrontLeft.seatHeater = true
     \endcode
 
     An example of how to use the AbstractZonedFeature::zones property:
