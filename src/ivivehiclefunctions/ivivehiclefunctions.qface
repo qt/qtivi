@@ -42,8 +42,8 @@ interface QIviClimateControl {
      * in centigrades, where the temperature can be between
      * minimumValue(coolest) to maximumValue (warmest).
      */
-    @config_simulator: { maximum: 30 }
-    int targetTemperature;
+    @config_simulator: { maximum: 30.0 }
+    real targetTemperature;
     /**
      * Holds the seat cooler level, where the level can be
      * between minimumValue(off) to maximumValue (coolest).
