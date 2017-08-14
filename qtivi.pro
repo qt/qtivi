@@ -1,3 +1,5 @@
+requires(!android)
+
 enable-examples {
     QTIVI_BUILD_PARTS = $$QT_BUILD_PARTS
     QTIVI_BUILD_PARTS *= examples
