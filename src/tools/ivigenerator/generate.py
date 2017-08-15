@@ -58,6 +58,7 @@ log = logging.getLogger(__file__)
 Filters.classPrefix = ''
 
 QT_AS_VERSION = 2.0
+IVI_DEFAULT_TEMPLATES = ['frontend', 'backend_simulator', 'generation_validator', 'control_panel']
 
 def tag_by_path(symbol, path, default_value=False):
     """
@@ -501,7 +502,7 @@ def model_type(symbol):
 def generate(tplconfig, moduleConfig, src, dst):
     log.debug('run {0} {1}'.format(src, dst))
     system = FileSystem.parse(src)
-    generator = Generator(search_path=here / tplconfig)
+    generator = Generator(search_path=tplconfig)
     generator.register_filter('return_type', return_type)
     generator.register_filter('parameter_type', parameter_type)
     generator.register_filter('getter_name', getter_name)
@@ -529,7 +530,7 @@ def generate(tplconfig, moduleConfig, src, dst):
     srcFile = os.path.basename(src[0])
     srcBase = os.path.splitext(srcFile)[0]
     ctx = {'dst': dst, 'qtASVersion': QT_AS_VERSION, 'srcFile':srcFile, 'srcBase':srcBase}
-    gen_config = yaml.load(open(here / '{0}.yaml'.format(tplconfig)))
+    gen_config = yaml.load(open(here / '{0}.yaml'.format(os.path.basename(tplconfig))))
     for module in system.modules:
         log.debug('generate code for module %s', module)
         module.add_tag('config')
@@ -563,29 +564,25 @@ def generate(tplconfig, moduleConfig, src, dst):
                     generator.write(rule['dest_file'], rule['template_file'], ctx, preserve)
 
 
-def run(formats, moduleConfig, src, dst):
-    for f in formats:
-        switcher = {
-            'frontend': 'templates_frontend',
-            'backend_simulator': 'templates_backend_simulator',
-            'generation_validator': 'templates_generation_validator',
-            'control_panel': 'templates_control_panel'
-        }
-        tplConfig = switcher.get(f, 'unknown')
-        if tplConfig == 'unknown':
-            log.debug('unknown format {0}'.format(f))
+def run(format, moduleConfig, src, dst):
+    if format in IVI_DEFAULT_TEMPLATES:
+        tplConfig = 'templates_{0}'.format(format)
+        generate(here / tplConfig, moduleConfig, src, dst)
+    else:
+        if os.path.exists(format):
+            generate(format, moduleConfig, src, dst)
         else:
-            generate(tplConfig, moduleConfig, src, dst)
+            print('Format "{0}" is invalid. Should be one of {1} or an existing template folder'.format(format, IVI_DEFAULT_TEMPLATES))
 
 
 @click.command()
 @click.option('--reload/--no-reload', default=False)
-@click.option('--format', '-f', multiple=True,
-              type=click.Choice(['frontend', 'backend_simulator', 'generation_validator', 'ui', 'control_panel']))
+@click.option('--format', '-f', multiple=False)
 @click.option('--module', default=False)
 @click.option('--validation_info', default=False)
 @click.argument('src', nargs=-1, type=click.Path(exists=True))
 @click.argument('dst', nargs=1, type=click.Path(exists=True))
+
 def app(src, dst, format, reload, module, validation_info):
     """Takes several files or directories as src and generates the code
     in the given dst directory."""
