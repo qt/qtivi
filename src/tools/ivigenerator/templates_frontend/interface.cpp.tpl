@@ -64,7 +64,9 @@ QT_BEGIN_NAMESPACE
 /*!
     \qmltype {{interface|qml_type}}
     \instantiates {{interface}}
+{% if module.tags.config.qml_name is defined %}
     \inqmlmodule {{module.tags.config.qml_name}}
+{% endif %}
 {% if interface.tags.config.zoned %}
     \inherits AbstractZonedFeature
 {% else %}
@@ -342,7 +344,7 @@ void {{class}}::clearServiceObject()
 {% endif %}
 }
 
-{% if interface.tags.config.zoned != True %}
+{% if not interface.tags.config.zoned %}
 /*! \internal */
 {{class}}BackendInterface *{{class}}::backend() const
 {

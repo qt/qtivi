@@ -506,6 +506,8 @@ def model_type(symbol):
 
 def generate(tplconfig, moduleConfig, src, dst):
     log.debug('run {0} {1}'.format(src, dst))
+    FileSystem.strict = True
+    Generator.strict = True
     system = FileSystem.parse(src)
     generator = Generator(search_path=tplconfig)
     generator.register_filter('return_type', return_type)
