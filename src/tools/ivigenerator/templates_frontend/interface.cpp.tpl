@@ -255,10 +255,12 @@ void {{class}}::{{property|setter_name}}({{ property|parameter_type }})
     if (d->m_{{property}} == {{property}})
         return;
 {% if not module.tags.config.disablePrivateIVI %}
+    bool sendToBackend = true;
     if (Q_UNLIKELY(d->m_propertyOverride)) {
         QVariant v = qVariantFromValue<{{property|return_type}}>({{property}});
-        d->m_propertyOverride->setProperty(metaObject()->indexOfProperty("{{property}}"), v);
-    } else {
+        sendToBackend = !d->m_propertyOverride->setProperty(metaObject()->indexOfProperty("{{property}}"), v);
+    }
+    if (sendToBackend) {
 {% else %}
     {
 {% endif %}
