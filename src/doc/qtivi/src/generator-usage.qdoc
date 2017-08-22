@@ -211,6 +211,12 @@ annotations used for defining various aspects of the generation of the backend-s
         \li Accompanying YAML file
         \li Property
         \li Defines the initial values for the property returned by the simulator backend.
+
+        For zoned properties a mapping from a zone to a default value can be used. The default key of the map is "=".
+        \code
+        config_simulator:
+        default: { left: 21.0, right: 22.5, =: 0.0 }
+        \endcode
     \row
         \li \code
         config_simulator:

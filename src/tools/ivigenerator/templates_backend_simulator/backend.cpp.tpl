@@ -72,7 +72,7 @@ QT_BEGIN_NAMESPACE
     ZoneBackend {{zone_name}}Zone;
 {%   for property in interface.properties %}
 {%     if property.tags.config_simulator and property.tags.config_simulator.zoned %}
-    {{zone_name}}Zone.{{property}} = {{property|default_value}};
+    {{zone_name}}Zone.{{property}} = {{property|default_value(zone_name)}};
 {%     endif %}
 {%   endfor %}
     m_zoneMap.insert("{{zone_id}}", {{zone_name}}Zone);

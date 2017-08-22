@@ -132,7 +132,7 @@ def default_type_value(symbol):
     return 'XXX'
 
 
-def default_value(symbol):
+def default_value(symbol, zone='='):
     """
     Find the default value used by the simulator backend
     """
@@ -143,6 +143,11 @@ def default_value(symbol):
         return 'new {0}Model(parent)'.format(nested)
     if 'config_simulator' in symbol.tags and 'default' in symbol.tags['config_simulator']:
         res = symbol.tags['config_simulator']['default']
+        if isinstance(res, dict):
+            if zone in res:
+                res = res[zone]
+            else:
+                res = res['=']
         t = symbol.type
         if t.is_enum:
             module_name = t.reference.module.module_name
