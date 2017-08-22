@@ -65,6 +65,10 @@ QtIviVehicleFunctions.QIviClimateControl#seatHeater:
         default: 0
         zoned: true
 
+QtIviVehicleFunctions.QIviClimateControl#outsideTemperature:
+    config_simulator:
+        default: 15
+
 QtIviVehicleFunctions.QIviWindowControl:
     config_simulator:
         zoned: true
