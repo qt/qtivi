@@ -52,7 +52,7 @@ QtIviVehicleFunctions.QIviClimateControl#automaticClimateFanIntensityLevel:
 
 QtIviVehicleFunctions.QIviClimateControl#targetTemperature:
     config_simulator:
-        default: 0.0
+        default: { left: 21.0, right: 22.5, =: 0.0 }
         zoned: true
 
 QtIviVehicleFunctions.QIviClimateControl#seatCooler:
