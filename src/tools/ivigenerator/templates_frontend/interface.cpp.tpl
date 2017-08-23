@@ -148,8 +148,10 @@ void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_typ
         f = q;
     if (f->zone() != zone)
         return;
-    {{class}}Private::get(f)->m_{{property}} = {{property}};
-    emit f->{{property}}Changed({{property}});
+    if ({{class}}Private::get(f)->m_{{property}} != {{property}}) {
+        {{class}}Private::get(f)->m_{{property}} = {{property}};
+        emit f->{{property}}Changed({{property}});
+    }
 }
 {%   else %}
 void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_type}})
@@ -256,6 +258,7 @@ void {{class}}::{{property|setter_name}}({{ property|parameter_type }})
     auto d = {{class}}Private::get(this);
     if (d->m_{{property}} == {{property}})
         return;
+    d->m_{{property}} = {{property}};
 {% if not module.tags.config.disablePrivateIVI %}
     bool sendToBackend = true;
     if (Q_UNLIKELY(d->m_propertyOverride)) {
@@ -268,7 +271,6 @@ void {{class}}::{{property|setter_name}}({{ property|parameter_type }})
 {% endif %}
         if ({{class}}BackendInterface *backend = qobject_cast<{{class}}BackendInterface *>(this->backend()))
             backend->{{property|setter_name}}({{property}}{% if interface.tags.config.zoned %}, zone(){% endif %});
-        d->m_{{property}} = {{property}};
     }
     emit {{property}}Changed({{property}});
 }
