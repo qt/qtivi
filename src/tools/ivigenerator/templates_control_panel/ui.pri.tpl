@@ -20,3 +20,4 @@ HEADERS += \
     $$PWD/{{module.module_name|lower}}global.h
 
 RESOURCES += $$PWD/qml.qrc
+QT *= simulator

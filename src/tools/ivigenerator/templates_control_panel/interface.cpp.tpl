@@ -45,6 +45,7 @@
 
 #include <QQmlEngine>
 #include <QDebug>
+#include <QtSimulator>
 
 namespace {
 const QString INITIAL_MAIN_ZONE = "MainZone";
@@ -69,13 +70,46 @@ QT_BEGIN_NAMESPACE
     {% for zone_name, zone_id in zones.items() %}
     addZone("{{zone_id}}");
     {% endfor %}
-}
 {% else %}
 {{class}}::{{class}}(QObject *parent)
     : QObject(parent)
 {
-}
 {% endif %}
+    QVariantMap peerInfo({{ '{{' }}"control_panel",""{{ '}}' }});
+    QSimulatorServer *server = {{module.module_name}}Module::simulationServer();
+    server->registerServer("{{interface}}", QVersionNumber(1, 0, 0), peerInfo, [=](QSimulatorConnectionWorker *client) {
+        m_worker = client;
+        connect(m_worker, &QSimulatorConnectionWorker::disconnected, this, [=]() {
+            qDebug() << "DISCONNECTED";
+            //Deleting it on the mainZone is enough as QPointer does the rest of the work for us.
+            m_worker = 0;
+        });
+        m_worker->addReceiver(this);
+        qDebug() << "connected: " << client->peerInfo();
+{% if interface.tags.config.zoned %}
+        auto i = m_zoneHash.constBegin();
+        while (i != m_zoneHash.constEnd()) {
+            i.value()->m_worker = client;
+{%   for property in interface.properties %}
+{%     set function_name = property|setter_name %}
+{%     if property.readonly or property.const %}
+{%       set function_name = property.name + 'Changed' %}
+{%     endif %}
+            m_worker->call("{{function_name}}", i.value()->m_{{property}}, i.value()->m_currentZone);
+{%   endfor %}
+            ++i;
+        }
+{% else %}
+{%   for property in interface.properties %}
+{%     set function_name = property|setter_name %}
+{%     if property.readonly or property.const %}
+{%       set function_name = property.name + 'Changed' %}
+{%     endif %}
+        m_worker->call("{{function_name}}", m_{{property}});
+{%   endfor %}
+{% endif %}
+    });
+}
 
 {{class}}::~{{class}}()
 {
@@ -102,6 +136,7 @@ void {{class}}::addZone(const QString &newZone)
         return;
 
     {{class}} *zoneObject = new {{class}}(newZone, this);
+    zoneObject->m_worker = m_worker;
     m_zoneHash.insert(newZone, zoneObject);
     m_zoneMap.insert(newZone, QVariant::fromValue(zoneObject));
 
@@ -136,20 +171,65 @@ void {{class}}::{{property|setter_name}}({{ property|parameter_type }})
 {
    if (m_{{property}} == {{property}})
        return;
-   m_{{property}} = {{property}};
-   emit {{property}}Changed({{property}});
+    m_{{property}} = {{property}};
+    emit {{property}}Changed({{property}});
+    auto w = worker();
+    if (w)
+{% set function_name = property|setter_name %}
+{% if property.readonly or property.const %}
+{%   set function_name = property.name + 'Changed' %}
+{% endif %}
+{% if interface.tags.config.zoned %}
+        w->call("{{function_name}}", {{property}}, m_currentZone);
+{% else %}
+        w->call("{{function_name}}", {{property}});
+{% endif %}
 }
 
-{% endfor %}
-
-{%- for operation in interface.operations %}
-
-{{operation|return_type}} {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){% if operation.const %} const{% endif %}
-
+{% if interface.tags.config.zoned %}
+void {{class}}::{{property|setter_name}}({{property|parameter_type}}, const QString &zone)
 {
-    return {{operation|default_type_value}};
+    QString z = zone;
+    if (z.isEmpty())
+        z = INITIAL_MAIN_ZONE;
+
+    if (!m_zoneMap.contains(z)) {
+        return;
+    }
+
+    // the setter cannot be used as it would update the simulation connection
+    // and by this create a async loop
+    if (m_zoneHash[z]->m_{{property}} == {{property}})
+        return;
+     m_zoneHash[z]->m_{{property}} = {{property}};
+     emit m_zoneHash[z]->{{property}}Changed({{property}});
+}
+{% endif %}
+
+{% endfor %}
+
+{% for signal in interface.signals %}
+void {{class}}::{{signal}}({{signal.parameters|map('parameter_type')|join(', ')}})
+{
+    auto w = worker();
+    if (w)
+        w->call("{{signal}}", {{signal.parameters|join(', ')}}{% if interface.tags.config.zoned %}, m_currentZone{% endif %});
 }
 
 {% endfor %}
+
+QSimulatorConnectionWorker *{{class}}::worker()
+{
+{% if interface.tags.config.zoned %}
+    if (m_currentZone.isEmpty())
+        return m_worker;
+    {{class}}* globalZone = qobject_cast<{{class}}*>(parent());
+    if (globalZone)
+        return globalZone->m_worker;
+    return nullptr;
+{% else %}
+    return m_worker;
+{% endif %}
+}
 
 QT_END_NAMESPACE

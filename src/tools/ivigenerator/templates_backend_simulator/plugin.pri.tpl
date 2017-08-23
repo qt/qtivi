@@ -41,6 +41,10 @@
 ## Do not edit! All changes made to it will be lost.
 #############################################################################
 
+{% if 'simulator' in features %}
+QT += simulator
+{% endif %}
+
 HEADERS += \
 {% for interface in module.interfaces %}
     $$PWD/{{interface|lower}}backend.h \

@@ -57,7 +57,7 @@ log = logging.getLogger(__file__)
 
 Filters.classPrefix = ''
 
-QT_AS_VERSION = 2.0
+builtin_config = {}
 IVI_DEFAULT_TEMPLATES = ['frontend', 'backend_simulator', 'generation_validator', 'control_panel']
 
 def tag_by_path(symbol, path, default_value=False):
@@ -316,7 +316,7 @@ def json_domain(properties):
     """
     data = {}
     if len(properties):
-        data["iviVersion"] = QT_AS_VERSION
+        data["iviVersion"] = builtin_config["VERSION"]
     for property in properties:
         if 'config_simulator' in property.tags:
             for p in ['range', 'domain', 'minimum', 'maximum']:
@@ -521,7 +521,7 @@ def generate(tplconfig, moduleConfig, src, dst):
 
     srcFile = os.path.basename(src[0])
     srcBase = os.path.splitext(srcFile)[0]
-    ctx = {'dst': dst, 'qtASVersion': QT_AS_VERSION, 'srcFile':srcFile, 'srcBase':srcBase}
+    ctx = {'dst': dst, 'qtASVersion': builtin_config["VERSION"], 'srcFile':srcFile, 'srcBase':srcBase, 'features': builtin_config["FEATURES"]}
     gen_config = yaml.load(open(here / '{0}.yaml'.format(os.path.basename(tplconfig))))
     for module in system.modules:
         log.debug('generate code for module %s', module)
@@ -578,6 +578,15 @@ def run(format, moduleConfig, src, dst):
 def app(src, dst, format, reload, module, validation_info):
     """Takes several files or directories as src and generates the code
     in the given dst directory."""
+
+    global builtin_config
+    builtin_config_path = here / '.config'
+    if 'IVIGENERATOR_CONFIG' in os.environ:
+        builtin_config_path = os.environ['IVIGENERATOR_CONFIG']
+    builtin_config = yaml.load(open(builtin_config_path))
+    if not 'VERSION' in builtin_config or not 'FEATURES' in builtin_config:
+        sys.exit("Invalid builtin config")
+
     if reload:
         script = '{0} {1} {2}'.format(Path(__file__).abspath(), ' '.join(src), dst)
         monitor(src, script)

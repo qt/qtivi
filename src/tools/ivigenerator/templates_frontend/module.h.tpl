@@ -78,6 +78,11 @@ public:
     static void registerQmlTypes(const QString& uri, int majorVersion = 1, int minorVersion = 0);
 };
 
+{% for enum in module.enums %}
+QDataStream &operator<<(QDataStream &out, {{class}}::{{enum|flag_type}} var);
+QDataStream &operator>>(QDataStream &in, {{class}}::{{enum|flag_type}} &var);
+{% endfor %}
+
 QT_END_NAMESPACE
 
 #endif // {{oncedefine}}

@@ -120,6 +120,32 @@ Flickable {
             {{property|qml_control(backend_obj)}}
         }
 {%     endfor %}
+{%     if interface.signals|count %}
+        ToolSeparator {
+            orientation: Qt.Horizontal
+        }
+
+        Text {
+            text: "Signals"
+        }
+{%       for signal in interface.signals  %}
+        // Button for signal call
+        RowLayout {
+            spacing: 2
+            height: 20
+            Button {
+                text: "{{signal}}"
+            }
+{%         for param in signal.parameters %}
+            Text {
+                text: "{{param}}"
+            }
+            {{param|qml_control(backend_obj)}}
+
+{%         endfor%}
+        }
+{%       endfor  %}
+{%     endif  %}
 {%     if interface.operations|count %}
 
         ToolSeparator {
@@ -129,7 +155,7 @@ Flickable {
         Text {
             text: "Operations"
         }
-{%         for operation in interface.operations %}
+{%       for operation in interface.operations %}
         // Button for operation call
         RowLayout {
             spacing: 2
@@ -146,29 +172,6 @@ Flickable {
 {%         endfor%}
        }
 {%       endfor %}
-{%     endif  %}
-{%     if interface.operations|count %}
-        ToolSeparator {
-            orientation: Qt.Horizontal
-        }
-
-        Text {
-            text: "Signals"
-        }
-{%       for signal in interface.signals  %}
-        // Button for signal emission
-        Row {
-            spacing: 2
-            height: 20
-
-            Button {
-                text: "{{signal}}"
-            }
-{%         for param in signal.parameters %}
-            {{param|qml_control(backend_obj)}}
-{%         endfor  %}
-        }
-{%       endfor  %}
 {%     endif  %}
         Item {
             //spacer

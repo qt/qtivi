@@ -30,6 +30,10 @@ QFACE_BASE_NAME = $$replace(QFACE_FILE, .qface, )
 QFACE_YAML = $$QFACE_ABS_PWD/$${QFACE_BASE_NAME}.yaml
 OTHER_FILES += $$QFACE_FILE
 
+# The 'click' library used by the generator needs to have a utf8 locale setup.
+win32: ENV = chcp 65001 &&
+else: ENV = LC_ALL="en_US.UTF-8"
+
 # Detect whether we are using the feature inside the qtivi repository
 VIRTUALENV_PATH = $$[QT_HOST_BINS]/ivigenerator/qtivi_qface_virtualenv
 INTERNAL_VIRTUALENV_PATH = $$QTIVI_BUILD_ROOT/src/tools/ivigenerator/qtivi_qface_virtualenv
@@ -40,19 +44,14 @@ QTEST_ENVIRONMENT = $$upper($$(QTEST_ENVIRONMENT))
 # Because of the two stage build of COIN, it might not exist, but the installed version should still be there
 !isEmpty(QTIVI_BUILD_ROOT):!equals(QTEST_ENVIRONMENT, CI):!qtConfig(system-ivigenerator) {
     VIRTUALENV_PATH = $$INTERNAL_VIRTUALENV_PATH
-}
-
-!isEmpty(QTIVI_BUILD_ROOT):!equals(QTEST_ENVIRONMENT, CI):!qtConfig(system-ivigenerator) {
     IVI_GENERATOR_PATH = $$QTIVI_ROOT/src/tools/ivigenerator
+    win32: ENV += set IVIGENERATOR_CONFIG="$$shell_path($$QTIVI_BUILD_ROOT/src/tools/ivigenerator/.config)" &&
+    else: ENV += IVIGENERATOR_CONFIG="$$shell_path($$QTIVI_BUILD_ROOT/src/tools/ivigenerator/.config)"
 }
 
 win32: VIRTUALENV_PYTHON = $$VIRTUALENV_PATH/Scripts/python.exe
 else: VIRTUALENV_PYTHON = $$VIRTUALENV_PATH/bin/python
 IVI_GENERATOR = $$VIRTUALENV_PYTHON $$IVI_GENERATOR_PATH/generate.py
-
-# The 'click' library used by the generator needs to have a utf8 locale setup.
-win32: ENV = chcp 65001 &&
-else: ENV = LC_ALL="en_US.UTF-8"
 
 # TODO make this work with multiple input files, or only support one QFACE_SOURCE
 # Although this could be extra_compiler it is a normal EXTRA_TARGET for a reason.

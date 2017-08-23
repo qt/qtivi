@@ -53,8 +53,15 @@
 
 QT_BEGIN_NAMESPACE
 
+{% if 'simulator' in features %}
+class QSimulatorConnection;
+class QSimulatorConnectionWorker;
+{% endif %}
+
 class {{class}} : public {{class}}Interface
 {
+    Q_OBJECT
+
 public:
     explicit {{class}}(QObject *parent = nullptr);
     ~{{class}}();
@@ -64,6 +71,7 @@ public:
 {%   endif %}
 
     void initialize() override;
+public Q_SLOTS:
 {% for property in interface.properties %}
 {%   if not property.readonly and not property.const %}
 {%     if interface_zoned %}
@@ -102,6 +110,10 @@ protected:
 {%   endfor %}
     };
     QMap<QString,ZoneBackend> m_zoneMap;
+{% endif %}
+{% if 'simulator' in features %}
+    QSimulatorConnection *mConnection;
+    QSimulatorConnectionWorker *mWorker;
 {% endif %}
 };
 

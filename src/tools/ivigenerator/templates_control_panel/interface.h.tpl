@@ -55,6 +55,7 @@ QT_BEGIN_NAMESPACE
 
 class {{class}}Private;
 class {{class}}BackendInterface;
+class QSimulatorConnectionWorker;
 
 class {{exportsymbol}} {{class}} : public QObject {
     Q_OBJECT
@@ -88,26 +89,30 @@ public:
 {% endfor %}
 
 public Q_SLOTS:
-{% for operation in interface.operations %}
-    {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){% if operation.const %} const{% endif %};
-{% endfor %}
 {% for property in interface.properties %}
     void {{property|setter_name}}({{property|parameter_type}});
+{%   if interface_zoned %}
+    void {{property|setter_name}}({{property|parameter_type}}, const QString &zone);
+{%   endif %}
+{% endfor %}
+{% for signal in interface.signals %}
+    void {{signal}}({{signal.parameters|map('parameter_type')|join(', ')}});
 {% endfor %}
 
 Q_SIGNALS:
+{% for operation in interface.operations %}
+    {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){% if operation.const %} const{% endif %};
+{% endfor %}
 {% if interface_zoned %}
     void currentZoneChanged();
     void zonesChanged();
 {% endif %}
-{% for signal in interface.signals %}
-    void {{signal}}({{signal.parameters|map('parameter_type')|join(', ')}});
-{% endfor %}
 {% for property in interface.properties %}
     void {{property}}Changed({{property|parameter_type}});
 {% endfor %}
 
 private:
+    QSimulatorConnectionWorker *worker();
 {%   for property in interface.properties %}
     {{ property|return_type }} m_{{ property }};
 {%   endfor %}
@@ -116,6 +121,7 @@ private:
     QVariantMap m_zoneMap;
     QString m_currentZone;
 {% endif %}
+    QSimulatorConnectionWorker *m_worker;
 };
 
 QT_END_NAMESPACE

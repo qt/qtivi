@@ -46,6 +46,7 @@
 #include "{{interface|lower}}.h"
 {% endfor %}
 #include <QQmlEngine>
+#include <QDataStream>
 
 QT_BEGIN_NAMESPACE
 
@@ -83,6 +84,7 @@ void {{class}}::registerTypes()
 {
 {% for enum in module.enums %}
     qRegisterMetaType<{{class}}::{{enum|flag_type}}>();
+    qRegisterMetaTypeStreamOperators<{{class}}::{{enum|flag_type}}>();
 {% endfor %}
 {% for struct in module.structs %}
     qRegisterMetaType<{{struct}}>();
@@ -99,5 +101,20 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
     {{interface}}::registerQmlTypes(uri, majorVersion, minorVersion);
 {% endfor %}
 }
+
+{% for enum in module.enums %}
+QDataStream &operator<<(QDataStream &out, {{class}}::{{enum|flag_type}} var)
+{
+    out << (int)var;
+    return out;
+}
+QDataStream &operator>>(QDataStream &in, {{class}}::{{enum|flag_type}} &var)
+{
+    int temp;
+    in >> temp;
+    var = ({{class}}::{{enum|flag_type}})temp;
+    return in;
+}
+{% endfor %}
 
 QT_END_NAMESPACE
