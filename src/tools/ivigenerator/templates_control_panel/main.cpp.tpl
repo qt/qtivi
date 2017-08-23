@@ -52,7 +52,8 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
 {% for interface in module.interfaces %}
-    {{interface}}::registerQmlTypes(QLatin1String("com.pelagicore.ControlPanel"), 1, 0, QLatin1String("{{interface}}Object"));
+    {{interface}}::registerQmlTypes(QLatin1String("QtIvi.ControlPanel"), 1, 0,
+                                    QLatin1String("{{interface|qml_type}}Object"));
 {% endfor %}
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

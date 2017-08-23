@@ -3,6 +3,8 @@
 ## Do not edit! All changes made to it will be lost.
 #############################################################################
 
+DEFINES += QT_BUILD_{{module.module_name|upper}}_LIB
+
 SOURCES += \
     $$PWD/main.cpp \
 {% for interface in module.interfaces %}

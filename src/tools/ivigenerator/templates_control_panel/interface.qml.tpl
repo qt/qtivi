@@ -44,28 +44,30 @@ import QtQuick 2.7
 import QtQuick.Window 2.2
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
-import com.pelagicore.ControlPanel 1.0
+import QtIvi.ControlPanel 1.0
 
-Rectangle {
-    visible: true
-    width: 640
-    height: 480
+Flickable {
     id: {{interface|lowerfirst}}
+    flickableDirection: Flickable.VerticalFlick
+    clip: true
+    ScrollBar.vertical: ScrollBar {}
+    contentHeight: layout.childrenRect.height
 
-    {{interface}}Object {
+    {{interface|qml_type}}Object {
         id: {{backend_obj}}
 {% for property in interface.properties %}
-        {{property}}:{{property|lowerfirst}}.{{property|qml_binding_property}}
+        {{property}}: {{property|lowerfirst}}Control.{{property|qml_binding_property}}
 {% endfor%}
 
     }
 
     ColumnLayout {
-        anchors.fill: parent
-        anchors.margins: 5
-
+        id: layout
 {% if interface.tags.config.zoned %}
         RowLayout {
+            Text {
+                text: "Zone: "
+            }
             ComboBox {
                 width: 250
                 id: comboZones
@@ -90,11 +92,8 @@ Rectangle {
         }
 {% endif %}
 
-        Text {
-            text: "{{interface}}"
-        }
-
         ToolSeparator {
+            Layout.fillWidth: true
             orientation: Qt.Horizontal
         }
 
@@ -107,6 +106,7 @@ Rectangle {
             {{property|qml_control(backend_obj)}}
         }
 {%     endfor %}
+{%     if interface.operations|count %}
 
         ToolSeparator {
             orientation: Qt.Horizontal
@@ -115,7 +115,7 @@ Rectangle {
         Text {
             text: "Operations"
         }
-{%     for operation in interface.operations %}
+{%         for operation in interface.operations %}
         // Button for operation call
         RowLayout {
             spacing: 2
@@ -123,15 +123,17 @@ Rectangle {
             Button {
                 text: "{{operation}}"
             }
-{%       for param in operation.parameters %}
+{%         for param in operation.parameters %}
             Text {
                 text: "{{param}}"
             }
             {{param|qml_control(backend_obj)}}
 
-{%       endfor%}
+{%         endfor%}
        }
-{%     endfor %}
+{%       endfor %}
+{%     endif  %}
+{%     if interface.operations|count %}
         ToolSeparator {
             orientation: Qt.Horizontal
         }
@@ -139,7 +141,7 @@ Rectangle {
         Text {
             text: "Signals"
         }
-{%     for signal in interface.signals  %}
+{%       for signal in interface.signals  %}
         // Button for signal emission
         Row {
             spacing: 2
@@ -148,10 +150,15 @@ Rectangle {
             Button {
                 text: "{{signal}}"
             }
-{%       for param in signal.parameters %}
+{%         for param in signal.parameters %}
             {{param|qml_control}}
-{%       endfor  %}
+{%         endfor  %}
         }
-{%     endfor  %}
+{%       endfor  %}
+{%     endif  %}
+        Item {
+            //spacer
+            Layout.fillHeight: true
+        }
     }
 }

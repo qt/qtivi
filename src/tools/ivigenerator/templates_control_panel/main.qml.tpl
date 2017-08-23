@@ -42,31 +42,37 @@
 import QtQuick 2.7
 import QtQuick.Window 2.2
 import QtQuick.Controls 2.1
+import QtQuick.Layouts 1.3
+import QtIvi.ControlPanel 1.0
 
-Window {
+ApplicationWindow {
     visible: true
     width: 640
-    height: 480
+    height: 800
     title: qsTr("QtIVI {{module.module_name}}")
 
-    Column {
+    ColumnLayout {
         anchors.fill: parent
         anchors.margins: 5
 
-
-{% for interface in module.interfaces %}
-        Text {
-            text: "{{interface}}"
+        TabBar {
+            id: bar
+            Layout.fillWidth: true
+            {% for interface in module.interfaces %}
+            TabButton {
+                text: "{{interface|qml_type}}"
+            }
+            {% endfor %}
         }
 
-        ToolSeparator {
-            orientation: Qt.Horizontal
+        StackLayout {
+            Layout.fillWidth: true
+            currentIndex: bar.currentIndex
+            {% for interface in module.interfaces %}
+            {{interface}} {
+                id: {{interface|lowerfirst}}
+            }
+            {% endfor %}
         }
-
-        {{interface}} {
-            id: {{interface|lowerfirst}}
-        }
-
-{% endfor %}
     }
 }

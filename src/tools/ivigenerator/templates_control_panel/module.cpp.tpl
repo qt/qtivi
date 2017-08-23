@@ -69,7 +69,7 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
 void {{class}}::registerTypes()
 {
 {% for enum in module.enums %}
-    qRegisterMetaType<{{class}}::{{enum}}>();
+    qRegisterMetaType<{{class}}::{{enum|flag_type}}>();
 {% endfor %}
 {% for struct in module.structs %}
     qRegisterMetaType<{{struct}}>();

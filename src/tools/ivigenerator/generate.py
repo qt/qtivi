@@ -349,7 +349,7 @@ def qml_control_properties(symbol, backend_object):
     Returns properties of the QML control matching to this
     IDL type (e.g. min/max properties)
     """
-    prop_str = lower_first_filter(symbol)
+    prop_str = lower_first_filter(symbol) + "Control"
     if isinstance(symbol, Property):
         top = range_high(symbol)
         bottom = range_low(symbol)
@@ -454,7 +454,7 @@ def qml_control(symbol, backend_object):
     Returns QML code for the control (or group of controls) to represent the editing UI for the symbol.
     """
 
-    if symbol.type.is_enum and symbol.type.reference.is_flag:
+    if symbol.type.reference and symbol.type.reference.is_flag:
         return qml_flag_control(symbol)
     if symbol.type.is_struct:
         return qml_struct_control(symbol)
@@ -470,8 +470,10 @@ def qml_binding_property(symbol):
     control_name = qml_control_name(symbol)
     if control_name == "CheckBox":
         return "checked"
-    elif control_name == "Slider" or control_name == "TextField" or control_name == "SpinBox":
+    elif control_name == "Slider" or control_name == "SpinBox":
         return "value"
+    elif control_name == "TextField":
+        return "text"
     elif control_name == "ComboBox":
         return "currentText"
 

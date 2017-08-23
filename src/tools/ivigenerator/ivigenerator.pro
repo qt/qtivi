@@ -52,14 +52,30 @@ templates_generation_validator.files += \
     templates_generation_validator/validationstatus.h.tpl
 templates_generation_validator.path = $$[QT_HOST_BINS]/ivigenerator/templates_generation_validator
 
+templates_control_panel.files += \
+    templates_control_panel/generated_comment.cpp.tpl \
+    templates_control_panel/global.h.tpl \
+    templates_control_panel/interface.cpp.tpl \
+    templates_control_panel/interface.h.tpl \
+    templates_control_panel/interface.qml.tpl \
+    templates_control_panel/main.cpp.tpl \
+    templates_control_panel/main.qml.tpl \
+    templates_control_panel/module.cpp.tpl \
+    templates_control_panel/module.h.tpl \
+    templates_control_panel/qml.qrc.tpl \
+    templates_control_panel/ui.pri.tpl \
+    templates_control_panel/utils.tpl
+templates_control_panel.path = $$[QT_HOST_BINS]/ivigenerator/templates_control_panel
+
 generator.files += \
     generate.py \
     templates_frontend.yaml \
     templates_backend_simulator.yaml \
-    templates_generation_validator.yaml
+    templates_generation_validator.yaml \
+    templates_control_panel.yaml
 generator.path = $$[QT_HOST_BINS]/ivigenerator
 
-INSTALLS += templates_frontend templates_backend_simulator templates_generation_validator generator
+INSTALLS += templates_frontend templates_backend_simulator templates_generation_validator templates_control_panel generator
 
 # Ensure files are installed to qtbase for non-prefixed builds
 !force_independent:if(!debug_and_release|!build_all|CONFIG(release, debug|release)) {

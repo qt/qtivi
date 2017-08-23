@@ -65,15 +65,11 @@ class {{exportsymbol}} {{class}} : public QObject {
     Q_PROPERTY(QString currentZone READ currentZone WRITE setCurrentZone NOTIFY currentZoneChanged)
     Q_PROPERTY(QVariantList zones READ zones NOTIFY zonesChanged)
 {% for property in interface.properties %}
-    Q_PROPERTY({{property|return_type}} {{property}} READ {{property}}{% if not property.readonly and not property.const %} WRITE set{{property|upperfirst}}{% endif %} NOTIFY {{property}}Changed)
+    Q_PROPERTY({{property|return_type}} {{property}} READ {{property|getter_name}} WRITE {{property|setter_name}} NOTIFY {{property}}Changed)
 {% endfor %}
     Q_CLASSINFO("IviPropertyDomains", "{{ interface.properties|json_domain|replace("\"", "\\\"") }}")
 public:
-{% if interface.tags.config.zoned %}
-    explicit {{class}}(const QString &zone = QString(), QObject *parent = nullptr);
-{% else %}
     explicit {{class}}(QObject *parent = nullptr);
-{% endif %}
     ~{{class}}();
 
     static void registerQmlTypes(const QString& uri, int majorVersion=1, int minorVersion=0, const QString& qmlName = "");
@@ -82,7 +78,7 @@ public:
     QString currentZone() const;
     QVariantList zones() const;
 {% for property in interface.properties %}
-    {{property|return_type}} {{property}}() const;
+    {{property|return_type}} {{property|getter_name}}() const;
 {% endfor %}
 
 public Q_SLOTS:
@@ -91,9 +87,7 @@ public Q_SLOTS:
     {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){% if operation.const %} const{% endif %};
 {% endfor %}
 {% for property in interface.properties %}
-{%   if not property.readonly and not property.const %}
-    void set{{property|upperfirst}}({{property|parameter_type}});
-{%   endif %}
+    void {{property|setter_name}}({{property|parameter_type}});
 {% endfor %}
 
 Q_SIGNALS:

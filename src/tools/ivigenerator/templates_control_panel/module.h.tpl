@@ -53,20 +53,20 @@ QT_BEGIN_NAMESPACE
 class {{exportsymbol}} {{class}} : public QObject {
     Q_OBJECT
 public:
-{{class}}(QObject *parent=0);
+    {{class}}(QObject *parent=0);
 
 {% for enum in module.enums %}
-{% if enum.comment %}
-    /*!
- {{ utils.format_comments(enum.comment) }}
-     */
-{% endif %}
     enum {{enum}} {
         {% for member in enum.members %}
         {{member.name}} = {{member.value}}, {{member.comment}}
         {% endfor %}
     };
+{% if enum.is_flag %}
+    Q_DECLARE_FLAGS({{enum|flag_type}}, {{enum}})
+    Q_FLAG({{enum|flag_type}})
+{% else %}
     Q_ENUM({{enum}})
+{% endif %}
 
 {% endfor %}
 

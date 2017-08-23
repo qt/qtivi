@@ -57,20 +57,16 @@ QT_BEGIN_NAMESPACE
     \inmodule {{module}}
 {{ utils.format_comments(interface.comment) }}
 */
-
-
-
-{%   if interface.tags.config.zoned %}
-{{class}}::{{class}}(const QString &zone, QObject *parent)
-    : QObject(parent)
-{%   else %}
 {{class}}::{{class}}(QObject *parent)
     : QObject(parent)
-{%   endif %}
-    , m_currentZone(INITIAL_MAIN_ZONE)
     , m_currentZoneBackend(createZoneBackend())
+    , m_currentZone(INITIAL_MAIN_ZONE)
 {
     m_zones << INITIAL_MAIN_ZONE;
+    {% set zones = interface.tags.config_simulator.zones if interface.tags.config_simulator else {} %}
+    {% for zone_name, zone_id in zones.items() %}
+    m_zones << "{{zone_id}}";
+    {% endfor %}
 }
 
 /*! \internal */
@@ -149,18 +145,16 @@ void {{class}}::setCurrentZone(const QString &zone)
     \note This property is constant and the value will not change once the plugin is initialized.
 {% endif %}
 */
-{{property|return_type}} {{class}}::{{property}}() const
+{{property|return_type}} {{class}}::{{property|getter_name}}() const
 {
    return m_currentZoneBackend.{{property}};
 }
-{%   if not property.readonly and not property.const %}
 
-void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
+void {{class}}::{{property|setter_name}}({{ property|parameter_type }})
 {
     m_currentZoneBackend.{{property}} = {{property}};
     emit {{property}}Changed({{property}});
 }
-{%   endif %}
 
 {% endfor %}
 

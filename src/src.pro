@@ -30,9 +30,19 @@ QT_FOR_CONFIG += geniviextras-private ivicore ivicore-private
     qtConfig(dlt): SUBDIRS += geniviextras
 }
 
-!qtConfig(geniviextras-only): qtConfig(ivigenerator): !qtConfig(system-ivigenerator) {
-    src_tools_ivigenerator.subdir = tools/ivigenerator
-    src_tools_ivigenerator.target = sub-ivigenerator
-    SUBDIRS += src_tools_ivigenerator
+!qtConfig(geniviextras-only): {
+    qtConfig(ivigenerator) {
+        !qtConfig(system-ivigenerator) {
+            src_tools_ivigenerator.subdir = tools/ivigenerator
+            src_tools_ivigenerator.target = sub-ivigenerator
+            SUBDIRS += src_tools_ivigenerator
+        }
+
+        src_tools_ivivehiclefunctions-controller.subdir = tools/vehiclefunctions-controller
+        !qtConfig(system-ivigenerator): src_tools_ivivehiclefunctions-controller.depends += sub-ivigenerator
+        src_tools_ivivehiclefunctions-controller.target = sub-ivivehiclefunctions-controller
+        SUBDIRS += src_tools_ivivehiclefunctions-controller
+    }
 }
+
 
