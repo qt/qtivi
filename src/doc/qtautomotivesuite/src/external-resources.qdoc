@@ -139,3 +139,38 @@
     \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-building-and-running.html#building-and-running-an-example
     \title Building and Running an Example
 */
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-custom-embedded-linux-image.html
+    \title Building Your Own Embedded Linux Image
+*/
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-about-b2qt.html
+    \title About Boot to Qt
+*/
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-custom-embedded-linux-image.html#configuring-qt-creator
+    \title Configuring Qt Creator
+*/
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-custom-embedded-linux-image.html#using-toolchain-without-qt-creator
+    \title Using Toolchain without Qt Creator
+*/
+
+/*!
+    \externalpage http://www.yoctoproject.org/
+    \title Yocto Project
+*/
+
+/*!
+    \externalpage http://www.yoctoproject.org/documentation/current
+    \title Yocto Project Documentation for the Latest Release
+*/
+
+/*!
+    \externalpage http://www.nvidia.com/object/drive-cx-request.html
+    \title NVIDIA DRIVE™ CX
+*/

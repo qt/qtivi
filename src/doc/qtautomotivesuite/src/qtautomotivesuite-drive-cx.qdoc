@@ -28,6 +28,7 @@
     \page qtas-preparing-hardware-drivecx.html
     \title NVIDIA DRIVE CX Guide
     \previouspage qtas-install.html
+    \nextpage qtautomotive-byos.html
 
     Take the following steps when preparing \l {http://www.nvidia.com/object/drive-cx.html}
     {NVIDIA DRIVE CX} for \B2Q:

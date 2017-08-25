@@ -35,12 +35,12 @@
     displayed in the Qt Creator Help mode Contents view.
 
     \list
-        \li \l{Contents}
+        \li \l {Qt Automotive Suite Overview}{Overview}
+        \li \l {Installing Qt Automotive Suite}{Install Instructions}
         \list
-            \li \l {Qt Automotive Suite Overview}{Overview}
-            \li \l {Installing Qt Automotive Suite}{Install Instructions}
-            \li \l {Supported Platforms}
-            \li \l {Related Information}
+            \li \l{NVIDIA DRIVE CX Guide}
         \endlist
+        \li \l {Building Your Own NVIDIA DRIVE CX Image}
+        \li \l {Related Information}
     \endlist
 */

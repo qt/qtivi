@@ -50,6 +50,7 @@
         \list
             \li \l{NVIDIA DRIVE CX Guide}
         \endlist
+        \li \l {Building Your Own NVIDIA DRIVE CX Image}
         \li \l {Related Information}
     \endlist
 
@@ -179,6 +180,7 @@
     \page qtas-install.html
     \title Installing Qt Automotive Suite
     \previouspage {Qt Automotive Suite Overview}{Overview}
+    \nextpage qtas-preparing-hardware-drivecx.html
 
     \QAS is a commercial product and requires a license to install and
     explore its possibilities. Use the guide on the
