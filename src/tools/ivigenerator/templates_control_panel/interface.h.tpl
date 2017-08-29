@@ -49,7 +49,7 @@
 
 #include <QObject>
 #include <QHash>
-
+#include <QVariantMap>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,27 +62,28 @@ class {{exportsymbol}} {{class}} : public QObject {
 class {{exportsymbol}} {{class}} : public QObject {
 {% endif %}
     Q_OBJECT
-    Q_PROPERTY(QString currentZone READ currentZone WRITE setCurrentZone NOTIFY currentZoneChanged)
-    Q_PROPERTY(QVariantList zones READ zones NOTIFY zonesChanged)
+    Q_PROPERTY(QString currentZone READ currentZone NOTIFY currentZoneChanged)
+    Q_PROPERTY(QStringList zones READ zones NOTIFY zonesChanged)
+    Q_PROPERTY(QVariantMap zoneAt READ zoneAt NOTIFY zonesChanged)
 {% for property in interface.properties %}
     Q_PROPERTY({{property|return_type}} {{property}} READ {{property|getter_name}} WRITE {{property|setter_name}} NOTIFY {{property}}Changed)
 {% endfor %}
     Q_CLASSINFO("IviPropertyDomains", "{{ interface.properties|json_domain|replace("\"", "\\\"") }}")
 public:
-    explicit {{class}}(QObject *parent = nullptr);
+    explicit {{class}}(const QString &zone = QString(), QObject *parent = nullptr);
     ~{{class}}();
 
     static void registerQmlTypes(const QString& uri, int majorVersion=1, int minorVersion=0, const QString& qmlName = "");
     Q_INVOKABLE void addZone(const QString& newZone);
 
     QString currentZone() const;
-    QVariantList zones() const;
+    QStringList zones() const;
+    QVariantMap zoneAt() const;
 {% for property in interface.properties %}
     {{property|return_type}} {{property|getter_name}}() const;
 {% endfor %}
 
 public Q_SLOTS:
-    void setCurrentZone(const QString& zone);
 {% for operation in interface.operations %}
     {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){% if operation.const %} const{% endif %};
 {% endfor %}
@@ -101,18 +102,15 @@ Q_SIGNALS:
 {% endfor %}
 
 private:
-    struct ZoneBackend {
 {%   for property in interface.properties %}
-        {{ property|return_type }} {{ property }};
+    {{ property|return_type }} m_{{ property }};
 {%   endfor %}
-    };
-    ZoneBackend m_currentZoneBackend ;
 {% if interface_zoned %}
-    QHash<QString,ZoneBackend> m_zoneMap;
+    QHash<QString,{{class}}*> m_zoneHash;
+    QVariantMap m_zoneMap;
 {% endif %}
-    QVariantList m_zones;
     QString m_currentZone;
-    ZoneBackend createZoneBackend();
+    //ZoneBackend createZoneBackend();
 };
 
 QT_END_NAMESPACE

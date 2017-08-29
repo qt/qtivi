@@ -53,6 +53,8 @@ templates_generation_validator.files += \
 templates_generation_validator.path = $$[QT_HOST_BINS]/ivigenerator/templates_generation_validator
 
 templates_control_panel.files += \
+    templates_control_panel/EnumControl.qml.tpl \
+    templates_control_panel/FlagControl.qml.tpl \
     templates_control_panel/generated_comment.cpp.tpl \
     templates_control_panel/global.h.tpl \
     templates_control_panel/interface.cpp.tpl \

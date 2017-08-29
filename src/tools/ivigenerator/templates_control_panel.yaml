@@ -14,6 +14,10 @@ generate_rules:
           template_file:  "module.h.tpl"
         - dest_file:  "{{module.module_name|lower}}module.cpp"
           template_file:  "module.cpp.tpl"
+        - dest_file:  "FlagControl.qml"
+          template_file:  "FlagControl.qml.tpl"
+        - dest_file:  "EnumControl.qml"
+          template_file:  "EnumControl.qml.tpl"
     interface_rules:
         - dest_file: '{{interface}}.qml'
           template_file: 'interface.qml.tpl'

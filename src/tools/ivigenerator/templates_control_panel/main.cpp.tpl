@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 
 {% for interface in module.interfaces %}
     {{interface}}::registerQmlTypes(QLatin1String("QtIvi.ControlPanel"), 1, 0,
-                                    QLatin1String("{{interface|qml_type}}Object"));
+                                    QLatin1String("{{interface|qml_type}}"));
 {% endfor %}
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

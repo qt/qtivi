@@ -67,6 +67,7 @@ QT_BEGIN_NAMESPACE
 {% endfor %}
 {
 
+    {{module.module_name}}Module::registerTypes();
 {% set zones = interface.tags.config_simulator.zones if interface.tags.config_simulator else {} %}
 {% for zone_name, zone_id in zones.items() %}
     ZoneBackend {{zone_name}}Zone;

@@ -53,16 +53,15 @@ Flickable {
     ScrollBar.vertical: ScrollBar {}
     contentHeight: layout.childrenRect.height
 
-    {{interface|qml_type}}Object {
+    {{interface|qml_type}} {
         id: {{backend_obj}}
-{% for property in interface.properties %}
-        {{property}}: {{property|lowerfirst}}Control.{{property|qml_binding_property}}
-{% endfor%}
-
     }
+
+    property {{interface|qml_type}} currentZoneObject: {{backend_obj}}.zoneAt[comboZones.displayText]
 
     ColumnLayout {
         id: layout
+        anchors.fill: parent
 {% if interface.tags.config.zoned %}
         RowLayout {
             Text {
@@ -73,12 +72,7 @@ Flickable {
                 id: comboZones
                 editable: true
                 model: {{backend_obj}}.zones
-                onCurrentIndexChanged: {
-                    var newZone = comboZones.textAt(comboZones.currentIndex)
-                    if (newZone !== "") {
-                        {{backend_obj}}.currentZone = newZone
-                    }
-                }
+                currentIndex: {{backend_obj}}.zones.indexOf("MainZone")
             }
             Button {
                 text:"+"
@@ -100,10 +94,25 @@ Flickable {
 {%     for property in interface.properties %}
         RowLayout {
             height: 30
+            Layout.fillWidth: true
             Text {
                 text: "{{property|upperfirst}}: "
             }
-            {{property|qml_control(backend_obj)}}
+
+            Connections {
+                target: {{property|lowerfirst}}Control
+                on{{property|qml_binding_property|upperfirst}}Changed: {
+                    currentZoneObject.{{property}} = {{property|lowerfirst}}Control.{{property|qml_binding_property}}
+                }
+            }
+
+            Binding {
+                target: {{property|lowerfirst}}Control
+                property: "{{property|qml_binding_property}}"
+                value: currentZoneObject.{{property}}
+            }
+
+            {{property|qml_control('currentZoneObject')}}
         }
 {%     endfor %}
 {%     if interface.operations|count %}

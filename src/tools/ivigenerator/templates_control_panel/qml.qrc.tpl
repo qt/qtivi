@@ -40,6 +40,8 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>EnumControl.qml</file>
+        <file>FlagControl.qml</file>
 {% for interface in module.interfaces %}
         <file>{{interface}}.qml</file>
 {% endfor %}

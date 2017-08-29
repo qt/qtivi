@@ -364,8 +364,9 @@ def qml_control_properties(symbol, backend_object):
                 return 'id: {0};  from:-100000; to: {1}; {2}'.format(prop_str, top, binding)
 
         values = domain_values(symbol)
-        if values is None and symbol.type.is_enum:
-            values = symbol.type.reference.members
+        if values is None and (symbol.type.is_enum or symbol.type.is_flag):
+            values_string = ' '.join('ListElement {{ key: "{0}"; value: {1}.{0} }}'.format(e, qml_type(symbol.interface)) for e in symbol.type.reference.members)
+            return 'id: {0}; textRole: "key"; {2} model: ListModel {{ {1} }}'.format(prop_str, values_string, binding)
         if values is not None:
             values_string = ','.join('"'+str(e)+'"' for e in values)
             return 'id: {0}; model: [ {1} ]; '.format(prop_str, values_string)
@@ -400,24 +401,6 @@ def qml_meta_control_name(symbol):
     if values is not None:
         return "ComboBox"
 
-
-def qml_flag_control(symbol):
-    """
-    Returns QML code for creation of group of check-boxes for
-    the flag property
-    """
-    # First try to calculate control name based on the tags
-    result = qml_meta_control_name(symbol)
-    # If nothing is defined, calculate it based on its type
-    if result is None and symbol.type.reference.members:
-        # form a group of checkboxes
-        values = symbol.type.reference.members
-        result = ""
-        for value in values:
-            result+="Text{{ text:'{0}'}} CheckBox {{ id: flag{0}; }}\n".format(value)
-    return result
-
-
 def qml_type_control_name(symbol):
     """
     Returns name of the QML control inferred based on the type of the symbol.
@@ -429,9 +412,11 @@ def qml_type_control_name(symbol):
         return "CheckBox"
     elif t.is_enum:
         if t.reference.is_enum:
-            return "ComboBox"
+            return "EnumControl"
         elif t.reference.is_flag:
-            return qml_flag_control(symbol)
+            return "FlagControl"
+    elif t.is_flag:
+        return "FlagControl"
     return "TextField"
 
 
@@ -454,8 +439,6 @@ def qml_control(symbol, backend_object):
     Returns QML code for the control (or group of controls) to represent the editing UI for the symbol.
     """
 
-    if symbol.type.reference and symbol.type.reference.is_flag:
-        return qml_flag_control(symbol)
     if symbol.type.is_struct:
         return qml_struct_control(symbol)
 
@@ -470,12 +453,12 @@ def qml_binding_property(symbol):
     control_name = qml_control_name(symbol)
     if control_name == "CheckBox":
         return "checked"
-    elif control_name == "Slider" or control_name == "SpinBox":
+    elif control_name == "Slider" or control_name == "SpinBox" or control_name == "FlagControl" or control_name == "EnumControl":
         return "value"
     elif control_name == "TextField":
         return "text"
     elif control_name == "ComboBox":
-        return "currentText"
+        return "currentIndex"
 
 def qml_struct_control(symbol):
     if symbol.type.is_struct and symbol.type.reference.fields:

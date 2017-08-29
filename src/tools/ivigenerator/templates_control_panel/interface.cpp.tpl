@@ -44,7 +44,7 @@
 #include "{{class|lower}}.h"
 
 #include <QQmlEngine>
-
+#include <QDebug>
 
 namespace {
 const QString INITIAL_MAIN_ZONE = "MainZone";
@@ -57,24 +57,27 @@ QT_BEGIN_NAMESPACE
     \inmodule {{module}}
 {{ utils.format_comments(interface.comment) }}
 */
-{{class}}::{{class}}(QObject *parent)
+{{class}}::{{class}}(const QString &zone, QObject *parent)
     : QObject(parent)
-    , m_currentZoneBackend(createZoneBackend())
-    , m_currentZone(INITIAL_MAIN_ZONE)
+    , m_currentZone(zone)
 {
-    m_zones << INITIAL_MAIN_ZONE;
+    if (!zone.isEmpty()) {
+        return;
+    }
+
+    //Add ourself to the available zones to make it available to the UI and still keep the code clean
+    m_zoneHash.insert(INITIAL_MAIN_ZONE, this);
+    m_zoneMap.insert(INITIAL_MAIN_ZONE, QVariant::fromValue(this));
+
     {% set zones = interface.tags.config_simulator.zones if interface.tags.config_simulator else {} %}
     {% for zone_name, zone_id in zones.items() %}
-    m_zones << "{{zone_id}}";
+    addZone("{{zone_id}}");
     {% endfor %}
 }
 
 /*! \internal */
 {{class}}::~{{class}}()
 {
-{% if module.tags.config.disablePrivateIVI %}
-    delete m_helper;
-{% endif %}
 }
 
 /*! \internal */
@@ -89,24 +92,24 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 
 void {{class}}::addZone(const QString &newZone)
 {
-    bool exists = false;
-    for (int i = 0; i < m_zones.count(); ++i) {
-        if (m_zones.at(i).toString() == newZone) {
-            exists = true;
-            break;
-        }
+    if (!m_currentZone.isEmpty()) {
+        qWarning("Adding a new zone is only possible from the root zone.");
+        return;
     }
-    if (!exists) {
-        m_zones.append(newZone);
-        emit zonesChanged();
 
-    }
+    if (m_zoneHash.contains(newZone))
+        return;
+
+    {{class}} *zoneObject = new {{class}}(newZone, this);
+    m_zoneHash.insert(newZone, zoneObject);
+    m_zoneMap.insert(newZone, QVariant::fromValue(zoneObject));
+
+    emit zonesChanged();
 }
 
-
-QVariantList {{class}}::zones() const
+QStringList {{class}}::zones() const
 {
-     return m_zones;
+     return m_zoneMap.keys();
 }
 
 
@@ -115,26 +118,10 @@ QString {{class}}::currentZone() const
     return m_currentZone;
 }
 
-
-void {{class}}::setCurrentZone(const QString &zone)
+QVariantMap {{class}}::zoneAt() const
 {
-    if (zone != m_currentZone) {
-{% if interface_zoned %}
-        m_zoneMap[m_currentZone]=m_currentZoneBackend;
-        m_currentZone = zone;
-        if(m_zoneMap.contains(m_currentZone)) {
-            m_currentZoneBackend = m_zoneMap[m_currentZone];
-        } else {
-            m_currentZoneBackend = createZoneBackend();
-        }
-{% endif %}
-        emit currentZoneChanged();
-{% for property in interface.properties %}
-        emit {{property}}Changed(m_currentZoneBackend.{{property}});
-{% endfor %}
-    }
+    return m_zoneMap;
 }
-
 
 {% for property in interface.properties %}
 
@@ -147,13 +134,15 @@ void {{class}}::setCurrentZone(const QString &zone)
 */
 {{property|return_type}} {{class}}::{{property|getter_name}}() const
 {
-   return m_currentZoneBackend.{{property}};
+   return m_{{property}};
 }
 
 void {{class}}::{{property|setter_name}}({{ property|parameter_type }})
 {
-    m_currentZoneBackend.{{property}} = {{property}};
-    emit {{property}}Changed({{property}});
+   if (m_{{property}} == {{property}})
+       return;
+   m_{{property}} = {{property}};
+   emit {{property}}Changed({{property}});
 }
 
 {% endfor %}
@@ -170,14 +159,4 @@ void {{class}}::{{property|setter_name}}({{ property|parameter_type }})
 
 {% endfor %}
 
-{{class}}::ZoneBackend {{class}}::createZoneBackend() {
-    ZoneBackend zoneBackend;
-{% for property in interface.properties %}
-    zoneBackend.{{property}} = {{property|default_value}};
-{%   endfor %}
-    return zoneBackend;
-}
-
 QT_END_NAMESPACE
-
-#include "moc_{{class|lower}}.cpp"
