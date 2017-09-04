@@ -80,6 +80,7 @@ public:
     static QIviAbstractFeaturePrivate *get(QIviAbstractFeature *q);
 
     virtual void initialize();
+    virtual bool notify(const QByteArray &propertyName, const QVariant &value);
 
     void setDiscoveryResult(QIviAbstractFeature::DiscoveryResult discoveryResult);
     void onInitializationDone();

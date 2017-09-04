@@ -176,6 +176,24 @@ void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_typ
 
 {% endfor %}
 
+{% if not module.tags.config.disablePrivateIVI %}
+bool {{class}}Private::notify(const QByteArray &propertyName, const QVariant &value)
+{
+    auto q = getParent();
+{%   for property in interface.properties %}
+    if (propertyName == QByteArray("{{property}}")) {
+        emit q->{{property}}Changed(value.value<{{property|return_type}}>());
+        return true;
+    }
+{%   endfor %}
+{%   if interface.tags.config.zoned %}
+    return QIviAbstractZonedFeaturePrivate::notify(propertyName, value);
+{%   else %}
+    return QIviAbstractFeaturePrivate::notify(propertyName, value);
+{%   endif %}
+}
+{% endif %}
+
 {% if module.tags.config.disablePrivateIVI %}
 {%   if interface.tags.config.zoned %}
 /*!

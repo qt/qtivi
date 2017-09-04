@@ -71,6 +71,13 @@ void QIviAbstractFeaturePrivate::initialize()
 {
 }
 
+bool QIviAbstractFeaturePrivate::notify(const QByteArray &propertyName, const QVariant &value)
+{
+    Q_UNUSED(propertyName);
+    Q_UNUSED(value);
+    return false;
+}
+
 QIviAbstractFeaturePrivate *QIviAbstractFeaturePrivate::get(QIviAbstractFeature *q)
 {
     return static_cast<QIviAbstractFeaturePrivate *>(q->d_ptr.data());

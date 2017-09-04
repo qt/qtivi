@@ -106,6 +106,8 @@ public:
 {% endfor %}
 
 {% if not module.tags.config.disablePrivateIVI %}
+    bool notify(const QByteArray &propertyName, const QVariant &value) override;
+
     {{class}} * const q_ptr;
 {% endif %}
 {% for property in interface.properties %}
