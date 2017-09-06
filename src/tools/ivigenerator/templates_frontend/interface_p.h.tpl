@@ -104,6 +104,13 @@ public:
     void on{{property|upperfirst}}Changed({{property|parameter_type}});
 {%   endif %}
 {% endfor %}
+{% for signal in interface.signals %}
+{%   if interface.tags.config.zoned %}
+    void on{{signal|upperfirst}}({{signal.parameters|map('parameter_type')|join(', ')}}, const QString &zone);
+{%   else %}
+    void on{{signal|upperfirst}}({{signal.parameters|map('parameter_type')|join(', ')}});
+{%   endif %}
+{% endfor %}
 
 {% if not module.tags.config.disablePrivateIVI %}
     bool notify(const QByteArray &propertyName, const QVariant &value) override;
