@@ -56,29 +56,33 @@ QT_BEGIN_NAMESPACE
 class {{class}}Private;
 class {{class}}BackendInterface;
 
-{% if interface.tags.config.zoned %}
 class {{exportsymbol}} {{class}} : public QObject {
-{% else %}
-class {{exportsymbol}} {{class}} : public QObject {
-{% endif %}
     Q_OBJECT
+{% if interface_zoned %}
     Q_PROPERTY(QString currentZone READ currentZone NOTIFY currentZoneChanged)
     Q_PROPERTY(QStringList zones READ zones NOTIFY zonesChanged)
     Q_PROPERTY(QVariantMap zoneAt READ zoneAt NOTIFY zonesChanged)
+{% endif %}
 {% for property in interface.properties %}
     Q_PROPERTY({{property|return_type}} {{property}} READ {{property|getter_name}} WRITE {{property|setter_name}} NOTIFY {{property}}Changed)
 {% endfor %}
     Q_CLASSINFO("IviPropertyDomains", "{{ interface.properties|json_domain|replace("\"", "\\\"") }}")
 public:
+{% if interface_zoned %}
     explicit {{class}}(const QString &zone = QString(), QObject *parent = nullptr);
+{% else %}
+    explicit {{class}}(QObject *parent = nullptr);
+{% endif %}
     ~{{class}}();
 
     static void registerQmlTypes(const QString& uri, int majorVersion=1, int minorVersion=0, const QString& qmlName = "");
-    Q_INVOKABLE void addZone(const QString& newZone);
 
+{% if interface_zoned %}
+    Q_INVOKABLE void addZone(const QString& newZone);
     QString currentZone() const;
     QStringList zones() const;
     QVariantMap zoneAt() const;
+{% endif %}
 {% for property in interface.properties %}
     {{property|return_type}} {{property|getter_name}}() const;
 {% endfor %}
@@ -92,8 +96,10 @@ public Q_SLOTS:
 {% endfor %}
 
 Q_SIGNALS:
+{% if interface_zoned %}
     void currentZoneChanged();
     void zonesChanged();
+{% endif %}
 {% for signal in interface.signals %}
     void {{signal}}({{signal.parameters|map('parameter_type')|join(', ')}});
 {% endfor %}
@@ -108,9 +114,8 @@ private:
 {% if interface_zoned %}
     QHash<QString,{{class}}*> m_zoneHash;
     QVariantMap m_zoneMap;
-{% endif %}
     QString m_currentZone;
-    //ZoneBackend createZoneBackend();
+{% endif %}
 };
 
 QT_END_NAMESPACE

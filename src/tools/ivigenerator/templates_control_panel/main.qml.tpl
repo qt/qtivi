@@ -69,7 +69,7 @@ ApplicationWindow {
             Layout.fillWidth: true
             currentIndex: bar.currentIndex
             {% for interface in module.interfaces %}
-            {{interface}} {
+            {{interface}}ControlUi {
                 id: {{interface|lowerfirst}}
             }
             {% endfor %}

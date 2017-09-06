@@ -52,11 +52,7 @@ const QString INITIAL_MAIN_ZONE = "MainZone";
 
 QT_BEGIN_NAMESPACE
 
-/*!
-    \class {{interface}}
-    \inmodule {{module}}
-{{ utils.format_comments(interface.comment) }}
-*/
+{% if interface.tags.config.zoned %}
 {{class}}::{{class}}(const QString &zone, QObject *parent)
     : QObject(parent)
     , m_currentZone(zone)
@@ -74,13 +70,17 @@ QT_BEGIN_NAMESPACE
     addZone("{{zone_id}}");
     {% endfor %}
 }
+{% else %}
+{{class}}::{{class}}(QObject *parent)
+    : QObject(parent)
+{
+}
+{% endif %}
 
-/*! \internal */
 {{class}}::~{{class}}()
 {
 }
 
-/*! \internal */
 void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minorVersion, const QString& qmlName)
 {
 {% if 'singleton' in interface.tags %}
@@ -90,6 +90,7 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 {% endif %}
 }
 
+{% if interface.tags.config.zoned %}
 void {{class}}::addZone(const QString &newZone)
 {
     if (!m_currentZone.isEmpty()) {
@@ -122,16 +123,10 @@ QVariantMap {{class}}::zoneAt() const
 {
     return m_zoneMap;
 }
+{% endif %}
 
 {% for property in interface.properties %}
 
-/*!
-    \property {{class}}::{{property}}
-{{ utils.format_comments(property.comment) }}
-{% if property.const %}
-    \note This property is constant and the value will not change once the plugin is initialized.
-{% endif %}
-*/
 {{property|return_type}} {{class}}::{{property|getter_name}}() const
 {
    return m_{{property}};
@@ -148,9 +143,7 @@ void {{class}}::{{property|setter_name}}({{ property|parameter_type }})
 {% endfor %}
 
 {%- for operation in interface.operations %}
-/*!
-{{ utils.format_comments(operation.comment) }}
-*/
+
 {{operation|return_type}} {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){% if operation.const %} const{% endif %}
 
 {

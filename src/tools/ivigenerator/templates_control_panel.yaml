@@ -19,7 +19,7 @@ generate_rules:
         - dest_file:  "EnumControl.qml"
           template_file:  "EnumControl.qml.tpl"
     interface_rules:
-        - dest_file: '{{interface}}.qml'
+        - dest_file: '{{interface}}ControlUi.qml'
           template_file: 'interface.qml.tpl'
         - dest_file: '{{interface|lower}}.cpp'
           template_file: 'interface.cpp.tpl'

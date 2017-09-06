@@ -43,7 +43,7 @@
         <file>EnumControl.qml</file>
         <file>FlagControl.qml</file>
 {% for interface in module.interfaces %}
-        <file>{{interface}}.qml</file>
+        <file>{{interface}}ControlUi.qml</file>
 {% endfor %}
     </qresource>
 </RCC>

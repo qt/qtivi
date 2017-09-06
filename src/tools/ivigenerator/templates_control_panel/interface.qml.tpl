@@ -57,7 +57,9 @@ Flickable {
         id: {{backend_obj}}
     }
 
+{% if interface.tags.config.zoned %}
     property {{interface|qml_type}} currentZoneObject: {{backend_obj}}.zoneAt[comboZones.displayText]
+{% endif %}
 
     ColumnLayout {
         id: layout
@@ -92,6 +94,9 @@ Flickable {
         }
 
 {%     for property in interface.properties %}
+{%     if interface.tags.config.zoned %}
+{%       set backend_obj = 'currentZoneObject' %}
+{%     endif %}
         RowLayout {
             height: 30
             Layout.fillWidth: true
@@ -102,17 +107,17 @@ Flickable {
             Connections {
                 target: {{property|lowerfirst}}Control
                 on{{property|qml_binding_property|upperfirst}}Changed: {
-                    currentZoneObject.{{property}} = {{property|lowerfirst}}Control.{{property|qml_binding_property}}
+                    {{backend_obj}}.{{property}} = {{property|lowerfirst}}Control.{{property|qml_binding_property}}
                 }
             }
 
             Binding {
                 target: {{property|lowerfirst}}Control
                 property: "{{property|qml_binding_property}}"
-                value: currentZoneObject.{{property}}
+                value: {{backend_obj}}.{{property}}
             }
 
-            {{property|qml_control('currentZoneObject')}}
+            {{property|qml_control(backend_obj)}}
         }
 {%     endfor %}
 {%     if interface.operations|count %}
