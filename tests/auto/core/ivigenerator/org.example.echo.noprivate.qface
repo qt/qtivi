@@ -29,6 +29,8 @@ interface Echo {
 
     string echo(string msg);
     string id();
+
+    signal valueChanged(int value);
 }
 
 @config: {"id": "org.foo.idz.1.0", "zoned": true}
@@ -46,4 +48,6 @@ interface EchoZoned {
 
     string echo(string msg);
     string id();
+
+    signal valueChanged(int value);
 }

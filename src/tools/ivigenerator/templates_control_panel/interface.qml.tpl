@@ -165,7 +165,7 @@ Flickable {
                 text: "{{signal}}"
             }
 {%         for param in signal.parameters %}
-            {{param|qml_control}}
+            {{param|qml_control(backend_obj)}}
 {%         endfor  %}
         }
 {%       endfor  %}
