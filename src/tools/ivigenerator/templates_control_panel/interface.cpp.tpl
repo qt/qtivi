@@ -218,6 +218,23 @@ void {{class}}::{{signal}}({{signal.parameters|map('parameter_type')|join(', ')}
 
 {% endfor %}
 
+{% if interface_zoned %}
+{%   for operation in interface.operations %}
+void {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}{%if operation.parameters|count %}, {% endif %}const QString &zone)
+{
+    QString z = zone;
+    if (z.isEmpty())
+        z = INITIAL_MAIN_ZONE;
+
+    if (!m_zoneMap.contains(z)) {
+        return;
+    }
+
+    emit m_zoneHash[z]->{{operation}}({{operation.parameters|join(', ')}});
+}
+{%   endfor %}
+{% endif %}
+
 QSimulatorConnectionWorker *{{class}}::worker()
 {
 {% if interface.tags.config.zoned %}

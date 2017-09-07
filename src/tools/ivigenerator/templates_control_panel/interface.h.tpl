@@ -101,7 +101,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
 {% for operation in interface.operations %}
-    {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){% if operation.const %} const{% endif %};
+    void {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}});
 {% endfor %}
 {% if interface_zoned %}
     void currentZoneChanged();
@@ -111,6 +111,12 @@ Q_SIGNALS:
     void {{property}}Changed({{property|parameter_type}});
 {% endfor %}
 
+private Q_SLOTS:
+{% if interface_zoned %}
+{%   for operation in interface.operations %}
+    void {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}{%if operation.parameters|count %}, {% endif %}const QString &zone);
+{%   endfor %}
+{% endif %}
 private:
     QSimulatorConnectionWorker *worker();
 {%   for property in interface.properties %}

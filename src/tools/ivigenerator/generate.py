@@ -382,6 +382,11 @@ def qml_control_properties(symbol, backend_object):
     if isinstance(symbol, Field):
         return 'id: {1}_{0}'.format(prop_str, lower_first_filter(symbol.struct))
 
+def qml_control_signal_parameters(symbol):
+    """
+    Returns the parameters for calling the signal using the values from the ui controls
+    """
+    return ', '.join('{0}Param{1}Control.{2}'.format(e.operation, lower_first_filter(e), qml_binding_property(e)) for e in symbol.parameters)
 
 def qml_meta_control_name(symbol):
     """
@@ -518,6 +523,7 @@ def generate(tplconfig, moduleConfig, src, dst):
     generator.register_filter('qml_type', qml_type)
     generator.register_filter('qml_control', qml_control)
     generator.register_filter('qml_binding_property', qml_binding_property)
+    generator.register_filter('qml_control_signal_parameters', qml_control_signal_parameters)
 
     srcFile = os.path.basename(src[0])
     srcBase = os.path.splitext(srcFile)[0]

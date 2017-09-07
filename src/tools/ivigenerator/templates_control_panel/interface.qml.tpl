@@ -123,6 +123,7 @@ Flickable {
 {%     if interface.signals|count %}
         ToolSeparator {
             orientation: Qt.Horizontal
+            Layout.fillWidth: true
         }
 
         Text {
@@ -135,6 +136,7 @@ Flickable {
             height: 20
             Button {
                 text: "{{signal}}"
+                onClicked: {{backend_obj}}.{{signal}}({{signal|qml_control_signal_parameters}});
             }
 {%         for param in signal.parameters %}
             Text {
@@ -150,27 +152,33 @@ Flickable {
 
         ToolSeparator {
             orientation: Qt.Horizontal
+            Layout.fillWidth: true
         }
 
         Text {
             text: "Operations"
         }
-{%       for operation in interface.operations %}
-        // Button for operation call
-        RowLayout {
-            spacing: 2
-            height: 20
-            Button {
-                text: "{{operation}}"
-            }
-{%         for param in operation.parameters %}
-            Text {
-                text: "{{param}}"
-            }
-            {{param|qml_control(backend_obj)}}
 
-{%         endfor%}
-       }
+        TextArea {
+            id: operationArea
+            readOnly: true
+            placeholderText: "The called operations will be logged here"
+            Layout.fillWidth: true
+        }
+{%       for operation in interface.operations %}
+{%         if interface.tags.config.zoned %}
+{%           set backend_obj = 'currentZoneObject' %}
+{%         endif %}
+        Connections {
+            target: {{backend_obj}}
+            on{{operation|upperfirst}}: {
+                operationArea.text += "{{operation}}("
+{%         for parameter in operation.parameters %}
+                    + "{{parameter}}: " + {{parameter}}
+{%         endfor %}
+                    + ")\n"
+            }
+        }
 {%       endfor %}
 {%     endif  %}
         Item {

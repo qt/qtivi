@@ -82,6 +82,18 @@ Window {
         }
 {%     endfor %}
 
+{%     for signal in iface.signals %}
+        Connections {
+            target: {{iface|lowerfirst}}
+            on{{signal|upperfirst}}: {
+                print("{{signal}}")
+{%       for parameter in signal.parameters %}
+                print({{parameter}})
+{%       endfor %}
+            }
+        }
+{%     endfor %}
+
 {% endfor %}
     }
 }
