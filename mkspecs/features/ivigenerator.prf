@@ -8,6 +8,7 @@
 #   QFACE_FORMAT = frontend (or backend, simulator... -- defaults to "frontend")
 #   QFACE_OUTPUT_DIR = my_output_dir (defaults to current build dir)
 #
+QT_FOR_CONFIG += ivicore-private
 
 isEmpty(QFACE_FORMAT): QFACE_FORMAT = frontend
 isEmpty(QFACE_OUTPUT_DIR): QFACE_OUTPUT_DIR = $$OUT_PWD
@@ -37,11 +38,11 @@ QTEST_ENVIRONMENT = $$upper($$(QTEST_ENVIRONMENT))
 
 # Try to use the internal virtualenv when building qtivi
 # Because of the two stage build of COIN, it might not exist, but the installed version should still be there
-!isEmpty(QTIVI_BUILD_ROOT):!equals(QTEST_ENVIRONMENT, CI) {
+!isEmpty(QTIVI_BUILD_ROOT):!equals(QTEST_ENVIRONMENT, CI):!qtConfig(system-ivigenerator) {
     VIRTUALENV_PATH = $$INTERNAL_VIRTUALENV_PATH
 }
 
-!isEmpty(QTIVI_BUILD_ROOT):!equals(QTEST_ENVIRONMENT, CI) {
+!isEmpty(QTIVI_BUILD_ROOT):!equals(QTEST_ENVIRONMENT, CI):!qtConfig(system-ivigenerator) {
     IVI_GENERATOR_PATH = $$QTIVI_ROOT/src/tools/ivigenerator
 }
 
