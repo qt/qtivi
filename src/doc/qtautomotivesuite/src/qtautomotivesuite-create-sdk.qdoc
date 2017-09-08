@@ -1,0 +1,167 @@
+/****************************************************************************
+**
+** Copyright (C) 2018 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the documentation of the Qt Automotive Suite.
+**
+** $QT_BEGIN_LICENSE:FDL-QTAS$
+** Commercial License Usage
+** Licensees holding valid commercial Qt Automotive Suite licenses may use
+** this file in accordance with the commercial license agreement provided
+** with the Software or, alternatively, in accordance with the terms
+** contained in a written agreement between you and The Qt Company.  For
+** licensing terms and conditions see https://www.qt.io/terms-conditions.
+** For further information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+/*!
+    \page qtas-sdk-creation.html
+    \title Creating Qt SDK
+    \nextpage qtas-sdk-prerequisities.html
+
+    Typically, some parts of system functionality are delivered by second
+    and third parties. Also, third parties may want to develop applications
+    specifically for your platform. With \QAS and the included Qt tools, you can build
+    a redistributable Qt online or offline software development kit (SDK) that contains your
+    specific UI assets, middleware components, and the Qt tools. Third parties
+    can use the SDK to build and test their applications.
+
+    In this topic, we focus on different aspects of online SDK. We describe
+    general workflow of creating online SDK with Qt tools and provide
+    common guidelines and best practices that facilitate your daily work with SDK.
+    We use Qt online installer and its build scripts as a concrete example of the
+    online SDK repository structure and the build process. In case of an offline SDK,
+    we refer to the \l{Qt Installer Framework} manual and its information about
+    creating installers.
+
+    \section1 Online SDK Structure
+
+    Qt online SDK consists of installers, servers, online repositories, and
+    a maintenance tool.
+
+    \image ifw-overview.png
+
+    For the end user, the online SDK provides the following high level use cases:
+
+    \list
+        \li With the online installer, you can install software components
+        from online repositories to your local host.
+        \li When you do your first installation via the online installer, a
+        maintenance tool is automatically installed to your local host.
+        \li With the maintenance tool, you can add new components to your
+        installation. For the installed components on your local host, you get
+        updates via the maintenance tool.
+    \endlist
+
+    In general, the maintainer of the online SDK must take care of the following
+    issues:
+
+    \list 1
+        \li Building the content that is provided to end users via
+        online repositories. For example, the Qt modules and the Qt tools like Qt Creator.
+        \li Planning a repository structure for the content.
+        \note It is essential that the maintenance tool has its own component in
+        the repository. Otherwise, it is not possible to update the maintenance
+        tool itself and it does not get new updates from the online repositories.
+        \li Building the Qt Installer Framework.
+        \li Building an online installer.
+        \li Building online repositories for the content and the maintenance tool.
+    \endlist
+
+    You can create the online SDK by using the tools provided by
+    Qt Installer Framework (IFW). See \l{Qt Installer Framework Overview} for
+    general information about the online and offline installers, the maintenance tool,
+    and working with the repositories.
+
+    \section1 Guidelines and Best Practices
+
+    You can create an SDK as instructed in the \l {Qt Installer Framework} manual.
+    Alternatively, there are scripts available in the
+    \l{Qt SDK Git Repository}{Qt SDK Git repository} that help you to automate
+    the SDK creation. The following topics go through the phases in the SDK creation
+    introducing both ways of working. The Qt release is used as an example
+    of creating the SDK with scripts:
+
+    \list 1
+        \li \l{Prerequisities}
+        \li \l{Online SDK Workflow}
+        \li Online Repositories
+        \list 1
+            \li \l{Planning Repository Structure}
+            \li \l{Working with Online Repositories}
+            \li \l{Troubleshooting and Best Practices}
+        \endlist
+    \endlist
+*/
+
+/*!
+    \page qtas-sdk-prerequisities.html
+    \title Prerequisities
+    \previouspage qtas-sdk-creation.html
+    \nextpage qtas-sdk-workflow.html
+
+    Before you create an SDK, you must have the appropriate tools and other
+    dependencies installed. If you use the scripts in the
+    \l{Qt SDK Git Repository}{Qt SDK Git} repository for creating the SDK,
+    install the following tools and Git repositories:
+
+    \table
+    \header
+        \li Requirement
+        \li Description
+    \row
+        \li Qt SDK Git Repository
+        \li Clone the \l{Qt SDK Git Repository}{Qt SDK Git} repository.
+        The repository contains all the scripts required for creating an SDK.
+    \row
+        \li Python 2.7
+        \li The scripts in Qt SDK Git repository have been written with Python.
+        For more information, see \l{Python 2.7}.
+    \row
+        \li 7-Zip
+        \li A compression format that is used by the scripts in
+        \l{Qt SDK Git Repository}{Qt SDK Git}. You must add 7-Zip to
+        the PATH environment variable. For more information, see \l{7-Zip}.
+    \row
+        \li Direct SSH access
+        \li If you use a network storage for backing up the built content, you
+        must enable direct SSH access for the network storage.
+    \endtable
+
+    \section1 Build Scripts in Qt SDK Git Repository
+
+    After you have cloned the \l{Qt SDK Git Repository}{Qt SDK Git} repository,
+    you find the following files under the path <qtsdk directory>/packaging-tools:
+
+    \table
+    \header
+        \li File Name
+        \li Description
+    \row
+        \li \l{http://code.qt.io/cgit/qtsdk/qtsdk.git/tree/packaging-tools/bld_ifw_tools.py} {bld_ifw_tools.py}
+        \li Builds static IFW libraries and tools.
+    \row
+        \li \l{http://code.qt.io/cgit/qtsdk/qtsdk.git/tree/packaging-tools/create_installer.py} {create_installer.py}
+        \li Creates offline installers, online installers, and online
+        repositories. The script depends on the libraries and the tools created
+        by \e{bld_ifw_tools.py}.
+    \endtable
+
+    \note You can get more information about the tools by using the command line
+    arguments \c{--help} or \c{/?}. For example, you can use \c{--help} as follows:
+
+    \badcode
+    python create_installer.py --help
+    \endcode
+*/
+

@@ -1,0 +1,215 @@
+/****************************************************************************
+**
+** Copyright (C) 2018 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the documentation of the Qt Automotive Suite.
+**
+** $QT_BEGIN_LICENSE:FDL-QTAS$
+** Commercial License Usage
+** Licensees holding valid commercial Qt Automotive Suite licenses may use
+** this file in accordance with the commercial license agreement provided
+** with the Software or, alternatively, in accordance with the terms
+** contained in a written agreement between you and The Qt Company.  For
+** licensing terms and conditions see https://www.qt.io/terms-conditions.
+** For further information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \page qtas-sdk-workflow.html
+    \title Online SDK Workflow
+    \previouspage qtas-sdk-prerequisities.html
+    \nextpage qtas-sdk-repository-structure.html
+
+    \section1 Building Content for SDK
+
+    The installable content in your online SDK can contain any kind of applications
+    and tools. What ever your content is, it is important that you build the
+    content before building the online repositories for the content.
+
+    The following topics instruct how you can build the Qt related content:
+
+    \list
+        \li \l{Building Qt 5 from Git} instructs how to build Qt from sources.
+        \li \l{Building Qt Creator from Git} instructs how to build
+        Qt Creator from sources.
+    \endlist
+
+    \section1 Working with Online SDK
+
+    After you have the content available, you can publish your content to the
+    web server. The following picture illustrates the required steps in a high level:
+
+    \image qtas_sdk.png
+
+    The following topics describe how you can build the Qt Installer Framework,
+    the online installer, and repositories with scripts that are available in
+    the \l{Qt SDK Git Repository}{Qt SDK Git repository}. You must clone the
+    repository before you can use the scripts.
+
+    \section1 Building Qt Installer Framework
+
+    You can build the Qt Installer Framework with \l{Build Installer Framework Tools Script}
+    by running the following command in a terminal:
+
+    \badcode
+        python bld_ifw_tools.py --qt_archive_uri=<path of <Qt source package>.tar.gz> --ifw_uri=<Qt Installer Framework source path>
+    \endcode
+
+    \e{--qt_archive_uri} defines a path of Qt sources that are used in the Qt
+    Installer Framework build. The Qt sources must be available as a \e{.tar.gz} package.
+
+    \e{--ifw_uri} defines a path of Qt Installer Framework sources. The path
+    can be a Git repository address or a path of a \e{.tar.gz} source package.
+
+    If you clone the Qt Installer Framework sources via Git, you need add
+    the related branch as follows:
+
+    \badcode
+        python bld_ifw_tools.py --qt_archive_uri=<path of <Qt source package>.tar.gz> --ifw_uri=<Qt Installer Framework source path> --ifw_branch=<branch> --openssl_dir =<OpenSSL path in your system>
+    \endcode
+
+    \e{--ifw_branch} defines the Git branch of Qt Installer Framework.
+
+    \section2 Build Outputs
+
+    A successful Qt Installer Framework build generates target platform
+    specific .7z files that you need to copy to your local network drive under some
+    base directory (1). For example, Qt Installer Framework build may generate the
+    following files for Linux:
+
+    \table
+    \header
+        \li Generated IFW file
+        \li Path where to copy the file in a local server
+    \row
+        \li installer-framework-linux.7z
+        \li http://my.local.server/base_directory/tools/ifw/
+    \row
+        \li installerbase-linux-x64.7z
+        \li http://my.local.server/base_directory/tools/ifw/
+    \endtable
+
+    \section1 Building Online Installer
+
+    As mentioned in \l{Creating Installers}, you need to have a configuration file
+    called \e{config.xml} that contains information about how to build the
+    online installer binaries and the repositories. See
+    \l{http://code.qt.io/cgit/qtsdk/qtsdk.git/tree/packaging-tools/configurations/linux/config.xml.template.linux-x64.qt5-sdk}
+    for an example of the config.xml in the Qt release.
+    You should note that the <Url> element in the config.xml must contain a URL
+    that points to a server that is used in your SDK environment.
+
+    You can use \l{Create Installer Script} for building the online installer.
+    You should note that the script uses the Qt Installer Framework that you
+    have built and copied under some base directory on your local network drive (1).
+    The script has the following command line arguments:
+
+    \table
+    \header
+        \li A command line argument
+        \li Description
+    \row
+        \li --online
+        \li An online installer is created.
+    \row
+        \li -c
+        \li A directory of the installer configurations. For example,
+        \l{http://code.qt.io/cgit/qtsdk/qtsdk.git/tree/packaging-tools/configurations}.
+    \row
+        \li -f
+        \li A path of the installer configuration file. For example,
+        \l{http://code.qt.io/cgit/qtsdk/qtsdk.git/tree/packaging-tools/configurations/online_installer_jobs/opensource/linux_x64_online}.
+    \row
+        \li --ifw-tools
+        \li A path of the prebuilt Qt Installer Framework tools (.7z).
+        See \l{Building Qt Installer Framework}.
+    \row
+        \li -u
+        \li A server URL of the archives (.7z).
+    \row
+        \li --preferred-installer-name
+        \li A full installer name. The name includes a file extension (.run, .exe, .app).
+    \row
+        \li --create-repo
+        \li Creates a new repository.
+    \endtable
+
+    The following code provides an example of how to use \e{create_installer.py}
+    for building an online installer:
+
+    \badcode
+        python create_installer.py --online
+            -c=/user/builder/myinstaller_configs
+            -f=/user/builder/myinstaller_configs/online_installer_main_conf_file
+        --ifw-tools=http://my.local.server/base_directory/tools/ifw/installer-framework-linux.7z
+            -u http://my.local.server/some/basedir
+        --preferred-installer-name=myinstallername
+    \endcode
+
+    \section1 Building Online Repository
+
+    With \l{Create Installer Script}, you can also build the online repositories.
+    See \l{Building Online Installer} for information about the command line arguments.
+    The following code provides an example of how to use \e{create_installer.py}
+    for creating a new repository:
+
+    \badcode
+        python create_installer.py --create-repo
+            -c=/user/builder/myinstaller_configs
+            -f=/user/builder/myinstaller_configs/online_installer_main_conf_file
+        --ifw-tools=http://my.local.server/some/basedir/tools/ifw/installer-framework-linux.7z
+            -u http://my.local.server/some/basedir
+    \endcode
+
+    As an output, a new repository is created under a directory called
+    \e{/repository}. For example, the repository content can be as follows:
+
+    \badcode
+    repository/qt.595.gcc_64/<version>meta.7z
+    repository/qt.595.src/<version>meta.7z
+    repository/qt.595.doc/<version>meta.7z
+    repository/qt.595.examples/<version>meta.7z
+    \endcode
+
+    The \e{<version>} (2) is defined in the component's \e{package.xml} file
+    (see \l{Package Directory}).
+
+    \section1 Updating Content to Web Server
+
+    Before you update the existing repositories in the web server, you must
+    ensure that you have updated the version number (2) in the component's
+    \e{package.xml} file (see \l{Package Directory}). This version number is
+    used in the generated file name of the .7z content file. For example, see the <Version> element in
+    \l{http://code.qt.io/cgit/qtsdk/qtsdk.git/tree/packaging-tools/configurations/pkg_templates/pkg_593/qt.593.gcc_64/meta/package.xml}.
+
+    In case you do not remember to update the version numbers, the online installer
+    gives a checksum failure error for the end user during the installation.
+
+    Updating the content to the online server has the following steps:
+
+    \list 1
+        \li Update the new content to the web server. Note that the version number
+        of the content differs from the version of old content. Thus both the
+        old and the new content can exist at the same time in the server.
+        \li Wait until all the new content has been synchronized to the online server.
+        \li Make new repositories available to end users by overwriting
+        the \e{Updates.xml} file in the root of the repository directory. All the
+        new content should nwo be available in the server as Updates.xml directly
+        refers to it.
+        \li Wait for example one day and delete the old content (.7z files) from
+        the online server.
+    \endlist
+
+*/
+
