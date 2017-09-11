@@ -9,17 +9,22 @@ QT_FOR_CONFIG += geniviextras-private ivicore ivicore-private
 !qtConfig(host-tools-only) {
     !qtConfig(geniviextras-only) {
         SUBDIRS = ivicore \
-                  ivivehiclefunctions \
                   ivimedia \
                   plugins \
                   imports \
-                  doc \
+                  doc
 
-        ivivehiclefunctions.depends = ivicore
-        !qtConfig(system-ivigenerator): ivivehiclefunctions.depends += sub-ivigenerator
+        qtConfig(ivigenerator): {
+            SUBDIRS += ivivehiclefunctions
+            ivivehiclefunctions.depends = ivicore
+            !qtConfig(system-ivigenerator): ivivehiclefunctions.depends += sub-ivigenerator
+            plugins.depends += ivivehiclefunctions
+            imports.depends += ivivehiclefunctions
+        }
+
         ivimedia.depends = ivicore
-        plugins.depends = ivivehiclefunctions ivimedia
-        imports.depends = ivivehiclefunctions ivimedia
+        plugins.depends += ivimedia
+        imports.depends += ivimedia
     }
 
     qtConfig(dlt): SUBDIRS += geniviextras

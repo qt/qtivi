@@ -1,9 +1,5 @@
 TARGET = vehiclefunction_simulator
 
-PLUGIN_TYPE = qtivi
-PLUGIN_EXTENDS = qtivi
-PLUGIN_CLASS_NAME = QIviClimateControlBackendInterface
-
 QT += core ivicore ivivehiclefunctions
 CONFIG += c++11 ivigenerator
 
@@ -23,5 +19,9 @@ HEADERS += \
 OTHER_FILES += \
     $$PWD/doc/*.qdocconf \
     $$PWD/doc/src/*.qdoc
+
+PLUGIN_TYPE = qtivi
+PLUGIN_EXTENDS = qtivi
+PLUGIN_CLASS_NAME = QIviClimateControlBackendInterface
 
 load(qt_plugin)
