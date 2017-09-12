@@ -1,4 +1,4 @@
-requires(!android)
+requires(!android:!macos)
 
 enable-examples {
     QTIVI_BUILD_PARTS = $$QT_BUILD_PARTS
