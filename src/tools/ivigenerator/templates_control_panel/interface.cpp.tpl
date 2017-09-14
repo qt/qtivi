@@ -68,7 +68,12 @@ QT_BEGIN_NAMESPACE
 
     {% set zones = interface.tags.config_simulator.zones if interface.tags.config_simulator else {} %}
     {% for zone_name, zone_id in zones.items() %}
-    addZone("{{zone_id}}");
+    addZone(QLatin1String("{{zone_id}}"));
+    {%   for property in interface.properties %}
+    {%     if property.tags.config_simulator and property.tags.config_simulator.zoned %}
+    m_zoneHash[QLatin1String("{{zone_id}}")]->m_{{property}} = {{property|default_value(zone_name)}};
+    {%     endif %}
+    {%   endfor %}
     {% endfor %}
 {% else %}
 {{class}}::{{class}}(QObject *parent)
