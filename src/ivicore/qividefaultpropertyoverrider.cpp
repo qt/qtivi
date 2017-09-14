@@ -45,6 +45,10 @@
 #include "qiviabstractfeature_p.h"
 #include "qividefaultpropertyoverrider_p.h"
 
+#include <QDebug>
+#include <QJsonDocument>
+#include <QJsonArray>
+
 QT_BEGIN_NAMESPACE
 
 QIviDefaultPropertyOverrider::PropertyOverride::PropertyOverride()

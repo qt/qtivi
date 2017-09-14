@@ -55,6 +55,7 @@
 
 #include <private/qtiviglobal_p.h>
 #include <vector>
+#include <QMetaProperty>
 
 #include "qiviabstractfeature_p.h"
 
