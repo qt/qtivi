@@ -108,7 +108,7 @@ signals:
 
 protected:
 
-    class PropertyOverride
+    class Q_QTIVICORE_EXPORT PropertyOverride
     {
         friend class QIviDefaultPropertyOverrider;
 
