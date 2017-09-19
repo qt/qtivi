@@ -1,5 +1,7 @@
 TEMPLATE = aux
 
+QT_FOR_CONFIG += ivicore
+
 !contains(CONFIG, no_internal_qface): include(qface_internal_build.pri)
 
 # Make sure to only build this once in a debug_and_release config
@@ -71,13 +73,19 @@ templates_control_panel.path = $$[QT_HOST_BINS]/ivigenerator/templates_control_p
 
 generator.files += \
     generate.py \
+    $$OUT_PWD/.config \
     templates_frontend.yaml \
     templates_backend_simulator.yaml \
     templates_generation_validator.yaml \
-    templates_control_panel.yaml
+
 generator.path = $$[QT_HOST_BINS]/ivigenerator
 
-INSTALLS += templates_frontend templates_backend_simulator templates_generation_validator templates_control_panel generator
+qtConfig(simulator) {
+    generator.files += templates_control_panel.yaml
+    INSTALLS += templates_control_panel
+}
+
+INSTALLS += templates_frontend templates_backend_simulator templates_generation_validator generator
 
 # Ensure files are installed to qtbase for non-prefixed builds
 !force_independent:if(!debug_and_release|!build_all|CONFIG(release, debug|release)) {
@@ -93,3 +101,21 @@ INSTALLS += templates_frontend templates_backend_simulator templates_generation_
         QMAKE_EXTRA_COMPILERS += $${install_target}_copy
     }
 }
+
+defineTest(createConfig) {
+    write_file($$OUT_PWD/.config, $$list("---"))
+    for(var, ARGS) {
+        isEmpty($$var):out = "$$var: ~"
+        else:count($$var, 1):out = "$$var: \"$$first($$var)\""
+        else {
+            out = "$$var:"
+            for(val, $$var):out += "  - \"$$val\""
+            out=$$join(out, "$$escape_expand(\\n)")
+        }
+        write_file($$OUT_PWD/.config, out, append)
+    }
+}
+
+VERSION = $$MODULE_VERSION
+FEATURES = $${QT.ivicore.enabled_features}
+createConfig(VERSION, FEATURES)

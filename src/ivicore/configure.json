@@ -55,6 +55,11 @@
             "label": "Only build the host tools",
             "condition": "input.host-tools-only == 'yes'",
             "output": [ "privateFeature" ]
+        },
+        "simulator": {
+            "label": "QtSimulator Support",
+            "condition": "module.simulator",
+            "output": [ "publicFeature" ]
         }
      },
 
@@ -65,6 +70,12 @@
             "message": "Cannot build the IVI Generator because its dependencies are not satisfied.
 The IVI Generator provides tooling to generate source code out of IDL files.
 Make sure that python3 and its 'virtualenv' packages are installed."
+        },
+        {
+            "type": "warning",
+            "condition": "!features.simulator",
+            "message": "Cannot enable the QtSimulator Support because the QtSimulator module is not installed.
+The QtSimulator Support is needed for the communication between the simulation backends and its control panel(controller)."
         }
     ],
 
@@ -81,7 +92,8 @@ Make sure that python3 and its 'virtualenv' packages are installed."
                         "python3-virtualenv"
                     ]
                },
-               "ivigenerator"
+               "ivigenerator",
+               "simulator"
             ]
         }
     ]

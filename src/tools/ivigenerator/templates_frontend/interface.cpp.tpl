@@ -175,6 +175,28 @@ void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_typ
 {%   endif %}
 
 {% endfor %}
+{% for signal in interface.signals %}
+/*! \internal */
+{%   if interface.tags.config.zoned %}
+void {{class}}Private::on{{signal|upperfirst}}({{signal.parameters|map('parameter_type')|join(', ')}}, const QString &zone)
+{
+    auto q = getParent();
+    auto f = qobject_cast<{{class}}*>(q->zoneAt(zone));
+    if (!f)
+        f = q;
+    if (f->zone() != zone)
+        return;
+    emit f->{{signal}}({{signal.parameters|join(', ')}});
+}
+{%   else %}
+void {{class}}Private::on{{signal|upperfirst}}({{signal.parameters|map('parameter_type')|join(', ')}})
+{
+    auto q = getParent();
+    emit q->{{signal}}({{signal.parameters|join(', ')}});
+}
+{%   endif %}
+
+{% endfor %}
 
 {% if not module.tags.config.disablePrivateIVI %}
 bool {{class}}Private::notify(const QByteArray &propertyName, const QVariant &value)
@@ -363,6 +385,12 @@ void {{class}}::connectToServiceObject(QIviServiceObject *serviceObject)
 {% else %}{% set Connect = 'QObjectPrivate::connect' %}{% endif %}
     {{Connect}}(backend, &{{class}}BackendInterface::{{property}}Changed,
         d, &{{class}}Private::on{{property|upperfirst}}Changed);
+{% endfor %}
+{% for signal in interface.signals %}
+{% if module.tags.config.disablePrivateIVI %}{% set Connect = 'QObject::connect' %}
+{% else %}{% set Connect = 'QObjectPrivate::connect' %}{% endif %}
+    {{Connect}}(backend, &{{class}}BackendInterface::{{signal}},
+        d, &{{class}}Private::on{{signal|upperfirst}});
 {% endfor %}
 
     backend->initialize();

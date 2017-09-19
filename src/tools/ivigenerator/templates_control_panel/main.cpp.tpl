@@ -42,6 +42,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
+#include "{{module.module_name|lower}}module.h"
 {% for iface in module.interfaces %}
 #include "{{iface|lower}}.h"
 {% endfor %}
@@ -51,6 +52,7 @@ int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
+    {{module.module_name}}Module::registerTypes();
 {% for interface in module.interfaces %}
     {{interface}}::registerQmlTypes(QLatin1String("QtIvi.ControlPanel"), 1, 0,
                                     QLatin1String("{{interface|qml_type}}"));

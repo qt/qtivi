@@ -49,6 +49,7 @@
 #include <QObject>
 
 QT_BEGIN_NAMESPACE
+class QSimulatorServer;
 
 class {{exportsymbol}} {{class}} : public QObject {
     Q_OBJECT
@@ -72,7 +73,14 @@ public:
 
     static void registerTypes();
     static void registerQmlTypes(const QString& uri, int majorVersion = 1, int minorVersion = 0);
+
+    static QSimulatorServer *simulationServer();
 };
+
+{% for enum in module.enums %}
+QDataStream &operator<<(QDataStream &out, {{class}}::{{enum|flag_type}} var);
+QDataStream &operator>>(QDataStream &in, {{class}}::{{enum|flag_type}} &var);
+{% endfor %}
 
 QT_END_NAMESPACE
 

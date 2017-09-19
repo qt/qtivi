@@ -51,6 +51,10 @@
 
 #include <QDebug>
 
+{% if 'simulator' in features %}
+#include <QtSimulator>
+{% endif %}
+
 QT_BEGIN_NAMESPACE
 
 /*!
@@ -65,6 +69,9 @@ QT_BEGIN_NAMESPACE
     , m_{{ property }}({{property|default_value}})
 {%   endif %}
 {% endfor %}
+{% if 'simulator' in features %}
+    , mWorker(nullptr)
+{% endif %}
 {
 
     {{module.module_name}}Module::registerTypes();
@@ -77,7 +84,6 @@ QT_BEGIN_NAMESPACE
 {%     endif %}
 {%   endfor %}
     m_zoneMap.insert("{{zone_id}}", {{zone_name}}Zone);
-
 {% endfor %}
 }
 
@@ -133,6 +139,21 @@ void {{class}}::initialize()
 {%   endfor %}
     }
 {% endif %}
+
+{% if 'simulator' in features %}
+    qDebug() << "CONNECTING";
+    mConnection = new QSimulatorConnection("{{interface}}", QVersionNumber(1, 0, 0));
+    mConnection->addPeerInfo("versionInfo", "1.0.0");
+    mConnection->addPeerInfo("name", "{{class}}");
+    QString hostname = QSimulatorConnection::simulatorHostName(false);
+    if (hostname.isEmpty())
+        hostname = QLatin1String("localhost");
+    mWorker = mConnection->connectToHost(hostname, 0xbeef+3);
+    if (!mWorker)
+        return;
+
+    mWorker->addReceiver(this);
+{% endif %}
 }
 
 {% for property in interface.properties %}
@@ -169,6 +190,10 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
     m_zoneMap[zone].{{property}} = {{property}};
     emit {{ property }}Changed({{property}}, zone);
 
+{%       if 'simulator' in features %}
+    if (mWorker)
+        mWorker->call("{{property|setter_name}}", {{property}}, zone);
+{%       endif %}
 {%     else %}
     if ({% if interface_zoned %}!zone.isEmpty() || {%endif%}m_{{ property }} == {{property}})
         return;
@@ -177,6 +202,10 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 
     m_{{property}} = {{property}};
     emit {{property}}Changed(m_{{property}}{% if interface_zoned%}, QString(){% endif %});
+{%       if 'simulator' in features %}
+    if (mWorker)
+        mWorker->call("{{property|setter_name}}", {{property}}{% if interface_zoned%}, QString(){% endif %});
+{%       endif %}
 {%     endif %}
 {%   endif %}
 }
@@ -206,6 +235,19 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {% if interface_zoned %}
     Q_UNUSED(zone);
 {% endif %}
+{%   set function_parameters = operation.parameters|join(', ') %}
+{%   if interface_zoned %}
+{%     if operation.parameters|length %}
+{%       set function_parameters = function_parameters + ', ' %}
+{%     endif %}
+{%     set function_parameters = function_parameters + 'zone' %}
+{%   endif%}
+
+{% if 'simulator' in features %}
+    if (mWorker)
+        mWorker->call("{{operation}}" {% if function_parameters is not equalto "" %}, {{function_parameters}} {% endif %});
+{% endif %}
+
     qWarning() << "Not implemented!";
     return {{operation|default_value}};
 }
