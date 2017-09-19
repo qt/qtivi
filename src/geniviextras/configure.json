@@ -18,7 +18,7 @@
             ]
         },
         "dlt_2_12": {
-            "label": "DLT > 2.12",
+            "label": "DLT >= 2.12",
             "test": "dlt",
             "sources": [
                 { "type": "pkgConfig", "args": "automotive-dlt >= 2.12.0" },
