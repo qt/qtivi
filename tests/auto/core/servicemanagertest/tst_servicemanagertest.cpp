@@ -261,7 +261,7 @@ void ServiceManagerTest::pluginLoaderTest()
     QList<QIviServiceObject *> services = manager->findServiceByInterface("simple_plugin");
     QCOMPARE(services.count(), 1);
     //Because we unloaded the backend and created a new instance of it we expect to get a different id for the ServiceObject as in initTestCase()
-    QCOMPARE(m_simplePluginID, services.at(0)->id());
+    QVERIFY(m_simplePluginID != services.at(0)->id());
 
 
     QVERIFY(manager->hasInterface("wrong_plugin"));
