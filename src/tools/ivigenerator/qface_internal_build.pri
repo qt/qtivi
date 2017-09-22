@@ -83,3 +83,10 @@ osx {
     virtualenv-python.CONFIG = no_check_exist
     INSTALLS += virtualenv-python
 }
+
+# Create the ivigenerator when the prepare_docs target is run, to generate the code
+# and have it ready when qdoc parses it for the documentation
+prepare_docs {
+    prepare_docs.depends += $${deploy_virtualenv.target}
+    QMAKE_EXTRA_TARGETS += prepare_docs
+}
