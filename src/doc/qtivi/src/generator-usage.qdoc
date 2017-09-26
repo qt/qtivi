@@ -26,23 +26,23 @@
 ****************************************************************************/
 /*!
 \page generator-usage.html
-\title AutoGenerator usage
+\title Autogenerator usage
 \previouspage Jinja template syntax
-\nextpage Qmake integration
+\nextpage Qmake Integration
 
 This page is about the usage of the QtIVI auto-generator.
 
 \section1 Introduction
 
-The Generator is a Python script that can be run manually or using the qmake integration (see \l
-{Qmakeintegration}). This script uses QFace as the autogenerator framework which parses the IDL
+The Generator is a Python script that can be run manually or using the \l {QMake Integration}.
+This script uses QFace as the autogenerator framework which parses the IDL
 file, generates the domain-model (similar to AST) and then feeds it to the actual generator.
 Depending on the type of the generated project, different \e{formats} are specified.
 
 \section1 Command line parameters
 The generation is run using the following command:
 \code
-$$[QT_HOST_BINS]/ivigenerator/generate.py interface.qface out_dir --format=backend_simulator
+$$[QT_HOST_BINS]/ivigenerator/generate.py --format=backend_simulator interface.qface out_dir
 \endcode
 
 The options and parameters are:
@@ -152,8 +152,8 @@ For QtIvi there are following annotations used for the IDL definition:
         \li Main IDL file
         \li Module
         \li Declares a function which will be called in the plugin to generate the instances for every interface.
-        The function takes a pointer to the plugin instance and returns a \code {QVector<QIviFeatureInterface *>}.
-        Interfaces should be generated in the same order as defined by \code {Plugin::interfaces()}.
+        The function takes a pointer to the plugin instance and returns a \c {QVector<QIviFeatureInterface *>}.
+        Interfaces should be generated in the same order as defined by \c {Plugin::interfaces()}.
 
         This can be used to instanciate classes derived from the generated plugin interfaces classes.
     \row

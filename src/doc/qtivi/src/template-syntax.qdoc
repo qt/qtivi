@@ -32,7 +32,7 @@
 \page template-syntax.html
 \title Jinja template syntax
 \previouspage QFace IDL syntax
-\nextpage AutoGenerator usage
+\nextpage Autogenerator usage
 
 This page is about the Jinja template engine. While the most detailed description of the template
 language can be found at \l {http://jinja.pocoo.org/docs/dev/templates/}{Jinja documentation},
