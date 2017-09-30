@@ -62,7 +62,8 @@ IVI_GENERATOR_OPTIONS = --format=$$QFACE_FORMAT
 !isEmpty(QFACE_MODULE_NAME): IVI_GENERATOR_OPTIONS += --module=$$QFACE_MODULE
 
 qface_sources.target = $$relative_path($$PRI, $$OUT_PWD)
-qface_sources.commands = $$ENV $$shell_path($$IVI_GENERATOR) $$IVI_GENERATOR_OPTIONS $$shell_path($$QFACE_ABS_PWD/$${QFACE_FILE}) $$shell_path($$QFACE_OUTPUT_DIR)
+macos: qface_sources.commands = sleep 1 && $$ENV $$shell_path($$IVI_GENERATOR) $$IVI_GENERATOR_OPTIONS $$shell_path($$QFACE_ABS_PWD/$${QFACE_FILE}) $$shell_path($$QFACE_OUTPUT_DIR)
+else: qface_sources.commands = $$ENV $$shell_path($$IVI_GENERATOR) $$IVI_GENERATOR_OPTIONS $$shell_path($$QFACE_ABS_PWD/$${QFACE_FILE}) $$shell_path($$QFACE_OUTPUT_DIR)
 qface_sources.depends = $$IVI_GENERATOR_PATH/generate.py
 
 # Add all templates of the generator format as dependency
