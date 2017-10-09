@@ -19,7 +19,7 @@ isEmpty(QFACE_SOURCES): error("QFACE_SOURCES must be set!")
 }
 
 # See the win32 section, why this is needed
-win32:!contains(CONFIG, debug_and_release) {
+equals(QMAKE_HOST.os, Windows):!contains(CONFIG, debug_and_release) {
     error("The ivigenerator works only in the debug_and_release configuration on windows")
 }
 
@@ -31,7 +31,7 @@ QFACE_YAML = $$QFACE_ABS_PWD/$${QFACE_BASE_NAME}.yaml
 OTHER_FILES += $$QFACE_FILE
 
 # The 'click' library used by the generator needs to have a utf8 locale setup.
-win32: ENV = chcp 65001 &&
+equals(QMAKE_HOST.os, Windows): ENV = chcp 65001 &&
 else: ENV = LC_ALL="en_US.UTF-8"
 
 # Detect whether we are using the feature inside the qtivi repository
@@ -45,11 +45,11 @@ QTEST_ENVIRONMENT = $$upper($$(QTEST_ENVIRONMENT))
 !isEmpty(QTIVI_BUILD_ROOT):!equals(QTEST_ENVIRONMENT, CI):!qtConfig(system-ivigenerator) {
     VIRTUALENV_PATH = $$INTERNAL_VIRTUALENV_PATH
     IVI_GENERATOR_PATH = $$QTIVI_ROOT/src/tools/ivigenerator
-    win32: ENV += set IVIGENERATOR_CONFIG="$$shell_path($$QTIVI_BUILD_ROOT/src/tools/ivigenerator/.config)" &&
+    equals(QMAKE_HOST.os, Windows): ENV += set IVIGENERATOR_CONFIG="$$shell_path($$QTIVI_BUILD_ROOT/src/tools/ivigenerator/.config)" &&
     else: ENV += IVIGENERATOR_CONFIG="$$shell_path($$QTIVI_BUILD_ROOT/src/tools/ivigenerator/.config)"
 }
 
-win32: VIRTUALENV_PYTHON = $$VIRTUALENV_PATH/Scripts/python.exe
+equals(QMAKE_HOST.os, Windows): VIRTUALENV_PYTHON = $$VIRTUALENV_PATH/Scripts/python.exe
 else: VIRTUALENV_PYTHON = $$VIRTUALENV_PATH/bin/python
 IVI_GENERATOR = $$VIRTUALENV_PYTHON $$IVI_GENERATOR_PATH/generate.py
 
@@ -136,7 +136,7 @@ QMAKE_EXTRA_TARGETS += Makefile qface_sources
 # where we can envorce the run of the generator and qmake.
 # Afterwards the sub makefiles are read (Makefile.debug/release), which have been
 # regenerated before starting NMAKE on them.
-win32 {
+equals(QMAKE_HOST.os, Windows) {
     qmake.depends = $$relative_path($$PRI, $$OUT_PWD)
 
     debug.depends = qmake
