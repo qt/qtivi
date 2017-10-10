@@ -143,7 +143,9 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
 
     qInfo() << "Scanning path: " << mediaDir;
 
+#ifndef QT_TAGLIB
     QMediaPlayer player;
+#endif
     QSqlQuery query(m_db);
 
     bool ret = query.exec("CREATE TABLE IF NOT EXISTS track "

@@ -137,6 +137,7 @@ QIviMediaIndexerControlBackendInterface *QIviMediaIndexerControlPrivate::indexer
 QIviMediaIndexerControl::QIviMediaIndexerControl(QObject *parent)
     : QIviAbstractFeature(*new QIviMediaIndexerControlPrivate(QLatin1String(QIviMediaIndexer_iid), this), parent)
 {
+    qRegisterMetaType<QIviMediaIndexerControl::State>();
 }
 
 /*!
