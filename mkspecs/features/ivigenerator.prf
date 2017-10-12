@@ -19,7 +19,7 @@ isEmpty(QFACE_SOURCES): error("QFACE_SOURCES must be set!")
 }
 
 # See the win32 section, why this is needed
-equals(QMAKE_HOST.os, Windows):!contains(CONFIG, debug_and_release) {
+win32-msvc*:!contains(CONFIG, debug_and_release) {
     error("The ivigenerator works only in the debug_and_release configuration on windows")
 }
 
@@ -136,7 +136,7 @@ QMAKE_EXTRA_TARGETS += Makefile qface_sources
 # where we can envorce the run of the generator and qmake.
 # Afterwards the sub makefiles are read (Makefile.debug/release), which have been
 # regenerated before starting NMAKE on them.
-equals(QMAKE_HOST.os, Windows) {
+win32-msvc* {
     qmake.depends = $$relative_path($$PRI, $$OUT_PWD)
 
     debug.depends = qmake

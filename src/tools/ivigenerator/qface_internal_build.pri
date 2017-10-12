@@ -18,7 +18,7 @@ VIRTUALENV_EXE += " -p $$QMAKE_PYTHON3_LOCATION"
 # On some systems virtualenv --always-copy doesn't work (https://github.com/pypa/virtualenv/issues/565).
 # To workaround the problem, we need to manually create the folder and create the virtualenv from
 # inside
-win32: qtivi_qface_virtualenv.target = qtivi_qface_virtualenv/Scripts/python.exe
+equals(QMAKE_HOST.os, Windows): qtivi_qface_virtualenv.target = qtivi_qface_virtualenv/Scripts/python.exe
 else:  qtivi_qface_virtualenv.target = qtivi_qface_virtualenv/bin/python
 qtivi_qface_virtualenv.commands = \
     $(MKDIR) qtivi_qface_virtualenv $$escape_expand(\n\t) \
@@ -27,7 +27,7 @@ qtivi_qface_virtualenv.commands = \
     @echo "Set up virtualenv for qface, name: qtivi_qface_virtualenv"
 QMAKE_EXTRA_TARGETS += qtivi_qface_virtualenv
 
-win32: VIRTUALENV_ACTIVATION = qtivi_qface_virtualenv\Scripts\activate &&
+equals(QMAKE_HOST.os, Windows): VIRTUALENV_ACTIVATION = qtivi_qface_virtualenv\Scripts\activate &&
 else: VIRTUALENV_ACTIVATION = . qtivi_qface_virtualenv/bin/activate &&
 
 # Create the forceRebuild file during the qmake run.
@@ -39,7 +39,7 @@ write_file($$OUT_PWD/forceRebuild)
 PYTHON3_SHORT_VERSION_SPLITTED = $$split(QMAKE_PYTHON3_VERSION, .)
 PYTHON3_SHORT_VERSION = $$member(PYTHON3_SHORT_VERSION_SPLITTED, 0).$$member(PYTHON3_SHORT_VERSION_SPLITTED, 1)
 # Always run this target
-win32: qtivi_qface_install.target = qtivi_qface_virtualenv/Lib/site-packages/qface
+equals(QMAKE_HOST.os, Windows): qtivi_qface_install.target = qtivi_qface_virtualenv/Lib/site-packages/qface
 else: qtivi_qface_install.target = qtivi_qface_virtualenv/lib/python$${PYTHON3_SHORT_VERSION}/site-packages/qface
 qtivi_qface_install.depends = $${qtivi_qface_virtualenv.target}
 qtivi_qface_install.depends += $$QFACE_SOURCE_DIR/setup.py
@@ -48,14 +48,14 @@ qtivi_qface_install.depends += $$QFACE_SOURCE_DIR/qface/__about__.py
 qtivi_qface_install.commands = $$VIRTUALENV_ACTIVATION \
         pip3 install --upgrade $$shell_path($$QFACE_SOURCE_DIR) $$escape_expand(\n\t) \
         @echo "Installed qface development version into qtivi_qface_virtualenv" $$escape_expand(\n\t)
-win32: qtivi_qface_install.commands += @COPY /B $$shell_path($$OUT_PWD/forceRebuild)+,, $$shell_path($$OUT_PWD/forceRebuild) >NUL
+equals(QMAKE_HOST.os, Windows): qtivi_qface_install.commands += @COPY /B $$shell_path($$OUT_PWD/forceRebuild)+,, $$shell_path($$OUT_PWD/forceRebuild) >NUL
 else: qtivi_qface_install.commands += @touch $$OUT_PWD/forceRebuild
 QMAKE_EXTRA_TARGETS += qtivi_qface_install
 
 # We need to make the virtualenv first deployable
 # Otherwise it still needs some modules from the system
 deploy_virtualenv.target = .stamp-deploy_virtualenv
-win32 {
+equals(QMAKE_HOST.os, Windows) {
     deploy_virtualenv.commands = $$PWD/deploy-virtualenv.bat qtivi_qface_virtualenv $$escape_expand(\n\t)
     deploy_virtualenv.commands += @type nul > $$shell_path($$OUT_PWD/.stamp-deploy_virtualenv)
 } else {
