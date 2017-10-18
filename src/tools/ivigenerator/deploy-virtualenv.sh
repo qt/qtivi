@@ -53,24 +53,33 @@ if [[ ! -e "$LIB_FOLDER/orig-prefix.txt" ]] ; then
     exit 1
 fi
 
-ORIG_PREFIX=$(<"$LIB_FOLDER"/orig-prefix.txt)
-ORIG_LIB=$ORIG_PREFIX/lib/$PYTHON_VERSION
-if [[ ! -d "$ORIG_LIB" ]] ; then
-    echo "$ORIG_LIB doesn't exist"
-    exit 1
+# If the python executable has a dependency towards a libpython
+# copy the file and add it as LD_LIBRARY_PATH to the activate script
+LIBPYTHON=`ldd $VIRTUALENV/bin/python | awk '{print $3}' | grep python`
+if [[ -e "$LIBPYTHON" ]] ; then
+   echo "copying $LIBPYTHON"
+   cp -Lf "$LIBPYTHON" "$LIB_FOLDER/"
+   echo "export LD_LIBRARY_PATH=`readlink -e $LIB_FOLDER/`" >> $VIRTUALENV/bin/activate
 fi
+
+# Find all the locations used for the system python files
+# They are located in prefix, but we don't know the sub-folder (it is lib on most systems, but lib64 on some others)
+ORIG_PREFIX=$(<"$LIB_FOLDER"/orig-prefix.txt)
+ORIG_LIBS=`$VIRTUALENV/bin/python3 -c "import sys; print ('\n'.join(path for path in sys.path))" | grep $ORIG_PREFIX`
 
 if [[ ! -e "$SCRIPT/deploy-virtualenv-files.txt" ]] ; then
     echo "$SCRIPT/deploy-virtualenv-files.txt doesn't exist";
     exit 1
 fi
 
-echo "copying files from $ORIG_LIB to $LIB_FOLDER"
-FILES=$(<$SCRIPT/deploy-virtualenv-files.txt)
-for file in ${FILES} ; do
-    expand_wildcard=($ORIG_LIB/$file)
-    [ ! -e "$expand_wildcard" ] && continue;
-    cp -af "$ORIG_LIB"/$file "$LIB_FOLDER/"
+for ORIG_LIB in ${ORIG_LIBS} ; do
+        echo "copying files from $ORIG_LIB to $LIB_FOLDER"
+        FILES=$(<$SCRIPT/deploy-virtualenv-files.txt)
+        for file in ${FILES} ; do
+            expand_wildcard=($ORIG_LIB/$file)
+            [ ! -e "$expand_wildcard" ] && continue;
+            cp -rLf "$ORIG_LIB"/$file "$LIB_FOLDER/"
+        done
 done
 
 if [ "$(readlink -- "$VIRTUALENV/lib64")" != "lib" ] ; then
