@@ -80,7 +80,7 @@ QT_BEGIN_NAMESPACE
     : QObject(parent)
 {
 {% endif %}
-    QVariantMap peerInfo({{ '{{' }}"control_panel",""{{ '}}' }});
+    QVariantMap peerInfo{{ '{{' }}"control_panel",""{{ '}}' }};
     QSimulatorServer *server = {{module.module_name}}Module::simulationServer();
     server->registerServer("{{interface}}", QVersionNumber(1, 0, 0), peerInfo, [=](QSimulatorConnectionWorker *client) {
         m_worker = client;
