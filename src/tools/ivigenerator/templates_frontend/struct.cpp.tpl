@@ -93,4 +93,35 @@ void {{class}}::set{{field|upperfirst}}({{ field|parameter_type }})
 
 {% endfor %}
 
+bool operator==(const {{class}} &left, const {{class}} &right) Q_DECL_NOTHROW
+{
+    return (
+{% for field in struct.fields %}
+        left.{{field}}() == right.{{field}}() {% if not loop.last %}&&{% endif %}
+
+{% endfor %}
+    );
+}
+
+bool operator!=(const {{class}} &left, const {{class}} &right) Q_DECL_NOTHROW
+{
+    return !(left == right);
+}
+
+QDataStream &operator<<(QDataStream &stream, const {{class}} &obj)
+{
+{% for field in struct.fields %}
+    stream << obj.{{field}}();
+{% endfor %}
+    return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, {{class}} &obj)
+{
+{% for field in struct.fields %}
+    stream >> obj.m_{{field}};
+{% endfor %}
+    return stream;
+}
+
 QT_END_NAMESPACE

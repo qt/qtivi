@@ -68,7 +68,7 @@ public:
 {% else %}
     Q_ENUM({{enum}})
 {% endif %}
-
+    static {{enum}} to{{enum}}(quint8 v, bool *ok);
 {% endfor %}
 
     static void registerTypes();

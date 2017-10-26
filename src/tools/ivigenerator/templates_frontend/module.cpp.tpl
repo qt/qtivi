@@ -46,6 +46,7 @@
 #include "{{interface|lower}}.h"
 {% endfor %}
 #include <QQmlEngine>
+#include <QDebug>
 #include <QDataStream>
 
 QT_BEGIN_NAMESPACE
@@ -79,6 +80,24 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
 {
 }
 
+{% for enum in module.enums %}
+{{class}}::{{enum}} {{class}}::to{{enum}}(quint8 v, bool *ok) {
+    if (ok) {
+        *ok = true;
+    }
+    switch (v) {
+{% for member in enum.members %}
+    case {{member.value}}: return {{member.name}};
+{% endfor %}
+    default:
+        if (ok) {
+            *ok = false;
+        }
+        return {{enum.members|first}};
+    }
+}
+
+{% endfor %}
 /*! \internal */
 void {{class}}::registerTypes()
 {
@@ -88,6 +107,7 @@ void {{class}}::registerTypes()
 {% endfor %}
 {% for struct in module.structs %}
     qRegisterMetaType<{{struct}}>();
+    qRegisterMetaTypeStreamOperators<{{struct}}>();
 {% endfor %}
 }
 
@@ -101,18 +121,23 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
     {{interface}}::registerQmlTypes(uri, majorVersion, minorVersion);
 {% endfor %}
 }
-
 {% for enum in module.enums %}
+
 QDataStream &operator<<(QDataStream &out, {{class}}::{{enum|flag_type}} var)
 {
-    out << (int)var;
+    out << (quint8)var;
     return out;
 }
+
 QDataStream &operator>>(QDataStream &in, {{class}}::{{enum|flag_type}} &var)
 {
-    int temp;
-    in >> temp;
-    var = ({{class}}::{{enum|flag_type}})temp;
+    bool ok;
+    quint8 val;
+    in >> val;
+    var = {{class}}::to{{enum}}(val, &ok);
+    if (!ok) {
+        qWarning() << "Received an invalid enum value for type {{class}}::{{enum|flag_type}}, value =" << var;
+    }
     return in;
 }
 {% endfor %}

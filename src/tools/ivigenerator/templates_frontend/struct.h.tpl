@@ -47,6 +47,7 @@
 
 #include "{{module.module_name|lower}}module.h"
 #include <QObject>
+#include <QDataStream>
 
 QT_BEGIN_NAMESPACE
 
@@ -69,11 +70,20 @@ public:
 {%   endif %}
 {% endfor %}
 
+
 private:
 {% for field in struct.fields %}
     {{field|return_type}} m_{{field}};
 {% endfor %}
+
+    friend QDataStream &operator>>(QDataStream &stream, {{class}} &obj);
 };
+
+bool operator==(const {{class}} &left, const {{class}} &right) Q_DECL_NOTHROW;
+bool operator!=(const {{class}} &left, const {{class}} &right) Q_DECL_NOTHROW;
+
+QDataStream &operator<<(QDataStream &stream, const {{class}} &obj);
+QDataStream &operator>>(QDataStream &stream, {{class}} &obj);
 
 QT_END_NAMESPACE
 
