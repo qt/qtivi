@@ -49,8 +49,12 @@ QTEST_ENVIRONMENT = $$upper($$(QTEST_ENVIRONMENT))
     else: ENV += IVIGENERATOR_CONFIG="$$shell_path($$QTIVI_BUILD_ROOT/src/tools/ivigenerator/.config)"
 }
 
-equals(QMAKE_HOST.os, Windows): VIRTUALENV_PYTHON = $$VIRTUALENV_PATH/Scripts/python.exe
-else: VIRTUALENV_PYTHON = $$VIRTUALENV_PATH/bin/python
+equals(QMAKE_HOST.os, Windows) {
+    VIRTUALENV_PYTHON = $$VIRTUALENV_PATH/Scripts/python.exe
+} else {
+    VIRTUALENV_PYTHON = $$VIRTUALENV_PATH/bin/python
+    ENV += LD_LIBRARY_PATH="$$shell_path($$VIRTUALENV_PATH/bin)"
+}
 IVI_GENERATOR = $$VIRTUALENV_PYTHON $$IVI_GENERATOR_PATH/generate.py
 
 # TODO make this work with multiple input files, or only support one QFACE_SOURCE

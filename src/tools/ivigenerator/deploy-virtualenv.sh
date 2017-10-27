@@ -58,8 +58,7 @@ fi
 LIBPYTHON=`ldd $VIRTUALENV/bin/python | awk '{print $3}' | grep python`
 if [[ -e "$LIBPYTHON" ]] ; then
    echo "copying $LIBPYTHON"
-   cp -Lf "$LIBPYTHON" "$LIB_FOLDER/"
-   echo "export LD_LIBRARY_PATH=`readlink -e $LIB_FOLDER/`" >> $VIRTUALENV/bin/activate
+   cp -Lf "$LIBPYTHON" "$VIRTUALENV/bin"
 fi
 
 # Find all the locations used for the system python files
@@ -81,6 +80,20 @@ for ORIG_LIB in ${ORIG_LIBS} ; do
             cp -rLf "$ORIG_LIB"/$file "$LIB_FOLDER/"
         done
 done
+
+# random.py is needed in order to generate temp directories from python
+# It is based on hashlib, which needs libcrypto and libssl to work.
+# As there is no compatibility for openssl libs, we need to copy
+# them to the bin folder similar to libpython
+HASHLIB=`find $LIB_FOLDER/lib-dynload -iname '_hashlib*'`
+if [[ -e "$HASHLIB" ]] ; then
+    LIBCRYPTO=`ldd $HASHLIB | awk '{print $3}' | grep crypto`
+    echo "copying $LIBCRYPTO"
+    cp -Lf "$LIBCRYPTO" "$VIRTUALENV/bin"
+    LIBSSL=`ldd $HASHLIB | awk '{print $3}' | grep ssl`
+    echo "copying $LIBSSL"
+    cp -Lf "$LIBSSL" "$VIRTUALENV/bin"
+fi
 
 if [ "$(readlink -- "$VIRTUALENV/lib64")" != "lib" ] ; then
     rm -f "$VIRTUALENV/lib64"
