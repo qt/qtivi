@@ -66,7 +66,7 @@ class QIviMediaPlayerPrivate : public QIviAbstractFeaturePrivate
 public:
     QIviMediaPlayerPrivate(const QString &interface, QIviMediaPlayer *parent);
 
-    virtual void initialize() Q_DECL_OVERRIDE;
+    virtual void initialize() override;
     void clearToDefaults();
     void onPlayModeChanged(QIviMediaPlayer::PlayMode playMode);
     void onPlayStateChanged(QIviMediaPlayer::PlayState playState);

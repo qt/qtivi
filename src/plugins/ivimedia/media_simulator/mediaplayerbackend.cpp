@@ -82,6 +82,7 @@ void MediaPlayerBackend::initialize()
 {
     emit durationChanged(0);
     emit positionChanged(0);
+    emit initializationDone();
 }
 
 void MediaPlayerBackend::play()

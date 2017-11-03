@@ -42,22 +42,21 @@
 #ifndef QIVIAMFMTUNERBACKENDINTERFACE_H
 #define QIVIAMFMTUNERBACKENDINTERFACE_H
 
+#include <QtIviCore/QIviFeatureInterface>
 #include <QtIviMedia/qtivimediaglobal.h>
 #include <QtIviMedia/QIviAmFmTuner>
-#include <QtCore/QObject>
 
 QT_BEGIN_NAMESPACE
 
 class QIviPlayableItem;
 
-class Q_QTIVIMEDIA_EXPORT QIviAmFmTunerBackendInterface : public QObject
+class Q_QTIVIMEDIA_EXPORT QIviAmFmTunerBackendInterface : public QIviFeatureInterface
 {
     Q_OBJECT
 
 public:
-    explicit QIviAmFmTunerBackendInterface(QObject *parent = Q_NULLPTR);
+    explicit QIviAmFmTunerBackendInterface(QObject *parent = nullptr);
 
-    virtual void initialize() = 0;
     virtual void setFrequency(int frequency) = 0;
     virtual void setBand(QIviAmFmTuner::Band band) = 0;
     virtual void stepUp() = 0;

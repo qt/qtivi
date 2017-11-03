@@ -55,9 +55,10 @@ class QDltRegistrationPrivate;
 class Q_GENIVIEXTRAS_EXPORT QDltRegistration : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(QDltRegistration)
 
 public:
-    QDltRegistration();
+    QDltRegistration(QObject *parent = nullptr);
     ~QDltRegistration();
 
     void registerApplication(const char *dltAppID, const char *dltAppDescription);

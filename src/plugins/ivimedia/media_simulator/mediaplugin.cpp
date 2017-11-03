@@ -89,7 +89,7 @@ QStringList MediaPlugin::interfaces() const
     return list;
 }
 
-QObject *MediaPlugin::interfaceInstance(const QString &interface) const
+QIviFeatureInterface *MediaPlugin::interfaceInstance(const QString &interface) const
 {
     if (interface == QIviMediaPlayer_iid)
         return m_player;

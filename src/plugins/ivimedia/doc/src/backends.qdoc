@@ -1,0 +1,127 @@
+/****************************************************************************
+**
+** Copyright (C) 2017 Pelagicore AG
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL-QTAS$
+** Commercial License Usage
+** Licensees holding valid commercial Qt Automotive Suite licenses may use
+** this file in accordance with the commercial license agreement provided
+** with the Software or, alternatively, in accordance with the terms
+** contained in a written agreement between you and The Qt Company.  For
+** licensing terms and conditions see https://www.qt.io/terms-conditions.
+** For further information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+\page qtivimedia-backends.html
+\title QtIviMedia Backends
+\ingroup qtivi_backend_groups
+
+All backends supporting interfaces from QtIviMedia
+
+\annotatedlist qtivimedia_backend
+*/
+
+/*!
+\page qtivimedia-tuner-simulation-backend.html
+\title QtIviMedia Tuner Simulation Backend
+\ingroup qtivimedia_backend
+\ingroup qtivi_backend
+
+\brief Provides a static tuner simulation.
+
+\section1 Supported interfaces
+\list
+    \li \l{org.qt-project.qtivi.AmFmTuner/1.0}
+    \li \l{org.qt-project.qtivi.SearchAndBrowseModel/1.0}
+\endlist
+
+The backend will return a fixed set of radio stations on the FM band and no stations on the AM band.
+
+For the SearchAndBrowseModel the following contenTypes are supported:
+\list
+    \li \b station A list of all stations found.
+    \li \b presets A list for storing the users favorite stations.
+\endlist
+
+\note Both lists don't support filtering and sorting.
+*/
+
+/*!
+\page qtivimedia-player-simulation-backend.html
+\title QtIviMedia MediaPlayer Simulation Backend
+\ingroup qtivimedia_backend
+\ingroup qtivi_backend
+
+\brief Provides a media player simulation using QtMultimedia.
+
+\section1 Requirements
+\list
+    \li QtMultimedia
+    \li taglib
+\endlist
+
+\section1 Supported interfaces
+\list
+    \li \l{org.qt-project.qtivi.MediaPlayer/1.0}
+    \li \l{org.qt-project.qtivi.MediaIndexer/1.0}
+    \li \l{org.qt-project.qtivi.MediaDiscovery/1.0}
+    \li \l{org.qt-project.qtivi.SearchAndBrowseModel/1.0}
+\endlist
+
+The backend uses QtMultimedia to offer real media playback on various platforms.
+The indexer will automatically start to index all \c mp3 files in the media folder.
+
+For the SearchAndBrowseModel the following contenTypes are supported:
+\list
+    \li \b artist A list of all artists.
+    \li \b album A list of all albums.
+    \li \b track A list of all tracks.
+\endlist
+
+The model supports filtering and sorting, as well as navigating through the media library using
+the following navigation paths:
+
+\list
+    \li Artist -> Album -> Track
+    \li Album -> Track
+\endlist
+
+\note On systems where \c taglib wasn't found, indexing of files doesn't work and because of that
+the media database can't be created.
+
+\section1 Configuration
+
+This backend uses environment variables for its configuration. By default it will use
+a non persistent mode, where the indexed media database is not saved, but recreated on every start
+of the app.
+
+\table
+\header
+    \li Name
+    \li Description
+\row
+    \li QTIVIMEDIA_SIMULATOR_DATABASE
+    \li A path to the media database which should be used.
+\row
+    \li QTIVIMEDIA_SIMULATOR_LOCALMEDIAFOLDER
+    \li The local media directory (default: /home/<user>/media)
+\row
+    \li QTIVIMEDIA_SIMULATOR_DEVICEFOLDER
+    \li The path which will be used by the DiscoveryModel for discovering media devices.
+        (default: /home/<user>/usb-simulation)
+\endtable
+*/

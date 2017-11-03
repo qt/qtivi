@@ -1,3 +1,0 @@
-{
-    "interfaces" : [ "org.qt-project.qtivi.ClimateControl/1.0", "org.qt-project.qtivi.WindowControl/1.0" ]
-}

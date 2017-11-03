@@ -42,17 +42,17 @@
 #ifndef QIVIMEDIAINDEXERCONTROLBACKENDINTERFACE_H
 #define QIVIMEDIAINDEXERCONTROLBACKENDINTERFACE_H
 
-#include <QObject>
+#include <QtIviCore/QIviFeatureInterface>
 #include <QtIviMedia/qtivimediaglobal.h>
 #include <QtIviMedia/QIviMediaIndexerControl>
 
 QT_BEGIN_NAMESPACE
 
-class Q_QTIVIMEDIA_EXPORT QIviMediaIndexerControlBackendInterface : public QObject
+class Q_QTIVIMEDIA_EXPORT QIviMediaIndexerControlBackendInterface : public QIviFeatureInterface
 {
     Q_OBJECT
 public:
-    explicit QIviMediaIndexerControlBackendInterface(QObject *parent = Q_NULLPTR);
+    explicit QIviMediaIndexerControlBackendInterface(QObject *parent = nullptr);
 
     virtual void initialize() = 0;
     virtual void pause() = 0;

@@ -48,11 +48,11 @@ public:
         return m_serviceObjects.keys();
     }
 
-    QObject *interfaceInstance(const QString &interface) const {
+    QIviFeatureInterface *interfaceInstance(const QString &interface) const {
         return m_serviceObjects.value(interface);
     }
 
-    void addServiceObject(const QString &interface, QObject *serviceObject) {
+    void addServiceObject(const QString &interface, QIviFeatureInterface *serviceObject) {
         if (!serviceObject->parent())
             serviceObject->setParent(this);
 
@@ -60,7 +60,20 @@ public:
     }
 
 private:
-    QMap<QString, QObject *> m_serviceObjects;
+    QMap<QString, QIviFeatureInterface *> m_serviceObjects;
+};
+
+class TestInterface : public QIviFeatureInterface
+{
+    Q_OBJECT
+public:
+    TestInterface(QObject *parent)
+        : QIviFeatureInterface(parent)
+    {}
+
+    void initialize() override
+    {
+    }
 };
 
 class ServiceManagerTest : public QObject
@@ -132,17 +145,17 @@ do { \
 } while (0)
 
 /*
- * Test the hasInterface method
- */
+    Test the hasInterface method
+*/
 void ServiceManagerTest::testHasInterface()
 {
-   QCOMPARE(manager->hasInterface("Foo"), false);
+    QCOMPARE(manager->hasInterface("Foo"), false);
 
-   MockServiceBackend *backend0 = new MockServiceBackend(manager);
-   bool regResult = manager->registerService(backend0, QStringList() << "Foo" << "Bar");
-   QCOMPARE(regResult, true);
-   QCOMPARE(manager->hasInterface("Foo"), true);
-   QCOMPARE(manager->hasInterface("Bar"), true);
+    MockServiceBackend *backend0 = new MockServiceBackend(manager);
+    bool regResult = manager->registerService(backend0, QStringList() << "Foo" << "Bar");
+    QCOMPARE(regResult, true);
+    QCOMPARE(manager->hasInterface("Foo"), true);
+    QCOMPARE(manager->hasInterface("Bar"), true);
 }
 
 void ServiceManagerTest::testFindServiceObjectsReturnInValidInstance()
@@ -168,7 +181,7 @@ void ServiceManagerTest::testFindServiceObjects()
         type = QIviServiceManager::SimulationBackend;
     bool regResult = manager->registerService(backend, QStringList() << "TestInterface", type);
     QCOMPARE(regResult, true);
-    QObject *testObject = new QObject();
+    QIviFeatureInterface *testObject = new TestInterface(backend);
     backend->addServiceObject("TestInterface", testObject);
 
     QList<QIviServiceObject*> list = manager->findServiceByInterface("TestInterface", searchFlags);
@@ -179,9 +192,9 @@ void ServiceManagerTest::testFindServiceObjects()
 }
 
 /*
- * Test that the registerService method returns false if the user tries
- * to register a service with an empty list of interfaces.
- */
+    Test that the registerService method returns false if the user tries
+    to register a service with an empty list of interfaces.
+*/
 void ServiceManagerTest::testRegisterWithNoInterfaces()
 {
     MockServiceBackend *backend = new MockServiceBackend(manager);
@@ -190,9 +203,9 @@ void ServiceManagerTest::testRegisterWithNoInterfaces()
 }
 
 /*
- * Test that the registerService method returns false if the user tries
- * to register a service which doesn't implement the ServiceBackendInterface.
- */
+    Test that the registerService method returns false if the user tries
+    to register a service which doesn't implement the ServiceBackendInterface.
+*/
 void ServiceManagerTest::testRegisterNonServiceBackendInterfaceObject()
 {
     QObject *anyObject = new QObject(manager);
@@ -202,8 +215,8 @@ void ServiceManagerTest::testRegisterNonServiceBackendInterfaceObject()
 }
 
 /*
- * Test typical QAbstractListModel behavior
- */
+    Test typical QAbstractListModel behavior
+*/
 void ServiceManagerTest::testManagerListModel()
 {
     QSignalSpy managerModelSpy(manager, SIGNAL(rowsInserted(QModelIndex,int,int)));
@@ -248,7 +261,7 @@ void ServiceManagerTest::pluginLoaderTest()
     QList<QIviServiceObject *> services = manager->findServiceByInterface("simple_plugin");
     QCOMPARE(services.count(), 1);
     //Because we unloaded the backend and created a new instance of it we expect to get a different id for the ServiceObject as in initTestCase()
-    QCOMPARE(m_simplePluginID, services.at(0)->id());
+    QVERIFY(m_simplePluginID != services.at(0)->id());
 
 
     QVERIFY(manager->hasInterface("wrong_plugin"));

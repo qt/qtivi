@@ -63,8 +63,8 @@ class Q_QTIVICORE_EXPORT QIviAbstractZonedFeature : public QIviAbstractFeature
 
 public:
 
-    explicit QIviAbstractZonedFeature(const QString &interface, const QString &zone = QString(), QObject *parent = Q_NULLPTR);
-    virtual ~QIviAbstractZonedFeature();
+    explicit QIviAbstractZonedFeature(const QString &interface, const QString &zone = QString(), QObject *parent = nullptr);
+    ~QIviAbstractZonedFeature();
 
     QString zone() const;
 
@@ -79,14 +79,14 @@ Q_SIGNALS:
     void zonesChanged();
 
 protected:
-    QIviAbstractZonedFeature(QIviAbstractZonedFeaturePrivate &dd, QObject *parent = Q_NULLPTR);
+    QIviAbstractZonedFeature(QIviAbstractZonedFeaturePrivate &dd, QObject *parent = nullptr);
 
     virtual QIviAbstractZonedFeature *createZoneFeature(const QString &zone) = 0;
     QIviZonedFeatureInterface *backend(const QString &interface = QString()) const;
 
-    virtual bool acceptServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
-    virtual void connectToServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
-    virtual void clearServiceObject() Q_DECL_OVERRIDE;
+    virtual bool acceptServiceObject(QIviServiceObject *serviceObject) override;
+    virtual void connectToServiceObject(QIviServiceObject *serviceObject) override;
+    virtual void clearServiceObject() override;
 
 private Q_SLOTS:
     void setZone(const QString &zone);

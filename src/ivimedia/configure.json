@@ -8,6 +8,7 @@
             "test": "taglib",
             "sources": [
                 { "type": "pkgConfig", "args": "taglib" },
+                { "includedir": "/usr/local/opt/taglib/include/taglib", "libs": "-L /usr/local/opt/taglib/lib -ltag" },
                 "-ltag"
             ]
         }

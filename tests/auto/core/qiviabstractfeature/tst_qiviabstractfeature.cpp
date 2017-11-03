@@ -40,16 +40,16 @@
 
 int acceptCounter = 100;
 
-class TestFeatureInterface : public QObject
+class TestFeatureInterface : public QIviFeatureInterface
 {
     Q_OBJECT
 
 public:
-    TestFeatureInterface(QObject *parent = 0)
-        : QObject(parent)
+    explicit TestFeatureInterface(QObject *parent = nullptr)
+        : QIviFeatureInterface(parent)
     {}
 
-    virtual ~TestFeatureInterface() {}
+    ~TestFeatureInterface() {}
 
 Q_SIGNALS:
     void errorChanged(QIviAbstractFeature::Error error, const QString &message = QString());
@@ -60,7 +60,7 @@ class TestFeature : public QIviAbstractFeature
     Q_OBJECT
 
 public:
-    TestFeature(bool testBaseFunctions = false, QObject *parent = 0)
+    TestFeature(bool testBaseFunctions = false, QObject *parent = nullptr)
         : QIviAbstractFeature("testFeature", parent)
         , m_testBaseFunctions(testBaseFunctions)
     {}
@@ -87,6 +87,8 @@ public:
             return;
         TestFeatureInterface* testInterface = qobject_cast<TestFeatureInterface*>(serviceObject->interfaceInstance(interfaceName()));
         connect(testInterface, &TestFeatureInterface::errorChanged, this, &TestFeature::onErrorChanged);
+
+        QIviAbstractFeature::connectToServiceObject(serviceObject);
     }
 
     virtual void disconnectFromServiceObject(QIviServiceObject*)
@@ -107,7 +109,7 @@ class TestFeatureListModel : public QIviAbstractFeatureListModel
     Q_OBJECT
 
 public:
-    TestFeatureListModel(bool testBaseFunctions = false, QObject *parent = 0)
+    TestFeatureListModel(bool testBaseFunctions = false, QObject *parent = nullptr)
         : QIviAbstractFeatureListModel("testFeature", parent)
         , m_testBaseFunctions(testBaseFunctions)
     {}
@@ -134,6 +136,8 @@ public:
             return;
         TestFeatureInterface* testInterface = qobject_cast<TestFeatureInterface*>(serviceObject->interfaceInstance(interfaceName()));
         connect(testInterface, &TestFeatureInterface::errorChanged, this, &TestFeatureListModel::onErrorChanged);
+
+        QIviAbstractFeatureListModel::connectToServiceObject(serviceObject);
     }
 
     virtual void disconnectFromServiceObject(QIviServiceObject*)
@@ -167,9 +171,14 @@ class TestFeatureBackend : public TestFeatureInterface
     Q_OBJECT
 
 public:
-    TestFeatureBackend(QObject *parent = 0)
+    TestFeatureBackend(QObject *parent = nullptr)
         : TestFeatureInterface(parent)
     {}
+
+    void initialize() override
+    {
+        emit initializationDone();
+    }
 
     void emitError(QIviAbstractFeature::Error error, const QString &message)
     {
@@ -183,7 +192,7 @@ class TestBackend : public QObject, QIviServiceInterface
     Q_INTERFACES(QIviServiceInterface)
 
 public:
-    TestBackend(QObject *parent = 0)
+    TestBackend(QObject *parent = nullptr)
         : QObject(parent)
         , m_testBackend(new TestFeatureBackend(this))
     {}
@@ -193,7 +202,7 @@ public:
         return QStringList(QString("testFeature"));
     }
 
-    QObject* interfaceInstance(const QString& interface) const
+    QIviFeatureInterface* interfaceInstance(const QString& interface) const
     {
         if (interface == "testFeature")
             return m_testBackend;
@@ -263,6 +272,7 @@ void BaseTest::testAutoDiscoveryFailure()
     QIviAbstractFeature::DiscoveryResult result = f->startAutoDiscovery();
     QVERIFY(!f->serviceObject());
     QVERIFY(!f->isValid());
+    QVERIFY(!f->isInitialized());
     QCOMPARE(result, QIviAbstractFeature::ErrorWhileLoading);
 
     QTest::ignoreMessage(QtWarningMsg, "There is no production backend implementing \"testFeature\" .");
@@ -271,6 +281,7 @@ void BaseTest::testAutoDiscoveryFailure()
     result = f->startAutoDiscovery();
     QVERIFY(!f->serviceObject());
     QVERIFY(!f->isValid());
+    QVERIFY(!f->isInitialized());
     QCOMPARE(result, QIviAbstractFeature::ErrorWhileLoading);
 
     TestBackend* backend1 = new TestBackend();
@@ -289,7 +300,7 @@ void BaseTest::testAutoDiscoveryFailure()
     f->setServiceObject(list.at(0));
     result = f->startAutoDiscovery();
     QCOMPARE(result, QIviAbstractFeature::NoResult);
-    f->setServiceObject(0);
+    f->setServiceObject(nullptr);
 
     TestBackend* backend2 = new TestBackend();
     m_manager->registerService(backend2, backend2->interfaces());
@@ -332,6 +343,7 @@ void BaseTest::testAutoDiscoveryWithMultipleBackends()
     QIviAbstractFeature::DiscoveryResult res = f->startAutoDiscovery();
     QVERIFY(f->serviceObject());
     QVERIFY(f->isValid());
+    QVERIFY(f->isInitialized());
     QCOMPARE(res, result);
 }
 
@@ -371,6 +383,7 @@ void BaseTest::testAutoDiscovery()
     QVERIFY(!f->isValid());
     f->setDiscoveryMode(mode);
     QSignalSpy validSpy(f, &QIviFeatureTester::isValidChanged);
+    QSignalSpy initializedSpy(f, &QIviFeatureTester::isInitializedChanged);
     if (!registerProduction)
         QTest::ignoreMessage(QtWarningMsg, "There is no production backend implementing \"testFeature\" .");
     QIviAbstractFeature::DiscoveryResult res = f->startAutoDiscovery();
@@ -381,6 +394,9 @@ void BaseTest::testAutoDiscovery()
     QCOMPARE(validSpy.at(0).at(0).toBool(), true);
     QCOMPARE(res, result);
     QCOMPARE(f->discoveryResult(), result);
+    QVERIFY(f->isInitialized());
+    QCOMPARE(initializedSpy.count(), 1);
+    QCOMPARE(initializedSpy.at(0).at(0).toBool(), true);
 }
 
 void BaseTest::testAutoDiscovery_qml()
@@ -499,7 +515,7 @@ void BaseTest::testResetServiceObject()
     serviceObjectChangedSpy.clear();
 
     //Reset the ServiceObject of the Feature and verify that the feature doesn't have a connection to the ServiceObject anymore
-    f->setServiceObject(0);
+    f->setServiceObject(nullptr);
 
     m_manager->unloadAllBackends();
     QCOMPARE(soDestroyedSpy.count(), 1);

@@ -28,6 +28,9 @@
 \page attribute-system.html
 \title The Qt IVI Attribute System
 \keyword AttributeSystem
+\previouspage Dynamic Backend System
+\nextpage Models
+\contentspage Concepts
 
 In the IVI world a system often needs to support a lot of different car configurations. These
 configurations could vary in display sizes and resolutions are used or the actual hardware changes
@@ -140,7 +143,7 @@ class SimpleControl : public QObject
     Q_OBJECT
     Q_PROPERTY(QIviProperty *temperature READ temperatureProperty CONSTANT)
 
-    SimpleControl(QObject *parent = Q_NULLPTR);
+    SimpleControl(QObject *parent = nullptr);
     ~SimpleControl();
 
     int temperature() const;

@@ -46,6 +46,8 @@
 #include <QtIviMedia/QIviMediaDevice>
 #include <QtDebug>
 
+QT_BEGIN_NAMESPACE
+
 QIviMediaDeviceDiscoveryModelPrivate::QIviMediaDeviceDiscoveryModelPrivate(const QString &interface, QIviMediaDeviceDiscoveryModel *parent)
     : QIviAbstractFeatureListModelPrivate(interface, parent)
     , q_ptr(parent)
@@ -94,7 +96,7 @@ void QIviMediaDeviceDiscoveryModelPrivate::onDeviceAdded(QIviServiceObject *devi
     m_deviceList += device;
     q->endInsertRows();
 
-    q->deviceAdded(mdevice);
+    emit q->deviceAdded(mdevice);
 }
 
 void QIviMediaDeviceDiscoveryModelPrivate::onDeviceRemoved(QIviServiceObject *device)
@@ -115,7 +117,7 @@ void QIviMediaDeviceDiscoveryModelPrivate::onDeviceRemoved(QIviServiceObject *de
     m_deviceList.takeAt(index);
     q->endRemoveRows();
 
-    q->deviceRemoved(mdevice);
+    emit q->deviceRemoved(mdevice);
 
     delete device;
 }
@@ -183,19 +185,19 @@ QIviMediaDeviceDiscoveryModelBackendInterface *QIviMediaDeviceDiscoveryModelPriv
 */
 
 /*!
-   \enum QIviMediaDeviceDiscoveryModel::Roles
-   \value NameRole
+    \enum QIviMediaDeviceDiscoveryModel::Roles
+    \value NameRole
           The name of the media device. E.g. The name of the connected USB-Thumbdrive/SDCard or a connected Ipod.
-   \value TypeRole
+    \value TypeRole
           The type of the media device. See \l SupportedMediaDevices for a detailed listing.
-   \value ServiceObjectRole
+    \value ServiceObjectRole
           A pointer to the media device itself. This pointer can be used as the ServiceObject for other Features. E.g. The QIviSearchAndBrowseModel.
 */
 
 /*!
-   Constructs a QIviMediaDeviceDiscoveryModel.
+    Constructs a QIviMediaDeviceDiscoveryModel.
 
-   The \a parent argument is passed on to the \l QIviAbstractFeatureListModel base class.
+    The \a parent argument is passed on to the \l QIviAbstractFeatureListModel base class.
 */
 QIviMediaDeviceDiscoveryModel::QIviMediaDeviceDiscoveryModel(QObject *parent)
     : QIviAbstractFeatureListModel(*new QIviMediaDeviceDiscoveryModelPrivate(QLatin1String(QIviMediaDeviceDiscovery_iid), this), parent)
@@ -205,11 +207,11 @@ QIviMediaDeviceDiscoveryModel::QIviMediaDeviceDiscoveryModel(QObject *parent)
 /*!
     \qmlproperty int MediaDeviceDiscoveryModel::count
     \brief Holds the current number of rows in this model.
- */
+*/
 /*!
     \property QIviMediaDeviceDiscoveryModel::count
     \brief Holds the current number of rows in this model.
- */
+*/
 int QIviMediaDeviceDiscoveryModel::rowCount(const QModelIndex &parent) const
 {
     Q_D(const QIviMediaDeviceDiscoveryModel);
@@ -253,7 +255,7 @@ QVariant QIviMediaDeviceDiscoveryModel::data(const QModelIndex &index, int role)
 
     \note The returned device is owned by the model and can be deleted at any time.
     If stored in a property or a var, this could lead to a dangling pointer.
- */
+*/
 /*!
     Returns the media device at index \a i.
 
@@ -320,6 +322,8 @@ void QIviMediaDeviceDiscoveryModel::connectToServiceObject(QIviServiceObject *se
     QObjectPrivate::connect(backend, &QIviMediaDeviceDiscoveryModelBackendInterface::deviceRemoved,
                             d, &QIviMediaDeviceDiscoveryModelPrivate::onDeviceRemoved);
 
+    QIviAbstractFeatureListModel::connectToServiceObject(serviceObject);
+
     backend->initialize();
 }
 
@@ -357,5 +361,7 @@ void QIviMediaDeviceDiscoveryModel::clearServiceObject()
     This signal is emitted whenever a media device got removed. The device which got removed is passed as \a device.
     Afterwards the device will be deleted.
 */
+
+QT_END_NAMESPACE
 
 #include "moc_qivimediadevicediscoverymodel.cpp"

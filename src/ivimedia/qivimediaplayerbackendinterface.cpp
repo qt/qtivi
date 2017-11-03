@@ -41,11 +41,14 @@
 
 #include "qivimediaplayerbackendinterface.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QIviMediaPlayerBackendInterface
     \inmodule QtIviMedia
     \ingroup backends
     \inherits QObject
+    \keyword org.qt-project.qtivi.MediaPlayer/1.0
     \brief The QIviMediaPlayerBackendInterface defines the interface for backends to the
     QIviMediaPlayer feature class.
 
@@ -62,17 +65,10 @@
     The \a parent is sent to the QObject constructor.
 */
 QIviMediaPlayerBackendInterface::QIviMediaPlayerBackendInterface(QObject *parent)
-    : QObject(parent)
+    : QIviFeatureInterface(parent)
 {
 
 }
-
-/*!
-    \fn QIviMediaPlayerBackendInterface::initialize()
-
-    Initializes the backend. This function is called, after a feature connected to the backend.
-    It is expected that this function will inform about the current state of the backend by emitting signals with the current status.
-*/
 
 /*!
     \fn QIviMediaPlayerBackendInterface::play()
@@ -274,3 +270,5 @@ QIviMediaPlayerBackendInterface::QIviMediaPlayerBackendInterface(QObject *parent
 
     \sa insert() remove() move()
 */
+
+QT_END_NAMESPACE

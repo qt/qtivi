@@ -1,6 +1,6 @@
 TARGET = QtIviVehicleFunctions
 QT = core core-private ivicore ivicore-private
-CONFIG += c++11
+CONFIG += c++11 ivigenerator
 
 OTHER_FILES = \
     $$PWD/doc/*.qdocconf \
@@ -10,20 +10,7 @@ OTHER_FILES = \
 
 CMAKE_MODULE_TESTS = '-'
 
-HEADERS += \
-    qtivivehiclefunctionsglobal.h \
-    qtivivehiclefunctionsglobal_p.h \
-    qiviclimatecontrol.h \
-    qiviclimatecontrolbackendinterface.h \
-    qiviclimatecontrol_p.h \
-    qiviwindowcontrol.h \
-    qiviwindowcontrol_p.h \
-    qiviwindowcontrolbackendinterface.h
+QFACE_MODULE_NAME = QtIviVehicleFunctions
+QFACE_SOURCES += ivivehiclefunctions.qface
 
-SOURCES += \
-    qiviclimatecontrol.cpp \
-    qiviclimatecontrolbackendinterface.cpp \
-    qiviwindowcontrol.cpp \
-    qiviwindowcontrolbackendinterface.cpp
-
-load(qt_module)
+load(ivigenerator_qt_module)

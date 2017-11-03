@@ -55,57 +55,57 @@
     To use feature elements, simply include the header file and instantiate
     the element:
 
-   \code
+    \code
    #include <QtIviVehicleFunctions/QIviClimateControl>
    ...
-   QIviClimateControl* m_climateControl;
-   m_climateControl = new QIviClimateControl(this);
-   \endcode
+    QIviClimateControl* m_climateControl;
+    m_climateControl = new QIviClimateControl(this);
+    \endcode
 
-   In order to trigger the auto discovery mechanism, call the startAutoDiscovery method. This will
-   load the appropriate backend and set a service object for the feature element. Please notice
-   that calling this method sets the autoDiscovery property to true. To use dynamic services,
-   simply do not call this method.
+    In order to trigger the auto discovery mechanism, call the startAutoDiscovery method. This will
+    load the appropriate backend and set a service object for the feature element. Please notice
+    that calling this method sets the autoDiscovery property to true. To use dynamic services,
+    simply do not call this method.
 
-   \code
-   m_climateControl->startAutoDiscovery();
-   \endcode
+    \code
+    m_climateControl->startAutoDiscovery();
+    \endcode
 
-   After the startAutoDiscovery method has been called, the isValid property can be used to
-   determine if a backend was found or not.
+    After the startAutoDiscovery method has been called, the isValid property can be used to
+    determine if a backend was found or not.
 
-   \code
-   if (!m_climateControl->isValid())
+    \code
+    if (!m_climateControl->isValid())
        QMessageBox::critical( ... ); // Take action here
-   \endcode
+    \endcode
 
-   Climate general values can be get and set directly by the feature instance:
-   \code
-   if (!m_climateControl->airConditioningEnabled());
+    Climate general values can be get and set directly by the feature instance:
+    \code
+    if (!m_climateControl->airConditioningEnabled());
        m_climateControl->setAirConditioningEnabled(true);
-   \endcode
+    \endcode
 
-   Some features, like climate control, are divided into several climate zones. The names
-   of the available zones can be checked using QIviAbstractZonedFeature::availableZones():
+    Some features, like climate control, are divided into several climate zones. The names
+    of the available zones can be checked using QIviAbstractZonedFeature::availableZones():
 
-   \code
-   QStringList zones = m_climateControl->availableZones();
-   \endcode
+    \code
+    QStringList zones = m_climateControl->availableZones();
+    \endcode
 
-   You can use QIviAbstractZonedFeature::zoneAt() to access zone functions:
+    You can use QIviAbstractZonedFeature::zoneAt() to access zone functions:
 
-   \code
-   m_climateControl->zoneAt("FrontSeat")->setSeatHeater(false);
-   \endcode
+    \code
+    m_climateControl->zoneAt("FrontLeft")->setSeatHeater(false);
+    \endcode
 
-   Looping zones is done with QIviAbstractZonedFeature::zones():
+    Looping zones is done with QIviAbstractZonedFeature::zones():
 
-   \code
+    \code
     const auto zones = m_climateControl->zones();
     for (QClimateControl *z : zones)
-        if (z->zone() == "FrontSeat")
+        if (z->zone() == "FrontLeft")
             z->setSeatHeater(true);
-   \endcode
+    \endcode
 */
 
 /*!
@@ -129,54 +129,54 @@
 
     \snippet doc_src_qmlivivehiclefunctions.cpp 0
 
-   Then instantiate the feature element. For most elements, autoDiscovery is set to true when
-   applicable, but in this example we set it explicitly.
+    Then instantiate the feature element. For most elements, autoDiscovery is set to true when
+    applicable, but in this example we set it explicitly.
 
-   \code
-   ClimateControl {
+    \code
+    ClimateControl {
        id: climateControl
        autoDiscovery: true
    }
-   \endcode
+    \endcode
 
-   When the top-level component has been completed, the isValid property of the feature elements
-   can be used to determine if any of the backends are missing. In some situations this is expected
-   behavior; the isValid property can be used to enable or disable parts of the user
-   interface.
+    When the top-level component has been completed, the isValid property of the feature elements
+    can be used to determine if any of the backends are missing. In some situations this is expected
+    behavior; the isValid property can be used to enable or disable parts of the user
+    interface.
 
-   \code
-   Component.onCompleted: {
+    \code
+    Component.onCompleted: {
        if (!climateControl.isValid)
            ; // Take action here
    }
-   \endcode
+    \endcode
 
-   Some features, like climate control, are divided into zones. The names of the available zones
-   can be fetched with AbstractZonedFeature::availableZones. Zones are available only
-   when the feature is valid.
-   \code
-   ComboBox {
+    Some features, like climate control, are divided into zones. The names of the available zones
+    can be fetched with AbstractZonedFeature::availableZones. Zones are available only
+    when the feature is valid.
+    \code
+    ComboBox {
        model: climateControl.availableZones
    }
-   \endcode
+    \endcode
 
-   With the AbstractZonedFeature::zoneAt property you can access the climate control zone-specific functions.
-   \code
-   climateControl.zoneAt.FrontSeat.seatheater = true
-   \endcode
+    With the AbstractZonedFeature::zoneAt property you can access the climate control zone-specific functions.
+    \code
+    climateControl.zoneAt.FrontLeft.seatHeater = true
+    \endcode
 
-   An example of how to use the AbstractZonedFeature::zones property:
-   \code
-   Repeater {
+    An example of how to use the AbstractZonedFeature::zones property:
+    \code
+    Repeater {
        model: climateControl.zones
        Text { text: modelData.zone + " seat heater level: " + modelData.seatHeater}
    }
-   \endcode
+    \endcode
 
-   Interactions with the feature element are described in the feature documentation. It is possible
-   to bind properties, call methods, and listen to signals.
+    Interactions with the feature element are described in the feature documentation. It is possible
+    to bind properties, call methods, and listen to signals.
 
-   \section1 QML Types
+    \section1 QML Types
 */
 
 /*!

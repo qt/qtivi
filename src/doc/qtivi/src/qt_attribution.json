@@ -1,0 +1,17 @@
+{
+    "Id": "jinja-documentation",
+    "Name": "Jinja Documentation",
+    "QDocModule": "qtivi",
+    "QtUsage": "Used in the Documentation of the Jinja template language",
+    "Path": "template-syntax.qdoc",
+
+    "Description": "Full featured template engine for python.",
+    "Homepage": "http://jinja.pocoo.org/",
+    "Version": "2.9.6",
+
+    "License": "BSD 3-clause License",
+    "LicenseId": "BSD-3-Clause",
+    "LicenseFile": "JINJA_LICENSE",
+    "Copyright": "(c) 2009 by the Jinja Team, see AUTHORS for more details."
+}
+

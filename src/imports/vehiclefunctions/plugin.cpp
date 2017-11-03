@@ -57,8 +57,8 @@ public:
         Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi.VehicleFunctions"));
         Q_UNUSED(uri);
 
-        qmlRegisterType<QIviClimateControl>(uri, 1, 0, "ClimateControl");
-        qmlRegisterType<QIviWindowControl>(uri, 1, 0, "WindowControl");
+        QIviClimateControl::registerQmlTypes(uri, 1, 0);
+        QIviWindowControl::registerQmlTypes(uri, 1, 0);
     }
 };
 

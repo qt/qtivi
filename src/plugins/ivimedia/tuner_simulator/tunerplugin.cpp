@@ -63,7 +63,7 @@ QStringList TunerPlugin::interfaces() const
     return list;
 }
 
-QObject *TunerPlugin::interfaceInstance(const QString &interface) const
+QIviFeatureInterface *TunerPlugin::interfaceInstance(const QString &interface) const
 {
     if (interface == QIviAmFmTuner_iid)
         return m_amfmtuner;

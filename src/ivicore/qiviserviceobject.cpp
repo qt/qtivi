@@ -43,86 +43,89 @@
 
 #include <QUuid>
 
+QT_BEGIN_NAMESPACE
+
 /*!
- * \class QIviServiceObject
- * \inmodule QtIviCore
- * \brief QIviServiceObject is the connection point to a Backend Service.
- *
- * QIviServiceObject provides you with a list of interfaces the Backend implements.
- *
- * By using interfaceInstance() a QObject implementing this interface will be returned.
- * The returned interface can contain signals that need to be connected to by the Feature
- * implementing this interface.
- *
- * \sa QIviAbstractFeature
- */
+    \class QIviServiceObject
+    \inmodule QtIviCore
+    \brief QIviServiceObject is the connection point to a Backend Service.
+
+    QIviServiceObject provides you with a list of interfaces the Backend implements.
+
+    By using interfaceInstance() a QObject implementing this interface will be returned.
+    The returned interface can contain signals that need to be connected to by the Feature
+    implementing this interface.
+
+    \sa QIviAbstractFeature
+*/
 
 
 /*!
- * Constructor.
- *
- * \a parent is passed on to \l QObject.
- */
+    Constructor.
+
+    \a parent is passed on to \l QObject.
+*/
 QIviServiceObject::QIviServiceObject(QObject *parent)
     : QObject(parent)
+    , m_id(QUuid::createUuid().toString())
 {
-
 }
 
 /*!
- * Destructor.
- */
+    Destructor.
+*/
 QIviServiceObject::~QIviServiceObject()
 {
 
 }
 
 /*!
- * \property QIviServiceObject::id
- * \brief A unique ID for the service object instance.
- *
- * Each service object has a unique ID. When subclassing, the id()
- * function can be overloaded to control the generation of the ID.
- */
+    \property QIviServiceObject::id
+    \brief A unique ID for the service object instance.
+
+    Each service object has a unique ID. When subclassing, the id()
+    function can be overloaded to control the generation of the ID.
+*/
 
 /*!
- * The id() function can be overloaded to control the generation of
- * the unique ID used by this service object.
- *
- * By default, QUuid::createUuid() is used.
- */
+    The id() function can be overloaded to control the generation of
+    the unique ID used by this service object.
+
+    By default, QUuid::createUuid() is used.
+*/
 QString QIviServiceObject::id() const
 {
-    static QUuid id = QUuid::createUuid();
-    return id.toString();
+    return m_id;
 }
 
 /*!
- * \class QIviServiceInterface
- * \inmodule QtIviCore
- * \brief Interface class for services.
- *
- * The QIviServiceInterface class defines the interface of services registered with QIviServiceManager.
- *
- * Commonly, service objects inherit the concrete class QIviServiceObject instead of using QIviServiceInterface directly.
- *
- * \sa QIviServiceObject
- */
+    \class QIviServiceInterface
+    \inmodule QtIviCore
+    \brief Interface class for services.
+
+    The QIviServiceInterface class defines the interface of services registered with QIviServiceManager.
+
+    Commonly, service objects inherit the concrete class QIviServiceObject instead of using QIviServiceInterface directly.
+
+    \sa QIviServiceObject
+*/
 
 /*!
- * \fn QIviServiceInterface::~QIviServiceInterface()
- *
- * Destructs the QIviServiceInterface instance.
- */
+    \fn QIviServiceInterface::~QIviServiceInterface()
+
+    Destructs the QIviServiceInterface instance.
+*/
 
 /*!
- * \fn QStringList QIviServiceInterface::interfaces() const
- *
- * Returns a list of service interface names supported by the service object instance.
- */
+    \fn QStringList QIviServiceInterface::interfaces() const
+
+    Returns a list of service interface names supported by the service object instance.
+*/
 
 /*!
- * \fn QObject* QIviServiceInterface::interfaceInstance(const QString& interface) const
- *
- * Returns an object implementing the service interface requested through \a interface.
- */
+    \fn QObject* QIviServiceInterface::interfaceInstance(const QString& interface) const
+
+    Returns an object implementing the service interface requested through \a interface.
+*/
+
+QT_END_NAMESPACE

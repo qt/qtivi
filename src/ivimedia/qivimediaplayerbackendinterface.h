@@ -42,22 +42,21 @@
 #ifndef QIVIMEDIAPLAYERBACKENDINTERFACE_H
 #define QIVIMEDIAPLAYERBACKENDINTERFACE_H
 
+#include <QtIviCore/QIviFeatureInterface>
 #include <QtIviMedia/qtivimediaglobal.h>
 #include <QtIviMedia/QIviMediaPlayer>
-#include <QtCore/QObject>
 
 QT_BEGIN_NAMESPACE
 
 class QIviPlayableItem;
 
-class Q_QTIVIMEDIA_EXPORT QIviMediaPlayerBackendInterface : public QObject
+class Q_QTIVIMEDIA_EXPORT QIviMediaPlayerBackendInterface : public QIviFeatureInterface
 {
     Q_OBJECT
 
 public:
-    explicit QIviMediaPlayerBackendInterface(QObject *parent = Q_NULLPTR);
+    explicit QIviMediaPlayerBackendInterface(QObject *parent = nullptr);
 
-    virtual void initialize() = 0;
     virtual void play() = 0;
     virtual void pause() = 0;
     virtual void stop() = 0;

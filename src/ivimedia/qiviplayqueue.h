@@ -89,13 +89,13 @@ public:
     QIviPlayQueue::LoadingType loadingType() const;
     void setLoadingType(QIviPlayQueue::LoadingType loadingType);
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
-    QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role) const override;
 
-    bool canFetchMore(const QModelIndex &parent) const Q_DECL_OVERRIDE;
-    void fetchMore(const QModelIndex &parent) Q_DECL_OVERRIDE;
+    bool canFetchMore(const QModelIndex &parent) const override;
+    void fetchMore(const QModelIndex &parent) override;
 
-    QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
+    QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE QVariant get(int index) const;
 
@@ -117,7 +117,7 @@ Q_SIGNALS:
     void currentIndexChanged(int currentIndex);
 
 protected:
-    explicit QIviPlayQueue(QIviMediaPlayer *parent = Q_NULLPTR);
+    explicit QIviPlayQueue(QIviMediaPlayer *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QIviPlayQueue)

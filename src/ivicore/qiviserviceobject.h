@@ -56,12 +56,13 @@ class Q_QTIVICORE_EXPORT QIviServiceObject : public QObject, public QIviServiceI
     Q_PROPERTY(QString id READ id CONSTANT)
 
 public:
-    explicit QIviServiceObject(QObject *parent = Q_NULLPTR);
-    virtual ~QIviServiceObject();
+    explicit QIviServiceObject(QObject *parent = nullptr);
+    ~QIviServiceObject();
 
     virtual QString id() const;
 
 private:
+    QString m_id;
 };
 
 QT_END_NAMESPACE

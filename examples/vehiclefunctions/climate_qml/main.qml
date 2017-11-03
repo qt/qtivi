@@ -83,37 +83,34 @@ ApplicationWindow {
                 anchors.fill: parent
                 CheckBox {
                     text: "Windshield"
-                    checked: climateControl.airflowDirections.value & ClimateControl.Windshield
-                    enabled: climateControl.airflowDirections.availableValues.indexOf(ClimateControl.Windshield) !== -1
+                    checked: climateControl.airflowDirections & ClimateControl.Windshield
                     onClicked: {
                         if (checked)
-                            climateControl.airflowDirections.value |= ClimateControl.Windshield
+                            climateControl.airflowDirections |= ClimateControl.Windshield
                         else
-                            climateControl.airflowDirections.value &= ~ClimateControl.Windshield
+                            climateControl.airflowDirections &= ~ClimateControl.Windshield
                     }
                 }
 
                 CheckBox {
                     text: "Dashboard"
-                    checked: climateControl.airflowDirections.value & ClimateControl.Dashboard
-                    enabled: climateControl.airflowDirections.availableValues.indexOf(ClimateControl.Dashboard) !== -1
+                    checked: climateControl.airflowDirections & ClimateControl.Dashboard
                     onClicked: {
                         if (checked)
-                            climateControl.airflowDirections.value |= ClimateControl.Dashboard
+                            climateControl.airflowDirections |= ClimateControl.Dashboard
                         else
-                            climateControl.airflowDirections.value &= ~ClimateControl.Dashboard
+                            climateControl.airflowDirections &= ~ClimateControl.Dashboard
                     }
                 }
 
                 CheckBox {
                     text: "Floor"
-                    checked: climateControl.airflowDirections.value & ClimateControl.Floor
-                    enabled: climateControl.airflowDirections.availableValues.indexOf(ClimateControl.Floor) !== -1
+                    checked: climateControl.airflowDirections & ClimateControl.Floor
                     onClicked: {
                         if (checked)
-                            climateControl.airflowDirections.value |= ClimateControl.Floor
+                            climateControl.airflowDirections |= ClimateControl.Floor
                         else
-                            climateControl.airflowDirections.value &= ~ClimateControl.Floor
+                            climateControl.airflowDirections &= ~ClimateControl.Floor
                     }
                 }
             }
@@ -121,31 +118,28 @@ ApplicationWindow {
 
         CheckBox {
             text: "Air Condition"
-            checked: climateControl.airConditioning.value
-            enabled: climateControl.airConditioning.available
+            checked: climateControl.airConditioningEnabled
             onClicked: {
-                    climateControl.airConditioning.value = checked
+                    climateControl.airConditioningEnabled = checked
             }
         }
 
         CheckBox {
             text: "Heater"
-            checked: climateControl.heater.value
-            enabled: climateControl.heater.available
+            checked: climateControl.heaterEnabled
             onClicked: {
-                    climateControl.heater.value = checked
+                    climateControl.heaterEnabled = checked
             }
         }
 
         CheckBox {
             text: "Air Recirculation"
-            checked: climateControl.recirculationMode.value === ClimateControl.RecirculationOn
-            enabled: climateControl.airRecirculation.available
+            checked: climateControl.recirculationMode === ClimateControl.RecirculationOn
             onClicked: {
                 if (checked)
-                    climateControl.recirculationMode.value = ClimateControl.RecirculationOn
+                    climateControl.recirculationMode = ClimateControl.RecirculationOn
                 else
-                    climateControl.recirculationMode.value = ClimateControl.RecirculationOff
+                    climateControl.recirculationMode = ClimateControl.RecirculationOff
             }
         }
 
@@ -157,12 +151,9 @@ ApplicationWindow {
                 }
 
                 SpinBox {
-                    value: climateControl.fanSpeedLevel.value
-                    minimumValue: climateControl.fanSpeedLevel.minimumValue
-                    maximumValue: climateControl.fanSpeedLevel.maximumValue
-                    enabled: climateControl.fanSpeedLevel.available
+                    value: climateControl.fanSpeedLevel
                     onValueChanged: {
-                        climateControl.fanSpeedLevel.value = value
+                        climateControl.fanSpeedLevel = value
                     }
                 }
             }
@@ -175,12 +166,9 @@ ApplicationWindow {
                 }
 
                 SpinBox {
-                    value: climateControl.steeringWheelHeater.value
-                    minimumValue: climateControl.steeringWheelHeater.minimumValue
-                    maximumValue: climateControl.steeringWheelHeater.maximumValue
-                    enabled: climateControl.steeringWheelHeater.available
+                    value: climateControl.steeringWheelHeater
                     onValueChanged: {
-                        climateControl.steeringWheelHeater.value = value
+                        climateControl.steeringWheelHeater = value
                     }
                 }
             }
@@ -199,12 +187,9 @@ ApplicationWindow {
                         }
 
                         SpinBox {
-                            value: climateControl.zoneAt.FrontLeft.targetTemperature.value
-                            minimumValue: climateControl.zoneAt.FrontLeft.targetTemperature.minimumValue
-                            maximumValue: climateControl.zoneAt.FrontLeft.targetTemperature.maximumValue
-                            enabled: climateControl.zoneAt.FrontLeft.targetTemperature.available
+                            value: climateControl.zoneAt.FrontLeft.targetTemperature
                             onValueChanged: {
-                                climateControl.zoneAt.FrontLeft.targetTemperature.value = value
+                                climateControl.zoneAt.FrontLeft.targetTemperature = value
                             }
                         }
                     }
@@ -217,12 +202,9 @@ ApplicationWindow {
                         }
 
                         SpinBox {
-                            value: climateControl.zoneAt.FrontLeft.seatHeater.value
-                            minimumValue: climateControl.zoneAt.FrontLeft.seatHeater.minimumValue
-                            maximumValue: climateControl.zoneAt.FrontLeft.seatHeater.maximumValue
-                            enabled: climateControl.zoneAt.FrontLeft.seatHeater.available
+                            value: climateControl.zoneAt.FrontLeft.seatHeater
                             onValueChanged: {
-                                climateControl.zoneAt.FrontLeft.seatHeater.value = value
+                                climateControl.zoneAt.FrontLeft.seatHeater = value
                             }
                         }
                     }
@@ -240,12 +222,9 @@ ApplicationWindow {
                         }
 
                         SpinBox {
-                            value: climateControl.zoneAt.FrontRight.targetTemperature.value
-                            minimumValue: climateControl.zoneAt.FrontRight.targetTemperature.minimumValue
-                            maximumValue: climateControl.zoneAt.FrontRight.targetTemperature.maximumValue
-                            enabled: climateControl.zoneAt.FrontRight.targetTemperature.available
+                            value: climateControl.zoneAt.FrontRight.targetTemperature
                             onValueChanged: {
-                                climateControl.zoneAt.FrontRight.targetTemperature.value = value
+                                climateControl.zoneAt.FrontRight.targetTemperature = value
                             }
                         }
                     }
@@ -258,12 +237,9 @@ ApplicationWindow {
                         }
 
                         SpinBox {
-                            value: climateControl.zoneAt.FrontRight.seatHeater.value
-                            minimumValue: climateControl.zoneAt.FrontRight.seatHeater.minimumValue
-                            maximumValue: climateControl.zoneAt.FrontRight.seatHeater.maximumValue
-                            enabled: climateControl.zoneAt.FrontRight.seatHeater.available
+                            value: climateControl.zoneAt.FrontRight.seatHeater
                             onValueChanged: {
-                                climateControl.zoneAt.FrontRight.seatHeater.value = value
+                                climateControl.zoneAt.FrontRight.seatHeater = value
                             }
                         }
                     }
@@ -281,12 +257,9 @@ ApplicationWindow {
                         }
 
                         SpinBox {
-                            value: climateControl.zoneAt.Rear.targetTemperature.value
-                            minimumValue: climateControl.zoneAt.Rear.targetTemperature.minimumValue
-                            maximumValue: climateControl.zoneAt.Rear.targetTemperature.maximumValue
-                            enabled: climateControl.zoneAt.Rear.targetTemperature.available
+                            value: climateControl.zoneAt.Rear.targetTemperature
                             onValueChanged: {
-                                climateControl.zoneAt.Rear.targetTemperature.value = value
+                                climateControl.zoneAt.Rear.targetTemperature = value
                             }
                         }
                     }
@@ -299,12 +272,9 @@ ApplicationWindow {
                         }
 
                         SpinBox {
-                            value: climateControl.zoneAt.Rear.seatHeater.value
-                            minimumValue: climateControl.zoneAt.Rear.seatHeater.minimumValue
-                            maximumValue: climateControl.zoneAt.Rear.seatHeater.maximumValue
-                            enabled: climateControl.zoneAt.Rear.seatHeater.available
+                            value: climateControl.zoneAt.Rear.seatHeater
                             onValueChanged: {
-                                climateControl.zoneAt.Rear.seatHeater.value = value
+                                climateControl.zoneAt.Rear.seatHeater = value
                             }
                         }
                     }

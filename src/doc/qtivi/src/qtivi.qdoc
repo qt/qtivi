@@ -55,11 +55,13 @@
     features. It can be used to develop automotive applications and to provide
     automotive features to Qt-based applications in a structured manner.
 
+    \section1 Important Topics
+
     \list
+    \li \l{Configuration}
+    \li \l{Concepts}
     \li \l{Using the Qt IVI Reference API}
-    \li \l{Extending Qt IVI}
-    \li \l{The Qt IVI Attribute System}
-    \li \l{The Qt IVI Query Language}
+    \li \l{QtIvi Backends}{Available Backends}
     \endlist
 
     \section1 Modules
@@ -101,4 +103,19 @@
       \li \l {Qt IVI QML Types}
       \li \l {Qt IVI Examples}
     \endlist
+
+    \section1 Licenses and Attributions
+
+    Qt IVI is available under commercial Qt Automotive Suite licenses.
+    In addition, it is available under the \l{GNU Lesser General Public License, version 3}, or
+    See \l{Qt Licensing} for further details.
+
+    Executables on Windows potentially link against \l{The qtmain Library}. This library is available
+    under commercial licenses, and in addition under the \l{BSD 3-clause "New" or "Revised" License}.
+
+    Furthermore Qt IVI potentially contains third party modules under following
+    permissive licenses:
+
+    \generatelist{groupsbymodule attributions-qtivi}
+
 */

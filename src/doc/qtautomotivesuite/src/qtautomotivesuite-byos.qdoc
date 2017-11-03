@@ -1,0 +1,195 @@
+/****************************************************************************
+**
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the documentation of the Qt Automotive Suite.
+**
+** $QT_BEGIN_LICENSE:FDL-QTAS$
+** Commercial License Usage
+** Licensees holding valid commercial Qt Automotive Suite licenses may use
+** this file in accordance with the commercial license agreement provided
+** with the Software or, alternatively, in accordance with the terms
+** contained in a written agreement between you and The Qt Company.  For
+** licensing terms and conditions see https://www.qt.io/terms-conditions.
+** For further information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \page qtautomotive-byos.html
+    \title Building Your Own NVIDIA DRIVE CX Image
+    \previouspage qtas-preparing-hardware-drivecx.html
+    \nextpage {Qt Automotive Suite Overview}{Overview}
+
+    \QAS is built on top of the \l{About Boot to Qt}{Boot to Qt} software stack
+    for embedded Linux systems. Boot to Qt for embedded Linux is built using the
+    tools and resources from the \l{Yocto Project}, and is based on Yocto's reference
+    distribution. You can use the same tools to build custom Boot to Qt images,
+    and have control over which packages are included in the build and how the
+    software stack is configured.
+
+    To build your own NVIDIA DRIVE CX image, follow the steps in this topic.
+    For more information about building the Boot to Qt image, see
+    \l{Building Your Own Embedded Linux Image}.
+
+    \note Building your own NVIDIA DRIVE CX image is supported only in Linux.
+
+    \section1 Requirements
+
+    You should be familiar with the Yocto tools and the concept of
+    \e {recipes}. For more information, see
+    \l{Yocto Project Documentation for the Latest Release}.
+
+    Your \QAS installation must include Yocto meta layer components. To install
+    those, select \uicontrol {Qt Automotive Suite}
+    > \uicontrol {Qt for Automotive Software Stack} > \uicontrol {Components}
+    > \uicontrol {Yocto meta layer} in the Qt online installation wizard.
+
+    \image qtas-yocto.png
+
+    After a successful installation, you will find the Yocto meta layer under the path
+    <Qt installation directory>/<Qt version>/Automotive/sources/meta-boot2qt.
+
+    Install dependencies for the Yocto tools. In Ubuntu, the following
+    packages are required:
+
+    \badcode
+        sudo apt-get install gawk curl git-core diffstat unzip p7zip-full texinfo \
+        gcc-multilib build-essential chrpath libsdl1.2-dev xterm gperf bison \
+        g++-multilib
+    \endcode
+
+    Download NVIDIA DRIVE CX Platform Development Kit (PDK) from the NVIDIA site.
+    In order to get access to PDK, you need a valid NVIDIA license.
+    For more information, see \l{NVIDIA DRIVE™ CX}. The required PDK version is 4.1.4.0.
+
+    \section1 Setting Up Build Environment
+
+    Set up the NVIDIA DRIVE CX build environment:
+
+    \list 1
+        \li Extract the following packages from NVIDIA DRIVE CX PDK:
+
+        \badcode
+            vibrante-t186ref-foundation-4.1.4.0-8512955.pdk.7z
+            vibrante-t186ref-linux-4.1.4.0-8512955-pdk.7z
+        \endcode
+
+        \li For installing the documentation, run the following command in a terminal:
+
+        \badcode
+            vibrante-t186ref-foundation-4.1.4.0-8512955-RUN-THIS-FIRST-install-docs.run
+        \endcode
+        After running the command, the NVIDIA DRIVE CX documentation should
+        be started automatically.
+
+        \li In the NVIDIA DRIVE CX documentation, open the topic
+        \uicontrol {System Programming} > \uicontrol {Building the Yocto Project Based Components}
+        and extract all defined prerequisite packages.
+
+        \li Extract the following package:
+        \badcode
+           <PDK installation directory>/vibrante-t186ref-linux-4.1.4.0-8512955-pdk/vibrante-t186ref-linux_src/yocto/nvidia-layer.tgz
+        \endcode
+
+        \li Create a new directory for building the image. In our example,
+        we use the directory name \e{builddir}.
+
+        \li Run the following commands in a terminal:
+        \badcode
+            cd builddir
+            <Qt Automotive Suite installation directory>/<Qt version>/Automotive/sources/meta-boot2qt/b2qt-init-build-env init --device tegra-t18x
+        \endcode
+
+        After running the commands, you should have:
+
+        \list
+            \li A directory \e{sources} generated under \e{builddir}.
+            \li A shell script \e{setup-environment.sh} generated under \e{builddir}.
+        \endlist
+
+        \li Create the following symbolic links:
+    \endlist
+
+    \table
+        \header
+            \li A symbolic link name
+            \li A source folder path
+            \li A destination folder path
+        \row
+            \li nvidia-layer
+            \li <PDK installation directory>/vibrante-t186ref-linux-4.1.4.0-8512955-pdk/vibrante-t186ref-linux_src/yocto/layers
+            \li builddir/sources/meta-boot2qt/sources
+        \row
+            \li vibrante-t186
+            \li <PDK installation directory>/vibrante-t186ref-linux-4.1.4.0-8512955-pdk
+            \li builddir/sources/meta-boot2qt/sources
+    \endtable
+
+    \e{builddir} is the directory that you created for building the image.
+
+    \section1 Configuring Build Environment
+
+    Configure the build environment for NVIDIA DRIVE CX by running the
+    following commands in a terminal:
+
+    \badcode
+        cd builddir
+        export MACHINE=tegra-t18x
+        source ./setup-environment.sh
+    \endcode
+
+    \e{builddir} is the directory you created for building the image.
+
+    After running \e{setup-environment.sh}, your current directory in a terminal
+    is \e{builddir/build-tegra-t18x}. There you can build an image and/or
+    a toolchain for NVIDIA DRIVE CX. The toolchain can be used with Qt Creator
+    for building Qt applications.
+
+    \section1 Building Image
+
+    Build the NVIDIA DRIVE CX image by running the following commands in a terminal:
+
+    \badcode
+        cd builddir/build-tegra-t18x
+        bitbake b2qt-automotive-qt5-image
+    \endcode
+
+    You will find the built image file \e{b2qt-automotive-qt5-image-tegra-t18x.7z}
+    under the path builddir/tmp/deploy/images/tegra-t18x.
+
+    \section1 Building Toolchain
+
+    Build the NVIDIA DRIVE CX toolchain by running the following commands in a terminal:
+
+    \badcode
+        cd builddir/build-tegra-t18x
+        bitbake meta-toolchain-b2qt-automotive-qt5-sdk
+    \endcode
+
+    After building the toolchain, you will find the shell script
+    \e{b2qt-x86-64-meta-toolchain-b2qt-automotive-qt5-sdk-tegra-t18x.sh}
+    under the path builddir/tmp/deploy/sdk/. Install the toolchain by running
+    the shell script.
+
+    \section1 Using Toolchain
+
+    After installing the toolchain, you can use it with or without Qt Creator.
+
+    If you are using the toolchain with Qt Creator, you need to configure
+    Qt Creator for the toolchain. See \l{Configuring Qt Creator}.
+    If you are using the toolchain without Qt Creator,
+    see \l{Using Toolchain without Qt Creator}.
+
+*/
+

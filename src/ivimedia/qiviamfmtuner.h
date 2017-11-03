@@ -64,7 +64,7 @@ class Q_QTIVIMEDIA_EXPORT QIviAmFmTuner : public QIviAbstractFeature
     Q_PROPERTY(bool scanRunning READ isScanRunning NOTIFY scanRunningChanged)
 
 public:
-    explicit QIviAmFmTuner(QObject *parent = Q_NULLPTR);
+    explicit QIviAmFmTuner(QObject *parent = nullptr);
 
     enum Band {
         AMBand,
@@ -105,10 +105,10 @@ Q_SIGNALS:
     void scanStopped();
 
 protected:
-    QIviAmFmTuner(QIviAmFmTunerPrivate &dd, QObject *parent = Q_NULLPTR);
+    QIviAmFmTuner(QIviAmFmTunerPrivate &dd, QObject *parent = nullptr);
 
-    virtual void connectToServiceObject(QIviServiceObject *serviceObject) Q_DECL_OVERRIDE;
-    virtual void clearServiceObject() Q_DECL_OVERRIDE;
+    virtual void connectToServiceObject(QIviServiceObject *serviceObject) override;
+    virtual void clearServiceObject() override;
 
 private:
     Q_DECLARE_PRIVATE(QIviAmFmTuner)

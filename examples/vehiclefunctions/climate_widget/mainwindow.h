@@ -70,17 +70,13 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private slots:
     void setAirRecirculationEnabled(bool enabled);
-    void onAirRecirculationModeChanged(QIviClimateControl::RecirculationMode mode);
-    void onAirRecirculationAttributeChanged(const QIviPropertyAttribute<QIviClimateControl::RecirculationMode> &attribute);
-    void onHeaterAttributeChanged(const QIviPropertyAttribute<bool> &attribute);
-    void onAirConditioningAttributeChanged(const QIviPropertyAttribute<bool> &attribute);
-    void setupFlowDirectionRadioButtons(QIviClimateControl::AirflowDirections direction);
-    void setupFlowDirectionAttribute(const QIviPropertyAttribute<QIviClimateControl::AirflowDirections> &attribute);
+    void onAirRecirculationModeChanged(QtIviVehicleFunctionsModule::RecirculationMode mode);
+    void setupFlowDirectionRadioButtons(QtIviVehicleFunctionsModule::AirflowDirections direction);
     void onFlowDirectionButtonToggled(QAbstractButton *button, bool checked);
 private:
 

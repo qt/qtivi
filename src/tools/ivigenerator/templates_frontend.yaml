@@ -1,0 +1,36 @@
+generate_rules:
+    module_rules:
+        - dest_file:  "{{module.module_name|lower}}global.h"
+          template_file:  "global.h.tpl"
+        - dest_file:  "{{module.module_name|lower}}module.h"
+          template_file:  "module.h.tpl"
+        - dest_file:  "{{module.module_name|lower}}module.cpp"
+          template_file:  "module.cpp.tpl"
+        - dest_file:  "{{module.module_name|lower}}modulefactory.h"
+          template_file:  "modulefactory.h.tpl"
+        - dest_file:  "{{module.module_name|lower}}modulefactory.cpp"
+          template_file:  "modulefactory.cpp.tpl"
+        - dest_file:  "{{srcBase|lower}}.pri"
+          template_file:  "module.pri.tpl"
+    interface_rules:
+        - dest_file: '{{interface|lower}}backendinterface.h'
+          template_file: 'backendinterface.h.tpl'
+        - dest_file: '{{interface|lower}}backendinterface.cpp'
+          template_file: 'backendinterface.cpp.tpl'
+        - dest_file: '{{interface|lower}}.h'
+          template_file: 'interface.h.tpl'
+        - dest_file: '{{interface|lower}}_p.h'
+          template_file: 'interface_p.h.tpl'
+        - dest_file: '{{interface|lower}}.cpp'
+          template_file: 'interface.cpp.tpl'
+    struct_rules:
+        - dest_file: '{{struct|lower}}.h'
+          template_file: 'struct.h.tpl'
+        - dest_file: '{{struct|lower}}.cpp'
+          template_file: 'struct.cpp.tpl'
+        - dest_file: '{{struct|lower}}model.h'
+          template_file: 'structmodel.h.tpl'
+        - dest_file: '{{struct|lower}}model_p.h'
+          template_file: 'structmodel_p.h.tpl'
+        - dest_file: '{{struct|lower}}model.cpp'
+          template_file: 'structmodel.cpp.tpl'

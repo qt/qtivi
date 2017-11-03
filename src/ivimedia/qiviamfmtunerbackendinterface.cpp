@@ -41,11 +41,14 @@
 
 #include "qiviamfmtunerbackendinterface.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QIviAmFmTunerBackendInterface
     \inmodule QtIviMedia
     \ingroup backends
     \inherits QObject
+    \keyword org.qt-project.qtivi.AmFmTuner/1.0
     \brief The QIviAmFmTunerBackendInterface defines the interface for backends to the
     QIviAmFmTuner feature class.
 
@@ -62,16 +65,9 @@
     The \a parent is sent to the QObject constructor.
 */
 QIviAmFmTunerBackendInterface::QIviAmFmTunerBackendInterface(QObject *parent)
-    : QObject(parent)
+    : QIviFeatureInterface(parent)
 {
 }
-
-/*!
-    \fn QIviAmFmTunerBackendInterface::initialize()
-
-    Initializes the backend. This function is called, after a feature connected to the backend.
-    It is expected that this function will inform about the current state of the backend by emitting signals with the current status.
-*/
 
 /*!
     \fn QIviAmFmTunerBackendInterface::setFrequency(int frequency)
@@ -199,3 +195,5 @@ QIviAmFmTunerBackendInterface::QIviAmFmTunerBackendInterface(QObject *parent)
 
     \sa startScan() stopScan()
 */
+
+QT_END_NAMESPACE

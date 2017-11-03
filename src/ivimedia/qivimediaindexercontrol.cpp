@@ -45,6 +45,8 @@
 #include <QIviServiceObject>
 #include <QtDebug>
 
+QT_BEGIN_NAMESPACE
+
 QIviMediaIndexerControlPrivate::QIviMediaIndexerControlPrivate(const QString &interface, QIviMediaIndexerControl *parent)
     : QIviAbstractFeaturePrivate(interface, parent)
     , q_ptr(parent)
@@ -128,13 +130,14 @@ QIviMediaIndexerControlBackendInterface *QIviMediaIndexerControlPrivate::indexer
 */
 
 /*!
-   Constructs a QIviMediaIndexerControl.
+    Constructs a QIviMediaIndexerControl.
 
-   The \a parent argument is passed on to the \l QIviAbstractFeature base class.
+    The \a parent argument is passed on to the \l QIviAbstractFeature base class.
 */
 QIviMediaIndexerControl::QIviMediaIndexerControl(QObject *parent)
     : QIviAbstractFeature(*new QIviMediaIndexerControlPrivate(QLatin1String(QIviMediaIndexer_iid), this), parent)
 {
+    qRegisterMetaType<QIviMediaIndexerControl::State>();
 }
 
 /*!
@@ -142,13 +145,13 @@ QIviMediaIndexerControl::QIviMediaIndexerControl(QObject *parent)
     \brief Holds the progress of the indexing operation.
 
     The value is between \e 0 and \e 1.
- */
+*/
 /*!
     \property QIviMediaIndexerControl::progress
     \brief Holds the progress of the indexing operation.
 
     The value is between \e 0 and \e 1.
- */
+*/
 qreal QIviMediaIndexerControl::progress() const
 {
     Q_D(const QIviMediaIndexerControl);
@@ -168,11 +171,11 @@ qreal QIviMediaIndexerControl::progress() const
            The indexer is paused, due to a call to pause().
     \value Error
            An error has occurred during the indexing operation.
- */
+*/
 /*!
     \property QIviMediaIndexerControl::state
     \brief Holds the current state of the indexer.
- */
+*/
 QIviMediaIndexerControl::State QIviMediaIndexerControl::state() const
 {
     Q_D(const QIviMediaIndexerControl);
@@ -249,6 +252,8 @@ void QIviMediaIndexerControl::connectToServiceObject(QIviServiceObject *serviceO
     QObjectPrivate::connect(backend, &QIviMediaIndexerControlBackendInterface::stateChanged,
                             d, &QIviMediaIndexerControlPrivate::onStateChanged);
 
+    QIviAbstractFeature::connectToServiceObject(serviceObject);
+
     backend->initialize();
 }
 
@@ -260,5 +265,7 @@ void QIviMediaIndexerControl::clearServiceObject()
     Q_D(QIviMediaIndexerControl);
     d->clearToDefaults();
 }
+
+QT_END_NAMESPACE
 
 #include "moc_qivimediaindexercontrol.cpp"

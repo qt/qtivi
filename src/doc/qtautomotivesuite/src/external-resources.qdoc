@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the documentation of the Qt Automotive Suite.
@@ -28,6 +28,11 @@
 /*!
     \externalpage http://www.genivi.org/
     \title GENIVI
+*/
+
+/*!
+    \externalpage http://doc.qt.io/
+    \title Qt Reference Documentation
 */
 
 /*!
@@ -113,4 +118,74 @@
 /*!
     \externalpage https://doc.qt.io/QtGENIVIExtras/index.html
     \title Qt GENIVI Extras
+*/
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-supported-platforms.html#supported-target-device-groups
+    \title Supported Target Devices
+*/
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-supported-platforms.html#supported-development-hosts
+    \title Supported Development Hosts
+*/
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-requirements-x11.html
+    \title Requirements for Linux/X11
+*/
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-requirements-windows.html
+    \title Requirements for Windows
+*/
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-building-and-running.html#building-and-running-an-example
+    \title Building and Running an Example
+*/
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-custom-embedded-linux-image.html
+    \title Building Your Own Embedded Linux Image
+*/
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-about-b2qt.html
+    \title About Boot to Qt
+*/
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-custom-embedded-linux-image.html#configuring-qt-creator
+    \title Configuring Qt Creator
+*/
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-custom-embedded-linux-image.html#using-toolchain-without-qt-creator
+    \title Using Toolchain without Qt Creator
+*/
+
+/*!
+    \externalpage http://www.yoctoproject.org/
+    \title Yocto Project
+*/
+
+/*!
+    \externalpage http://www.yoctoproject.org/documentation/current
+    \title Yocto Project Documentation for the Latest Release
+*/
+
+/*!
+    \externalpage http://www.nvidia.com/object/drive-cx-request.html
+    \title NVIDIA DRIVE™ CX
+*/
+
+/*!
+    \externalpage http://doc.qt.io/emulator/
+    \title Emulator
+*/
+
+/*!
+    \externalpage http://doc.qt.io/qtcreator/creator-overview-qtasam.html
+    \title Qt Creator Application Manager Plugin
 */

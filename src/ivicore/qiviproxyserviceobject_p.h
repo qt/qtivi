@@ -60,12 +60,14 @@ QT_BEGIN_NAMESPACE
 
 class QIviProxyServiceObject : public QIviServiceObject
 {
+    Q_OBJECT
+
 public:
-    QIviProxyServiceObject(QIviServiceInterface *interface);
-    virtual ~QIviProxyServiceObject();
+    explicit QIviProxyServiceObject(QIviServiceInterface *interface);
+    ~QIviProxyServiceObject();
 
     virtual QStringList interfaces() const;
-    virtual QObject *interfaceInstance(const QString &interface) const;
+    virtual QIviFeatureInterface *interfaceInstance(const QString &interface) const;
 
 private:
 

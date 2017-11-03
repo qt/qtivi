@@ -36,6 +36,8 @@
 
 class WindowControlTestBackend : public QIviWindowControlBackendInterface
 {
+    Q_OBJECT
+
 public:
     WindowControlTestBackend()
         : QIviWindowControlBackendInterface()
@@ -57,12 +59,12 @@ public:
         m_zoneMap.insert("Rear", zone);
     }
 
-    QStringList availableZones() const Q_DECL_OVERRIDE
+    QStringList availableZones() const override
     {
         return m_zoneMap.keys();
     }
 
-    void initializeAttributes() Q_DECL_OVERRIDE
+    void initialize() override
     {
         const QStringList zones = availableZones();
         //zones.removeLast(); // Do not init zone "Dummy"
@@ -82,7 +84,7 @@ public:
 
 public:
 
-    void setHeaterMode(QIviWindowControl::HeaterMode value, const QString &zone) Q_DECL_OVERRIDE
+    void setHeaterMode(QIviWindowControl::HeaterMode value, const QString &zone) override
     {
         if (!m_zoneMap.contains(zone))
             return;
@@ -126,7 +128,7 @@ public:
         }
     }
 
-    void setBlindMode(QIviWindowControl::BlindMode value, const QString &zone) Q_DECL_OVERRIDE
+    void setBlindMode(QIviWindowControl::BlindMode value, const QString &zone) override
     {
         if (!m_zoneMap.contains(zone))
             return;
@@ -194,12 +196,12 @@ public:
     }
 
     //TODO add an autotest for this
-    void open(const QString &zone)
+    void open(const QString &zone) override
     {
         Q_UNUSED(zone)
     }
 
-    void close(const QString &zone)
+    void close(const QString &zone) override
     {
         Q_UNUSED(zone)
     }
@@ -226,10 +228,12 @@ private:
 typedef QIviPropertyTestData<QIviWindowControl, WindowControlTestBackend, QIviWindowControl::State> WindowControlTestDataState;
 Q_DECLARE_METATYPE(WindowControlTestDataState)
 
-class WindowControlTestServiceObject : public QIviServiceObject {
+class WindowControlTestServiceObject : public QIviServiceObject
+{
+    Q_OBJECT
 
 public:
-    explicit WindowControlTestServiceObject(QObject *parent=0) :
+    explicit WindowControlTestServiceObject(QObject *parent = nullptr) :
         QIviServiceObject(parent), m_name(QLatin1String(""))
     {
         m_backend = new WindowControlTestBackend;
@@ -238,7 +242,7 @@ public:
 
     QString name() const { return m_name; }
     QStringList interfaces() const { return m_interfaces; }
-    QObject *interfaceInstance(const QString& interface) const
+    QIviFeatureInterface *interfaceInstance(const QString& interface) const
     {
         if (interface == QIviWindowControl_iid)
             return testBackend();
@@ -257,23 +261,40 @@ private:
     WindowControlTestBackend *m_backend;
 };
 
-class WindowControlInvalidServiceObject : public QIviServiceObject {
+class InvalidInterface : public QIviFeatureInterface
+{
+    Q_OBJECT
 
 public:
-    explicit WindowControlInvalidServiceObject(QObject *parent=0) :
-        QIviServiceObject(parent), m_name(QLatin1String("")), m_dummyBackend(new QObject(this))
+    InvalidInterface(QObject *parent)
+        : QIviFeatureInterface(parent)
+    {}
+
+    void initialize() override
+    {
+        emit initializationDone();
+    }
+};
+
+class WindowControlInvalidServiceObject : public QIviServiceObject
+{
+    Q_OBJECT
+
+public:
+    explicit WindowControlInvalidServiceObject(QObject *parent = nullptr) :
+        QIviServiceObject(parent), m_name(QLatin1String("")), m_dummyBackend(new InvalidInterface(this))
     {
         m_interfaces << QIviWindowControl_iid;
     }
 
     QString name() const { return m_name; }
     QStringList interfaces() const { return m_interfaces; }
-    QObject *interfaceInstance(const QString& ) const { return m_dummyBackend; }
+    QIviFeatureInterface *interfaceInstance(const QString& ) const { return m_dummyBackend; }
 
 private:
     QString m_name;
     QStringList m_interfaces;
-    QObject *m_dummyBackend;
+    QIviFeatureInterface *m_dummyBackend;
 };
 
 class WindowControlTest : public QObject
@@ -360,7 +381,7 @@ void WindowControlTest::testClearServiceObject()
     QIviWindowControl *zone = qobject_cast<QIviWindowControl*>(wc.zoneAt("FrontLeft"));
     QVERIFY(zone);
     QCOMPARE(zone->heaterMode(), QIviWindowControl::HeaterOn);
-    wc.setServiceObject(0);
+    wc.setServiceObject(nullptr);
     QVERIFY(!wc.zoneAt("FrontLeft"));
 }
 

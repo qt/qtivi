@@ -28,6 +28,8 @@
 \page query-language.html
 \title The Qt IVI Query Language
 \keyword Qt IVI Query Language
+\previouspage Models
+\contentspage Concepts
 
 Automotive systems are getting bigger and bigger and with it also the feature-set in areas like
 entertainment or connectivity. Modern system can handle phone calls, access the mobile phone's addressbook, and have a mediaplayer

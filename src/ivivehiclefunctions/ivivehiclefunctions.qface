@@ -1,0 +1,265 @@
+@config: { qml_name: "QtIvi.VehicleFunctions", interfaceBuilder: "vehicleFunctionsInterfaceBuilder" }
+module QtIviVehicleFunctions 1.0;
+
+/**
+ * @brief Provides an interface to the climate control.
+ *
+ * The QIviClimateControl provides an interface to the climate control of the vehicle.
+ *
+ * The climate control properties are divided into two categories: central or zoned. The central
+ * properties are exposed directly through the QIviClimateControl and the zoned properties are
+ * exposed through zone objects. The zones are retrieved using the \l zoneAt method.
+ *
+ * The QIviClimateControl expects a single backend to be available. It is recommended to use it
+ * with \l {QIviAbstractFeature::}{discoveryMode} set to \l AutoDiscovery.
+ */
+@config: { zoned: true, id: "org.qt-project.qtivi.ClimateControl/1.0", qml_type: "ClimateControl" }
+interface QIviClimateControl {
+    /**
+     * Holds whether the air conditioning is enabled.
+     */
+    @config: { getter_name: "isAirConditioningEnabled" }
+    bool airConditioningEnabled;
+    /**
+     * Indicates whether the heater is enabled.
+     */
+    @config: { getter_name: "isHeaterEnabled" }
+    bool heaterEnabled;
+    /**
+     * Holds the fan speed level, where the level can be between
+     * minimumValue(off) to maximumValue (strongest).
+     */
+    @config_simulator: { range: [0, 50] }
+    int fanSpeedLevel;
+    /**
+     * Holds the steering wheel heater level, where the level can
+     * be between minimumValue(off) to maximumValue (warmest).
+     */
+    @config_simulator: { minimum: 0 }
+    int steeringWheelHeater;
+    /**
+     * Holds the target temperature of the zone expressed
+     * in centigrades, where the temperature can be between
+     * minimumValue(coolest) to maximumValue (warmest).
+     */
+    @config_simulator: { maximum: 30.0 }
+    real targetTemperature;
+    /**
+     * Holds the seat cooler level, where the level can be
+     * between minimumValue(off) to maximumValue (coolest).
+     */
+    int seatCooler;
+    /**
+     * Holds the seat heater level, where the level can be between
+     * minimumValue(off) to maximumValue (warmest).
+     */
+    int seatHeater;
+    /**
+     * Holds the outside temperature of the zone expressed in
+     * centigrades, where the temperature can be between
+     * minimumValue(coolest) to maximumValue (warmest).
+     */
+    int outsideTemperature;
+    /**
+     * The outside temperature expressed as a string, e.g. "mild"
+     */
+    @config_simulator: { domain: ["cold", "mild", "warm" ] }
+    string outsideTemperatureLabel;
+    /**
+     * Indicates whether the zone synchronization is enabled.
+     *
+     * Which zones and properties are synchronized is controlled
+     * by the backend implementing it.
+     */
+    @config: { getter_name: "isZoneSynchronizationEnabled" }
+    bool zoneSynchronizationEnabled;
+    /**
+     * Indicates whether the defrost mode is enabled. Usually that means that the fans
+     * are on the highest level to remove ice from the windshield.
+     */
+    @config: { getter_name: "isDefrostEnabled" }
+    bool defrostEnabled;
+    /**
+     * Holds the current recirculation mode
+     */
+    RecirculationMode recirculationMode;
+    /**
+     * Indicates whether the recirculation is currently running.
+     */
+    @config: { getter_name: "isRecirculationEnabled" }
+    bool recirculationEnabled;
+    /**
+     * Holds the sensitivity level of the recirculation
+     * system when the recirculationMode is set to AutoRecirculation,
+     * where the level can be between minimumValue(least sensitive)
+     * to maximumValue(most sensitive).
+     */
+    int recirculationSensitivityLevel;
+    /**
+     * value holds the climate mode
+     */
+    ClimateMode climateMode;
+    /**
+     * Holds the intensity level of the fan when the climateMode
+     * is set to AutoClimate, where the level can be between
+     * minimumValue(least intensity) to maximumValue(most intensity).
+     */
+    int automaticClimateFanIntensityLevel;
+    /**
+     * Holds the combination of flags indicating the areas
+     * where airflow is on.
+     */
+    AirflowDirection airflowDirections;
+}
+
+/**
+ * Controls where the airflow goes
+ */
+flag AirflowDirection {
+    /**
+     * Direct airflow along the windshield.
+     */
+    Windshield = 1,
+    /**
+     * Direct airflow through the dashboard.
+     */
+    Dashboard = 2,
+    /**
+     * Direct airflow to the floor.
+     */
+    Floor = 4
+}
+
+/**
+ * Indicates the current mode of the recirculation system
+ */
+enum RecirculationMode {
+    /**
+     * The recirculation is turned off.
+     */
+    RecirculationOff = 0x0,
+    /**
+     * The recirculation is turned on.
+     */
+    RecirculationOn = 0x1,
+    /**
+     * The recirculation is turning off and on automatically depending on the air quality.
+     */
+    AutoRecirculation = 0x2
+}
+
+/**
+ * Indicates the current mode of the climate system
+ */
+enum ClimateMode {
+    /**
+     * The climate system is turned off.
+     */
+    ClimateOff = 0x0,
+    /**
+     * The climate system is turned on.
+     */
+    ClimateOn = 0x1,
+    /**
+     * The climate system is in automatic mode and is adjusting some parts of the system automatically. E.g. lower the fan speed when the targetTemperature is reached.
+     */
+    AutoClimate = 0x2
+}
+
+/**
+ * @brief Provides an interface to the window control.
+ *
+ * The QIviWindowControl provides an interface to control the physical windows of the vehicle.
+ *
+ * All properties are exposed through zone objects. The zones are retrieved using the \l zoneAt method.
+ *
+ * The QIviWindowControl expects a single backend to be available. It is recommended to use it
+ * with \l {QIviAbstractFeature::}{discoveryMode} set to \l AutoDiscovery.
+ */
+@config: { zoned: true, id: "org.qt-project.qtivi.WindowControl/1.0", qml_type: "WindowControl" }
+interface QIviWindowControl {
+
+    /**
+     * Holds the current mode of the window heater.
+     */
+    HeaterMode heaterMode;
+    /**
+     * Indicates whether the window heater is currently running.
+     */
+    readonly bool heater;
+    /**
+     * Holds the current state of the window.
+     */
+    readonly WindowState state;
+    /**
+     * Holds the current mode of the window blind.
+     */
+    BlindMode blindMode;
+    /**
+     * Holds the current state of the window blind.
+     */
+    readonly WindowState blindState;
+
+    /**
+     * Opens the window, if not already in the QIviWindowControl::FullyOpen state.
+     */
+    void open();
+    /**
+     * Closes the window, if not already in the QIviWindowControl::Closed state.
+     */
+    void close();
+}
+
+/**
+ * Indicates the current mode of the window heater
+ */
+enum HeaterMode {
+    /**
+     * The window heater is turned on.
+     */
+    HeaterOn,
+    /**
+     * The window heater is turned off.
+     */
+    HeaterOff,
+    /**
+     * The window heater is turning off and on automatically.
+     */
+    AutoHeater
+}
+
+/**
+ * Indicates the current mode of the window blind
+ */
+enum BlindMode {
+    /**
+     * The blind will be opened.
+     */
+    BlindOpen,
+    /**
+     * The blind will be closed.
+     */
+    BlindClosed,
+    /**
+     * The blind is opened or closed automatically.
+     */
+    AutoBlind
+}
+
+/**
+ * The state of the window
+ */
+enum WindowState {
+    /**
+     * The object is fully open.
+     */
+    FullyOpen,
+    /**
+     * The object is open, but not fully open yet.
+     */
+    Open,
+    /**
+     * The object is closed.
+     */
+    Closed
+}

@@ -60,10 +60,10 @@ class MediaPlugin : public QObject, QIviServiceInterface
     Q_INTERFACES(QIviServiceInterface)
 
 public:
-    explicit MediaPlugin(QObject *parent = Q_NULLPTR);
+    explicit MediaPlugin(QObject *parent = nullptr);
 
     QStringList interfaces() const;
-    QObject *interfaceInstance(const QString &interface) const;
+    QIviFeatureInterface *interfaceInstance(const QString &interface) const;
 
 private:
     MediaPlayerBackend *m_player;

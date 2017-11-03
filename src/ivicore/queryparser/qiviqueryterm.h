@@ -74,11 +74,11 @@ public:
         Or
     };
 
-    QIviConjunctionTerm();
-    virtual ~QIviConjunctionTerm();
+    explicit QIviConjunctionTerm();
+    ~QIviConjunctionTerm();
 
-    QIviAbstractQueryTerm::Type type() const Q_DECL_OVERRIDE;
-    QString toString() const Q_DECL_OVERRIDE;
+    QIviAbstractQueryTerm::Type type() const override;
+    QString toString() const override;
     Conjunction conjunction() const;
     QList<QIviAbstractQueryTerm*> terms() const;
 
@@ -95,10 +95,10 @@ class Q_QTIVICORE_EXPORT QIviScopeTerm : public QIviAbstractQueryTerm
 public:
 
     explicit QIviScopeTerm();
-    virtual ~QIviScopeTerm();
+    ~QIviScopeTerm();
 
-    QIviAbstractQueryTerm::Type type() const Q_DECL_OVERRIDE;
-    QString toString() const Q_DECL_OVERRIDE;
+    QIviAbstractQueryTerm::Type type() const override;
+    QString toString() const override;
     bool isNegated() const;
     QIviAbstractQueryTerm* term() const;
 
@@ -124,10 +124,10 @@ public:
     };
 
     explicit QIviFilterTerm();
-    virtual ~QIviFilterTerm();
+    ~QIviFilterTerm();
 
-    QIviAbstractQueryTerm::Type type() const Q_DECL_OVERRIDE;
-    QString toString() const Q_DECL_OVERRIDE;
+    QIviAbstractQueryTerm::Type type() const override;
+    QString toString() const override;
     Operator operatorType() const;
     QVariant value() const;
     QString propertyName() const;

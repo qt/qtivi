@@ -61,6 +61,7 @@ class Q_QTIVICORE_EXPORT QIviAbstractFeature : public QObject, public QQmlParser
     Q_PROPERTY(QIviAbstractFeature::DiscoveryResult discoveryResult READ discoveryResult NOTIFY discoveryResultChanged)
     Q_PROPERTY(QIviServiceObject *serviceObject READ serviceObject WRITE setServiceObject NOTIFY serviceObjectChanged)
     Q_PROPERTY(bool isValid READ isValid NOTIFY isValidChanged)
+    Q_PROPERTY(bool isInitialized READ isInitialized NOTIFY isInitializedChanged)
     Q_PROPERTY(QString error READ errorMessage NOTIFY errorChanged)
 
 public:
@@ -91,13 +92,14 @@ public:
     };
     Q_ENUM(DiscoveryResult)
 
-    explicit QIviAbstractFeature(const QString &interface, QObject *parent = Q_NULLPTR);
-    virtual ~QIviAbstractFeature();
+    explicit QIviAbstractFeature(const QString &interface, QObject *parent = nullptr);
+    ~QIviAbstractFeature();
 
     QIviServiceObject *serviceObject() const;
     QIviAbstractFeature::DiscoveryMode discoveryMode() const;
     QIviAbstractFeature::DiscoveryResult discoveryResult() const;
     bool isValid() const;
+    bool isInitialized() const;
     QIviAbstractFeature::Error error() const;
     QString errorMessage() const;
 
@@ -111,13 +113,14 @@ Q_SIGNALS:
     void discoveryModeChanged(QIviAbstractFeature::DiscoveryMode discoveryMode);
     void discoveryResultChanged(QIviAbstractFeature::DiscoveryResult discoveryResult);
     void isValidChanged(bool arg);
+    void isInitializedChanged(bool isInitialized);
     void errorChanged(QIviAbstractFeature::Error error, const QString &message);
 
 protected:
-    QIviAbstractFeature(QIviAbstractFeaturePrivate &dd, QObject *parent = Q_NULLPTR);
+    QIviAbstractFeature(QIviAbstractFeaturePrivate &dd, QObject *parent = nullptr);
 
     virtual bool acceptServiceObject(QIviServiceObject*);
-    virtual void connectToServiceObject(QIviServiceObject*) = 0;
+    virtual void connectToServiceObject(QIviServiceObject*);
     virtual void disconnectFromServiceObject(QIviServiceObject*);
     virtual void clearServiceObject() = 0;
 
@@ -136,6 +139,7 @@ private Q_SLOTS:
 
 private:
     Q_DECLARE_PRIVATE(QIviAbstractFeature)
+    Q_PRIVATE_SLOT(d_func(), void onInitializationDone())
     friend class QIviFeatureTester;
 };
 

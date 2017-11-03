@@ -1,0 +1,27 @@
+generate_rules:
+    module_rules:
+        - dest_file:  'main.cpp'
+          template_file:  'main.cpp.tpl'
+        - dest_file:  'main.qml'
+          template_file:  'main.qml.tpl'
+        - dest_file:  'qml.qrc'
+          template_file:  'qml.qrc.tpl'
+        - dest_file:  "{{srcBase|lower}}.pri"
+          template_file:  "ui.pri.tpl"
+        - dest_file:  "{{module.module_name|lower}}global.h"
+          template_file:  "global.h.tpl"
+        - dest_file:  "{{module.module_name|lower}}module.h"
+          template_file:  "module.h.tpl"
+        - dest_file:  "{{module.module_name|lower}}module.cpp"
+          template_file:  "module.cpp.tpl"
+        - dest_file:  "FlagControl.qml"
+          template_file:  "FlagControl.qml.tpl"
+        - dest_file:  "EnumControl.qml"
+          template_file:  "EnumControl.qml.tpl"
+    interface_rules:
+        - dest_file: '{{interface}}ControlUi.qml'
+          template_file: 'interface.qml.tpl'
+        - dest_file: '{{interface|lower}}.cpp'
+          template_file: 'interface.cpp.tpl'
+        - dest_file: '{{interface|lower}}.h'
+          template_file: 'interface.h.tpl'

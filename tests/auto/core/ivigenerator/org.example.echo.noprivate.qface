@@ -1,0 +1,53 @@
+/**
+ * module
+ */
+@config: {"disablePrivateIVI": true}
+module org.example.echo.noprivate 1.0
+
+/**
+ * @brief the brief
+ * @description the description
+ * continues {@link http://qt.io}
+ * @deprecated
+ * @see org.example.echo.Echo
+ * @see org.example
+ * @see http://qt.io
+ * @anything hello
+ */
+@config: {"id": "org.foo.id.1.0"}
+interface Echo {
+    /**
+     * @brief brief message
+     * @details long message
+     *
+     * @param msg the message
+     * @return the echo
+     */
+    readonly string lastMessage;
+    int intValue;
+    string stringValue;
+
+    string echo(string msg);
+    string id();
+
+    signal valueChanged(int value);
+}
+
+@config: {"id": "org.foo.idz.1.0", "zoned": true}
+interface EchoZoned {
+    /**
+     * @brief brief message
+     * @details long message
+     *
+     * @param msg the message
+     * @return the echo
+     */
+    readonly string lastMessage;
+    int intValue;
+    string stringValue;
+
+    string echo(string msg);
+    string id();
+
+    signal valueChanged(int value);
+}

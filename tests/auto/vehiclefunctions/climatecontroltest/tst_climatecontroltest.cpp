@@ -37,6 +37,8 @@
 
 class ClimateControlTestBackend : public QIviClimateControlBackendInterface
 {
+    Q_OBJECT
+
 public:
     ClimateControlTestBackend()
         : QIviClimateControlBackendInterface()
@@ -85,12 +87,12 @@ public:
          m_zones << "Dummy"; // to test unavailable attributes
     }
 
-    QStringList availableZones() const Q_DECL_OVERRIDE
+    QStringList availableZones() const override
     {
         return m_zones;
     }
 
-    void initializeAttributes() Q_DECL_OVERRIDE
+    void initialize() override
     {
         emit airflowDirectionsChanged(m_airflowDirections);
         emit airflowDirectionsAttributeChanged(m_airflowDirectionsAttribute);
@@ -131,7 +133,7 @@ public:
         }
     }
 
-    void setTargetTemperature(int t, const QString &z) Q_DECL_OVERRIDE
+    void setTargetTemperature(int t, const QString &z) override
     {
         if (!m_zoneTargetTemperature.contains(z)) {
             qWarning() << "Trying to set ClimateControl::targetTemperature in an unsupported zone.";
@@ -155,7 +157,7 @@ public:
         }
     }
 
-    void setSeatCooler(int t, const QString &z) Q_DECL_OVERRIDE
+    void setSeatCooler(int t, const QString &z) override
     {
         if (!m_zoneSeatCooler.contains(z)) {
             qWarning() << "Trying to set ClimateControl::seatCooler in an unsupported zone.";
@@ -179,7 +181,7 @@ public:
         }
     }
 
-    void setSeatHeater(int t, const QString &z) Q_DECL_OVERRIDE
+    void setSeatHeater(int t, const QString &z) override
     {
         if (!m_zoneSeatHeater.contains(z)) {
             qWarning() << "Trying to set ClimateControl::seatHeater in an unsupported zone.";
@@ -203,7 +205,7 @@ public:
         }
     }
 
-    void setAirflowDirections(QIviClimateControl::AirflowDirections ad, const QString &z) Q_DECL_OVERRIDE
+    void setAirflowDirections(QIviClimateControl::AirflowDirections ad, const QString &z) override
     {
         Q_UNUSED(z)
         if (m_airflowDirections != ad) {
@@ -221,7 +223,7 @@ public:
         }
     }
 
-    void setAirConditioningEnabled(bool e, const QString &z) Q_DECL_OVERRIDE
+    void setAirConditioningEnabled(bool e, const QString &z) override
     {
         Q_UNUSED(z)
         if (m_airConditioningEnabled != e) {
@@ -239,7 +241,7 @@ public:
         }
     }
 
-    void setHeaterEnabled(bool e, const QString &z) Q_DECL_OVERRIDE
+    void setHeaterEnabled(bool e, const QString &z) override
     {
         Q_UNUSED(z)
         if (m_heaterEnabled != e) {
@@ -257,7 +259,7 @@ public:
         }
     }
 
-    void setSteeringWheelHeater(int t, const QString &z) Q_DECL_OVERRIDE
+    void setSteeringWheelHeater(int t, const QString &z) override
     {
         if (!m_zoneSteeringWheelHeater.contains(z))
             return;
@@ -279,7 +281,7 @@ public:
         }
     }
 
-    void setFanSpeedLevel(int fsl, const QString &z) Q_DECL_OVERRIDE
+    void setFanSpeedLevel(int fsl, const QString &z) override
     {
         if (!m_zoneFanSpeedLevel.contains(z))
             return;
@@ -324,7 +326,7 @@ public:
         }
     }
 
-    void setZoneSynchronizationEnabled(bool zoneSynchronization, const QString &z) Q_DECL_OVERRIDE
+    void setZoneSynchronizationEnabled(bool zoneSynchronization, const QString &z) override
     {
         Q_UNUSED(z)
         if (m_zoneSynchronizationEnabled != zoneSynchronization) {
@@ -342,7 +344,7 @@ public:
         }
     }
 
-    void setDefrostEnabled(bool defrost, const QString &z) Q_DECL_OVERRIDE
+    void setDefrostEnabled(bool defrost, const QString &z) override
     {
         Q_UNUSED(z)
         if (m_defrostEnabled != defrost) {
@@ -360,7 +362,7 @@ public:
         }
     }
 
-    void setRecirculationMode(QIviClimateControl::RecirculationMode recirculationMode, const QString &z) Q_DECL_OVERRIDE
+    void setRecirculationMode(QIviClimateControl::RecirculationMode recirculationMode, const QString &z) override
     {
         Q_UNUSED(z)
         if (m_recirculationMode != recirculationMode) {
@@ -396,7 +398,7 @@ public:
         }
     }
 
-    void setRecirculationSensitivityLevel(int recirculationSensitivityLevel, const QString &z) Q_DECL_OVERRIDE
+    void setRecirculationSensitivityLevel(int recirculationSensitivityLevel, const QString &z) override
     {
         Q_UNUSED(z)
 
@@ -420,7 +422,7 @@ public:
         }
     }
 
-    void setClimateMode(QIviClimateControl::ClimateMode climateMode, const QString &z) Q_DECL_OVERRIDE
+    void setClimateMode(QIviClimateControl::ClimateMode climateMode, const QString &z) override
     {
         Q_UNUSED(z)
         if (m_climateMode != climateMode) {
@@ -438,7 +440,7 @@ public:
         }
     }
 
-    void setAutomaticClimateFanIntensityLevel(int automaticClimateFanIntensityLevel, const QString &z) Q_DECL_OVERRIDE
+    void setAutomaticClimateFanIntensityLevel(int automaticClimateFanIntensityLevel, const QString &z) override
     {
         Q_UNUSED(z)
 
@@ -506,10 +508,12 @@ Q_DECLARE_METATYPE(ClimateControlTestDataInt)
 typedef QIviPropertyTestData<QIviClimateControl, ClimateControlTestBackend, bool> ClimateControlTestDataBool;
 Q_DECLARE_METATYPE(ClimateControlTestDataBool)
 
-class ClimateControlTestServiceObject : public QIviServiceObject {
+class ClimateControlTestServiceObject : public QIviServiceObject
+{
+    Q_OBJECT
 
 public:
-    explicit ClimateControlTestServiceObject(QObject *parent=0) :
+    explicit ClimateControlTestServiceObject(QObject *parent = nullptr) :
         QIviServiceObject(parent), m_name(QLatin1String(""))
     {
         m_backend = new ClimateControlTestBackend;
@@ -518,7 +522,7 @@ public:
 
     QString name() const { return m_name; }
     QStringList interfaces() const { return m_interfaces; }
-    QObject *interfaceInstance(const QString& interface) const
+    QIviFeatureInterface *interfaceInstance(const QString& interface) const
     {
         if (interface == QIviClimateControl_iid)
             return testBackend();
@@ -537,23 +541,39 @@ private:
     ClimateControlTestBackend *m_backend;
 };
 
-class ClimateControlInvalidServiceObject : public QIviServiceObject {
+class InvalidInterface : public QIviFeatureInterface
+{
+    Q_OBJECT
+public:
+    InvalidInterface(QObject *parent)
+        : QIviFeatureInterface(parent)
+    {}
+
+    void initialize() override
+    {
+        emit initializationDone();
+    }
+};
+
+class ClimateControlInvalidServiceObject : public QIviServiceObject
+{
+    Q_OBJECT
 
 public:
-    explicit ClimateControlInvalidServiceObject(QObject *parent=0) :
-        QIviServiceObject(parent), m_name(QLatin1String("")), m_dummyBackend(new QObject(this))
+    explicit ClimateControlInvalidServiceObject(QObject *parent = nullptr) :
+        QIviServiceObject(parent), m_name(QLatin1String("")), m_dummyBackend(new InvalidInterface(this))
     {
         m_interfaces << QIviClimateControl_iid;
     }
 
     QString name() const { return m_name; }
     QStringList interfaces() const { return m_interfaces; }
-    QObject *interfaceInstance(const QString& ) const { return m_dummyBackend; }
+    QIviFeatureInterface *interfaceInstance(const QString& ) const { return m_dummyBackend; }
 
 private:
     QString m_name;
     QStringList m_interfaces;
-    QObject *m_dummyBackend;
+    QIviFeatureInterface *m_dummyBackend;
 };
 
 class ClimateControlTest : public QObject

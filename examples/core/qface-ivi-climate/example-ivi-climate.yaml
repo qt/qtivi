@@ -1,0 +1,62 @@
+Example.IVI.Climate.ClimateControl:
+    config_simulator:
+        zones: { left : FrontLeft, right : FrontRight, rear: Rear }
+
+Example.IVI.Climate.ClimateControl#airConditioning:
+    config_simulator:
+        default: true
+
+Example.IVI.Climate.ClimateControl#heater:
+    config_simulator:
+        default: true
+
+Example.IVI.Climate.ClimateControl#recirculation:
+    config_simulator:
+        default: false
+
+Example.IVI.Climate.ClimateControl#zoneSynchronization:
+    config_simulator:
+        default: false
+
+Example.IVI.Climate.ClimateControl#defrost:
+    config_simulator:
+        default: false
+
+Example.IVI.Climate.ClimateControl#steeringWheelHeater:
+    config_simulator:
+        default: 0
+
+Example.IVI.Climate.ClimateControl#fanSpeedLevel:
+    config_simulator:
+        default: 2
+
+Example.IVI.Climate.ClimateControl#recirculationMode:
+    config_simulator:
+        default: RecirculationMode.RecirculationOff
+
+Example.IVI.Climate.ClimateControl#recirculationSensitivityLevel:
+    config_simulator:
+        unsupported: true
+        default: 0
+
+Example.IVI.Climate.ClimateControl#climateMode:
+    config_simulator:
+        unsupported: true
+        default: ClimateMode.ClimateOn
+
+Example.IVI.Climate.ClimateControl#automaticClimateFanIntensityLevel:
+    config_simulator:
+        unsupported: true
+        default: 0
+
+Example.IVI.Climate.ClimateControl#targetTemperature:
+    config_simulator:
+        default: 0
+
+Example.IVI.Climate.ClimateControl#seatCooler:
+    config_simulator:
+        default: 0
+
+Example.IVI.Climate.ClimateControl#seatHeater:
+    config_simulator:
+        default: 0

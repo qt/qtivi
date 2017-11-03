@@ -41,66 +41,69 @@
 
 #include "qivizonedfeatureinterface.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
-   \class QIviZonedFeatureInterface
-   \inmodule QtIviCore
-   \ingroup backends
+    \class QIviZonedFeatureInterface
+    \inmodule QtIviCore
+    \ingroup backends
 
-   \brief QIviZonedFeatureInterface defines the base interface for the
-   feature backend classes.
+    \brief QIviZonedFeatureInterface defines the base interface for the
+    feature backend classes.
 
-   Vehicle feature can be zoned or be just generic depending of the vehicle.
-   For example some vehicles can contain only one climate fan and some other
-   may have one fan for the front seats and one for the back seat. To fill both
-   requirements, a backend developer can specify each feature attribute to be
-   generic or zone specific. If the backend doesn't specify a zone for an
-   attribute, then the attribute is generic. There can be multiple zone
-   attributes, but only a single generic one. The zone value for a generic
-   attribute is an empty string, and it can be omitted from the signals. The
-   code snippets below describes how to implement zone specific fanSpeedlevel
-   and generic steeringWheelHeater support in the backend.
+    Vehicle feature can be zoned or be just generic depending of the vehicle.
+    For example some vehicles can contain only one climate fan and some other
+    may have one fan for the front seats and one for the back seat. To fill both
+    requirements, a backend developer can specify each feature attribute to be
+    generic or zone specific. If the backend doesn't specify a zone for an
+    attribute, then the attribute is generic. There can be multiple zone
+    attributes, but only a single generic one. The zone value for a generic
+    attribute is an empty string, and it can be omitted from the signals. The
+    code snippets below describes how to implement zone specific fanSpeedlevel
+    and generic steeringWheelHeater support in the backend.
 
-   \section2 Providing Available Zones
+    \section2 Providing Available Zones
 
-   Before making any further calls to the backend, VehicleFunctions will query
-   the list of available zones. Zones are string keys and can be anything
-   defined by the backend developer. In this case we have two zones: "Front"
-   and "Rear".
+    Before making any further calls to the backend, VehicleFunctions will query
+    the list of available zones. Zones are string keys and can be anything
+    defined by the backend developer. In this case we have two zones: "Front"
+    and "Rear".
 
-   The backend must return all available zones via
-   \l {QIviZonedFeatureInterface::}{availableZones}:
-   \code
-   QStringList backend::availableZones() const {
+    The backend must return all available zones via
+    \l {QIviZonedFeatureInterface::}{availableZones}:
+    \code
+    QStringList backend::availableZones() const {
         QStringList zones;
         zones << "Front";
         zones << "Rear";
         return zones;
    }
-   \endcode
+    \endcode
 
-   \section2 Initializing Attributes
+    \section2 Initializing Attributes
 
-   VehicleFunctions calls the backend to initialize all attributes. Backend
-   implementation has to emit all supported attribute signals, passing the
-   zone as a parameter. Zone is not needed if attribute is generic.
+    VehicleFunctions calls the backend to initialize all attributes. Backend
+    implementation has to emit all supported attribute signals, passing the
+    zone as a parameter. Zone is not needed if attribute is generic.
 
-   Initialization signals are emitted in the
-   \l {QIviZonedFeatureInterface::}{initializeAttributes}:
-   \code
-   void backend::initializeAttributes() {
+    Initialization signals are emitted in the
+    \l {QIviZonedFeatureInterface::}{initialize}:
+    \code
+    void backend::initialize() {
         emit fanSpeedLevelChanged(2, "Front");
         emit fanSpeedLevelChanged(2, "Rear");
         emit steeringWheelHeaterChanged(0); // Generic, no zone specified
+        emit initializationDone();
    }
-   \endcode
+    \endcode
 
-   \section2 Implementing Feature-specific Attributes
+    \section2 Implementing Feature-specific Attributes
 
-   Fan speed is zoned, validating requested zones is the responsibility
-   of the backend. If zone is valid, the vehicle's actual fan speed level
-   can be adjusted. The backend has to emit a signal for the changed zone.
-   \code
-   void backend::setFanSpeedLevel(int value, const QString &zone) {
+    Fan speed is zoned, validating requested zones is the responsibility
+    of the backend. If zone is valid, the vehicle's actual fan speed level
+    can be adjusted. The backend has to emit a signal for the changed zone.
+    \code
+    void backend::setFanSpeedLevel(int value, const QString &zone) {
         if (!m_fanSpeedZones.contains(zone)) {
             emit errorChanged(QIviAbstractFeature::InvalidZone);
         } else {
@@ -110,7 +113,7 @@
         }
    }
 
-   int backend::fanSpeedLevel(const QString &zone) {
+    int backend::fanSpeedLevel(const QString &zone) {
         if (!m_fanSpeedZones.contains(zone)) {
             emit errorChanged(QIviAbstractFeature::InvalidZone);
             return -1;
@@ -119,14 +122,14 @@
             return value;
         }
    }
-   \endcode
+    \endcode
 
-   Steering wheel heater is not zone specific, so zone attribute should be
-   empty. If zone is empty, the vehicle's actual steering wheel heater can
-   be controlled. The backend has to emit a signal for the changed value.
-   Because the attribute is generic, zone is omitted from the signal.
-   \code
-   void backend::setSteeringWheelHeater(int value, const QString &zone) {
+    Steering wheel heater is not zone specific, so zone attribute should be
+    empty. If zone is empty, the vehicle's actual steering wheel heater can
+    be controlled. The backend has to emit a signal for the changed value.
+    Because the attribute is generic, zone is omitted from the signal.
+    \code
+    void backend::setSteeringWheelHeater(int value, const QString &zone) {
         if (!zone.isEmpty()) {  // zone must be empty for a generic attribute
             emit errorChanged(QIviAbstractFeature::InvalidZone);
             return;
@@ -137,7 +140,7 @@
         }
    }
 
-   int backend::steeringWheelHeater(const QString &zone) {
+    int backend::steeringWheelHeater(const QString &zone) {
         if (!zone.isEmpty()) {  // zone must be empty for a generic attribute
             emit errorChanged(QIviAbstractFeature::InvalidZone);
             return -1;
@@ -146,53 +149,39 @@
             return value;
         }
    }
-   \endcode
+    \endcode
 
-   To implement a backend plugin you need also to implement QIviServiceInterface from the QtIviCore module.
+    To implement a backend plugin you need also to implement QIviServiceInterface from the QtIviCore module.
 
-   See the full example backend implementation from \c {src/plugins/ivivehiclefunctions/climate_simulator}.
-   \sa QIviAbstractZonedFeature, QIviServiceInterface
- */
+    See the full example backend implementation from \c {src/plugins/ivivehiclefunctions/climate_simulator}.
+    \sa QIviAbstractZonedFeature, QIviServiceInterface
+*/
 
 /*!
- * \fn QIviZonedFeatureInterface::QIviZonedFeatureInterface(QObject *parent=0)
- *
- * Constructs a backend base interface.
- *
- * The \a parent is sent to the QObject constructor.
- */
+    \fn QIviZonedFeatureInterface::QIviZonedFeatureInterface(QObject *parent = nullptr)
+
+    Constructs a backend base interface.
+
+    The \a parent is sent to the QObject constructor.
+*/
 QIviZonedFeatureInterface::QIviZonedFeatureInterface(QObject *parent)
-    : QObject(parent)
+    : QIviFeatureInterface(parent)
+{
+}
+
+QIviZonedFeatureInterface::~QIviZonedFeatureInterface()
 {
 }
 
 /*!
- * \fn QStringList QIviZonedFeatureInterface::availableZones() const
- *
- * Returns a list of supported zone names. This is called from the client
- * after having connected.
- *
- * The returned names must be valid QML property names, i.e. \c {[a-z_][A-Za-z0-9_]*}.
- *
- * \sa {Providing Available Zones}
- */
+    \fn QStringList QIviZonedFeatureInterface::availableZones() const
 
-/*!
- * \fn void QIviZonedFeatureInterface::initializeAttributes()
- *
- * Called from the client to initialize attributes. This is called after
- * client is connected and available zones are fetched.
- *
- * In this function all supported attributes for each zone need to be emitted with
- * the initialized value.
- *
- * \sa {Initializing Attributes}
- */
+    Returns a list of supported zone names. This is called from the client
+    after having connected.
 
-/*!
- * \fn void errorChanged(QIviAbstractFeature::Error error, const QString &message = QString())
- *
- * The signal is emitted when \a error occurs in the backend.
- * Error \a message is optional.
- */
+    The returned names must be valid QML property names, i.e. \c {[a-z_][A-Za-z0-9_]*}.
 
+    \sa {Providing Available Zones}
+*/
+
+QT_END_NAMESPACE

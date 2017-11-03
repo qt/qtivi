@@ -91,8 +91,6 @@ public:
     int m_rating;
 };
 
-QT_END_NAMESPACE
-
 /*!
     \class QIviPlayableItem
     \inmodule QtIviMedia
@@ -474,3 +472,5 @@ bool QIviAudioTrackItem::operator==(const QIviAudioTrackItem &other)
 
     \sa operator==()
 */
+
+QT_END_NAMESPACE

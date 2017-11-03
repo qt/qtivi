@@ -1,0 +1,115 @@
+/****************************************************************************
+**
+** Copyright (C) 2017 Pelagicore AG
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL-QTAS$
+** Commercial License Usage
+** Licensees holding valid commercial Qt Automotive Suite licenses may use
+** this file in accordance with the commercial license agreement provided
+** with the Software or, alternatively, in accordance with the terms
+** contained in a written agreement between you and The Qt Company.  For
+** licensing terms and conditions see https://www.qt.io/terms-conditions.
+** For further information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+/*!
+\page models.html
+\title Models
+\previouspage The Qt IVI Attribute System
+\nextpage The Qt IVI Query Language
+\contentspage Concepts
+
+For interacting with lists in Qt applications, you usually want to use Qt's ListView classes, which
+are based on the Model-View-Controller pattern. QtIvi offers support classes, making it easy to
+provide your own models.
+
+\section1 QIviAbstractListModel
+
+When designing features like a contacts list of a connected mobile phone, you may want to use
+QtIvi's frontend/backend separation by deriving from QIviAbstractFeature and at the same time make
+it possible to use this feature with a QAbstractItemView derived class to show your contacts in a
+list form.
+
+QtIviCore provides QIviAbstractListModel for this use-case. The class is derived from
+QIviAbstractFeatureListModel, but also provides all the functionality from QIviAbstractFeature.
+
+\section1 QIviSearchAndBrowseModel
+
+The QIviSearchAndBrowseModel is not directly a base class, but intended to be used as-is. As the
+name suggests, it provides a model, that supports searching the model content as well as browsing
+through a set of model data. Let's go through all its features in more detail:
+
+\section2 Fetch Modes
+
+As we don't have control over the interfaces of the data providers, the
+QIviSearchAndBrowseModel
+supports two distinct fetch modes:
+\list 1
+\li If the number of items in the model is \b not known from the
+beginning, the \l{QIviSearchAndBrowseModel::FetchMore}{FetchMore} mode should be used. This mode
+will fetch a number of items from the backend once they are needed and the backend tells the
+frontend whether there is more data to be fetched.
+
+\li The second fetch mode - \l{QIviSearchAndBrowseModel::DataChanged}{DataChanged} - will fill the
+complete model with empty data and use the \l{QAbstractItemModel::dataChanged()} signal to tell the
+View about the actual content. For this mode to work correctly, the number of items in the list
+needs to be known from the beginning.
+\endlist
+
+See the QIviSearchAndBrowseModel documentation for a more detailed description of the fetch modes
+and their (dis)advantages.
+
+\section2 Modifying the Content
+
+QIviSearchAndBrowseModel provides some generic methods for modifying the content of the model:
+
+\list
+  \li \l{QIviSearchAndBrowseModel::insert}{insert()}
+  \li \l{QIviSearchAndBrowseModel::remove}{remove()}
+  \li \l{QIviSearchAndBrowseModel::move}{move()}
+\endlist
+
+\section2 Filtering and Sorting (Search)
+
+For filtering and sorting, QIviSearchAndBrowseModel uses \l{the Qt IVI Query Language}. This makes
+the system very flexible and powerful at the same time. See the \l {The Qt IVI Query Language}{next
+page} for more information about the query language.
+
+\section2 Browsing
+
+Although the Qt IVI Query Language supports very complex queries, enabling you to filter list
+content, it might still not be suitable for all use-cases. With the query language, the frontend
+developer defines which data is needed next. This is sometimes not possible, as the backend already
+defines a specific browsing order. A DLNA backend for example already specifies that first an
+artist needs to be selected and only then a list of all albums of that artist is presented.
+
+For this scenario, the QIviSearchAndBrowseModel provides some methods to navigate through the
+models using the following methods:
+
+\list
+  \li \l{QIviSearchAndBrowseModel::canGoForward}{canGoForward(index)}
+  \li \l{QIviSearchAndBrowseModel::goForward}{goForward(index)}
+  \li \l{QIviSearchAndBrowseModel::canGoBack}{canGoBack()}
+  \li \l{QIviSearchAndBrowseModel::goBack}{goBack()}
+\endlist
+
+\section2 Capabilities
+
+You might not need all of the above features at the same time or your backend doesn't even support
+them. In this case, there is a capability system within the QIviSearchAndBrowseModel. The backend
+reports which capabilities it can support. Based on that information, only the supported
+functionalities are enabled in the frontend API.
+
+*/

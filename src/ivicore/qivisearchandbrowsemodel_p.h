@@ -71,7 +71,7 @@ public:
     QIviSearchAndBrowseModelPrivate(const QString &interface, QIviSearchAndBrowseModel *model);
     ~QIviSearchAndBrowseModelPrivate();
 
-    virtual void initialize() Q_DECL_OVERRIDE;
+    virtual void initialize() override;
     void onCapabilitiesChanged(const QUuid &identifier, QIviSearchAndBrowseModel::Capabilities capabilities);
     void onDataFetched(const QUuid &identifer, const QList<QVariant> &items, int start, bool moreAvailable);
     void onCountChanged(const QUuid &identifier, int new_length);

@@ -447,7 +447,7 @@ bool QIviQueryParser::checkIdentifier(const QString &identifer)
 {
     if (!m_identifierList.isEmpty() && !m_identifierList.contains(identifer)) {
         QString errorMessage = QString(QLatin1String("Got %1 but expected on of the following identifiers:\n")).arg(identifer);
-        for (QString ident : m_identifierList)
+        for (const QString &ident : qAsConst(m_identifierList))
             errorMessage.append(QString(QLatin1String("     %1\n")).arg(ident));
 
         setErrorString(errorMessage);

@@ -42,6 +42,8 @@
 #include "qivisearchandbrowsemodelinterface.h"
 #include "qivisearchandbrowsemodelinterface_p.h"
 
+QT_BEGIN_NAMESPACE
+
 QIviSearchAndBrowseModelInterfacePrivate::QIviSearchAndBrowseModelInterfacePrivate()
 {
 }
@@ -51,6 +53,7 @@ QIviSearchAndBrowseModelInterfacePrivate::QIviSearchAndBrowseModelInterfacePriva
     \inmodule QtIviCore
     \ingroup backends
     \inherits QObject
+    \keyword org.qt-project.qtivi.SearchAndBrowseModel/1.0
     \brief The QIviSearchAndBrowseModelInterface defines the interface for backends to the
     QIviSearchAndBrowseModel feature class.
 
@@ -68,14 +71,14 @@ QIviSearchAndBrowseModelInterfacePrivate::QIviSearchAndBrowseModelInterfacePriva
 */
 
 /*!
-    \fn QIviSearchAndBrowseModelInterface::QIviSearchAndBrowseModelInterface(QObject *parent=0)
+    \fn QIviSearchAndBrowseModelInterface::QIviSearchAndBrowseModelInterface(QObject *parent = nullptr)
 
     Constructs a backend interface.
 
     The \a parent is sent to the QObject constructor.
 */
 QIviSearchAndBrowseModelInterface::QIviSearchAndBrowseModelInterface(QObject *parent)
-    : QObject(*new QIviSearchAndBrowseModelInterfacePrivate(), parent)
+    : QIviFeatureInterface(*new QIviSearchAndBrowseModelInterfacePrivate(), parent)
 {}
 
 QIviSearchAndBrowseModelInterface::~QIviSearchAndBrowseModelInterface()
@@ -288,3 +291,5 @@ void QIviSearchAndBrowseModelInterface::registerContentType(const QMetaObject &o
 
     \sa indexOf()
 */
+
+QT_END_NAMESPACE

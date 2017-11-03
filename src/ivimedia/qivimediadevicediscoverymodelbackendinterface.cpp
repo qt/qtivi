@@ -41,11 +41,14 @@
 
 #include "qivimediadevicediscoverymodelbackendinterface.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QIviMediaDeviceDiscoveryModelBackendInterface
     \inmodule QtIviMedia
     \ingroup backends
     \inherits QObject
+    \keyword org.qt-project.qtivi.MediaDiscovery/1.0
     \brief The QIviMediaDeviceDiscoveryModelBackendInterface defines the interface for backends to the
     QIviMediaDeviceDiscoveryModel feature class.
 
@@ -62,7 +65,7 @@
     The \a parent is sent to the QObject constructor.
 */
 QIviMediaDeviceDiscoveryModelBackendInterface::QIviMediaDeviceDiscoveryModelBackendInterface(QObject *parent)
-    : QObject(parent)
+    : QIviFeatureInterface(parent)
 {
 
 }
@@ -102,3 +105,5 @@ QIviMediaDeviceDiscoveryModelBackendInterface::QIviMediaDeviceDiscoveryModelBack
 
     This signal is emitted when a \a device has been removed from the system and cannot be used anymore.
 */
+
+QT_END_NAMESPACE

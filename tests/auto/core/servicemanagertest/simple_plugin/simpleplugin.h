@@ -40,14 +40,14 @@ class SimplePlugin : public QObject, public QIviServiceInterface
     Q_INTERFACES(QIviServiceInterface)
     Q_PLUGIN_METADATA(IID QIviServiceInterface_iid FILE "simple_plugin.json")
 public:
-    SimplePlugin();
-    virtual ~SimplePlugin() {}
+    explicit SimplePlugin();
+    ~SimplePlugin() {}
 
     QStringList interfaces() const {
         return QStringList() << "simple_plugin";
     }
 
-    QObject *interfaceInstance(const QString &interface) const {
+    QIviFeatureInterface *interfaceInstance(const QString &interface) const {
         Q_UNUSED(interface)
         return 0;
     }

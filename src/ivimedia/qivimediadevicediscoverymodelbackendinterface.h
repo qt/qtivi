@@ -42,17 +42,17 @@
 #ifndef QIVIMEDIADEVICEDISCOVERYMODELBACKENDINTERFACE_H
 #define QIVIMEDIADEVICEDISCOVERYMODELBACKENDINTERFACE_H
 
-#include <QtCore/QObject>
+#include <QtIviCore/QIviFeatureInterface>
 #include <QtIviCore/QIviServiceObject>
 #include <QtIviMedia/qtivimediaglobal.h>
 
 QT_BEGIN_NAMESPACE
 
-class Q_QTIVIMEDIA_EXPORT QIviMediaDeviceDiscoveryModelBackendInterface : public QObject
+class Q_QTIVIMEDIA_EXPORT QIviMediaDeviceDiscoveryModelBackendInterface : public QIviFeatureInterface
 {
     Q_OBJECT
 public:
-    explicit QIviMediaDeviceDiscoveryModelBackendInterface(QObject *parent = Q_NULLPTR);
+    explicit QIviMediaDeviceDiscoveryModelBackendInterface(QObject *parent = nullptr);
 
     virtual void initialize() = 0;
 

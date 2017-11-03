@@ -66,7 +66,7 @@ public:
     QIviTunerStation();
     QIviTunerStation(const QIviTunerStation &);
     QIviTunerStation &operator=(const QIviTunerStation &);
-    virtual ~QIviTunerStation();
+    ~QIviTunerStation();
 
     virtual QString stationName() const;
     virtual void setStationName(const QString &stationName);
@@ -80,8 +80,8 @@ public:
     void setRadioText(QString radioText);
     int receptionQuality() const;
     void setReceptionQuality(int receptionQuality);
-    virtual QString name() const Q_DECL_OVERRIDE;
-    virtual QString type() const Q_DECL_OVERRIDE;
+    virtual QString name() const override;
+    virtual QString type() const override;
 
     bool operator==(const QIviTunerStation &other);
     inline bool operator!=(const QIviTunerStation &other) { return !(*this == other); }
@@ -105,7 +105,7 @@ public:
 
     virtual QIviAmFmTuner::Band band() const;
     virtual void setBand(QIviAmFmTuner::Band band);
-    virtual QString type() const Q_DECL_OVERRIDE;
+    virtual QString type() const override;
 
     bool operator==(const QIviAmFmTunerStation &other);
     inline bool operator!=(const QIviAmFmTunerStation &other) { return !(*this == other); }

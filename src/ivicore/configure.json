@@ -2,9 +2,99 @@
     "module": "ivicore",
     "testDir": "../../config.tests",
 
-    "features": {},
+    "commandline": {
+        "options": {
+            "ivigenerator": { "type": "enum", "values": [ "no", "qt", "system" ] },
+            "host-tools-only": "boolean"
+        }
+    },
 
-    "report": [],
+    "tests": {
+        "python3": {
+            "label": "Python3",
+            "type": "python3",
+            "files": [ "python3" ]
+        },
+        "virtualenv": {
+            "label": "virtualenv",
+            "type": "python3_package",
+            "package": "virtualenv"
+        }
 
-    "summary": []
+    },
+
+    "features": {
+        "python3": {
+            "label": "python3",
+            "condition": "tests.python3",
+            "output": [
+                "privateFeature",
+                { "type": "varAssign", "name": "QMAKE_PYTHON3_LOCATION", "value": "tests.python3.value" },
+                { "type": "varAssign", "name": "QMAKE_PYTHON3_VERSION", "value": "tests.python3.version" }
+            ]
+        },
+        "python3-virtualenv": {
+            "label": "virtualenv",
+            "condition": "features.python3 && tests.virtualenv",
+            "output": [ "privateFeature" ]
+        },
+        "system-ivigenerator": {
+            "label": "System IVI Generator",
+            "enable": "input.ivigenerator == 'system'",
+            "disable": "input.ivigenerator != 'system'",
+            "output": [ "privateFeature" ]
+        },
+        "ivigenerator": {
+            "label": "IVI Generator",
+            "enable": "input.ivigenerator == 'qt' || input.ivigenerator == 'system'",
+            "disable": "input.ivigenerator == 'no'",
+            "condition": "features.python3.&& features.python3-virtualenv || features.system-ivigenerator",
+            "output": [ "publicFeature" ]
+        },
+        "host-tools-only": {
+            "label": "Only build the host tools",
+            "condition": "input.host-tools-only == 'yes'",
+            "output": [ "privateFeature" ]
+        },
+        "simulator": {
+            "label": "QtSimulator Support",
+            "condition": "module.simulator",
+            "output": [ "publicFeature" ]
+        }
+     },
+
+    "report": [
+        {
+            "type": "warning",
+            "condition": "!features.ivigenerator",
+            "message": "Cannot build the IVI Generator because its dependencies are not satisfied.
+The IVI Generator provides tooling to generate source code out of IDL files.
+Make sure that python3 and its 'virtualenv' packages are installed."
+        },
+        {
+            "type": "warning",
+            "condition": "!features.simulator",
+            "message": "Cannot enable the QtSimulator Support because the QtSimulator module is not installed.
+The QtSimulator Support is needed for the communication between the simulation backends and its control panel(controller)."
+        }
+    ],
+
+    "summary": [
+        {
+            "section": "Qt IVI Core",
+            "entries": [
+                {
+                    "section": "Python3",
+                    "entries": [
+                        {
+                            "type": "python3"
+                        },
+                        "python3-virtualenv"
+                    ]
+               },
+               "ivigenerator",
+               "simulator"
+            ]
+        }
+    ]
 }

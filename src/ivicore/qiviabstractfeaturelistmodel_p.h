@@ -62,14 +62,18 @@ QT_BEGIN_NAMESPACE
 
 class QIviHelperFeature : public QIviAbstractFeature
 {
+    Q_OBJECT
+
 public:
     QIviHelperFeature(const QString &interface, QIviAbstractFeatureListModel *model);
 
-    bool acceptServiceObject(QIviServiceObject *so);
+    bool acceptServiceObject(QIviServiceObject *so) override;
     bool acceptServiceObjectDefaultImpl(QIviServiceObject *so);
-    void connectToServiceObject(QIviServiceObject *so);
-    void disconnectFromServiceObject(QIviServiceObject *so);
-    void clearServiceObject();
+    void connectToServiceObject(QIviServiceObject *so) override;
+    void connectToServiceObjectDefaultImpl(QIviServiceObject *so);
+    void disconnectFromServiceObject(QIviServiceObject *so) override;
+    void disconnectFromServiceObjectDefaultImpl(QIviServiceObject *so);
+    void clearServiceObject() override;
 
     using QIviAbstractFeature::interfaceName;
     using QIviAbstractFeature::errorText;
@@ -82,7 +86,7 @@ class Q_QTIVICORE_EXPORT QIviAbstractFeatureListModelPrivate : public QAbstractI
 {
 public:
     QIviAbstractFeatureListModelPrivate(const QString &interface, QIviAbstractFeatureListModel *model);
-    virtual ~QIviAbstractFeatureListModelPrivate();
+    ~QIviAbstractFeatureListModelPrivate();
 
     virtual void initialize();
 

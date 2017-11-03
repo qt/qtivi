@@ -49,6 +49,8 @@
 #include <QMetaObject>
 #include <QDebug>
 
+QT_BEGIN_NAMESPACE
+
 QIviSearchAndBrowseModelPrivate::QIviSearchAndBrowseModelPrivate(const QString &interface, QIviSearchAndBrowseModel *model)
     : QIviAbstractFeatureListModelPrivate(interface, model)
     , q_ptr(model)
@@ -98,7 +100,7 @@ void QIviSearchAndBrowseModelPrivate::onCapabilitiesChanged(const QUuid &identif
 
     Q_Q(QIviSearchAndBrowseModel);
     m_capabilities = capabilities;
-    q->capabilitiesChanged(capabilities);
+    emit q->capabilitiesChanged(capabilities);
 }
 
 void QIviSearchAndBrowseModelPrivate::onDataFetched(const QUuid &identifer, const QList<QVariant> &items, int start, bool moreAvailable)
@@ -124,7 +126,7 @@ void QIviSearchAndBrowseModelPrivate::onDataFetched(const QUuid &identifer, cons
 
         for (int i = 0; i < items.count(); i++)
             m_itemList.replace(start + i, items.at(i));
-        q->dataChanged(q->index(start), q->index(start + items.count() -1));
+        emit q->dataChanged(q->index(start), q->index(start + items.count() -1));
     }
 }
 
@@ -170,7 +172,7 @@ void QIviSearchAndBrowseModelPrivate::onDataChanged(const QUuid &identifier, con
     if (updateCount > 0) {
         for (int i = start, j=0; j < updateCount; i++, j++)
             m_itemList.replace(i, data.at(j));
-        q->dataChanged(q->index(start), q->index(start + updateCount -1));
+        emit q->dataChanged(q->index(start), q->index(start + updateCount -1));
     }
 
     if (delta < 0) { //Remove
@@ -257,7 +259,7 @@ void QIviSearchAndBrowseModelPrivate::checkType()
 
     if (!m_availableContentTypes.contains(m_contentType)) {
         QString error = QString(QLatin1String("Unsupported type: \"%1\" \n Supported types are: \n")).arg(m_contentType);
-        for (const QString &type : m_availableContentTypes)
+        for (const QString &type : qAsConst(m_availableContentTypes))
             error.append(type + QLatin1String("\n"));
         qWarning("%s", qPrintable(error));
     }
@@ -372,14 +374,14 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
 */
 
 /*!
-   \enum QIviSearchAndBrowseModel::Roles
-   \value NameRole
+    \enum QIviSearchAndBrowseModel::Roles
+    \value NameRole
           The name of the item. E.g. The name of a contact in a addressbook, or the artist-name in a list of artists.
-   \value TypeRole
+    \value TypeRole
           The type of the item. E.g. "artist", "track", "contact".
-   \value ItemRole
+    \value ItemRole
           The item itself. This provides access to the properties which are type specific. E.g. the address of a contact.
-   \value CanGoForwardRole
+    \value CanGoForwardRole
           True if this item can be used to go one level forward and display the next set of items. \sa goForward()
 */
 
@@ -455,10 +457,10 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
 */
 
 /*!
-   Constructs a QIviSearchAndBrowseModel.
+    Constructs a QIviSearchAndBrowseModel.
 
-   The \a parent argument is passed on to the \l QIviAbstractFeatureListModel base class.
- */
+    The \a parent argument is passed on to the \l QIviAbstractFeatureListModel base class.
+*/
 QIviSearchAndBrowseModel::QIviSearchAndBrowseModel(QObject *parent)
     : QIviAbstractFeatureListModel(*new QIviSearchAndBrowseModelPrivate(QLatin1String(QIviSearchAndBrowseModel_iid), this), parent)
 {
@@ -500,14 +502,14 @@ QIviSearchAndBrowseModel::~QIviSearchAndBrowseModel()
            The backend supports moving items within the model.
     \value SupportsRemove
            The backend supports removing items from the model.
- */
+*/
 
 /*!
     \property QIviSearchAndBrowseModel::capabilities
     \brief Holds the capabilities of the backend for the current content of the model.
 
     The capabilties controls what the current contentType supports. e.g. filtering or sorting.
- */
+*/
 
 QIviSearchAndBrowseModel::Capabilities QIviSearchAndBrowseModel::capabilities() const
 {
@@ -523,7 +525,7 @@ QIviSearchAndBrowseModel::Capabilities QIviSearchAndBrowseModel::capabilities() 
 
     See \l {Qt IVI Query Language} for more information.
     \sa FilteringAndSorting
- */
+*/
 
 /*!
     \property QIviSearchAndBrowseModel::query
@@ -533,7 +535,7 @@ QIviSearchAndBrowseModel::Capabilities QIviSearchAndBrowseModel::capabilities() 
 
     See \l {Qt IVI Query Language} for more information.
     \sa FilteringAndSorting
- */
+*/
 QString QIviSearchAndBrowseModel::query() const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -563,7 +565,7 @@ void QIviSearchAndBrowseModel::setQuery(const QString &query)
 
     Bigger chunks means less calls to the backend and to a potential IPC underneath, but more data
     to be transferred and probably longer waiting time until the request was finished.
- */
+*/
 
 /*!
     \property QIviSearchAndBrowseModel::chunkSize
@@ -573,7 +575,7 @@ void QIviSearchAndBrowseModel::setQuery(const QString &query)
 
     Bigger chunks means less calls to the backend and to a potential IPC underneath, but more data
     to be transferred and probably longer waiting time until the request was finished.
- */
+*/
 int QIviSearchAndBrowseModel::chunkSize() const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -601,7 +603,7 @@ void QIviSearchAndBrowseModel::setChunkSize(int chunkSize)
     The threshold defines the number of rows before the cached rows ends.
 
     \note This property is only used when loadingType is set to FetchMore.
- */
+*/
 
 /*!
     \property QIviSearchAndBrowseModel::fetchMoreThreshold
@@ -614,7 +616,7 @@ void QIviSearchAndBrowseModel::setChunkSize(int chunkSize)
     The threshold defines the number of rows before the cached rows ends.
 
     \note This property is only used when loadingType is set to FetchMore.
- */
+*/
 int QIviSearchAndBrowseModel::fetchMoreThreshold() const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -638,7 +640,7 @@ void QIviSearchAndBrowseModel::setFetchMoreThreshold(int fetchMoreThreshold)
     \note When changing this property the content will be reset.
 
     \sa SearchAndBrowseModel::availableContentTypes
- */
+*/
 
 /*!
     \property QIviSearchAndBrowseModel::contentType
@@ -647,7 +649,7 @@ void QIviSearchAndBrowseModel::setFetchMoreThreshold(int fetchMoreThreshold)
     \note When changing this property the content will be reset.
 
     \sa availableContentTypes
- */
+*/
 QString QIviSearchAndBrowseModel::contentType() const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -668,14 +670,14 @@ void QIviSearchAndBrowseModel::setContentType(const QString &contentType)
     \brief Holds all the available content types
 
     \sa contentType
- */
+*/
 
 /*!
     \property QIviSearchAndBrowseModel::availableContentTypes
     \brief Holds all the available content types
 
     \sa contentType
- */
+*/
 QStringList QIviSearchAndBrowseModel::availableContentTypes() const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -687,14 +689,14 @@ QStringList QIviSearchAndBrowseModel::availableContentTypes() const
     \brief Holds whether the goBack() function can be used to return to the previous content.
 
     See \l Browsing for more information.
- */
+*/
 
 /*!
     \property QIviSearchAndBrowseModel::canGoBack
     \brief Holds whether the goBack() function can be used to return to the previous content.
 
     See \l Browsing for more information.
- */
+*/
 bool QIviSearchAndBrowseModel::canGoBack() const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -706,14 +708,14 @@ bool QIviSearchAndBrowseModel::canGoBack() const
     \brief Holds the currently used loading type used for loading the data.
 
     \note When changing this property the content will be reset.
- */
+*/
 
 /*!
     \property QIviSearchAndBrowseModel::loadingType
     \brief Holds the currently used loading type used for loading the data.
 
     \note When changing this property the content will be reset.
- */
+*/
 QIviSearchAndBrowseModel::LoadingType QIviSearchAndBrowseModel::loadingType() const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -740,11 +742,11 @@ void QIviSearchAndBrowseModel::setLoadingType(QIviSearchAndBrowseModel::LoadingT
 /*!
     \qmlproperty int SearchAndBrowseModel::count
     \brief Holds the current number of rows in this model.
- */
+*/
 /*!
     \property QIviSearchAndBrowseModel::count
     \brief Holds the current number of rows in this model.
- */
+*/
 int QIviSearchAndBrowseModel::rowCount(const QModelIndex &parent) const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -756,7 +758,7 @@ int QIviSearchAndBrowseModel::rowCount(const QModelIndex &parent) const
 
 /*!
     \reimp
- */
+*/
 QVariant QIviSearchAndBrowseModel::data(const QModelIndex &index, int role) const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -795,7 +797,7 @@ QVariant QIviSearchAndBrowseModel::data(const QModelIndex &index, int role) cons
     \qmlmethod object SearchAndBrowseModel::get(i)
 
     Returns the item at index \a i.
- */
+*/
 /*!
     Returns the item at index \a i as QVariant.
 
@@ -812,12 +814,12 @@ QVariant QIviSearchAndBrowseModel::get(int i) const
     Goes one level back in the navigation history.
 
     See also \l Browsing for more information.
- */
+*/
 /*!
     Goes one level back in the navigation history.
 
     See also \l Browsing for more information.
- */
+*/
 void QIviSearchAndBrowseModel::goBack()
 {
     Q_D(QIviSearchAndBrowseModel);
@@ -843,12 +845,12 @@ void QIviSearchAndBrowseModel::goBack()
     Returns true when the item at index \a i can be used to show the next set of elements.
 
     See also \l Browsing for more information.
- */
+*/
 /*!
     Returns true when the item at index \a i can be used to show the next set of elements.
 
     See also \l Browsing for more information.
- */
+*/
 bool QIviSearchAndBrowseModel::canGoForward(int i) const
 {
     Q_D(const QIviSearchAndBrowseModel);
@@ -883,7 +885,7 @@ bool QIviSearchAndBrowseModel::canGoForward(int i) const
     \note Whether the OutOfModelNavigation navigation type is supported is decided by the backend.
 
     See also \l Browsing for more information.
- */
+*/
 /*!
     Returns true when the item at index \a i can be used to show the next set of elements.
 
@@ -895,7 +897,7 @@ bool QIviSearchAndBrowseModel::canGoForward(int i) const
     \note Whether the OutOfModelNavigation navigation type is supported is decided by the backend.
 
     See also \l Browsing for more information.
- */
+*/
 QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationType navigationType)
 {
     Q_D(QIviSearchAndBrowseModel);
@@ -1155,8 +1157,6 @@ bool QIviSearchAndBrowseModel::acceptServiceObject(QIviServiceObject *serviceObj
 */
 void QIviSearchAndBrowseModel::connectToServiceObject(QIviServiceObject *serviceObject)
 {
-    Q_UNUSED(serviceObject);
-
     Q_D(QIviSearchAndBrowseModel);
 
     QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
@@ -1174,6 +1174,8 @@ void QIviSearchAndBrowseModel::connectToServiceObject(QIviServiceObject *service
     QObjectPrivate::connect(backend, &QIviSearchAndBrowseModelInterface::indexOfCallResult,
                             d, &QIviSearchAndBrowseModelPrivate::onIndexOfCallResult,
                             Qt::QueuedConnection);
+
+    QIviAbstractFeatureListModel::connectToServiceObject(serviceObject);
 
     d->setCanGoBack(backend->canGoBack(d->m_identifier, d->m_contentType));
 
@@ -1211,5 +1213,7 @@ void QIviSearchAndBrowseModel::clearServiceObject()
 
     This signal is emitted whenever the fetchMoreThreshold is reached and new data is requested from the backend.
 */
+
+QT_END_NAMESPACE
 
 #include "moc_qivisearchandbrowsemodel.cpp"

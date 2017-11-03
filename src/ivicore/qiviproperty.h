@@ -61,7 +61,7 @@ class Q_QTIVICORE_EXPORT QIviProperty : public QObject
     Q_PROPERTY(QVariantList availableValues READ availableValues NOTIFY availableValuesChanged)
 
 public:
-    virtual ~QIviProperty();
+    ~QIviProperty();
 
     virtual bool isAvailable() const = 0;
     virtual QVariant minimumValue() const  = 0;

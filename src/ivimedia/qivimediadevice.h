@@ -55,7 +55,7 @@ class Q_QTIVIMEDIA_EXPORT QIviMediaDevice : public QIviServiceObject
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
 
 public:
-    explicit QIviMediaDevice(QObject *parent = Q_NULLPTR);
+    explicit QIviMediaDevice(QObject *parent = nullptr);
     virtual QString type() const = 0;
     virtual QString name() const = 0;
 
@@ -68,9 +68,9 @@ class Q_QTIVIMEDIA_EXPORT QIviMediaUsbDevice : public QIviMediaDevice
     Q_OBJECT
 
 public:
-    explicit QIviMediaUsbDevice(QObject *parent = Q_NULLPTR);
+    explicit QIviMediaUsbDevice(QObject *parent = nullptr);
 
-    virtual QString type() const Q_DECL_OVERRIDE;
+    virtual QString type() const override;
 
     //TODO add a signal to indicate that the stick can be removed now.
 public Q_SLOTS:

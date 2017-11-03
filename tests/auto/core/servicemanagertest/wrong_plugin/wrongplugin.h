@@ -40,8 +40,8 @@ class WrongPlugin : public QObject
     //Q_INTERFACES(QIviServiceInterface)
     Q_PLUGIN_METADATA(IID QIviServiceInterface_iid FILE "wrong_plugin.json")
 public:
-    WrongPlugin();
-    virtual ~WrongPlugin() {}
+    explicit WrongPlugin();
+    ~WrongPlugin() {}
 
     QStringList interfaces() const {
         return QStringList() << "wrong_plugin";

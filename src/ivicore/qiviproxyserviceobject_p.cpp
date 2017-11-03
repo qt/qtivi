@@ -41,6 +41,8 @@
 
 #include "qiviproxyserviceobject_p.h"
 
+QT_BEGIN_NAMESPACE
+
 QIviProxyServiceObject::QIviProxyServiceObject(QIviServiceInterface *interface)
     : QIviServiceObject()
     , m_interface(interface)
@@ -58,8 +60,9 @@ QStringList QIviProxyServiceObject::interfaces() const
     return m_interface->interfaces();
 }
 
-QObject *QIviProxyServiceObject::interfaceInstance(const QString &interface) const
+QIviFeatureInterface *QIviProxyServiceObject::interfaceInstance(const QString &interface) const
 {
     return m_interface->interfaceInstance(interface);
 }
 
+QT_END_NAMESPACE

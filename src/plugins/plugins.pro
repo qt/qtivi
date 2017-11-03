@@ -1,4 +1,4 @@
 TEMPLATE = subdirs
-SUBDIRS = ivivehiclefunctions \
-          ivimedia
+SUBDIRS = ivimedia
 
+qtHaveModule(ivivehiclefunctions): SUBDIRS += ivivehiclefunctions

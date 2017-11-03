@@ -1,0 +1,142 @@
+/****************************************************************************
+**
+** Copyright (C) 2017 Pelagicore AG
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL-QTAS$
+** Commercial License Usage
+** Licensees holding valid commercial Qt Automotive Suite licenses may use
+** this file in accordance with the commercial license agreement provided
+** with the Software or, alternatively, in accordance with the terms
+** contained in a written agreement between you and The Qt Company.  For
+** licensing terms and conditions see https://www.qt.io/terms-conditions.
+** For further information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+\example qface-ivi-climate
+\brief This Example shows how to use the Qt IVI Generator.
+\ingroup qtivicore-examples
+\title Qt IVI Generator Example
+
+This shows an example of using the Qt IVI Generator to build a new component.
+Based on a single qface IDL file it will generate:
+\list
+\li a shared library with the front end code
+\li a backend simulator plugin
+\li a demo application showing the current model values
+\endlist
+
+\section1 Introduction
+
+The QFace file used in the example represents a simplified climate control
+interface. It contains a single interface and a couple of enumerated types.
+The complete reference for the IDL syntax is available
+\l {QFace IDL syntax}{here}. In particular:
+\table
+\row
+    \li \code {@config: {interfaceBuilder: "echoInterfaceBuilder"}} \endcode
+    \li indicates the plugin should use a custom function to generate the backend instances.
+\row
+    \li \code {@config: {zoned: true}} \endcode
+    \li indicates the interface supports different zones
+\row
+    \li \code {@config: {zoned: true}} \endcode
+    \li indicates the interface supports different zones
+\row
+    \li \code {@config: {id: "..."}} \endcode
+    \li indicates the id used for matching backend plugins
+\row
+    \li \code {@config_simulator: { range:[0, 50] }} \endcode
+    \li range of valid values for number type properties
+\row
+    \li \code
+    {@config_simulator: { minimum: 0 }}
+    {@config_simulator: { maximum: 50 }} \endcode
+    \li minimum and maximum of valid values for number type properties.
+    \note \c {range} annotation is a short cut to specifying both minimum and
+    maximum values.
+\row
+    \li \code {@config_simulator: { domain: ["cold", "mild", "warm" ] }} \endcode
+    \li list of valid values for properties
+\endtable
+
+In addition to the qface file, a YAML file (with the same basename) is used to
+add extra configuration. These could also be added directly in the qface file
+but keeping them separate can improve readability.
+Highlights:
+\table
+\row
+    \li
+    \code
+    Example.IVI.Climate.ClimateControl:
+        config_simulator:
+            zones: { left : FrontLeft, right : FrontRight, rear: Rear }
+    \endcode
+    \li the names of the supported zones
+\row
+    \li
+    \code
+    Example.IVI.Climate.ClimateControl#recirculationMode:
+        config_simulator:
+            default: RecirculationMode.RecirculationOff
+    \endcode
+    \li the default value assigned to the property in the simulator backend plugin.
+\endtable
+
+
+\section1 Frontend library
+
+The QFace file is used to generate the API for the frontend, as a shared library.
+The interface class is derived from \c {QIviAbstractZonedFeature} and includes all
+the specified properties.
+
+The project files includes the basic setup for generating a shared library. The
+actual code is generated using these QMake variable:
+\code
+CONFIG += ivigenerator
+QFACE_SOURCES = ../example-ivi-climate.qface
+\endcode
+
+In addition to the feature interface class, the generator will also create
+an abstract base class which can used in the plugin.
+
+
+\section1 Backend Simulator Plugin
+
+Using the same qface file, this project will generate the backend plugin with
+the appropriate values for the properties.
+
+\code
+CONFIG += ivigenerator
+QFACE_FORMAT = backend_simulator
+QFACE_SOURCES = ../example-ivi-climate.qface
+\endcode
+
+If present for a given property, range and domain values will used to test the
+validity of incoming values in the setters.
+
+
+\section1 Demo Application
+
+The demo application presents a simple QML interface with all the properties of
+the generated interface.
+
+Qt IVI generator does not provide a QML plugin, so the application needs
+to link to the generated frontend and call the \c {ClimateModule::registerTypes}
+and \c {ClimateModule::registerQmlTypes} methods that are generated in the
+module singleton.
+
+*/

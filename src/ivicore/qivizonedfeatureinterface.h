@@ -43,22 +43,19 @@
 #define QIVIZONEDFEATUREINTERFACE_H
 
 #include <QtIviCore/QIviAbstractZonedFeature>
+#include <QtIviCore/QIviFeatureInterface>
 
 QT_BEGIN_NAMESPACE
 
-class Q_QTIVICORE_EXPORT QIviZonedFeatureInterface : public QObject
+class Q_QTIVICORE_EXPORT QIviZonedFeatureInterface : public QIviFeatureInterface
 {
     Q_OBJECT
 
 public:
-    QIviZonedFeatureInterface(QObject *parent = Q_NULLPTR);
+    explicit QIviZonedFeatureInterface(QObject *parent = nullptr);
+    ~QIviZonedFeatureInterface();
 
     virtual QStringList availableZones() const = 0;
-
-    virtual void initializeAttributes() = 0;
-
-Q_SIGNALS:
-    void errorChanged(QIviAbstractFeature::Error error, const QString &message = QString());
 };
 
 QT_END_NAMESPACE

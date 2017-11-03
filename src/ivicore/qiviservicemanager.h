@@ -69,7 +69,7 @@ public:
     Q_ENUM(BackendType)
 
     static QIviServiceManager *instance();
-    virtual ~QIviServiceManager();
+    ~QIviServiceManager();
 
     QList<QIviServiceObject*> findServiceByInterface(const QString &interface, SearchFlags searchFlags = IncludeAll);
     bool hasInterface(const QString &interface) const;

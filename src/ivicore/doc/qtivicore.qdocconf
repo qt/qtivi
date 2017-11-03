@@ -4,6 +4,8 @@ headerdirs  += .. \
 sourcedirs  += .. \
                ../../imports/core
 
+exampledirs += ../../../examples/core \
+
 macro.qmlqtiviproperty = "\\qmlpropertygroup \2 \n\\qmlproperty bool \2.available\n \\qmlproperty \1 \2.maximumValue\n \\qmlproperty \1 \2.minimumValue\n \\qmlproperty list<\1> \2.availableValues\n \\qmlproperty \1 \2.value\n \\include src/qmlqtiviproperty.qdocinc"
 macro.qmlqtivipropertyBool = "\\qmlpropertygroup \1 \n\\qmlproperty bool \1.available\n \\qmlproperty bool \1.value\n \\include src/qmlqtiviproperty.qdocinc"
 macro.qmlqtivipropertyEnum = "\\qmlpropertygroup \1 \n\\qmlproperty bool \1.available\n \\qmlproperty list<enumeration> \1.availableValues\n \\qmlproperty enumeration \1.value\n \\include src/qmlqtiviproperty.qdocinc"

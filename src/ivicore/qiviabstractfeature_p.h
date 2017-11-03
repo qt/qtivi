@@ -60,14 +60,30 @@
 
 QT_BEGIN_NAMESPACE
 
+class Q_QTIVICORE_EXPORT QIviPropertyOverrider {
+public:
+    QIviPropertyOverrider() { }
+    virtual ~QIviPropertyOverrider() { }
+
+    virtual QVariant property(int propertyIndex) const = 0;
+    virtual void setProperty(int propertyIndex, const QVariant &value) = 0;
+    virtual bool isOverridden(int propertyIndex) const = 0;
+private:
+    Q_DISABLE_COPY(QIviPropertyOverrider)
+};
+
 class Q_QTIVICORE_EXPORT QIviAbstractFeaturePrivate : public QObjectPrivate
 {
 public:
     QIviAbstractFeaturePrivate(const QString &interface, QIviAbstractFeature *parent);
 
+    static QIviAbstractFeaturePrivate *get(QIviAbstractFeature *q);
+
     virtual void initialize();
+    virtual bool notify(const QByteArray &propertyName, const QVariant &value);
 
     void setDiscoveryResult(QIviAbstractFeature::DiscoveryResult discoveryResult);
+    void onInitializationDone();
 
     QIviAbstractFeature * const q_ptr;
     Q_DECLARE_PUBLIC(QIviAbstractFeature)
@@ -79,6 +95,10 @@ public:
     QString m_errorMessage;
     QIviAbstractFeature::Error m_error;
     bool m_qmlCreation;
+    bool m_isInitialized;
+
+    bool m_supportsPropertyOverriding;
+    QIviPropertyOverrider *m_propertyOverride;
 };
 
 QT_END_NAMESPACE

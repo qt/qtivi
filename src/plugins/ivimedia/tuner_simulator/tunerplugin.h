@@ -54,10 +54,10 @@ class TunerPlugin : public QObject, QIviServiceInterface
     Q_INTERFACES(QIviServiceInterface)
 
 public:
-    explicit TunerPlugin(QObject *parent = Q_NULLPTR);
+    explicit TunerPlugin(QObject *parent = nullptr);
 
     QStringList interfaces() const;
-    QObject *interfaceInstance(const QString &interface) const;
+    QIviFeatureInterface *interfaceInstance(const QString &interface) const;
 
 private:
     AmFmTunerBackend *m_amfmtuner;

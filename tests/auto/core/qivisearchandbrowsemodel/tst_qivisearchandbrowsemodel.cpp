@@ -39,6 +39,7 @@
 
 class TestBackend : public QIviSearchAndBrowseModelInterface
 {
+    Q_OBJECT
 
 public:
 
@@ -105,7 +106,12 @@ public:
         return list;
     }
 
-    virtual void fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count) Q_DECL_OVERRIDE
+    void initialize() override
+    {
+        emit initializationDone();
+    }
+
+    virtual void fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count) override
     {
         emit supportedCapabilitiesChanged(identifier, m_caps);
 
@@ -200,13 +206,13 @@ public:
         emit dataFetched(identifier, requestedItems, start, start + count < list.count());
     }
 
-    virtual bool canGoBack(const QUuid &identifier, const QString &type) Q_DECL_OVERRIDE
+    virtual bool canGoBack(const QUuid &identifier, const QString &type) override
     {
         Q_UNUSED(identifier)
         return (type == "levelTwo" || type == "levelThree");
     }
 
-    virtual QString goBack(const QUuid &identifier, const QString &type) Q_DECL_OVERRIDE
+    virtual QString goBack(const QUuid &identifier, const QString &type) override
     {
         Q_UNUSED(identifier)
 
@@ -218,7 +224,7 @@ public:
         return "levelOne";
     }
 
-    virtual bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) Q_DECL_OVERRIDE
+    virtual bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) override
     {
         Q_UNUSED(identifier)
         if (itemId.endsWith("0"))
@@ -227,7 +233,7 @@ public:
         return (type == "levelOne" || type == "levelTwo");
     }
 
-    virtual QString goForward(const QUuid &identifier, const QString &type, const QString &itemId) Q_DECL_OVERRIDE
+    virtual QString goForward(const QUuid &identifier, const QString &type, const QString &itemId) override
     {
         Q_UNUSED(identifier)
         Q_UNUSED(itemId)
@@ -240,7 +246,7 @@ public:
         return "levelOne";
     }
 
-    virtual void insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item) Q_DECL_OVERRIDE
+    virtual void insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item) override
     {
         QList<QIviSearchAndBrowseModelItem> list = m_lists.value(type);
 
@@ -252,7 +258,7 @@ public:
         emit dataChanged(identifier, variantList, index, 0);
     }
 
-    virtual void remove(const QUuid &identifier, const QString &type, int index) Q_DECL_OVERRIDE
+    virtual void remove(const QUuid &identifier, const QString &type, int index) override
     {
         QList<QIviSearchAndBrowseModelItem> list = m_lists.value(type);
 
@@ -262,7 +268,7 @@ public:
         emit dataChanged(identifier, QVariantList(), index, 1);
     }
 
-    virtual void move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) Q_DECL_OVERRIDE
+    virtual void move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) override
     {
         QList<QIviSearchAndBrowseModelItem> list = m_lists.value(type);
 
@@ -279,7 +285,7 @@ public:
         emit dataChanged(identifier, variantLIst, min, max - min + 1);
     }
 
-    virtual int indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item) Q_DECL_OVERRIDE
+    virtual int indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item) override
     {
         static int callID = 0;
         QList<QIviSearchAndBrowseModelItem> list = m_lists.value(type);
@@ -296,9 +302,10 @@ private:
 
 class TestServiceObject : public QIviServiceObject
 {
+    Q_OBJECT
 
 public:
-    explicit TestServiceObject(QObject *parent = 0) :
+    explicit TestServiceObject(QObject *parent = nullptr) :
         QIviServiceObject(parent)
     {
         m_backend = new TestBackend;
@@ -306,7 +313,7 @@ public:
     }
 
     QStringList interfaces() const { return m_interfaces; }
-    QObject *interfaceInstance(const QString &interface) const
+    QIviFeatureInterface *interfaceInstance(const QString &interface) const
     {
         if (interface == QIviSearchAndBrowseModel_iid)
             return testBackend();
@@ -428,7 +435,7 @@ void tst_QIviSearchAndBrowseModel::testClearServiceObject()
     //QVERIFY(model.loadingType() != defaultModel.loadingType());
     QVERIFY(model.rowCount() != defaultModel.rowCount());
 
-    QVERIFY(model.setServiceObject(0));
+    QVERIFY(model.setServiceObject(nullptr));
 
     QVERIFY(model.chunkSize() == defaultModel.chunkSize());
     QVERIFY(model.contentType() == defaultModel.contentType());

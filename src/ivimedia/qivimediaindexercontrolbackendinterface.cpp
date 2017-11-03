@@ -41,11 +41,14 @@
 
 #include "qivimediaindexercontrolbackendinterface.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QIviMediaIndexerControlBackendInterface
     \inmodule QtIviMedia
     \ingroup backends
     \inherits QObject
+    \keyword org.qt-project.qtivi.MediaIndexer/1.0
     \brief The QIviMediaIndexerControlBackendInterface defines the interface for backends to the
     QIviMediaIndexerControl feature class.
 
@@ -62,7 +65,7 @@
     The \a parent is sent to the QObject constructor.
 */
 QIviMediaIndexerControlBackendInterface::QIviMediaIndexerControlBackendInterface(QObject *parent)
-    : QObject(parent)
+    : QIviFeatureInterface(parent)
 {
 
 }
@@ -106,3 +109,5 @@ QIviMediaIndexerControlBackendInterface::QIviMediaIndexerControlBackendInterface
     This signal is emitted whenever the indexing state changed. The \a state argument holds the new state
     of the indexer.
 */
+
+QT_END_NAMESPACE

@@ -1,0 +1,17 @@
+generate_rules:
+    module_rules:
+        -   dest_file:  "{{module.module_name|lower}}plugin.h"
+            template_file:  "plugin.h.tpl"
+        -   dest_file:  "{{module.module_name|lower}}plugin.cpp"
+            template_file:  "plugin.cpp.tpl"
+        -   dest_file:  "{{module.module_name|lower}}.json"
+            template_file:  "plugin.json"
+        -   dest_file:  "{{srcBase|lower}}.pri"
+            template_file:  "plugin.pri.tpl"
+    interface_rules:
+        -   dest_file: '{{interface|lower}}backend.h'
+            template_file: 'backend.h.tpl'
+        -   dest_file: '{{interface|lower}}backend.cpp'
+            template_file: 'backend.cpp.tpl'
+    struct_rules:
+

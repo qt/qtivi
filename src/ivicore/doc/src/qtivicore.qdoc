@@ -68,3 +68,14 @@
 
     \section1 QML Types
 */
+
+/*!
+    \group qtivicore-examples
+    \ingroup all-examples
+    \ingroup qtivi-examples
+    \title Qt IVI Core Examples
+
+    \brief Examples for using the Qt IVI Core features
+
+    These are the Qt IVI Core features examples.
+*/
