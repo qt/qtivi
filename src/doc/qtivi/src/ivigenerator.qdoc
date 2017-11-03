@@ -38,6 +38,6 @@ library, which provides a generic autogeneration framework.
     \li \l {Jinja template syntax}
     \li \l {Autogenerator Usage}
     \li \l {QMake Integration}
-    \li \l {qface-ivi-climate}{Generator Example}
+    \li \l {ivicore/qface-ivi-climate}{Generator Example}
 \endlist
 */

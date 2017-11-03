@@ -5,6 +5,9 @@ build_online_docs: {
     QMAKE_DOCS = $$PWD/qtivi.qdocconf
 }
 
-OTHER_FILES += \
+DISTFILES += \
     $$PWD/*.qdocconf \
-    $$PWD/src/*.qdoc
+    $$PWD/online/*.qdocconf \
+    $$PWD/src/*.qdoc \
+    $$PWD/images/*.jpg \
+    $$PWD/images/*.png

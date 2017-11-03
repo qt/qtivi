@@ -6,7 +6,10 @@ url                           = http://doc.qt.io/QtIVI
 sourcedirs                   += .
 headerdirs                   += .
 imagedirs                    += images
-exampledirs                  += ../../examples/core
+exampledirs                  += ../../../examples
+
+# geniviextras has its own documentation project, ignore the examples here
+excludedirs                  += ../../../examples/geniviextras
 
 # include sub-modules' sources and headers
 include(../../ivicore/doc/qtivicore.qdocconf)
@@ -16,6 +19,13 @@ include(../../ivimedia/doc/qtivimedia.qdocconf)
 # include the backend plugins documentation
 include(../../plugins/ivimedia/doc/qtivimedia_plugins.qdocconf)
 include(../../plugins/ivivehiclefunctions/doc/qtivivehiclefunctions_plugins.qdocconf)
+
+# include definitions shared with all doc modules
+include(../shared.qdocconf)
+
+# include extra image to qhp (referred to in the generated examples-manifest.xml)
+HTML.extraimages             += images/qtivi-codesample.png
+qhp.QtIvi.extraFiles         += images/qtivi-codesample.png
 
 qhp.projects                  = QtIvi
 
@@ -49,8 +59,6 @@ qhp.QtIvi.subprojects.examples.sortPages = true
 tagfile                 = qtivi.tags
 
 depends += qtcore qtdoc qtquick qtqml qtautomotivesuite
-
-examplesinstallpath     = vehiclefunctions
 
 navigation.homepage = "Qt Automotive Suite"
 navigation.landingpage = "Qt IVI"

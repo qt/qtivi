@@ -51,7 +51,7 @@
 ****************************************************************************/
 
 /*!
-     \example tuner
+     \example ivimedia/tuner
      \title QML Tuner Example
      \ingroup qtivimedia-examples
 
@@ -63,13 +63,13 @@
      First an AmFmTuner object is created. By default,
      the auto discovery is used to search for a plugin that implements QIviAmFmTunerBackendInterface.
      Depending on the selection of the band radio buttons the tuner band is selected.
-     \snippet tuner/main.qml 1
+     \snippet ivimedia/tuner/main.qml 1
 
      \section1 Station Information
 
      In the left third of the UI we want to display information about the current radio station
      as well as providing some buttons to change the stations or start a scan through all stations.
-     \snippet tuner/main.qml 2
+     \snippet ivimedia/tuner/main.qml 2
 
      The station property of AmFmTuner exposes the station you are currently listening to, which can
      be empty as well, if the frequency property was manually changed to a frequency no station is
@@ -81,7 +81,7 @@
      list shows the name and the frequency of a station. By clicking on one of the list items,
      the current station will be changed to this station. On the right side of every station is a
      \c + button which can be used to save this station into the preset list.
-     \snippet tuner/main.qml 3
+     \snippet ivimedia/tuner/main.qml 3
 
      To fill the ListView with all available stations, the SearchAndBrowseModel model is used. As
      the SearchAndBrowseModel is a generic model, it needs to know where the data should come from.
@@ -89,11 +89,11 @@
      use the QIviSearchAndBrowseModelInterface exposed by the same backend which is used by AmFmTuner.
      Because the tuner backend could expose multiple different lists, the contentType needs to be
      selected: in this case the contentType is set to \c station, which provides all available stations.
-     \snippet tuner/main.qml 4
+     \snippet ivimedia/tuner/main.qml 4
 
      To change the currently playing station the AmFmTuner::tune method is used by calling it
      in an onClicked handler
-     \snippet tuner/main.qml 5
+     \snippet ivimedia/tuner/main.qml 5
 
      \section1 Preset List
 
@@ -101,7 +101,7 @@
      is sorted and maintained by the user. A press on the \c + button of the station list will
      add a station to this list, the \c X button will remove the item and the arrow buttons can be
      used to change the order of the stations.
-     \snippet tuner/main.qml 7
+     \snippet ivimedia/tuner/main.qml 7
 
      Similar to the station list, the SearchAndBrowseModel is used as a model, but the contentType
      was changed to \c presets.
@@ -116,7 +116,7 @@
      result. Depending on whether the index is valid, the button will be enabled or disabled.
      This asynchronous approach is needed, as the preset list might be pretty big and the data might
      come from a different process which maintains the tuner state.
-     \snippet tuner/main.qml 6
+     \snippet ivimedia/tuner/main.qml 6
 
      If not already part of the preset list, the station is added to the list by using the
      SearchAndBrowseModel::insert method, which is passed \c 0 as the first parameter to add it on

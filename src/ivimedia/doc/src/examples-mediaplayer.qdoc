@@ -51,7 +51,7 @@
 ****************************************************************************/
 
 /*!
-     \example mediaplayer
+     \example ivimedia/mediaplayer
      \title QML Media Player Example
      \ingroup qtivimedia-examples
 

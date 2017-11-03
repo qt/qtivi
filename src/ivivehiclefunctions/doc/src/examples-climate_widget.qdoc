@@ -51,7 +51,7 @@
 ****************************************************************************/
 
 /*!
-     \example climate_widget
+     \example ivivehiclefunctions/climate_widget
      \title Climate Control Widget Example
      \ingroup qtivivehiclefunctions-examples
 
@@ -68,12 +68,12 @@
 
      \l {QIviClimateControl::}{isValid()} is used for verifying that the
      autoDiscovery found a backend:
-     \snippet climate_widget/mainwindow.cpp 1
+     \snippet ivivehiclefunctions/climate_widget/mainwindow.cpp 1
 
      The constructor then continues to connect the climate control
      attribute change signals to the UI components:
-     \snippet climate_widget/mainwindow.cpp 2
+     \snippet ivivehiclefunctions/climate_widget/mainwindow.cpp 2
 
      Airflow direction is controlled using these functions:
-     \snippet climate_widget/mainwindow.cpp 3
+     \snippet ivivehiclefunctions/climate_widget/mainwindow.cpp 3
 */
