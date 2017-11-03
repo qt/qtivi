@@ -1,6 +1,8 @@
 TEMPLATE = app
 
-QT += qml quick widgets
+QT += qml quick widgets ivicore
+
+CONFIG += c++11
 
 SOURCES += main.cpp
 
@@ -10,5 +12,5 @@ RESOURCES += qml.qrc
 QML_IMPORT_PATH =
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/vehiclefunctions/window_qml
+target.path = $$[QT_INSTALL_EXAMPLES]/ivimedia/tuner
 INSTALLS += target

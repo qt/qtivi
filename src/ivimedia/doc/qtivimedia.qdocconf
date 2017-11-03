@@ -4,7 +4,7 @@ headerdirs  += .. \
 sourcedirs  += .. \
                ../../imports/media
 
-exampledirs += ../../../examples/media \
+exampledirs += ../../../examples/ivimedia \
                snippets
 
 imagedirs   += images

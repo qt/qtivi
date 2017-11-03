@@ -15,5 +15,5 @@ HEADERS  += mainwindow.h
 FORMS    += mainwindow.ui
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/vehiclefunctions/climate_widget
+target.path = $$[QT_INSTALL_EXAMPLES]/ivivehiclefunctions/climate_widget
 INSTALLS += target

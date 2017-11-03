@@ -46,17 +46,24 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-TARGET = $$qtLibraryTarget(QtIviClimateExample)
-TEMPLATE = lib
-CONFIG += ivigenerator
-DESTDIR = ..
+TEMPLATE=lib
+TARGET = $$qtLibraryTarget(example_ivi_climate)
+CONFIG += ivigenerator plugin
 macos: CONFIG += debug_and_release build_all
 
-QT += ivicore ivicore-private qml quick
+LIBS += -L$$OUT_PWD/../ -l$$qtLibraryTarget(QtIviClimateExample)
+DESTDIR = ../qtivi
 
-DEFINES += QT_BUILD_CLIMATE_LIB
+CONFIG += warn_off
+INCLUDEPATH += $$OUT_PWD/../frontend
+PLUGIN_TYPE = qtivi
+PLUGIN_EXTENDS = qtivi
+PLUGIN_CLASS_NAME = ClimatePlugin
 
+QT += core ivicore
+
+QFACE_FORMAT = backend_simulator
 QFACE_SOURCES = ../example-ivi-climate.qface
 
-target.path = $$[QT_INSTALL_EXAMPLES]/core/qface-ivi-climate/frontend
+target.path = $$[QT_INSTALL_EXAMPLES]/ivicore/qface-ivi-climate/backend_simulator
 INSTALLS += target

@@ -6,7 +6,7 @@ sourcedirs  += .. \
                ../../imports/vehiclefunctions \
                $$BUILDDIR/../../ivivehiclefunctions \
 
-exampledirs += ../../../examples/vehiclefunctions \
+exampledirs += ../../../examples/ivivehiclefunctions \
                snippets
 
 imagedirs   += images
