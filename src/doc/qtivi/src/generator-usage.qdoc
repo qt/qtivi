@@ -185,6 +185,13 @@ For QtIvi there are following annotations used for the IDL definition:
         \li Main IDL file
         \li Property
         \li Overrides the default setter method name.
+    \row
+        \li @config(qml_name)
+        \li Main IDL file
+        \li Module, Interface
+        \li Defines the name this interface/module should be using in QML. For interfaces, it is the
+            name which is used to export the interface to QML. For modules it defines the uri of the
+            complete module.
 \endtable
 
 The annotations that are not logically part of the interface description but rather the ones used
