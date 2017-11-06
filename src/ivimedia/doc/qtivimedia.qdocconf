@@ -7,6 +7,3 @@ sourcedirs  += .. \
 exampledirs += snippets
 
 imagedirs   += images
-
-# Set a generic thumbnail for examples that do not have an \image
-manifestmeta.thumbnail.names += "QtIvi/QML Media Player Example"

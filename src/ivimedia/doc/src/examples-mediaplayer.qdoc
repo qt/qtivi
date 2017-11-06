@@ -56,4 +56,5 @@
      \ingroup qtivimedia-examples
 
      \brief The Example shows how to use the MediaPlayer API from QML.
+     \image examples_mediaplayer.png
 */

@@ -30,6 +30,7 @@
 \brief This Example shows how to use the Qt IVI Generator.
 \ingroup qtivicore-examples
 \title Qt IVI Generator Example
+\image examples_qface_ivi_climate.png
 
 This shows an example of using the Qt IVI Generator to build a new component.
 Based on a single qface IDL file it will generate:
