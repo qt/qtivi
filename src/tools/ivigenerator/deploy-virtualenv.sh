@@ -53,12 +53,20 @@ if [[ ! -e "$LIB_FOLDER/orig-prefix.txt" ]] ; then
     exit 1
 fi
 
-# If the python executable has a dependency towards a libpython
-# copy the file and add it as LD_LIBRARY_PATH to the activate script
-LIBPYTHON=`ldd $VIRTUALENV/bin/python | awk '{print $3}' | grep python`
-if [[ -e "$LIBPYTHON" ]] ; then
-   echo "copying $LIBPYTHON"
-   cp -Lf "$LIBPYTHON" "$VIRTUALENV/bin"
+if [ "$(uname)" == "Darwin" ]; then
+    PLATFORM="darwin"
+else
+    PLATFORM="linux"
+fi
+
+if [ "$PLATFORM" == "linux" ]; then
+    # If the python executable has a dependency towards a libpython
+    # copy the file and add it as LD_LIBRARY_PATH to the activate script
+    LIBPYTHON=`ldd $VIRTUALENV/bin/python | awk '{print $3}' | grep python`
+    if [[ -e "$LIBPYTHON" ]] ; then
+       echo "copying $LIBPYTHON"
+       cp -Lf "$LIBPYTHON" "$VIRTUALENV/bin"
+    fi
 fi
 
 # Find all the locations used for the system python files
@@ -77,7 +85,7 @@ for ORIG_LIB in ${ORIG_LIBS} ; do
         for file in ${FILES} ; do
             expand_wildcard=($ORIG_LIB/$file)
             [ ! -e "$expand_wildcard" ] && continue;
-            cp -rLf "$ORIG_LIB"/$file "$LIB_FOLDER/"
+            cp -RLf "$ORIG_LIB"/$file "$LIB_FOLDER/"
         done
 done
 
@@ -85,14 +93,18 @@ done
 # It is based on hashlib, which needs libcrypto and libssl to work.
 # As there is no compatibility for openssl libs, we need to copy
 # them to the bin folder similar to libpython
-HASHLIB=`find $LIB_FOLDER/lib-dynload -iname '_hashlib*'`
-if [[ -e "$HASHLIB" ]] ; then
-    LIBCRYPTO=`ldd $HASHLIB | awk '{print $3}' | grep crypto`
-    echo "copying $LIBCRYPTO"
-    cp -Lf "$LIBCRYPTO" "$VIRTUALENV/bin"
-    LIBSSL=`ldd $HASHLIB | awk '{print $3}' | grep ssl`
-    echo "copying $LIBSSL"
-    cp -Lf "$LIBSSL" "$VIRTUALENV/bin"
+if [ "$PLATFORM" == "linux" ]; then
+    #TODO This also needs to be fixed for mac
+
+    HASHLIB=`find $LIB_FOLDER/lib-dynload -iname '_hashlib*'`
+    if [[ -e "$HASHLIB" ]] ; then
+        LIBCRYPTO=`ldd $HASHLIB | awk '{print $3}' | grep crypto`
+        echo "copying $LIBCRYPTO"
+        cp -Lf "$LIBCRYPTO" "$VIRTUALENV/bin"
+        LIBSSL=`ldd $HASHLIB | awk '{print $3}' | grep ssl`
+        echo "copying $LIBSSL"
+        cp -Lf "$LIBSSL" "$VIRTUALENV/bin"
+    fi
 fi
 
 if [ "$(readlink -- "$VIRTUALENV/lib64")" != "lib" ] ; then
