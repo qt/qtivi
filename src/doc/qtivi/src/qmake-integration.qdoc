@@ -67,4 +67,38 @@ Available QMake Variables:
 
 See \l {Autogenerator usage} for more details on the generator command line arguments.
 
+\section1 QtModule support
+
+The Qmake Integration also supports generating code which enables you to compile the generated code
+as a qt module. As it needs to work more closely with the Qt's module build system, it shouldn't be
+loaded using the \e CONFIG variable, but using the \e load() function instead. The \e
+ivigenerator_qt_module feature replaces the \e load(qt_module) call. The following shows how the
+integration of the QtIviVehicleFunctions module is done.
+
+\badcode
+TARGET = QtIviVehicleFunctions
+QT = core core-private ivicore ivicore-private
+CONFIG += c++11 ivigenerator
+
+...
+
+QFACE_MODULE_NAME = QtIviVehicleFunctions
+QFACE_SOURCES += ivivehiclefunctions.qface
+
+load(ivigenerator_qt_module)
+\endcode
+
+In addition to the project file for the module library also the \e sync.profile needs to be
+changed, as this is used to call the \e syncqt.pl script which generates the forwarding headers.
+Usually the \e sync.profile is setup to search for the headers in the source folders. Using
+\e $out_basedir it can be extended to also search in the build folder.
+
+\badcode
+...
+%modules = ( # path to module name map
+    "QtIviVehicleFunctions" => "$basedir/src/ivivehiclefunctions;$out_basedir/src/ivivehiclefunctions"
+);
+...
+\endcode
+
 */
