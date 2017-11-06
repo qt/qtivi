@@ -24,6 +24,9 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+/*
+  NOTE: Some content in this file was copied from the QFace Documentation
+*/
 /*!
 \page idl-syntax.html
 \title QFace IDL syntax

@@ -27,6 +27,7 @@
 ****************************************************************************/
 /*
   NOTE: Some content in this file was copied from the Jinja Template Engine Documentation
+        and from the QFace Documentation
 */
 /*!
 \page template-syntax.html
