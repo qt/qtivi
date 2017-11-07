@@ -281,6 +281,8 @@ After that filter called lower first will be available from the template:
 {{ var | lowerfirst }}
 \endcode
 
+A list of all supported filters can be found in the \l{Filter Reference}.
+
 
 \section2 Variables
 Template variables are defined by the context dictionary passed to the template. Variables can be

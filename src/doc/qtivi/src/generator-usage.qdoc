@@ -28,7 +28,7 @@
 \page generator-usage.html
 \title Autogenerator usage
 \previouspage Jinja template syntax
-\nextpage Qmake Integration
+\nextpage Filter Reference
 
 This page is about the usage of the QtIVI auto-generator.
 
@@ -360,6 +360,4 @@ for more information.
         \li Control UI for this interface. Contains a interface to control every
         property and method and log calls to signals.
 \endtable
-
-
 */
