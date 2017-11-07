@@ -1,6 +1,9 @@
 {
     "module": "ivimedia",
     "testDir": "../../config.tests",
+    "depends": [
+        "ivicore"
+    ],
 
     "libraries": {
         "taglib": {
@@ -22,15 +25,26 @@
                 "privateFeature",
                 { "type": "define", "name": "QT_TAGLIB" }
             ]
+        },
+        "ivimedia" : {
+            "label": "Qt IVI Media",
+            "condition": "features.ivicore",
+            "output": [ "publicFeature" ]
         }
     },
 
     "summary": [
         {
             "section": "Qt IVI Media",
+            "condition": "features.ivimedia",
             "entries": [
                 "taglib"
             ]
+        },
+        {
+            "type": "feature",
+            "args": "ivimedia",
+            "condition": "!features.ivimedia"
         }
     ]
 }

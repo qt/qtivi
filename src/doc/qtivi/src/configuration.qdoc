@@ -87,6 +87,21 @@ These command-line options can be passed to qmake using the \c QMAKE_EXTRA_ARGS 
     QMAKE_EXTRA_ARGS="--host-tools-only" qmake <qtivi-src>/qtivi.pro
 \endcode
 
+\section2 Only build what is needed
+
+By default all QtIvi modules are configured to be built, depending on whether all needed dependencies
+are available for the respective module or not. Similar to other Qt Features, every module can be
+requested to be built or skipped explicitly using the "--[no-]feature-<modulename>" arguments when
+invoking \c qmake.
+
+E.g. to disable building QtIvi Media:
+\code
+    QMAKE_EXTRA_ARGS="--no-feature-ivimedia" qmake <qtivi-src>/qtivi.pro
+\endcode
+
+Selecting the needed module explicitly has the advantage to show an error at configuration time
+if not all dependencies are met.
+
 \section1 Runtime Configuration
 
 The following environment variables are supported for runtime configurations:

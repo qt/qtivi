@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS = core \
-          media
 
+qtHaveModule(ivicore): SUBDIRS += core
+qtHaveModule(ivimedia): SUBDIRS += media
 qtHaveModule(ivivehiclefunctions): SUBDIRS += vehiclefunctions
