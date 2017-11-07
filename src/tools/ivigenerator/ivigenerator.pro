@@ -71,12 +71,37 @@ templates_control_panel.files += \
     templates_control_panel/utils.tpl
 templates_control_panel.path = $$[QT_HOST_BINS]/ivigenerator/templates_control_panel
 
+templates_backend_qtro.files += \
+    templates_backend_qtro/generated_comment.cpp.tpl \
+    templates_backend_qtro/backend.cpp.tpl \
+    templates_backend_qtro/backend.h.tpl \
+    templates_backend_qtro/plugin.cpp.tpl \
+    templates_backend_qtro/plugin.h.tpl \
+    templates_backend_qtro/plugin.json \
+    templates_backend_qtro/plugin.pri.tpl \
+    templates_backend_qtro/replica.cpp.tpl \
+    templates_backend_qtro/replica.h.tpl \
+    templates_backend_qtro/project.qrc.tpl
+templates_backend_qtro.path = $$[QT_HOST_BINS]/ivigenerator/templates_backend_qtro
+
+templates_server_qtro.files += \
+    templates_server_qtro/generated_comment.cpp.tpl \
+    templates_server_qtro/core.cpp.tpl \
+    templates_server_qtro/core.h.tpl \
+    templates_server_qtro/server.pri.tpl \
+    templates_server_qtro/source.cpp.tpl \
+    templates_server_qtro/source.h.tpl \
+    templates_server_qtro/project.qrc.tpl
+templates_server_qtro.path = $$[QT_HOST_BINS]/ivigenerator/templates_server_qtro
+
 generator.files += \
     generate.py \
     $$OUT_PWD/.config \
     templates_frontend.yaml \
     templates_backend_simulator.yaml \
     templates_generation_validator.yaml \
+    templates_backend_qtro.yaml \
+    templates_server_qtro.yaml \
 
 generator.path = $$[QT_HOST_BINS]/ivigenerator
 
@@ -85,7 +110,7 @@ qtConfig(simulator) {
     INSTALLS += templates_control_panel
 }
 
-INSTALLS += templates_frontend templates_backend_simulator templates_generation_validator generator
+INSTALLS += templates_frontend templates_backend_simulator templates_generation_validator generator templates_backend_qtro templates_server_qtro
 
 # Ensure files are installed to qtbase for non-prefixed builds
 !force_independent:if(!debug_and_release|!build_all|CONFIG(release, debug|release)) {

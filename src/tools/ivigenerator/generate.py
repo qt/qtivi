@@ -50,6 +50,7 @@ from qface.helper.qtcpp import Filters
 from qface.helper.doc import parse_doc
 from qface.watch import monitor
 from qface.idl.domain import Interface, Property, Parameter, Field, Struct
+import qface.filters
 
 here = Path(__file__).dirname()
 
@@ -58,7 +59,7 @@ log = logging.getLogger(__file__)
 Filters.classPrefix = ''
 
 builtin_config = {}
-IVI_DEFAULT_TEMPLATES = ['frontend', 'backend_simulator', 'generation_validator', 'control_panel']
+IVI_DEFAULT_TEMPLATES = ['frontend', 'backend_simulator', 'generation_validator', 'control_panel', 'backend_qtro', 'server_qtro']
 
 def tag_by_path(symbol, path, default_value=False):
     """
@@ -550,6 +551,8 @@ def generate(tplconfig, moduleConfig, src, dst):
     generator.register_filter('qml_binding_property', qml_binding_property)
     generator.register_filter('qml_control_signal_parameters', qml_control_signal_parameters)
     generator.register_filter('struct_includes', struct_includes)
+    generator.register_filter('hash', qface.filters.hash)
+
 
     srcFile = os.path.basename(src[0])
     srcBase = os.path.splitext(srcFile)[0]
