@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 SUBDIRS = plugins \
-          imports
+          imports \
           doc
 
 # Include the config.pri from the build folder as the qtgenivieextras-config.pri is copied
