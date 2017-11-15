@@ -31,10 +31,14 @@ interface Echo {
     real floatValue2;
     string stringValue;
     model<Contact> contactList;
+    Contact contact;
     WeekDay weekDay;
 
     string echo(string msg);
     string id() const;
+    Combo getCombo();
+    signal anotherChanged(AnotherStruct another);
+    signal foobar(string foo);
 }
 
 @config: {id: "org.foo.idz.1.0", zoned: true}
@@ -59,9 +63,11 @@ interface EchoZoned {
     @config_simulator: {minimum: 10., maximum: 15.}
     int rangedValue;
     int rangedValueWithDefault;
+    Contact contact;
 
     string echo(string msg);
     string id();
+    Combo getCombo();
 }
 
 /**
@@ -98,4 +104,13 @@ struct Contact {
     string name;
     int age;
     bool isMarried;
+}
+
+struct Combo {
+    Contact contactInfo;
+    WeekDay day;
+}
+
+struct AnotherStruct {
+    int justANumber;
 }

@@ -186,5 +186,11 @@ E.g. "value" for a Slider and "checked" for a CheckBox.
 \section1 qml_control_signal_parameters(symbol)
 
 Returns the parameters for calling the signal using the values from the UI controls.
+
+\target struct_includes(symbol)
+\section1 struct_includes(symbol)
+
+Returns the includes for the structs that the interface or a struct depends on. The returned
+strings are complete and in format #include "struct.h".
 */
 

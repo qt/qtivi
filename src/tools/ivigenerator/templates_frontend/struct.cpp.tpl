@@ -124,4 +124,11 @@ QDataStream &operator>>(QDataStream &stream, {{class}} &obj)
     return stream;
 }
 
+QDebug &operator<<(QDebug &dbg, const {{class}} &obj)
+{
+    Q_UNUSED(obj);
+    dbg << "{{class}}";
+    return dbg;
+}
+
 QT_END_NAMESPACE

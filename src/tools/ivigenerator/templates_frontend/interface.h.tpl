@@ -46,6 +46,10 @@
 
 #include "{{module.module_name|lower}}module.h"
 
+{% for inc in interface|struct_includes %}
+{{inc}}
+{% endfor %}
+
 {% if interface.tags.config.zoned %}
 #include <QtIviCore/QIviAbstractZonedFeature>
 {% else %}
