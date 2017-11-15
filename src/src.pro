@@ -43,9 +43,10 @@ QT_FOR_CONFIG += geniviextras geniviextras-private ivicore ivicore-private ivive
             SUBDIRS += src_tools_ivigenerator
         }
 
-        qtConfig(simulator) {
+        qtConfig(simulator):qtHaveModule(simulator) {
             src_tools_ivivehiclefunctions-controller.subdir = tools/vehiclefunctions-controller
             !qtConfig(system-ivigenerator): src_tools_ivivehiclefunctions-controller.depends += sub-ivigenerator
+            else: src_tools_ivivehiclefunctions-controller.depends += ivicore
             src_tools_ivivehiclefunctions-controller.target = sub-ivivehiclefunctions-controller
             SUBDIRS += src_tools_ivivehiclefunctions-controller
         }

@@ -5,7 +5,8 @@
     "commandline": {
         "options": {
             "ivigenerator": { "type": "enum", "values": [ "no", "qt", "system" ] },
-            "host-tools-only": "boolean"
+            "host-tools-only": "boolean",
+            "force-ivigenerator-qtsimulator": "boolean"
         }
     },
 
@@ -58,7 +59,7 @@
         },
         "simulator": {
             "label": "QtSimulator Support",
-            "condition": "module.simulator",
+            "condition": "module.simulator || input.force-ivigenerator-qtsimulator == 'yes'",
             "output": [ "publicFeature" ]
         },
         "ivicore": {
