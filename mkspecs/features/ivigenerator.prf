@@ -42,6 +42,7 @@ QTEST_ENVIRONMENT = $$upper($$(QTEST_ENVIRONMENT))
 
 # Try to use the internal virtualenv when building qtivi
 # Because of the two stage build of COIN, it might not exist, but the installed version should still be there
+QT_FOR_CONFIG *= ivicore-private
 !isEmpty(QTIVI_BUILD_ROOT):!equals(QTEST_ENVIRONMENT, CI):!qtConfig(system-ivigenerator) {
     VIRTUALENV_PATH = $$INTERNAL_VIRTUALENV_PATH
     IVI_GENERATOR_PATH = $$QTIVI_ROOT/src/tools/ivigenerator
