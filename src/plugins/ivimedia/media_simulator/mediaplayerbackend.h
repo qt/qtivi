@@ -90,11 +90,15 @@ public Q_SLOTS:
 private Q_SLOTS:
     void onStateChanged(QMediaPlayer::State state);
     void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
+    void onPositionChanged(qint64 position);
+    void onDurationChanged(qint64 duration);
 private:
 
     int m_count;
     int m_currentIndex;
     QIviMediaPlayer::PlayMode m_playMode;
+    QIviMediaPlayer::PlayState m_requestedState;
+    QIviMediaPlayer::PlayState m_state;
     QThreadPool *m_threadPool;
     QMediaPlayer *m_player;
     QSqlDatabase m_db;

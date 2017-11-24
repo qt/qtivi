@@ -49,21 +49,26 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QtDebug>
+#include <QLoggingCategory>
+
+Q_LOGGING_CATEGORY(media, "qt.ivi.media.media_simulator")
 
 MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *parent)
     : QIviMediaPlayerBackendInterface(parent)
     , m_count(0)
     , m_currentIndex(-1)
     , m_playMode(QIviMediaPlayer::Normal)
+    , m_requestedState(QIviMediaPlayer::Stopped)
+    , m_state(QIviMediaPlayer::Stopped)
     , m_threadPool(new QThreadPool(this))
     , m_player(new QMediaPlayer(this))
 {
     m_threadPool->setMaxThreadCount(1);
 
     connect(m_player, &QMediaPlayer::durationChanged,
-            this, &MediaPlayerBackend::durationChanged);
+            this, &MediaPlayerBackend::onDurationChanged);
     connect(m_player, &QMediaPlayer::positionChanged,
-            this, &MediaPlayerBackend::positionChanged);
+            this, &MediaPlayerBackend::onPositionChanged);
     connect(m_player, &QMediaPlayer::stateChanged,
             this, &MediaPlayerBackend::onStateChanged);
     connect(m_player, &QMediaPlayer::mediaStatusChanged,
@@ -87,26 +92,35 @@ void MediaPlayerBackend::initialize()
 
 void MediaPlayerBackend::play()
 {
+    qCDebug(media) << Q_FUNC_INFO;
+    qCDebug(media) << m_player->media().canonicalUrl();
+    m_requestedState = QIviMediaPlayer::Playing;
     m_player->play();
 }
 
 void MediaPlayerBackend::pause()
 {
+    qCDebug(media) << Q_FUNC_INFO;
+    m_requestedState = QIviMediaPlayer::Paused;
     m_player->pause();
 }
 
 void MediaPlayerBackend::stop()
 {
+    qCDebug(media) << Q_FUNC_INFO;
+    m_requestedState = QIviMediaPlayer::Stopped;
     m_player->stop();
 }
 
 void MediaPlayerBackend::seek(qint64 offset)
 {
+    qCDebug(media) << Q_FUNC_INFO << offset;
     m_player->setPosition(m_player->position() + offset);
 }
 
 void MediaPlayerBackend::next()
 {
+    qCDebug(media) << Q_FUNC_INFO;
     int nextIndex = m_currentIndex + 1;
     if (m_playMode == QIviMediaPlayer::Shuffle)
         nextIndex = qrand() % m_count;
@@ -120,6 +134,7 @@ void MediaPlayerBackend::next()
 
 void MediaPlayerBackend::previous()
 {
+    qCDebug(media) << Q_FUNC_INFO;
     int nextIndex = m_currentIndex - 1;
     if (m_playMode == QIviMediaPlayer::Shuffle)
         nextIndex = qrand() % m_count;
@@ -133,12 +148,14 @@ void MediaPlayerBackend::previous()
 
 void MediaPlayerBackend::setPlayMode(QIviMediaPlayer::PlayMode playMode)
 {
+    qCDebug(media) << Q_FUNC_INFO << playMode;
     m_playMode = playMode;
     emit playModeChanged(m_playMode);
 }
 
 void MediaPlayerBackend::setPosition(qint64 position)
 {
+    qCDebug(media) << Q_FUNC_INFO << position;
     m_player->setPosition(position);
 }
 
@@ -328,6 +345,7 @@ void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, 
 
 void MediaPlayerBackend::setCurrentIndex(int index)
 {
+    qCDebug(media) << Q_FUNC_INFO << index;
     //If we the list is empty the current Index needs to updated to an invalid track
     if (m_count == 0 && index == -1) {
         m_currentIndex = index;
@@ -357,17 +375,32 @@ void MediaPlayerBackend::setCurrentIndex(int index)
 
 void MediaPlayerBackend::onStateChanged(QMediaPlayer::State state)
 {
-    QIviMediaPlayer::PlayState iviState = QIviMediaPlayer::Stopped;
+    qCDebug(media) << Q_FUNC_INFO << state;
     if (state == QMediaPlayer::PlayingState)
-        iviState = QIviMediaPlayer::Playing;
+        m_state = QIviMediaPlayer::Playing;
     else if (state == QMediaPlayer::PausedState)
-        iviState = QIviMediaPlayer::Paused;
+        m_state = QIviMediaPlayer::Paused;
 
-    emit playStateChanged(iviState);
+    emit playStateChanged(m_state);
 }
 
 void MediaPlayerBackend::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
 {
+    qCDebug(media) << Q_FUNC_INFO << status;
     if (status == QMediaPlayer::EndOfMedia)
         next();
+    if (status == QMediaPlayer::LoadedMedia && m_requestedState == QIviMediaPlayer::Playing)
+        m_player->play();
+}
+
+void MediaPlayerBackend::onPositionChanged(qint64 position)
+{
+    qCDebug(media) << Q_FUNC_INFO << position;
+    emit positionChanged(position);
+}
+
+void MediaPlayerBackend::onDurationChanged(qint64 duration)
+{
+    qCDebug(media) << Q_FUNC_INFO << duration;
+    emit durationChanged(duration);
 }
