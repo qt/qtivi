@@ -189,6 +189,8 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
         QString coverArtUrl;
 #ifdef QT_TAGLIB
         TagLib::FileRef f(fileName.toLocal8Bit());
+        if (f.isNull())
+            continue;
         QString trackName = QLatin1String(f.tag()->title().toCString());
         QString albumName = QLatin1String(f.tag()->album().toCString());
         QString artistName = QLatin1String(f.tag()->artist().toCString());
