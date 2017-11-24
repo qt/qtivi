@@ -66,12 +66,14 @@ public:
     QIviFeatureInterface *interfaceInstance(const QString &interface) const;
 
 private:
+    QSqlDatabase createDatabaseConnection(const QString &connectionName);
+
     MediaPlayerBackend *m_player;
     SearchAndBrowseBackend *m_browse;
     MediaDiscoveryBackend *m_discovery;
     MediaIndexerBackend *m_indexer;
     AmFmTunerBackend *m_amfmtuner;
-    QSqlDatabase m_db;
+    QString m_dbFile;
 };
 
 #endif // MEDIAPLUGIN_H

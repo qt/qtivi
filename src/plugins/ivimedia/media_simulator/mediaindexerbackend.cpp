@@ -48,6 +48,7 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QtDebug>
+#include <QThreadPool>
 
 #include <QMediaPlayer>
 #include <QMediaMetaData>
@@ -68,7 +69,10 @@ MediaIndexerBackend::MediaIndexerBackend(const QSqlDatabase &database, QObject *
     : QIviMediaIndexerControlBackendInterface(parent)
     , m_db(database)
     , m_state(QIviMediaIndexerControl::Idle)
+    , m_threadPool(new QThreadPool(this))
 {
+    m_threadPool->setMaxThreadCount(1);
+
     connect(&m_watcher, SIGNAL(finished()), this, SLOT(onScanFinished()));
 
     QString mediaFolder = QDir::homePath() + QLatin1String("/media");
@@ -146,24 +150,6 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
 #ifndef QT_TAGLIB
     QMediaPlayer player;
 #endif
-    QSqlQuery query(m_db);
-
-    bool ret = query.exec("CREATE TABLE IF NOT EXISTS track "
-                     "(id integer primary key, "
-                     "trackName varchar(200), "
-                     "albumName varchar(200), "
-                     "artistName varchar(200), "
-                     "genre varchar(200), "
-                     "number integer,"
-                     "file varchar(200),"
-                     "coverArtUrl varchar(200),"
-                     "UNIQUE(file))");
-
-    if (!ret) {
-        setState(QIviMediaIndexerControl::Error);
-        qInfo() << "create query:" << query.lastError().text();
-        return false;
-    }
 
     QStringList mediaFiles;
     mediaFiles << "*.mp3";

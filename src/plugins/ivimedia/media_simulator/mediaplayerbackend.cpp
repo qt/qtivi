@@ -64,7 +64,6 @@ MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *pa
     , m_player(new QMediaPlayer(this))
 {
     m_threadPool->setMaxThreadCount(1);
-
     connect(m_player, &QMediaPlayer::durationChanged,
             this, &MediaPlayerBackend::onDurationChanged);
     connect(m_player, &QMediaPlayer::positionChanged,
@@ -75,12 +74,6 @@ MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *pa
             this, &MediaPlayerBackend::onMediaStatusChanged);
 
     m_db = database;
-    m_db.open();
-
-    QSqlQuery query = m_db.exec(QLatin1String("CREATE TABLE IF NOT EXISTS \"queue\" (\"id\" INTEGER PRIMARY KEY, \"qindex\" INTEGER, \"track_index\" INTEGER)"));
-    if (query.lastError().isValid())
-        qWarning() << query.lastError().text();
-    m_db.commit();
 }
 
 void MediaPlayerBackend::initialize()
@@ -346,6 +339,8 @@ void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, 
 void MediaPlayerBackend::setCurrentIndex(int index)
 {
     qCDebug(media) << Q_FUNC_INFO << index;
+    if (m_currentIndex == index)
+        return;
     //If we the list is empty the current Index needs to updated to an invalid track
     if (m_count == 0 && index == -1) {
         m_currentIndex = index;

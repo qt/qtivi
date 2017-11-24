@@ -49,6 +49,8 @@
 #include <QQueue>
 #include <QSqlDatabase>
 
+QT_FORWARD_DECLARE_CLASS(QThreadPool);
+
 class MediaIndexerBackend : public QIviMediaIndexerControlBackendInterface
 {
     Q_OBJECT
@@ -84,6 +86,7 @@ private:
     QQueue<ScanData> m_folderQueue;
     QString m_currentFolder;
     QFutureWatcher<bool> m_watcher;
+    QThreadPool *m_threadPool;
 };
 
 #endif // MEDIAINDEXERBACKEND_H

@@ -49,6 +49,8 @@
 #include <QSqlDatabase>
 #include <QStack>
 
+QT_FORWARD_DECLARE_CLASS(QThreadPool);
+
 class SearchAndBrowseItem : public QIviSearchAndBrowseModelItem
 {
     Q_GADGET
@@ -92,6 +94,7 @@ private:
     QString mapIdentifiers(const QString &type, const QString &identifer);
 
     QSqlDatabase m_db;
+    QThreadPool *m_threadPool;
 };
 
 #endif // SEARCHBACKEND_H

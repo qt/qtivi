@@ -50,7 +50,10 @@
 
 SearchAndBrowseBackend::SearchAndBrowseBackend(const QSqlDatabase &database, QObject *parent)
     : QIviSearchAndBrowseModelInterface(parent)
+    , m_threadPool(new QThreadPool(this))
 {
+    m_threadPool->setMaxThreadCount(1);
+
     qRegisterMetaType<SearchAndBrowseItem>();
     registerContentType<SearchAndBrowseItem>("artist");
     registerContentType<SearchAndBrowseItem>("album");
@@ -118,15 +121,16 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &t
                  whereClause.isEmpty() ? QString() : QLatin1String("WHERE ") + whereClause,
                  groupBy.isEmpty() ? QString() : QLatin1String("GROUP BY ") + groupBy);
 
-    QSqlQuery query(m_db);
-
-    if (query.exec(countQuery)) {
-        while (query.next()) {
-            emit countChanged(identifier, query.value(0).toInt());
+    QtConcurrent::run(m_threadPool, [this, countQuery, identifier]() {
+        QSqlQuery query(m_db);
+        if (query.exec(countQuery)) {
+            while (query.next()) {
+                emit countChanged(identifier, query.value(0).toInt());
+            }
+        } else {
+            qDebug() << query.lastError().text();
         }
-    } else {
-        qDebug() << query.lastError().text();
-    }
+    });
 
     QString queryString = QString(QLatin1String("SELECT %1 FROM track %2 %3 %4 LIMIT %5, %6"))
             .arg(columns,
@@ -136,7 +140,8 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &t
             QString::number(start),
             QString::number(count));
 
-    QtConcurrent::run(this,
+    QtConcurrent::run(m_threadPool,
+                      this,
                       &SearchAndBrowseBackend::search,
                       identifier,
                       queryString,

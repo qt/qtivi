@@ -51,27 +51,48 @@
 #include <QStringList>
 #include <QTemporaryFile>
 #include <QCoreApplication>
+#include <QSqlQuery>
+#include <QSqlError>
 #include <QtDebug>
 
 MediaPlugin::MediaPlugin(QObject *parent)
     : QObject(parent)
     , m_discovery(new MediaDiscoveryBackend(this))
 {
-    m_db = QSqlDatabase::addDatabase("QSQLITE");
     const QByteArray database = qgetenv("QTIVIMEDIA_SIMULATOR_DATABASE");
     if (database.isEmpty()) {
         QTemporaryFile *tempFile = new QTemporaryFile(qApp);
         tempFile->open();
-        m_db.setDatabaseName(tempFile->fileName());
+        m_dbFile = tempFile->fileName();
         qCritical() << "QTIVIMEDIA_SIMULATOR_DATABASE environment variable isn't set.\n"
                     << "Using the temporary database: " << tempFile->fileName();
     } else {
-        m_db.setDatabaseName(database);
+        m_dbFile = database;
     }
 
-    m_player = new MediaPlayerBackend(m_db, this);
-    m_browse = new SearchAndBrowseBackend(m_db, this);
-    m_indexer = new MediaIndexerBackend(m_db, this);
+    QSqlDatabase db = createDatabaseConnection("main");
+    QSqlQuery query = db.exec(QLatin1String("CREATE TABLE IF NOT EXISTS \"queue\" (\"id\" INTEGER PRIMARY KEY, \"qindex\" INTEGER, \"track_index\" INTEGER)"));
+    if (query.lastError().isValid())
+        qFatal("Couldn't create Database Tables: %s", qPrintable(query.lastError().text()));
+
+    query = db.exec("CREATE TABLE IF NOT EXISTS track "
+                     "(id integer primary key, "
+                     "trackName varchar(200), "
+                     "albumName varchar(200), "
+                     "artistName varchar(200), "
+                     "genre varchar(200), "
+                     "number integer,"
+                     "file varchar(200),"
+                     "coverArtUrl varchar(200),"
+                     "UNIQUE(file))");
+
+    if (query.lastError().isValid())
+        qFatal("Couldn't create Database Tables: %s", qPrintable(query.lastError().text()));
+    db.commit();
+
+    m_player = new MediaPlayerBackend(createDatabaseConnection("player"), this);
+    m_browse = new SearchAndBrowseBackend(createDatabaseConnection("model"), this);
+    m_indexer = new MediaIndexerBackend(createDatabaseConnection("indexer"), this);
 
     connect(m_discovery, &MediaDiscoveryBackend::mediaDirectoryAdded,
             m_indexer, &MediaIndexerBackend::addMediaFolder);
@@ -101,4 +122,12 @@ QIviFeatureInterface *MediaPlugin::interfaceInstance(const QString &interface) c
         return m_indexer;
 
     return 0;
+}
+
+QSqlDatabase MediaPlugin::createDatabaseConnection(const QString &connectionName)
+{
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
+    db.setDatabaseName(m_dbFile);
+    db.open();
+    return db;
 }
