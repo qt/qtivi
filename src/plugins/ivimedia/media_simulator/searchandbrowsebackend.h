@@ -51,7 +51,7 @@
 
 QT_FORWARD_DECLARE_CLASS(QThreadPool);
 
-class SearchAndBrowseItem : public QIviSearchAndBrowseModelItem
+class SearchAndBrowseItem : public QIviPlayableItem
 {
     Q_GADGET
 
