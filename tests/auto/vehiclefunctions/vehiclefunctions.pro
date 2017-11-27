@@ -1,4 +1,5 @@
 TEMPLATE = subdirs
 
-SUBDIRS = climatecontroltest \
+SUBDIRS = basic
+#SUBDIRS = climatecontroltest \
           windowcontroltest

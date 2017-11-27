@@ -71,12 +71,21 @@ templates_control_panel.files += \
     templates_control_panel/utils.tpl
 templates_control_panel.path = $$[QT_HOST_BINS]/ivigenerator/templates_control_panel
 
+templates_test.files += \
+    templates_test/generated_comment.cpp.tpl \
+    templates_test/tst_test.h.tpl \
+    templates_test/tst_test.cpp.tpl \
+    templates_test/module.pri.tpl \
+    templates_test/main.cpp.tpl
+templates_test.path = $$[QT_HOST_BINS]/ivigenerator/templates_test
+
 generator.files += \
     generate.py \
     $$OUT_PWD/.config \
     templates_frontend.yaml \
     templates_backend_simulator.yaml \
     templates_generation_validator.yaml \
+    templates_test.yaml \
 
 generator.path = $$[QT_HOST_BINS]/ivigenerator
 
@@ -85,7 +94,11 @@ qtConfig(simulator) {
     INSTALLS += templates_control_panel
 }
 
-INSTALLS += templates_frontend templates_backend_simulator templates_generation_validator generator
+INSTALLS += generator \
+    templates_frontend \
+    templates_backend_simulator \
+    templates_generation_validator \
+    templates_test \
 
 # Ensure files are installed to qtbase for non-prefixed builds
 !force_independent:if(!debug_and_release|!build_all|CONFIG(release, debug|release)) {

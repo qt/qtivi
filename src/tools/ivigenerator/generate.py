@@ -58,7 +58,7 @@ log = logging.getLogger(__file__)
 Filters.classPrefix = ''
 
 builtin_config = {}
-IVI_DEFAULT_TEMPLATES = ['frontend', 'backend_simulator', 'generation_validator', 'control_panel']
+IVI_DEFAULT_TEMPLATES = ['frontend', 'backend_simulator', 'generation_validator', 'control_panel', 'test']
 
 def tag_by_path(symbol, path, default_value=False):
     """
@@ -131,6 +131,41 @@ def default_type_value(symbol):
         return 'nullptr'
     return 'XXX'
 
+def test_type_value(symbol):
+    """
+    Find a value different than the default value for the type. Models are initialized as nullptr
+    """
+    prefix = Filters.classPrefix
+    t = symbol.type  # type: qface.domain.TypeSymbol
+    if t.is_primitive:
+        if t.is_int:
+            return '111'
+        if t.is_bool:
+            return 'true'
+        if t.is_string:
+            return '"TEST STRING"'
+        if t.is_real:
+            return '1234.5678'
+        if t.is_variant:
+            return 'QVariant("TEST VARIANT")'
+    elif t.is_void:
+        return ''
+    elif t.is_enum:
+        module_name = t.reference.module.module_name
+        value = list(iter(t.reference.members))[-1]
+        return '{0}{1}Module::{2}'.format(prefix, module_name, value)
+    elif t.is_flag:
+        module_name = t.reference.module.module_name
+        value = next(iter(t.reference.members))
+        return '{0}{1}Module::{2}'.format(prefix, module_name, value)
+    elif symbol.type.is_list:
+        return 'QVariantList({})'
+    elif symbol.type.is_struct:
+        values_string = ', '.join(test_type_value(e) for e in symbol.type.reference.fields)
+        return '{0}{1}({2})'.format(prefix, symbol.type, values_string)
+    elif symbol.type.is_model:
+        return 'new {0}{1}Model()'.format(prefix, symbol.type.nested)
+    return 'XXX'
 
 def default_value(symbol, zone='='):
     """
@@ -529,6 +564,7 @@ def generate(tplconfig, moduleConfig, src, dst):
     generator.register_filter('parameter_type', parameter_type)
     generator.register_filter('getter_name', getter_name)
     generator.register_filter('setter_name', setter_name)
+    generator.register_filter('test_type_value', test_type_value)
     generator.register_filter('default_type_value', default_type_value)
     generator.register_filter('default_value', default_value)
     generator.register_filter('model_type', model_type)
