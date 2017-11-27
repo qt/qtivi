@@ -98,10 +98,10 @@ if [ "$PLATFORM" == "linux" ]; then
 
     HASHLIB=`find $LIB_FOLDER/lib-dynload -iname '_hashlib*'`
     if [[ -e "$HASHLIB" ]] ; then
-        LIBCRYPTO=`ldd $HASHLIB | awk '{print $3}' | grep crypto`
+        LIBCRYPTO=`ldd $HASHLIB | awk '{print $3}' | grep libcrypto`
         echo "copying $LIBCRYPTO"
         cp -Lf "$LIBCRYPTO" "$VIRTUALENV/bin"
-        LIBSSL=`ldd $HASHLIB | awk '{print $3}' | grep ssl`
+        LIBSSL=`ldd $HASHLIB | awk '{print $3}' | grep libssl`
         echo "copying $LIBSSL"
         cp -Lf "$LIBSSL" "$VIRTUALENV/bin"
     fi
