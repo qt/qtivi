@@ -6,6 +6,10 @@
     ],
 
     "features": {
+        "vehiclefunctions_simulation_backend" : {
+            "label": "Vehicle Functions Simulation Backend",
+            "output": [ "privateFeature" ]
+        },
         "ivivehiclefunctions" : {
             "label": "Qt IVI VehicleFunctions",
             "condition": "features.ivicore && features.ivigenerator",
@@ -16,6 +20,22 @@
     "report": [],
 
     "summary": [
-            "ivivehiclefunctions"
+        {
+            "section": "Qt IVI VehicleFunctions",
+            "condition": "features.ivivehiclefunctions",
+            "entries": [
+                {
+                    "section": "Backends",
+                    "entries": [
+                        "vehiclefunctions_simulation_backend"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "feature",
+            "args": "ivivehiclefunctions",
+            "condition": "!features.ivivehiclefunctions"
+        }
     ]
 }
