@@ -67,8 +67,8 @@ QT_BEGIN_NAMESPACE
 */
 QIviServiceObject::QIviServiceObject(QObject *parent)
     : QObject(parent)
+    , m_id(QUuid::createUuid().toString())
 {
-
 }
 
 /*!
@@ -95,8 +95,7 @@ QIviServiceObject::~QIviServiceObject()
 */
 QString QIviServiceObject::id() const
 {
-    static QUuid id = QUuid::createUuid();
-    return id.toString();
+    return m_id;
 }
 
 /*!

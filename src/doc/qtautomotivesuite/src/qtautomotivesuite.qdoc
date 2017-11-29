@@ -75,16 +75,24 @@
     \previouspage {Qt Automotive Suite}
     \nextpage {Installing Qt Automotive Suite}
 
-    \section1 Components
-
     \QAS includes several components built on Qt and the \l {Qt Creator}
-    integrated development environment.
+    integrated development environment. The following picture illustrates
+    the structure and environment of \QAS. The parts outlined in grey are
+    specific to \QAS:
 
-    \section2 Qt
+    \image qtas-architecture.png
 
-    Cross-platform \l {http://www.qt.io/}{Qt} development libraries (Qt 5.7)
-    and core tools, developed through an open-source collaboration model.
-    Qt is a full development framework designed to streamline the creation of
+    \section1 Qt and Qt for Device Creation
+
+    \QAS is built on top of the \l {Qt for Device Creation} offering.
+    In addition to Qt, Qt for Device Creation contains an embedded development
+    environment built around Qt Creator. Especially, Qt for Device Creation provides
+    Boot to Qt, a light-weight software stack for embedded systems. It supports
+    building your own Linux image for customizing the Boot to Qt stack.
+
+    Qt is a cross-platform \l {http://www.qt.io/}{Qt} development framework
+    that provides libraries and core tools, developed through an open-source
+    collaboration model. Qt is designed to streamline the creation of
     applications and user interfaces for desktop, embedded, and mobile
     platforms.
 
@@ -94,9 +102,9 @@
     \l {Qt Quick} or HTML5/hybrid user interfaces with the \l {Qt WebEngine}
     module.
 
-    For overview about Qt libraries see the \l {Qt reference documentation}.
+    For an overview of Qt libraries, see the \l {Qt Reference Documentation}.
 
-    Qt modules that are especially useful for embedded/IVI application
+    Qt modules that are especially useful for embedded and IVI application
     development include:
 
     \list
@@ -111,9 +119,11 @@
             \l {http://www.chromium.org}{Chromium} project.
     \endlist
 
-    \section2 Development Environment
+    \section1 Development Environment
 
     The development environment in \QAS is built around \l {Qt Creator}.
+    The following topics provide more information about Qt Creator as a
+    development environment:
 
     \list
       \li \l {Qt Creator: Developing Qt Quick Applications}
@@ -124,52 +134,59 @@
     \QAS comes with additional functionality for diagnostics and debugging,
     as well as deployment:
 
-    \section3 GammaRay
+    \section2 GammaRay
 
     GammaRay is a plugin for Qt Creator that provides software introspection
     for Qt applications. It allows visualization of application behavior and
     manipulating it at run-time, both locally and remotely on an embedded
     target.
 
-    \section3 QmlLive
+    \section2 QmlLive
 
     \l{Qt QmlLive}{QmlLive} provides a live reloader environment for rapid development of
     Qt Quick applications, dramatically reducing the time it takes to
     deploy and test changes in the UI design.
 
-    \section3 Deployment
+    \section2 Deployment
 
     Device deployment can be done directly from the Qt Creator IDE to a
-    device connected via USB or local area network, or to an emulator
+    device connected via USB or local area network, or to an \l{Emulator}{emulator}
     running the same, full software stack as the devices.
 
     As with any Qt application, the same project can be deployed to
-    desktop or mobile targets as well.
+    desktop or target devices as well.
 
-    \section2 Automotive APIs
+    \section1 Automotive APIs
 
     The \l {Qt IVI} module provides C++ and QML interfaces for accessing
     vehicle features, and also enables implementing new IVI features.
     Already defined interfaces from the GENIVI alliance are exposed in the
     \l {Qt GENIVI Extras} module.
 
-    \section2 Qt Application Manager
+    \section1 Qt Application Manager
 
-    \l {Qt Application Manager} provides application lifecycle management.
+    \l {Qt Application Manager} provides a basis for a multi-application
+    embedded system. It takes care of the application lifecycle management.
+    Qt Application Manager provides an API for implementing a UI and its application
+    logic separately.
 
-    \section2 Reference Applications
+    Qt Creator contains a
+    \l{Qt Creator Application Manager Plugin}{Qt Application Manager} plugin
+    that facilitates the development of 3rd party applications within
+    a Qt Application Manager setup by automating the underlying processes.
 
-    \QAS includes \l{Neptune UI}{Neptune}, a reference HMI designed for IVI
-    systems, including multiple IVI applications and an application store
-    implementation. It enables the OEMs to test their applications on supported
-    hardware and emulator targets.
+    \section1 Reference Applications
 
-    \section3 Web Browser
+    \QAS includes \l{Neptune UI} that provides a UI implementation for
+    Qt in IVI (In-Vehichle Infotainment) systems. It demonstrates best practices
+    for developing an automotive UI with \QAS.
 
-    \l {Qt Web Browser} is a browser designed for embedded devices, based on
+    \section1 Web Browser
+
+    \l {Qt Web Browser} is a browser designed for embedded devices. It is based on
     \l {Qt WebEngine}, with a slick, touch-friendly user interface.
 
-    \section2 Over-The-Air Updates
+    \section1 Over-The-Air Updates
 
     \QAS comes with \l {Over-The-Air Update}{Over-The-Air} (OTA) package, providing
     tools that assist in enabling distribution of software updates in embedded

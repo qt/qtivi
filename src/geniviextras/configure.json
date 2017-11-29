@@ -46,6 +46,12 @@
             "label": "Only build Qt GENIVI Extras",
             "condition": "input.geniviextras-only == 'yes'",
             "output": [ "privateFeature" ]
+        },
+
+        "geniviextras" : {
+            "label": "Qt GENIVI Extras",
+            "condition": "features.dlt",
+            "output": [ "publicFeature" ]
         }
     },
 
@@ -57,7 +63,7 @@
         },
         {
             "type": "note",
-            "condition": "!features.dlt_2_12",
+            "condition": "features.dlt && !features.dlt_2_12",
             "message": "Old DLT version detected. Not all features of Qt GENIVI Extras can be enabled."
         },
         {
@@ -70,10 +76,16 @@
     "summary": [
         {
             "section": "Qt GENIVI Extras",
+            "condition": "features.geniviextras",
             "entries": [
                 "dlt",
                 "dlt_2_12"
             ]
+        },
+        {
+            "type": "feature",
+            "args": "geniviextras",
+            "condition": "!features.geniviextras"
         }
     ]
 }

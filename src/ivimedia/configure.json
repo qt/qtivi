@@ -1,6 +1,9 @@
 {
     "module": "ivimedia",
     "testDir": "../../config.tests",
+    "depends": [
+        "ivicore"
+    ],
 
     "libraries": {
         "taglib": {
@@ -22,15 +25,47 @@
                 "privateFeature",
                 { "type": "define", "name": "QT_TAGLIB" }
             ]
+        },
+        "media_simulation_backend": {
+            "label": "Mediaplayer Simulation Backend",
+            "output": [ "privateFeature" ]
+        },
+        "tuner_simulation_backend": {
+            "label": "Tuner Simulation Backend",
+            "output": [ "privateFeature" ]
+        },
+        "mpris_backend": {
+            "label": "MPRIS Backend",
+            "condition": "config.linux",
+            "output": [ "privateFeature" ]
+        },
+        "ivimedia" : {
+            "label": "Qt IVI Media",
+            "condition": "features.ivicore",
+            "output": [ "publicFeature" ]
         }
     },
 
     "summary": [
         {
             "section": "Qt IVI Media",
+            "condition": "features.ivimedia",
             "entries": [
-                "taglib"
+                "taglib",
+                {
+                    "section": "Backends",
+                    "entries": [
+                        "media_simulation_backend",
+                        "tuner_simulation_backend",
+                        "mpris_backend"
+                    ]
+                }
             ]
+        },
+        {
+            "type": "feature",
+            "args": "ivimedia",
+            "condition": "!features.ivimedia"
         }
     ]
 }

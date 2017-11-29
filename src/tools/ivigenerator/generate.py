@@ -49,7 +49,7 @@ from qface.generator import FileSystem, Generator
 from qface.helper.qtcpp import Filters
 from qface.helper.doc import parse_doc
 from qface.watch import monitor
-from qface.idl.domain import Property, Parameter, Field, Struct
+from qface.idl.domain import Interface, Property, Parameter, Field, Struct
 
 here = Path(__file__).dirname()
 
@@ -494,6 +494,31 @@ def model_type(symbol):
     return None
 
 
+def struct_includes(symbol):
+    includesSet = set()
+    tpl = '#include \"{0}.h\"'
+    if isinstance(symbol, Struct):
+        for val in symbol.fields:
+            if val.type.is_struct:
+                includesSet.add(tpl.format(val.type).lower())
+    elif isinstance(symbol, Interface):
+        for val in symbol.properties:
+            if val.type.is_struct:
+                includesSet.add(tpl.format(val.type).lower())
+        for op in symbol.operations:
+            for param in op.parameters:
+                if param.type.is_struct:
+                    includesSet.add(tpl.format(param.type).lower())
+            if op.type.is_struct:
+                includesSet.add(tpl.format(op.type).lower())
+        for op in symbol.signals:
+            for param in op.parameters:
+                if param.type.is_struct:
+                    includesSet.add(tpl.format(param.type).lower())
+
+    return includesSet
+
+
 def generate(tplconfig, moduleConfig, src, dst):
     log.debug('run {0} {1}'.format(src, dst))
     FileSystem.strict = True
@@ -524,6 +549,7 @@ def generate(tplconfig, moduleConfig, src, dst):
     generator.register_filter('qml_control', qml_control)
     generator.register_filter('qml_binding_property', qml_binding_property)
     generator.register_filter('qml_control_signal_parameters', qml_control_signal_parameters)
+    generator.register_filter('struct_includes', struct_includes)
 
     srcFile = os.path.basename(src[0])
     srcBase = os.path.splitext(srcFile)[0]

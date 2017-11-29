@@ -5,7 +5,8 @@
     "commandline": {
         "options": {
             "ivigenerator": { "type": "enum", "values": [ "no", "qt", "system" ] },
-            "host-tools-only": "boolean"
+            "host-tools-only": "boolean",
+            "force-ivigenerator-qtsimulator": "boolean"
         }
     },
 
@@ -48,7 +49,7 @@
             "label": "IVI Generator",
             "enable": "input.ivigenerator == 'qt' || input.ivigenerator == 'system'",
             "disable": "input.ivigenerator == 'no'",
-            "condition": "features.python3.&& features.python3-virtualenv || features.system-ivigenerator",
+            "condition": "features.ivicore && features.python3 && features.python3-virtualenv || features.system-ivigenerator",
             "output": [ "publicFeature" ]
         },
         "host-tools-only": {
@@ -58,7 +59,11 @@
         },
         "simulator": {
             "label": "QtSimulator Support",
-            "condition": "module.simulator",
+            "condition": "module.simulator || input.force-ivigenerator-qtsimulator == 'yes'",
+            "output": [ "publicFeature" ]
+        },
+        "ivicore": {
+            "label": "Qt IVI Core",
             "output": [ "publicFeature" ]
         }
      },
@@ -82,6 +87,7 @@ The QtSimulator Support is needed for the communication between the simulation b
     "summary": [
         {
             "section": "Qt IVI Core",
+            "condition": "features.ivicore",
             "entries": [
                 {
                     "section": "Python3",
@@ -95,6 +101,11 @@ The QtSimulator Support is needed for the communication between the simulation b
                "ivigenerator",
                "simulator"
             ]
+        },
+        {
+            "type": "feature",
+            "args": "ivicore",
+            "condition": "!features.ivicore"
         }
     ]
 }

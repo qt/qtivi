@@ -25,7 +25,7 @@
 **
 ****************************************************************************/
 /*!
-\page qface-main.html
+\page ivigenerator.html
 \title The Qt IVI Autogenerator
 \keyword QFace
 
@@ -36,8 +36,9 @@ library, which provides a generic autogeneration framework.
 \list
     \li \l {QFace IDL syntax}
     \li \l {Jinja template syntax}
-    \li \l {AutoGenerator Usage}
-    \li \l {Qmake integration}
-    \li \l {qface-ivi-climate}{Generator Example}
+    \li \l {Autogenerator Usage}
+    \li \l {Filter Reference}
+    \li \l {QMake Integration}
+    \li \l {ivicore/qface-ivi-climate}{Generator Example}
 \endlist
 */

@@ -51,9 +51,10 @@
 ****************************************************************************/
 
 /*!
-     \example mediaplayer
+     \example ivimedia/mediaplayer
      \title QML Media Player Example
      \ingroup qtivimedia-examples
 
      \brief The Example shows how to use the MediaPlayer API from QML.
+     \image examples_mediaplayer.png
 */

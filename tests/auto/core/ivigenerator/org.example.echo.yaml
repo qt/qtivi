@@ -40,3 +40,7 @@ org.example.echo.Echo#intValue:
       default_value: 61
       range_high: 150
       range_low:  0
+
+org.example.echo.EchoZoned#contact:
+    config_simulator:
+        zoned: true

@@ -497,12 +497,12 @@ bool QIviDefaultPropertyOverrider::setOverridenValue(int index, const QVariant &
         if (property.setOverridenValue(value, carrier))
             res = true;
     }
-    return true;
+    return res;
 }
 
 int QIviDefaultPropertyOverrider::propertyCount() const
 {
-    return m_properties.size();
+    return (int) m_properties.size();
 }
 
 const QIviDefaultPropertyOverrider::PropertyOverride &QIviDefaultPropertyOverrider::propertyForIndex(int index) const

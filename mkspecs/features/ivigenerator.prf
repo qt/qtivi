@@ -19,7 +19,7 @@ isEmpty(QFACE_SOURCES): error("QFACE_SOURCES must be set!")
 }
 
 # See the win32 section, why this is needed
-win32:!contains(CONFIG, debug_and_release) {
+win32-msvc*:!contains(CONFIG, debug_and_release) {
     error("The ivigenerator works only in the debug_and_release configuration on windows")
 }
 
@@ -31,7 +31,7 @@ QFACE_YAML = $$QFACE_ABS_PWD/$${QFACE_BASE_NAME}.yaml
 OTHER_FILES += $$QFACE_FILE
 
 # The 'click' library used by the generator needs to have a utf8 locale setup.
-win32: ENV = chcp 65001 &&
+equals(QMAKE_HOST.os, Windows): ENV = chcp 65001 &&
 else: ENV = LC_ALL="en_US.UTF-8"
 
 # Detect whether we are using the feature inside the qtivi repository
@@ -42,15 +42,20 @@ QTEST_ENVIRONMENT = $$upper($$(QTEST_ENVIRONMENT))
 
 # Try to use the internal virtualenv when building qtivi
 # Because of the two stage build of COIN, it might not exist, but the installed version should still be there
+QT_FOR_CONFIG *= ivicore-private
 !isEmpty(QTIVI_BUILD_ROOT):!equals(QTEST_ENVIRONMENT, CI):!qtConfig(system-ivigenerator) {
     VIRTUALENV_PATH = $$INTERNAL_VIRTUALENV_PATH
     IVI_GENERATOR_PATH = $$QTIVI_ROOT/src/tools/ivigenerator
-    win32: ENV += set IVIGENERATOR_CONFIG="$$shell_path($$QTIVI_BUILD_ROOT/src/tools/ivigenerator/.config)" &&
+    equals(QMAKE_HOST.os, Windows): ENV += set IVIGENERATOR_CONFIG="$$shell_path($$QTIVI_BUILD_ROOT/src/tools/ivigenerator/.config)" &&
     else: ENV += IVIGENERATOR_CONFIG="$$shell_path($$QTIVI_BUILD_ROOT/src/tools/ivigenerator/.config)"
 }
 
-win32: VIRTUALENV_PYTHON = $$VIRTUALENV_PATH/Scripts/python.exe
-else: VIRTUALENV_PYTHON = $$VIRTUALENV_PATH/bin/python
+equals(QMAKE_HOST.os, Windows) {
+    VIRTUALENV_PYTHON = $$VIRTUALENV_PATH/Scripts/python.exe
+} else {
+    VIRTUALENV_PYTHON = $$VIRTUALENV_PATH/bin/python
+    ENV += LD_LIBRARY_PATH="$$shell_path($$VIRTUALENV_PATH/bin)"
+}
 IVI_GENERATOR = $$VIRTUALENV_PYTHON $$IVI_GENERATOR_PATH/generate.py
 
 # TODO make this work with multiple input files, or only support one QFACE_SOURCE
@@ -61,8 +66,12 @@ PRI = $$QFACE_OUTPUT_DIR/$$lower($${QFACE_BASE_NAME}).pri
 IVI_GENERATOR_OPTIONS = --format=$$QFACE_FORMAT
 !isEmpty(QFACE_MODULE_NAME): IVI_GENERATOR_OPTIONS += --module=$$QFACE_MODULE
 
+# Windows doesn't offer any other way to sleep for a time inside non-interactive scripts
+equals(QMAKE_HOST.os, Windows): SLEEP = ping -n 2 127.0.0.1 >nul
+else: SLEEP = sleep 1
+
 qface_sources.target = $$relative_path($$PRI, $$OUT_PWD)
-qface_sources.commands = $$ENV $$shell_path($$IVI_GENERATOR) $$IVI_GENERATOR_OPTIONS $$shell_path($$QFACE_ABS_PWD/$${QFACE_FILE}) $$shell_path($$QFACE_OUTPUT_DIR)
+qface_sources.commands = $$SLEEP && $$ENV $$shell_path($$IVI_GENERATOR) $$IVI_GENERATOR_OPTIONS $$shell_path($$QFACE_ABS_PWD/$${QFACE_FILE}) $$shell_path($$QFACE_OUTPUT_DIR)
 qface_sources.depends = $$IVI_GENERATOR_PATH/generate.py
 
 # Add all templates of the generator format as dependency
@@ -135,7 +144,7 @@ QMAKE_EXTRA_TARGETS += Makefile qface_sources
 # where we can envorce the run of the generator and qmake.
 # Afterwards the sub makefiles are read (Makefile.debug/release), which have been
 # regenerated before starting NMAKE on them.
-win32 {
+win32-msvc* {
     qmake.depends = $$relative_path($$PRI, $$OUT_PWD)
 
     debug.depends = qmake

@@ -53,25 +53,59 @@ if [[ ! -e "$LIB_FOLDER/orig-prefix.txt" ]] ; then
     exit 1
 fi
 
-ORIG_PREFIX=$(<"$LIB_FOLDER"/orig-prefix.txt)
-ORIG_LIB=$ORIG_PREFIX/lib/$PYTHON_VERSION
-if [[ ! -d "$ORIG_LIB" ]] ; then
-    echo "$ORIG_LIB doesn't exist"
-    exit 1
+if [ "$(uname)" == "Darwin" ]; then
+    PLATFORM="darwin"
+else
+    PLATFORM="linux"
 fi
+
+if [ "$PLATFORM" == "linux" ]; then
+    # If the python executable has a dependency towards a libpython
+    # copy the file and add it as LD_LIBRARY_PATH to the activate script
+    LIBPYTHON=`ldd $VIRTUALENV/bin/python | awk '{print $3}' | grep python`
+    if [[ -e "$LIBPYTHON" ]] ; then
+       echo "copying $LIBPYTHON"
+       cp -Lf "$LIBPYTHON" "$VIRTUALENV/bin"
+    fi
+fi
+
+# Find all the locations used for the system python files
+# They are located in prefix, but we don't know the sub-folder (it is lib on most systems, but lib64 on some others)
+ORIG_PREFIX=$(<"$LIB_FOLDER"/orig-prefix.txt)
+ORIG_LIBS=`$VIRTUALENV/bin/python3 -c "import sys; print ('\n'.join(path for path in sys.path))" | grep $ORIG_PREFIX`
 
 if [[ ! -e "$SCRIPT/deploy-virtualenv-files.txt" ]] ; then
     echo "$SCRIPT/deploy-virtualenv-files.txt doesn't exist";
     exit 1
 fi
 
-echo "copying files from $ORIG_LIB to $LIB_FOLDER"
-FILES=$(<$SCRIPT/deploy-virtualenv-files.txt)
-for file in ${FILES} ; do
-    expand_wildcard=($ORIG_LIB/$file)
-    [ ! -e "$expand_wildcard" ] && continue;
-    cp -af "$ORIG_LIB"/$file "$LIB_FOLDER/"
+for ORIG_LIB in ${ORIG_LIBS} ; do
+        echo "copying files from $ORIG_LIB to $LIB_FOLDER"
+        FILES=$(<$SCRIPT/deploy-virtualenv-files.txt)
+        for file in ${FILES} ; do
+            expand_wildcard=($ORIG_LIB/$file)
+            [ ! -e "$expand_wildcard" ] && continue;
+            cp -RLf "$ORIG_LIB"/$file "$LIB_FOLDER/"
+        done
 done
+
+# random.py is needed in order to generate temp directories from python
+# It is based on hashlib, which needs libcrypto and libssl to work.
+# As there is no compatibility for openssl libs, we need to copy
+# them to the bin folder similar to libpython
+if [ "$PLATFORM" == "linux" ]; then
+    #TODO This also needs to be fixed for mac
+
+    HASHLIB=`find $LIB_FOLDER/lib-dynload -iname '_hashlib*'`
+    if [[ -e "$HASHLIB" ]] ; then
+        LIBCRYPTO=`ldd $HASHLIB | awk '{print $3}' | grep libcrypto`
+        echo "copying $LIBCRYPTO"
+        cp -Lf "$LIBCRYPTO" "$VIRTUALENV/bin"
+        LIBSSL=`ldd $HASHLIB | awk '{print $3}' | grep libssl`
+        echo "copying $LIBSSL"
+        cp -Lf "$LIBSSL" "$VIRTUALENV/bin"
+    fi
+fi
 
 if [ "$(readlink -- "$VIRTUALENV/lib64")" != "lib" ] ; then
     rm -f "$VIRTUALENV/lib64"

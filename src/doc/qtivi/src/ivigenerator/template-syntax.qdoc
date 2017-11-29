@@ -27,12 +27,13 @@
 ****************************************************************************/
 /*
   NOTE: Some content in this file was copied from the Jinja Template Engine Documentation
+        and from the QFace Documentation
 */
 /*!
 \page template-syntax.html
 \title Jinja template syntax
 \previouspage QFace IDL syntax
-\nextpage AutoGenerator usage
+\nextpage Autogenerator usage
 
 This page is about the Jinja template engine. While the most detailed description of the template
 language can be found at \l {http://jinja.pocoo.org/docs/dev/templates/}{Jinja documentation},
@@ -279,6 +280,8 @@ After that filter called lower first will be available from the template:
 \code
 {{ var | lowerfirst }}
 \endcode
+
+A list of all supported filters can be found in the \l{Filter Reference}.
 
 
 \section2 Variables

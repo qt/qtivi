@@ -49,33 +49,31 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QtDebug>
+#include <QLoggingCategory>
+
+Q_LOGGING_CATEGORY(media, "qt.ivi.media.media_simulator")
 
 MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *parent)
     : QIviMediaPlayerBackendInterface(parent)
     , m_count(0)
     , m_currentIndex(-1)
     , m_playMode(QIviMediaPlayer::Normal)
+    , m_requestedState(QIviMediaPlayer::Stopped)
+    , m_state(QIviMediaPlayer::Stopped)
     , m_threadPool(new QThreadPool(this))
     , m_player(new QMediaPlayer(this))
 {
     m_threadPool->setMaxThreadCount(1);
-
     connect(m_player, &QMediaPlayer::durationChanged,
-            this, &MediaPlayerBackend::durationChanged);
+            this, &MediaPlayerBackend::onDurationChanged);
     connect(m_player, &QMediaPlayer::positionChanged,
-            this, &MediaPlayerBackend::positionChanged);
+            this, &MediaPlayerBackend::onPositionChanged);
     connect(m_player, &QMediaPlayer::stateChanged,
             this, &MediaPlayerBackend::onStateChanged);
     connect(m_player, &QMediaPlayer::mediaStatusChanged,
             this, &MediaPlayerBackend::onMediaStatusChanged);
 
     m_db = database;
-    m_db.open();
-
-    QSqlQuery query = m_db.exec(QLatin1String("CREATE TABLE IF NOT EXISTS \"queue\" (\"id\" INTEGER PRIMARY KEY, \"qindex\" INTEGER, \"track_index\" INTEGER)"));
-    if (query.lastError().isValid())
-        qWarning() << query.lastError().text();
-    m_db.commit();
 }
 
 void MediaPlayerBackend::initialize()
@@ -87,26 +85,35 @@ void MediaPlayerBackend::initialize()
 
 void MediaPlayerBackend::play()
 {
+    qCDebug(media) << Q_FUNC_INFO;
+    qCDebug(media) << m_player->media().canonicalUrl();
+    m_requestedState = QIviMediaPlayer::Playing;
     m_player->play();
 }
 
 void MediaPlayerBackend::pause()
 {
+    qCDebug(media) << Q_FUNC_INFO;
+    m_requestedState = QIviMediaPlayer::Paused;
     m_player->pause();
 }
 
 void MediaPlayerBackend::stop()
 {
+    qCDebug(media) << Q_FUNC_INFO;
+    m_requestedState = QIviMediaPlayer::Stopped;
     m_player->stop();
 }
 
 void MediaPlayerBackend::seek(qint64 offset)
 {
+    qCDebug(media) << Q_FUNC_INFO << offset;
     m_player->setPosition(m_player->position() + offset);
 }
 
 void MediaPlayerBackend::next()
 {
+    qCDebug(media) << Q_FUNC_INFO;
     int nextIndex = m_currentIndex + 1;
     if (m_playMode == QIviMediaPlayer::Shuffle)
         nextIndex = qrand() % m_count;
@@ -120,6 +127,7 @@ void MediaPlayerBackend::next()
 
 void MediaPlayerBackend::previous()
 {
+    qCDebug(media) << Q_FUNC_INFO;
     int nextIndex = m_currentIndex - 1;
     if (m_playMode == QIviMediaPlayer::Shuffle)
         nextIndex = qrand() % m_count;
@@ -133,12 +141,14 @@ void MediaPlayerBackend::previous()
 
 void MediaPlayerBackend::setPlayMode(QIviMediaPlayer::PlayMode playMode)
 {
+    qCDebug(media) << Q_FUNC_INFO << playMode;
     m_playMode = playMode;
     emit playModeChanged(m_playMode);
 }
 
 void MediaPlayerBackend::setPosition(qint64 position)
 {
+    qCDebug(media) << Q_FUNC_INFO << position;
     m_player->setPosition(position);
 }
 
@@ -165,16 +175,31 @@ void MediaPlayerBackend::fetchData(int start, int count)
 
 void MediaPlayerBackend::insert(int index, const QIviPlayableItem *item)
 {
-    if (item->type() != "audiotrack")
-        return;
-
-    int track_index = item->id().toInt();
-
-    QString queryString = QString(QLatin1String("UPDATE queue SET qindex = qindex + 1 WHERE qindex >= %1;"
-                                                "INSERT INTO queue(qindex, track_index) VALUES( %1, %2);"
-                                                "SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id WHERE qindex=%1"))
-            .arg(index)
-            .arg(track_index);
+    QString queryString;
+    if (item->type() == "audiotrack") {
+        int track_index = item->id().toInt();
+        queryString = QString(QLatin1String("UPDATE queue SET qindex = qindex + 1 WHERE qindex >= %1;"
+                                            "INSERT INTO queue(qindex, track_index) VALUES( %1, %2);"
+                                            "SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id WHERE qindex=%1"))
+                .arg(index)
+                .arg(track_index);
+    } else {
+        QString whereClause;
+        if (item->type() == "artist") {
+            whereClause = QString("artistName == \"%1\"").arg(item->name());
+        } else if (item->type() == "album") {
+            whereClause = QString("albumName == \"%1\"").arg(item->name());
+        } else {
+            qWarning("Can't insert item: Given type is not supported.");
+            return;
+        }
+        queryString = QString(QLatin1String("UPDATE queue SET qindex = qindex + (SELECT count(*) from track WHERE %2) WHERE qindex >= %1;"
+                                            "INSERT INTO queue(qindex, track_index) SELECT (SELECT COUNT(*) FROM track t1 WHERE t1.id <= t2.id AND %2)"
+                                            "+ %1, id from track t2 WHERE %2;"
+                                            "SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id ORDER BY queue.qindex LIMIT %1, (SELECT count(*) from track WHERE %2)"))
+                .arg(index)
+                .arg(whereClause);
+    }
     QStringList queries = queryString.split(';');
 
     QtConcurrent::run(m_threadPool, this,
@@ -328,6 +353,9 @@ void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, 
 
 void MediaPlayerBackend::setCurrentIndex(int index)
 {
+    qCDebug(media) << Q_FUNC_INFO << index;
+    if (m_currentIndex == index)
+        return;
     //If we the list is empty the current Index needs to updated to an invalid track
     if (m_count == 0 && index == -1) {
         m_currentIndex = index;
@@ -357,17 +385,32 @@ void MediaPlayerBackend::setCurrentIndex(int index)
 
 void MediaPlayerBackend::onStateChanged(QMediaPlayer::State state)
 {
-    QIviMediaPlayer::PlayState iviState = QIviMediaPlayer::Stopped;
+    qCDebug(media) << Q_FUNC_INFO << state;
     if (state == QMediaPlayer::PlayingState)
-        iviState = QIviMediaPlayer::Playing;
+        m_state = QIviMediaPlayer::Playing;
     else if (state == QMediaPlayer::PausedState)
-        iviState = QIviMediaPlayer::Paused;
+        m_state = QIviMediaPlayer::Paused;
 
-    emit playStateChanged(iviState);
+    emit playStateChanged(m_state);
 }
 
 void MediaPlayerBackend::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
 {
+    qCDebug(media) << Q_FUNC_INFO << status;
     if (status == QMediaPlayer::EndOfMedia)
         next();
+    if (status == QMediaPlayer::LoadedMedia && m_requestedState == QIviMediaPlayer::Playing)
+        m_player->play();
+}
+
+void MediaPlayerBackend::onPositionChanged(qint64 position)
+{
+    qCDebug(media) << Q_FUNC_INFO << position;
+    emit positionChanged(position);
+}
+
+void MediaPlayerBackend::onDurationChanged(qint64 duration)
+{
+    qCDebug(media) << Q_FUNC_INFO << duration;
+    emit durationChanged(duration);
 }

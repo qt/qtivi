@@ -1,8 +1,6 @@
 TEMPLATE = app
 
-QT += qml quick widgets ivicore
-
-CONFIG += c++11
+QT += qml quick widgets
 
 SOURCES += main.cpp
 
@@ -12,5 +10,5 @@ RESOURCES += qml.qrc
 QML_IMPORT_PATH =
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/media/mediaplayer
+target.path = $$[QT_INSTALL_EXAMPLES]/ivivehiclefunctions/climate_qml
 INSTALLS += target

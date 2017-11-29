@@ -62,6 +62,7 @@ public:
     virtual QString id() const;
 
 private:
+    QString m_id;
 };
 
 QT_END_NAMESPACE

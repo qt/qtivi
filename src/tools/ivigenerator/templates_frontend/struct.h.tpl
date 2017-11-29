@@ -46,7 +46,12 @@
 #define {{oncedefine}}
 
 #include "{{module.module_name|lower}}module.h"
+{% for inc in struct|struct_includes %}
+{{inc}}
+{% endfor %}
 #include <QObject>
+#include <QDataStream>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 
@@ -69,11 +74,22 @@ public:
 {%   endif %}
 {% endfor %}
 
+
 private:
 {% for field in struct.fields %}
     {{field|return_type}} m_{{field}};
 {% endfor %}
+
+    friend {{exportsymbol}} QDataStream &operator>>(QDataStream &stream, {{class}} &obj);
 };
+
+{{exportsymbol}} bool operator==(const {{class}} &left, const {{class}} &right) Q_DECL_NOTHROW;
+{{exportsymbol}} bool operator!=(const {{class}} &left, const {{class}} &right) Q_DECL_NOTHROW;
+
+{{exportsymbol}} QDataStream &operator<<(QDataStream &stream, const {{class}} &obj);
+{{exportsymbol}} QDataStream &operator>>(QDataStream &stream, {{class}} &obj);
+
+{{exportsymbol}} QDebug &operator<<(QDebug &dbg, const {{class}} &obj);
 
 QT_END_NAMESPACE
 

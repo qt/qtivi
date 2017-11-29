@@ -53,6 +53,7 @@ QT_BEGIN_NAMESPACE
 {% else %}
     \inherits QIviFeatureInterface
 {% endif %}
+    \keyword {{interface.tags.config.id}}
 
     \brief Backend interface for {{interface}}.
     The {{class}} is the interface used by \l {{interface}}

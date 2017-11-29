@@ -51,7 +51,7 @@
 ****************************************************************************/
 
 /*!
-     \example climate_qml
+     \example ivivehiclefunctions/climate_qml
      \title Climate Control QML Example
      \ingroup qtivivehiclefunctions-examples
 
@@ -63,19 +63,19 @@
      In the example, ClimateControl is created and autoDiscovery enabled.
      When autoDiscovery is enabled, the module starts searching for the presence
      of a plugin that implements QIviClimateControlBackendInterface.
-     \snippet climate_qml/main.qml 1
+     \snippet ivivehiclefunctions/climate_qml/main.qml 1
 
      If discovery fails, a message dialog is shown:
-     \snippet climate_qml/main.qml 4
+     \snippet ivivehiclefunctions/climate_qml/main.qml 4
 
      As a Climate System can support multiple climate zones, we need to
      differentiate between the zones. A \e {general zone} can be used for settings
      that are applied to all zones.
 
      General ClimateControl attribute values are handled in check boxes as follows:
-     \snippet climate_qml/main.qml 2
+     \snippet ivivehiclefunctions/climate_qml/main.qml 2
 
      For the zoned ClimateControl, the \l [QML] {AbstractZonedFeature::}{zoneAt}
      property is used for controlling the values from the front left climate zone:
-     \snippet climate_qml/main.qml 3
+     \snippet ivivehiclefunctions/climate_qml/main.qml 3
 */

@@ -323,10 +323,10 @@ void {{class}}::{{property|setter_name}}({{ property|parameter_type }})
 {% endif %}
     if (!forceUpdate && d->m_{{property}} == {{property}})
         return;
-    d->m_{{property}} = {{property}};
     if ({{class}}BackendInterface *backend = qobject_cast<{{class}}BackendInterface *>(this->backend()))
         backend->{{property|setter_name}}({{property}}{% if interface.tags.config.zoned %}, zone(){% endif %});
-    emit {{property}}Changed({{property}});
+    else
+        emit {{property}}Changed(d->m_{{property}});
 }
 {%   endif %}
 

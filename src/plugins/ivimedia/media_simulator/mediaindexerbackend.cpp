@@ -48,6 +48,7 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QtDebug>
+#include <QThreadPool>
 
 #include <QMediaPlayer>
 #include <QMediaMetaData>
@@ -68,7 +69,10 @@ MediaIndexerBackend::MediaIndexerBackend(const QSqlDatabase &database, QObject *
     : QIviMediaIndexerControlBackendInterface(parent)
     , m_db(database)
     , m_state(QIviMediaIndexerControl::Idle)
+    , m_threadPool(new QThreadPool(this))
 {
+    m_threadPool->setMaxThreadCount(1);
+
     connect(&m_watcher, SIGNAL(finished()), this, SLOT(onScanFinished()));
 
     QString mediaFolder = QDir::homePath() + QLatin1String("/media");
@@ -143,25 +147,9 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
 
     qInfo() << "Scanning path: " << mediaDir;
 
+#ifndef QT_TAGLIB
     QMediaPlayer player;
-    QSqlQuery query(m_db);
-
-    bool ret = query.exec("CREATE TABLE IF NOT EXISTS track "
-                     "(id integer primary key, "
-                     "trackName varchar(200), "
-                     "albumName varchar(200), "
-                     "artistName varchar(200), "
-                     "genre varchar(200), "
-                     "number integer,"
-                     "file varchar(200),"
-                     "coverArtUrl varchar(200),"
-                     "UNIQUE(file))");
-
-    if (!ret) {
-        setState(QIviMediaIndexerControl::Error);
-        qInfo() << "create query:" << query.lastError().text();
-        return false;
-    }
+#endif
 
     QStringList mediaFiles;
     mediaFiles << "*.mp3";
@@ -187,6 +175,8 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
         QString coverArtUrl;
 #ifdef QT_TAGLIB
         TagLib::FileRef f(fileName.toLocal8Bit());
+        if (f.isNull())
+            continue;
         QString trackName = QLatin1String(f.tag()->title().toCString());
         QString albumName = QLatin1String(f.tag()->album().toCString());
         QString artistName = QLatin1String(f.tag()->artist().toCString());

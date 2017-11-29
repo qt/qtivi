@@ -49,7 +49,9 @@
 #include <QSqlDatabase>
 #include <QStack>
 
-class SearchAndBrowseItem : public QIviSearchAndBrowseModelItem
+QT_FORWARD_DECLARE_CLASS(QThreadPool);
+
+class SearchAndBrowseItem : public QIviPlayableItem
 {
     Q_GADGET
 
@@ -92,6 +94,7 @@ private:
     QString mapIdentifiers(const QString &type, const QString &identifer);
 
     QSqlDatabase m_db;
+    QThreadPool *m_threadPool;
 };
 
 #endif // SEARCHBACKEND_H
