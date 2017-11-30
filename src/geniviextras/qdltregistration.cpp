@@ -45,6 +45,11 @@
 #include <QDebug>
 #include <QLoggingCategory>
 
+#define GENIVIEXTRAS_DEBUG 0
+#if GENIVIEXTRAS_DEBUG
+#  include <iostream>
+#endif
+
 QT_BEGIN_NAMESPACE
 
 void qtGeniviLogLevelChangedHandler(char context_id[], uint8_t log_level, uint8_t trace_status)
@@ -89,7 +94,11 @@ void QDltRegistrationPrivate::registerCategory(CategoryInfo &info)
 {
     Q_ASSERT_X(m_dltAppRegistered, "registerCategory", "A DLT Application needs to be registered before registering a Logging Category");
 
+#if GENIVIEXTRAS_DEBUG
+    std::cout << "REGISTERING CONTEXT " << info.m_ctxName.constData() << std::endl;
+#endif
     DLT_REGISTER_CONTEXT_LL_TS(*info.m_context, info.m_ctxName, info.m_ctxDescription, category2dltLevel(info.m_category), DLT_TRACE_STATUS_DEFAULT);
+
 #if QT_CONFIG(dlt_2_12)
     //TODO move to lamda once c++11 is ok to be used
     DLT_REGISTER_LOG_LEVEL_CHANGED_CALLBACK(*info.m_context, &qtGeniviLogLevelChangedHandler);
@@ -116,7 +125,7 @@ DltContext *QDltRegistrationPrivate::context(const char *categoryName)
     if (!m_categoryInfoHash.contains(category) && !m_defaultCategory.isEmpty())
         category = m_defaultCategory;
 
-    CategoryInfo info = m_categoryInfoHash.value(category);
+    CategoryInfo &info = m_categoryInfoHash[category];
     if (info.m_context && !info.m_registered) {
         if (!m_dltAppRegistered)
             registerApplication();
@@ -248,7 +257,7 @@ void QDltRegistration::registerApplication(const char *dltAppID, const char *dlt
         d->registerApplication();
 
     //Register all Contexts which already have been registered again under the new application
-    if (registerCategories) {
+    if (registerCategories && !d->m_registerOnFirstUse) {
         for (auto it = d->m_categoryInfoHash.begin(); it != d->m_categoryInfoHash.end(); ++it) {
             if (it.value().m_registered)
                 d->registerCategory(it.value());
@@ -311,6 +320,9 @@ void QDltRegistration::setRegisterContextOnFirstUseEnabled(bool enabled)
 */
 void QDltRegistration::registerUnregisteredContexts()
 {
+#if GENIVIEXTRAS_DEBUG
+    std::cout << "REGISTERING UNREGISTERED CONTEXTS" << std::endl;
+#endif
     Q_D(QDltRegistration);
     if (!d->m_dltAppRegistered)
         d->registerApplication();
