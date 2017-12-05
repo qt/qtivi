@@ -195,7 +195,7 @@ void MediaPlayerBackend::insert(int index, const QIviPlayableItem *item)
         }
         queryString = QString(QLatin1String("UPDATE queue SET qindex = qindex + (SELECT count(*) from track WHERE %2) WHERE qindex >= %1;"
                                             "INSERT INTO queue(qindex, track_index) SELECT (SELECT COUNT(*) FROM track t1 WHERE t1.id <= t2.id AND %2)"
-                                            "+ %1, id from track t2 WHERE %2;"
+                                            "+ %1 - 1, id from track t2 WHERE %2;"
                                             "SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id ORDER BY queue.qindex LIMIT %1, (SELECT count(*) from track WHERE %2)"))
                 .arg(index)
                 .arg(whereClause);
