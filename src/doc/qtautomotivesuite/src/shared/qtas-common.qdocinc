@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the documentation of the Qt Automotive Suite.
@@ -24,17 +24,16 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 /*!
-    \contentspage qtautomotive-index.html
-    \page qtautomotivesuite-toc.html
-
-    \title Qt Automotive Suite TOC
-
-    \omit
-    This file is used only for generating the TOC for the help file to be
-    displayed in the Qt Creator's Help mode Contents view.
-    \endomit
-
-    \include qtas-common.qdocinc qtas contents
+//! [qtas contents]
+    \list
+        \li \l {Qt Automotive Suite Overview}{Overview}
+        \li \l {Installing Qt Automotive Suite}{Install Instructions}
+        \list
+            \li \l{NVIDIA DRIVE CX Guide}
+        \endlist
+        \li \l {Building Your Own NVIDIA DRIVE CX Image}
+        \li \l {Related Information}
+    \endlist
+//! [qtas contents]
 */
