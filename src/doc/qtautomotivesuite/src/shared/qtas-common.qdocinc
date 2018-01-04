@@ -32,6 +32,7 @@
         \list
             \li \l{NVIDIA DRIVE CX Guide}
         \endlist
+        \li \l {Tutorial: Deploying Your First Project with Qt Automotive Suite}
         \li \l {Building Your Own NVIDIA DRIVE CX Image}
         \li \l {Related Information}
     \endlist

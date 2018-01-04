@@ -28,7 +28,7 @@
     \page qtas-preparing-hardware-drivecx.html
     \title NVIDIA DRIVE CX Guide
     \previouspage qtas-install.html
-    \nextpage qtautomotive-byos.html
+    \nextpage qtautomotive-tutorial-deploying.html
 
     Take the following steps when preparing \l {http://www.nvidia.com/object/drive-cx.html}
     {NVIDIA DRIVE CX} for \B2Q:
@@ -67,5 +67,5 @@
     \include qtas-post-install-setup.qdocinc configuring device kit linux
 
     You are now ready to start developing for your device. For more information,
-    see \l{Building and Running an Example}.
+    see \l{Tutorial: Deploying Your First Project with Qt Automotive Suite}.
 */

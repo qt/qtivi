@@ -189,3 +189,23 @@
     \externalpage http://doc.qt.io/qtcreator/creator-overview-qtasam.html
     \title Qt Creator Application Manager Plugin
 */
+
+/*!
+    \externalpage http://doc.qt.io/archives/qt-5.9-devicecreation/qtee-requirements-x11.html#setting-up-usb-access-to-embedded-devices
+    \title Setting Up USB Access to Embedded Devices
+*/
+
+/*!
+    \externalpage http://doc.qt.io/QtForDeviceCreation/b2qt-deploying-b2qt.html
+    \title Deploying Qt Projects with Boot to Qt
+*/
+
+/*!
+    \externalpage http://doc.qt.io/qtcreator/quick-projects.html#creating-qt-quick-applications
+    \title Creating Qt Quick Applications
+*/
+
+/*!
+    \externalpage http://doc.qt.io/qt-5/all-examples.html
+    \title Qt Examples
+*/

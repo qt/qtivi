@@ -28,7 +28,7 @@
 /*!
     \page qtautomotive-byos.html
     \title Building Your Own NVIDIA DRIVE CX Image
-    \previouspage qtas-preparing-hardware-drivecx.html
+    \previouspage qtautomotive-tutorial-deploying.html
     \nextpage {Qt Automotive Suite Overview}{Overview}
 
     \QAS is built on top of the \l{About Boot to Qt}{Boot to Qt} software stack
