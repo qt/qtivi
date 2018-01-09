@@ -565,10 +565,11 @@ def generate(tplconfig, moduleConfig, src, dst):
         dst = generator.apply('{{dst}}', ctx)
         generator.destination = dst
         module_rules = gen_config['generate_rules']['module_rules']
+        force = moduleConfig['force']
         if module_rules is None: module_rules = []
         for rule in module_rules:
             preserve = rule['preserve'] if 'preserve' in rule else False
-            generator.write(rule['dest_file'], rule['template_file'], ctx, preserve)
+            generator.write(rule['dest_file'], rule['template_file'], ctx, preserve, force)
         for interface in module.interfaces:
             log.debug('generate backend code for interface %s', interface)
             interface.add_tag('config')
@@ -577,7 +578,7 @@ def generate(tplconfig, moduleConfig, src, dst):
             if interface_rules is None: interface_rules = []
             for rule in interface_rules:
                 preserve = rule['preserve'] if 'preserve' in rule else False
-                generator.write(rule['dest_file'], rule['template_file'], ctx, preserve)
+                generator.write(rule['dest_file'], rule['template_file'], ctx, preserve, force)
         if 'struct_rules' in gen_config['generate_rules'] and isinstance(gen_config['generate_rules']['struct_rules'], list):
             for struct in module.structs:
                 log.debug('generate code for struct %s', struct)
@@ -585,7 +586,7 @@ def generate(tplconfig, moduleConfig, src, dst):
                 ctx.update({'struct': struct})
                 for rule in gen_config['generate_rules']['struct_rules']:
                     preserve = rule['preserve'] if 'preserve' in rule else False
-                    generator.write(rule['dest_file'], rule['template_file'], ctx, preserve)
+                    generator.write(rule['dest_file'], rule['template_file'], ctx, preserve, force)
 
 
 def run(format, moduleConfig, src, dst):
@@ -604,10 +605,11 @@ def run(format, moduleConfig, src, dst):
 @click.option('--format', '-f', multiple=False)
 @click.option('--module', default=False)
 @click.option('--validation_info', default=False)
+@click.option('--force', is_flag=True, default=False)
 @click.argument('src', nargs=-1, type=click.Path(exists=True))
 @click.argument('dst', nargs=1, type=click.Path(exists=True))
 
-def app(src, dst, format, reload, module, validation_info):
+def app(src, dst, format, reload, module, validation_info, force):
     """Takes several files or directories as src and generates the code
     in the given dst directory."""
 
@@ -625,7 +627,8 @@ def app(src, dst, format, reload, module, validation_info):
     else:
         moduleConfig = {
             "module": module,
-            "validation_info": validation_info
+            "validation_info": validation_info,
+            "force": force
         }
         run(format, moduleConfig, src, dst)
 
