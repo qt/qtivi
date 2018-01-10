@@ -20,8 +20,11 @@
             "label": "virtualenv",
             "type": "python3_package",
             "package": "virtualenv"
+        },
+        "qface": {
+            "label": "qface",
+            "type": "qface_submodule"
         }
-
     },
 
     "features": {
@@ -49,7 +52,7 @@
             "label": "IVI Generator",
             "enable": "input.ivigenerator == 'qt' || input.ivigenerator == 'system'",
             "disable": "input.ivigenerator == 'no'",
-            "condition": "features.ivicore && features.python3 && features.python3-virtualenv || features.system-ivigenerator",
+            "condition": "features.ivicore && features.python3 && features.python3-virtualenv && tests.qface || features.system-ivigenerator",
             "output": [ "publicFeature" ]
         },
         "host-tools-only": {
@@ -74,7 +77,13 @@
             "condition": "!features.ivigenerator",
             "message": "Cannot build the IVI Generator because its dependencies are not satisfied.
 The IVI Generator provides tooling to generate source code out of IDL files.
-Make sure that python3 and its 'virtualenv' packages are installed."
+Make sure python3 and its 'virtualenv' packages are installed.
+E.g. by running
+    apt-get install python3 python3-virtualenv
+
+And make sure the qface submodule is initialized.
+E.g. by running the following command:
+    git submodule init && git submodule update"
         },
         {
             "type": "warning",
