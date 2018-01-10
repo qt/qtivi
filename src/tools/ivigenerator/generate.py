@@ -601,17 +601,21 @@ def run(format, moduleConfig, src, dst):
 
 
 @click.command()
-@click.option('--reload/--no-reload', default=False)
-@click.option('--format', '-f', multiple=False)
-@click.option('--module', default=False)
-@click.option('--validation_info', default=False)
-@click.option('--force', is_flag=True, default=False)
+@click.option('--reload/--no-reload', default=False, help='Specifies whether the generator should keep track of the changes in the IDL file and update output on the fly (--no-reload by default).')
+@click.option('--format', '-f', multiple=False, help='The format the autogenerator should use for the generation. This can either be one of the builtin formats or a path to a template folder. Builtin formats are: \n' + '\n'.join(IVI_DEFAULT_TEMPLATES))
+@click.option('--module', default=False, help='The name of the Qt module the autogenerator is generating. This is automatically used by the qmake integration and passed directly to the qface templates.')
+@click.option('--validation_info', is_flag=True, default=False, help='Annotates every interface with additional JSON code containing all the options used to generate this interface. This can be used to validate the generation of the interface.')
+@click.option('--force', is_flag=True, default=False, help='Always write all output files')
 @click.argument('src', nargs=-1, type=click.Path(exists=True))
 @click.argument('dst', nargs=1, type=click.Path(exists=True))
 
 def app(src, dst, format, reload, module, validation_info, force):
-    """Takes several files or directories as src and generates the code
-    in the given dst directory."""
+    """
+    The QtIvi Autogenerator (ivigenerator)
+
+    It takes several files or directories as src and generates the code
+    in the given dst directory.
+    """
 
     global builtin_config
     builtin_config_path = here / '.config'
