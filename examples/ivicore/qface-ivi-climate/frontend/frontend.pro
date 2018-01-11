@@ -52,6 +52,9 @@ CONFIG += ivigenerator
 DESTDIR = ..
 macos: CONFIG += debug_and_release build_all
 
+QT_FOR_CONFIG += ivicore
+!qtConfig(ivigenerator): error("No ivigenerator available")
+
 QT += ivicore ivicore-private qml quick
 
 DEFINES += QT_BUILD_CLIMATE_LIB

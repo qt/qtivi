@@ -51,6 +51,9 @@ TARGET = $$qtLibraryTarget(example_ivi_climate)
 CONFIG += ivigenerator plugin
 macos: CONFIG += debug_and_release build_all
 
+QT_FOR_CONFIG += ivicore
+!qtConfig(ivigenerator): error("No ivigenerator available")
+
 LIBS += -L$$OUT_PWD/../ -l$$qtLibraryTarget(QtIviClimateExample)
 DESTDIR = ../qtivi
 
