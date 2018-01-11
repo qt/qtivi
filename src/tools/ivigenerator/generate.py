@@ -598,6 +598,7 @@ def run(format, moduleConfig, src, dst):
             generate(format, moduleConfig, src, dst)
         else:
             print('Format "{0}" is invalid. Should be one of {1} or an existing template folder'.format(format, IVI_DEFAULT_TEMPLATES))
+            exit(1)
 
 
 @click.command()
