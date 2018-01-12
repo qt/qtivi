@@ -118,6 +118,8 @@ The following environment variables are supported for runtime configurations:
         enabled.
 \endtable
 
+Also see the documentation about the \l {QtIvi Backends} {backend plugins} for more runtime configuration options.
+
 \section2 Logging
 
 The \e qt.ivi.servicemanagement Logging Category can be used to get more information on which

@@ -31,7 +31,7 @@
 
     The Qt IVI (In-Vehicle Infotainment) module provides C++ classes and QML types
     for accessing vehicle features, as well as a core API for implementing
-    new IVI features.
+    new IVI features manually or using a \l {The Qt IVI Autogenerator}{auto generator}.
 
     The module is built around a pattern based on the separation of API facing the
     application developer, the so called \e {Feature}, and the code implementing it,
@@ -63,29 +63,6 @@
     \li \l{Using the Qt IVI Reference API}
     \li \l{QtIvi Backends}{Available Backends}
     \endlist
-
-    \section1 Modules
-
-    Qt IVI consists of the following C++ modules:
-
-    \annotatedlist qtivi_modules
-
-    \b {Qt IVI Core} provides core base classes for the Qt IVI features,
-    and handles the discovery of Qt IVI backend plugins. Application
-    developers do not need to use Qt IVI Core directly. It is only needed
-    when implementing a new IVI feature, such as Qt IVI Vehicle Functions
-    ClimateControl.
-
-    \b {Qt IVI Vehicle Functions} provides interfaces to access vehicle
-    features.
-
-    \b {Qt IVI Media} provides interfaces to access media related APIs e.g.
-    Managing your music playlist or controlling the radio tuner.
-
-    The functionality provided by these modules is available to QML
-    applications:
-
-    \annotatedlist qtivi_qmlmodules
 
     \section1 Getting Started
 
