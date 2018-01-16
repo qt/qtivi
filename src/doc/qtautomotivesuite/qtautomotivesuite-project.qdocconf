@@ -21,7 +21,7 @@ qhp.QtAutomotiveSuite.customFilters.Qt.filterAttributes = qtautomotivesuite $QT_
 qhp.QtAutomotiveSuite.subprojects                   = manual
 qhp.QtAutomotiveSuite.subprojects.manual.title      = Qt Automotive Suite
 qhp.QtAutomotiveSuite.subprojects.manual.indexTitle = Qt Automotive Suite TOC
-qhp.QtAutomotiveSuite.subprojects.manual.selectors  = manual
+qhp.QtAutomotiveSuite.subprojects.manual.type  = manual
 
 tagfile                       = qtautomotivesuite.tags
 
