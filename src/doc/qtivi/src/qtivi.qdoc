@@ -67,6 +67,7 @@
     \section1 Getting Started
 
     \list
+      \li \l {Getting Started Using the Qt IVI Generator}
       \li \l {Qt IVI Vehicle Functions C++ Classes#Getting Started}
              {Getting started with Qt IVI Vehicle Functions (C++)}
       \li \l {Qt IVI Vehicle Functions QML Types#Getting Started}
