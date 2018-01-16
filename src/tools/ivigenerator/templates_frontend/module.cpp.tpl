@@ -81,6 +81,7 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
 }
 
 {% for enum in module.enums %}
+/*! \internal */
 {{class}}::{{enum}} {{class}}::to{{enum}}(quint8 v, bool *ok) {
     if (ok) {
         *ok = true;

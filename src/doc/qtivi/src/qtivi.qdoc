@@ -61,6 +61,7 @@
     \li \l{Configuration}
     \li \l{Concepts}
     \li \l{Using the Qt IVI Reference API}
+    \li \l{Extending Qt IVI}
     \li \l{QtIvi Backends}{Available Backends}
     \endlist
 
