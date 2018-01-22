@@ -24,19 +24,21 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+
 /*!
-//! [qtas contents]
+    \page qtas-licenses.html
+    \title Licenses Used in Qt Automotive Suite
+    \previouspage qtautomotive-byos.html
+    \nextpage qtautomotive-index.html
+
+    Some Qt Automotive Suite modules use Free and Open Source Software (FOSS)
+    components. For more information about the FOSS components and their licenses,
+    see the following module documentation:
+
     \list
-        \li \l {Qt Automotive Suite Overview}{Overview}
-        \li \l {Installing Qt Automotive Suite}{Install Instructions}
-        \list
-            \li \l{NVIDIA DRIVE CX Guide}
-        \endlist
-        \li \l {Tutorial: Deploying Your First Project with Qt Automotive Suite}
-        \li \l {Building Your Own NVIDIA DRIVE CX Image}
-        \li \l {Licenses Used in Qt Automotive Suite}
-        \li \l {Related Information}
+        \li \l{Qt Application Manager Licenses and Attributions}
+        \li \l{Qt IVI Licenses and Attributions}
+        \li \l{GammaRay}
     \endlist
-//! [qtas contents]
 */
 
