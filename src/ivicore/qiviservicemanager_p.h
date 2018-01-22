@@ -59,13 +59,13 @@
 #include <QtCore/QStringList>
 #include <QtCore/QMap>
 #include <QtCore/QSet>
+#include <QtCore/QPluginLoader>
 
 #include <private/qtiviglobal_p.h>
 #include <QtIviCore/qiviservicemanager.h>
 
 QT_BEGIN_NAMESPACE
 
-class QPluginLoader;
 class QIviServiceInterface;
 class QIviServiceObject;
 class QIviProxyServiceObject;
@@ -88,10 +88,12 @@ public:
     explicit QIviServiceManagerPrivate(QIviServiceManager *parent);
 
     static QIviServiceManagerPrivate* get(QIviServiceManager *serviceManager);
+    static bool isSimulation(const QVariantMap &metaData);
 
     QList<QIviServiceObject*> findServiceByInterface(const QString &interface, QIviServiceManager::SearchFlags searchFlags) const;
 
     void searchPlugins();
+    void registerStaticBackend(QStaticPlugin plugin);
     void registerBackend(const QString &fileName, const QJsonObject &metaData);
     bool registerBackend(QObject *serviceBackendInterface, const QStringList &interfaces, QIviServiceManager::BackendType backendType);
     void addBackend(struct Backend *backend);

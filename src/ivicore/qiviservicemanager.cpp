@@ -45,7 +45,6 @@
 #include "qiviservicemanager_p.h"
 
 #include <QStringList>
-#include <QPluginLoader>
 #include <QJsonObject>
 #include <QCoreApplication>
 #include <QDir>
@@ -77,6 +76,14 @@ QIviServiceManagerPrivate *QIviServiceManagerPrivate::get(QIviServiceManager *se
     return serviceManager->d_ptr;
 }
 
+bool QIviServiceManagerPrivate::isSimulation(const QVariantMap &metaData)
+{
+    QString fileName = metaData[QLatin1String("fileName")].toString();
+    return fileName.contains(QLatin1String("_simulation")) ||
+            fileName.contains(QLatin1String("_simulator")) ||
+            metaData[QLatin1String("simulation")].toBool();
+}
+
 QList<QIviServiceObject *> QIviServiceManagerPrivate::findServiceByInterface(const QString &interface, QIviServiceManager::SearchFlags searchFlags) const
 {
     QList<QIviServiceObject*> list;
@@ -85,8 +92,7 @@ QList<QIviServiceObject *> QIviServiceManagerPrivate::findServiceByInterface(con
     for (Backend *backend : m_backends) {
 
         if (backend->metaData[QLatin1String("interfaces")].toStringList().contains(interface)) {
-            const QString& fileName = backend->metaData[QLatin1String("fileName")].toString();
-            bool isSimulation = fileName.contains(QLatin1String("_simulation")) || fileName.contains(QLatin1String("_simulator"));
+            bool isSimulation = QIviServiceManagerPrivate::isSimulation(backend->metaData);
             if ((searchFlags & QIviServiceManager::IncludeSimulationBackends && isSimulation) ||
                 (searchFlags & QIviServiceManager::IncludeProductionBackends && !isSimulation)) {
                 if (!backend->proxyServiceObject) {
@@ -95,6 +101,9 @@ QList<QIviServiceObject *> QIviServiceManagerPrivate::findServiceByInterface(con
                         backend->proxyServiceObject = new QIviProxyServiceObject(backendInterface);
                 }
                 if (backend->proxyServiceObject) {
+                    QString fileName = backend->metaData[QLatin1String("fileName")].toString();
+                    if (fileName.isEmpty())
+                        fileName = QLatin1String("static plugin");
                     qCDebug(qLcIviServiceManagement) << "Found: " << backend->proxyServiceObject << "from: " << fileName;
                     list.append(backend->proxyServiceObject);
                 }
@@ -129,6 +138,10 @@ void QIviServiceManagerPrivate::searchPlugins()
             found = true;
         }
     }
+    const auto staticPlugins = QPluginLoader::staticPlugins();
+    for (const QStaticPlugin &plugin : staticPlugins)
+        registerStaticBackend(plugin);
+
     if (Q_UNLIKELY(!found))
         qWarning() << "No plugins found in search path: " << QCoreApplication::libraryPaths().join(QLatin1String(":"));
 }
@@ -163,6 +176,39 @@ void QIviServiceManagerPrivate::registerBackend(const QString &fileName, const Q
     addBackend(backend);
 }
 
+void QIviServiceManagerPrivate::registerStaticBackend(QStaticPlugin plugin)
+{
+    QVariantMap backendMetaData = plugin.metaData().value(QLatin1String("MetaData")).toVariant().toMap();
+    const char* pluginName = plugin.instance()->metaObject()->className();
+
+    if (Q_UNLIKELY(backendMetaData[QLatin1String("interfaces")].isNull() ||
+                   backendMetaData[QLatin1String("interfaces")].toList().isEmpty())) {
+        qCWarning(qLcIviServiceManagement, "PluginManager - Malformed metaData in static plugin '%s'. MetaData must contain a list of interfaces", pluginName);
+        return;
+    }
+
+    if (Q_UNLIKELY(plugin.metaData().value(QLatin1String("debug")).toBool() != qtivi_helper::loadDebug)) {
+        qCWarning(qLcIviServiceManagement, "Skipping incompatible plugin %s. "
+                                           "Expected build configuration '%s'",
+                                            pluginName, qtivi_helper::loadDebug ? "debug" : "release");
+        return;
+    }
+
+    QIviServiceInterface *backendInterface = qobject_cast<QIviServiceInterface*>(plugin.instance());
+    if (Q_UNLIKELY(!backendInterface))
+        qCWarning(qLcIviServiceManagement, "ServiceManager::serviceObjects - failed to cast to interface from '%s'", pluginName);
+
+    //TODO check for other metaData like name etc.
+
+    Backend* backend = new Backend;
+    backend->metaData = backendMetaData;
+    backend->interface = backendInterface;
+    backend->interfaceObject = nullptr;
+    backend->loader = nullptr;
+    backend->proxyServiceObject = nullptr;
+    addBackend(backend);
+}
+
 bool QIviServiceManagerPrivate::registerBackend(QObject *serviceBackendInterface, const QStringList &interfaces, QIviServiceManager::BackendType backendType)
 {
     if (interfaces.isEmpty()) {
@@ -178,8 +224,8 @@ bool QIviServiceManagerPrivate::registerBackend(QObject *serviceBackendInterface
     QVariantMap metaData = QVariantMap();
 
     metaData.insert(QLatin1String("interfaces"), interfaces);
-    if (backendType == QIviServiceManager::SimulationBackend) //fake a simulation filename
-        metaData.insert(QLatin1String("fileName"), QLatin1String("fake_simulation."));
+    if (backendType == QIviServiceManager::SimulationBackend)
+        metaData.insert(QLatin1String("simulation"), true);
 
     Backend *backend = new Backend;
     backend->metaData = metaData;
@@ -275,6 +321,12 @@ QIviServiceInterface *QIviServiceManagerPrivate::loadServiceBackendInterface(str
     By default QIviServiceManager reads the metaData of all plugins within the "qtivi" folder
     of your plugin path. The plugin itself will be loaded once it's explictly requested by
     the developer by using findServiceByInterface().
+
+    The manager can distinguish between \e Production and \e Simulation backends. For the recognition
+    either the filename or the metaData is used.
+
+    Simulation Backends can set the \e simulation key in their plugin metadata to \e true or use
+    one of two supported plugin postfixes (_simulation, _simulator) in the plugin filename.
 
     The registerService() function can be used to add Backend classes without putting them into
     a plugin.
