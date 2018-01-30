@@ -35,17 +35,17 @@ For interacting with lists in Qt applications, you usually want to use Qt's List
 are based on the Model-View-Controller pattern. QtIvi offers support classes, making it easy to
 provide your own models.
 
-\section1 QIviAbstractListModel
+\section1 The QIviAbstractFeatureListModel
 
 When designing features like a contacts list of a connected mobile phone, you may want to use
 QtIvi's frontend/backend separation by deriving from QIviAbstractFeature and at the same time make
 it possible to use this feature with a QAbstractItemView derived class to show your contacts in a
 list form.
 
-QtIviCore provides QIviAbstractListModel for this use-case. The class is derived from
-QIviAbstractFeatureListModel, but also provides all the functionality from QIviAbstractFeature.
+QtIviCore provides QIviAbstractFeatureListModel for this use-case. The class is derived from
+QAbstractListModel, but also provides all the functionality from QIviAbstractFeature.
 
-\section1 QIviSearchAndBrowseModel
+\section1 The QIviSearchAndBrowseModel
 
 The QIviSearchAndBrowseModel is not directly a base class, but intended to be used as-is. As the
 name suggests, it provides a model, that supports searching the model content as well as browsing

@@ -339,15 +339,99 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
 
     The backend filling the model with data needs to implement the QIviSearchAndBrowseModelInterface class.
 
+    \section1 Setting it up
+    The QIviSearchAndBrowseModel is using QtIviCore's \l {Dynamic Backend System} and is derived from QIviAbstractFeatureListModel.
+    Other than most "QtIvi Feature classes", the QIviSearchAndBrowseModel doesn't automatically connect to available backends.
+
+    The easiest approach to set it up, is to connect to the same backend used by another feature. E.g. for connecting to the
+    media backend, use the instance from the mediaplayer feature:
+    \code
+        QIviMediaPlayer *player = new QIviMediaPlayer();
+        player->startAutoDiscovery();
+        QIviSearchAndBrowseModel *model = new QIviSearchAndBrowseModel();
+        model->setServiceObject(player->serviceObject());
+    \endcode
+
+    \section2 Content Types
+
+    Once the model is connected to a backend, the contentType needs to be selected. All possible content types can be queried
+    from the availableContentTypes property. As the name already suggests, this property selects what type of content
+    should be shown in the model. For the mediaplayer example, the available content types could be "track", "album" and "artist".
+
     \section1 Filtering and Sorting
     \target FilteringAndSorting
 
-    \l {Qt IVI Query Language}
+    One of the main use case of the QIviSearchAndBrowseModel is to provide a powerful way of filtering and sorting the content
+    of the underlying data model. As explained above, the filtering and sorting is supposed to happen where the data is produced.
+    To make this work across multiple backends the \l {Qt IVI Query Language} was invented.
+
+    The \l {QIviSearchAndBrowseModel::}{query} property is used to sort the content of the model: e.g. by setting the string "[/name]", the content
+    will be sorted by name in ascending order.
+
+    For filtering, the same property is used but without the brackets e.g. "name='Example Item'" for only showing items which
+    have the 'name' property set to 'Example Item'.
+
+    Filtering and sorting can also be combined in one string and the filter part can also be more complex. More on that
+    can be found in the detailed \l {Qt IVI Query Language} Documentation.
 
     \section1 Browsing
     \target Browsing
 
-    \section1 Fetch Modes
+    In addition to filtering and sorting, the QIviSearchAndBrowseModel also supports browsing through a hierarchy of different
+    content types. The easiest way to explain this is to look at the existing media example.
+
+    When implementing a library view of all available media files, you might want to provide a way for the user to browse
+    through the media database and select a song. You might also want to provide several staring points and from there
+    limit the results. E.g.
+
+    \list
+        \li Artist -> Album -> Track
+        \li Album -> Track
+        \li Track
+    \endlist
+
+    This can be achieved by defining a complex filter query which takes the previously selected item into account.
+    That is the most powerful way of doing it, as the developer/designer can define the browsing order and it can easily
+    be changed. The downside of this is that the backend needs to support this way of filtering and sorting as well, which
+    is not always be the case. A good example here is a DLNA backend, where the server already defines a fixed  browsing order.
+
+    The QIviSearchAndBrowseModel provides the following methods for browsing:
+    \list
+        \li canGoForward()
+        \li goForward()
+        \li canGoBack()
+        \li goBack()
+    \endlist
+
+    \section2 Navigation Types
+
+    The QIviSearchAndBrowseModel supports two navigation types when browsing through the available data: for most use cases
+    the simple InModelNavigation type is sufficient. By using this, the content type of the current model instance changes
+    when navigating and the model is reset to show the new data.
+    The other navigation type is OutOfModelNavigation and leaves the current model instance as it is. Instead the goForward()
+    method returns a new model instance which contains the new data. This is especially useful when several views need to
+    be open at the same time. E.g. when used inside a QML StackView.
+
+    \code
+        QIviSearchAndBrowseModel *artistModel = new QIviSearchAndBrowseModel();
+        model->setContentType("artist");
+        //Returns a new instance of QIviSearchAndBrowseModel which contains all albums from the artist at index '0'
+        QIviSearchAndBrowseModel *albumModel = artistModel->goForward(0, QIviSearchAndBrowseModel::OutOfModelNavigation);
+    \endcode
+
+    \section1 Loading Types
+
+    Multiple loading types are supported, as the QIviSearchAndBrowseModel is made to work with asynchrounous requests to
+    fetch its data. The FetchMore loading type is the default and is using the \l{QAbstractItemModel::}{canFetchMore()}/\l{QAbstractItemModel::}{fetchMore()} functions of
+    QAbstractItemModel to fetch new data once the view hits the end of the currently available data. As fetching can take
+    some time, there is the fetchMoreThreshold property which controls how much in advance a new fetch should be started.
+
+    The other loading type is DataChanged. In contrast to FetchMore, the complete model is pre-populated with empty rows
+    and the actual data for a specific row is fetched the first time the data() function is called. Once the data is available,
+    the dataChanged() signal will be triggered for this row and the view will start to render the new data.
+
+    Please see the documentation of \l{QIviSearchAndBrowseModel::}{LoadingType} for more details on how the modes work and
+    when they are suitable to use.
 */
 
 /*!
@@ -364,13 +448,14 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
     \value FetchMore
            This is the default and can be used if you don't know the final size of the list (e.g. a infinite list).
            The list will detect that it is near the end (fetchMoreThreshold) and then fetch the next chunk of data using canFetchMore and fetchMore.
-           The drawback of this method is that, because the final size of the data is not known, you can't display a dynamic scroll-bar indicator which is resized depending on the content of the list.
-           The other problem could be fast scrolling, as the data might not come in-time and scrolling stops. This can be tweaked by the fetchMoreThreshold property.
+           The drawback of this method is that you can't display a dynamic scroll-bar indicator which is resized depending on the content of the list,
+           because the final size of the data is not known.
+           The other problem could be fast scrolling, as the data might not arrive in-time and scrolling stops. This can be tweaked by the fetchMoreThreshold property.
 
     \value DataChanged
            For this loading type you need to know how many items are in the list, as dummy items are created and the user can already start scrolling even though the data is not yet ready to be displayed.
-           Similar to FetchMore the data is also loaded in chunks. You can safely use a scroll indicator here.
-           The delegate needs to support this approach, as it doesn't have a content when it's first created.
+           Similar to FetchMore, the data is also loaded in chunks. You can safely use a scroll indicator here.
+           The delegate needs to support this approach, as it doesn't have content when it's first created.
 */
 
 /*!
@@ -454,6 +539,122 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
         \li bool
         \li True if this item can be used to go one level forward and display the next set of items. \sa goForward()
     \endtable
+
+    \section1 Setting it up
+    The SearchAndBrowseModel is using QtIviCore's \l {Dynamic Backend System} and is derived from QIviAbstractFeatureListModel.
+    Other than most "QtIvi Feature classes", the SearchAndBrowseModel doesn't automatically connect to available backends.
+
+    The easiest approach to set it up, is to connect to the same backend used by another feature. E.g. for connecting to the
+    media backend, use the instance from the mediaplayer feature:
+    \qml
+        Item {
+            MediaPlayer {
+                id: player
+            }
+
+            SearchAndBrowseModel {
+                serviceObject: player.serviceObject
+            }
+        }
+    \endqml
+
+    \section2 Content Types
+
+    Once the model is connected to a backend, the contentType needs to be selected. All possible content types can be queried
+    from the availableContentTypes property. As the name already suggests, this property selects what type of content
+    should be shown in the model. For the mediaplayer example, the available content types could be "track", "album" and "artist".
+
+    \section1 Filtering and Sorting
+    \target FilteringAndSorting
+
+    One of the main use case of the SearchAndBrowseModel is to provide a powerful way of filtering and sorting the content
+    of the underlying data model. As explained above, the filtering and sorting is supposed to happen where the data is produced.
+    To make this work across multiple backends the \l {Qt IVI Query Language} was invented.
+
+    The \l {SearchAndBrowseModel::}{query} property is used to sort the content of the model: e.g. by setting the string "[/name]", the content
+    will be sorted by name in ascending order.
+
+    For filtering, the same property is used but without the brackets e.g. "name='Example Item'" for only showing items which
+    have the 'name' property set to 'Example Item'.
+
+    Filtering and sorting can also be combined in one string and the filter part can also be more complex. More on that
+    can be found in the detailed \l {Qt IVI Query Language} Documentation.
+
+    \section1 Browsing
+    \target Browsing
+
+    In addition to filtering and sorting, the SearchAndBrowseModel also supports browsing through a hierarchy of different
+    content types. The easiest way to explain this is to look at the existing media example.
+
+    When implementing a library view of all available media files, you might want to provide a way for the user to browse
+    through the media database and select a song. You might also want to provide several staring points and from there
+    limit the results. E.g.
+
+    \list
+        \li Artist -> Album -> Track
+        \li Album -> Track
+        \li Track
+    \endlist
+
+    This can be achieved by defining a complex filter query which takes the previously selected item into account.
+    That is the most powerful way of doing it, as the developer/designer can define the browsing order and it can easily
+    be changed. The downside of this is that the backend needs to support this way of filtering and sorting as well, which
+    is not always be the case. A good example here is a DLNA backend, where the server already defines a fixed  browsing order.
+
+    The SearchAndBrowseModel provides the following methods/properties for browsing:
+    \list
+        \li canGoForward()
+        \li goForward()
+        \li canGoBack
+        \li goBack()
+    \endlist
+
+    \section2 Navigation Types
+
+    The SearchAndBrowseModel supports two navigation types when browsing through the available data: for most use cases
+    the simple InModelNavigation type is sufficient. By using this, the content type of the current model instance changes
+    when navigating and the model is reset to show the new data.
+    The other navigation type is OutOfModelNavigation and leaves the current model instance as it is. Instead the goForward()
+    method returns a new model instance which contains the new data. This is especially useful when several views need to
+    be open at the same time. E.g. when used inside a QML StackView.
+
+    \qml
+        StackView {
+            id: stack
+            initialItem: view
+
+            Component {
+                id: view
+                ListView {
+                    model: SearchAndBrowseModel {
+                        contentType: "artist"
+                    }
+                    delegate: MouseArea {
+                        onClicked: {
+                            stack.push({ "item" : view,
+                                        "properties:" {
+                                            "model" : model->goForward(index, SearchAndBrowseModel.OutOfModelNavigation)
+                                        }});
+                        }
+                    }
+                }
+            }
+        }
+    \endqml
+
+    \section1 Loading Types
+
+    Multiple loading types are supported, as the SearchAndBrowseModel is made to work with asynchrounous requests to
+    fetch its data. The FetchMore loading type is the default and is using the \l{QAbstractItemModel::}{canFetchMore()}/\l{QAbstractItemModel::}{fetchMore()} functions of
+    QAbstractItemModel to fetch new data once the view hits the end of the currently available data. As fetching can take
+    some time, there is the fetchMoreThreshold property which controls how much in advance a new fetch should be started.
+
+    The other loading type is DataChanged. In contrast to FetchMore, the complete model is pre-populated with empty rows
+    and the actual data for a specific row is fetched the first time the data() function is called. Once the data is available,
+    the dataChanged() signal will be triggered for this row and the view will start to render the new data.
+
+    Please see the documentation of loadingType for more details on how the modes work and
+    when they are suitable to use.
 */
 
 /*!
@@ -707,6 +908,21 @@ bool QIviSearchAndBrowseModel::canGoBack() const
     \qmlproperty enumeration SearchAndBrowseModel::loadingType
     \brief Holds the currently used loading type used for loading the data.
 
+    It can be one of the following values:
+    \target FetchMore
+    \value FetchMore
+           This is the default and can be used if you don't know the final size of the list (e.g. a infinite list).
+           The list will detect that it is near the end (fetchMoreThreshold) and then fetch the next chunk of data using canFetchMore and fetchMore.
+           The drawback of this method is that you can't display a dynamic scroll-bar indicator which is resized depending on the content of the list,
+           because the final size of the data is not known.
+           The other problem could be fast scrolling, as the data might not arrive in-time and scrolling stops. This can be tweaked by the fetchMoreThreshold property.
+
+    \target DataChanged
+    \value DataChanged
+           For this loading type you need to know how many items are in the list, as dummy items are created and the user can already start scrolling even though the data is not yet ready to be displayed.
+           Similar to FetchMore, the data is also loaded in chunks. You can safely use a scroll indicator here.
+           The delegate needs to support this approach, as it doesn't have content when it's first created.
+
     \note When changing this property the content will be reset.
 */
 
@@ -876,8 +1092,10 @@ bool QIviSearchAndBrowseModel::canGoForward(int i) const
     Uses the item at index \a i and shows the next set of items.
 
     \a navigationType can be one of the following values:
+    \target InModelNavigation
     \value InModelNavigation
            The new content will be loaded into this model and the existing model data will be reset
+    \target OutOfModelNavigation
     \value OutOfModelNavigation
            A new model will be returned which loads the new content. The model data of this model will
            not be changed and can still be used.
