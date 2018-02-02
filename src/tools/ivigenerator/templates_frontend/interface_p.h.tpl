@@ -106,7 +106,7 @@ public:
 {% endfor %}
 {% for signal in interface.signals %}
 {%   if interface.tags.config.zoned %}
-    void on{{signal|upperfirst}}({{signal.parameters|map('parameter_type')|join(', ')}}, const QString &zone);
+    void on{{signal|upperfirst}}({{signal.parameters|map('parameter_type')|join(', ')}}{%if signal.parameters|length %}, {%endif%}const QString &zone);
 {%   else %}
     void on{{signal|upperfirst}}({{signal.parameters|map('parameter_type')|join(', ')}});
 {%   endif %}

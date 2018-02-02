@@ -39,6 +39,7 @@ interface Echo {
     Combo getCombo();
     signal anotherChanged(AnotherStruct another);
     signal foobar(string foo);
+    signal somethingHappened();
 }
 
 @config: {id: "org.foo.idz.1.0", zoned: true}
@@ -68,6 +69,10 @@ interface EchoZoned {
     string echo(string msg);
     string id();
     Combo getCombo();
+
+    signal anotherChanged(AnotherStruct another);
+    signal foobar(string foo);
+    signal somethingHappened();
 }
 
 /**
