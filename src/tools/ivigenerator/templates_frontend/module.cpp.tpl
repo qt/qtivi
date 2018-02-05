@@ -45,6 +45,9 @@
 {% for interface in module.interfaces %}
 #include "{{interface|lower}}.h"
 {% endfor %}
+{% for struct in module.structs %}
+#include "{{struct|lower}}model.h"
+{% endfor %}
 #include <QQmlEngine>
 #include <QDebug>
 #include <QDataStream>
@@ -108,6 +111,7 @@ void {{class}}::registerTypes()
 {% endfor %}
 {% for struct in module.structs %}
     qRegisterMetaType<{{struct}}>();
+    qRegisterMetaType<{{struct}}Model*>();
     qRegisterMetaTypeStreamOperators<{{struct}}>();
 {% endfor %}
 }
