@@ -45,6 +45,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QIviPropertyFactory
+    \obsolete
     \inmodule QtIviCore
     \brief The QIviPropertyFactory is used as a factory class for creating instances of QIviProperty
 

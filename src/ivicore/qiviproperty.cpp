@@ -70,6 +70,7 @@ void QIviPropertyPrivate::throwError(QObject *object, const QString &error)
 
 /*!
     \class QIviProperty
+    \obsolete
     \inmodule QtIviCore
     \brief The QIviProperty combines a normal property and a QIviPropertyAttribute
 

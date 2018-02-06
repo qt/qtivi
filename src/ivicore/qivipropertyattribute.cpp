@@ -62,6 +62,7 @@ void QIviPropertyAttributeBase::registerTypes()
 
 /*!
     \class QIviPropertyAttribute
+    \obsolete
     \inmodule QtIviCore
     \brief The QIviPropertyAttribute encapsulates the attributes of a property
 
