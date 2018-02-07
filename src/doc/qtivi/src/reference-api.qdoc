@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Pelagicore AG
+** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
@@ -33,23 +33,28 @@
 The Qt IVI module contains a reference API providing interfaces to common automotive
 functionality. These APIs rely on the separation of the front-end API and the backend
 implementation. The Qt IVI module also introduces a set of concepts used in the APIs:
-zones and property attributes.
+zones and property attributes. More about the concepts can be read \l {Concepts} {here}.
 
-The feature areas covered by the Qt IVI module reference API are:
+\section1 Modules
 
-\list
-    \li Vehicle Functions
-    \list
-        \li \l {QIviClimateControl} {Climate Control}
-        \li \l {QIviWindowControl} {Window Control}
-    \endlist
-\omit
-    \li Media Management
-    \list
-        \li Search and Browse
-        \li Playqueue Management
-        \li Playback Control
-    \endlist
-\endomit
-\endlist
+Qt IVI consists of the following C++ modules:
+
+\annotatedlist qtivi_modules
+
+\b {Qt IVI Core} provides core base classes for the Qt IVI features,
+and handles the discovery of Qt IVI backend plugins. Application
+developers do not need to use Qt IVI Core directly. It is only needed
+when implementing a new IVI feature, such as Qt IVI Vehicle Functions
+ClimateControl.
+
+\b {Qt IVI Vehicle Functions} provides interfaces to access vehicle
+features.
+
+\b {Qt IVI Media} provides interfaces to access media related APIs e.g.
+Managing your music playlist or controlling the radio tuner.
+
+The functionality provided by these modules is available to QML
+applications:
+
+\annotatedlist qtivi_qmlmodules
 */

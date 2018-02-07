@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (C) 2017 Pelagicore AG
+# Copyright (C) 2018 Pelagicore AG
 # Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB)
 # Contact: https://www.qt.io/licensing/
 #
@@ -59,7 +59,7 @@ log = logging.getLogger(__file__)
 Filters.classPrefix = ''
 
 builtin_config = {}
-IVI_DEFAULT_TEMPLATES = ['frontend', 'backend_simulator', 'generation_validator', 'control_panel', 'backend_qtro', 'server_qtro']
+IVI_DEFAULT_TEMPLATES = ['frontend', 'backend_simulator', 'generation_validator', 'control_panel', 'backend_qtro', 'server_qtro', 'test']
 
 def tag_by_path(symbol, path, default_value=False):
     """
@@ -132,6 +132,41 @@ def default_type_value(symbol):
         return 'nullptr'
     return 'XXX'
 
+def test_type_value(symbol):
+    """
+    Find a value different than the default value for the type. Models are initialized as nullptr
+    """
+    prefix = Filters.classPrefix
+    t = symbol.type  # type: qface.domain.TypeSymbol
+    if t.is_primitive:
+        if t.is_int:
+            return '111'
+        if t.is_bool:
+            return 'true'
+        if t.is_string:
+            return '"TEST STRING"'
+        if t.is_real:
+            return '1234.5678'
+        if t.is_variant:
+            return 'QVariant("TEST VARIANT")'
+    elif t.is_void:
+        return ''
+    elif t.is_enum:
+        module_name = t.reference.module.module_name
+        value = list(iter(t.reference.members))[-1]
+        return '{0}{1}Module::{2}'.format(prefix, module_name, value)
+    elif t.is_flag:
+        module_name = t.reference.module.module_name
+        value = next(iter(t.reference.members))
+        return '{0}{1}Module::{2}'.format(prefix, module_name, value)
+    elif symbol.type.is_list:
+        return 'QVariantList({})'
+    elif symbol.type.is_struct:
+        values_string = ', '.join(test_type_value(e) for e in symbol.type.reference.fields)
+        return '{0}{1}({2})'.format(prefix, symbol.type, values_string)
+    elif symbol.type.is_model:
+        return 'new {0}{1}Model()'.format(prefix, symbol.type.nested)
+    return 'XXX'
 
 def default_value(symbol, zone='='):
     """
@@ -530,6 +565,7 @@ def generate(tplconfig, moduleConfig, src, dst):
     generator.register_filter('parameter_type', parameter_type)
     generator.register_filter('getter_name', getter_name)
     generator.register_filter('setter_name', setter_name)
+    generator.register_filter('test_type_value', test_type_value)
     generator.register_filter('default_type_value', default_type_value)
     generator.register_filter('default_value', default_value)
     generator.register_filter('model_type', model_type)
@@ -568,10 +604,11 @@ def generate(tplconfig, moduleConfig, src, dst):
         dst = generator.apply('{{dst}}', ctx)
         generator.destination = dst
         module_rules = gen_config['generate_rules']['module_rules']
+        force = moduleConfig['force']
         if module_rules is None: module_rules = []
         for rule in module_rules:
             preserve = rule['preserve'] if 'preserve' in rule else False
-            generator.write(rule['dest_file'], rule['template_file'], ctx, preserve)
+            generator.write(rule['dest_file'], rule['template_file'], ctx, preserve, force)
         for interface in module.interfaces:
             log.debug('generate backend code for interface %s', interface)
             interface.add_tag('config')
@@ -580,7 +617,7 @@ def generate(tplconfig, moduleConfig, src, dst):
             if interface_rules is None: interface_rules = []
             for rule in interface_rules:
                 preserve = rule['preserve'] if 'preserve' in rule else False
-                generator.write(rule['dest_file'], rule['template_file'], ctx, preserve)
+                generator.write(rule['dest_file'], rule['template_file'], ctx, preserve, force)
         if 'struct_rules' in gen_config['generate_rules'] and isinstance(gen_config['generate_rules']['struct_rules'], list):
             for struct in module.structs:
                 log.debug('generate code for struct %s', struct)
@@ -588,7 +625,7 @@ def generate(tplconfig, moduleConfig, src, dst):
                 ctx.update({'struct': struct})
                 for rule in gen_config['generate_rules']['struct_rules']:
                     preserve = rule['preserve'] if 'preserve' in rule else False
-                    generator.write(rule['dest_file'], rule['template_file'], ctx, preserve)
+                    generator.write(rule['dest_file'], rule['template_file'], ctx, preserve, force)
 
 
 def run(format, moduleConfig, src, dst):
@@ -600,19 +637,25 @@ def run(format, moduleConfig, src, dst):
             generate(format, moduleConfig, src, dst)
         else:
             print('Format "{0}" is invalid. Should be one of {1} or an existing template folder'.format(format, IVI_DEFAULT_TEMPLATES))
+            exit(1)
 
 
 @click.command()
-@click.option('--reload/--no-reload', default=False)
-@click.option('--format', '-f', multiple=False)
-@click.option('--module', default=False)
-@click.option('--validation_info', default=False)
+@click.option('--reload/--no-reload', default=False, help='Specifies whether the generator should keep track of the changes in the IDL file and update output on the fly (--no-reload by default).')
+@click.option('--format', '-f', multiple=False, help='The format the autogenerator should use for the generation. This can either be one of the builtin formats or a path to a template folder. Builtin formats are: \n' + '\n'.join(IVI_DEFAULT_TEMPLATES))
+@click.option('--module', default=False, help='The name of the Qt module the autogenerator is generating. This is automatically used by the qmake integration and passed directly to the qface templates.')
+@click.option('--validation_info', is_flag=True, default=False, help='Annotates every interface with additional JSON code containing all the options used to generate this interface. This can be used to validate the generation of the interface.')
+@click.option('--force', is_flag=True, default=False, help='Always write all output files')
 @click.argument('src', nargs=-1, type=click.Path(exists=True))
 @click.argument('dst', nargs=1, type=click.Path(exists=True))
 
-def app(src, dst, format, reload, module, validation_info):
-    """Takes several files or directories as src and generates the code
-    in the given dst directory."""
+def app(src, dst, format, reload, module, validation_info, force):
+    """
+    The QtIvi Autogenerator (ivigenerator)
+
+    It takes several files or directories as src and generates the code
+    in the given dst directory.
+    """
 
     global builtin_config
     builtin_config_path = here / '.config'
@@ -628,7 +671,8 @@ def app(src, dst, format, reload, module, validation_info):
     else:
         moduleConfig = {
             "module": module,
-            "validation_info": validation_info
+            "validation_info": validation_info,
+            "force": force
         }
         run(format, moduleConfig, src, dst)
 

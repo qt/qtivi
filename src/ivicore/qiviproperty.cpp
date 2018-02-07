@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Pelagicore AG
+** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the QtIvi module of the Qt Toolkit.
@@ -70,6 +70,7 @@ void QIviPropertyPrivate::throwError(QObject *object, const QString &error)
 
 /*!
     \class QIviProperty
+    \obsolete
     \inmodule QtIviCore
     \brief The QIviProperty combines a normal property and a QIviPropertyAttribute
 

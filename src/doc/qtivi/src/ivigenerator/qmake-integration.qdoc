@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Pelagicore AG
+** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
@@ -41,6 +41,9 @@ Example:
 \code
 CONFIG += ivigenerator
 
+QT_FOR_CONFIG += ivicore
+!qtConfig(ivigenerator): error("No ivigenerator available")
+
 QFACE_FORMAT = frontend
 QFACE_SOURCES = example.qface
 QFACE_MODULE_NAME = myModule
@@ -67,6 +70,17 @@ Available QMake Variables:
 
 See \l {Autogenerator usage} for more details on the generator command line arguments.
 
+\quotation
+\note As the ivigenerator has specific system dependencies, it may not be available in every QtIviCore installation.
+In this case the ivigenerator qmake feature is also not available and this can result in build errors.
+
+The following code snippet makes sure to stop the build and give a meaningful error message in this case:
+\code
+QT_FOR_CONFIG += ivicore
+!qtConfig(ivigenerator): error("No ivigenerator available")
+\endcode
+\endquotation
+
 \section1 QtModule support
 
 The Qmake Integration also supports generating code which enables you to compile the generated code
@@ -79,6 +93,9 @@ integration of the QtIviVehicleFunctions module is done.
 TARGET = QtIviVehicleFunctions
 QT = core core-private ivicore ivicore-private
 CONFIG += c++11 ivigenerator
+
+QT_FOR_CONFIG += ivicore
+!qtConfig(ivigenerator): error("No ivigenerator available")
 
 ...
 

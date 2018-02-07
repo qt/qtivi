@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Pelagicore AG
+** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the QtIvi module of the Qt Toolkit.
@@ -25,7 +25,6 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 
 #include <QString>
 #include <QtTest>
@@ -255,14 +254,19 @@ void ServiceManagerTest::testManagerListModel()
 
 void ServiceManagerTest::pluginLoaderTest()
 {
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in '.*'. MetaData must contain a list of interfaces"));
+    //Test the error message for plugins with invalid metadata
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in '(.*)wrongmetadata_plugin(.*)'. MetaData must contain a list of interfaces"));
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in static plugin 'WrongMetadataStaticPlugin'. MetaData must contain a list of interfaces"));
     QIviServiceManagerPrivate::get(manager)->searchPlugins();
     QVERIFY(manager->hasInterface("simple_plugin"));
-    QList<QIviServiceObject *> services = manager->findServiceByInterface("simple_plugin");
+    QList<QIviServiceObject *> services = manager->findServiceByInterface("simple_plugin", QIviServiceManager::IncludeProductionBackends);
     QCOMPARE(services.count(), 1);
     //Because we unloaded the backend and created a new instance of it we expect to get a different id for the ServiceObject as in initTestCase()
     QVERIFY(m_simplePluginID != services.at(0)->id());
 
+    //Test whether the loading of static plugins works as well
+    services = manager->findServiceByInterface("simple_plugin_static", QIviServiceManager::IncludeSimulationBackends);
+    QCOMPARE(services.count(), 1);
 
     QVERIFY(manager->hasInterface("wrong_plugin"));
     QTest::ignoreMessage(QtWarningMsg, QRegularExpression("ServiceManager::serviceObjects - failed to cast to interface from '.*wrong_plugin.*'"));
@@ -273,7 +277,12 @@ void ServiceManagerTest::pluginLoaderTest()
     manager->unloadAllBackends();
     services = manager->findServiceByInterface("simple_plugin");
     QCOMPARE(services.count(), 0);
+    services = manager->findServiceByInterface("simple_plugin_static");
+    QCOMPARE(services.count(), 0);
 }
+
+Q_IMPORT_PLUGIN(SimpleStaticPlugin)
+Q_IMPORT_PLUGIN(WrongMetadataStaticPlugin)
 
 QTEST_APPLESS_MAIN(ServiceManagerTest)
 

@@ -4,7 +4,8 @@ QT_FOR_CONFIG += ivicore
 
 SUBDIRS = frontend \
           backend_simulator \
-          validator
+          validator \
+          test
 
 qtConfig(simulator) {
     SUBDIRS += control_panel
@@ -12,3 +13,4 @@ qtConfig(simulator) {
 
 backend_simulator.depends = frontend
 validator.depends = frontend
+test.depends = frontend

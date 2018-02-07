@@ -1,5 +1,5 @@
 {#
-# Copyright (C) 2017 Pelagicore AG.
+# Copyright (C) 2018 Pelagicore AG.
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -45,6 +45,9 @@
 {% for interface in module.interfaces %}
 #include "{{interface|lower}}.h"
 {% endfor %}
+{% for struct in module.structs %}
+#include "{{struct|lower}}model.h"
+{% endfor %}
 #include <QQmlEngine>
 #include <QDebug>
 #include <QDataStream>
@@ -81,6 +84,7 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
 }
 
 {% for enum in module.enums %}
+/*! \internal */
 {{class}}::{{enum}} {{class}}::to{{enum}}(quint8 v, bool *ok) {
     if (ok) {
         *ok = true;
@@ -107,6 +111,7 @@ void {{class}}::registerTypes()
 {% endfor %}
 {% for struct in module.structs %}
     qRegisterMetaType<{{struct}}>();
+    qRegisterMetaType<{{struct}}Model*>();
     qRegisterMetaTypeStreamOperators<{{struct}}>();
 {% endfor %}
 }

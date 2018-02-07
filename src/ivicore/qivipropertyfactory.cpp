@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Pelagicore AG
+** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the QtIvi module of the Qt Toolkit.
@@ -45,6 +45,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QIviPropertyFactory
+    \obsolete
     \inmodule QtIviCore
     \brief The QIviPropertyFactory is used as a factory class for creating instances of QIviProperty
 

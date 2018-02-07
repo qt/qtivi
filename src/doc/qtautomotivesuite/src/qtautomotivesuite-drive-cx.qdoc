@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the documentation of the Qt Automotive Suite.
@@ -28,7 +28,7 @@
     \page qtas-preparing-hardware-drivecx.html
     \title NVIDIA DRIVE CX Guide
     \previouspage qtas-install.html
-    \nextpage qtautomotive-byos.html
+    \nextpage qtautomotive-tutorial-deploying.html
 
     Take the following steps when preparing \l {http://www.nvidia.com/object/drive-cx.html}
     {NVIDIA DRIVE CX} for \B2Q:
@@ -38,6 +38,9 @@
 
     The image containing the \B2Q stack for the device, as well as the
     flashing tool are included in \QAS.
+
+    \note The flashing tool that is used in \l{Installing the Boot to Qt Image} is
+    only supported in a Linux host platform.
 
     \section1 Installing the \B2Q Image
 
@@ -64,5 +67,5 @@
     \include qtas-post-install-setup.qdocinc configuring device kit linux
 
     You are now ready to start developing for your device. For more information,
-    see \l{Building and Running an Example}.
+    see \l{Tutorial: Deploying Your First Project with Qt Automotive Suite}.
 */

@@ -1,5 +1,5 @@
 {#
-# Copyright (C) 2017 Pelagicore AG.
+# Copyright (C) 2018 Pelagicore AG.
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -178,7 +178,7 @@ void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_typ
 {% for signal in interface.signals %}
 /*! \internal */
 {%   if interface.tags.config.zoned %}
-void {{class}}Private::on{{signal|upperfirst}}({{signal.parameters|map('parameter_type')|join(', ')}}, const QString &zone)
+void {{class}}Private::on{{signal|upperfirst}}({{signal.parameters|map('parameter_type')|join(', ')}}{%if signal.parameters|length %}, {%endif%}const QString &zone)
 {
     auto q = getParent();
     auto f = qobject_cast<{{class}}*>(q->zoneAt(zone));

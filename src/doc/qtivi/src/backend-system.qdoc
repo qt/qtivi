@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Pelagicore AG
+** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
@@ -59,7 +59,9 @@ on a production system, you only want to have production backends running. But d
 development phase, it might be useful to have a simulation backend available, which can be used for
 frontend development until the backend services are in an usable state. QtIvi uses a simple naming
 scheme to identify whether a plugin provides simulation or production backends. Every simulation
-plugin needs to have either "simulation" or "simulator" in its name.
+plugin needs to have either "simulation" or "simulator" in its name. In addition it is also supported
+to set the "simulation" key in the plugin metadata. This is especially useful for static
+plugins. Please see \l {How to Create Qt Plugins} for more details about Qt's plugin system.
 
 \image backendtypes.jpg "Backend types"
 

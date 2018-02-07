@@ -18,6 +18,10 @@ ui_*
 
 # Test generated files
 tst_*
+!tst_*.cpp
+!tst_*.h
+!tst_*.tpl
+!tst_*.qface
 *Makefile.tst_*
 
 # Directories to ignore

@@ -7,6 +7,7 @@ sourcedirs                   += .
 headerdirs                   += .
 imagedirs                    += images
 exampledirs                  += ../../../examples
+examples.fileextensions      += *.qface *.yaml
 
 # geniviextras has its own documentation project, ignore the examples here
 excludedirs                  += ../../../examples/geniviextras

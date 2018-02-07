@@ -55,3 +55,12 @@ defineTest(qtConfReport_python3) {
     qtConfReportPadded("$${1}Executable", $$path)
     qtConfReportPadded("$${1}Version", $$version)
 }
+
+defineTest(qtConfTest_qface_submodule) {
+    path = $$QTIVI_ROOT/src/3rdparty/qface/setup.py
+    exists($$path): return(true)
+
+    qtLog("The submodule at \"$$path\" is not initialized")
+
+    return(false)
+}

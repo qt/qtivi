@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Pelagicore AG
+** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
@@ -117,6 +117,8 @@ The following environment variables are supported for runtime configurations:
         \note This is only available when the \l {feature-qtsimulator} {QtSimulator Support} is
         enabled.
 \endtable
+
+Also see the documentation about the \l {QtIvi Backends} {backend plugins} for more runtime configuration options.
 
 \section2 Logging
 

@@ -8,5 +8,7 @@ QT += ivicore ivicore-private qml quick
 
 DEFINES += QT_BUILD_NOPRIVATE_LIB
 
+macos: QMAKE_SONAME_PREFIX = @rpath
+
 QFACE_SOURCES = ../../../org.example.echo.noprivate.qface
 

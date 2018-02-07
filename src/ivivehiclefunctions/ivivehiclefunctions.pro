@@ -2,6 +2,9 @@ TARGET = QtIviVehicleFunctions
 QT = core core-private ivicore ivicore-private
 CONFIG += c++11 ivigenerator
 
+QT_FOR_CONFIG += ivicore
+!qtConfig(ivigenerator): error("No ivigenerator available")
+
 OTHER_FILES = \
     $$PWD/doc/*.qdocconf \
     $$PWD/doc/src/*.qdoc \
