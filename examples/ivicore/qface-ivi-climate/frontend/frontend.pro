@@ -13,5 +13,6 @@ DEFINES += QT_BUILD_CLIMATE_LIB
 
 QFACE_SOURCES = ../example-ivi-climate.qface
 
-target.path = $$[QT_INSTALL_EXAMPLES]/ivicore/qface-ivi-climate/frontend
+CONFIG += install_ok  # Do not cargo-cult this!
+target.path = $$[QT_INSTALL_EXAMPLES]/ivicore/qface-ivi-climate
 INSTALLS += target

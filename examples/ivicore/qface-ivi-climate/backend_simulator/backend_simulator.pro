@@ -20,5 +20,6 @@ QT += core ivicore
 QFACE_FORMAT = backend_simulator
 QFACE_SOURCES = ../example-ivi-climate.qface
 
-target.path = $$[QT_INSTALL_EXAMPLES]/ivicore/qface-ivi-climate/backend_simulator
+CONFIG += install_ok  # Do not cargo-cult this!
+target.path = $$[QT_INSTALL_EXAMPLES]/ivicore/qface-ivi-climate/qtivi/
 INSTALLS += target
