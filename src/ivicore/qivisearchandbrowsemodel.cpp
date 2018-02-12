@@ -213,7 +213,7 @@ void QIviSearchAndBrowseModelPrivate::resetModel()
     m_fetchedDataCount = 0;
 
     if (searchBackend())
-        m_availableContentTypes = searchBackend()->availableContentTypes().toList();
+        setAvailableContenTypes(searchBackend()->availableContentTypes().toList());
 
     checkType();
     parseQuery();
@@ -290,6 +290,16 @@ void QIviSearchAndBrowseModelPrivate::setCanGoBack(bool canGoBack)
 
     m_canGoBack = canGoBack;
     emit q->canGoBackChanged(m_canGoBack);
+}
+
+void QIviSearchAndBrowseModelPrivate::setAvailableContenTypes(QStringList contentTypes)
+{
+    Q_Q(QIviSearchAndBrowseModel);
+    if (m_availableContentTypes == contentTypes)
+        return;
+
+    m_availableContentTypes = contentTypes;
+    emit q->availableContentTypesChanged(contentTypes);
 }
 
 const QIviSearchAndBrowseModelItem *QIviSearchAndBrowseModelPrivate::itemAt(int i) const

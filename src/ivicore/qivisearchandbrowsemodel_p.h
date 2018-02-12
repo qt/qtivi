@@ -83,6 +83,7 @@ public:
     void checkType();
     void clearToDefaults();
     void setCanGoBack(bool canGoBack);
+    void setAvailableContenTypes(QStringList contentTypes);
     const QIviSearchAndBrowseModelItem *itemAt(int i) const;
 
     QIviSearchAndBrowseModelInterface *searchBackend() const;
