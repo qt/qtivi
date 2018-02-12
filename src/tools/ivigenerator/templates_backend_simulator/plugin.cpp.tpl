@@ -38,7 +38,7 @@
 # SPDX-License-Identifier: LGPL-3.0
 #}
 {% include "generated_comment.cpp.tpl" %}
-{% set class = '{0}Plugin'.format(module.module_name) %}
+{% set class = '{0}Plugin'.format(module.module_name|upperfirst) %}
 
 #include "{{class|lower}}.h"
 
@@ -78,7 +78,7 @@ QStringList {{class}}::interfaces() const
 {
     QStringList list;
 {% for iface in module.interfaces %}
-{%   if loop.first %}    list{% endif %} << {{module.module_name}}_{{iface}}_iid{% if loop.last %};{% endif %}
+{%   if loop.first %}    list{% endif %} << {{module.module_name|upperfirst}}_{{iface}}_iid{% if loop.last %};{% endif %}
 {% endfor %}
 
     return list;

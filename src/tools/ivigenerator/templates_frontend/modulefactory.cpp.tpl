@@ -36,7 +36,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% set class = '{0}ModuleFactory'.format(module.module_name) %}
+{% set class = '{0}ModuleFactory'.format(module.module_name|upperfirst) %}
 {% include 'generated_comment.cpp.tpl' %}
 {% import 'utils.tpl' as utils %}
 
@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
     \brief The {{class}} class provides factory methods for all structs defined in the {{module}} module.
 */
 {{class}}::{{class}}(QObject *parent)
-    : {{module.module_name}}Module(parent)
+    : {{module.module_name|upperfirst}}Module(parent)
 {
 }
 

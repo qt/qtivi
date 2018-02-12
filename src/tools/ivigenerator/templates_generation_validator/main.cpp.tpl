@@ -62,9 +62,9 @@ int main(int argc, char *argv[])
 
 
     qmlRegisterType<GeneratorValidationStatus>("org.example.Example", 1, 0, "ValidationStatus");
-    {{module.module_name}}Module::registerTypes();
+    {{module.module_name|upperfirst}}Module::registerTypes();
 {#% for iface in module.interfaces %#}
-    {{module.module_name}}Module::registerQmlTypes(QLatin1String("{{module.module_name}}"), 1, 0);
+    {{module.module_name|upperfirst}}Module::registerQmlTypes(QLatin1String("{{module.module_name}}"), 1, 0);
 {#% endfor %#}
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

@@ -111,7 +111,7 @@ Q_SIGNALS:
 {% endfor %}
 };
 
-#define {{module.module_name}}_{{interface}}_iid ("{{interface.tags.config.id}}")
+#define {{module.module_name|upperfirst}}_{{interface}}_iid ("{{interface.tags.config.id}}")
 
 QT_END_NAMESPACE
 
