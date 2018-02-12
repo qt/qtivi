@@ -9,7 +9,11 @@ QT       += core ivicore ivimedia sql multimedia
 
 load(qt_plugin)
 
-qtConfig(taglib): QMAKE_USE += taglib
+qtConfig(system-taglib) {
+    QMAKE_USE += taglib
+} else:qtConfig(taglib) {
+    include($$PWD/../../../3rdparty/taglib/taglib.pri)
+}
 
 DISTFILES += media_simulator.json
 

@@ -5,6 +5,12 @@
         "ivicore"
     ],
 
+    "commandline": {
+        "options": {
+            "taglib": { "type": "enum", "values": [ "no", "qt", "system" ] }
+        }
+    },
+
     "libraries": {
         "taglib": {
             "label": "taglib",
@@ -20,11 +26,18 @@
     "features": {
         "taglib": {
             "label": "taglib",
-            "condition": "libs.taglib",
+            "disable": "input.taglib == 'no'",
             "output": [
                 "privateFeature",
-                { "type": "define", "name": "QT_TAGLIB" }
+                { "type": "define", "negative": true, "name": "QTIVI_NO_TAGLIB" }
             ]
+        },
+        "system-taglib": {
+            "label": "  Using system taglib",
+            "disable": "input.taglib == 'qt'",
+            "enable": "input.taglib == 'system'",
+            "condition": "features.taglib && libs.taglib",
+            "output": [ "privateFeature" ]
         },
         "media_simulation_backend": {
             "label": "Mediaplayer Simulation Backend",
@@ -52,6 +65,7 @@
             "condition": "features.ivimedia",
             "entries": [
                 "taglib",
+                "system-taglib",
                 {
                     "section": "Backends",
                     "entries": [

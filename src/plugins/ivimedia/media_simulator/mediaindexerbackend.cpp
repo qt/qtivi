@@ -53,7 +53,7 @@
 #include <QMediaPlayer>
 #include <QMediaMetaData>
 
-#ifdef QT_TAGLIB
+#ifndef QTIVI_NO_TAGLIB
 #include <attachedpictureframe.h>
 #include <fileref.h>
 #include <id3v2frame.h>
@@ -82,7 +82,7 @@ MediaIndexerBackend::MediaIndexerBackend(const QSqlDatabase &database, QObject *
     else
         mediaFolder = customMediaFolder;
 
-#ifndef QT_TAGLIB
+#ifdef QTIVI_NO_TAGLIB
     qWarning() << "The indexer simulation doesn't work correctly without an installed taglib";
 #endif
 
@@ -147,7 +147,7 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
 
     qInfo() << "Scanning path: " << mediaDir;
 
-#ifndef QT_TAGLIB
+#ifdef QTIVI_NO_TAGLIB
     QMediaPlayer player;
 #endif
 
@@ -173,8 +173,8 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
 
         QString defaultCoverArtUrl = fileName + QLatin1Literal(".png");
         QString coverArtUrl;
-#ifdef QT_TAGLIB
-        TagLib::FileRef f(fileName.toLocal8Bit());
+#ifndef QTIVI_NO_TAGLIB
+        TagLib::FileRef f(TagLib::FileName(QFile::encodeName(fileName)));
         if (f.isNull())
             continue;
         QString trackName = QLatin1String(f.tag()->title().toCString());
@@ -184,21 +184,23 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
         int number = f.tag()->track();
 
         // Extract cover art
-        TagLib::MPEG::File file(fileName.toLocal8Bit());
-        TagLib::ID3v2::Tag *tag = file.ID3v2Tag(true);
-        TagLib::ID3v2::FrameList frameList = tag->frameList("APIC");
+        if (fileName.endsWith(QLatin1String("mp3"))) {
+            TagLib::MPEG::File *file = static_cast<TagLib::MPEG::File*>(f.file());
+            TagLib::ID3v2::Tag *tag = file->ID3v2Tag(true);
+            TagLib::ID3v2::FrameList frameList = tag->frameList("APIC");
 
-        if (frameList.isEmpty()) {
-            qWarning() << "No cover art was found";
-        } else {
-            TagLib::ID3v2::AttachedPictureFrame *coverImage =
-                static_cast<TagLib::ID3v2::AttachedPictureFrame *>(frameList.front());
+            if (frameList.isEmpty()) {
+                qWarning() << "No cover art was found";
+            } else {
+                TagLib::ID3v2::AttachedPictureFrame *coverImage =
+                    static_cast<TagLib::ID3v2::AttachedPictureFrame *>(frameList.front());
 
-            QImage coverQImg;
-            coverArtUrl = defaultCoverArtUrl;
+                QImage coverQImg;
+                coverArtUrl = defaultCoverArtUrl;
 
-            coverQImg.loadFromData((const uchar *)coverImage->picture().data(), coverImage->picture().size());
-            coverQImg.save(coverArtUrl, "PNG");
+                coverQImg.loadFromData((const uchar *)coverImage->picture().data(), coverImage->picture().size());
+                coverQImg.save(coverArtUrl, "PNG");
+            }
         }
 #else
         player.setMedia(QUrl::fromLocalFile(fileName));
@@ -240,7 +242,7 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
         if (genres.count())
             genre = genres.first();
         int number = player.metaData(QMediaMetaData::TrackNumber).toInt();
-#endif // QT_TAGLIB
+#endif // QTIVI_NO_TAGLIB
 
         QSqlQuery query(m_db);
 

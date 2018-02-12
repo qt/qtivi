@@ -2,3 +2,7 @@
 	path = src/3rdparty/qface
 	url = ../qtivi-qface.git
 	branch = upstream/develop
+[submodule "src/3rdparty/taglib/taglib"]
+	path = src/3rdparty/taglib/taglib
+	url = ../qtivi-taglib.git
+	branch = upstream/master
