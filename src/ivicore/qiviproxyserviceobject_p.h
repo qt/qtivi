@@ -58,7 +58,7 @@
 
 QT_BEGIN_NAMESPACE
 
-class QIviProxyServiceObject : public QIviServiceObject
+class Q_QTIVICORE_EXPORT QIviProxyServiceObject : public QIviServiceObject
 {
     Q_OBJECT
 
@@ -69,6 +69,7 @@ public:
     virtual QStringList interfaces() const;
     virtual QIviFeatureInterface *interfaceInstance(const QString &interface) const;
 
+    QIviServiceInterface *serviceInterface() const;
 private:
 
     QIviServiceInterface *m_interface;

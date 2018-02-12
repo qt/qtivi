@@ -45,6 +45,11 @@
 
 QT_BEGIN_NAMESPACE
 
+QObject* serviceManagerSingelton(QQmlEngine *, QJSEngine *)
+{
+    return QIviServiceManager::instance();
+}
+
 class QIviCorePlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
@@ -54,10 +59,12 @@ public:
     {
         Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi"));
         qRegisterMetaType<QIviServiceObject*>();
+        qRegisterMetaType<QList<QIviServiceObject*>>("QList<QIviServiceObject*>");
 
         qmlRegisterUncreatableType<QIviAbstractFeature>(uri, 1, 0, "AbstractFeature", "AbstractFeature is not accessible directly");
         qmlRegisterUncreatableType<QIviAbstractZonedFeature>(uri, 1, 0, "AbstractZonedFeature", "AbstractZonedFeature is not accessible directly");
         qmlRegisterType<QIviSearchAndBrowseModel>(uri, 1, 0, "SearchAndBrowseModel");
+        qmlRegisterSingletonType<QIviServiceManager>(uri, 1, 0, "ServiceManager", &serviceManagerSingelton);
     }
 };
 

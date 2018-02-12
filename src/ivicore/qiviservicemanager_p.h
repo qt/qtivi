@@ -73,6 +73,7 @@ class QIviProxyServiceObject;
 Q_DECLARE_LOGGING_CATEGORY(qLcIviServiceManagement)
 
 struct Backend{
+    QString name;
     QVariantMap metaData;
     QIviServiceInterface *interface;
     QObject *interfaceObject;
@@ -90,6 +91,7 @@ public:
     static QIviServiceManagerPrivate* get(QIviServiceManager *serviceManager);
     static bool isSimulation(const QVariantMap &metaData);
 
+    QIviProxyServiceObject *createServiceObject(struct Backend *backend) const;
     QList<QIviServiceObject*> findServiceByInterface(const QString &interface, QIviServiceManager::SearchFlags searchFlags) const;
 
     void searchPlugins();

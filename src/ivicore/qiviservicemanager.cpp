@@ -84,6 +84,28 @@ bool QIviServiceManagerPrivate::isSimulation(const QVariantMap &metaData)
             metaData[QLatin1String("simulation")].toBool();
 }
 
+QIviProxyServiceObject *QIviServiceManagerPrivate::createServiceObject(struct Backend *backend) const
+{
+    if (!backend)
+        return nullptr;
+
+    if (!backend->proxyServiceObject) {
+        QIviServiceInterface *backendInterface = loadServiceBackendInterface(backend);
+        if (backendInterface)
+            backend->proxyServiceObject = new QIviProxyServiceObject(backendInterface);
+    }
+
+    if (backend->proxyServiceObject) {
+        QString fileName = backend->metaData[QLatin1String("fileName")].toString();
+        if (fileName.isEmpty())
+            fileName = QLatin1String("static plugin");
+        qCDebug(qLcIviServiceManagement) << "Found: " << backend->proxyServiceObject << "from: " << fileName;
+        return backend->proxyServiceObject;
+    }
+
+    return nullptr;
+}
+
 QList<QIviServiceObject *> QIviServiceManagerPrivate::findServiceByInterface(const QString &interface, QIviServiceManager::SearchFlags searchFlags) const
 {
     QList<QIviServiceObject*> list;
@@ -95,18 +117,9 @@ QList<QIviServiceObject *> QIviServiceManagerPrivate::findServiceByInterface(con
             bool isSimulation = QIviServiceManagerPrivate::isSimulation(backend->metaData);
             if ((searchFlags & QIviServiceManager::IncludeSimulationBackends && isSimulation) ||
                 (searchFlags & QIviServiceManager::IncludeProductionBackends && !isSimulation)) {
-                if (!backend->proxyServiceObject) {
-                    QIviServiceInterface *backendInterface = loadServiceBackendInterface(backend);
-                    if (backendInterface)
-                        backend->proxyServiceObject = new QIviProxyServiceObject(backendInterface);
-                }
-                if (backend->proxyServiceObject) {
-                    QString fileName = backend->metaData[QLatin1String("fileName")].toString();
-                    if (fileName.isEmpty())
-                        fileName = QLatin1String("static plugin");
-                    qCDebug(qLcIviServiceManagement) << "Found: " << backend->proxyServiceObject << "from: " << fileName;
-                    list.append(backend->proxyServiceObject);
-                }
+                QIviServiceObject *serviceObject = createServiceObject(backend);
+                if (serviceObject)
+                    list.append(serviceObject);
             }
         }
     }
@@ -168,6 +181,7 @@ void QIviServiceManagerPrivate::registerBackend(const QString &fileName, const Q
     backendMetaData.insert(QLatin1String("fileName"), fileName);
 
     Backend* backend = new Backend;
+    backend->name =  metaData.value(QLatin1String("className")).toString();
     backend->metaData = backendMetaData;
     backend->interface = nullptr;
     backend->interfaceObject = nullptr;
@@ -201,6 +215,7 @@ void QIviServiceManagerPrivate::registerStaticBackend(QStaticPlugin plugin)
     //TODO check for other metaData like name etc.
 
     Backend* backend = new Backend;
+    backend->name = plugin.metaData().value(QLatin1String("className")).toString();
     backend->metaData = backendMetaData;
     backend->interface = backendInterface;
     backend->interfaceObject = nullptr;
@@ -228,6 +243,7 @@ bool QIviServiceManagerPrivate::registerBackend(QObject *serviceBackendInterface
         metaData.insert(QLatin1String("simulation"), true);
 
     Backend *backend = new Backend;
+    backend->name = QString::fromLocal8Bit(serviceBackendInterface->metaObject()->className());
     backend->metaData = metaData;
     backend->interface = interface;
     backend->interfaceObject = serviceBackendInterface;
@@ -459,11 +475,33 @@ QVariant QIviServiceManager::data(const QModelIndex &index, int role) const
 
     int row = index.row();
 
-    if (row >= 0 && row < d->m_backends.count() && role == Qt::DisplayRole) {
-        return QVariant::fromValue<QIviServiceInterface*>(d->m_backends.at(index.row())->interface);
+    if (row < 0 || row >= d->m_backends.count())
+        return QVariant();
+
+    Backend *backend = d->m_backends.at(row);
+
+    switch (role) {
+    case NameRole: return backend->name;
+    case ServiceObjectRole: return QVariant::fromValue(d->createServiceObject(backend));
+    case InterfacesRole: return backend->metaData[QLatin1String("interfaces")];
     }
 
     return QVariant();
+}
+
+
+/*!
+    \reimp
+*/
+QHash<int, QByteArray> QIviServiceManager::roleNames() const
+{
+    static QHash<int, QByteArray> roles;
+    if (roles.isEmpty()) {
+        roles[NameRole] = "name";
+        roles[ServiceObjectRole] = "serviceObject";
+        roles[InterfacesRole] = "interfaces";
+    }
+    return roles;
 }
 
 QT_END_NAMESPACE

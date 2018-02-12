@@ -54,6 +54,12 @@ class Q_QTIVICORE_EXPORT QIviServiceManager : public QAbstractListModel
 {
     Q_OBJECT
 public:
+    enum Roles {
+        NameRole = Qt::DisplayRole,
+        ServiceObjectRole = Qt::UserRole,
+        InterfacesRole = Qt::UserRole +1
+    };
+
     enum SearchFlag {
         IncludeProductionBackends = 0x01,
         IncludeSimulationBackends = 0x02,
@@ -71,15 +77,16 @@ public:
     static QIviServiceManager *instance();
     ~QIviServiceManager();
 
-    QList<QIviServiceObject*> findServiceByInterface(const QString &interface, SearchFlags searchFlags = IncludeAll);
-    bool hasInterface(const QString &interface) const;
+    Q_INVOKABLE QList<QIviServiceObject*> findServiceByInterface(const QString &interface, SearchFlags searchFlags = IncludeAll);
+    Q_INVOKABLE bool hasInterface(const QString &interface) const;
 
     bool registerService(QObject *serviceBackendInterface, const QStringList &interfaces, BackendType backendType = ProductionBackend);
     void unloadAllBackends();
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    QVariant data(const QModelIndex &index, int role) const;
-Q_SIGNALS:
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role) const override;
+
+    QHash<int, QByteArray> roleNames() const override;
 
 private:
     explicit QIviServiceManager();

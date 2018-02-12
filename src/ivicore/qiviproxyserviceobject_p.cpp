@@ -65,4 +65,9 @@ QIviFeatureInterface *QIviProxyServiceObject::interfaceInstance(const QString &i
     return m_interface->interfaceInstance(interface);
 }
 
+QIviServiceInterface *QIviProxyServiceObject::serviceInterface() const
+{
+    return m_interface;
+}
+
 QT_END_NAMESPACE
