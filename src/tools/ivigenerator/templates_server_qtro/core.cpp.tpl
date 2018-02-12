@@ -62,7 +62,7 @@ QT_BEGIN_NAMESPACE
 
 void {{class}}::init()
 {
-    {{module.module_name}}Module::registerTypes();
+    {{module.module_name|upperfirst}}Module::registerTypes();
     QString configPath = "./server.conf";
     if (qEnvironmentVariableIsSet("SERVER_CONF_PATH"))
         configPath = QString::fromLatin1(qgetenv("SERVER_CONF_PATH"));

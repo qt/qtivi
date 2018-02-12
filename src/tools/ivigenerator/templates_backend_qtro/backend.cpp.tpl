@@ -56,7 +56,7 @@ QT_BEGIN_NAMESPACE
 {{class}}::{{class}}(QObject *parent)
     : {{class}}Interface(parent)
 {
-    {{module.module_name}}Module::registerTypes();
+    {{module.module_name|upperfirst}}Module::registerTypes();
     QString configPath = "./server.conf";
     if (qEnvironmentVariableIsSet("SERVER_CONF_PATH"))
         configPath = QString::fromLatin1(qgetenv("SERVER_CONF_PATH"));

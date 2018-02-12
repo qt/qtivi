@@ -61,7 +61,7 @@ QStringList {{class}}::interfaces() const
 {
     QStringList list;
 {% for iface in module.interfaces %}
-{%   if loop.first %}    list{% endif %} << {{module.module_name}}_{{iface}}_iid{% if loop.last %};{% endif %}
+{%   if loop.first %}    list{% endif %} << {{module.module_name|upperfirst}}_{{iface}}_iid{% if loop.last %};{% endif %}
 {% endfor %}
 
     return list;
