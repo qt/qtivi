@@ -84,6 +84,8 @@ public:
     virtual void remove(int index) override;
     virtual void move(int cur_index, int new_index) override;
 
+signals:
+    void playTrack(const QUrl& url);
 public Q_SLOTS:
     void doSqlOperation(MediaPlayerBackend::OperationType type, const QStringList &queries, int start, int count);
 
@@ -92,6 +94,7 @@ private Q_SLOTS:
     void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
     void onPositionChanged(qint64 position);
     void onDurationChanged(qint64 duration);
+    void onPlayTrack(const QUrl& url);
 private:
 
     int m_count;
