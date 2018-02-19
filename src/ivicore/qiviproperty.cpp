@@ -43,6 +43,7 @@
 #include "qiviproperty_p.h"
 
 #include <QMetaEnum>
+#include <QQmlEngine>
 
 //Needed for error reporting
 #include <private/qv8engine_p.h>
@@ -64,7 +65,12 @@ void QIviPropertyPrivate::throwError(QObject *object, const QString &error)
         qWarning("%s", qPrintable(error));
         return;
     }
-    QV4::ExecutionEngine *v4 = QV8Engine::getV4(jsEngine);
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
+    QV4::ExecutionEngine *v4 = jsEngine->handle();
+#else
+    QV4::ExecutionEngine *v4 = QV8Engine::getV4(jsEngine->handle());
+#endif
     v4->throwError(error);
 }
 
