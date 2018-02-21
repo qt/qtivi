@@ -28,14 +28,10 @@
 //! [qtas contents]
     \list
         \li \l {Qt Automotive Suite Overview}{Overview}
-        \li \l {Installing Qt Automotive Suite}{Install Instructions}
-        \list
-            \li \l{NVIDIA DRIVE CX Guide}
-        \endlist
+        \li \l {Installing Qt Automotive Suite}
         \li \l {Tutorial: Deploying Your First Project with Qt Automotive Suite}
         \li \l {Building Your Own NVIDIA DRIVE CX Image}
         \li \l {Licenses Used in Qt Automotive Suite}
-        \li \l {Related Information}
     \endlist
 //! [qtas contents]
 */

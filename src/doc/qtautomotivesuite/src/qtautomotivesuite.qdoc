@@ -46,7 +46,7 @@
 
     \include qtas-common.qdocinc qtas contents
 
-    \section1 Related Information
+    \section1 Components
 
     \list
         \li \l {Qt for Device Creation}
@@ -54,9 +54,7 @@
         \li \l {Qt IVI}{Qt IVI Module Reference Documentation}
         \li \l {Qt Application Manager}
         \li \l {Qt QmlLive}
-        \li \l {Over-The-Air Update}
-        \li \l {Qt Web Browser}
-        \li \l {Neptune UI}{Reference UI}
+        \li \l {Neptune UI}{Reference UI (Neptune)}
         \li \l {GammaRay}
     \endlist
 */
@@ -173,16 +171,6 @@
     Qt in IVI (In-Vehichle Infotainment) systems. It demonstrates best practices
     for developing an automotive UI with \QAS.
 
-    \section1 Web Browser
-
-    \l {Qt Web Browser} is a browser designed for embedded devices. It is based on
-    \l {Qt WebEngine}, with a slick, touch-friendly user interface.
-
-    \section1 Over-The-Air Updates
-
-    \QAS comes with \l {Over-The-Air Update}{Over-The-Air} (OTA) package, providing
-    tools that assist in enabling distribution of software updates in embedded
-    Linux devices over wireless networks.
 */
 
 /*!
