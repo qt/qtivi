@@ -124,20 +124,20 @@
     \QAS comes with additional functionality for diagnostics and debugging,
     as well as deployment:
 
-    \section2 GammaRay
+    \section1 GammaRay
 
     GammaRay is a plugin for Qt Creator that provides software introspection
     for Qt applications. It allows visualization of application behavior and
     manipulating it at run-time, both locally and remotely on an embedded
     target.
 
-    \section2 QmlLive
+    \section1 QmlLive
 
     \l{Qt QmlLive}{QmlLive} provides a live reloader environment for rapid development of
     Qt Quick applications, dramatically reducing the time it takes to
     deploy and test changes in the UI design.
 
-    \section2 Deployment
+    \section1 Deployment
 
     Device deployment can be done directly from the Qt Creator IDE to a
     device connected via USB or local area network, or to an \l{Emulator}{emulator}
