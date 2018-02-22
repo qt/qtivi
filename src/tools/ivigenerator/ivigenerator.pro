@@ -129,8 +129,12 @@ INSTALLS += generator \
 !force_independent:if(!debug_and_release|!build_all|CONFIG(release, debug|release)) {
     for (install_target, INSTALLS) {
         path = $$eval($${install_target}.path)
+        depends = $$eval($${install_target}.depends)
         $${install_target}_copy.input = $${install_target}.files
         $${install_target}_copy.output = $$path/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+        !isEmpty(depends) {
+            $${install_target}_copy.depends = $$eval($${depends}.target)
+        }
         $${install_target}_copy.commands = $$sprintf($$QMAKE_MKDIR_CMD, "$$path") $$escape_expand(\n\t)
         contains($${install_target}.CONFIG, directory): $${install_target}_copy.commands += $$QMAKE_COPY_DIR ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
         else: $${install_target}_copy.commands += $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
