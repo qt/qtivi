@@ -51,9 +51,6 @@
 #include <QtDebug>
 #include <QThreadPool>
 
-#include <QMediaPlayer>
-#include <QMediaMetaData>
-
 #ifndef QTIVI_NO_TAGLIB
 #include <attachedpictureframe.h>
 #include <fileref.h>
@@ -84,7 +81,7 @@ MediaIndexerBackend::MediaIndexerBackend(const QSqlDatabase &database, QObject *
         mediaFolder = customMediaFolder;
 
 #ifdef QTIVI_NO_TAGLIB
-    qCCritical(media) << "The indexer simulation doesn't work correctly without an installed taglib";
+    qCCritical(media) << "The indexer simulation doesn't work without an installed taglib";
 #endif
 
     //We want to have the indexer running also when the Indexing interface is not used.
@@ -152,10 +149,6 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
 
     qCInfo(media) << "Scanning path: " << mediaDir;
 
-#ifdef QTIVI_NO_TAGLIB
-    QMediaPlayer player;
-#endif
-
     QStringList mediaFiles;
     mediaFiles << "*.mp3";
 
@@ -207,47 +200,6 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
                 coverQImg.save(coverArtUrl, "PNG");
             }
         }
-#else
-        player.setMedia(QUrl::fromLocalFile(fileName));
-        // Evil hack to wait until the media is loaded
-        while (player.mediaStatus() != QMediaPlayer::LoadedMedia) {
-            QThread::msleep(100);
-            qApp->processEvents();
-        }
-
-        if (!QFile::exists(defaultCoverArtUrl)) {
-            QImage coverArt = player.metaData(QMediaMetaData::CoverArtImage).value<QImage>();
-            if (coverArt.isNull()) {
-                // Either there is no coverArt information available, or QtMultimedia cannot read it.
-                // We try to be smart and see whether we can find a cover file where the music is located.
-                QFileInfo info(fileName);
-                QString coverPath = info.absoluteDir().absoluteFilePath(QLatin1String("cover.png"));
-                if (QFile::exists(coverPath))
-                    coverArtUrl = coverPath;
-            } else {
-                coverArt.save(defaultCoverArtUrl, "PNG");
-                coverArtUrl = defaultCoverArtUrl;
-            }
-        } else {
-            coverArtUrl = defaultCoverArtUrl;
-        }
-
-        if (coverArtUrl.isEmpty())
-            qCWarning(media) << "No cover art was found";
-
-        QString trackName = player.metaData(QMediaMetaData::Title).toString();
-        QString albumName = player.metaData(QMediaMetaData::AlbumTitle).toString();
-        QString artistName = player.metaData(QMediaMetaData::AlbumArtist).toString();
-        if (artistName.isEmpty())
-            artistName = player.metaData(QMediaMetaData::Author).toString();
-        if (artistName.isEmpty())
-            artistName = player.metaData(QMediaMetaData::ContributingArtist).toString();
-        QString genre;
-        QStringList genres = player.metaData(QMediaMetaData::Genre).toStringList();
-        if (genres.count())
-            genre = genres.first();
-        int number = player.metaData(QMediaMetaData::TrackNumber).toInt();
-#endif // QTIVI_NO_TAGLIB
 
         QSqlQuery query(m_db);
 
@@ -271,6 +223,9 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
         } else {
             emit progressChanged(qreal(currentFileIndex)/qreal(totalFileCount));
         }
+#else
+        emit progressChanged(qreal(currentFileIndex)/qreal(totalFileCount));
+#endif // QTIVI_NO_TAGLIB
 
         currentFileIndex++;
     }
@@ -286,8 +241,12 @@ void MediaIndexerBackend::onScanFinished()
     }
 
     qCInfo(media) << "Scanning done";
+#ifdef QTIVI_NO_TAGLIB
+    qCCritical(media) << "No data was added, this is just a simulation";
+#endif
     emit progressChanged(1);
     emit indexingDone();
+
 
     //If the last run didn't succeed we will stay in the Error state
     if (m_watcher.future().result())

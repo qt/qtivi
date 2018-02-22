@@ -59,6 +59,15 @@
         }
     },
 
+    "report": [
+        {
+            "type": "warning",
+            "condition": "input.taglib == 'no'",
+            "message": "Building taglib was disabled!
+The Mediaplayer Simulation Backend will only provide a stub and can't scan media files"
+        }
+    ],
+
     "summary": [
         {
             "section": "Qt IVI Media",
