@@ -108,7 +108,7 @@ void QIviMediaPlayerPrivate::onCurrentTrackChanged(const QVariant &currentTrack)
     const QIviPlayableItem *currentItem = nullptr;
 
     if (currentTrack.isValid()) {
-        currentItem = qtivi_gadgetFromVariant<QIviPlayableItem>(currentTrack);
+        currentItem = qtivi_gadgetFromVariant<QIviPlayableItem>(q_ptr, currentTrack);
         if (m_currentTrack == currentItem)
             return;
     }

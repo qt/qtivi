@@ -205,7 +205,7 @@ const QIviPlayableItem *QIviPlayQueuePrivate::itemAt(int i) const
     if (!var.isValid())
         return nullptr;
 
-    return qtivi_gadgetFromVariant<QIviPlayableItem>(var);
+    return qtivi_gadgetFromVariant<QIviPlayableItem>(q_ptr, var);
 }
 
 QIviMediaPlayerBackendInterface *QIviPlayQueuePrivate::playerBackend() const
@@ -422,7 +422,7 @@ void QIviPlayQueue::setLoadingType(QIviPlayQueue::LoadingType loadingType)
         return;
 
     if (loadingType == QIviPlayQueue::DataChanged && !d->playerBackend()->canReportCount()) {
-        qWarning("The backend doesn't support the DataChanged loading type. This call will have no effect");
+        qtivi_qmlOrCppWarning(this, QLatin1String("The backend doesn't support the DataChanged loading type. This call will have no effect"));
         return;
     }
 
@@ -517,7 +517,7 @@ QVariant QIviPlayQueue::get(int i) const
 */
 void QIviPlayQueue::insert(int index, const QVariant &variant)
 {
-    const QIviPlayableItem *item = qtivi_gadgetFromVariant<QIviPlayableItem>(variant);
+    const QIviPlayableItem *item = qtivi_gadgetFromVariant<QIviPlayableItem>(this, variant);
     if (!item)
         return;
 

@@ -39,25 +39,44 @@
 **
 ****************************************************************************/
 
-#ifndef QIVIGLOBAL_H
-#define QIVIGLOBAL_H
+#include <qiviqmlconversion_helper.h>
 
-#include <QtCore/qglobal.h>
-#include <QtIviCore/qtivicore-config.h>
+#include <QtQml>
+#include <private/qv8engine_p.h>
+#include <private/qv4engine_p.h>
+#include <private/qv4scopedvalue_p.h>
+#include <private/qv4errorobject_p.h>
 
 QT_BEGIN_NAMESPACE
 
-#ifndef QT_STATIC
-#  if defined(QT_BUILD_IVICORE_LIB)
-#    define Q_QTIVICORE_EXPORT Q_DECL_EXPORT
-#  else
-#    define Q_QTIVICORE_EXPORT Q_DECL_IMPORT
-#  endif
+void qtivi_qmlOrCppWarning(const QObject *obj, const QString &errorString)
+{
+    //If the object is not part of a javascript engine, print a normal warning
+    QJSEngine *jsEngine = qjsEngine(obj);
+    if (Q_UNLIKELY(!jsEngine)) {
+        qWarning("%s", qPrintable(errorString));
+        return;
+    }
+
+    //Try to get more information about the current line of execution
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
+    QV4::ExecutionEngine *v4 = jsEngine->handle();
 #else
-#  define Q_QTIVICORE_EXPORT
+    QV4::ExecutionEngine *v4 = QV8Engine::getV4(jsEngine->handle());
 #endif
+    QV4::Scope scope(v4);
+    QV4::Scoped<QV4::ErrorObject> error(scope);
+    QV4::StackTrace trace = v4->stackTrace(1);
+    if (!!error)
+        trace = *error->d()->stackTrace;
+
+    //If we don't have any information, let qmlWarning use its magic and find something
+    if (trace.isEmpty()) {
+        qmlWarning(obj) << errorString;
+        return;
+    }
+
+    v4->throwError(errorString);
+}
 
 QT_END_NAMESPACE
-
-#endif // QIVIGLOBAL_H
-

@@ -55,7 +55,8 @@ SOURCES += \
     qivisearchandbrowsemodelinterface.cpp \
     qivisearchandbrowsemodelitem.cpp \
     qivifeatureinterface.cpp \
-    qividefaultpropertyoverrider.cpp
+    qividefaultpropertyoverrider.cpp \
+    qiviqmlconversion_helper.cpp
 
 include(queryparser/queryparser.pri)
 

@@ -58,6 +58,7 @@
 #include <QtCore/qglobal.h>
 #include <QtIviCore/private/qtivicore-config_p.h>
 #include <QtIviCore/qtiviglobal.h>
+#include <QtIviCore/qiviqmlconversion_helper.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -79,6 +80,14 @@ void qAsConst(const T &&) Q_DECL_EQ_DELETE;
     static_cast<const wchar_t*>(static_cast<const void*>(QString(string).utf16()))
 #endif
 #endif
+
+#define Q_IVI_BACKEND(c, b_f, err) \
+Q_D(c); \
+auto *backend = b_f; \
+if (!backend) { \
+    qtivi_qmlOrCppWarning(this, QLatin1String(err)); \
+    return; \
+} \
 
 QT_END_NAMESPACE
 

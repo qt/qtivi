@@ -42,12 +42,16 @@
 #ifndef QIVIQMLCONVERSION_HELPER_H
 #define QIVIQMLCONVERSION_HELPER_H
 
+#include <QtIviCore/qtiviglobal.h>
+
 #include <QtCore/QVariant>
 #include <QtCore/QVector>
 #include <QtCore/QMetaEnum>
 #include <QtCore/QtDebug>
 
 QT_BEGIN_NAMESPACE
+
+Q_QTIVICORE_EXPORT void qtivi_qmlOrCppWarning(const QObject *obj, const QString& errorString);
 
 template <typename T>  QVariant qtivi_convertValue(const T &val)
 {
@@ -79,13 +83,18 @@ template <typename T> QVariantList qtivi_convertAvailableValues(const QVector<T>
     return list;
 }
 
-template <class T> const T *qtivi_gadgetFromVariant(const QVariant &var)
+template <class T> const T *qtivi_gadgetFromVariant(const QObject *obj, const QVariant &var)
 {
+    if (Q_UNLIKELY(!var.isValid())) {
+        qtivi_qmlOrCppWarning(obj, QLatin1String("The passed QVariant is undefined"));
+        return nullptr;
+    }
+
     const void *data = var.constData();
 
     QMetaType type(var.userType());
-    if (!type.flags().testFlag(QMetaType::IsGadget)) {
-        qCritical("The passed QVariant needs to use the Q_GADGET macro");
+    if (Q_UNLIKELY(!type.flags().testFlag(QMetaType::IsGadget))) {
+        qtivi_qmlOrCppWarning(obj, QLatin1String("The passed QVariant needs to use the Q_GADGET macro"));
         return nullptr;
     }
 
@@ -96,10 +105,11 @@ template <class T> const T *qtivi_gadgetFromVariant(const QVariant &var)
         mo = mo->superClass();
     }
 
-    qCritical("The passed QVariant is not derived from %s", T::staticMetaObject.className());
+    qtivi_qmlOrCppWarning(obj, QLatin1String("The passed QVariant is not derived from ") + QLatin1String(T::staticMetaObject.className()));
 
     return nullptr;
 }
+
 
 QT_END_NAMESPACE
 

@@ -235,7 +235,7 @@ void QIviSearchAndBrowseModelPrivate::parseQuery()
         return;
 
     if (!m_capabilities.testFlag(QIviSearchAndBrowseModel::SupportsFiltering) && !m_capabilities.testFlag(QIviSearchAndBrowseModel::SupportsSorting)) {
-        qWarning("The backend doesn't support filtering or sorting. Changing the query will have no effect");
+        qtivi_qmlOrCppWarning(q_ptr, QLatin1String("The backend doesn't support filtering or sorting. Changing the query will have no effect"));
         return;
     }
 
@@ -246,7 +246,7 @@ void QIviSearchAndBrowseModelPrivate::parseQuery()
     m_queryTerm = parser.parse();
 
     if (!m_queryTerm) {
-        qWarning("%s", qPrintable(parser.lastError()));
+        qtivi_qmlOrCppWarning(q_ptr, parser.lastError());
         return;
     }
     m_orderTerms = parser.orderTerms();
@@ -261,7 +261,7 @@ void QIviSearchAndBrowseModelPrivate::checkType()
         QString error = QString(QLatin1String("Unsupported type: \"%1\" \n Supported types are: \n")).arg(m_contentType);
         for (const QString &type : qAsConst(m_availableContentTypes))
             error.append(type + QLatin1String("\n"));
-        qWarning("%s", qPrintable(error));
+        qtivi_qmlOrCppWarning(q_ptr, error);
     }
 }
 
@@ -298,7 +298,7 @@ const QIviSearchAndBrowseModelItem *QIviSearchAndBrowseModelPrivate::itemAt(int 
     if (!var.isValid())
         return nullptr;
 
-    return qtivi_gadgetFromVariant<QIviSearchAndBrowseModelItem>(var);
+    return qtivi_gadgetFromVariant<QIviSearchAndBrowseModelItem>(q_ptr, var);
 }
 
 QIviSearchAndBrowseModelInterface *QIviSearchAndBrowseModelPrivate::searchBackend() const
@@ -945,7 +945,7 @@ void QIviSearchAndBrowseModel::setLoadingType(QIviSearchAndBrowseModel::LoadingT
         return;
 
     if (loadingType == QIviSearchAndBrowseModel::DataChanged && !d->m_capabilities.testFlag(QIviSearchAndBrowseModel::SupportsGetSize)) {
-        qWarning("The backend doesn't support the DataChanged loading type. This call will have no effect");
+        qtivi_qmlOrCppWarning(this, QLatin1String("The backend doesn't support the DataChanged loading type. This call will have no effect"));
         return;
     }
 
@@ -1042,12 +1042,12 @@ void QIviSearchAndBrowseModel::goBack()
     QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
 
     if (!backend) {
-        qWarning("No backend connected");
+        qtivi_qmlOrCppWarning(this, QLatin1String("No backend connected"));
         return;
     }
 
     if (!backend->canGoBack(d->m_identifier, d->m_contentType)) {
-        qWarning("Can't go backward anymore");
+        qtivi_qmlOrCppWarning(this, QLatin1String("Can't go backward anymore"));
         return;
     }
 
@@ -1076,7 +1076,7 @@ bool QIviSearchAndBrowseModel::canGoForward(int i) const
         return false;
 
     if (!backend) {
-        qWarning("No backend connected");
+        qtivi_qmlOrCppWarning(this, QLatin1String("No backend connected"));
         return false;
     }
 
@@ -1125,7 +1125,7 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
         return nullptr;
 
     if (!backend) {
-        qWarning("No backend connected");
+        qtivi_qmlOrCppWarning(this, QLatin1String("No backend connected"));
         return nullptr;
     }
 
@@ -1134,7 +1134,7 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
         return nullptr;
 
     if (!backend->canGoForward(d->m_identifier, d->m_contentType, item->id())) {
-        qWarning("Can't go forward anymore");
+        qtivi_qmlOrCppWarning(this, QLatin1String("Can't go forward anymore"));
         return nullptr;
     }
 
@@ -1144,7 +1144,7 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
             QIviSearchAndBrowseModel* newModel = new QIviSearchAndBrowseModel(serviceObject(), newContentType);
             return newModel;
         } else {
-            qWarning("The backend doesn't support the OutOfModelNavigation");
+            qtivi_qmlOrCppWarning(this, QLatin1String("The backend doesn't support the OutOfModelNavigation"));
             return nullptr;
         }
     } else {
@@ -1173,18 +1173,18 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
 void QIviSearchAndBrowseModel::insert(int index, const QVariant &variant)
 {
     Q_D(QIviSearchAndBrowseModel);
-    const QIviSearchAndBrowseModelItem *item = qtivi_gadgetFromVariant<QIviSearchAndBrowseModelItem>(variant);
+    const QIviSearchAndBrowseModelItem *item = qtivi_gadgetFromVariant<QIviSearchAndBrowseModelItem>(this, variant);
     if (!item)
         return;
 
     QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
     if (!backend) {
-        qWarning("Can't insert itmes without a connected backend");
+        qtivi_qmlOrCppWarning(this, QLatin1String("Can't insert itmes without a connected backend"));
         return;
     }
 
     if (!d->m_capabilities.testFlag(SupportsInsert)) {
-        qWarning("The backend doesn't support inserting items");
+        qtivi_qmlOrCppWarning(this, QLatin1String("The backend doesn't support inserting items"));
         return;
     }
 
@@ -1207,12 +1207,12 @@ void QIviSearchAndBrowseModel::remove(int index)
     Q_D(QIviSearchAndBrowseModel);
     QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
     if (!backend) {
-        qWarning("Can't remove items without a connected backend");
+        qtivi_qmlOrCppWarning(this, QLatin1String("Can't remove items without a connected backend"));
         return;
     }
 
     if (!d->m_capabilities.testFlag(SupportsRemove)) {
-        qWarning("The backend doesn't support removing of items");
+        qtivi_qmlOrCppWarning(this, QLatin1String("The backend doesn't support removing of items"));
         return;
     }
 
@@ -1235,12 +1235,12 @@ void QIviSearchAndBrowseModel::move(int cur_index, int new_index)
     Q_D(QIviSearchAndBrowseModel);
     QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
     if (!backend) {
-        qWarning("Can't move items without a connected backend");
+        qtivi_qmlOrCppWarning(this, QLatin1String("Can't move items without a connected backend"));
         return;
     }
 
     if (!d->m_capabilities.testFlag(SupportsMove)) {
-        qWarning("The backend doesn't support moving of items");
+        qtivi_qmlOrCppWarning(this, QLatin1String("The backend doesn't support moving of items"));
         return;
     }
 
@@ -1275,24 +1275,24 @@ void QIviSearchAndBrowseModel::move(int cur_index, int new_index)
 void QIviSearchAndBrowseModel::indexOf(const QVariant &variant, const QJSValue &functor)
 {
     Q_D(QIviSearchAndBrowseModel);
-    const QIviSearchAndBrowseModelItem *item = qtivi_gadgetFromVariant<QIviSearchAndBrowseModelItem>(variant);
+    const QIviSearchAndBrowseModelItem *item = qtivi_gadgetFromVariant<QIviSearchAndBrowseModelItem>(this, variant);
     if (!item)
         return;
 
     if (!functor.isCallable()) {
-        qWarning("Provided functor is not callable");
+        qtivi_qmlOrCppWarning(this, QLatin1String("Provided functor is not callable"));
         return;
     }
 
     QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
     if (!backend) {
-        qWarning("Can't get the index without a connected backend");
+        qtivi_qmlOrCppWarning(this, QLatin1String("Can't get the index without a connected backend"));
         return;
     }
 
     int callID = backend->indexOf(d->m_identifier, d->m_contentType, item);
     if (callID == -1) {
-        qWarning("An error happened while calling the backend");
+        qtivi_qmlOrCppWarning(this, QLatin1String("An error happened while calling the backend"));
         return;
     }
 
