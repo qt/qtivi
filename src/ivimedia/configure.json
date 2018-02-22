@@ -11,6 +11,13 @@
         }
     },
 
+    "tests": {
+        "taglib_submodule": {
+            "label": "taglib_submodule",
+            "type": "taglib_submodule"
+        }
+    },
+
     "libraries": {
         "taglib": {
             "label": "taglib",
@@ -60,6 +67,16 @@
     },
 
     "report": [
+        {
+            "type": "error",
+            "condition": "!tests.taglib_submodule && !input.taglib == 'no'",
+            "message": "The taglib submodule was not initialized
+Please initialize the submodule
+E.g. by running the following command:
+    git submodule init && git submodule update
+
+or disable taglib by passing --taglib=no"
+        },
         {
             "type": "warning",
             "condition": "input.taglib == 'no'",
