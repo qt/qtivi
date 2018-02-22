@@ -654,7 +654,7 @@ void QIviQueryParser::setErrorString(const QString &error)
 {
     int err_col = column - yyleng;
 
-    m_error = QString(QLatin1String(":%1 ERROR: %2")).arg(err_col).arg(error);
+    m_error = error;
 
     m_error.append(m_query).append(QLatin1String("\n"));
     QString marker(QLatin1String("^"));

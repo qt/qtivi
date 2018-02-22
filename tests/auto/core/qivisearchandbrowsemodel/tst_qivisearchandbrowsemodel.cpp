@@ -853,7 +853,7 @@ void tst_QIviSearchAndBrowseModel::testInputErrors()
     model.setContentType("simple");
 
     // Invalid query
-    QTest::ignoreMessage(QtWarningMsg, ":2 ERROR: Got end of file but expected on of the following types:\n     integer\n     float\nid>\n  ^");
+    QTest::ignoreMessage(QtWarningMsg, "Got end of file but expected on of the following types:\n     integer\n     float\nid>\n  ^");
     model.setQuery(QString("id>"));
 }
 
