@@ -41,6 +41,7 @@
 
 #include "mediaplayerbackend.h"
 #include "searchandbrowsebackend.h"
+#include "logging.h"
 
 #include <QtConcurrent/QtConcurrent>
 
@@ -49,9 +50,6 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QtDebug>
-#include <QLoggingCategory>
-
-Q_LOGGING_CATEGORY(media, "qt.ivi.media.media_simulator")
 
 MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *parent)
     : QIviMediaPlayerBackendInterface(parent)
@@ -190,7 +188,8 @@ void MediaPlayerBackend::insert(int index, const QIviPlayableItem *item)
         } else if (item->type() == "album") {
             whereClause = QString("albumName == \"%1\"").arg(item->name());
         } else {
-            qWarning("Can't insert item: Given type is not supported.");
+            qCWarning(media) << "Can't insert item: Given type is not supported.";
+            emit errorChanged(QIviAbstractFeature::InvalidOperation, "Can't insert item: Given type is not supported.");
             return;
         }
         queryString = QString(QLatin1String("UPDATE queue SET qindex = qindex + (SELECT count(*) from track WHERE %2) WHERE qindex >= %1;"
@@ -268,8 +267,7 @@ void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, 
                 list.append(QVariant::fromValue(item));
             }
         } else {
-            qDebug() << queryString;
-            qDebug() << query.lastError().text();
+            sqlError(this, query.lastQuery(), query.lastError().text());
             m_db.rollback();
             break;
         }
@@ -281,14 +279,14 @@ void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, 
         m_count = query.value(0).toInt();
         emit countChanged(m_count);
     } else {
-        qWarning() << query.lastError().text();
+        sqlError(this, query.lastQuery(), query.lastError().text());
     }
 
     if (type == MediaPlayerBackend::Select) {
         emit dataFetched(list, start, list.count() >= count);
     } else if (type == MediaPlayerBackend::SetIndex) {
         if (list.isEmpty()) {
-            qWarning() << "SIMULATION: Can't set index in an empty queue";
+            emit errorChanged(QIviAbstractFeature::InvalidOperation, "SIMULATION: Can't set index in an empty queue");
             return;
         }
 

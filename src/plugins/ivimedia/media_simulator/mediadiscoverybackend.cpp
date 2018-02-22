@@ -41,6 +41,7 @@
 
 #include "mediadiscoverybackend.h"
 #include "usbdevice.h"
+#include "logging.h"
 
 #include <QDir>
 #include <QtDebug>
@@ -51,7 +52,7 @@ MediaDiscoveryBackend::MediaDiscoveryBackend(QObject *parent)
     m_deviceFolder = QDir::homePath() + "/usb-simulation";
     const QByteArray customDeviceFolder = qgetenv("QTIVIMEDIA_SIMULATOR_DEVICEFOLDER");
     if (customDeviceFolder.isEmpty())
-        qCritical() << "QTIVIMEDIA_SIMULATOR_DEVICEFOLDER environment variable is not set, falling back to:" << m_deviceFolder;
+        qCCritical(media) << "QTIVIMEDIA_SIMULATOR_DEVICEFOLDER environment variable is not set, falling back to:" << m_deviceFolder;
     else
         m_deviceFolder = customDeviceFolder;
 
@@ -67,7 +68,7 @@ void MediaDiscoveryBackend::initialize()
     QDir deviceFolder(m_deviceFolder);
     const QStringList folders = deviceFolder.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
     for (const QString &folder : folders) {
-        qDebug() << "Adding USB Device for: " << folder;
+        qCDebug(media) << "Adding USB Device for: " << folder;
         m_deviceMap.insert(folder, new USBDevice(deviceFolder.absoluteFilePath(folder)));
     }
     emit availableDevices(m_deviceMap.values());
@@ -85,7 +86,7 @@ void MediaDiscoveryBackend::onDirectoryChanged(const QString &path)
         i.next();
         const QString &folder = i.key();
         if (!deviceFolder.exists(folder)) {
-            qDebug() << "Removing USB Device for: " << folder;
+            qCDebug(media) << "Removing USB Device for: " << folder;
             QIviServiceObject *device = m_deviceMap.take(folder);
             emit deviceRemoved(device);
             emit mediaDirectoryRemoved(deviceFolder.absoluteFilePath(folder));
@@ -98,7 +99,7 @@ void MediaDiscoveryBackend::onDirectoryChanged(const QString &path)
         if (m_deviceMap.contains(folder))
             continue;
 
-        qDebug() << "Adding USB Device for: " << folder;
+        qCDebug(media) << "Adding USB Device for: " << folder;
         USBDevice *device = new USBDevice(deviceFolder.absoluteFilePath(folder));
         m_deviceMap.insert(folder, device);
         emit deviceAdded(device);

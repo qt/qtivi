@@ -39,42 +39,15 @@
 **
 ****************************************************************************/
 
-#include "usbbrowsebackend.h"
-#include "usbdevice.h"
 #include "logging.h"
 
-#include <QtIviCore/QIviSearchAndBrowseModel>
+#include <QtIviCore/QIviFeatureInterface>
 
-#include <QDir>
+Q_LOGGING_CATEGORY(media, "qt.ivi.media.media_simulator")
 
-USBDevice::USBDevice(const QString &folder, QObject *parent)
-    : QIviMediaUsbDevice(parent)
-    , m_browseModel(new UsbBrowseBackend(folder, this))
-    , m_folder(folder)
+void sqlError(QIviFeatureInterface *interface, const QString &query, const QString &error)
 {
-}
-
-QString USBDevice::name() const
-{
-    return QDir(m_folder).dirName();
-}
-
-void USBDevice::eject()
-{
-    qCWarning(media) << "Ejecting a USB Device is not supported in the simulation";
-}
-
-QStringList USBDevice::interfaces() const
-{
-    QStringList list;
-    list << QIviSearchAndBrowseModel_iid;
-    return list;
-}
-
-QIviFeatureInterface *USBDevice::interfaceInstance(const QString &interface) const
-{
-    if (interface == QIviSearchAndBrowseModel_iid)
-        return m_browseModel;
-
-    return nullptr;
+    qCWarning(media) << "Error when executing SQL statement:" << query;
+    qCWarning(media) << "ERROR:" << error;
+    emit interface->errorChanged(QIviAbstractFeature::Unknown, error);
 }

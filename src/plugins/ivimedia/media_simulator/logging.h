@@ -39,42 +39,15 @@
 **
 ****************************************************************************/
 
-#include "usbbrowsebackend.h"
-#include "usbdevice.h"
-#include "logging.h"
+#ifndef LOGGING_H
+#define LOGGING_H
 
-#include <QtIviCore/QIviSearchAndBrowseModel>
+#include <QLoggingCategory>
 
-#include <QDir>
+Q_DECLARE_LOGGING_CATEGORY(media)
 
-USBDevice::USBDevice(const QString &folder, QObject *parent)
-    : QIviMediaUsbDevice(parent)
-    , m_browseModel(new UsbBrowseBackend(folder, this))
-    , m_folder(folder)
-{
-}
+QT_FORWARD_DECLARE_CLASS(QIviFeatureInterface);
 
-QString USBDevice::name() const
-{
-    return QDir(m_folder).dirName();
-}
+void sqlError(QIviFeatureInterface *interface, const QString &query, const QString &error);
 
-void USBDevice::eject()
-{
-    qCWarning(media) << "Ejecting a USB Device is not supported in the simulation";
-}
-
-QStringList USBDevice::interfaces() const
-{
-    QStringList list;
-    list << QIviSearchAndBrowseModel_iid;
-    return list;
-}
-
-QIviFeatureInterface *USBDevice::interfaceInstance(const QString &interface) const
-{
-    if (interface == QIviSearchAndBrowseModel_iid)
-        return m_browseModel;
-
-    return nullptr;
-}
+#endif // LOGGING_H

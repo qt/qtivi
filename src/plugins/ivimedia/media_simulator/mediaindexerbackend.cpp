@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "mediaindexerbackend.h"
+#include "logging.h"
 
 #include <QtConcurrent/QtConcurrent>
 
@@ -78,12 +79,12 @@ MediaIndexerBackend::MediaIndexerBackend(const QSqlDatabase &database, QObject *
     QString mediaFolder = QDir::homePath() + QLatin1String("/media");
     const QByteArray customMediaFolder = qgetenv("QTIVIMEDIA_SIMULATOR_LOCALMEDIAFOLDER");
     if (customMediaFolder.isEmpty())
-        qCritical() << "QTIVIMEDIA_SIMULATOR_LOCALMEDIAFOLDER environment variable is not set, falling back to:" << mediaFolder;
+        qCCritical(media) << "QTIVIMEDIA_SIMULATOR_LOCALMEDIAFOLDER environment variable is not set, falling back to:" << mediaFolder;
     else
         mediaFolder = customMediaFolder;
 
 #ifdef QTIVI_NO_TAGLIB
-    qWarning() << "The indexer simulation doesn't work correctly without an installed taglib";
+    qCCritical(media) << "The indexer simulation doesn't work correctly without an installed taglib";
 #endif
 
     //We want to have the indexer running also when the Indexing interface is not used.
@@ -98,12 +99,16 @@ void MediaIndexerBackend::initialize()
 
 void MediaIndexerBackend::pause()
 {
-    qWarning("SIMULATION: Pausing the indexing is not supported");
+    static const QLatin1String error("SIMULATION: Pausing the indexing is not supported");
+    qCWarning(media) << error;
+    emit errorChanged(QIviAbstractFeature::InvalidOperation, error);
 }
 
 void MediaIndexerBackend::resume()
 {
-    qWarning("SIMULATION: Resuming the indexing is not supported");
+    static const QLatin1String error("SIMULATION: Resuming the indexing is not supported");
+    qCWarning(media) << error;
+    emit errorChanged(QIviAbstractFeature::InvalidOperation, error);
 }
 
 void MediaIndexerBackend::addMediaFolder(const QString &path)
@@ -131,21 +136,21 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
     setState(QIviMediaIndexerControl::Active);
 
     if (removeData) {
-        qInfo() << "Removing content: " << mediaDir;
+        qCInfo(media) << "Removing content: " << mediaDir;
         QSqlQuery query(m_db);
 
         bool ret = query.exec(QString("DELETE from track WHERE file LIKE '%1%'").arg(mediaDir));
 
         if (!ret) {
             setState(QIviMediaIndexerControl::Error);
-            qInfo() << "remove query:" << query.lastError().text();
+            sqlError(this, query.lastQuery(), query.lastError().text());
             return false;
         }
 
         return true;
     }
 
-    qInfo() << "Scanning path: " << mediaDir;
+    qCInfo(media) << "Scanning path: " << mediaDir;
 
 #ifdef QTIVI_NO_TAGLIB
     QMediaPlayer player;
@@ -156,17 +161,17 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
 
     QVector<QString> files;
     QDirIterator it(mediaDir, mediaFiles, QDir::Files, QDirIterator::Subdirectories);
-    qInfo() << "Calculating total file count";
+    qCInfo(media) << "Calculating total file count";
 
     int totalFileCount = 0;
     while (it.hasNext()) {
         files.append(it.next());
         totalFileCount++;
     }
-    qInfo() << "total files: " << totalFileCount;
+    qCInfo(media) << "total files: " << totalFileCount;
     int currentFileIndex = 0;
     for (const QString &fileName : files) {
-        qInfo() << "Processing file:" << fileName;
+        qCInfo(media) << "Processing file:" << fileName;
 
         if (qApp->closingDown())
             return false;
@@ -190,7 +195,7 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
             TagLib::ID3v2::FrameList frameList = tag->frameList("APIC");
 
             if (frameList.isEmpty()) {
-                qWarning() << "No cover art was found";
+                qCWarning(media) << "No cover art was found";
             } else {
                 TagLib::ID3v2::AttachedPictureFrame *coverImage =
                     static_cast<TagLib::ID3v2::AttachedPictureFrame *>(frameList.front());
@@ -228,7 +233,7 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
         }
 
         if (coverArtUrl.isEmpty())
-            qWarning() << "No cover art was found";
+            qCWarning(media) << "No cover art was found";
 
         QString trackName = player.metaData(QMediaMetaData::Title).toString();
         QString albumName = player.metaData(QMediaMetaData::AlbumTitle).toString();
@@ -261,7 +266,7 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
 
         if (!ret) {
             setState(QIviMediaIndexerControl::Error);
-            qWarning() << "insert query:" << query.lastQuery() << query.lastError().text();
+            sqlError(this, query.lastQuery(), query.lastError().text());
             return false;
         } else {
             emit progressChanged(qreal(currentFileIndex)/qreal(totalFileCount));
@@ -280,7 +285,7 @@ void MediaIndexerBackend::onScanFinished()
         return;
     }
 
-    qInfo() << "Scanning done";
+    qCInfo(media) << "Scanning done";
     emit progressChanged(1);
     emit indexingDone();
 

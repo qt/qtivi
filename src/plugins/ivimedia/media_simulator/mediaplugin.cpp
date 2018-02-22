@@ -44,6 +44,7 @@
 #include "mediaplayerbackend.h"
 #include "mediaplugin.h"
 #include "searchandbrowsebackend.h"
+#include "logging.h"
 
 #include <QtIviCore/QIviSearchAndBrowseModel>
 #include <QtIviMedia/QIviMediaPlayer>
@@ -64,7 +65,7 @@ MediaPlugin::MediaPlugin(QObject *parent)
         QTemporaryFile *tempFile = new QTemporaryFile(qApp);
         tempFile->open();
         m_dbFile = tempFile->fileName();
-        qCritical() << "QTIVIMEDIA_SIMULATOR_DATABASE environment variable isn't set.\n"
+        qCCritical(media) << "QTIVIMEDIA_SIMULATOR_DATABASE environment variable isn't set.\n"
                     << "Using the temporary database: " << tempFile->fileName();
     } else {
         m_dbFile = database;

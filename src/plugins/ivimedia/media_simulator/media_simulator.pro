@@ -25,6 +25,7 @@ HEADERS += \
     usbdevice.h \
     usbbrowsebackend.h \
     mediaindexerbackend.h \
+    logging.h
 
 SOURCES += \
     mediaplugin.cpp \
@@ -34,3 +35,4 @@ SOURCES += \
     usbdevice.cpp \
     usbbrowsebackend.cpp \
     mediaindexerbackend.cpp \
+    logging.cpp

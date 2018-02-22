@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "searchandbrowsebackend.h"
+#include "logging.h"
 
 #include <QtConcurrent/QtConcurrent>
 
@@ -79,7 +80,7 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &t
                                           QIviSearchAndBrowseModel::SupportsGetSize
                                           ));
 
-    qDebug() << "FETCH" << identifier << type << start << count;
+    qCDebug(media) << "FETCH" << identifier << type << start << count;
 
     //Determine the current type and which items got selected previously to define the base filter.
     QStringList where_clauses;
@@ -128,7 +129,7 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &t
                 emit countChanged(identifier, query.value(0).toInt());
             }
         } else {
-            qDebug() << query.lastError().text();
+            sqlError(this, query.lastQuery(), query.lastError().text());
         }
     });
 
@@ -205,7 +206,7 @@ void SearchAndBrowseBackend::search(const QUuid &identifier, const QString &quer
 //            }
         }
     } else {
-        qDebug() << query.lastError().text();
+        qCWarning(media) << query.lastError().text();
     }
 
     emit dataFetched(identifier, list, start, list.count() >= count);
