@@ -226,13 +226,13 @@ bool {{class}}Private::notify(const QByteArray &propertyName, const QVariant &va
    The \a parent argument is passed on to the \l QIviAbstractZonedFeature base class.
 */
 {{class}}::{{class}}(const QString &zone, QObject *parent)
-    : QIviAbstractZonedFeature(QLatin1String({{module.module_name}}_{{interface}}_iid), zone, parent)
+    : QIviAbstractZonedFeature(QLatin1String({{module.module_name|upperfirst}}_{{interface}}_iid), zone, parent)
 {%   else %}
 /*!
     Default constructs an instance of {{class}}.
 */
 {{class}}::{{class}}(QObject *parent)
-    : QIviAbstractFeature({{module.module_name}}_{{interface}}_iid, parent)
+    : QIviAbstractFeature({{module.module_name|upperfirst}}_{{interface}}_iid, parent)
 {%   endif %}
     , m_helper(new {{class}}Private(this))
 {% else %}
@@ -245,13 +245,13 @@ bool {{class}}Private::notify(const QByteArray &propertyName, const QVariant &va
    The \a parent argument is passed on to the \l QIviAbstractZonedFeature base class.
 */
 {{class}}::{{class}}(const QString &zone, QObject *parent)
-    : QIviAbstractZonedFeature(*new {{class}}Private(QLatin1String({{module.module_name}}_{{interface}}_iid), zone, this), parent)
+    : QIviAbstractZonedFeature(*new {{class}}Private(QLatin1String({{module.module_name|upperfirst}}_{{interface}}_iid), zone, this), parent)
 {%   else %}
 /*!
     Default constructs an instance of {{class}}.
 */
 {{class}}::{{class}}(QObject *parent)
-    : QIviAbstractFeature(*new {{class}}Private(QLatin1String({{module.module_name}}_{{interface}}_iid), this), parent)
+    : QIviAbstractFeature(*new {{class}}Private(QLatin1String({{module.module_name|upperfirst}}_{{interface}}_iid), this), parent)
 {%   endif %}
 {% endif %}
 {

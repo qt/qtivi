@@ -37,7 +37,7 @@
 # SPDX-License-Identifier: LGPL-3.0
 #}
 {% set exportsymbol = 'Q_{0}_EXPORT'.format(module.module_name|upper) %}
-{% set class = '{0}ModuleFactory'.format(module.module_name) %}
+{% set class = '{0}ModuleFactory'.format(module.module_name|upperfirst) %}
 {% set oncedefine = '{0}_H_'.format(class|upper) %}
 {% include 'generated_comment.cpp.tpl' %}
 {% import 'utils.tpl' as utils %}
@@ -54,7 +54,7 @@
 
 QT_BEGIN_NAMESPACE
 
-class {{exportsymbol}} {{class}} : public {{module.module_name}}Module {
+class {{exportsymbol}} {{class}} : public {{module.module_name|upperfirst}}Module {
     Q_OBJECT
 public:
     {{class}}(QObject *parent = nullptr);

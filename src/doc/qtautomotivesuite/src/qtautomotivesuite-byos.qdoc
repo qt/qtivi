@@ -29,7 +29,7 @@
     \page qtautomotive-byos.html
     \title Building Your Own NVIDIA DRIVE CX Image
     \previouspage qtautomotive-tutorial-deploying.html
-    \nextpage {Qt Automotive Suite Overview}{Overview}
+    \nextpage qtas-licenses.html
 
     \QAS is built on top of the \l{About Boot to Qt}{Boot to Qt} software stack
     for embedded Linux systems. Boot to Qt for embedded Linux is built using the

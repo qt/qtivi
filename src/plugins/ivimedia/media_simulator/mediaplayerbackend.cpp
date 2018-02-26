@@ -70,6 +70,9 @@ MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *pa
             this, &MediaPlayerBackend::onStateChanged);
     connect(m_player, &QMediaPlayer::mediaStatusChanged,
             this, &MediaPlayerBackend::onMediaStatusChanged);
+    connect(this, &MediaPlayerBackend::playTrack,
+            this, &MediaPlayerBackend::onPlayTrack,
+            Qt::QueuedConnection);
 
     m_db = database;
 }
@@ -291,11 +294,7 @@ void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, 
         }
 
         QIviAudioTrackItem item = list.at(0).value<QIviAudioTrackItem>();
-        bool playing = m_player->state() == QMediaPlayer::PlayingState || m_player->mediaStatus() == QMediaPlayer::EndOfMedia;
-        m_player->setMedia(item.url());
-        if (playing)
-            m_player->play();
-
+        emit playTrack(item.url());
         emit currentIndexChanged(start);
         emit currentTrackChanged(list.at(0));
     } else if (type == MediaPlayerBackend::Insert && start <= m_currentIndex) {
@@ -411,4 +410,12 @@ void MediaPlayerBackend::onDurationChanged(qint64 duration)
 {
     qCDebug(media) << Q_FUNC_INFO << duration;
     emit durationChanged(duration);
+}
+
+void MediaPlayerBackend::onPlayTrack(const QUrl &url)
+{
+    bool playing = m_player->state() == QMediaPlayer::PlayingState || m_player->mediaStatus() == QMediaPlayer::EndOfMedia;
+    m_player->setMedia(url);
+    if (playing)
+        m_player->play();
 }

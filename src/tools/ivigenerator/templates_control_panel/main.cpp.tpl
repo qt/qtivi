@@ -41,6 +41,7 @@
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QCommandLineParser>
 
 #include "{{module.module_name|lower}}module.h"
 {% for iface in module.interfaces %}
@@ -51,6 +52,14 @@
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
+    QCoreApplication::setApplicationName("{{module}} Control Panel");
+    QCoreApplication::setApplicationVersion("{{module.version}}");
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription("{{module}} Control Panel for controlling {{module}} simulation backends");
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.process(app);
 
     {{module.module_name}}Module::registerTypes();
 {% for interface in module.interfaces %}

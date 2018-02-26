@@ -173,14 +173,14 @@ public:
         QIviServiceObject(parent), m_name(QLatin1String(""))
     {
         m_backend = new {{interface}}TestBackend;
-        m_interfaces << {{module.module_name}}_{{interface}}_iid;
+        m_interfaces << {{module.module_name|upperfirst}}_{{interface}}_iid;
     }
 
     QString name() const { return m_name; }
     QStringList interfaces() const { return m_interfaces; }
     QIviFeatureInterface *interfaceInstance(const QString& interface) const
     {
-        if (interface == {{module.module_name}}_{{interface}}_iid)
+        if (interface == {{module.module_name|upperfirst}}_{{interface}}_iid)
             return testBackend();
         else
             return nullptr;
@@ -217,7 +217,7 @@ public:
     explicit {{interface}}InvalidServiceObject(QObject *parent=nullptr) :
         QIviServiceObject(parent), m_name(QLatin1String("")), m_dummyBackend(new {{interface}}InvalidInterface(this))
     {
-        m_interfaces << {{module.module_name}}_{{interface}}_iid;
+        m_interfaces << {{module.module_name|upperfirst}}_{{interface}}_iid;
     }
 
     QString name() const { return m_name; }
@@ -233,7 +233,7 @@ private:
 {{interface}}Test::{{interface}}Test()
     : QObject()
 {
-    {{module.module_name}}Module::registerTypes();
+    {{module.module_name|upperfirst}}Module::registerTypes();
     manager = QIviServiceManager::instance();
 }
 

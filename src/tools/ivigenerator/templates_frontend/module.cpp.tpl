@@ -36,7 +36,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% set class = '{0}Module'.format(module.module_name) %}
+{% set class = '{0}Module'.format(module.module_name|upperfirst) %}
 {% include 'generated_comment.cpp.tpl' %}
 {% import 'utils.tpl' as utils %}
 
@@ -120,7 +120,7 @@ void {{class}}::registerTypes()
 void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minorVersion)
 {
     qmlRegisterSingletonType<{{class}}>(uri.toLatin1(), majorVersion, minorVersion,
-                                        "{{module.module_name}}Module",
+                                        "{{module.module_name|upperfirst}}Module",
                                         {{class|lower}}_singletontype_provider);
 {% for interface in module.interfaces %}
     {{interface}}::registerQmlTypes(uri, majorVersion, minorVersion);

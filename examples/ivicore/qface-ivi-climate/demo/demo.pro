@@ -13,6 +13,8 @@ SOURCES += main.cpp
 
 RESOURCES += qml.qrc
 
+QMAKE_RPATHDIR += $ORIGIN
+
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
 
@@ -30,5 +32,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-target.path = $$[QT_INSTALL_EXAMPLES]/ivicore/qface-ivi-climate/demo
+CONFIG += install_ok  # Do not cargo-cult this!
+target.path = $$[QT_INSTALL_EXAMPLES]/ivicore/qface-ivi-climate
 INSTALLS += target
