@@ -357,6 +357,7 @@ private Q_SLOTS:
     void testFetchMore_data();
     void testFetchMore();
     void testDataChangedMode();
+    void testDataChangedMode_jump();
     void testNavigation_data();
     void testNavigation();
     void testFilter_data();
@@ -604,6 +605,43 @@ void tst_QIviSearchAndBrowseModel::testDataChangedMode()
 
     // Test that we really fetched new data
     QCOMPARE(fetchDataSpy.at(0).at(2).toInt(), testIndex + 1);
+}
+
+void tst_QIviSearchAndBrowseModel::testDataChangedMode_jump()
+{
+    TestServiceObject *service = new TestServiceObject();
+    manager->registerService(service, service->interfaces());
+    service->testBackend()->setCapabilities(QIviSearchAndBrowseModel::SupportsGetSize);
+    service->testBackend()->initializeSimpleData();
+
+    QIviSearchAndBrowseModel model;
+    model.setServiceObject(service);
+
+    QVERIFY(model.availableContentTypes().contains("simple"));
+    model.setContentType("simple");
+    QVERIFY(model.serviceObject());
+
+    QSignalSpy loadingTypeChangedSpy(&model, SIGNAL(loadingTypeChanged(QIviSearchAndBrowseModel::LoadingType)));
+    model.setLoadingType(model.loadingType());
+    QVERIFY(!loadingTypeChangedSpy.count());
+
+    model.setLoadingType(QIviSearchAndBrowseModel::DataChanged);
+    QCOMPARE(model.loadingType(), QIviSearchAndBrowseModel::DataChanged);
+    QVERIFY(loadingTypeChangedSpy.count());
+
+    QCOMPARE(model.rowCount(), 100);
+
+    // Ask for the last item. This should just fetch the chunk which is needed.
+    QSignalSpy dataChangedSpy(&model, SIGNAL(dataChanged(const QModelIndex, const QModelIndex, const QVector<int>)));
+    QSignalSpy fetchDataSpy(service->testBackend(), SIGNAL(dataFetched(const QUuid &, const QList<QVariant> &, int , bool )));
+    model.get(99);
+    dataChangedSpy.wait();
+    QCOMPARE(model.at<QIviSearchAndBrowseModelItem>(99).id(), QLatin1String("simple ") + QString::number(99));
+    QVERIFY(fetchDataSpy.count());
+
+    // Test that we really fetched new data
+    int chunkBegin = int(99 / model.chunkSize()) * model.chunkSize();
+    QCOMPARE(fetchDataSpy.at(0).at(2).toInt(), chunkBegin);
 }
 
 void tst_QIviSearchAndBrowseModel::testNavigation_data()

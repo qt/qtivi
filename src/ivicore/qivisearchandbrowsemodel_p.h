@@ -62,6 +62,7 @@
 #include "qiviqueryterm.h"
 
 #include <QUuid>
+#include <QBitArray>
 
 QT_BEGIN_NAMESPACE
 
@@ -85,6 +86,7 @@ public:
     void setCanGoBack(bool canGoBack);
     void setAvailableContenTypes(QStringList contentTypes);
     const QIviSearchAndBrowseModelItem *itemAt(int i) const;
+    void fetchData(int startIndex);
 
     QIviSearchAndBrowseModelInterface *searchBackend() const;
     void updateContentType(const QString &contentType);
@@ -99,6 +101,7 @@ public:
     QIviAbstractQueryTerm *m_queryTerm;
     QList<QIviOrderTerm> m_orderTerms;
     QList<QVariant> m_itemList;
+    QBitArray m_availableChunks;
     bool m_moreAvailable;
 
     QUuid m_identifier;

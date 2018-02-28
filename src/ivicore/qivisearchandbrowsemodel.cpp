@@ -108,6 +108,9 @@ void QIviSearchAndBrowseModelPrivate::onDataFetched(const QUuid &identifer, cons
     if (!items.count() || identifer != m_identifier)
         return;
 
+    Q_ASSERT(items.count() <= m_chunkSize);
+    Q_ASSERT((start + items.count() - 1) / m_chunkSize == start / m_chunkSize);
+
     Q_Q(QIviSearchAndBrowseModel);
     m_moreAvailable = moreAvailable;
 
@@ -117,7 +120,8 @@ void QIviSearchAndBrowseModelPrivate::onDataFetched(const QUuid &identifer, cons
         m_fetchedDataCount = m_itemList.count();
         q->endInsertRows();
     } else {
-        if (m_itemList.count() < start + items.count()) {
+        const int newSize = start + items.count();
+        if (m_itemList.count() <  newSize || m_availableChunks.count() < newSize / m_chunkSize) {
             qWarning() << "countChanged signal needs to be emitted before the dataFetched signal";
             return;
         }
@@ -126,6 +130,9 @@ void QIviSearchAndBrowseModelPrivate::onDataFetched(const QUuid &identifer, cons
 
         for (int i = 0; i < items.count(); i++)
             m_itemList.replace(start + i, items.at(i));
+
+        m_availableChunks.setBit(start / m_chunkSize);
+
         emit q->dataChanged(q->index(start), q->index(start + items.count() -1));
     }
 }
@@ -140,6 +147,8 @@ void QIviSearchAndBrowseModelPrivate::onCountChanged(const QUuid &identifier, in
     for (int i = 0; i < new_length; i++)
         m_itemList.append(QVariant());
     q->endInsertRows();
+
+    m_availableChunks.resize(new_length / m_chunkSize + 1);
 }
 
 void QIviSearchAndBrowseModelPrivate::onDataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count)
@@ -209,6 +218,7 @@ void QIviSearchAndBrowseModelPrivate::resetModel()
     Q_Q(QIviSearchAndBrowseModel);
     q->beginResetModel();
     m_itemList.clear();
+    m_availableChunks.clear();
     q->endResetModel();
     m_fetchedDataCount = 0;
 
@@ -263,6 +273,19 @@ void QIviSearchAndBrowseModelPrivate::checkType()
             error.append(type + QLatin1String("\n"));
         qtivi_qmlOrCppWarning(q_ptr, error);
     }
+}
+
+void QIviSearchAndBrowseModelPrivate::fetchData(int startIndex)
+{
+    if (!searchBackend() || m_contentType.isEmpty())
+        return;
+
+    m_moreAvailable = false;
+    const int start = startIndex >= 0 ? startIndex : m_fetchedDataCount;
+    const int chunkIndex = start / m_chunkSize;
+    if (chunkIndex < m_availableChunks.size())
+        m_availableChunks.setBit(chunkIndex);
+    searchBackend()->fetchData(m_identifier, m_contentType, m_queryTerm, m_orderTerms, start, m_chunkSize);
 }
 
 void QIviSearchAndBrowseModelPrivate::clearToDefaults()
@@ -997,12 +1020,21 @@ QVariant QIviSearchAndBrowseModel::data(const QModelIndex &index, int role) cons
     if (row >= d->m_itemList.count() || row < 0)
         return QVariant();
 
+    const int chunkIndex = row / d->m_chunkSize;
+    if (d->m_loadingType == DataChanged && !d->m_availableChunks.at(chunkIndex)) {
+        //qWarning() << "Cache miss: Fetching Data for index " << row << "and following";
+        const_cast<QIviSearchAndBrowseModelPrivate*>(d)->fetchData(chunkIndex * d->m_chunkSize);
+        return QVariant();
+    }
+
     if (row >= d->m_fetchedDataCount - d->m_fetchMoreThreshold && canFetchMore(QModelIndex()))
         emit fetchMoreThresholdReached();
 
     const QIviSearchAndBrowseModelItem *item = d->itemAt(row);
-    if (!item)
+    if (!item) {
+        //qWarning() << "Cache miss: Waiting for fetched Data";
         return QVariant();
+    }
 
     switch (role) {
     case NameRole: return item->name();
@@ -1334,7 +1366,7 @@ void QIviSearchAndBrowseModel::fetchMore(const QModelIndex &parent)
         return;
 
     d->m_moreAvailable = false;
-    d->searchBackend()->fetchData(d->m_identifier, d->m_contentType, d->m_queryTerm, d->m_orderTerms, d->m_fetchedDataCount, d->m_chunkSize);
+    d->fetchData(-1);
 }
 
 /*!
