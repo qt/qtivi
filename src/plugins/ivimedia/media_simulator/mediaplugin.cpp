@@ -122,7 +122,7 @@ QIviFeatureInterface *MediaPlugin::interfaceInstance(const QString &interface) c
     else if (interface == QIviMediaIndexer_iid)
         return m_indexer;
 
-    return 0;
+    return nullptr;
 }
 
 QSqlDatabase MediaPlugin::createDatabaseConnection(const QString &connectionName)

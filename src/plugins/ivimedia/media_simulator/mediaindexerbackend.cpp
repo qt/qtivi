@@ -71,7 +71,7 @@ MediaIndexerBackend::MediaIndexerBackend(const QSqlDatabase &database, QObject *
 {
     m_threadPool->setMaxThreadCount(1);
 
-    connect(&m_watcher, SIGNAL(finished()), this, SLOT(onScanFinished()));
+    connect(&m_watcher, &QFutureWatcherBase::finished, this, &MediaIndexerBackend::onScanFinished);
 
     QString mediaFolder = QDir::homePath() + QLatin1String("/media");
     const QByteArray customMediaFolder = qgetenv("QTIVIMEDIA_SIMULATOR_LOCALMEDIAFOLDER");
@@ -149,21 +149,18 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
 
     qCInfo(media) << "Scanning path: " << mediaDir;
 
-    QStringList mediaFiles;
-    mediaFiles << "*.mp3";
+    QStringList mediaFiles{QStringLiteral("*.mp3")};
 
     QVector<QString> files;
     QDirIterator it(mediaDir, mediaFiles, QDir::Files, QDirIterator::Subdirectories);
     qCInfo(media) << "Calculating total file count";
 
-    int totalFileCount = 0;
-    while (it.hasNext()) {
+    while (it.hasNext())
         files.append(it.next());
-        totalFileCount++;
-    }
+    int totalFileCount = files.size();
     qCInfo(media) << "total files: " << totalFileCount;
     int currentFileIndex = 0;
-    for (const QString &fileName : files) {
+    for (const QString &fileName : qAsConst(files)) {
         qCInfo(media) << "Processing file:" << fileName;
 
         if (qApp->closingDown())
@@ -175,10 +172,10 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
         TagLib::FileRef f(TagLib::FileName(QFile::encodeName(fileName)));
         if (f.isNull())
             continue;
-        QString trackName = QLatin1String(f.tag()->title().toCString());
-        QString albumName = QLatin1String(f.tag()->album().toCString());
-        QString artistName = QLatin1String(f.tag()->artist().toCString());
-        QString genre = QLatin1String(f.tag()->genre().toCString());
+        QString trackName = TStringToQString(f.tag()->title());
+        QString albumName = TStringToQString(f.tag()->album());
+        QString artistName = TStringToQString(f.tag()->artist());
+        QString genre = TStringToQString(f.tag()->genre());
         int number = f.tag()->track();
 
         // Extract cover art
@@ -189,7 +186,7 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
 
             if (frameList.isEmpty()) {
                 qCWarning(media) << "No cover art was found";
-            } else {
+            } else if (!QFile::exists(defaultCoverArtUrl)) {
                 TagLib::ID3v2::AttachedPictureFrame *coverImage =
                     static_cast<TagLib::ID3v2::AttachedPictureFrame *>(frameList.front());
 
@@ -198,6 +195,8 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
 
                 coverQImg.loadFromData((const uchar *)coverImage->picture().data(), coverImage->picture().size());
                 coverQImg.save(coverArtUrl, "PNG");
+            } else {
+                coverArtUrl = defaultCoverArtUrl;
             }
         }
 
@@ -221,13 +220,11 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
             sqlError(this, query.lastQuery(), query.lastError().text());
             return false;
         } else {
-            emit progressChanged(qreal(currentFileIndex)/qreal(totalFileCount));
+            emit progressChanged(qreal(++currentFileIndex)/qreal(totalFileCount));
         }
 #else
-        emit progressChanged(qreal(currentFileIndex)/qreal(totalFileCount));
+        emit progressChanged(qreal(++currentFileIndex)/qreal(totalFileCount));
 #endif // QTIVI_NO_TAGLIB
-
-        currentFileIndex++;
     }
 
     return true;
