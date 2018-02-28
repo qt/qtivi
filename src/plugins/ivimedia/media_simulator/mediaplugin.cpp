@@ -55,6 +55,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QtDebug>
+#include <QFileInfo>
 
 MediaPlugin::MediaPlugin(QObject *parent)
     : QObject(parent)
@@ -68,7 +69,9 @@ MediaPlugin::MediaPlugin(QObject *parent)
         qCCritical(media) << "QTIVIMEDIA_SIMULATOR_DATABASE environment variable isn't set.\n"
                     << "Using the temporary database: " << tempFile->fileName();
     } else {
-        m_dbFile = database;
+        m_dbFile = QFile::decodeName(database);
+        if (!QFileInfo(m_dbFile).isAbsolute())
+            qCritical() << "Please set an valid absolute path for QTIVIMEDIA_SIMULATOR_DATABASE. Current path:" << m_dbFile;
     }
 
     QSqlDatabase db = createDatabaseConnection("main");
@@ -129,6 +132,7 @@ QSqlDatabase MediaPlugin::createDatabaseConnection(const QString &connectionName
 {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
     db.setDatabaseName(m_dbFile);
-    db.open();
+    if (!db.open())
+        qFatal("Couldn't couldn't open database: %s", qPrintable(db.lastError().text()));
     return db;
 }
