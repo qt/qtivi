@@ -56,22 +56,30 @@
 #include <QSqlError>
 #include <QtDebug>
 #include <QFileInfo>
+#include <QStandardPaths>
+#include <QDir>
 
 MediaPlugin::MediaPlugin(QObject *parent)
     : QObject(parent)
     , m_discovery(new MediaDiscoveryBackend(this))
 {
     const QByteArray database = qgetenv("QTIVIMEDIA_SIMULATOR_DATABASE");
-    if (database.isEmpty()) {
+    if (qEnvironmentVariableIsSet("QTIVIMEDIA_TEMPORARY_DATABASE")) {
         QTemporaryFile *tempFile = new QTemporaryFile(qApp);
         tempFile->open();
         m_dbFile = tempFile->fileName();
-        qCCritical(media) << "QTIVIMEDIA_SIMULATOR_DATABASE environment variable isn't set.\n"
+        qCInfo(media) << "QTIVIMEDIA_TEMPORARY_DATABASE environment variable is set.\n"
                     << "Using the temporary database: " << tempFile->fileName();
-    } else {
+    } else if (!database.isEmpty()) {
         m_dbFile = QFile::decodeName(database);
         if (!QFileInfo(m_dbFile).isAbsolute())
-            qCritical() << "Please set an valid absolute path for QTIVIMEDIA_SIMULATOR_DATABASE. Current path:" << m_dbFile;
+            qCInfo(media) << "Please set an valid absolute path for QTIVIMEDIA_SIMULATOR_DATABASE. Current path:" << m_dbFile;
+    } else {
+        const QDir cacheLocation = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+        if (!cacheLocation.exists())
+            cacheLocation.mkpath(QStringLiteral("."));
+        m_dbFile = cacheLocation.absoluteFilePath(QStringLiteral("ivimedia.db"));
+        qCInfo(media) << "Used media database:" << m_dbFile;
     }
 
     QSqlDatabase db = createDatabaseConnection("main");

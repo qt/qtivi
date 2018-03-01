@@ -50,6 +50,7 @@
 #include <QSqlQuery>
 #include <QtDebug>
 #include <QThreadPool>
+#include <QStandardPaths>
 
 #ifndef QTIVI_NO_TAGLIB
 #include <attachedpictureframe.h>
@@ -73,19 +74,23 @@ MediaIndexerBackend::MediaIndexerBackend(const QSqlDatabase &database, QObject *
 
     connect(&m_watcher, &QFutureWatcherBase::finished, this, &MediaIndexerBackend::onScanFinished);
 
-    QString mediaFolder = QDir::homePath() + QLatin1String("/media");
+    QStringList mediaFolderList;
     const QByteArray customMediaFolder = qgetenv("QTIVIMEDIA_SIMULATOR_LOCALMEDIAFOLDER");
-    if (customMediaFolder.isEmpty())
-        qCCritical(media) << "QTIVIMEDIA_SIMULATOR_LOCALMEDIAFOLDER environment variable is not set, falling back to:" << mediaFolder;
-    else
-        mediaFolder = customMediaFolder;
+    if (!customMediaFolder.isEmpty()) {
+        qCInfo(media) << "QTIVIMEDIA_SIMULATOR_LOCALMEDIAFOLDER environment variable is set to:" << customMediaFolder;
+        mediaFolderList.append(customMediaFolder);
+    } else {
+        mediaFolderList = QStandardPaths::standardLocations(QStandardPaths::MusicLocation);
+        qCInfo(media) << "Searching for music files in the following locations: " << mediaFolderList;
+    }
 
 #ifdef QTIVI_NO_TAGLIB
     qCCritical(media) << "The indexer simulation doesn't work without an installed taglib";
 #endif
 
     //We want to have the indexer running also when the Indexing interface is not used.
-    addMediaFolder(mediaFolder);
+    for (const QString &folder : qAsConst(mediaFolderList))
+        addMediaFolder(folder);
 }
 
 void MediaIndexerBackend::initialize()

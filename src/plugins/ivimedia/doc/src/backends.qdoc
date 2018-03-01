@@ -100,25 +100,28 @@ the following navigation paths:
     \li Album -> Track
 \endlist
 
-\note On systems where \c taglib wasn't found, indexing of files doesn't work and because of that
+\note On systems where \c taglib is disabled, indexing of files doesn't work and because of that
 the media database can't be created.
 
 \section1 Configuration
 
-This backend uses environment variables for its configuration. By default it will use
-a non persistent mode, where the indexed media database is not saved, but recreated on every start
-of the app.
+This backend uses environment variables for its configuration. By default it will write its database
+to the application's cache location. There is also a non persistent mode, where the indexed media
+database is not saved, but recreated on every start of the app.
 
 \table
 \header
     \li Name
     \li Description
 \row
+    \li QTIVIMEDIA_TEMPORARY_DATABASE
+    \li The database is written to a temporary location and deleted when the application is stopped.
+\row
     \li QTIVIMEDIA_SIMULATOR_DATABASE
     \li A path to the media database which should be used.
 \row
     \li QTIVIMEDIA_SIMULATOR_LOCALMEDIAFOLDER
-    \li The local media directory (default: /home/<user>/media)
+    \li The local media directory (default: all media locations of the user - see also QStandardPaths)
 \row
     \li QTIVIMEDIA_SIMULATOR_DEVICEFOLDER
     \li The path which will be used by the DiscoveryModel for discovering media devices.
