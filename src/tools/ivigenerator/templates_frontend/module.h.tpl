@@ -79,8 +79,8 @@ public:
 };
 
 {% for enum in module.enums %}
-QDataStream &operator<<(QDataStream &out, {{class}}::{{enum|flag_type}} var);
-QDataStream &operator>>(QDataStream &in, {{class}}::{{enum|flag_type}} &var);
+{{exportsymbol}} QDataStream &operator<<(QDataStream &out, {{class}}::{{enum|flag_type}} var);
+{{exportsymbol}} QDataStream &operator>>(QDataStream &in, {{class}}::{{enum|flag_type}} &var);
 {% endfor %}
 
 QT_END_NAMESPACE

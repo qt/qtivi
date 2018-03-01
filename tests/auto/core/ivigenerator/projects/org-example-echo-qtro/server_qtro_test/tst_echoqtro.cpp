@@ -35,8 +35,6 @@ EchoQtroTest::EchoQtroTest()
     :QObject()
 {
     EchoModule::registerTypes();
-
-    QCoreApplication::setLibraryPaths({QDir::currentPath()});
 }
 
 void EchoQtroTest::cleanup()
@@ -61,7 +59,6 @@ void EchoQtroTest::testInitServer()
 
 void EchoQtroTest::testInitClient()
 {
-    QTest::ignoreMessage(QtWarningMsg, "QtRO cannot convert the property weekDay to type EchoModule::DaysOfTheWeek");
     Echo client;
     QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
 
@@ -80,7 +77,6 @@ void EchoQtroTest::testClient2Server()
     Server server;
     QVERIFY(server.start());
 
-    QTest::ignoreMessage(QtWarningMsg, "QtRO cannot convert the property weekDay to type EchoModule::DaysOfTheWeek");
     Echo client;
     QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
 
@@ -161,7 +157,6 @@ void EchoQtroTest::testServer2Client()
     Server server;
     QVERIFY(server.start());
 
-    QTest::ignoreMessage(QtWarningMsg, "QtRO cannot convert the property weekDay to type EchoModule::DaysOfTheWeek");
     Echo client;
     QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
 

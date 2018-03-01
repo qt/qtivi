@@ -1,5 +1,5 @@
 {#
-# Copyright (C) 2017 Pelagicore AG
+# Copyright (C) 2018 Pelagicore AG
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -79,7 +79,9 @@ QT_BEGIN_NAMESPACE
 void {{class}}::initialize()
 {
 {% for property in interface.properties %}
+{%   if not property.is_model %}
     emit {{property}}Changed(m_replica->{{property}}());
+{%   endif %}
 {% endfor %}
 }
 
@@ -87,7 +89,11 @@ void {{class}}::initialize()
 {%   if not property.readonly and not property.const %}
 void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {
+{%     if not property.type.is_model %}
     m_replica->push{{property|upperfirst}}({{property}});
+{%     else %}
+    qCritical() << "{{class}}::{{property}}, remote models not supported";
+{%     endif %}
 }
 
 {%   endif %}

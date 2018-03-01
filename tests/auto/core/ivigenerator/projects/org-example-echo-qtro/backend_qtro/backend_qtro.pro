@@ -10,7 +10,7 @@ PLUGIN_TYPE = qtivi
 PLUGIN_EXTENDS = qtivi
 PLUGIN_CLASS_NAME = QIviServiceInterface
 
-QT += core ivicore remoteobjects
+QT += core ivicore
 
 macos: QMAKE_SONAME_PREFIX = @rpath
 

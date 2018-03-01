@@ -1,5 +1,5 @@
 {#
-# Copyright (C) 2017 Pelagicore AG
+# Copyright (C) 2018 Pelagicore AG.
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -36,64 +36,40 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% set class = '{0}Replica'.format(interface) %}
-{% set properties = interface.properties|rejectattr('is_model')|list %}
-#pragma once
-
-#include <QRemoteObjectReplica>
-
-#include "{{module.module_name|lower}}module.h"
+/////////////////////////////////////////////////////////////////////////////
+// Generated from '{{module}}.qface'
+//
+// Created by: The QFace generator (QtAS {{qtASVersion}})
+//
+// WARNING! All changes made in this file will be lost!
+/////////////////////////////////////////////////////////////////////////////
+{% set class = '{0}'.format(interface) %}
 {% for inc in interface|struct_includes %}
 {{inc}}
 {% endfor %}
-
-QT_BEGIN_NAMESPACE
-
-class {{class}} : public QRemoteObjectReplica {
-    Q_OBJECT
-    Q_CLASSINFO(QCLASSINFO_REMOTEOBJECT_TYPE, "{{interface}}")
-    Q_CLASSINFO(QCLASSINFO_REMOTEOBJECT_SIGNATURE, "{{interface.qualified_name|hash}}")
-
-{% for property in properties %}
-    Q_PROPERTY({{property|return_type}} {{property}} READ {{property}} {% if not property.const %}NOTIFY {{property}}Changed{% endif %})
+{% for property in interface.properties %}
+{%   if property.type.is_model %}
+#include "{{property|model_type|lower}}.h"
+{%   endif %}
 {% endfor %}
 
-public:
-    {{class}}();
-private:
-    {{class}}(QRemoteObjectNode *node, const QString &name = QString());
-public:
-    virtual ~{{class}}();
-
-{% for property in properties %}
-    {{property|return_type}} {{property}}() const;
-{% endfor %}
-
-public Q_SLOTS:
-{% for property in properties %}
-{%   if not property.readonly and not property.const %}
-    void push{{property|upperfirst}}({{property|parameter_type}});
+class {{class}}
+{
+{% for property in interface.properties %}
+{%   set propKeyword = '' %}
+{%   if property.readonly %}
+{%     set propKeyword = 'READONLY' %}
+{%   endif %}
+{%   if not property.is_model %}
+    PROP({{property|return_type|replace(" *", "")}} {{property}} {{propKeyword}})
 {%   endif %}
 {% endfor %}
 
 {% for operation in interface.operations %}
-    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}});
+    SLOT({{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}))
 {% endfor %}
 
-Q_SIGNALS:
-{% for property in properties %}
-    void {{property}}Changed({{property|return_type}});
-{% endfor %}
 {% for signal in interface.signals %}
-    void {{signal}}({{signal|parameter_type}});
+    SIGNAL({{signal}}({{signal.parameters|map('parameter_type')|join(', ')}}))
 {% endfor %}
-
-private:
-    void initialize();
-private:
-    friend class QT_PREPEND_NAMESPACE(QRemoteObjectNode);
 };
-
-QT_END_NAMESPACE
-
-

@@ -7,8 +7,6 @@ generate_rules:
         -   dest_file:  "{{srcBase|lower}}.pri"
             template_file:  "server.pri.tpl"
     interface_rules:
-        -   dest_file:  "{{interface|lower}}source.h"
-            template_file:  "source.h.tpl"
-        -   dest_file:  "{{interface|lower}}source.cpp"
-            template_file:  "source.cpp.tpl"
+        -   dest_file:  "{{interface|lower}}.rep"
+            template_file:  "interface.rep.tpl"
     struct_rules:

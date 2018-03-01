@@ -1,5 +1,5 @@
 {#
-# Copyright (C) 2017 Pelagicore AG
+# Copyright (C) 2018 Pelagicore AG.
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -36,53 +36,40 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% include "generated_comment.cpp.tpl" %}
-{% set class = '{0}Source'.format(interface) %}
-{% set models = interface.properties|selectattr('is_model')|list %}
-{% set properties = interface.properties|rejectattr('is_model')|list %}
-
-#include "{{class|lower}}.h"
-
-{{class}}::{{class}}(QObject *parent)
-    : QObject(parent)
-{% for property in properties %}
-    , m_{{property}}({{property|default_value}})
+/////////////////////////////////////////////////////////////////////////////
+// Generated from '{{module}}.qface'
+//
+// Created by: The QFace generator (QtAS {{qtASVersion}})
+//
+// WARNING! All changes made in this file will be lost!
+/////////////////////////////////////////////////////////////////////////////
+{% set class = '{0}'.format(interface) %}
+{% for inc in interface|struct_includes %}
+{{inc}}
 {% endfor %}
-{
-}
-
-{{class}}::~{{class}}()
-{
-}
-
-{% for property in properties %}
-{{property|return_type}} {{class}}::{{property}}() const
-{
-    qDebug() << "{{class}}::{{property}}()";
-    return m_{{property}};
-}
-
-void {{class}}::set{{property|upperfirst}}({{property|parameter_type}})
-{
-    qDebug() << "{{class}}::set{{property|upperfirst}}({{property|parameter_type}})";
-    if (m_{{property}} != {{property}}) {
-        m_{{property}} = {{property}};
-        Q_EMIT {{property}}Changed({{property}});
-    }
-}
-
-{%   if not property.readonly and not property.const %}
-void {{class}}::push{{property|upperfirst}}({{property|parameter_type}})
-{
-    qDebug() << "{{class}}::push{{property|upperfirst}}({{property|parameter_type}})";
-    set{{property|upperfirst}}({{property}});
-}
+{% for property in interface.properties %}
+{%   if property.type.is_model %}
+#include "{{property|model_type|lower}}.h"
 {%   endif %}
 {% endfor %}
 
-{% for property in models %}
-QAbstractItemModel *{{class}}::{{property}}() const
+class {{class}}
 {
-    return m_{{property}};
-}
+{% for property in interface.properties %}
+{%   set propKeyword = '' %}
+{%   if property.readonly %}
+{%     set propKeyword = 'READONLY' %}
+{%   endif %}
+{%   if not property.is_model %}
+    PROP({{property|return_type|replace(" *", "")}} {{property}} {{propKeyword}})
+{%   endif %}
 {% endfor %}
+
+{% for operation in interface.operations %}
+    SLOT({{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}))
+{% endfor %}
+
+{% for signal in interface.signals %}
+    SIGNAL({{signal}}({{signal.parameters|map('parameter_type')|join(', ')}}))
+{% endfor %}
+};

@@ -29,9 +29,9 @@
 #ifndef ECHOSERVICE_H
 #define ECHOSERVICE_H
 
-#include "echosource.h"
+#include "rep_echo_source.h"
 
-class EchoService: public EchoSource
+class EchoService: public EchoSimpleSource
 {
     Q_OBJECT
 

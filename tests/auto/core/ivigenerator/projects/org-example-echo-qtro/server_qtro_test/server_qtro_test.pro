@@ -1,6 +1,6 @@
 TARGET = tst_org-example-echo-qtro
 QT -= gui
-QT += remoteobjects testlib ivicore
+QT += testlib ivicore
 LIBS += -L$$OUT_PWD/.. -l$$qtLibraryTarget(echo_frontend)
 
 DESTDIR = ..

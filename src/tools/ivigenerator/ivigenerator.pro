@@ -79,8 +79,7 @@ templates_backend_qtro.files += \
     templates_backend_qtro/plugin.h.tpl \
     templates_backend_qtro/plugin.json \
     templates_backend_qtro/plugin.pri.tpl \
-    templates_backend_qtro/replica.cpp.tpl \
-    templates_backend_qtro/replica.h.tpl
+    templates_backend_qtro/interface.rep.tpl
 templates_backend_qtro.path = $$[QT_HOST_BINS]/ivigenerator/templates_backend_qtro
 
 templates_server_qtro.files += \
@@ -88,8 +87,7 @@ templates_server_qtro.files += \
     templates_server_qtro/core.cpp.tpl \
     templates_server_qtro/core.h.tpl \
     templates_server_qtro/server.pri.tpl \
-    templates_server_qtro/source.cpp.tpl \
-    templates_server_qtro/source.h.tpl
+    templates_server_qtro/interface.rep.tpl
 templates_server_qtro.path = $$[QT_HOST_BINS]/ivigenerator/templates_server_qtro
 
 templates_test.files += \

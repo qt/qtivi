@@ -1,5 +1,5 @@
 {#
-# Copyright (C) 2017 Pelagicore AG.
+# Copyright (C) 2018 Pelagicore AG.
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -41,19 +41,25 @@
 ## Do not edit! All changes made to it will be lost.
 #############################################################################
 
+QT += remoteobjects
+
 HEADERS += \
 {% for interface in module.interfaces %}
-    $$PWD/{{interface|lower}}replica.h \
     $$PWD/{{interface|lower}}backend.h \
 {% endfor %}
     $$PWD/{{module.module_name|lower}}plugin.h
 
 SOURCES += \
 {% for interface in module.interfaces %}
-    $$PWD/{{interface|lower}}replica.cpp \
     $$PWD/{{interface|lower}}backend.cpp \
 {% endfor %}
     $$PWD/{{module.module_name|lower}}plugin.cpp
+
+REPC_REPLICA += \
+{% for interface in module.interfaces %}
+    $$PWD/{{interface|lower}}.rep \
+{% endfor %}
+
 
 OTHER_FILES += \
     $$PWD/{{module.module_name|lower}}.json

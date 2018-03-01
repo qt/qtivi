@@ -13,8 +13,6 @@ generate_rules:
             template_file: 'backend.h.tpl'
         -   dest_file: '{{interface|lower}}backend.cpp'
             template_file: 'backend.cpp.tpl'
-        -   dest_file: '{{interface|lower}}replica.h'
-            template_file: 'replica.h.tpl'
-        -   dest_file: '{{interface|lower}}replica.cpp'
-            template_file: 'replica.cpp.tpl'
+        -   dest_file:  "{{interface|lower}}.rep"
+            template_file:  "interface.rep.tpl"
     struct_rules:
