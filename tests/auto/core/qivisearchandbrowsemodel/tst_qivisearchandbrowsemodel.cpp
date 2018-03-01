@@ -357,6 +357,7 @@ private Q_SLOTS:
     void testFetchMore_data();
     void testFetchMore();
     void testDataChangedMode();
+    void testReload();
     void testDataChangedMode_jump();
     void testNavigation_data();
     void testNavigation();
@@ -605,6 +606,35 @@ void tst_QIviSearchAndBrowseModel::testDataChangedMode()
 
     // Test that we really fetched new data
     QCOMPARE(fetchDataSpy.at(0).at(2).toInt(), testIndex + 1);
+}
+
+void tst_QIviSearchAndBrowseModel::testReload()
+{
+    TestServiceObject *service = new TestServiceObject();
+    manager->registerService(service, service->interfaces());
+    service->testBackend()->setCapabilities(QIviSearchAndBrowseModel::SupportsGetSize);
+    service->testBackend()->initializeSimpleData();
+
+    QIviSearchAndBrowseModel model;
+    model.setServiceObject(service);
+
+    QVERIFY(model.serviceObject());
+
+    QVERIFY(model.availableContentTypes().contains("simple"));
+    QSignalSpy countChangedSpy(&model, SIGNAL(countChanged()));
+    model.setContentType("simple");
+    countChangedSpy.wait(100);
+    QVERIFY(countChangedSpy.count());
+
+    QCOMPARE(model.rowCount(), model.chunkSize());
+    countChangedSpy.clear();
+
+    QSignalSpy resetSpy(&model, SIGNAL(modelReset()));
+    model.reload();
+    countChangedSpy.wait(100);
+    QCOMPARE(resetSpy.count(), 1);
+    QCOMPARE(countChangedSpy.count(), 2);
+    QCOMPARE(model.rowCount(), model.chunkSize());
 }
 
 void tst_QIviSearchAndBrowseModel::testDataChangedMode_jump()

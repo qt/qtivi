@@ -146,6 +146,7 @@ public:
     Q_INVOKABLE void move(int cur_index, int new_index);
     //TODO add a C++ version for this, similar to QTimer::singleShot()
     Q_INVOKABLE void indexOf(const QVariant &variant, const QJSValue &functor);
+    Q_INVOKABLE void reload();
 
     template <typename T> T at(int i) const {
         return data(index(i,0), ItemRole).value<T>();

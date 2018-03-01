@@ -216,11 +216,14 @@ void QIviSearchAndBrowseModelPrivate::onFetchMoreThresholdReached()
 void QIviSearchAndBrowseModelPrivate::resetModel()
 {
     Q_Q(QIviSearchAndBrowseModel);
+
     q->beginResetModel();
     m_itemList.clear();
     m_availableChunks.clear();
-    q->endResetModel();
     m_fetchedDataCount = 0;
+    //Setting this to true to let fetchMore do one first fetchcall.
+    m_moreAvailable = true;
+    q->endResetModel();
 
     if (searchBackend())
         setAvailableContenTypes(searchBackend()->availableContentTypes().toList());
@@ -228,7 +231,6 @@ void QIviSearchAndBrowseModelPrivate::resetModel()
     checkType();
     parseQuery();
 
-    m_moreAvailable = false;
     q->fetchMore(QModelIndex());
 }
 
@@ -1342,6 +1344,20 @@ void QIviSearchAndBrowseModel::indexOf(const QVariant &variant, const QJSValue &
 }
 
 /*!
+    \qmlmethod SearchAndBrowseModel::reload()
+
+    Resets the model and starts fetching the content again.
+*/
+/*!
+    Resets the model and starts fetching the content again.
+*/
+void QIviSearchAndBrowseModel::reload()
+{
+    Q_D(QIviSearchAndBrowseModel);
+    d->resetModel();
+}
+
+/*!
     \reimp
 */
 bool QIviSearchAndBrowseModel::canFetchMore(const QModelIndex &parent) const
@@ -1363,6 +1379,9 @@ void QIviSearchAndBrowseModel::fetchMore(const QModelIndex &parent)
         return;
 
     if (!d->searchBackend() || d->m_contentType.isEmpty())
+        return;
+
+    if (!d->m_moreAvailable)
         return;
 
     d->m_moreAvailable = false;
