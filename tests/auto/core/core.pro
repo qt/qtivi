@@ -4,6 +4,7 @@ SUBDIRS = servicemanagertest \
           qivipropertyattribute \
           qiviproperty \
           qiviabstractfeature \
+          qivipendingreply \
           queryparser \
           qivisearchandbrowsemodel \
 

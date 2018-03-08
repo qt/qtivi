@@ -37,7 +37,9 @@ HEADERS += \
     qivisearchandbrowsemodelinterface_p.h \
     qivisearchandbrowsemodelitem.h \
     qivifeatureinterface.h \
-    qividefaultpropertyoverrider_p.h
+    qividefaultpropertyoverrider_p.h \
+    qivipendingreply.h \
+    qivipendingreply_p.h
 
 SOURCES += \
     qiviservicemanager.cpp \
@@ -56,7 +58,8 @@ SOURCES += \
     qivisearchandbrowsemodelitem.cpp \
     qivifeatureinterface.cpp \
     qividefaultpropertyoverrider.cpp \
-    qiviqmlconversion_helper.cpp
+    qiviqmlconversion_helper.cpp \
+    qivipendingreply.cpp
 
 include(queryparser/queryparser.pri)
 
