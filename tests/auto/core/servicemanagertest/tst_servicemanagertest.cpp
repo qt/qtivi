@@ -234,9 +234,9 @@ void ServiceManagerTest::testManagerListModel()
     QCOMPARE(regResult, true);
     QCOMPARE(manager->rowCount(), 1);
     //QCOMPARE(manager->data(manager->index(0), Qt::DisplayRole).value<QIviServiceInterface*>(), backend0);
-    QCOMPARE(manager->data(manager->index(0), QIviServiceManager::NameRole), "MockServiceBackend");
+    QCOMPARE(manager->data(manager->index(0), QIviServiceManager::NameRole).toString(), QStringLiteral("MockServiceBackend"));
     QCOMPARE(manager->data(manager->index(0), QIviServiceManager::ServiceObjectRole).value<QIviProxyServiceObject*>()->serviceInterface(), backend0);
-    QCOMPARE(manager->data(manager->index(0), QIviServiceManager::InterfacesRole), QStringList() << "Interface0");
+    QCOMPARE(manager->data(manager->index(0), QIviServiceManager::InterfacesRole).toStringList(), QStringList() << "Interface0");
     QCOMPARE(managerModelSpy.count(), 1);
     // Extendend sanity check
     QCOMPARE(manager->data(manager->index(0,0), Qt::UserRole + 200), QVariant());
@@ -246,12 +246,12 @@ void ServiceManagerTest::testManagerListModel()
     regResult = manager->registerService(backend1, QStringList() << "Interface1" << "Interface2");
     QCOMPARE(regResult, true);
     QCOMPARE(manager->rowCount(), 2);
-    QCOMPARE(manager->data(manager->index(0), QIviServiceManager::NameRole), "MockServiceBackend");
+    QCOMPARE(manager->data(manager->index(0), QIviServiceManager::NameRole).toString(), QStringLiteral("MockServiceBackend"));
     QCOMPARE(manager->data(manager->index(0), QIviServiceManager::ServiceObjectRole).value<QIviProxyServiceObject*>()->serviceInterface(), backend0);
-    QCOMPARE(manager->data(manager->index(0), QIviServiceManager::InterfacesRole), QStringList() << "Interface0");
-    QCOMPARE(manager->data(manager->index(1), QIviServiceManager::NameRole), "MockServiceBackend");
+    QCOMPARE(manager->data(manager->index(0), QIviServiceManager::InterfacesRole).toStringList(), QStringList() << "Interface0");
+    QCOMPARE(manager->data(manager->index(1), QIviServiceManager::NameRole).toString(), QStringLiteral("MockServiceBackend"));
     QCOMPARE(manager->data(manager->index(1), QIviServiceManager::ServiceObjectRole).value<QIviProxyServiceObject*>()->serviceInterface(), backend1);
-    QCOMPARE(manager->data(manager->index(1), QIviServiceManager::InterfacesRole), QStringList() << "Interface1" << "Interface2");
+    QCOMPARE(manager->data(manager->index(1), QIviServiceManager::InterfacesRole).toStringList(), QStringList() << "Interface1" << "Interface2");
     QCOMPARE(managerModelSpy.count(), 2);
 
     // Register backend-2 with 'Interface1' and 'Interface2'. Should not result in any model changes
