@@ -38,6 +38,24 @@ class EchoService: public EchoSimpleSource
 public:
     EchoService();
 
+    Combo m_testCombo;
+    QString m_testId;
+
+    virtual void setLastMessage(QString lastMessage) override;
+
+public Q_SLOTS:
+    virtual QString echo(const QString &msg) override;
+    virtual QString id() override;
+    virtual Combo getCombo() override;
+    virtual void voidSlot();
+    virtual void voidSlot2(int param);
+
+Q_SIGNALS:
+    void echoSlotCalled(const QString &msg);
+    void idSlotCalled();
+    void getComboSlotCalled();
+    void voidSlotCalled();
+    void voidSlot2Called(int param);
 };
 
 #endif // ECHOSERVICE_H

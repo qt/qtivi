@@ -15,6 +15,7 @@ ui_*
 *.version*
 .qmake.*
 !.qmake.conf
+*.qmlc
 
 # Test generated files
 tst_*

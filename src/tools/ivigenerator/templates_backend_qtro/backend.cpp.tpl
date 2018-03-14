@@ -103,9 +103,18 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {%   set operation_parameters = operation.parameters|map('parameter_type')|join(', ') %}
 {{operation|return_type}} {{class}}::{{operation}}({{operation_parameters}}){%if operation.const %} const{% endif %}
 {
-    m_replica->{{operation}}({{operation.parameters|join(', ')}});
+{% if not operation.type.is_void %}
+    QRemoteObjectPendingReply<{{operation|return_type}}> reply;
+    reply = m_replica->{{operation}}({{operation.parameters|join(', ')}});
+    if (reply.waitForFinished())
+        return reply.returnValue();
+    qDebug() << "{{class}}, remote call of method {{operation}} failed";
     return {{operation|default_value}};
+{%   else %}
+    m_replica->{{operation}}({{operation.parameters|join(', ')}});
+{%   endif %}
 }
+
 {% endfor %}
 
 void {{class}}::setupConnections()

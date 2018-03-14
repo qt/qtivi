@@ -29,6 +29,41 @@
 #include "echoservice.h"
 
 EchoService::EchoService()
+    :m_testCombo(Contact("Antti", 34, true), EchoModule::Friday),
+     m_testId("id123")
 {
 
+}
+
+void EchoService::setLastMessage(QString lastMessage)
+{
+    EchoSimpleSource::setLastMessage(lastMessage);
+}
+
+QString EchoService::echo(const QString &msg)
+{
+    emit echoSlotCalled(msg);
+    return msg;
+}
+
+QString EchoService::id()
+{
+    emit idSlotCalled();
+    return m_testId;
+}
+
+Combo EchoService::getCombo()
+{
+    emit getComboSlotCalled();
+    return m_testCombo;
+}
+
+void EchoService::voidSlot()
+{
+    emit voidSlotCalled();
+}
+
+void EchoService::voidSlot2(int param)
+{
+    emit voidSlot2Called(param);
 }

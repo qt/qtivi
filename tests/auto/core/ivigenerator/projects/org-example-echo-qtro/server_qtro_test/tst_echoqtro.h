@@ -41,10 +41,11 @@ public:
 
 private slots:
     void cleanup();
-    void testInitServer();
-    void testInitClient();
+    void testInit();
     void testClient2Server();
     void testServer2Client();
+    void testSlots();
+    void testSignals();
 };
 
 #endif // ECHOQTROTEST_H

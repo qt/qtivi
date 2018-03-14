@@ -33,10 +33,18 @@ interface Echo {
     list<Contact> contactList;
     Contact contact;
     WeekDay weekDay;
+
+    string echo(string msg);
+    string id() const;
+    Combo getCombo();
+    void voidSlot();
+    void voidSlot2(int param);
+    signal anotherChanged(AnotherStruct another);
+    signal foobar(string foo);
+    signal somethingHappened();
 }
 
-@config: { type: "DaysOfTheWeek" }
-flag WeekDay {
+enum WeekDay {
     Monday = 1,
     Tuesday = 2,
     Wednesday = 3,

@@ -41,6 +41,8 @@ public Q_SLOTS:
 public:
     EchoService m_service;
 
+    ~Server();
+
 };
 
 #endif // SERVER_H
