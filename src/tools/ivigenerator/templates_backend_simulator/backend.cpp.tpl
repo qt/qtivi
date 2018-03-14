@@ -141,16 +141,20 @@ void {{class}}::initialize()
 {% endif %}
 
 {% if 'simulator' in features %}
-    qDebug() << "CONNECTING";
     mConnection = new QSimulatorConnection("{{interface}}", QVersionNumber(1, 0, 0));
     mConnection->addPeerInfo("versionInfo", "1.0.0");
     mConnection->addPeerInfo("name", "{{class}}");
     QString hostname = QSimulatorConnection::simulatorHostName(false);
-    if (hostname.isEmpty())
-        hostname = QLatin1String("localhost");
-    mWorker = mConnection->connectToHost(hostname, 0xbeef+3);
-    if (!mWorker)
+    if (hostname.isEmpty()) {
+        qWarning() << "SIMULATOR_HOSTNAME environment variable not set! Disabling the QtSimulator connection";
         return;
+    }
+    qWarning() << "Connecting to QtSimulator Device:" << hostname;
+    mWorker = mConnection->connectToHost(hostname, 0xbeef+3);
+    if (!mWorker) {
+        qWarning() << "Couldn't connect to QtSimulator Device:" << hostname;
+        return;
+    }
 
     mWorker->addReceiver(this);
 {% endif %}
