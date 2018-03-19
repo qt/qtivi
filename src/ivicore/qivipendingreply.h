@@ -63,6 +63,7 @@ class Q_QTIVICORE_EXPORT QIviPendingReplyWatcher : public QObject
 
 public:
     explicit QIviPendingReplyWatcher(int userType);
+    ~QIviPendingReplyWatcher();
 
     QVariant value() const;
     bool isValid() const;
@@ -93,7 +94,8 @@ class Q_QTIVICORE_EXPORT QIviPendingReplyBase
     Q_PROPERTY(bool success READ isSuccessful)
 
 public:
-    explicit QIviPendingReplyBase(int userType = -1);
+    QIviPendingReplyBase();
+    explicit QIviPendingReplyBase(int userType);
     QIviPendingReplyBase(const QIviPendingReplyBase & other);
     virtual ~QIviPendingReplyBase();
 
@@ -126,6 +128,13 @@ public:
     }
 
     T reply() const { return m_watcher->value().template value<T>(); }
+
+    static QIviPendingReply createFailedReply()
+    {
+        QIviPendingReply<T> reply;
+        reply.setFailed();
+        return reply;
+    }
 };
 
 template <> class QIviPendingReply <QVariant> : public QIviPendingReplyBase
@@ -141,6 +150,13 @@ public:
     }
 
     QVariant reply() const { return m_watcher->value(); }
+
+    static QIviPendingReply createFailedReply()
+    {
+        QIviPendingReply<QVariant> reply;
+        reply.setFailed();
+        return reply;
+    }
 };
 
 template <> class QIviPendingReply <void> : public QIviPendingReplyBase
@@ -156,6 +172,13 @@ public:
     }
 
     void reply() const { return; }
+
+    static QIviPendingReply createFailedReply()
+    {
+        QIviPendingReply<void> reply;
+        reply.setFailed();
+        return reply;
+    }
 };
 
 template <typename T> void qIviRegisterPendingReplyType(const char *name = nullptr)

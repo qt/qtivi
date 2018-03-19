@@ -138,6 +138,10 @@ QIviPendingReplyWatcher::QIviPendingReplyWatcher(int userType)
 {
 }
 
+QIviPendingReplyWatcher::~QIviPendingReplyWatcher()
+{
+}
+
 //document default value
 //note about having no changed signal (gadget) and use of watcher which has one
 QVariant QIviPendingReplyWatcher::value() const
@@ -261,6 +265,10 @@ void QIviPendingReplyWatcher::then(const QJSValue &success, const QJSValue &fail
     }
 }
 
+QIviPendingReplyBase::QIviPendingReplyBase()
+{
+}
+
 QIviPendingReplyBase::QIviPendingReplyBase(int userType)
     : m_watcher(new QIviPendingReplyWatcher(userType))
 {
@@ -283,42 +291,58 @@ QIviPendingReplyWatcher *QIviPendingReplyBase::watcher() const
 
 QVariant QIviPendingReplyBase::value() const
 {
-    return m_watcher->value();
+    if (m_watcher)
+        return m_watcher->value();
+    return QVariant();
 }
 
 bool QIviPendingReplyBase::isValid() const
 {
-    return m_watcher->isValid();
+    if (m_watcher)
+        return m_watcher->isValid();
+    return false;
 }
 
 bool QIviPendingReplyBase::isResultAvailable() const
 {
-    return m_watcher->isResultAvailable();
+    if (m_watcher)
+        return m_watcher->isResultAvailable();
+    return false;
 }
 
 bool QIviPendingReplyBase::isSuccessful() const
 {
-    return m_watcher->isSuccessful();
+    if (m_watcher)
+        return m_watcher->isSuccessful();
+    return false;
 }
 
 void QIviPendingReplyBase::then(const QJSValue &success, const QJSValue &failed)
 {
-    m_watcher->then(success, failed);
+    if (m_watcher)
+        m_watcher->then(success, failed);
+    return;
 }
 
 void QIviPendingReplyBase::setSuccess(const QVariant &value)
 {
-    m_watcher->setSuccess(value);
+    if (m_watcher)
+        m_watcher->setSuccess(value);
+    return;
 }
 
 void QIviPendingReplyBase::setFailed()
 {
-    m_watcher->setFailed();
+    if (m_watcher)
+        m_watcher->setFailed();
+    return;
 }
 
 void QIviPendingReplyBase::setSuccessNoCheck(const QVariant &value)
 {
-    m_watcher->d_func()->setSuccess(value);
+    if (m_watcher)
+        m_watcher->d_func()->setSuccess(value);
+    return;
 }
 
 QT_END_NAMESPACE
