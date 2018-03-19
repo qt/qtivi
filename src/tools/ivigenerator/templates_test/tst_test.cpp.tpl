@@ -139,12 +139,13 @@ public:
 {% endfor %}
 
 {% for operation in interface.operations %}
-    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}{% if interface_zoned %}{%
+    virtual QIviPendingReply<{{operation|return_type}}> {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}{% if interface_zoned %}{%
     if operation.parameters|length %}, {%endif%}const QString &zone{% endif %}) override
     {
         emit {{operation}}Called({% if operation.parameters|length %}{{operation.parameters|join(', ')}}{% endif %}{%
         if interface_zoned %}{%if operation.parameters|length %}, {%endif%} zone{% endif %});
-        return {{operation|return_type}}();
+
+        return QIviPendingReply<{{operation|return_type}}>::createFailedReply();
     }
 
     Q_SIGNAL void {{operation}}Called({{operation.parameters|map('parameter_type')|join(', ')}}{% if interface_zoned %}{%
@@ -414,8 +415,12 @@ void {{interface}}Test::testMethods()
     QSignalSpy {{operation}}Spy(service->testBackend(), SIGNAL({{operation}}Called({{operation.parameters|map('return_type')|join(', ')}}{%if interface_zoned %}{%
         if operation.parameters|length %}, {%endif%}QString{% endif %})));
 
-    cc.{{operation}}({% if operation.parameters|length %}{{operation.parameters|map('test_type_value')|join(' ')}}{% endif %});
+    auto {{operation}}Reply = cc.{{operation}}({% if operation.parameters|length %}{{operation.parameters|map('test_type_value')|join(' ')}}{% endif %});
     QCOMPARE({{operation}}Spy.count(), 1);
+    QVERIFY({{operation}}Reply.isValid());
+    QVERIFY({{operation}}Reply.isResultAvailable());
+    //To make the generation easier our generated methods always return a failed reply
+    QVERIFY(!{{operation}}Reply.isSuccessful());
 
 {% endfor %}
 }

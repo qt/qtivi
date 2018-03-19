@@ -231,7 +231,7 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 
 {{ utils.format_comments(operation.comment) }}
 */
-{{operation|return_type}} {{class}}::{{operation}}({{operation_parameters}}){%if operation.const %} const{% endif %}
+QIviPendingReply<{{operation|return_type}}> {{class}}::{{operation}}({{operation_parameters}}){%if operation.const %} const{% endif %}
 
 {
 {% for operation_parameter in operation.parameters %}
@@ -254,7 +254,11 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {% endif %}
 
     qWarning() << "Not implemented!";
-    return {{operation|default_value}};
+
+    //Fake that the reply always succeeded
+    QIviPendingReply<{{operation|return_type}}> successReply;
+    successReply.setSuccess({{operation|default_value}});
+    return successReply;
 }
 
 {% endfor %}

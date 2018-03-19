@@ -46,6 +46,7 @@ private slots:
     void testClient2Server();
     void testServer2Client();
     void testSlots();
+    void testMultipleSlotCalls();
     void testSignals();
 };
 

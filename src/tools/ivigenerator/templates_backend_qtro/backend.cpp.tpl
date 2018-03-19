@@ -104,18 +104,26 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 
 {% for operation in interface.operations %}
 {%   set operation_parameters = operation.parameters|map('parameter_type')|join(', ') %}
-{{operation|return_type}} {{class}}::{{operation}}({{operation_parameters}}){%if operation.const %} const{% endif %}
+QIviPendingReply<{{operation|return_type}}> {{class}}::{{operation}}({{operation_parameters}}){%if operation.const %} const{% endif %}
 {
+    QIviPendingReply<{{operation|return_type}}> iviReply;
 {% if not operation.type.is_void %}
-    QRemoteObjectPendingReply<{{operation|return_type}}> reply;
-    reply = m_replica->{{operation}}({{operation.parameters|join(', ')}});
-    if (reply.waitForFinished())
-        return reply.returnValue();
-    qDebug() << "{{class}}, remote call of method {{operation}} failed";
-    return {{operation|default_value}};
+    QRemoteObjectPendingReply<{{operation|return_type}}> reply = m_replica->{{operation}}({{operation.parameters|join(', ')}});
+    auto watcher = new QRemoteObjectPendingCallWatcher(reply);
+    connect(watcher, &QRemoteObjectPendingCallWatcher::finished, this, [this, iviReply](QRemoteObjectPendingCallWatcher *self) mutable {
+        if (self->error() == QRemoteObjectPendingCallWatcher::NoError) {
+            iviReply.setSuccess(self->returnValue().value<{{operation|return_type}}>());
+        } else {
+            iviReply.setFailed();
+            emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("{{class}}, remote call of method {{operation}} failed"));
+        }
+        self->deleteLater();
+    });
 {%   else %}
     m_replica->{{operation}}({{operation.parameters|join(', ')}});
+    iviReply.setSuccess();
 {%   endif %}
+    return iviReply;
 }
 
 {% endfor %}

@@ -340,7 +340,7 @@ void {{class}}::{{property|setter_name}}({{ property|parameter_type }})
 /*!
 {{ utils.format_comments(operation.comment) }}
 */
-{{operation|return_type}} {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){% if operation.const %} const{% endif %}
+QIviPendingReply<{{operation|return_type}}> {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){% if operation.const %} const{% endif %}
 
 {
     if ({{class}}BackendInterface *backend = ({{class}}BackendInterface *) this->backend())
@@ -353,7 +353,7 @@ void {{class}}::{{property|setter_name}}({{ property|parameter_type }})
 {% else %}
         return backend->{{operation}}({{operation.parameters|join(', ')}});
 {% endif %}
-    return {{operation|default_type_value}};
+    return QIviPendingReply<{{operation|return_type}}>::createFailedReply();
 }
 
 {% endfor %}

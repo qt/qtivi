@@ -65,14 +65,24 @@ void WindowTimer::setOpeningTime(int intervalInSeconds)
     m_interval = intervalInSeconds;
 }
 
-void WindowTimer::open()
+void WindowTimer::open(QIviPendingReply<void> reply)
 {
+    if (!m_pendingReply.isResultAvailable())
+        m_pendingReply.setFailed();
+
+    m_pendingReply = reply;
+
     m_opening = true;
     m_timer->start();
 }
 
-void WindowTimer::close()
+void WindowTimer::close(QIviPendingReply<void> reply)
 {
+    if (!m_pendingReply.isResultAvailable())
+        m_pendingReply.setFailed();
+
+    m_pendingReply = reply;
+
     m_opening = false;
     m_timer->start();
 }
@@ -89,10 +99,12 @@ void WindowTimer::checkValue()
         m_currentValue = 0;
         m_timer->stop();
         state = QtIviVehicleFunctionsModule::Closed;
+        m_pendingReply.setSuccess();
     } else if (m_currentValue >= m_interval) {
         m_currentValue = m_interval;
         m_timer->stop();
         state = QtIviVehicleFunctionsModule::FullyOpen;
+        m_pendingReply.setSuccess();
     } else {
         state = QtIviVehicleFunctionsModule::Open;
     }
@@ -127,35 +139,41 @@ void QIviConcreteWindowControlBackend::setBlindMode(QtIviVehicleFunctionsModule:
         return;
 
     if (blindMode == QtIviVehicleFunctionsModule::BlindOpen)
-        m_zoneBlindTimers[zone]->open();
+        m_zoneBlindTimers[zone]->open(QIviPendingReply<void>());
     else if (blindMode == QtIviVehicleFunctionsModule::BlindClosed)
-        m_zoneBlindTimers[zone]->close();
+        m_zoneBlindTimers[zone]->close(QIviPendingReply<void>());
 
     QIviWindowControlBackend::setBlindMode(blindMode, zone);
 }
 
-void QIviConcreteWindowControlBackend::open(const QString &zone)
+QIviPendingReply<void> QIviConcreteWindowControlBackend::open(const QString &zone)
 {
     if (!m_zoneMap.contains(zone))
-        return;
+        return QIviPendingReply<void>::createFailedReply();
 
     if (m_zoneMap[zone].state == QtIviVehicleFunctionsModule::Open)
-        return;
+        return QIviPendingReply<void>::createFailedReply();
 
     qWarning() << "SIMULATION open Window:" << zone;
-    m_zoneWindowTimers[zone]->open();
+    QIviPendingReply<void> reply;
+    m_zoneWindowTimers[zone]->open(reply);
+
+    return reply;
 }
 
-void QIviConcreteWindowControlBackend::close(const QString &zone)
+QIviPendingReply<void> QIviConcreteWindowControlBackend::close(const QString &zone)
 {
     if (!m_zoneMap.contains(zone))
-        return;
+        return QIviPendingReply<void>::createFailedReply();
 
     if (m_zoneMap[zone].state == QtIviVehicleFunctionsModule::Closed)
-        return;
+        return QIviPendingReply<void>::createFailedReply();
 
     qWarning() << "SIMULATION close Window:" << zone;
-    m_zoneWindowTimers[zone]->close();
+    QIviPendingReply<void> reply;
+    m_zoneWindowTimers[zone]->close(reply);
+
+    return reply;
 }
 
 QtIviVehicleFunctionsModule::WindowState QIviConcreteWindowControlBackend::windowState(QString zone)

@@ -330,21 +330,30 @@ void EchoQtroTest::testSlots()
     QSignalSpy echoSpy(&server.m_service, SIGNAL(echoSlotCalled(const QString&)));
     QVERIFY(echoSpy.isValid());
     QString echoTestValue("this will be echoed");
-    QString echoReturnValue = client.echo(echoTestValue);
-    QCOMPARE(echoReturnValue, echoTestValue);
+    QIviPendingReply<QString> echoReply = client.echo(echoTestValue);
+    QSignalSpy echoReplySpy(echoReply.watcher(), SIGNAL(replySuccess()));
+    echoReplySpy.wait();
+    QCOMPARE(echoReplySpy.count(), 1);
+    QCOMPARE(echoReply.reply(), echoTestValue);
     QCOMPARE(echoSpy.count(),1);
     QCOMPARE(echoSpy[0][0].toString(), echoTestValue);
 
     QSignalSpy idSpy(&server.m_service, SIGNAL(idSlotCalled()));
     QVERIFY(idSpy.isValid());
-    QString idReturnValue = client.id();
-    QCOMPARE(idReturnValue, server.m_service.m_testId);
+    QIviPendingReply<QString> idReply = client.id();
+    QSignalSpy idReplySpy(idReply.watcher(), SIGNAL(replySuccess()));
+    idReplySpy.wait();
+    QCOMPARE(idReplySpy.count(), 1);
+    QCOMPARE(idReply.reply(), server.m_service.m_testId);
     QCOMPARE(idSpy.count(),1);
 
     QSignalSpy getComboSpy(&server.m_service, SIGNAL(getComboSlotCalled()));
     QVERIFY(getComboSpy.isValid());
-    Combo comboReturnValue = client.getCombo();
-    QCOMPARE(comboReturnValue, server.m_service.m_testCombo);
+    QIviPendingReply<Combo> comboReply = client.getCombo();
+    QSignalSpy comboReplySpy(comboReply.watcher(), SIGNAL(replySuccess()));
+    comboReplySpy.wait();
+    QCOMPARE(comboReplySpy.count(), 1);
+    QCOMPARE(comboReply.reply(), server.m_service.m_testCombo);
     QCOMPARE(getComboSpy.count(),1);
 
     QSignalSpy voidSlotSpy(&server.m_service, SIGNAL(voidSlotCalled()));
@@ -360,6 +369,47 @@ void EchoQtroTest::testSlots()
     voidSlot2Spy.wait(1000);
     QCOMPARE(voidSlot2Spy.count(),1);
     QCOMPARE(voidSlot2Spy[0][0].toInt(), voidSlot2TestValue);
+}
+
+void EchoQtroTest::testMultipleSlotCalls()
+{
+    Server server;
+    server.start();
+
+    Echo client;
+    client.startAutoDiscovery();
+
+
+    //wait until the client has connected and initial values are set
+    QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
+    QVERIFY(initSpy.isValid());
+    initSpy.wait(1000);
+    QCOMPARE(initSpy.count(), 1);
+    QVERIFY(client.isInitialized());
+
+    //test the pending replies by calling the same slot with 3 different values
+    QSignalSpy echoSpy(&server.m_service, SIGNAL(echoSlotCalled(const QString&)));
+    QVERIFY(echoSpy.isValid());
+    QString echoTestValue("first");
+    QString echoTestValue2("second");
+    QString echoTestValue3("third");
+    QIviPendingReply<QString> echoReply = client.echo(echoTestValue);
+    QIviPendingReply<QString> echoReply2 = client.echo(echoTestValue2);
+    QIviPendingReply<QString> echoReply3 = client.echo(echoTestValue3);
+    QSignalSpy echoReplySpy(echoReply.watcher(), SIGNAL(replySuccess()));
+    QSignalSpy echoReplySpy2(echoReply2.watcher(), SIGNAL(replySuccess()));
+    QSignalSpy echoReplySpy3(echoReply3.watcher(), SIGNAL(replySuccess()));
+    echoReplySpy3.wait();
+    QCOMPARE(echoReplySpy.count(), 1);
+    QCOMPARE(echoReplySpy2.count(), 1);
+    QCOMPARE(echoReplySpy3.count(), 1);
+    QCOMPARE(echoReply.reply(), echoTestValue);
+    QCOMPARE(echoReply2.reply(), echoTestValue2);
+    QCOMPARE(echoReply3.reply(), echoTestValue3);
+    QCOMPARE(echoSpy.count(),3);
+    QCOMPARE(echoSpy[0][0].toString(), echoTestValue);
+    QCOMPARE(echoSpy[1][0].toString(), echoTestValue2);
+    QCOMPARE(echoSpy[2][0].toString(), echoTestValue3);
 }
 
 void EchoQtroTest::testSignals()

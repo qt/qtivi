@@ -48,6 +48,7 @@
 {% for struct in module.structs %}
 #include "{{struct|lower}}model.h"
 {% endfor %}
+#include <QtIviCore/QIviPendingReply>
 #include <QQmlEngine>
 #include <QDebug>
 #include <QDataStream>
@@ -108,11 +109,14 @@ void {{class}}::registerTypes()
 {% for enum in module.enums %}
     qRegisterMetaType<{{class}}::{{enum|flag_type}}>();
     qRegisterMetaTypeStreamOperators<{{class}}::{{enum|flag_type}}>();
+    qIviRegisterPendingReplyType<{{class}}::{{enum|flag_type}}>();
 {% endfor %}
 {% for struct in module.structs %}
     qRegisterMetaType<{{struct}}>();
     qRegisterMetaType<{{struct}}Model*>();
     qRegisterMetaTypeStreamOperators<{{struct}}>();
+    qIviRegisterPendingReplyType<{{struct}}>();
+    qIviRegisterPendingReplyType<{{struct}}Model*>();
 {% endfor %}
 }
 

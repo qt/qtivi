@@ -55,6 +55,7 @@
 {% else %}
 #include <QtIviCore/QIviFeatureInterface>
 {% endif %}
+#include <QtIviCore/QIviPendingReply>
 
 QT_BEGIN_NAMESPACE
 
@@ -81,12 +82,12 @@ public:
 {% for operation in interface.operations %}
 {%   if interface.tags.config.zoned %}
 {%     if operation.parameters|length %}
-    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}, const QString &zone){%if operation.const %} const{% endif %} = 0;
+    virtual QIviPendingReply<{{operation|return_type}}> {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}, const QString &zone){%if operation.const %} const{% endif %} = 0;
 {%     else %}
-    virtual {{operation|return_type}} {{operation}}(const QString &zone){%if operation.const %} const{% endif %} = 0;
+    virtual QIviPendingReply<{{operation|return_type}}> {{operation}}(const QString &zone){%if operation.const %} const{% endif %} = 0;
 {%     endif %}
 {%   else %}
-    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){%if operation.const %} const{% endif %} = 0;
+    virtual QIviPendingReply<{{operation|return_type}}> {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){%if operation.const %} const{% endif %} = 0;
 {%   endif %}
 {% endfor %}
 

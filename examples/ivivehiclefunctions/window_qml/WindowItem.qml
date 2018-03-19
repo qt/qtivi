@@ -84,12 +84,12 @@ GroupBox {
 
         Button {
             text: "open"
-            onClicked: zone.open()
+            onClicked: zone.open().then(function(){console.error(zone.zone + " window opened")}, function(){console.error("opening " + zone.zone + " window failed!")})
         }
 
         Button {
             text: "close"
-            onClicked: zone.close()
+            onClicked: zone.close().then(function(){console.error(zone.zone + " window closed")}, function(){console.error("closing " + zone.zone + " window failed!")})
         }
 
         RowLayout {

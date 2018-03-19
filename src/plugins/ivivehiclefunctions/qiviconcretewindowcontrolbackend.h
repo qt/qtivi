@@ -55,8 +55,8 @@ public:
     WindowTimer(const QString &zone, bool isBlind, QIviConcreteWindowControlBackend *backend);
 
     void setOpeningTime(int intervalInSeconds);
-    void open();
-    void close();
+    void open(QIviPendingReply<void> reply);
+    void close(QIviPendingReply<void> reply);
 
 public slots:
     void checkValue();
@@ -69,6 +69,7 @@ private:
     QString m_zone;
     bool m_blind;
     QIviConcreteWindowControlBackend *m_backend;
+    QIviPendingReply<void> m_pendingReply;
 };
 
 class QIviConcreteWindowControlBackend : public QIviWindowControlBackend
@@ -78,8 +79,8 @@ public:
     ~QIviConcreteWindowControlBackend();
 
     virtual void setBlindMode(QtIviVehicleFunctionsModule::BlindMode blindMode, const QString &zone) override;
-    virtual void open(const QString &zone) override;
-    virtual void close(const QString &zone) override;
+    virtual QIviPendingReply<void> open(const QString &zone) override;
+    virtual QIviPendingReply<void> close(const QString &zone) override;
 
     QtIviVehicleFunctionsModule::WindowState windowState(QString zone);
     void setWindowState(QtIviVehicleFunctionsModule::WindowState state, const QString &zone);

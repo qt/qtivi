@@ -85,12 +85,12 @@ public Q_SLOTS:
 {% for operation in interface.operations %}
 {%   if interface_zoned %}
 {%     if operation.parameters|length %}
-    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}, const QString &zone){%if operation.const %} const{% endif %} override;
+    virtual QIviPendingReply<{{operation|return_type}}> {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}, const QString &zone){%if operation.const %} const{% endif %} override;
 {%     else %}
-    virtual {{operation|return_type}} {{operation}}(const QString &zone){%if operation.const %} const{% endif %} override;
+    virtual QIviPendingReply<{{operation|return_type}}> {{operation}}(const QString &zone){%if operation.const %} const{% endif %} override;
 {%     endif %}
 {%   else %}
-    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){%if operation.const %} const{% endif %} override;
+    virtual QIviPendingReply<{{operation|return_type}}> {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){%if operation.const %} const{% endif %} override;
 {%   endif %}
 {% endfor %}
 

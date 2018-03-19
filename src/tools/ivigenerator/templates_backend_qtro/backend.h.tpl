@@ -71,7 +71,7 @@ public Q_SLOTS:
 {% endfor %}
 
 {% for operation in interface.operations %}
-    virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){%if operation.const %} const{% endif %} override;
+    virtual QIviPendingReply<{{operation|return_type}}> {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){%if operation.const %} const{% endif %} override;
 {% endfor %}
 
 protected Q_SLOTS:

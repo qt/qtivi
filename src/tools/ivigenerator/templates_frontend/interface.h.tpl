@@ -55,6 +55,7 @@
 {% else %}
 #include <QtIviCore/QIviAbstractFeature>
 {% endif %}
+#include <QtIviCore/QIviPendingReply>
 
 QT_BEGIN_NAMESPACE
 
@@ -90,7 +91,7 @@ public:
 
 public Q_SLOTS:
 {% for operation in interface.operations %}
-    {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){% if operation.const %} const{% endif %};
+    QIviPendingReply<{{operation|return_type}}> {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){% if operation.const %} const{% endif %};
 {% endfor %}
 {% for property in interface.properties %}
 {%   if not property.readonly and not property.const %}
