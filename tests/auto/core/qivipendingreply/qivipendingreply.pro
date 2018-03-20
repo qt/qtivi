@@ -1,6 +1,7 @@
 QT       += testlib ivicore qml
 
 TARGET = tst_qiviasyncreply
+QMAKE_PROJECT_NAME = $$TARGET
 CONFIG   += testcase
 
 TEMPLATE = app

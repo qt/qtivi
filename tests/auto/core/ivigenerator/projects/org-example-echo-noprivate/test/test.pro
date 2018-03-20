@@ -1,4 +1,5 @@
 TARGET = tst_org-example-echo-noprivate
+QMAKE_PROJECT_NAME = $$TARGET
 DESTDIR = ../
 
 QT += testlib core ivicore

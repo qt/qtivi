@@ -1,6 +1,7 @@
 QT       += testlib geniviextras
 
 TARGET = tst_dlt
+QMAKE_PROJECT_NAME = $$TARGET
 CONFIG   += testcase
 
 QMAKE_USE += dlt

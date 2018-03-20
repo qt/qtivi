@@ -1,4 +1,5 @@
 TARGET = tst_basic
+QMAKE_PROJECT_NAME = $$TARGET
 
 QT += testlib core ivicore ivivehiclefunctions
 CONFIG += c++11 ivigenerator testcase

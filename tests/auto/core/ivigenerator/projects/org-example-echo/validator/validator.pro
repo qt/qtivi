@@ -1,5 +1,6 @@
-TEMPLATE=app
-TARGET = validator-check
+TEMPLATE = app
+TARGET = validator_org-example-echo
+QMAKE_PROJECT_NAME = $$TARGET
 LIBS += -L$$OUT_PWD/.. -l$$qtLibraryTarget(echo_frontend)
 
 DESTDIR = ..
