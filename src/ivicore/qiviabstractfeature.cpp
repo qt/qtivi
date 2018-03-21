@@ -62,6 +62,7 @@ QIviAbstractFeaturePrivate::QIviAbstractFeaturePrivate(const QString &interface,
     , m_error(QIviAbstractFeature::NoError)
     , m_qmlCreation(false)
     , m_isInitialized(false)
+    , m_isConnected(false)
     , m_supportsPropertyOverriding(false)
     , m_propertyOverride(nullptr)
 {
@@ -299,6 +300,8 @@ bool QIviAbstractFeature::setServiceObject(QIviServiceObject *so)
 
     if (so) {
         connectToServiceObject(d->m_serviceObject);
+        if (!d->m_isConnected)
+            qWarning("The QIviServiceObject got accepted but QIviAbstractFeature::connectToServiceObject wasn't called");
         connect(so, SIGNAL(destroyed()), this, SLOT(serviceObjectDestroyed()));
     }
 
@@ -655,6 +658,8 @@ void QIviAbstractFeature::connectToServiceObject(QIviServiceObject *serviceObjec
                                 d, &QIviAbstractFeaturePrivate::onInitializationDone);
         backend->initialize();
     }
+
+    d->m_isConnected = true;
 }
 
 /*!
@@ -671,11 +676,15 @@ void QIviAbstractFeature::connectToServiceObject(QIviServiceObject *serviceObjec
 */
 void QIviAbstractFeature::disconnectFromServiceObject(QIviServiceObject *serviceObject)
 {
+    Q_D(QIviAbstractFeature);
     Q_ASSERT(serviceObject);
     QObject *backend = serviceObject->interfaceInstance(interfaceName());
 
     if (backend)
         disconnect(backend, 0, this, 0);
+
+    d->m_isInitialized = false;
+    d->m_isConnected = false;
 }
 
 /*!

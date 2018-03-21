@@ -96,6 +96,7 @@ public:
     QIviAbstractFeature::Error m_error;
     bool m_qmlCreation;
     bool m_isInitialized;
+    bool m_isConnected;
 
     bool m_supportsPropertyOverriding;
     QIviPropertyOverrider *m_propertyOverride;
