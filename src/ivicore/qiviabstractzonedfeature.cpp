@@ -121,10 +121,10 @@ void QIviAbstractZonedFeature::connectToServiceObject(QIviServiceObject *service
     else if (serviceObject)
         backend = qobject_cast<QIviZonedFeatureInterface*>(serviceObject->interfaceInstance(interfaceName()));
 
-    if (backend) {
-        connect(backend, &QIviZonedFeatureInterface::errorChanged, this, &QIviAbstractZonedFeature::onErrorChanged);
+    if (backend)
         initializeZones();
-    }
+
+    QIviAbstractFeature::connectToServiceObject(serviceObject);
 }
 
 /*!

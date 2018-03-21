@@ -369,11 +369,6 @@ QIviAbstractZonedFeature *{{class}}::createZoneFeature(const QString &zone)
 /*! \internal */
 void {{class}}::connectToServiceObject(QIviServiceObject *serviceObject)
 {
-{% if interface.tags.config.zoned %}
-    QIviAbstractZonedFeature::connectToServiceObject(serviceObject);
-{% else %}
-    Q_UNUSED(serviceObject);
-{% endif %}
     auto d = {{class}}Private::get(this);
 
     auto *backend = qobject_cast<{{class}}BackendInterface*>(this->backend());
@@ -393,7 +388,11 @@ void {{class}}::connectToServiceObject(QIviServiceObject *serviceObject)
         d, &{{class}}Private::on{{signal|upperfirst}});
 {% endfor %}
 
-    backend->initialize();
+{% if interface.tags.config.zoned %}
+    QIviAbstractZonedFeature::connectToServiceObject(serviceObject);
+{% else %}
+    QIviAbstractFeature::connectToServiceObject(serviceObject);
+{% endif %}
 }
 
 /*! \internal */

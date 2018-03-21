@@ -37,6 +37,7 @@ class Server : public QObject
 
 public Q_SLOTS:
     bool start();
+    bool stop();
 
 public:
     EchoService m_service;

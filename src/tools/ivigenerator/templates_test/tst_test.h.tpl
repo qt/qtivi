@@ -52,6 +52,7 @@ public:
 private slots:
     void cleanup();
 
+    void testInitBackend();
     void testWithoutBackend();
     void testInvalidBackend();
     void testClearServiceObject();

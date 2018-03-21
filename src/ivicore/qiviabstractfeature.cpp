@@ -65,6 +65,9 @@ QIviAbstractFeaturePrivate::QIviAbstractFeaturePrivate(const QString &interface,
     , m_supportsPropertyOverriding(false)
     , m_propertyOverride(nullptr)
 {
+    qRegisterMetaType<QIviAbstractFeature::Error>();
+    qRegisterMetaType<QIviAbstractFeature::DiscoveryMode>();
+    qRegisterMetaType<QIviAbstractFeature::DiscoveryResult>();
 }
 
 void QIviAbstractFeaturePrivate::initialize()
@@ -228,9 +231,6 @@ QIviAbstractFeature::QIviAbstractFeature(const QString &interface, QObject *pare
 {
     Q_D(QIviAbstractFeature);
     d->initialize();
-    qRegisterMetaType<QIviAbstractFeature::Error>();
-    qRegisterMetaType<QIviAbstractFeature::DiscoveryMode>();
-    qRegisterMetaType<QIviAbstractFeature::DiscoveryResult>();
 }
 
 /*!

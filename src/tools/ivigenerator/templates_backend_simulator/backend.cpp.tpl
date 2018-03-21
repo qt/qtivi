@@ -158,6 +158,7 @@ void {{class}}::initialize()
 
     mWorker->addReceiver(this);
 {% endif %}
+    emit initializationDone();
 }
 
 {% for property in interface.properties %}

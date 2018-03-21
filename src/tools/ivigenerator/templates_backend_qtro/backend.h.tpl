@@ -74,7 +74,10 @@ public Q_SLOTS:
     virtual {{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){%if operation.const %} const{% endif %} override;
 {% endfor %}
 
-    void onError(QRemoteObjectNode::ErrorCode code);
+protected Q_SLOTS:
+    void onReplicaStateChanged(QRemoteObjectReplica::State newState,
+                        QRemoteObjectReplica::State oldState);
+    void onNodeError(QRemoteObjectNode::ErrorCode code);
 
 protected:
     void setupConnections();

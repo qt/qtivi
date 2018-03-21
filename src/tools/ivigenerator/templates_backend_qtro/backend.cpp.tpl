@@ -57,18 +57,6 @@ QT_BEGIN_NAMESPACE
     : {{class}}Interface(parent)
 {
     {{module.module_name|upperfirst}}Module::registerTypes();
-    QString configPath = "./server.conf";
-    if (qEnvironmentVariableIsSet("SERVER_CONF_PATH"))
-        configPath = QString::fromLatin1(qgetenv("SERVER_CONF_PATH"));
-    else
-        qDebug() << "Environment variable SERVER_CONF_PATH not defined, using " << configPath;
-    QSettings settings(configPath, QSettings::IniFormat);
-    settings.beginGroup("{{module.module_name|lower}}");
-    QUrl url = QUrl(settings.value("Registry", "local:{{module.module_name|lower}}").toString());
-    m_node = new QRemoteObjectNode(url);
-    connect(m_node, &QRemoteObjectNode::error, this, &{{class}}::onError);
-    m_replica.reset(m_node->acquire<{{interface}}Replica>("{{interface.qualified_name}}"));
-    setupConnections();
 }
 
 {{class}}::~{{class}}()
@@ -78,11 +66,26 @@ QT_BEGIN_NAMESPACE
 
 void {{class}}::initialize()
 {
+    QString configPath = "./server.conf";
+    if (qEnvironmentVariableIsSet("SERVER_CONF_PATH"))
+        configPath = QString::fromLatin1(qgetenv("SERVER_CONF_PATH"));
+    else
+        qDebug() << "Environment variable SERVER_CONF_PATH not defined, using " << configPath;
+    QSettings settings(configPath, QSettings::IniFormat);
+    settings.beginGroup("{{module.module_name|lower}}");
+    QUrl url = QUrl(settings.value("Registry", "local:{{module.module_name|lower}}").toString());
+    m_node = new QRemoteObjectNode(url);
+    connect(m_node, &QRemoteObjectNode::error, this, &{{class}}::onNodeError);
+    m_replica.reset(m_node->acquire<{{interface}}Replica>("{{interface.qualified_name}}"));
+    setupConnections();
+
 {% for property in interface.properties %}
 {%   if not property.is_model %}
     emit {{property}}Changed(m_replica->{{property}}());
 {%   endif %}
 {% endfor %}
+    if (m_replica->isInitialized())
+        emit initializationDone();
 }
 
 {% for property in interface.properties %}
@@ -119,6 +122,8 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 
 void {{class}}::setupConnections()
 {
+    connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &QIviFeatureInterface::initializationDone);
+    connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, this, &{{class}}::onReplicaStateChanged);
 {% for property in interface.properties if not property.type.is_model %}
     connect(m_replica.data(), &{{interface}}Replica::{{property}}Changed, this, &{{class}}::{{property}}Changed);
 {% endfor %}
@@ -127,10 +132,26 @@ void {{class}}::setupConnections()
 {% endfor %}
 }
 
-void {{class}}::onError(QRemoteObjectNode::ErrorCode code)
+void {{class}}::onReplicaStateChanged(QRemoteObjectReplica::State newState,
+                               QRemoteObjectReplica::State oldState)
 {
-    qDebug() << "{{class}}, QRemoteObjects error, code: " << code;
-    emit errorChanged(QIviAbstractFeature::Unknown, "QRemoteObjects error, code: " + code);
+    if (newState == QRemoteObjectReplica::Suspect) {
+        qDebug() << "{{class}}, QRemoteObjectReplica error, connection to the source lost";
+        emit errorChanged(QIviAbstractFeature::Unknown,
+                        "QRemoteObjectReplica error, connection to the source lost");
+    } else if (newState == QRemoteObjectReplica::SignatureMismatch) {
+        qDebug() << "{{class}}, QRemoteObjectReplica error, signature mismatch";
+        emit errorChanged(QIviAbstractFeature::Unknown,
+                        "QRemoteObjectReplica error, signature mismatch");
+    } else if (newState==QRemoteObjectReplica::Valid) {
+        emit errorChanged(QIviAbstractFeature::NoError, "");
+    }
+}
+
+void {{class}}::onNodeError(QRemoteObjectNode::ErrorCode code)
+{
+    qDebug() << "{{class}}, QRemoteObjectNode error, code: " << code;
+    emit errorChanged(QIviAbstractFeature::Unknown, "QRemoteObjectNode error, code: " + code);
 }
 
 QT_END_NAMESPACE

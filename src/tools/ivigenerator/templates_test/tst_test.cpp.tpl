@@ -242,6 +242,21 @@ void {{interface}}Test::cleanup()
     manager->unloadAllBackends();
 }
 
+void {{interface}}Test::testInitBackend()
+{
+    {{interface}}TestServiceObject *service = new {{interface}}TestServiceObject();
+    manager->registerService(service, service->interfaces());
+
+    {{interface}} cc;
+    QSignalSpy initSpy(&cc, SIGNAL(isInitializedChanged(bool)));
+    QVERIFY(initSpy.isValid());
+    cc.startAutoDiscovery();
+
+    QCOMPARE(initSpy.count(), 1);
+    QCOMPARE(initSpy.at(0).at(0).toBool(), true);
+    QVERIFY(cc.isInitialized());
+}
+
 void {{interface}}Test::testWithoutBackend()
 {
     {{interface}} cc;

@@ -88,16 +88,17 @@ void EchoQtroTest::testInit()
     server.m_service.setContact(contactTestValue);
     server.m_service.setWeekDay(weekDayTestValue);
 
+    QVERIFY(!client.isInitialized());
+    QCOMPARE(client.error(), QIviAbstractFeature::NoError);
+
     QVERIFY(server.start());
 
-
-    //hack that makes sure we wait until the client is connected to the server
-    //QSignalSpy spy(&client, SIGNAL(weekDayChanged(EchoModule::WeekDay)));
-    QSignalSpy spy(&client, SIGNAL(floatValue1Changed(qreal)));
-    QVERIFY(spy.isValid());
-    spy.wait(1000);
-    // end of hack
-
+    //wait until the client has connected and initial values are set
+    QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
+    QVERIFY(initSpy.isValid());
+    initSpy.wait(1000);
+    QCOMPARE(initSpy.count(), 1);
+    QVERIFY(client.isInitialized());
 
     //test that client gets the same values that were set at the server before connection was established
     QCOMPARE(client.lastMessage(),lastMessageTestValue);
@@ -109,8 +110,44 @@ void EchoQtroTest::testInit()
     QCOMPARE(contactList[0].value<Contact>(), contactListTestValue[0].value<Contact>());
     QCOMPARE(contactList[1].value<Contact>(), contactListTestValue[1].value<Contact>());
     QCOMPARE(client.contact(), contactTestValue);
-    QCOMPARE(server.m_service.weekDay(), weekDayTestValue);
     QCOMPARE(client.weekDay(), weekDayTestValue);
+}
+
+void EchoQtroTest::testReconnect()
+{
+    Server server;
+    QVERIFY(server.start());
+
+    Echo client;
+    QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
+
+    //wait until the client has connected and initial values are set
+    QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
+    QVERIFY(initSpy.isValid());
+    initSpy.wait(1000);
+    QCOMPARE(initSpy.count(), 1);
+    QVERIFY(client.isInitialized());
+
+    //test disconnection
+    QCOMPARE(client.error(), QIviAbstractFeature::NoError);
+    QSignalSpy disconnectSpy(&client, SIGNAL(errorChanged(QIviAbstractFeature::Error,QString)));
+    QVERIFY(disconnectSpy.isValid());
+
+    server.stop();
+
+    disconnectSpy.wait(1000);
+    QCOMPARE(disconnectSpy.count(), 1);
+    QCOMPARE(client.error(), QIviAbstractFeature::Unknown);
+
+    //test reconnection
+    QSignalSpy reconnectSpy(&client, SIGNAL(errorChanged(QIviAbstractFeature::Error,QString)));
+    QVERIFY(reconnectSpy.isValid());
+
+    server.start();
+
+    reconnectSpy.wait(1000);
+    QCOMPARE(reconnectSpy.count(), 1);
+    QCOMPARE(client.error(), QIviAbstractFeature::NoError);
 }
 
 void EchoQtroTest::testClient2Server()
@@ -122,12 +159,12 @@ void EchoQtroTest::testClient2Server()
     QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
 
 
-    //hack that makes sure we wait until the client is connected to the server
-    server.m_service.setFloatValue1(1.0);
-    QSignalSpy spy(&client, SIGNAL(floatValue1Changed(qreal)));
-    spy.wait(1000);
-    // end of hack
-
+    //wait until the client has connected and initial values are set
+    QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
+    QVERIFY(initSpy.isValid());
+    initSpy.wait(1000);
+    QCOMPARE(initSpy.count(), 1);
+    QVERIFY(client.isInitialized());
 
     //test properties
     QSignalSpy intValueSpy(&server.m_service, SIGNAL(intValueChanged(int)));
@@ -202,12 +239,12 @@ void EchoQtroTest::testServer2Client()
     QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
 
 
-    //hack that makes sure we wait until the client is connected to the server
-    server.m_service.setFloatValue1(1.0);
-    QSignalSpy spy(&client, SIGNAL(floatValue1Changed(qreal)));
-    spy.wait(1000);
-    // end of hack
-
+    //wait until the client has connected and initial values are set
+    QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
+    QVERIFY(initSpy.isValid());
+    initSpy.wait(1000);
+    QCOMPARE(initSpy.count(), 1);
+    QVERIFY(client.isInitialized());
 
     //test properties
     QSignalSpy intValueSpy(&client, SIGNAL(intValueChanged(int)));
@@ -282,19 +319,18 @@ void EchoQtroTest::testSlots()
     client.startAutoDiscovery();
 
 
-    //hack that makes sure we wait until the client is connected to the server
-    server.m_service.setFloatValue1(1.0);
-    QSignalSpy spy(&client, SIGNAL(floatValue1Changed(qreal)));
-    spy.wait(1000);
-    // end of hack
-
+    //wait until the client has connected and initial values are set
+    QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
+    QVERIFY(initSpy.isValid());
+    initSpy.wait(1000);
+    QCOMPARE(initSpy.count(), 1);
+    QVERIFY(client.isInitialized());
 
     //test slots by calling them on the client
     QSignalSpy echoSpy(&server.m_service, SIGNAL(echoSlotCalled(const QString&)));
     QVERIFY(echoSpy.isValid());
     QString echoTestValue("this will be echoed");
     QString echoReturnValue = client.echo(echoTestValue);
-    //echoSpy.wait(1000);
     QCOMPARE(echoReturnValue, echoTestValue);
     QCOMPARE(echoSpy.count(),1);
     QCOMPARE(echoSpy[0][0].toString(), echoTestValue);
@@ -302,14 +338,12 @@ void EchoQtroTest::testSlots()
     QSignalSpy idSpy(&server.m_service, SIGNAL(idSlotCalled()));
     QVERIFY(idSpy.isValid());
     QString idReturnValue = client.id();
-    //idSpy.wait(1000);
     QCOMPARE(idReturnValue, server.m_service.m_testId);
     QCOMPARE(idSpy.count(),1);
 
     QSignalSpy getComboSpy(&server.m_service, SIGNAL(getComboSlotCalled()));
     QVERIFY(getComboSpy.isValid());
     Combo comboReturnValue = client.getCombo();
-    //getComboSpy.wait(1000);
     QCOMPARE(comboReturnValue, server.m_service.m_testCombo);
     QCOMPARE(getComboSpy.count(),1);
 
@@ -337,12 +371,12 @@ void EchoQtroTest::testSignals()
     client.startAutoDiscovery();
 
 
-    //hack that makes sure we wait until the client is connected to the server
-    server.m_service.setFloatValue1(1.0);
-    QSignalSpy spy(&client, SIGNAL(floatValue1Changed(qreal)));
-    spy.wait(1000);
-    // end of hack
-
+    //wait until the client has connected and initial values are set
+    QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
+    QVERIFY(initSpy.isValid());
+    initSpy.wait(1000);
+    QCOMPARE(initSpy.count(), 1);
+    QVERIFY(client.isInitialized());
 
     //test custom signals (other than property notifiers) from server to client
     QSignalSpy anotherChangedSpy(&client, SIGNAL(anotherChanged(AnotherStruct)));

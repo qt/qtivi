@@ -34,7 +34,12 @@ bool Server::start()
     return Core::instance()->host()->enableRemoting(&m_service, "org.example.echo.Echo");
 }
 
+bool Server::stop()
+{
+    return Core::instance()->host()->disableRemoting(&m_service);
+}
+
 Server::~Server()
 {
-    qWarning() << "disableRemoting, returned=" << Core::instance()->host()->disableRemoting(&m_service);
+    stop();
 }
