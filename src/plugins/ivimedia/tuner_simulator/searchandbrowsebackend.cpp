@@ -119,30 +119,38 @@ QString SearchAndBrowseBackend::goForward(const QUuid &identifier, const QString
     return QString();
 }
 
-void SearchAndBrowseBackend::insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item)
+QIviPendingReply<void> SearchAndBrowseBackend::insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item)
 {
     if (type != "presets" || item->type() != "amfmtunerstation")
-        return;
+        return QIviPendingReply<void>::createFailedReply();
 
     const QIviAmFmTunerStation &station = *static_cast<const QIviAmFmTunerStation*>(item);
     m_presets.insert(index, station);
     QVariantList stations = { QVariant::fromValue(station) };
     emit dataChanged(identifier, stations, index, 0);
+
+    QIviPendingReply<void> reply;
+    reply.setSuccess();
+    return reply;
 }
 
-void SearchAndBrowseBackend::remove(const QUuid &identifier, const QString &type, int index)
+QIviPendingReply<void> SearchAndBrowseBackend::remove(const QUuid &identifier, const QString &type, int index)
 {
     if (type != "presets")
-        return;
+        return QIviPendingReply<void>::createFailedReply();
 
     m_presets.removeAt(index);
     emit dataChanged(identifier, QVariantList(), index, 1);
+
+    QIviPendingReply<void> reply;
+    reply.setSuccess();
+    return reply;
 }
 
-void SearchAndBrowseBackend::move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex)
+QIviPendingReply<void> SearchAndBrowseBackend::move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex)
 {
     if (type != "presets")
-        return;
+        return QIviPendingReply<void>::createFailedReply();
 
     int min = qMin(currentIndex, newIndex);
     int max = qMax(currentIndex, newIndex);
@@ -153,12 +161,18 @@ void SearchAndBrowseBackend::move(const QUuid &identifier, const QString &type, 
         stations.append(QVariant::fromValue(m_presets.at(i)));
 
     emit dataChanged(identifier, stations, min, max - min + 1);
+
+    QIviPendingReply<void> reply;
+    reply.setSuccess();
+    return reply;
 }
 
-int SearchAndBrowseBackend::indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item)
+QIviPendingReply<int> SearchAndBrowseBackend::indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item)
 {
+    Q_UNUSED(identifier)
+
     if (item->type() != "amfmtunerstation")
-        return -1;
+        return QIviPendingReply<int>::createFailedReply();
 
     QVector<QIviAmFmTunerStation> stations;
 
@@ -167,12 +181,11 @@ int SearchAndBrowseBackend::indexOf(const QUuid &identifier, const QString &type
     else if (type == "presets")
         stations = m_presets;
     else
-        return -1;
+        return QIviPendingReply<int>::createFailedReply();
 
     QIviAmFmTunerStation station = *static_cast<const QIviAmFmTunerStation*>(item);
-    static int callID = 0;
 
-    emit indexOfCallResult(identifier, callID, stations.indexOf(station));
-
-    return callID++;
+    QIviPendingReply<int> reply;
+    reply.setSuccess(stations.indexOf(station));
+    return reply;
 }

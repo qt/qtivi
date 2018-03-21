@@ -347,34 +347,40 @@ QString SearchAndBrowseBackend::goForward(const QUuid &identifier, const QString
     return new_type;
 }
 
-void SearchAndBrowseBackend::insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item)
+QIviPendingReply<void> SearchAndBrowseBackend::insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item)
 {
     Q_UNUSED(identifier)
     Q_UNUSED(type)
     Q_UNUSED(index)
     Q_UNUSED(item)
+
+    return QIviPendingReply<void>::createFailedReply();
 }
 
-void SearchAndBrowseBackend::remove(const QUuid &identifier, const QString &type, int index)
+QIviPendingReply<void> SearchAndBrowseBackend::remove(const QUuid &identifier, const QString &type, int index)
 {
     Q_UNUSED(identifier)
     Q_UNUSED(type)
     Q_UNUSED(index)
+
+    return QIviPendingReply<void>::createFailedReply();
 }
 
-void SearchAndBrowseBackend::move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex)
+QIviPendingReply<void> SearchAndBrowseBackend::move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex)
 {
     Q_UNUSED(identifier)
     Q_UNUSED(type)
     Q_UNUSED(currentIndex)
     Q_UNUSED(newIndex)
+
+    return QIviPendingReply<void>::createFailedReply();
 }
 
-int SearchAndBrowseBackend::indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item)
+QIviPendingReply<int> SearchAndBrowseBackend::indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item)
 {
     Q_UNUSED(identifier)
     Q_UNUSED(type)
     Q_UNUSED(item)
 
-    return -1;
+    return QIviPendingReply<int>::createFailedReply();
 }

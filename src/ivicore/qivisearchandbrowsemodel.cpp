@@ -197,16 +197,6 @@ void QIviSearchAndBrowseModelPrivate::onDataChanged(const QUuid &identifier, con
     }
 }
 
-void QIviSearchAndBrowseModelPrivate::onIndexOfCallResult(const QUuid &identifier, int callID, int index)
-{
-    if (identifier != m_identifier || !m_indexOfFunctorHash.contains(callID))
-        return;
-
-    QJSValue functor = m_indexOfFunctorHash.take(callID);
-    QJSValueList list = { QJSValue(index) };
-    functor.call(list);
-}
-
 void QIviSearchAndBrowseModelPrivate::onFetchMoreThresholdReached()
 {
     Q_Q(QIviSearchAndBrowseModel);
@@ -1205,6 +1195,8 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
     Insert the \a item at the position \a index.
 
     If the backend doesn't accept the provided item, this operation will end in a no op.
+
+    The returned PendingReply notifies about when the action has been done or whether it failed.
 */
 
 /*!
@@ -1213,134 +1205,123 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
     Insert the \a variant at the position \a index.
 
     If the backend doesn't accept the provided item, this operation will end in a no op.
+
+    The returned QIviPendingReply notifies about when the action has been done or whether it failed.
 */
-void QIviSearchAndBrowseModel::insert(int index, const QVariant &variant)
+QIviPendingReply<void> QIviSearchAndBrowseModel::insert(int index, const QVariant &variant)
 {
     Q_D(QIviSearchAndBrowseModel);
     const QIviSearchAndBrowseModelItem *item = qtivi_gadgetFromVariant<QIviSearchAndBrowseModelItem>(this, variant);
     if (!item)
-        return;
+        return QIviPendingReply<void>::createFailedReply();
 
     QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
     if (!backend) {
         qtivi_qmlOrCppWarning(this, QLatin1String("Can't insert itmes without a connected backend"));
-        return;
+        return QIviPendingReply<void>::createFailedReply();
     }
 
     if (!d->m_capabilities.testFlag(SupportsInsert)) {
         qtivi_qmlOrCppWarning(this, QLatin1String("The backend doesn't support inserting items"));
-        return;
+        return QIviPendingReply<void>::createFailedReply();
     }
 
-    backend->insert(d->m_identifier, d->m_contentType, index, item);
+    return backend->insert(d->m_identifier, d->m_contentType, index, item);
 }
 
 /*!
     \qmlmethod SearchAndBrowseModel::remove(int index)
 
     Removes the item at position \a index.
+
+    The returned PendingReply notifies about when the action has been done or whether it failed.
 */
 
 /*!
     \fn void QIviSearchAndBrowseModel::remove(int index)
 
     Removes the item at position \a index.
+
+    The returned QIviPendingReply notifies about when the action has been done or whether it failed.
 */
-void QIviSearchAndBrowseModel::remove(int index)
+QIviPendingReply<void> QIviSearchAndBrowseModel::remove(int index)
 {
     Q_D(QIviSearchAndBrowseModel);
     QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
     if (!backend) {
         qtivi_qmlOrCppWarning(this, QLatin1String("Can't remove items without a connected backend"));
-        return;
+        return QIviPendingReply<void>::createFailedReply();
     }
 
     if (!d->m_capabilities.testFlag(SupportsRemove)) {
         qtivi_qmlOrCppWarning(this, QLatin1String("The backend doesn't support removing of items"));
-        return;
+        return QIviPendingReply<void>::createFailedReply();
     }
 
-    backend->remove(d->m_identifier, d->m_contentType, index);
+    return backend->remove(d->m_identifier, d->m_contentType, index);
 }
 
 /*!
     \qmlmethod SearchAndBrowseModel::move(int cur_index, int new_index)
 
     Moves the item at position \a cur_index to the new position \a new_index.
+
+    The returned PendingReply notifies about when the action has been done or whether it failed.
 */
 
 /*!
     \fn void QIviSearchAndBrowseModel::move(int cur_index, int new_index)
 
     Moves the item at position \a cur_index to the new position \a new_index.
+
+    The returned QIviPendingReply notifies about when the action has been done or whether it failed.
 */
-void QIviSearchAndBrowseModel::move(int cur_index, int new_index)
+QIviPendingReply<void> QIviSearchAndBrowseModel::move(int cur_index, int new_index)
 {
     Q_D(QIviSearchAndBrowseModel);
     QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
     if (!backend) {
         qtivi_qmlOrCppWarning(this, QLatin1String("Can't move items without a connected backend"));
-        return;
+        return QIviPendingReply<void>::createFailedReply();
     }
 
     if (!d->m_capabilities.testFlag(SupportsMove)) {
         qtivi_qmlOrCppWarning(this, QLatin1String("The backend doesn't support moving of items"));
-        return;
+        return QIviPendingReply<void>::createFailedReply();
     }
 
-    backend->move(d->m_identifier, d->m_contentType, cur_index, new_index);
+    return backend->move(d->m_identifier, d->m_contentType, cur_index, new_index);
 }
 
 /*!
-    \qmlmethod SearchAndBrowseModel::indexOf(SearchAndBrowseModelItem item, object functor)
+    \qmlmethod SearchAndBrowseModel::indexOf(SearchAndBrowseModelItem item)
 
-    Determines the index of \a item in this model and calls the \a functor once the result is ready.
-    The result is passed as the first argument to the functor and is -1 if the item is not part of the list.
+    Determines the index of \a item in this model.
 
-    \code
-    model.indexOf(item, function (index) {
-        console.log("The index of item is: ", index)
-    })
-    \endcode
+    The result is returned as a PendingReply.
 */
 
 /*!
-    \fn void QIviSearchAndBrowseModel::indexOf(const QVariant &variant, const QJSValue &functor)
+    \fn void QIviSearchAndBrowseModel::indexOf(const QVariant &variant)
 
-    Determines the index of \a variant in this model and calls the \a functor once the result is ready.
-    The result is passed as the first argument to the functor and is -1 if the item is not part of the list.
+    Determines the index of \a item in this model.
 
-    \code
-    model.indexOf(item, function (index) {
-        console.log("The index of item is: ", index)
-    })
-    \endcode
+    The result is returned as a QIviPendingReply.
 */
-void QIviSearchAndBrowseModel::indexOf(const QVariant &variant, const QJSValue &functor)
+QIviPendingReply<int> QIviSearchAndBrowseModel::indexOf(const QVariant &variant)
 {
     Q_D(QIviSearchAndBrowseModel);
     const QIviSearchAndBrowseModelItem *item = qtivi_gadgetFromVariant<QIviSearchAndBrowseModelItem>(this, variant);
     if (!item)
-        return;
-
-    if (!functor.isCallable()) {
-        qtivi_qmlOrCppWarning(this, QLatin1String("Provided functor is not callable"));
-        return;
-    }
+        return QIviPendingReply<int>::createFailedReply();
 
     QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
     if (!backend) {
         qtivi_qmlOrCppWarning(this, QLatin1String("Can't get the index without a connected backend"));
-        return;
+        return QIviPendingReply<int>::createFailedReply();
     }
 
-    int callID = backend->indexOf(d->m_identifier, d->m_contentType, item);
-    if (callID == -1) {
-        qtivi_qmlOrCppWarning(this, QLatin1String("An error happened while calling the backend"));
-        return;
-    }
-
-    d->m_indexOfFunctorHash.insert(callID, functor);
+    return backend->indexOf(d->m_identifier, d->m_contentType, item);
 }
 
 /*!
@@ -1450,9 +1431,6 @@ void QIviSearchAndBrowseModel::connectToServiceObject(QIviServiceObject *service
                             d, &QIviSearchAndBrowseModelPrivate::onCountChanged);
     QObjectPrivate::connect(backend, &QIviSearchAndBrowseModelInterface::dataChanged,
                             d, &QIviSearchAndBrowseModelPrivate::onDataChanged);
-    QObjectPrivate::connect(backend, &QIviSearchAndBrowseModelInterface::indexOfCallResult,
-                            d, &QIviSearchAndBrowseModelPrivate::onIndexOfCallResult,
-                            Qt::QueuedConnection);
 
     QIviAbstractFeatureListModel::connectToServiceObject(serviceObject);
 

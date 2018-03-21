@@ -246,7 +246,7 @@ public:
         return "levelOne";
     }
 
-    virtual void insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item) override
+    virtual QIviPendingReply<void> insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item) override
     {
         QList<QIviSearchAndBrowseModelItem> list = m_lists.value(type);
 
@@ -256,9 +256,13 @@ public:
         m_lists.insert(type, list);
 
         emit dataChanged(identifier, variantList, index, 0);
+
+        QIviPendingReply<void> reply;
+        reply.setSuccess();
+        return reply;
     }
 
-    virtual void remove(const QUuid &identifier, const QString &type, int index) override
+    virtual QIviPendingReply<void> remove(const QUuid &identifier, const QString &type, int index) override
     {
         QList<QIviSearchAndBrowseModelItem> list = m_lists.value(type);
 
@@ -266,9 +270,13 @@ public:
         m_lists.insert(type, list);
 
         emit dataChanged(identifier, QVariantList(), index, 1);
+
+        QIviPendingReply<void> reply;
+        reply.setSuccess();
+        return reply;
     }
 
-    virtual void move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) override
+    virtual QIviPendingReply<void> move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) override
     {
         QList<QIviSearchAndBrowseModelItem> list = m_lists.value(type);
 
@@ -283,16 +291,20 @@ public:
         m_lists.insert(type, list);
 
         emit dataChanged(identifier, variantLIst, min, max - min + 1);
+
+        QIviPendingReply<void> reply;
+        reply.setSuccess();
+        return reply;
     }
 
-    virtual int indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item) override
+    virtual QIviPendingReply<int> indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item) override
     {
-        static int callID = 0;
+        Q_UNUSED(identifier)
         QList<QIviSearchAndBrowseModelItem> list = m_lists.value(type);
 
-        emit indexOfCallResult(identifier, callID, list.indexOf(*item));
-
-        return callID++;
+        QIviPendingReply<int> reply;
+        reply.setSuccess(list.indexOf(*item));
+        return reply;
     }
 
 private:
@@ -403,11 +415,10 @@ void tst_QIviSearchAndBrowseModel::testWithoutBackend()
     QTest::ignoreMessage(QtWarningMsg, "Can't insert itmes without a connected backend");
     model.insert(0, QVariant::fromValue(QIviSearchAndBrowseModelItem()));
 
-    QQmlEngine engine;
-    QJSValue functor = engine.evaluate("(function(index) { return index; })");
-
     QTest::ignoreMessage(QtWarningMsg, "Can't get the index without a connected backend");
-    model.indexOf(QVariant::fromValue(QIviSearchAndBrowseModelItem()), functor);
+    auto reply = model.indexOf(QVariant::fromValue(QIviSearchAndBrowseModelItem()));
+    QVERIFY(reply.isResultAvailable());
+    QVERIFY(!reply.isSuccessful());
 
     QVERIFY(model.availableContentTypes().isEmpty());
 }
@@ -908,12 +919,6 @@ void tst_QIviSearchAndBrowseModel::testInputErrors()
     QSignalSpy countChanged(&model, SIGNAL(countChanged()));
     model.fetchMore(model.index(0,0));
     QVERIFY(!countChanged.count());
-
-    QIviSearchAndBrowseModelItem item = model.at<QIviSearchAndBrowseModelItem>(25);
-    QCOMPARE(item.id(), QLatin1String("simple 25"));
-
-    QTest::ignoreMessage(QtWarningMsg, "Provided functor is not callable");
-    model.indexOf(QVariant::fromValue(item), QJSValue());
 
     // Invalid content Type
     QTest::ignoreMessage(QtWarningMsg, "Unsupported type: \"levelOne\" \n Supported types are: \nsimple\n");

@@ -209,24 +209,9 @@ void QIviSearchAndBrowseModelInterface::registerContentType(const QMetaObject &o
 */
 
 /*!
-    \fn int QIviSearchAndBrowseModelInterface::indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item)
+    \fn QIviSearchAndBrowseModelInterface::indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item)
 
     Determines the index of \a item in the model identified by \a identifier and \a type.
-    An id will be returned which identifies this call (-1 for an error, or not supported). The result is sent by emitting the indexOfCallResult() signal
-
-    The following code shows and example usage:
-    \code
-    QVector<ExampleItem> list;
-
-    ExampleItem item = *static_cast<const ExampleItem*>(item);
-    static int callID = 0;
-
-    emit indexOfCallResult(identifier, callID, list.indexOf(item));
-
-    return callID++;
-    \endcode
-
-    \sa indexOfCallResult()
 */
 
 /*!
@@ -280,16 +265,6 @@ void QIviSearchAndBrowseModelInterface::registerContentType(const QMetaObject &o
     \endcode
 
     \sa insert() remove() move()
-*/
-
-/*!
-    \fn void QIviSearchAndBrowseModelInterface::indexOfCallResult(const QUuid &identifier, int callID, int index)
-
-    This signal is emitted as a result of a call to indexOf() and returns the \a index of the requested item.
-    If the item is not part of the list -1 should be returned. The \a identifier and \a callID arguments are used to map this result to the matching
-    model and the call.
-
-    \sa indexOf()
 */
 
 QT_END_NAMESPACE

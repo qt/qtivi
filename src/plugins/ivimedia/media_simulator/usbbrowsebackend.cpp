@@ -125,34 +125,40 @@ QString UsbBrowseBackend::goForward(const QUuid &identifier, const QString &type
         return itemId;
 }
 
-void UsbBrowseBackend::insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item)
+QIviPendingReply<void> UsbBrowseBackend::insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item)
 {
     Q_UNUSED(identifier)
     Q_UNUSED(type)
     Q_UNUSED(index)
     Q_UNUSED(item)
+
+    return QIviPendingReply<void>::createFailedReply();
 }
 
-void UsbBrowseBackend::remove(const QUuid &identifier, const QString &type, int index)
+QIviPendingReply<void> UsbBrowseBackend::remove(const QUuid &identifier, const QString &type, int index)
 {
     Q_UNUSED(identifier)
     Q_UNUSED(type)
     Q_UNUSED(index)
+
+    return QIviPendingReply<void>::createFailedReply();
 }
 
-void UsbBrowseBackend::move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex)
+QIviPendingReply<void> UsbBrowseBackend::move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex)
 {
     Q_UNUSED(identifier)
     Q_UNUSED(type)
     Q_UNUSED(currentIndex)
     Q_UNUSED(newIndex)
+
+    return QIviPendingReply<void>::createFailedReply();
 }
 
-int UsbBrowseBackend::indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item)
+QIviPendingReply<int> UsbBrowseBackend::indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item)
 {
     Q_UNUSED(identifier)
     Q_UNUSED(type)
     Q_UNUSED(item)
 
-    return -1;
+    return QIviPendingReply<int>::createFailedReply();
 }

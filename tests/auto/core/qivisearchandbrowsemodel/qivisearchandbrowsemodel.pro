@@ -11,3 +11,5 @@ SOURCES += \
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
+DISTFILES += testdata/*
+

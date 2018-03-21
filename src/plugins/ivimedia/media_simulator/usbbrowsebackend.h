@@ -58,10 +58,10 @@ public:
     virtual bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) override;
     virtual QString goForward(const QUuid &identifier, const QString &type, const QString &itemId) override;
 
-    virtual void insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item) override;
-    virtual void remove(const QUuid &identifier, const QString &type, int index) override;
-    virtual void move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) override;
-    virtual int indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item) override;
+    virtual QIviPendingReply<void> insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item) override;
+    virtual QIviPendingReply<void> remove(const QUuid &identifier, const QString &type, int index) override;
+    virtual QIviPendingReply<void> move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) override;
+    virtual QIviPendingReply<int> indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item) override;
 
 private:
     QString m_rootFolder;

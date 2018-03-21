@@ -43,7 +43,7 @@ ListView {
     }
 
     function callIndexOf(item) {
-        root.model.indexOf(item, function (index) {
+        root.model.indexOf(item).then(function (index) {
             root.indexOfItem(index);
         })
     }

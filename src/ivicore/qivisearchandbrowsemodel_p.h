@@ -77,7 +77,6 @@ public:
     void onDataFetched(const QUuid &identifer, const QList<QVariant> &items, int start, bool moreAvailable);
     void onCountChanged(const QUuid &identifier, int new_length);
     void onDataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count);
-    void onIndexOfCallResult(const QUuid &identifier, int callID, int index);
     void onFetchMoreThresholdReached();
     void resetModel();
     void parseQuery();
@@ -111,7 +110,6 @@ public:
     QStringList m_availableContentTypes;
     bool m_canGoBack;
     QIviSearchAndBrowseModel::LoadingType m_loadingType;
-    QHash<int, QJSValue> m_indexOfFunctorHash;
 };
 
 QT_END_NAMESPACE

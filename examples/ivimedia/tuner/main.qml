@@ -212,8 +212,8 @@ ApplicationWindow {
                         }
 
                         function checkExists() {
-                            presetsModel.indexOf(model.item, function (index) {
-                                addButton.enabled = (index == -1)
+                            presetsModel.indexOf(model.item).then(function (index) {
+                                addButton.enabled = (index === -1)
                             })
                         }
 
