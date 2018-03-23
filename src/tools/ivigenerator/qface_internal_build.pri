@@ -27,6 +27,12 @@ qtivi_qface_virtualenv.commands = \
     @echo "Set up virtualenv for qface, name: qtivi_qface_virtualenv"
 QMAKE_EXTRA_TARGETS += qtivi_qface_virtualenv
 
+# This helper adds a target for the qtivi_qface_virtualenv folder
+# This target is needed for any target which has the folder as a dependency but not the python executable
+qtivi_qface_virtualenv_helper.target = qtivi_qface_virtualenv
+qtivi_qface_virtualenv_helper.depends = $${qtivi_qface_virtualenv.target}
+QMAKE_EXTRA_TARGETS += qtivi_qface_virtualenv_helper
+
 equals(QMAKE_HOST.os, Windows): VIRTUALENV_ACTIVATION = qtivi_qface_virtualenv\Scripts\activate &&
 else: VIRTUALENV_ACTIVATION = . qtivi_qface_virtualenv/bin/activate &&
 
