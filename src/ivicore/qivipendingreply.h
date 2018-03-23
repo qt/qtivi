@@ -62,7 +62,6 @@ class Q_QTIVICORE_EXPORT QIviPendingReplyWatcher : public QObject
     Q_PROPERTY(bool success READ isSuccessful NOTIFY valueChanged)
 
 public:
-    explicit QIviPendingReplyWatcher(int userType);
     ~QIviPendingReplyWatcher();
 
     QVariant value() const;
@@ -80,6 +79,7 @@ Q_SIGNALS:
     void valueChanged(const QVariant &value);
 
 private:
+    explicit QIviPendingReplyWatcher(int userType);
     Q_DECLARE_PRIVATE(QIviPendingReplyWatcher)
     friend class QIviPendingReplyBase;
 };
