@@ -104,8 +104,6 @@ generator.files += \
     templates_frontend.yaml \
     templates_backend_simulator.yaml \
     templates_generation_validator.yaml \
-    templates_backend_qtro.yaml \
-    templates_server_qtro.yaml \
     templates_test.yaml \
 
 generator.path = $$[QT_HOST_BINS]/ivigenerator
@@ -115,12 +113,19 @@ qtConfig(simulator) {
     INSTALLS += templates_control_panel
 }
 
+qtConfig(remoteobjects) {
+    generator.files += templates_backend_qtro.yaml \
+                       templates_server_qtro.yaml \
+
+    INSTALLS += templates_backend_qtro \
+                templates_server_qtro \
+
+}
+
 INSTALLS += generator \
     templates_frontend \
     templates_backend_simulator \
     templates_generation_validator \
-    templates_backend_qtro \
-    templates_server_qtro \
     templates_test \
 
 # Ensure files are installed to qtbase for non-prefixed builds

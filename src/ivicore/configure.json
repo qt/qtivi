@@ -6,7 +6,8 @@
         "options": {
             "ivigenerator": { "type": "enum", "values": [ "no", "qt", "system" ] },
             "host-tools-only": "boolean",
-            "force-ivigenerator-qtsimulator": "boolean"
+            "force-ivigenerator-qtsimulator": "boolean",
+            "force-ivigenerator-qtremoteobjects": "boolean"
         }
     },
 
@@ -65,6 +66,11 @@
             "condition": "module.simulator || input.force-ivigenerator-qtsimulator == 'yes'",
             "output": [ "publicFeature" ]
         },
+        "remoteobjects": {
+            "label": "QtRemoteObjects Support",
+            "condition": "module.remoteobjects || input.force-ivigenerator-qtremoteobjects == 'yes'",
+            "output": [ "publicFeature" ]
+        },
         "ivicore": {
             "label": "Qt IVI Core",
             "output": [ "publicFeature" ]
@@ -90,6 +96,11 @@ E.g. by running the following command:
             "condition": "!features.simulator",
             "message": "Cannot enable the QtSimulator Support because the QtSimulator module is not installed.
 The QtSimulator Support is needed for the communication between the simulation backends and its control panel(controller)."
+        },
+        {
+            "type": "warning",
+            "condition": "!features.remoteobjects",
+            "message": "Cannot enable the QtRemoteObjects features because the QtRemoteObjects module is not installed."
         }
     ],
 
@@ -108,7 +119,8 @@ The QtSimulator Support is needed for the communication between the simulation b
                     ]
                },
                "ivigenerator",
-               "simulator"
+               "simulator",
+               "remoteobjects"
             ]
         },
         {
