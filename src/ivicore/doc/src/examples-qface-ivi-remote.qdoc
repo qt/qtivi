@@ -1,0 +1,311 @@
+/****************************************************************************
+**
+** Copyright (C) 2018 Pelagicore AG
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL-QTAS$
+** Commercial License Usage
+** Licensees holding valid commercial Qt Automotive Suite licenses may use
+** this file in accordance with the commercial license agreement provided
+** with the Software or, alternatively, in accordance with the terms
+** contained in a written agreement between you and The Qt Company.  For
+** licensing terms and conditions see https://www.qt.io/terms-conditions.
+** For further information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+\example ivicore/qface-ivi-remote
+\brief This Example shows how to use the Qt IVI Generator to create remote backends.
+\ingroup qtivicore-examples
+\title Qt IVI Generator Remote Objects Example
+\image examples_qface_ivi_remote.png
+
+\section1 Introduction
+
+This example shows how to create a remote backend and the client side components
+using the Qt IVI Generator. The communication between the client and server is done with
+QtRemoteObjects. Based on a single qface IDL file, it will generate:
+
+\list
+\li a shared library with the front-end code
+\li a back-end plugin that implements a client for connecting to the server
+\li a server that runs the actual remote backend logic
+\li a demo application that connects to the server and provides and UI for using the service
+\endlist
+
+In addition to the generated C++ code, the backend-plugin and the server contain also an
+intermediate .rep -file that is further processed by Qt’s replica compiler to produce the actual
+source and replica classes.
+
+\section2 Walkthrough
+
+The IDL file used in the example represents an imaginary remote service for processing data . It
+contains a single interface with a single property and a single method.
+
+First we need to define which \e module we want to describe. The \e module acts as a namespace,
+because the IDL file can contain multiple interfaces.
+
+\code
+module Example.IVI.Remote 1.0;
+\endcode
+
+The most important part is the definition of the \e interface.
+
+\code
+
+interface ProcessingService {
+
+    string lastMessage;
+
+    int process(string data);
+}
+
+\endcode
+
+In this case, we define an \e interface named \b ProcessingService consisting of a single property
+and a single method. Every property and method definition needs to contain at least a type and a
+name. Most of the basic types are builtin and can be found in the \l {QFace IDL syntax} {reference}.
+
+
+\section1 Frontend library
+
+Now we want to use the IVI Generator to generate a shared library containing a C++ implementation of
+our module and its interface. For this, the \e frontend template is used. This will generate a class
+derived from \c {QIviAbstractZonedFeature} including all the specified properties. The generated
+library will use the \l {Dynamic Backend System} from QtIviCore and by that provide an easy way to
+change the behavior implementations.
+
+In order to call the autogenerator for our shared library, the qmake project file needs to use the
+\e ivigenerator qmake feature. The following snippet shows how it can be added:
+
+\code
+CONFIG += ivigenerator
+QFACE_SOURCES = ../example-ivi-climate.qface
+\endcode
+
+By adding \e ivigenerator to the \e CONFIG variable, the \e ivigenerator feature file will be
+loaded and interpret the \e QFACE_SOURCES variable similar to \e SOURCES variable of normal qmake
+projects.
+Activating the qmake feature using the \e CONFIG variable has the disadvantage that it doesn't
+report any errors if the feature is not available. Because of this, it is encouraged to use the
+following additional code to report errors:
+
+\code
+QT_FOR_CONFIG += ivicore
+!qtConfig(ivigenerator): error("No ivigenerator available")
+\endcode
+
+The other part of the project file is a normal library setup which is supposed to work on
+Linux, macOS and Windows.
+
+
+\section1 RemoteObjects Backend Plugin
+
+As mentioned above, the \e frontend library will use the \l {Dynamic Backend System}. This means
+that for the library to provide some functionality, we also need a \e backend plugin. The generated
+plugin here will work as a client that connects to the server using the Qt Remote Objects. The qmake
+integration works in the same way, but it is using the \e QFACE_FORMAT variable to tell the
+ivigenerator to use a different generation template, \e backend_qtro:
+
+\code
+CONFIG += ivigenerator plugin
+QFACE_FORMAT = backend_qtro
+QFACE_SOURCES = ../example-ivi-climate.qface
+\endcode
+
+The generated backend plugin code is usable as is, and doesn't require further changes by the
+developer. As we want to generate a plugin instead of a plain library, we need to instrument qmake
+to do so by adding \e plugin to the \e CONFIG variable. For the plugin to compile correctly it needs
+to get the backend interface header from the previously created library. As this header is also
+generated, it is not part of our source tree, but part of the build tree. We do this by adding it to
+the include path using the following construct:
+
+\code
+INCLUDEPATH += $$OUT_PWD/../frontend
+\endcode
+
+Most of the code in the backend plugin is generated by the IVI Generator, but some of it is
+generated by the Qt's remote object compiler (repc). This is achieved by IVI Generator producing an
+intermediate .repc file that is further processed by the repc compiler. The repc is called via the
+generated .pri file, found in the build directory (notice, that you have to call qmake on the
+project at least once to have the generated files available).
+
+
+As our application doesn't know about the existence of our backend plugin, we need to put this
+plugin in a folder where our application searches for plugins. By default Qt either search in the
+\b plugins folder within Qt's installation directory or in the current working directory of the
+application. For QtIvi plugins to be found, they need to be provided within a \b qtivi sub-folder.
+This is achieved automatically by adding the following line to our backend project file:
+
+\code
+DESTDIR = ../qtivi
+\endcode
+
+
+\section1 RemoteObjects Server
+
+The server is an independent, GUIless application that contains the actual business logic of our
+backend and hence needs to have most of its implementation written by the developer. Nevertheless,
+the generator produces some code to simplify the development. We can generate server side code by
+using the IVI Generator with \e server_qtro template:
+
+\code
+TEMPLATE = app
+QT -= gui
+CONFIG += c++11 ivigenerator
+...
+QFACE_FORMAT = server_qtro
+QFACE_SOURCES = ../example-ivi-remote.qface
+\endcode
+
+To use the generated remote source, we need to inherit from one of the classes defined in the
+generated rep_processingservice_source.h file. In this example we implement our servers logic in the
+ProcessingService class and use the ProcessingServiceSimpleSource as the base class:
+
+\code
+// server_qtro/processingservice.h
+#include "rep_processingservice_source.h"
+
+class ProcessingService : public ProcessingServiceSimpleSource
+{
+public:
+    ProcessingService();
+
+    int process(const QString & data) override;
+};
+\endcode
+
+Please notice, that the base class contains already the definitions for property accessors, but any
+custom method or slot needs to be overridden and defined by the developer. Our implementation of the
+process function merely counts and returns the length of the passed data and updates the lastMessage
+property:
+
+\code
+// server_qtro/processingservice.cpp
+ProcessingService::ProcessingService()
+{
+    setLastMessage("Service online.");
+}
+
+int ProcessingService::process(const QString & data)
+{
+    setLastMessage("Processed data \'" +data+"\'");
+    return data.length();
+}
+\endcode
+
+In order to make the class \b ProcessingService accessible remotely, we need to share it. This is
+done with the QRemoteObjectNode::enableRemoting() function. The generated Core class provides a
+preconfigured instance of a remotenode that is used for the remoting. In order for the plugin to
+connect to the right object, use an identifier in the format ModuleName.InterfaceName, which in this
+case is "Example.IVI.Remote.ProcessingService". All this is done in the main()-function, along with
+the start of the main event loop:
+
+\code
+// server_qtro/main.cpp
+#include <QCoreApplication>
+
+#include "processingservice.h"
+#include "core.h"
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication app(argc, argv);
+
+    ProcessingService service;
+    Core::instance()->host()->enableRemoting(&service,"Example.IVI.Remote.ProcessingService");
+
+    return app.exec();
+}
+\endcode
+
+Implementing a service that is accessible remotely is as simple as that; use the properties as usual
+and provide the method implementations. The QtRemoteObjects library takes care of the communication.
+
+
+\section1 Demo Client Application
+
+The demo application presents a simple QML GUI for using the remote service over
+the generated interface.
+
+As we do not provide a QML plugin, the application needs to link to the generated frontend library
+and call the \e {RemoteModule::registerTypes} and \e {RemoteModule::registerQmlTypes} methods
+that are generated in the module singleton to register all autogenerated interfaces and types with
+the QML engine.
+
+In our QML application, we still need to import the module using the name we provided to \e
+{RemoteModule::registerQmlTypes}. Afterwards the interface can be instantiated like any other
+QML item.
+
+\code
+// demo/main.qml
+import IviRemote 1.0
+
+Window {
+
+...
+
+    UiProcessingService {
+        id: processingService
+    }
+
+...
+
+}
+\endcode
+
+Every method call that is made through a generated API, is asynchronous. This means,
+that instead of directly returning a return value, a \c {QIviPendingReply} object is returned.
+Using the \l QIviPendingReply::then() method on the returned object, we may assign callbacks to it
+that are called when the method call has been successfully finished or if it has failed.
+
+\code
+// demo/main.qml
+Button {
+    text: "Process"
+
+    onClicked: processingService.process(inputField.text).then(
+           function(result) { //success callback
+                resultLabel.text = result
+           },
+           function() { //failure callback
+                resultLabel.text = "failed"
+           }
+       )
+}
+\endcode
+
+In case of properties, we just use bindings as usual:
+
+\code
+// demo/main.qml
+Row {
+    Text { text: "Last message: " }
+    Text {
+        id: serverMessage
+        text: processingService.lastMessage
+    }
+}
+\endcode
+
+
+\section1 Running the Example
+
+In order to see the whole functionality of the demo, run both the server and the demo application
+at the same time. You may leave the server running and restart the application, or vice versa,
+to see that the reconnection works. Run the demo application alone without the server running,
+to test how the remote method call fails when there is no connection.
+
+*/

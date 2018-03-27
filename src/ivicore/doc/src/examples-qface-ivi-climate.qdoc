@@ -230,7 +230,7 @@ works in the same way, but it is using the \e QFACE_FORMAT variable to tell the 
 a different generation template.
 
 \code
-CONFIG += ivigenerator
+CONFIG += ivigenerator plugin
 QFACE_FORMAT = backend_simulator
 QFACE_SOURCES = ../example-ivi-climate.qface
 \endcode
