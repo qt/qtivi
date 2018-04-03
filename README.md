@@ -1,44 +1,41 @@
-# Qt Genivi Extras: Platform specific components for GENIVI
+# Qt Ivi
 
-This repository is similar to qtwinextras or qtmacextras and contains specific components for GENIVI based Linux systems.
+This repository hosts multiple Qt modules: the QtIvi modules and the QtGeniviExtras module.
 
-Currently the only component it contains is a Qt Categorized Logging Binding towards GENIVI DLT (Diagnostic Log and Trace)
-
-## How to build
+# How to build
 
 	qmake
 	make
 	make install
 	
-	
+
+# Configuration
+
+By running qmake for the first time, a configuration step runs and tries to detect a configuration that works on your
+system. At the end a configuration summary is printed, incl. some notes on what the configuration might be missing
+due to dependencies missing.
+
+Please read this configuration output first and try to fix the dependencies before creating bug reports.
+
+The configuration step is based on Qt's configure system and also offers some command-line arguments for enabling/disabling
+certain features. More about how to configure qtivi can be found here:
+
+https://doc-snapshots.qt.io/qtivi/configuration.html
+
+# Qt Genivi Extras: Platform specific components for GENIVI
+
+This module is similar to qtwinextras or qtmacextras and contains specific components for GENIVI based Linux systems.
+
+Currently the only component it contains is a Qt Categorized Logging Binding towards GENIVI DLT (Diagnostic Log and Trace)
+
 ## Depedencies
 
-This module has a dependency towards **dlt-daemon** (http://projects.genivi.org/diagnostic-log-trace/about)
+This module has a dependency towards **dlt-daemon** (https://at.projects.genivi.org/wiki/display/PROJ/Diagnostic+Log+and+Trace)
 
 The dlt-daemon needs to be installed into the system and needs to be detectable by pkg-config.
 
-## Example Usage
+If the dependencies are not satisfied the complete module is disabled and is not built at all.
 
-As QDlt is a binding for Qt Categorized Logging you first need to create you logging categories in the header:
+See the QtGeniviExtras documentation for more information:
 
-	#include <QLoggingCategory>
-
-	Q_DECLARE_LOGGING_CATEGORY(FOO)
-	Q_DECLARE_LOGGING_CATEGORY(BAR)
-
-In the source file you need to define your logging categories, but instead of using the normal Q_LOGGING_CATEGORY() macro you can use QDLT_LOGGING_CATEGORY() instead.
-
-	#include <QtGeniviExtras/QtDlt>
-
-	QDLT_REGISTER_APPLICATION("APP1", "Description for APP")
-
-	QDLT_LOGGING_CATEGORY(FOO, "com.pelagicore.foo", "FOO", "FOO CATEGORY")
-	QDLT_LOGGING_CATEGORY(BAR, "com.pelagicore.bar", "BAR", "BAR CATEGORY")
-
-	QDLT_FALLBACK_CATEGORY(FOO)
-
-As DLT works for the whole system it needs to know also a little bit more about your application, which can be done by using QDLT_REGISTER_APPLICATION()
-
-DLT is using 4 character based idenifiers, this identifier needs to be assigned to your application, as well as to every category you define.
-
-By using QDLT_FALLBACK_CATEGORY() you can define which DLT category is used when no Qt Category was set for loogging a message e.g. when qWarning(), qDebug() or qCritical() was used
+https://doc.qt.io/QtGENIVIExtras/index.html
