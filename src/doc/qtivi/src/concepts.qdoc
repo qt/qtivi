@@ -33,7 +33,6 @@ following sections.
 
 \list
     \li \l {Dynamic Backend System}
-    \li \l {The Qt IVI Attribute System}
     \li \l {The Qt IVI Autogenerator}
     \li \l {Models}
     \li \l {The Qt IVI Query Language}

@@ -32,6 +32,8 @@
 \nextpage Models
 \contentspage Concepts
 
+\note This page is deprecated and is only left here for reference
+
 In the IVI world a system often needs to support a lot of different car configurations. These
 configurations could vary in display sizes and resolutions are used or the actual hardware changes
 to a e.g. less powerful cpu and less memory to software configurations where certain features are

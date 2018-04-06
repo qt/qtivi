@@ -147,20 +147,5 @@ is to be used in a climate control API, while the zoned interface provides per-z
 Building a zoned feature requires the backend interface to be derived from
 QIviZonedFeatureInterface. This provides the backend an interface for enumerating the
 available zones. This interface also includes the necessary
-QIviZonedFeatureInterface::initialize method to initialize any
-\l {Extending Qt IVI#property-attributes} {property attributes}.
-
-\section2 Property Attributes
-
-Some properties need additional associated information to be useful from the application.
-By exposing the properties as QIviProperty elements instead of a set of methods, the
-interface for the application developers is made smaller and more homogenous.
-
-Each QIviProperty element is initialized with getter and setter functions, a notification
-signal for value changes, as well as a getter function and a notification signal for a
-QIviPropertyAttribute. The latter describes the former by providing available values for
-enumerated types, minimum and maximum values for ranged numerical values and availability.
-This means that the application can adapt to the abilities of the backend while accessing
-the backend through an interface shared by all backend implementations.
-
+QIviZonedFeatureInterface::initialize method to initialize any properties.
 */
