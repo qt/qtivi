@@ -106,6 +106,9 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {%   set operation_parameters = operation.parameters|map('parameter_type')|join(', ') %}
 QIviPendingReply<{{operation|return_type}}> {{class}}::{{operation}}({{operation_parameters}}){%if operation.const %} const{% endif %}
 {
+    if (m_replica->state() != QRemoteObjectReplica::Valid)
+        return QIviPendingReply<{{operation|return_type}}>::createFailedReply();
+
     QIviPendingReply<{{operation|return_type}}> iviReply;
 {% if not operation.type.is_void %}
     QRemoteObjectPendingReply<{{operation|return_type}}> reply = m_replica->{{operation}}({{operation.parameters|join(', ')}});

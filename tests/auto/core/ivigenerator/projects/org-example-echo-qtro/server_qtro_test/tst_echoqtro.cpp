@@ -139,6 +139,10 @@ void EchoQtroTest::testReconnect()
     QCOMPARE(disconnectSpy.count(), 1);
     QCOMPARE(client.error(), QIviAbstractFeature::Unknown);
 
+    //test that a remote call fails on a disconnected replica
+    QIviPendingReply<QString> idReply = client.id();
+    QVERIFY(idReply.isResultAvailable() && !idReply.watcher()->isSuccessful());
+
     //test reconnection
     QSignalSpy reconnectSpy(&client, SIGNAL(errorChanged(QIviAbstractFeature::Error,QString)));
     QVERIFY(reconnectSpy.isValid());
