@@ -43,7 +43,6 @@
 #define MEDIAPLAYERBACKEND_H
 
 #include <QtConcurrent/QtConcurrent>
-#include <QtMultimedia/QMediaPlayer>
 #include <QtIviMedia/QIviMediaPlayerBackendInterface>
 #include "mediaplayer2_interface.h"
 
