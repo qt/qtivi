@@ -17,7 +17,14 @@
         }
     },
 
-    "report": [],
+    "report": [
+        {
+            "type": "warning",
+            "condition": "!features.ivivehiclefunctions",
+            "message": "Cannot build the IVI VehicleFunctions module because its dependencies are not satisfied or it was disabled.
+The IVI VehicleFunctions module needs the IVI Core module and the IVI Generator."
+        }
+    ],
 
     "summary": [
         {
