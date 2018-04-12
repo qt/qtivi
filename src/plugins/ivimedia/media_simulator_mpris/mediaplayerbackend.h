@@ -44,6 +44,7 @@
 
 #include <QtConcurrent/QtConcurrent>
 #include <QtIviMedia/QIviMediaPlayerBackendInterface>
+
 #include "mediaplayer2_interface.h"
 
 class MediaPlayerBackend : public QIviMediaPlayerBackendInterface
@@ -53,23 +54,23 @@ class MediaPlayerBackend : public QIviMediaPlayerBackendInterface
 public:
     MediaPlayerBackend(const QString &dbusServiceName, const QDBusConnection &dbusConnection, QObject *parent = nullptr);
 
-    virtual void initialize() override;
-    virtual void play() override;
-    virtual void pause() override;
-    virtual void stop() override;
-    virtual void seek(qint64 offset) override;
-    virtual void next() override;
-    virtual void previous() override;
-    virtual void setPlayMode(QIviMediaPlayer::PlayMode playMode) override;
-    virtual void setPosition(qint64 position) override;
-    virtual void setCurrentIndex(int index) override;
+    void initialize() override;
+    void play() override;
+    void pause() override;
+    void stop() override;
+    void seek(qint64 offset) override;
+    void next() override;
+    void previous() override;
+    void setPlayMode(QIviMediaPlayer::PlayMode playMode) override;
+    void setPosition(qint64 position) override;
+    void setCurrentIndex(int index) override;
 
-    virtual bool canReportCount() override;
-    virtual void fetchData(int start, int count) override;
+    bool canReportCount() override;
+    void fetchData(int start, int count) override;
 
-    virtual void insert(int index, const QIviPlayableItem *item) override;
-    virtual void remove(int index) override;
-    virtual void move(int cur_index, int new_index) override;
+    void insert(int index, const QIviPlayableItem *item) override;
+    void remove(int index) override;
+    void move(int cur_index, int new_index) override;
 
 signals:
     void initializationDone();
@@ -89,7 +90,7 @@ private:
     void updateTrackIndex(const QDBusObjectPath &newTrackId);
     void updateTrackIndex(const QVariantMap &newTrack);
     QIviAudioTrackItem audioTrackFromMPRIS2Object(const QVariantMap &metadata);
-    QFuture<QVariantList> itemsForMPRIS2Object(QList<QDBusObjectPath> obj);
+    QFuture<QVariantList> itemsForMPRIS2Object(const QList<QDBusObjectPath> &obj);
     void fetchOrUpdate(int start, int count, bool fetch);
     void handlePlaybackStatus(const QString &playbackStatus);
     void handlePosition(qlonglong position);

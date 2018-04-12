@@ -66,17 +66,13 @@ class QDltRegistrationPrivate
 {
 private:
     struct CategoryInfo {
-        CategoryInfo()
-            : m_category(nullptr)
-            , m_context(nullptr)
-            , m_registered(false)
-        {}
+        CategoryInfo() = default;
 
         QByteArray m_ctxName;
         QByteArray m_ctxDescription;
-        QLoggingCategory *m_category;
-        DltContext *m_context;
-        bool m_registered;
+        QLoggingCategory *m_category = nullptr;
+        DltContext *m_context = nullptr;
+        bool m_registered = false;
     };
 
 public:

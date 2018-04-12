@@ -52,15 +52,15 @@ AmFmTunerBackend::AmFmTunerBackend(QObject *parent)
 
     QVector<QIviAmFmTunerStation> fm_stations;
     QIviAmFmTunerStation radioQt;
-    radioQt.setId("0");
-    radioQt.setStationName("Radio Qt");
+    radioQt.setId(QStringLiteral("0"));
+    radioQt.setStationName(QStringLiteral("Radio Qt"));
     radioQt.setFrequency(87500000);
     radioQt.setBand(QIviAmFmTuner::FMBand);
     fm_stations.append(radioQt);
 
     QIviAmFmTunerStation qtRocksNonStop;
-    qtRocksNonStop.setId("1");
-    qtRocksNonStop.setStationName("Qt Rocks non-stop");
+    qtRocksNonStop.setId(QStringLiteral("1"));
+    qtRocksNonStop.setStationName(QStringLiteral("Qt Rocks non-stop"));
     qtRocksNonStop.setFrequency(102500000);
     qtRocksNonStop.setBand(QIviAmFmTuner::FMBand);
     fm_stations.append(qtRocksNonStop);

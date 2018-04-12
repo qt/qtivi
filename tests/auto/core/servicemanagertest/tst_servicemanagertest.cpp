@@ -109,6 +109,7 @@ void ServiceManagerTest::initTestCase()
 {
     QStringList origList = QCoreApplication::libraryPaths();
     QCoreApplication::setLibraryPaths(QStringList());
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in static plugin '.*'. MetaData must contain a list of interfaces"));
     QTest::ignoreMessage(QtWarningMsg, "No plugins found in search path:  \"\"");
     QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in '.*'. MetaData must contain a list of interfaces"));
     manager = QIviServiceManager::instance();
@@ -116,6 +117,7 @@ void ServiceManagerTest::initTestCase()
     QList<QIviServiceObject *> services = manager->findServiceByInterface("simple_plugin");
     QCOMPARE(services.count(), 0);
 
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in static plugin '.*'. MetaData must contain a list of interfaces"));
     //Reset original setting + this folder for finding our test plugins
     origList.append(QDir::currentPath());
     QCoreApplication::setLibraryPaths(origList);

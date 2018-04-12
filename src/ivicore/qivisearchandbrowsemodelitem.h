@@ -42,11 +42,11 @@
 #ifndef QIVISEARCHANDBROWSEMODELITEM_H
 #define QIVISEARCHANDBROWSEMODELITEM_H
 
-#include <QtIviCore/qtiviglobal.h>
 #include <QtCore/QMetaType>
-#include <QtCore/qobjectdefs.h>
 #include <QtCore/QSharedDataPointer>
 #include <QtCore/QVariantMap>
+#include <QtCore/qobjectdefs.h>
+#include <QtIviCore/qtiviglobal.h>
 
 QT_BEGIN_NAMESPACE
 

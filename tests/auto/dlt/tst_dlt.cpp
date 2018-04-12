@@ -138,15 +138,15 @@ void QDltTest::testLogging()
     registration->registerApplication("APP1", "Description for APP");
     registration->registerCategory(&TEST1(), "TES1", "Test Category One");
 
-    QString msg = QLatin1Literal("TEST");
+    QString msg = QLatin1String("TEST");
     QString expectedMsg = QString("%1: \"%2\"").arg(TEST1().categoryName(), msg);
 
     qWarning(TEST1) << msg;
 
     QList<QDltMessage> dltMessages = m_dltParser->readNextMessages();
     QCOMPARE(dltMessages.count(), 1);
-    QCOMPARE(dltMessages.at(0).appId, QLatin1Literal("APP1"));
-    QCOMPARE(dltMessages.at(0).ctxId, QLatin1Literal("TES1"));
+    QCOMPARE(dltMessages.at(0).appId, QLatin1String("APP1"));
+    QCOMPARE(dltMessages.at(0).ctxId, QLatin1String("TES1"));
     QCOMPARE(dltMessages.at(0).payload, expectedMsg);
 }
 

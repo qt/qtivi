@@ -53,7 +53,6 @@ class Q_QTIVICORE_EXPORT QIviZonedFeatureInterface : public QIviFeatureInterface
 
 public:
     explicit QIviZonedFeatureInterface(QObject *parent = nullptr);
-    ~QIviZonedFeatureInterface();
 
     virtual QStringList availableZones() const = 0;
 };

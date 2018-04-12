@@ -42,9 +42,9 @@
 #ifndef AMFMTUNERBACKEND_H
 #define AMFMTUNERBACKEND_H
 
+#include <QtCore/QVector>
 #include <QtIviMedia/QIviAmFmTunerBackendInterface>
 #include <QtIviMedia/QIviTunerStation>
-#include <QtCore/QVector>
 
 class AmFmTunerBackend : public QIviAmFmTunerBackendInterface
 {
@@ -52,15 +52,15 @@ class AmFmTunerBackend : public QIviAmFmTunerBackendInterface
 public:
     explicit AmFmTunerBackend(QObject *parent = nullptr);
 
-    virtual void initialize() override;
-    virtual void setFrequency(int frequency) override;
-    virtual void setBand(QIviAmFmTuner::Band band) override;
-    virtual void stepUp() override;
-    virtual void stepDown() override;
-    virtual void seekUp() override;
-    virtual void seekDown() override;
-    virtual void startScan() override;
-    virtual void stopScan() override;
+    void initialize() override;
+    void setFrequency(int frequency) override;
+    void setBand(QIviAmFmTuner::Band band) override;
+    void stepUp() override;
+    void stepDown() override;
+    void seekUp() override;
+    void seekDown() override;
+    void startScan() override;
+    void stopScan() override;
 
 private:
     void setCurrentStation(const QIviAmFmTunerStation &station);

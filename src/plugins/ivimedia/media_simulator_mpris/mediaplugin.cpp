@@ -52,19 +52,19 @@
 MediaPlugin::MediaPlugin(QObject *parent)
     : QObject(parent)
 {
-    m_player = new MediaPlayerBackend("org.mpris.MediaPlayer2.vlc", QDBusConnection::sessionBus(), this);
+    m_player = new MediaPlayerBackend(QStringLiteral("org.mpris.MediaPlayer2.vlc"), QDBusConnection::sessionBus(), this);
 }
 
 QStringList MediaPlugin::interfaces() const
 {
     QStringList list;
-    list << QIviMediaPlayer_iid;
+    list << QStringLiteral(QIviMediaPlayer_iid);
     return list;
 }
 
 QIviFeatureInterface *MediaPlugin::interfaceInstance(const QString &interface) const
 {
-    if (interface == QIviMediaPlayer_iid)
+    if (interface == QLatin1String(QIviMediaPlayer_iid))
         return m_player;
 
     return nullptr;

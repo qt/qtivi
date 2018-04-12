@@ -39,9 +39,9 @@
 **
 ****************************************************************************/
 
+#include "logging.h"
 #include "usbbrowsebackend.h"
 #include "usbdevice.h"
-#include "logging.h"
 
 #include <QtIviCore/QIviSearchAndBrowseModel>
 
@@ -67,13 +67,13 @@ void USBDevice::eject()
 QStringList USBDevice::interfaces() const
 {
     QStringList list;
-    list << QIviSearchAndBrowseModel_iid;
+    list << QStringLiteral(QIviSearchAndBrowseModel_iid);
     return list;
 }
 
 QIviFeatureInterface *USBDevice::interfaceInstance(const QString &interface) const
 {
-    if (interface == QIviSearchAndBrowseModel_iid)
+    if (interface == QStringLiteral(QIviSearchAndBrowseModel_iid))
         return m_browseModel;
 
     return nullptr;

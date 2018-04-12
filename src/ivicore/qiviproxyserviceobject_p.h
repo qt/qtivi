@@ -53,8 +53,8 @@
 // We mean it.
 //
 
-#include <private/qtiviglobal_p.h>
 #include <QtIviCore/QIviServiceObject>
+#include <private/qtiviglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,10 +64,9 @@ class Q_QTIVICORE_EXPORT QIviProxyServiceObject : public QIviServiceObject
 
 public:
     explicit QIviProxyServiceObject(QIviServiceInterface *interface);
-    ~QIviProxyServiceObject();
 
-    virtual QStringList interfaces() const;
-    virtual QIviFeatureInterface *interfaceInstance(const QString &interface) const;
+    QStringList interfaces() const override;
+    QIviFeatureInterface *interfaceInstance(const QString &interface) const override;
 
     QIviServiceInterface *serviceInterface() const;
 private:

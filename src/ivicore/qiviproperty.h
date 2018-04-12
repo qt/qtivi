@@ -44,8 +44,8 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
-#include <QtIviCore/qtiviglobal.h>
 #include <QtIviCore/QIviPropertyAttribute>
+#include <QtIviCore/qtiviglobal.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,7 +61,7 @@ class Q_QTIVICORE_EXPORT QIviProperty : public QObject
     Q_PROPERTY(QVariantList availableValues READ availableValues NOTIFY availableValuesChanged)
 
 public:
-    ~QIviProperty();
+    ~QIviProperty() override;
 
     virtual bool isAvailable() const = 0;
     virtual QVariant minimumValue() const  = 0;

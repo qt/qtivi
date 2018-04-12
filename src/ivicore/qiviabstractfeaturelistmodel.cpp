@@ -165,11 +165,6 @@ QIviAbstractFeatureListModel::QIviAbstractFeatureListModel(const QString &interf
     connect(d->m_feature, &QIviAbstractFeature::errorChanged, this, &QIviAbstractFeatureListModel::errorChanged);
 }
 
-QIviAbstractFeatureListModel::~QIviAbstractFeatureListModel()
-{
-
-}
-
 /*!
     \qmlproperty ServiceObject AbstractFeatureListModel::serviceObject
     \brief Sets the service object for the feature.
@@ -353,7 +348,7 @@ bool QIviAbstractFeatureListModel::setServiceObject(QIviServiceObject *so)
 void QIviAbstractFeatureListModel::setDiscoveryMode(QIviAbstractFeature::DiscoveryMode discoveryMode)
 {
     Q_D(QIviAbstractFeatureListModel);
-    return d->m_feature->setDiscoveryMode(discoveryMode);
+    d->m_feature->setDiscoveryMode(discoveryMode);
 }
 
 /*!
@@ -449,7 +444,7 @@ bool QIviAbstractFeatureListModel::acceptServiceObject(QIviServiceObject *servic
 void QIviAbstractFeatureListModel::connectToServiceObject(QIviServiceObject *serviceObject)
 {
     Q_D(QIviAbstractFeatureListModel);
-    return d->m_feature->connectToServiceObjectDefaultImpl(serviceObject);
+    d->m_feature->connectToServiceObjectDefaultImpl(serviceObject);
 }
 
 /*!
@@ -467,7 +462,7 @@ void QIviAbstractFeatureListModel::connectToServiceObject(QIviServiceObject *ser
 void QIviAbstractFeatureListModel::disconnectFromServiceObject(QIviServiceObject *serviceObject)
 {
     Q_D(QIviAbstractFeatureListModel);
-    return d->m_feature->disconnectFromServiceObjectDefaultImpl(serviceObject);
+    d->m_feature->disconnectFromServiceObjectDefaultImpl(serviceObject);
 }
 
 /*!

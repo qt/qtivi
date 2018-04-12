@@ -44,13 +44,14 @@
 
 #include <QtIviCore/qtiviglobal.h>
 
+#include <QtCore/QMetaEnum>
 #include <QtCore/QVariant>
 #include <QtCore/QVector>
-#include <QtCore/QMetaEnum>
 #include <QtCore/QtDebug>
 
 QT_BEGIN_NAMESPACE
 
+Q_QTIVICORE_EXPORT void qtivi_qmlOrCppWarning(const QObject *obj, const char *errorString);
 Q_QTIVICORE_EXPORT void qtivi_qmlOrCppWarning(const QObject *obj, const QString& errorString);
 
 template <typename T>  QVariant qtivi_convertValue(const T &val)
@@ -86,7 +87,7 @@ template <typename T> QVariantList qtivi_convertAvailableValues(const QVector<T>
 template <class T> const T *qtivi_gadgetFromVariant(const QObject *obj, const QVariant &var)
 {
     if (Q_UNLIKELY(!var.isValid())) {
-        qtivi_qmlOrCppWarning(obj, QLatin1String("The passed QVariant is undefined"));
+        qtivi_qmlOrCppWarning(obj, "The passed QVariant is undefined");
         return nullptr;
     }
 
@@ -94,7 +95,7 @@ template <class T> const T *qtivi_gadgetFromVariant(const QObject *obj, const QV
 
     QMetaType type(var.userType());
     if (Q_UNLIKELY(!type.flags().testFlag(QMetaType::IsGadget))) {
-        qtivi_qmlOrCppWarning(obj, QLatin1String("The passed QVariant needs to use the Q_GADGET macro"));
+        qtivi_qmlOrCppWarning(obj, "The passed QVariant needs to use the Q_GADGET macro");
         return nullptr;
     }
 

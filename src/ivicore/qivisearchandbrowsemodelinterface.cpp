@@ -44,10 +44,6 @@
 
 QT_BEGIN_NAMESPACE
 
-QIviSearchAndBrowseModelInterfacePrivate::QIviSearchAndBrowseModelInterfacePrivate()
-{
-}
-
 /*!
     \class QIviSearchAndBrowseModelInterface
     \inmodule QtIviCore
@@ -79,9 +75,6 @@ QIviSearchAndBrowseModelInterfacePrivate::QIviSearchAndBrowseModelInterfacePriva
 */
 QIviSearchAndBrowseModelInterface::QIviSearchAndBrowseModelInterface(QObject *parent)
     : QIviFeatureInterface(*new QIviSearchAndBrowseModelInterfacePrivate(), parent)
-{}
-
-QIviSearchAndBrowseModelInterface::~QIviSearchAndBrowseModelInterface()
 {}
 
 /*!

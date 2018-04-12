@@ -64,7 +64,6 @@ class Q_QTIVICORE_EXPORT QIviAbstractFeatureListModel : public QAbstractListMode
 public:
 
     explicit QIviAbstractFeatureListModel(const QString &interface, QObject *parent = nullptr);
-    ~QIviAbstractFeatureListModel();
 
     QIviServiceObject *serviceObject() const;
     QIviAbstractFeature::DiscoveryMode discoveryMode() const;
@@ -95,8 +94,8 @@ protected:
     virtual void disconnectFromServiceObject(QIviServiceObject*);
     virtual void clearServiceObject() = 0;
 
-    virtual void classBegin() override;
-    virtual void componentComplete() override;
+     void classBegin() override;
+     void componentComplete() override;
 
     QString interfaceName() const;
     QString errorText() const;

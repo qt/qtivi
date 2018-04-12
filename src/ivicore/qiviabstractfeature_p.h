@@ -53,8 +53,8 @@
 // We mean it.
 //
 
-#include <private/qtiviglobal_p.h>
 #include <private/qobject_p.h>
+#include <private/qtiviglobal_p.h>
 
 #include "qiviabstractfeature.h"
 
@@ -62,8 +62,8 @@ QT_BEGIN_NAMESPACE
 
 class Q_QTIVICORE_EXPORT QIviPropertyOverrider {
 public:
-    QIviPropertyOverrider() { }
-    virtual ~QIviPropertyOverrider() { }
+    QIviPropertyOverrider() = default;
+    virtual ~QIviPropertyOverrider() = default;
 
     virtual QVariant property(int propertyIndex) const = 0;
     virtual void setProperty(int propertyIndex, const QVariant &value) = 0;
@@ -87,6 +87,7 @@ public:
 
     QIviAbstractFeature * const q_ptr;
     Q_DECLARE_PUBLIC(QIviAbstractFeature)
+    Q_DISABLE_COPY(QIviAbstractFeaturePrivate)
 
     QString m_interface;
     QIviServiceObject *m_serviceObject;

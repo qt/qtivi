@@ -53,9 +53,9 @@
 // We mean it.
 //
 
-#include <private/qtiviglobal_p.h>
 #include "qiviabstractfeature_p.h"
 #include "qiviabstractzonedfeature.h"
+#include <private/qtiviglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,7 +63,6 @@ class Q_QTIVICORE_EXPORT QIviAbstractZonedFeaturePrivate : public QIviAbstractFe
 {
 public:
     QIviAbstractZonedFeaturePrivate(const QString &interface, const QString &zone, QIviAbstractFeature *parent);
-    ~QIviAbstractZonedFeaturePrivate();
 
     QString m_zone;
     QList<QIviAbstractZonedFeature*> m_zoneFeatures;

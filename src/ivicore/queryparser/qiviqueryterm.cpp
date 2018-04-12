@@ -225,7 +225,7 @@ QIviAbstractQueryTerm::Type QIviScopeTerm::type() const
 QString QIviScopeTerm::toString() const
 {
     Q_D(const QIviScopeTerm);
-    QString string = QLatin1Literal("(") + d->m_term->toString() + QLatin1Literal(")");
+    QString string = QLatin1String("(") + d->m_term->toString() + QLatin1String(")");
     if (d->m_negated)
         string.prepend(QLatin1String("!"));
 

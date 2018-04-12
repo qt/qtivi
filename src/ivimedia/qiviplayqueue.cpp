@@ -422,7 +422,7 @@ void QIviPlayQueue::setLoadingType(QIviPlayQueue::LoadingType loadingType)
         return;
 
     if (loadingType == QIviPlayQueue::DataChanged && !d->playerBackend()->canReportCount()) {
-        qtivi_qmlOrCppWarning(this, QLatin1String("The backend doesn't support the DataChanged loading type. This call will have no effect"));
+        qtivi_qmlOrCppWarning(this, "The backend doesn't support the DataChanged loading type. This call will have no effect");
         return;
     }
 

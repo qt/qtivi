@@ -46,14 +46,8 @@ QT_BEGIN_NAMESPACE
 class QIviSearchAndBrowseModelItemPrivate : public QSharedData
 {
 public:
-    QIviSearchAndBrowseModelItemPrivate()
-    {}
-
-    QIviSearchAndBrowseModelItemPrivate(const QIviSearchAndBrowseModelItemPrivate &other)
-        : QSharedData(other)
-        , m_id(other.m_id)
-        , m_data(other.m_data)
-    {}
+    QIviSearchAndBrowseModelItemPrivate() = default;
+    QIviSearchAndBrowseModelItemPrivate(const QIviSearchAndBrowseModelItemPrivate &other) = default;
 
     QString m_id;
     QVariantMap m_data;
@@ -131,11 +125,8 @@ QIviSearchAndBrowseModelItem::QIviSearchAndBrowseModelItem()
 
 }
 
-QIviSearchAndBrowseModelItem::QIviSearchAndBrowseModelItem(const QIviSearchAndBrowseModelItem &rhs)
-    : d(rhs.d)
-{
-
-}
+//defined here as a inline default copy constructor leads to compilation errors
+QIviSearchAndBrowseModelItem::QIviSearchAndBrowseModelItem(const QIviSearchAndBrowseModelItem &rhs) = default;
 
 QIviSearchAndBrowseModelItem &QIviSearchAndBrowseModelItem::operator=(const QIviSearchAndBrowseModelItem &rhs)
 {
@@ -144,9 +135,8 @@ QIviSearchAndBrowseModelItem &QIviSearchAndBrowseModelItem::operator=(const QIvi
     return *this;
 }
 
-QIviSearchAndBrowseModelItem::~QIviSearchAndBrowseModelItem()
-{
-}
+//defined here as a inline default destructor leads to compilation errors
+QIviSearchAndBrowseModelItem::~QIviSearchAndBrowseModelItem() = default;
 
 QString QIviSearchAndBrowseModelItem::id() const
 {

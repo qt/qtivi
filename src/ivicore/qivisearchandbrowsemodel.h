@@ -43,8 +43,8 @@
 #define QIVISEARCHANDBROWSEMODEL_H
 
 #include <QtIviCore/QIviAbstractFeatureListModel>
-#include <QtIviCore/QIviServiceObject>
 #include <QtIviCore/QIviPendingReply>
+#include <QtIviCore/QIviServiceObject>
 #include <QtQml/QJSValue>
 
 QT_BEGIN_NAMESPACE
@@ -107,7 +107,6 @@ public:
     Q_FLAG(Capabilities)
 
     explicit QIviSearchAndBrowseModel(QObject *parent = nullptr);
-    ~QIviSearchAndBrowseModel();
 
     QIviSearchAndBrowseModel::Capabilities capabilities() const;
 
@@ -167,10 +166,10 @@ Q_SIGNALS:
 protected:
     QIviSearchAndBrowseModel(QIviServiceObject *serviceObject, const QString &contentType, QObject *parent = nullptr);
     QIviSearchAndBrowseModel(QIviSearchAndBrowseModelPrivate &dd, QObject *parent);
-    virtual bool acceptServiceObject(QIviServiceObject *serviceObject) override;
-    virtual void connectToServiceObject(QIviServiceObject *serviceObject) override;
-    virtual void disconnectFromServiceObject(QIviServiceObject *serviceObject) override;
-    virtual void clearServiceObject() override;
+    bool acceptServiceObject(QIviServiceObject *serviceObject) override;
+    void connectToServiceObject(QIviServiceObject *serviceObject) override;
+    void disconnectFromServiceObject(QIviServiceObject *serviceObject) override;
+    void clearServiceObject() override;
 
 private:
     Q_DECLARE_PRIVATE(QIviSearchAndBrowseModel)

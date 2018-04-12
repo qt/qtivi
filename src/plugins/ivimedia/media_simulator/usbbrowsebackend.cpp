@@ -44,12 +44,14 @@
 #include <QDir>
 #include <QtDebug>
 
+static const QString fileLiteral = QStringLiteral("file");
+
 UsbBrowseBackend::UsbBrowseBackend(const QString &path, QObject *parent)
     : QIviSearchAndBrowseModelInterface(parent)
     , m_rootFolder(path)
 {
     qRegisterMetaType<SearchAndBrowseItem>();
-    registerContentType<SearchAndBrowseItem>("file");
+    registerContentType<SearchAndBrowseItem>(fileLiteral);
 }
 
 void UsbBrowseBackend::initialize()
@@ -70,7 +72,7 @@ void UsbBrowseBackend::fetchData(const QUuid &identifier, const QString &type, Q
 
     QVariantList list;
     QString folder = m_rootFolder;
-    if (type != "file")
+    if (type != fileLiteral)
         folder += type;
     QDir dir(folder);
     QFileInfoList infoList = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot | QDir::NoSymLinks);
@@ -90,7 +92,7 @@ void UsbBrowseBackend::fetchData(const QUuid &identifier, const QString &type, Q
 bool UsbBrowseBackend::canGoBack(const QUuid &identifier, const QString &type)
 {
     Q_UNUSED(identifier)
-    return type != "file";
+    return type != fileLiteral;
 }
 
 QString UsbBrowseBackend::goBack(const QUuid &identifier, const QString &type)
@@ -98,8 +100,8 @@ QString UsbBrowseBackend::goBack(const QUuid &identifier, const QString &type)
     Q_UNUSED(identifier)
     QStringList types = type.split('/');
 
-    if (types.count() < 2 && type != "file")
-        return "file";
+    if (types.count() < 2 && type != fileLiteral)
+        return fileLiteral;
 
     types.removeLast();
     types.replace(types.count() - 1, types.at(types.count() - 1).split('?').at(0));
@@ -110,7 +112,7 @@ QString UsbBrowseBackend::goBack(const QUuid &identifier, const QString &type)
 bool UsbBrowseBackend::canGoForward(const QUuid &identifier, const QString &type, const QString &itemId)
 {
     Q_UNUSED(identifier);
-    if (type != "file")
+    if (type != fileLiteral)
         return QDir(m_rootFolder + "/" + type + "/" + itemId).count();
     else
         return QDir(m_rootFolder + "/" + itemId).count();
@@ -119,7 +121,7 @@ bool UsbBrowseBackend::canGoForward(const QUuid &identifier, const QString &type
 QString UsbBrowseBackend::goForward(const QUuid &identifier, const QString &type, const QString &itemId)
 {
     Q_UNUSED(identifier)
-    if (type != "file")
+    if (type != fileLiteral)
         return type + "/" + itemId;
     else
         return itemId;

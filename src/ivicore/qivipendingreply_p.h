@@ -53,8 +53,8 @@
 // We mean it.
 //
 
-#include <private/qtiviglobal_p.h>
 #include <private/qobject_p.h>
+#include <private/qtiviglobal_p.h>
 
 #include "qivipendingreply.h"
 
@@ -71,6 +71,7 @@ public:
 
     QIviPendingReplyWatcher * const q_ptr;
     Q_DECLARE_PUBLIC(QIviPendingReplyWatcher)
+    Q_DISABLE_COPY(QIviPendingReplyWatcherPrivate)
 
     int m_type;
     bool m_resultAvailable;

@@ -43,12 +43,12 @@
 #include "qiviabstractfeature_p.h"
 #include "qtiviglobal_p.h"
 
-#include "qiviserviceobject.h"
 #include "qiviservicemanager.h"
 #include "qiviservicemanager_p.h"
+#include "qiviserviceobject.h"
 
-#include <QMetaEnum>
 #include <QDebug>
+#include <QMetaEnum>
 
 QT_BEGIN_NAMESPACE
 
@@ -235,14 +235,6 @@ QIviAbstractFeature::QIviAbstractFeature(const QString &interface, QObject *pare
 }
 
 /*!
-    Destructor.
-*/
-QIviAbstractFeature::~QIviAbstractFeature()
-{
-
-}
-
-/*!
     \qmlproperty ServiceObject AbstractFeature::serviceObject
     \brief Sets the service object for the feature.
 
@@ -275,7 +267,7 @@ bool QIviAbstractFeature::setServiceObject(QIviServiceObject *so)
     bool serviceObjectIsSet = d->m_serviceObject;
     if (d->m_serviceObject) {
         disconnectFromServiceObject(d->m_serviceObject);
-        disconnect(d->m_serviceObject, SIGNAL(destroyed()), this, SLOT(serviceObjectDestroyed()));
+        disconnect(d->m_serviceObject, &QObject::destroyed, this, &QIviAbstractFeature::serviceObjectDestroyed);
     }
 
     d->m_serviceObject = nullptr;
@@ -302,7 +294,7 @@ bool QIviAbstractFeature::setServiceObject(QIviServiceObject *so)
         connectToServiceObject(d->m_serviceObject);
         if (!d->m_isConnected)
             qWarning("The QIviServiceObject got accepted but QIviAbstractFeature::connectToServiceObject wasn't called");
-        connect(so, SIGNAL(destroyed()), this, SLOT(serviceObjectDestroyed()));
+        connect(so, &QObject::destroyed, this, &QIviAbstractFeature::serviceObjectDestroyed);
     }
 
     return true;
@@ -681,7 +673,7 @@ void QIviAbstractFeature::disconnectFromServiceObject(QIviServiceObject *service
     QObject *backend = serviceObject->interfaceInstance(interfaceName());
 
     if (backend)
-        disconnect(backend, 0, this, 0);
+        disconnect(backend, nullptr, this, nullptr);
 
     d->m_isInitialized = false;
     d->m_isConnected = false;
@@ -716,7 +708,7 @@ void QIviAbstractFeature::disconnectFromServiceObject(QIviServiceObject *service
 bool QIviAbstractFeature::isValid() const
 {
     Q_D(const QIviAbstractFeature);
-    return d->m_serviceObject != 0;
+    return d->m_serviceObject != nullptr;
 }
 
 /*!

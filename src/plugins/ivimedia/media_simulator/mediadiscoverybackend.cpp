@@ -39,9 +39,9 @@
 **
 ****************************************************************************/
 
+#include "logging.h"
 #include "mediadiscoverybackend.h"
 #include "usbdevice.h"
-#include "logging.h"
 
 #include <QDir>
 #include <QtDebug>

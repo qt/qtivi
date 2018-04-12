@@ -40,14 +40,14 @@
 ****************************************************************************/
 
 #include "qiviabstractfeature.h"
-#include "qiviabstractzonedfeature.h"
-#include "qiviserviceobject.h"
 #include "qiviabstractfeature_p.h"
+#include "qiviabstractzonedfeature.h"
 #include "qividefaultpropertyoverrider_p.h"
+#include "qiviserviceobject.h"
 
 #include <QDebug>
-#include <QJsonDocument>
 #include <QJsonArray>
+#include <QJsonDocument>
 
 QT_BEGIN_NAMESPACE
 

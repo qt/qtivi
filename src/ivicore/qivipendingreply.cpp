@@ -42,12 +42,13 @@
 #include "qivipendingreply.h"
 #include "qivipendingreply_p.h"
 #include "qiviqmlconversion_helper.h"
+
 #include "private/qjsengine_p.h"
 #include "private/qjsvalue_p.h"
 
-#include <QtQml>
 #include <QDebug>
 #include <QJSEngine>
+#include <QtQml>
 
 QT_BEGIN_NAMESPACE
 
@@ -385,10 +386,6 @@ QIviPendingReplyWatcher::QIviPendingReplyWatcher(int userType)
 {
 }
 
-QIviPendingReplyWatcher::~QIviPendingReplyWatcher()
-{
-}
-
 /*!
     \property QIviPendingReplyWatcher::value
     \brief Holds the current value of the QIviPendingReply
@@ -453,7 +450,7 @@ void QIviPendingReplyWatcher::setSuccess(const QVariant &value)
     Q_D(QIviPendingReplyWatcher);
 
     if (d->m_resultAvailable) {
-        qtivi_qmlOrCppWarning(this, QStringLiteral("Result is already set. Ignoring request"));
+        qtivi_qmlOrCppWarning(this, "Result is already set. Ignoring request");
         return;
     }
 
@@ -481,7 +478,7 @@ void QIviPendingReplyWatcher::setSuccess(const QVariant &value)
         if (mEnum.isValid()) {
             isEnumOrFlag = true;
             if (!mEnum.isFlag() && !mEnum.valueToKey(var.toInt())) {
-                qtivi_qmlOrCppWarning(this, QStringLiteral("Enum value out of range"));
+                qtivi_qmlOrCppWarning(this, "Enum value out of range");
                 return;
             }
         }
@@ -534,12 +531,12 @@ void QIviPendingReplyWatcher::setFailed()
 void QIviPendingReplyWatcher::then(const QJSValue &success, const QJSValue &failed)
 {
     if (!success.isUndefined() && !success.isCallable()) {
-        qtivi_qmlOrCppWarning(this, QStringLiteral("The success functor is not callable"));
+        qtivi_qmlOrCppWarning(this, "The success functor is not callable");
         return;
     }
 
     if (!failed.isUndefined() && !failed.isCallable()) {
-        qtivi_qmlOrCppWarning(this, QStringLiteral("The failed functor is not callable"));
+        qtivi_qmlOrCppWarning(this, "The failed functor is not callable");
         return;
     }
 
@@ -551,7 +548,7 @@ void QIviPendingReplyWatcher::then(const QJSValue &success, const QJSValue &fail
         d->m_callbackEngine = QJSValuePrivate::engine(&d->m_failedFunctor)->jsEngine();
 
     if (!d->m_callbackEngine)
-        qtivi_qmlOrCppWarning(this, QStringLiteral("Couldn't access the current QJSEngine. The given callbacks will not be called without a valid QJSEngine"));
+        qtivi_qmlOrCppWarning(this, "Couldn't access the current QJSEngine. The given callbacks will not be called without a valid QJSEngine");
 
     if (d->m_resultAvailable) {
         if (d->m_success)
@@ -559,10 +556,6 @@ void QIviPendingReplyWatcher::then(const QJSValue &success, const QJSValue &fail
         else
             d->callFailedCallback();
     }
-}
-
-QIviPendingReplyBase::QIviPendingReplyBase()
-{
 }
 
 QIviPendingReplyBase::QIviPendingReplyBase(int userType)
@@ -573,10 +566,6 @@ QIviPendingReplyBase::QIviPendingReplyBase(int userType)
 QIviPendingReplyBase::QIviPendingReplyBase(const QIviPendingReplyBase &other)
 {
     this->m_watcher = other.m_watcher;
-}
-
-QIviPendingReplyBase::~QIviPendingReplyBase()
-{
 }
 
 /*!

@@ -57,7 +57,6 @@ class Q_QTIVICORE_EXPORT QIviServiceObject : public QObject, public QIviServiceI
 
 public:
     explicit QIviServiceObject(QObject *parent = nullptr);
-    ~QIviServiceObject();
 
     virtual QString id() const;
 

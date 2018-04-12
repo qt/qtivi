@@ -75,7 +75,6 @@ public:
     Q_ENUM(BackendType)
 
     static QIviServiceManager *instance();
-    ~QIviServiceManager();
 
     Q_INVOKABLE QList<QIviServiceObject*> findServiceByInterface(const QString &interface, SearchFlags searchFlags = IncludeAll);
     Q_INVOKABLE bool hasInterface(const QString &interface) const;

@@ -42,12 +42,17 @@
 #include <qiviqmlconversion_helper.h>
 
 #include <QtQml>
-#include <private/qv8engine_p.h>
 #include <private/qv4engine_p.h>
-#include <private/qv4scopedvalue_p.h>
 #include <private/qv4errorobject_p.h>
+#include <private/qv4scopedvalue_p.h>
+#include <private/qv8engine_p.h>
 
 QT_BEGIN_NAMESPACE
+
+void qtivi_qmlOrCppWarning(const QObject *obj, const char *errorString)
+{
+    qtivi_qmlOrCppWarning(obj, QLatin1String(errorString));
+}
 
 void qtivi_qmlOrCppWarning(const QObject *obj, const QString &errorString)
 {

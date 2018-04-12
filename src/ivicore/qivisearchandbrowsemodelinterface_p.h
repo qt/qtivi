@@ -53,8 +53,8 @@
 // We mean it.
 //
 
-#include <private/qtiviglobal_p.h>
 #include <private/qobject_p.h>
+#include <private/qtiviglobal_p.h>
 
 #include "qivisearchandbrowsemodelinterface.h"
 
@@ -63,8 +63,6 @@ QT_BEGIN_NAMESPACE
 class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModelInterfacePrivate : public QObjectPrivate
 {
 public:
-    QIviSearchAndBrowseModelInterfacePrivate();
-
     QMultiHash<QString, QString> m_identifiers;
     QSet<QString> m_types;
 };
