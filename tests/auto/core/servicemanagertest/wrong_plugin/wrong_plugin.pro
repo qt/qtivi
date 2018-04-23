@@ -1,4 +1,4 @@
-TARGET = wrong_plugin
+TARGET = $$qtLibraryTarget(wrong_plugin)
 DESTDIR = $$OUT_PWD/../qtivi/
 TEMPLATE = lib
 CONFIG += plugin
@@ -8,9 +8,6 @@ QT       += core ivicore
 # because debug/release is decided at runtime.
 macos:qtConfig(framework) {
     CONFIG += debug_and_release build_all
-    build_pass:CONFIG(debug, debug|release) {
-        TARGET = $$join(TARGET,,,_debug)
-    }
 }
 
 SOURCES += wrongplugin.cpp \
