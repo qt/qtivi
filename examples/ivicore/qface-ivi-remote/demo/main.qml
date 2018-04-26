@@ -53,6 +53,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Window 2.2
+//! [0]
 import IviRemote 1.0
 
 Window {
@@ -64,12 +65,14 @@ Window {
     UiProcessingService {
         id: processingService
     }
+//! [0]
 
     Column {
         anchors.fill: parent
         anchors.margins: 10
 
         Row {
+            //! [1]
             Button {
                 text: "Process"
 
@@ -81,6 +84,7 @@ Window {
                         resultLabel.text = "failed"
                     } )
             }
+            //! [1]
             TextField {
                 placeholderText: "text to process"
                 id: inputField
@@ -91,7 +95,7 @@ Window {
             Text { text: "Processing result: " }
             Text { id: resultLabel }
         }
-
+        //! [2]
         Row {
             Text { text: "Last message: " }
             Text {
@@ -99,5 +103,6 @@ Window {
                 text: processingService.lastMessage
             }
         }
+        //! [2]
     }
 }

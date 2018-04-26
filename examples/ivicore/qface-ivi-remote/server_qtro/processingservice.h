@@ -52,7 +52,7 @@
 
 #ifndef PROCESSINGSERVICE_H
 #define PROCESSINGSERVICE_H
-
+//! [0]
 #include "rep_processingservice_source.h"
 
 class ProcessingService : public ProcessingServiceSimpleSource
@@ -62,5 +62,5 @@ public:
 
     int process(const QString & data) override;
 };
-
+//! [0]
 #endif // PROCESSINGSERVICE_H

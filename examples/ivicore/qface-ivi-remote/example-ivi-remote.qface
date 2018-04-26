@@ -1,12 +1,14 @@
 /**
  * Test module
  */
+//! [0]
 module Example.IVI.Remote 1.0;
-
+//! [0]
 /**
  * The ProcessingService provides a QML interface to a service doing
  * all sorts of heavy processing
  */
+//! [1]
 @config: { id: "example.qtivi.ProcessingService/1.0", qml_type: "UiProcessingService" }
 interface ProcessingService {
 
@@ -14,3 +16,4 @@ interface ProcessingService {
 
     int process(string data);
 }
+//! [1]

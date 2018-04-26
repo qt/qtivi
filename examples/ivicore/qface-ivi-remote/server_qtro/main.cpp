@@ -49,7 +49,7 @@
 ** SPDX-License-Identifier: BSD-3-Clause
 **
 ****************************************************************************/
-
+//! [0]
 #include <QCoreApplication>
 
 #include "processingservice.h"
@@ -64,3 +64,4 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
+//! [0]

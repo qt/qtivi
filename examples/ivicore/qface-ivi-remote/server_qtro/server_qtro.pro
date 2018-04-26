@@ -1,8 +1,9 @@
 TARGET = qface-ivi-remote-server
+#! [0]
 TEMPLATE = app
-
 QT -= gui
 CONFIG += c++11 ivigenerator
+#! [0]
 CONFIG -= app_bundle
 DESTDIR = ../
 
@@ -13,10 +14,10 @@ SOURCES += main.cpp \
     processingservice.cpp
 
 QMAKE_RPATHDIR += $ORIGIN
-
+#! [1]
 QFACE_FORMAT = server_qtro
 QFACE_SOURCES = ../example-ivi-remote.qface
-
+#! [1]
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
 
