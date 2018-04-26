@@ -47,7 +47,9 @@ QT_BEGIN_NAMESPACE
 
 QObject* serviceManagerSingelton(QQmlEngine *, QJSEngine *)
 {
-    return QIviServiceManager::instance();
+    auto manager = QIviServiceManager::instance();
+    QQmlEngine::setObjectOwnership(manager, QQmlEngine::CppOwnership);
+    return manager;
 }
 
 class QIviCorePlugin : public QQmlExtensionPlugin

@@ -28,6 +28,8 @@
 
 #include <QString>
 #include <QtTest>
+#include <QQmlEngine>
+#include <QQmlComponent>
 #include <qiviservicemanager.h>
 #include <QtIviCore/private/qiviservicemanager_p.h>
 #include <qiviserviceinterface.h>
@@ -87,6 +89,7 @@ private Q_SLOTS:
     void initTestCase();
     void cleanup();
 
+    void testRetakeSingleton();
     void testHasInterface();
     void testFindServiceObjectsReturnInValidInstance();
     void testFindServiceObjects_data();
@@ -132,6 +135,29 @@ void ServiceManagerTest::initTestCase()
 void ServiceManagerTest::cleanup()
 {
     manager->unloadAllBackends();
+}
+
+void ServiceManagerTest::testRetakeSingleton()
+{
+    QPointer<QIviServiceManager> serviceManager = QIviServiceManager::instance();
+    QQmlEngine *engine = new QQmlEngine;
+
+    QByteArray qml ("import QtQuick 2.0; \n\
+                     import QtIvi 1.0; \n\
+                     QtObject { \n\
+                         Component.onCompleted: { \n\
+                             var count = ServiceManager.count; \n\
+                         } \n\
+                     } \n\
+                    ");
+    QQmlComponent component(engine);
+    component.setData(qml, QUrl());
+    QScopedPointer<QObject> obj(component.create());
+    QVERIFY2(obj, qPrintable(component.errorString()));
+
+    delete engine;
+
+    QVERIFY(!serviceManager.isNull());
 }
 
 #define COMPARE_SERVICE_OBJECT(_model_, _index_, _serviceObject_) \
@@ -296,6 +322,6 @@ void ServiceManagerTest::pluginLoaderTest()
 Q_IMPORT_PLUGIN(SimpleStaticPlugin)
 Q_IMPORT_PLUGIN(WrongMetadataStaticPlugin)
 
-QTEST_APPLESS_MAIN(ServiceManagerTest)
+QTEST_MAIN(ServiceManagerTest)
 
 #include "tst_servicemanagertest.moc"
