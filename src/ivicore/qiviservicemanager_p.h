@@ -74,6 +74,7 @@ Q_DECLARE_LOGGING_CATEGORY(qLcIviServiceManagement)
 
 struct Backend{
     QString name;
+    bool debug;
     QVariantMap metaData;
     QIviServiceInterface *interface;
     QObject *interfaceObject;

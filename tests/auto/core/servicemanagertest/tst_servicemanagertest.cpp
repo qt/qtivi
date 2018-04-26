@@ -114,15 +114,17 @@ void ServiceManagerTest::initTestCase()
     QCoreApplication::setLibraryPaths(QStringList());
     QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in static plugin '.*'. MetaData must contain a list of interfaces"));
     QTest::ignoreMessage(QtWarningMsg, "No plugins found in search path:  \"\"");
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in '.*'. MetaData must contain a list of interfaces"));
     manager = QIviServiceManager::instance();
 
     QList<QIviServiceObject *> services = manager->findServiceByInterface("simple_plugin");
     QCOMPARE(services.count(), 0);
 
     QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in static plugin '.*'. MetaData must contain a list of interfaces"));
-    //Reset original setting + this folder for finding our test plugins
-    origList.append(QDir::currentPath());
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in '.*'. MetaData must contain a list of interfaces"));
+#ifdef DEBUG_AND_RELEASE
+    QTest::ignoreMessage(QtInfoMsg, QRegularExpression("Found the same plugin in two configurations. Using the '.*' configuration: .*"));
+#endif
+    //Reset original setting
     QCoreApplication::setLibraryPaths(origList);
     QIviServiceManagerPrivate::get(manager)->searchPlugins();
 
@@ -295,6 +297,9 @@ void ServiceManagerTest::pluginLoaderTest()
     //Test the error message for plugins with invalid metadata
     QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in '(.*)wrongmetadata_plugin(.*)'. MetaData must contain a list of interfaces"));
     QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in static plugin 'WrongMetadataStaticPlugin'. MetaData must contain a list of interfaces"));
+#ifdef DEBUG_AND_RELEASE
+    QTest::ignoreMessage(QtInfoMsg, QRegularExpression("Found the same plugin in two configurations. Using the '.*' configuration: .*"));
+#endif
     QIviServiceManagerPrivate::get(manager)->searchPlugins();
     QVERIFY(manager->hasInterface("simple_plugin"));
     QList<QIviServiceObject *> services = manager->findServiceByInterface("simple_plugin", QIviServiceManager::IncludeProductionBackends);

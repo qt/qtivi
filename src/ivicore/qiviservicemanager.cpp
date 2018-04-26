@@ -70,6 +70,27 @@ namespace qtivi_helper {
     static const QString classNameLiteral = QStringLiteral("className");
     static const QString simulationLiteral = QStringLiteral("simulation");
     static const QString debugLiteral = QStringLiteral("debug");
+#ifdef Q_OS_WIN
+    static const QString debugSuffixLiteral = QStringLiteral("d");
+#else
+    static const QString debugSuffixLiteral = QStringLiteral("_debug");
+#endif
+
+    QString backendBaseName(const QString fileName)
+    {
+        if (fileName.isEmpty())
+            return fileName;
+        const QFileInfo fi(fileName);
+        //remove the library suffix
+        QString baseName = fileName;
+        baseName.chop(fi.suffix().count() + 1);
+
+        //remove the configuration suffix
+        if (baseName.endsWith(debugSuffixLiteral))
+            baseName.chop(debugSuffixLiteral.count());
+
+        return baseName;
+    }
 }
 
 using namespace qtivi_helper;
@@ -177,19 +198,11 @@ void QIviServiceManagerPrivate::registerBackend(const QString &fileName, const Q
         return;
     }
 
-    if (Q_UNLIKELY(metaData.value(debugLiteral).toBool() != qtivi_helper::loadDebug)) {
-        qCWarning(qLcIviServiceManagement, "Skipping incompatible plugin %s. "
-                                           "Expected build configuration '%s'",
-                                            qPrintable(fileName), qtivi_helper::loadDebug ? "debug" : "release");
-        return;
-    }
-
-    //TODO check for other metaData like name etc.
-
     backendMetaData.insert(fileNameLiteral, fileName);
 
     auto *backend = new Backend;
     backend->name =  metaData.value(classNameLiteral).toString();
+    backend->debug = metaData.value(debugLiteral).toBool();
     backend->metaData = backendMetaData;
     backend->interface = nullptr;
     backend->interfaceObject = nullptr;
@@ -209,13 +222,6 @@ void QIviServiceManagerPrivate::registerStaticBackend(QStaticPlugin plugin)
         return;
     }
 
-    if (Q_UNLIKELY(plugin.metaData().value(debugLiteral).toBool() != qtivi_helper::loadDebug)) {
-        qCWarning(qLcIviServiceManagement, "Skipping incompatible plugin %s. "
-                                           "Expected build configuration '%s'",
-                                            pluginName, qtivi_helper::loadDebug ? "debug" : "release");
-        return;
-    }
-
     QIviServiceInterface *backendInterface = qobject_cast<QIviServiceInterface*>(plugin.instance());
     if (Q_UNLIKELY(!backendInterface))
         qCWarning(qLcIviServiceManagement, "ServiceManager::serviceObjects - failed to cast to interface from '%s'", pluginName);
@@ -224,6 +230,7 @@ void QIviServiceManagerPrivate::registerStaticBackend(QStaticPlugin plugin)
 
     auto *backend = new Backend;
     backend->name = plugin.metaData().value(classNameLiteral).toString();
+    backend->debug = plugin.metaData().value(debugLiteral).toBool();
     backend->metaData = backendMetaData;
     backend->interface = backendInterface;
     backend->interfaceObject = nullptr;
@@ -252,6 +259,7 @@ bool QIviServiceManagerPrivate::registerBackend(QObject *serviceBackendInterface
 
     auto *backend = new Backend;
     backend->name = QString::fromLocal8Bit(serviceBackendInterface->metaObject()->className());
+    backend->debug = false;
     backend->metaData = metaData;
     backend->interface = interface;
     backend->interfaceObject = serviceBackendInterface;
@@ -293,13 +301,55 @@ void QIviServiceManagerPrivate::unloadAllBackends()
 void QIviServiceManagerPrivate::addBackend(Backend *backend)
 {
     Q_Q(QIviServiceManager);
+    //Check whether the same plugin is already in (maybe also in a different configuration)
+    //The current configuration of QtIviCore decides which configuration takes precedence
 
-    q->beginInsertRows(QModelIndex(), m_backends.count(), m_backends.count());
-    m_backends.append(backend);
-    q->endInsertRows();
+    const QString newBackendFile = backend->metaData.value(fileNameLiteral).toString();
+    const QString newBackendFileBase = qtivi_helper::backendBaseName(newBackendFile);
+    const QSet<QString> newInterfaces = backend->metaData.value(interfacesLiteral).toStringList().toSet();
 
-    const auto interfaces = backend->metaData[interfacesLiteral].toStringList();
-    for (const QString &interface : interfaces)
+    bool addBackend = true;
+    if (!newBackendFile.isEmpty()) {
+        for (int i = 0; i < m_backends.count(); i++) {
+            Backend *b = m_backends[i];
+            const QSet<QString> interfaces = b->metaData.value(interfacesLiteral).toStringList().toSet();
+            if (interfaces == newInterfaces && b->name == backend->name) {
+                const QString fileName = b->metaData.value(fileNameLiteral).toString();
+                if (fileName == newBackendFile) {
+                    qCDebug(qLcIviServiceManagement, "SKIPPING %s: already in the list", qPrintable(newBackendFile));
+                    return;
+                }
+
+                QString base = backendBaseName(fileName);
+                //check whether the plugins name are the same after removing the debug and library suffixes
+                if (newBackendFileBase == base) {
+                    qCInfo(qLcIviServiceManagement, "Found the same plugin in two configurations. "
+                                                    "Using the '%s' configuration: %s",
+                                                    qtivi_helper::loadDebug ? "debug" : "release",
+                                                    qPrintable(b->debug == qtivi_helper::loadDebug ? fileName : newBackendFile));
+                    if (b->debug != qtivi_helper::loadDebug) {
+                        qCDebug(qLcIviServiceManagement, "REPLACING %s with %s", qPrintable(fileName), qPrintable(newBackendFile));
+                        addBackend = false;
+                        m_backends[i] = backend;
+                        emit q->dataChanged(q->index(i, 0), q->index(i, 0));
+                        delete b;
+                        break;
+                    } else {
+                        qCDebug(qLcIviServiceManagement, "SKIPPING %s: wrong configuration", qPrintable(newBackendFile));
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    if (addBackend) {
+        qCDebug(qLcIviServiceManagement, "ADDING %s", qPrintable(newBackendFile.isEmpty() ? backend->name : newBackendFile));
+        q->beginInsertRows(QModelIndex(), m_backends.count(), m_backends.count());
+        m_backends.append(backend);
+        q->endInsertRows();
+    }
+
+    for (const QString &interface : newInterfaces)
         m_interfaceNames.insert(interface);
 }
 
