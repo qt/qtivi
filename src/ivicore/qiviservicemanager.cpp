@@ -162,21 +162,22 @@ void QIviServiceManagerPrivate::searchPlugins()
     const auto pluginDirs = QCoreApplication::libraryPaths();
     for (const QString &pluginDir : pluginDirs) {
 
-        QDir dir(pluginDir);
         QString path = pluginDir + QDir::separator() + QLatin1String(QIVI_PLUGIN_DIRECTORY);
+        QDir dir(path);
         //Check whether the directory exists
-        if (!QDir(path).exists(QStringLiteral(".")))
+        if (!dir.exists())
             continue;
 
         const QStringList plugins = QDir(path).entryList(QDir::Files);
-        for (const QString &pluginPath : plugins) {
-            if (!QLibrary::isLibrary(pluginPath))
+        for (const QString &pluginFileName : plugins) {
+            if (!QLibrary::isLibrary(pluginFileName))
                 continue;
-            const QString fileName = QDir::cleanPath(path + QLatin1Char('/') + pluginPath);
-            const QString absFileName = dir.absoluteFilePath(fileName);
-            QPluginLoader loader(absFileName);
 
-            registerBackend(loader.fileName(), loader.metaData());
+            const QFileInfo info(dir, pluginFileName);
+            const QString absFile = info.canonicalFilePath();
+            QPluginLoader loader(absFile);
+
+            registerBackend(absFile, loader.metaData());
             found = true;
         }
     }
