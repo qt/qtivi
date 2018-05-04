@@ -38,7 +38,6 @@
 #}
 {% set class = '{0}Module'.format(module.module_name) %}
 {% include 'generated_comment.cpp.tpl' %}
-{% import 'utils.tpl' as utils %}
 
 #include "{{class|lower}}.h"
 {% for interface in module.interfaces %}
@@ -61,7 +60,7 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
     \class {{class}}
     \inmodule {{module}}
 
-{{ utils.format_comments(module.comment) }}
+{{ ivi.format_comments(module.comment) }}
 */
 {{class}}::{{class}}(QObject *parent)
     : QObject(parent)

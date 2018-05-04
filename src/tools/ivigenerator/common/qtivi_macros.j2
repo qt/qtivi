@@ -1,0 +1,204 @@
+{#
+# Copyright (C) 2018 Pelagicore AG
+# Contact: https://www.qt.io/licensing/
+#
+# This file is part of the QtIvi module of the Qt Toolkit.
+#
+# $QT_BEGIN_LICENSE:LGPL-QTAS$
+# Commercial License Usage
+# Licensees holding valid commercial Qt Automotive Suite licenses may use
+# this file in accordance with the commercial license agreement provided
+# with the Software or, alternatively, in accordance with the terms
+# contained in a written agreement between you and The Qt Company.  For
+# licensing terms and conditions see https://www.qt.io/terms-conditions.
+# For further information use the contact form at https://www.qt.io/contact-us.
+#
+# GNU Lesser General Public License Usage
+# Alternatively, this file may be used under the terms of the GNU Lesser
+# General Public License version 3 as published by the Free Software
+# Foundation and appearing in the file LICENSE.LGPL3 included in the
+# packaging of this file. Please review the following information to
+# ensure the GNU Lesser General Public License version 3 requirements
+# will be met: https://www.gnu.org/licenses/lgpl-3.0.html.
+#
+# GNU General Public License Usage
+# Alternatively, this file may be used under the terms of the GNU
+# General Public License version 2.0 or (at your option) the GNU General
+# Public license version 3 or any later version approved by the KDE Free
+# Qt Foundation. The licenses are as published by the Free Software
+# Foundation and appearing in the file LICENSE.GPL2 and LICENSE.GPL3
+# included in the packaging of this file. Please review the following
+# information to ensure the GNU General Public License requirements will
+# be met: https://www.gnu.org/licenses/gpl-2.0.html and
+# https://www.gnu.org/licenses/gpl-3.0.html.
+#
+# $QT_END_LICENSE$
+#
+# SPDX-License-Identifier: LGPL-3.0
+#}
+
+{# these macros can be used to generate content for QtIvi code. The macros
+# provide snippets that are commonly found in multiple templates and are not
+# too template specific.
+# Function macros do not generate the whole body of the function, but just
+# the header line, so remember to add potential virtuals, overrides,
+# semicolons etc. yourself!
+#}
+
+{# join operation parameters, with type and name, into a comma separated list,
+# optionally including the zone.
+#}
+{% macro join_params(operation, zoned = false) %}
+{%   set params = operation.parameters|map('parameter_type')|join(', ') %}
+{%   if zoned %}
+{%     if params|length %}
+{%       set params = params + ', const QString &zone' %}
+{%     else %}
+{%       set params = 'const QString &zone' %}
+{%     endif %}
+{%   endif %}
+{{params}}
+{%- endmacro %}
+
+{# function header for a custom slot. pass the class parameter in order to add
+# the scope:: -specifier. use zoned to add the zone-specifier
+#}
+{% macro operation(operation, class = '', zoned = false) %}
+{%   if  class|count %}
+{%     set scope = class+'::' %}
+{%   else %}
+{%     set scope = '' %}
+{%   endif %}
+{%   if operation.const %}
+{%     set const = ' const' %}
+{%   else%}
+{%     set const = '' %}
+{%   endif %}
+QIviPendingReply<{{operation|return_type}}> {{scope}}{{operation}}({{join_params(operation, zoned)}}){{const}}
+{%- endmacro %}
+
+
+{# property declaration, Q_PROPERTY(...) #}
+{% macro property(property) %}
+{%   if property.readonly or property.const %}
+{%     set write = '' %}
+{%   else %}
+{%     set write = ' WRITE ' + property|setter_name %}
+{%   endif %}
+Q_PROPERTY({{property|return_type}} {{property}} READ {{property|getter_name}}{{write}} NOTIFY {{property}}Changed)
+{% endmacro %}
+
+
+{# function header for a property setter: setProperty(...)
+# pass the class parameter in order to add the scope:: -specifier.
+# use zoned to add the zone-specifier
+#}
+{% macro prop_setter(property, class = '', zoned = false) %}
+{%   if  class|count %}
+{%     set scope = class+'::' %}
+{%   else %}
+{%     set scope = '' %}
+{%   endif %}
+{%   if zoned %}
+{%     set zone = ', const QString &zone' %}
+{%   else %}
+{%     set zone = '' %}
+{%   endif %}
+void {{scope}}{{property|setter_name}}({{property|parameter_type}}{{zone}})
+{%- endmacro %}
+
+
+{# function header for a property getter.
+# pass the class parameter in order to add the scope:: -specifier.
+#}
+{% macro prop_getter(property, class = '') %}
+{%   if  class|count %}
+{%     set scope = class+'::' %}
+{%   else %}
+{%     set scope = '' %}
+{%   endif %}
+{{property|return_type}} {{scope}}{{property|getter_name}}() const
+{%- endmacro %}
+
+
+{# helper macro for defining a property notifier and a corresponding callback.
+# This is an internal function and not intended to be used inside a template.
+#}
+{% macro _prop_notify(property, class, zoned, prefix) %}
+{%   if prefix|count %}
+{%     set prop = prefix + property|upperfirst %}
+{%   else %}
+{%     set prop = property %}
+{%   endif %}
+{%   if class|count %}
+{%     set scope = class+'::' %}
+{%   else %}
+{%     set scope = '' %}
+{%   endif %}
+{%   if zoned %}
+{%     set zone = ', const QString &zone' %}
+{%   else %}
+{%     set zone = '' %}
+{%   endif %}
+void {{scope}}{{prop}}Changed({{property|parameter_type}}{{zone}})
+{%- endmacro %}
+
+{# signal declaration for property notifier.
+# pass the class parameter in order to add the scope:: -specifier.
+# use zoned to add the zone-specifier
+#}
+{% macro prop_notify(property, class = '', zoned = false) %}
+{{_prop_notify(property, class, zoned, '')}}
+{%- endmacro %}
+
+{# callback slot declaration for property notifier.
+# pass the class parameter in order to add the scope:: -specifier.
+# use zoned to add the zone-specifier
+#}
+{% macro on_prop_changed(property, class = '', zoned = false) %}
+{{_prop_notify(property, class, zoned, 'on')}}
+{%- endmacro %}
+
+
+{# helper macro for defining a signal and a corresponding callback.
+# This is an internal function and not intended to be used inside a template.
+#}
+{% macro _signal(signal, class, zoned, prefix) %}
+{%   if prefix|count %}
+{%     set sig = prefix + signal|upperfirst %}
+{%   else %}
+{%     set sig = signal %}
+{%   endif %}
+{%   if  class|count %}
+{%     set scope = class+'::' %}
+{%   else %}
+{%     set scope = '' %}
+{%   endif %}
+void {{scope}}{{sig}}({{join_params(signal, zoned)}})
+{%- endmacro %}
+
+{# custom signal declaration
+# pass the class parameter in order to add the scope:: -specifier.
+# use zoned to add the zone-specifier
+#}
+{% macro signal(signal, class = '', zoned = false) %}
+{{_signal(signal, class, zoned, '')}}
+{%- endmacro %}
+
+{# custom signal callback declaration
+# pass the class parameter in order to add the scope:: -specifier.
+# use zoned to add the zone-specifier
+#}
+{% macro on_signal(signal, class = '', zoned = false) %}
+{{_signal(signal, class, zoned, 'on')}}
+{%- endmacro %}
+
+
+{% macro format_comments(comments) -%}
+{% with doc = comments|parse_doc -%}
+{% if doc.brief %}    \brief {{doc.brief|join(' ')| wordwrap(width=100, wrapstring='\n    ')}}
+{% endif %}
+{% if doc.description %}
+    {{doc.description|join(' ')| wordwrap(width=100, wrapstring='\n    ')}}{% endif %}
+{% endwith -%}
+{% endmacro -%}

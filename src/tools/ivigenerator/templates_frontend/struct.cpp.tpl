@@ -37,9 +37,9 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
+{% import 'qtivi_macros.j2' as ivi %}
 {% set class = '{0}'.format(struct) %}
 {% include 'generated_comment.cpp.tpl' %}
-{% import 'utils.tpl' as utils %}
 
 #include "{{class|lower}}.h"
 
@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 /*!
     \class {{struct}}
     \inmodule {{module}}
-{{ utils.format_comments(struct.comment) }}
+{{ ivi.format_comments(struct.comment) }}
 */
 
 {{class}}::{{class}}()
@@ -74,18 +74,18 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \property {{class}}::{{field}}
-{{ utils.format_comments(field.comment) }}
+{{ ivi.format_comments(field.comment) }}
 {% if field.const %}
     \note This property is constant and the value will not change once an instance has been created.
 {% endif %}
 */
-{{field|return_type}} {{class}}::{{field}}() const
+{{ivi.prop_getter(field, class)}}
 {
     return m_{{field}};
 }
 {%   if not field.readonly and not field.const %}
 
-void {{class}}::set{{field|upperfirst}}({{ field|parameter_type }})
+{{ivi.prop_setter(field, class)}}
 {
     m_{{field}} = {{field}};
 }

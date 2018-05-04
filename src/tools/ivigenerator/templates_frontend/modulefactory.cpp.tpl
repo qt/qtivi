@@ -38,7 +38,6 @@
 #}
 {% set class = '{0}ModuleFactory'.format(module.module_name|upperfirst) %}
 {% include 'generated_comment.cpp.tpl' %}
-{% import 'utils.tpl' as utils %}
 
 #include "{{class|lower}}.h"
 

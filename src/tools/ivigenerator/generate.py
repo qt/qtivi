@@ -564,7 +564,7 @@ def generate(tplconfig, moduleConfig, src, dst):
     FileSystem.strict = True
     Generator.strict = True
     system = FileSystem.parse(src)
-    generator = Generator(search_path=tplconfig)
+    generator = Generator(search_path=[tplconfig, here / "common"])
     generator.register_filter('return_type', return_type)
     generator.register_filter('parameter_type', parameter_type)
     generator.register_filter('getter_name', getter_name)

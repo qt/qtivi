@@ -8,10 +8,14 @@ QT_FOR_CONFIG += ivicore
 # This needs to be the last step as it unsets other configs and may have side effects
 CONFIG -= debug_and_release
 
+common.files += \
+    common/generated_comment.cpp.tpl \
+    common/qtivi_macros.j2
+common.path = $$[QT_HOST_BINS]/ivigenerator/common
+
 templates_frontend.files +=  \
     templates_frontend/backendinterface.cpp.tpl \
     templates_frontend/backendinterface.h.tpl \
-    templates_frontend/generated_comment.cpp.tpl \
     templates_frontend/global.h.tpl \
     templates_frontend/interface.cpp.tpl \
     templates_frontend/interface.h.tpl \
@@ -25,25 +29,21 @@ templates_frontend.files +=  \
     templates_frontend/struct.h.tpl \
     templates_frontend/structmodel.cpp.tpl \
     templates_frontend/structmodel.h.tpl \
-    templates_frontend/structmodel_p.h.tpl \
-    templates_frontend/utils.tpl
+    templates_frontend/structmodel_p.h.tpl
 templates_frontend.path = $$[QT_HOST_BINS]/ivigenerator/templates_frontend
 
 templates_backend_simulator.files += \
     templates_backend_simulator/backend.cpp.tpl \
     templates_backend_simulator/backend.h.tpl \
     templates_backend_simulator/backend_range.cpp.tpl \
-    templates_backend_simulator/generated_comment.cpp.tpl \
     templates_backend_simulator/plugin.cpp.tpl \
     templates_backend_simulator/plugin.h.tpl \
     templates_backend_simulator/plugin.json \
     templates_backend_simulator/plugin.pri.tpl \
-    templates_backend_simulator/plugin.pro \
-    templates_backend_simulator/utils.tpl
+    templates_backend_simulator/plugin.pro
 templates_backend_simulator.path = $$[QT_HOST_BINS]/ivigenerator/templates_backend_simulator
 
 templates_generation_validator.files += \
-    templates_generation_validator/generated_comment.cpp.tpl \
     templates_generation_validator/generationstatusitem.cpp.tpl \
     templates_generation_validator/generationstatusitem.h.tpl \
     templates_generation_validator/main.cpp.tpl \
@@ -57,7 +57,6 @@ templates_generation_validator.path = $$[QT_HOST_BINS]/ivigenerator/templates_ge
 templates_control_panel.files += \
     templates_control_panel/EnumControl.qml.tpl \
     templates_control_panel/FlagControl.qml.tpl \
-    templates_control_panel/generated_comment.cpp.tpl \
     templates_control_panel/global.h.tpl \
     templates_control_panel/interface.cpp.tpl \
     templates_control_panel/interface.h.tpl \
@@ -67,12 +66,10 @@ templates_control_panel.files += \
     templates_control_panel/module.cpp.tpl \
     templates_control_panel/module.h.tpl \
     templates_control_panel/qml.qrc.tpl \
-    templates_control_panel/ui.pri.tpl \
-    templates_control_panel/utils.tpl
+    templates_control_panel/ui.pri.tpl
 templates_control_panel.path = $$[QT_HOST_BINS]/ivigenerator/templates_control_panel
 
 templates_backend_qtro.files += \
-    templates_backend_qtro/generated_comment.cpp.tpl \
     templates_backend_qtro/backend.cpp.tpl \
     templates_backend_qtro/backend.h.tpl \
     templates_backend_qtro/plugin.cpp.tpl \
@@ -83,7 +80,6 @@ templates_backend_qtro.files += \
 templates_backend_qtro.path = $$[QT_HOST_BINS]/ivigenerator/templates_backend_qtro
 
 templates_server_qtro.files += \
-    templates_server_qtro/generated_comment.cpp.tpl \
     templates_server_qtro/core.cpp.tpl \
     templates_server_qtro/core.h.tpl \
     templates_server_qtro/server.pri.tpl \
@@ -91,7 +87,6 @@ templates_server_qtro.files += \
 templates_server_qtro.path = $$[QT_HOST_BINS]/ivigenerator/templates_server_qtro
 
 templates_test.files += \
-    templates_test/generated_comment.cpp.tpl \
     templates_test/tst_test.h.tpl \
     templates_test/tst_test.cpp.tpl \
     templates_test/module.pri.tpl \
@@ -123,6 +118,7 @@ qtConfig(remoteobjects) {
 }
 
 INSTALLS += generator \
+    common \
     templates_frontend \
     templates_backend_simulator \
     templates_generation_validator \

@@ -36,7 +36,13 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
+{% import 'qtivi_macros.j2' as ivi %}
 {% set class = '{0}'.format(interface) %}
+{% if interface.tags.config.zoned %}
+{%   set base_class = 'QIviAbstractZonedFeature' %}
+{% else %}
+{%   set base_class = 'QIviAbstractFeature' %}
+{% endif %}
 {% set oncedefine = '{0}_{1}PRIVATE_H_'.format(module.module_name|upper, class|upper) %}
 {% include 'generated_comment.cpp.tpl' %}
 
@@ -59,11 +65,7 @@
 {% if module.tags.config.disablePrivateIVI %}
 #include <QObject>
 {% else %}
-{%   if interface.tags.config.zoned %}
-#include <QtIviCore/private/qiviabstractzonedfeature_p.h>
-{%   else %}
-#include <QtIviCore/private/qiviabstractfeature_p.h>
-{%   endif %}
+#include <QtIviCore/private/{{base_class|lower}}_p.h>
 {% endif %}
 
 QT_BEGIN_NAMESPACE
@@ -73,11 +75,7 @@ class {{class}};
 {% if module.tags.config.disablePrivateIVI %}
 class {{class}}Private : public QObject
 {% else %}
-{%   if interface.tags.config.zoned %}
-class {{class}}Private : public QIviAbstractZonedFeaturePrivate
-{%   else %}
-class {{class}}Private : public QIviAbstractFeaturePrivate
-{%   endif %}
+class {{class}}Private : public {{base_class}}Private
 {% endif %}
 {
 public:
@@ -98,18 +96,10 @@ public:
     void clearToDefaults();
 
 {% for property in interface.properties %}
-{%   if interface.tags.config.zoned %}
-    void on{{property|upperfirst}}Changed({{property|parameter_type}}, const QString &zone);
-{%   else %}
-    void on{{property|upperfirst}}Changed({{property|parameter_type}});
-{%   endif %}
+    {{ivi.on_prop_changed(property, zoned = interface.tags.config.zoned)}};
 {% endfor %}
 {% for signal in interface.signals %}
-{%   if interface.tags.config.zoned %}
-    void on{{signal|upperfirst}}({{signal.parameters|map('parameter_type')|join(', ')}}{%if signal.parameters|length %}, {%endif%}const QString &zone);
-{%   else %}
-    void on{{signal|upperfirst}}({{signal.parameters|map('parameter_type')|join(', ')}});
-{%   endif %}
+    void on{{signal|upperfirst}}({{ivi.join_params(signal, zoned = interface.tags.config.zoned)}});
 {% endfor %}
 
 {% if not module.tags.config.disablePrivateIVI %}

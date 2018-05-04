@@ -37,6 +37,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
+{% import 'qtivi_macros.j2' as ivi %}
 {% include "generated_comment.cpp.tpl" %}
 {% set class = '{0}Backend'.format(interface) %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
@@ -74,24 +75,12 @@ public:
 public Q_SLOTS:
 {% for property in interface.properties %}
 {%   if not property.readonly and not property.const %}
-{%     if interface_zoned %}
-    virtual void set{{property|upperfirst}}({{ property|parameter_type }}, const QString &zone) override;
-{%     else %}
-    virtual void set{{property|upperfirst}}({{ property|parameter_type }}) override;
-{%     endif %}
+    virtual {{ivi.prop_setter(property, zoned = interface_zoned)}} override;
 {%   endif %}
 {% endfor %}
 
 {% for operation in interface.operations %}
-{%   if interface_zoned %}
-{%     if operation.parameters|length %}
-    virtual QIviPendingReply<{{operation|return_type}}> {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}, const QString &zone){%if operation.const %} const{% endif %} override;
-{%     else %}
-    virtual QIviPendingReply<{{operation|return_type}}> {{operation}}(const QString &zone){%if operation.const %} const{% endif %} override;
-{%     endif %}
-{%   else %}
-    virtual QIviPendingReply<{{operation|return_type}}> {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){%if operation.const %} const{% endif %} override;
-{%   endif %}
+    virtual {{ivi.operation(operation, zoned = interface_zoned)}} override;
 {% endfor %}
 
 protected:

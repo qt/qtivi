@@ -36,6 +36,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
+{% import 'qtivi_macros.j2' as ivi %}
 {% set class = '{0}'.format(interface) %}
 {% set oncedefine = '{0}_{1}_H_'.format(module.module_name|upper, class|upper) %}
 {% set exportsymbol = 'Q_QT{0}_EXPORT'.format(module.module_name|upper) %}
@@ -85,36 +86,36 @@ public:
     QVariantMap zoneAt() const;
 {% endif %}
 {% for property in interface.properties %}
-    {{property|return_type}} {{property|getter_name}}() const;
+    {{ivi.prop_getter(property)}};
 {% endfor %}
 
 public Q_SLOTS:
 {% for property in interface.properties %}
-    void {{property|setter_name}}({{property|parameter_type}});
+    {{ivi.prop_setter(property)}};
 {%   if interface_zoned %}
-    void {{property|setter_name}}({{property|parameter_type}}, const QString &zone);
+    {{ivi.prop_setter(property, zoned = true)}};
 {%   endif %}
 {% endfor %}
 {% for signal in interface.signals %}
-    void {{signal}}({{signal.parameters|map('parameter_type')|join(', ')}});
+    {{ivi.signal(signal)}};
 {% endfor %}
 
 Q_SIGNALS:
 {% for operation in interface.operations %}
-    void {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}});
+    {{ivi.operation(operation)}};
 {% endfor %}
 {% if interface_zoned %}
     void currentZoneChanged();
     void zonesChanged();
 {% endif %}
 {% for property in interface.properties %}
-    void {{property}}Changed({{property|parameter_type}});
+    {{ivi.prop_notify(property)}};
 {% endfor %}
 
 private Q_SLOTS:
 {% if interface_zoned %}
 {%   for operation in interface.operations %}
-    void {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}{%if operation.parameters|count %}, {% endif %}const QString &zone);
+    {{ivi.operation(operation, zoned = true)}};
 {%   endfor %}
 {% endif %}
 private:

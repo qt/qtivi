@@ -36,9 +36,9 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
+{% import 'qtivi_macros.j2' as ivi %}
 {% set class = '{0}'.format(interface) %}
 {% include 'generated_comment.cpp.tpl' %}
-{% import 'utils.tpl' as utils %}
 
 #include "{{class|lower}}.h"
 #include "{{class|lower}}_p.h"
@@ -58,7 +58,7 @@ QT_BEGIN_NAMESPACE
 /*!
     \class {{interface}}
     \inmodule {{module}}
-{{ utils.format_comments(interface.comment) }}
+{{ ivi.format_comments(interface.comment) }}
 */
 
 /*!
@@ -73,7 +73,7 @@ QT_BEGIN_NAMESPACE
     \inherits AbstractFeature
 {% endif %}
 
-{{ utils.format_comments(interface.comment) }}
+{{ ivi.format_comments(interface.comment) }}
 */
 
 /*! \internal */
@@ -178,7 +178,7 @@ void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_typ
 {% for signal in interface.signals %}
 /*! \internal */
 {%   if interface.tags.config.zoned %}
-void {{class}}Private::on{{signal|upperfirst}}({{signal.parameters|map('parameter_type')|join(', ')}}{%if signal.parameters|length %}, {%endif%}const QString &zone)
+void {{class}}Private::on{{signal|upperfirst}}({{ivi.join_params(signal, true)}})
 {
     auto q = getParent();
     auto f = qobject_cast<{{class}}*>(q->zoneAt(zone));
@@ -189,7 +189,7 @@ void {{class}}Private::on{{signal|upperfirst}}({{signal.parameters|map('paramete
     emit f->{{signal}}({{signal.parameters|join(', ')}});
 }
 {%   else %}
-void {{class}}Private::on{{signal|upperfirst}}({{signal.parameters|map('parameter_type')|join(', ')}})
+void {{class}}Private::on{{signal|upperfirst}}({{ivi.join_params(signal)}})
 {
     auto q = getParent();
     emit q->{{signal}}({{signal.parameters|join(', ')}});
@@ -279,7 +279,7 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 
 /*!
     \property {{class}}::{{property}}
-{{ utils.format_comments(property.comment) }}
+{{ ivi.format_comments(property.comment) }}
 {% if property.const %}
     \note This property is constant and the value will not change once the plugin is initialized.
 {% endif %}
@@ -287,12 +287,12 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 
 /*!
     \qmlproperty {{property|return_type}} {{interface|qml_type}}::{{property}}
-{{ utils.format_comments(property.comment) }}
+{{ ivi.format_comments(property.comment) }}
 {% if property.const %}
     \note This property is constant and the value will not change once the plugin is initialized.
 {% endif %}
 */
-{{property|return_type}} {{class}}::{{property|getter_name}}() const
+{{ivi.prop_getter(property, class)}}
 {
     const auto d = {{class}}Private::get(this);
 {% if not module.tags.config.disablePrivateIVI %}
@@ -303,7 +303,7 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 }
 {%   if not property.readonly and not property.const %}
 
-void {{class}}::{{property|setter_name}}({{ property|parameter_type }})
+{{ivi.prop_setter(property, class)}}
 {
     auto d = {{class}}Private::get(this);
     bool forceUpdate = false;
@@ -334,14 +334,13 @@ void {{class}}::{{property|setter_name}}({{ property|parameter_type }})
 
 {%- for operation in interface.operations %}
 /*!
-    \qmlmethod {{interface|qml_type}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}})
-{{ utils.format_comments(operation.comment) }}
+    \qmlmethod {{interface|qml_type}}::{{operation}}({{ivi.join_params(operation)}})
+{{ ivi.format_comments(operation.comment) }}
 */
 /*!
-{{ utils.format_comments(operation.comment) }}
+{{ ivi.format_comments(operation.comment) }}
 */
-QIviPendingReply<{{operation|return_type}}> {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){% if operation.const %} const{% endif %}
-
+{{ivi.operation(operation, class)}}
 {
     if ({{class}}BackendInterface *backend = ({{class}}BackendInterface *) this->backend())
 {% if interface.tags.config.zoned %}
