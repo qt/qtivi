@@ -79,6 +79,8 @@ qface_sources.depends = $$QFACE_ABS_PWD/$${QFACE_FILE}
 QFACE_TEMPLATE_PWD = $$IVI_GENERATOR_PATH/templates_$${QFACE_FORMAT}
 exists($$QFACE_TEMPLATE_PWD) {
     qface_sources.depends += $$files($${QFACE_TEMPLATE_PWD}/*)
+} else {
+    error("Invalid QFACE_FORMAT: Couldn't find the template folder: $$QFACE_TEMPLATE_PWD")
 }
 
 # Add the configuration yaml as dependency and to other files
