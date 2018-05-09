@@ -48,6 +48,7 @@
         },
         "media_simulation_backend": {
             "label": "Mediaplayer Simulation Backend",
+            "condition": "module.multimedia",
             "output": [ "privateFeature" ]
         },
         "tuner_simulation_backend": {
@@ -82,6 +83,12 @@ or disable taglib by passing --taglib=no"
             "condition": "input.taglib == 'no'",
             "message": "Building taglib was disabled!
 The Mediaplayer Simulation Backend will only provide a stub and can't scan media files"
+        },
+        {
+            "type": "warning",
+            "condition": "!features.media_simulation_backend && !module.multimedia",
+            "message": "Building Mediaplayer Simulation Backend was disabled!
+Please make sure the QtMultimedia module is available."
         }
     ],
 

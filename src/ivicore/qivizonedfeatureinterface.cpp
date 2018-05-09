@@ -169,10 +169,6 @@ QIviZonedFeatureInterface::QIviZonedFeatureInterface(QObject *parent)
 {
 }
 
-QIviZonedFeatureInterface::~QIviZonedFeatureInterface()
-{
-}
-
 /*!
     \fn QStringList QIviZonedFeatureInterface::availableZones() const
 

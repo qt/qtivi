@@ -46,8 +46,8 @@
 #include <QQmlEngine>
 
 //Needed for error reporting
-#include <private/qv8engine_p.h>
 #include <private/qv4engine_p.h>
+#include <private/qv8engine_p.h>
 
 QT_BEGIN_NAMESPACE
 

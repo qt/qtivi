@@ -1,3 +1,4 @@
+QTIVICORE_ROOT = $$PWD
 
 defineTest(qtConfTest_python3) {
 
@@ -57,7 +58,7 @@ defineTest(qtConfReport_python3) {
 }
 
 defineTest(qtConfTest_qface_submodule) {
-    path = $$QTIVI_ROOT/src/3rdparty/qface/setup.py
+    path = $$QTIVICORE_ROOT/../3rdparty/qface/setup.py
     exists($$path): return(true)
 
     qtLog("The submodule at \"$$path\" is not initialized")

@@ -66,17 +66,17 @@ QT_BEGIN_NAMESPACE
 
 void {{class}}::initialize()
 {
-    QString configPath = "./server.conf";
+    QString configPath(QStringLiteral("./server.conf"));
     if (qEnvironmentVariableIsSet("SERVER_CONF_PATH"))
-        configPath = QString::fromLatin1(qgetenv("SERVER_CONF_PATH"));
+        configPath = QString::fromLocal8Bit(qgetenv("SERVER_CONF_PATH"));
     else
         qDebug() << "Environment variable SERVER_CONF_PATH not defined, using " << configPath;
     QSettings settings(configPath, QSettings::IniFormat);
-    settings.beginGroup("{{module.module_name|lower}}");
-    QUrl url = QUrl(settings.value("Registry", "local:{{module.module_name|lower}}").toString());
+    settings.beginGroup(QStringLiteral("{{module.module_name|lower}}"));
+    QUrl url = QUrl(settings.value(QStringLiteral("Registry"), QStringLiteral("local:{{module.module_name|lower}}")).toString());
     m_node = new QRemoteObjectNode(url);
     connect(m_node, &QRemoteObjectNode::error, this, &{{class}}::onNodeError);
-    m_replica.reset(m_node->acquire<{{interface}}Replica>("{{interface.qualified_name}}"));
+    m_replica.reset(m_node->acquire<{{interface}}Replica>(QStringLiteral("{{interface.qualified_name}}")));
     setupConnections();
 
 {% for property in interface.properties %}
@@ -106,6 +106,9 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {%   set operation_parameters = operation.parameters|map('parameter_type')|join(', ') %}
 QIviPendingReply<{{operation|return_type}}> {{class}}::{{operation}}({{operation_parameters}}){%if operation.const %} const{% endif %}
 {
+    if (m_replica->state() != QRemoteObjectReplica::Valid)
+        return QIviPendingReply<{{operation|return_type}}>::createFailedReply();
+
     QIviPendingReply<{{operation|return_type}}> iviReply;
 {% if not operation.type.is_void %}
     QRemoteObjectPendingReply<{{operation|return_type}}> reply = m_replica->{{operation}}({{operation.parameters|join(', ')}});

@@ -62,8 +62,8 @@ class MediaPlugin : public QObject, QIviServiceInterface
 public:
     explicit MediaPlugin(QObject *parent = nullptr);
 
-    QStringList interfaces() const;
-    QIviFeatureInterface *interfaceInstance(const QString &interface) const;
+    QStringList interfaces() const override;
+    QIviFeatureInterface *interfaceInstance(const QString &interface) const override;
 
 private:
     QSqlDatabase createDatabaseConnection(const QString &connectionName);

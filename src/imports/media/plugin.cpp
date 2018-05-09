@@ -42,13 +42,13 @@
 #include <QtQml/qqmlextensionplugin.h>
 #include <qqml.h>
 
-#include <QtIviMedia/QIviMediaPlayer>
+#include <QtIviMedia/QIviAmFmTuner>
+#include <QtIviMedia/QIviMediaDevice>
 #include <QtIviMedia/QIviMediaDeviceDiscoveryModel>
 #include <QtIviMedia/QIviMediaIndexerControl>
+#include <QtIviMedia/QIviMediaPlayer>
 #include <QtIviMedia/QIviPlayQueue>
-#include <QtIviMedia/QIviAmFmTuner>
 #include <QtIviMedia/QIviTunerStation>
-#include <QtIviMedia/QIviMediaDevice>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,7 +57,7 @@ class QIviMediaPlugin : public QQmlExtensionPlugin
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
 public:
-    virtual void registerTypes(const char *uri)
+    void registerTypes(const char *uri) override
     {
         Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi.Media"));
         Q_UNUSED(uri);
@@ -71,10 +71,10 @@ public:
         qmlRegisterType<QIviMediaIndexerControl>(uri, 1, 0, "MediaIndexerControl");
         qmlRegisterType<QIviAmFmTuner>(uri, 1, 0, "AmFmTuner");
 
-        qmlRegisterUncreatableType<QIviPlayQueue>(uri, 1, 0, "PlayQueue", "PlayQueue needs to be retrieved from the MediaPlayer");
+        qmlRegisterUncreatableType<QIviPlayQueue>(uri, 1, 0, "PlayQueue", QStringLiteral("PlayQueue needs to be retrieved from the MediaPlayer"));
 
-        qmlRegisterUncreatableType<QIviMediaDevice>(uri, 1, 0, "MediaDevice", "MediaDevice can't be instantiated from QML");
-        qmlRegisterUncreatableType<QIviMediaUsbDevice>(uri, 1, 0, "MediaUsbDevice", "MediaUsbDevice can't be instantiated from QML");
+        qmlRegisterUncreatableType<QIviMediaDevice>(uri, 1, 0, "MediaDevice", QStringLiteral("MediaDevice can't be instantiated from QML"));
+        qmlRegisterUncreatableType<QIviMediaUsbDevice>(uri, 1, 0, "MediaUsbDevice", QStringLiteral("MediaUsbDevice can't be instantiated from QML"));
     }
 };
 

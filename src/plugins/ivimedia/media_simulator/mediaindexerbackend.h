@@ -57,9 +57,9 @@ class MediaIndexerBackend : public QIviMediaIndexerControlBackendInterface
 public:
     explicit MediaIndexerBackend(const QSqlDatabase &database, QObject *parent = nullptr);
 
-    virtual void initialize() override;
-    virtual void pause() override;
-    virtual void resume() override;
+    void initialize() override;
+    void pause() override;
+    void resume() override;
 
 signals:
     void indexingDone();

@@ -28,6 +28,8 @@
 
 #include <QString>
 #include <QtTest>
+#include <QQmlEngine>
+#include <QQmlComponent>
 #include <qiviservicemanager.h>
 #include <QtIviCore/private/qiviservicemanager_p.h>
 #include <qiviserviceinterface.h>
@@ -87,6 +89,7 @@ private Q_SLOTS:
     void initTestCase();
     void cleanup();
 
+    void testRetakeSingleton();
     void testHasInterface();
     void testFindServiceObjectsReturnInValidInstance();
     void testFindServiceObjects_data();
@@ -109,15 +112,19 @@ void ServiceManagerTest::initTestCase()
 {
     QStringList origList = QCoreApplication::libraryPaths();
     QCoreApplication::setLibraryPaths(QStringList());
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in static plugin '.*'. MetaData must contain a list of interfaces"));
     QTest::ignoreMessage(QtWarningMsg, "No plugins found in search path:  \"\"");
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in '.*'. MetaData must contain a list of interfaces"));
     manager = QIviServiceManager::instance();
 
     QList<QIviServiceObject *> services = manager->findServiceByInterface("simple_plugin");
     QCOMPARE(services.count(), 0);
 
-    //Reset original setting + this folder for finding our test plugins
-    origList.append(QDir::currentPath());
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in static plugin '.*'. MetaData must contain a list of interfaces"));
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in '.*'. MetaData must contain a list of interfaces"));
+#ifdef DEBUG_AND_RELEASE
+    QTest::ignoreMessage(QtInfoMsg, QRegularExpression("Found the same plugin in two configurations. Using the '.*' configuration: .*"));
+#endif
+    //Reset original setting
     QCoreApplication::setLibraryPaths(origList);
     QIviServiceManagerPrivate::get(manager)->searchPlugins();
 
@@ -130,6 +137,29 @@ void ServiceManagerTest::initTestCase()
 void ServiceManagerTest::cleanup()
 {
     manager->unloadAllBackends();
+}
+
+void ServiceManagerTest::testRetakeSingleton()
+{
+    QPointer<QIviServiceManager> serviceManager = QIviServiceManager::instance();
+    QQmlEngine *engine = new QQmlEngine;
+
+    QByteArray qml ("import QtQuick 2.0; \n\
+                     import QtIvi 1.0; \n\
+                     QtObject { \n\
+                         Component.onCompleted: { \n\
+                             var count = ServiceManager.count; \n\
+                         } \n\
+                     } \n\
+                    ");
+    QQmlComponent component(engine);
+    component.setData(qml, QUrl());
+    QScopedPointer<QObject> obj(component.create());
+    QVERIFY2(obj, qPrintable(component.errorString()));
+
+    delete engine;
+
+    QVERIFY(!serviceManager.isNull());
 }
 
 #define COMPARE_SERVICE_OBJECT(_model_, _index_, _serviceObject_) \
@@ -267,6 +297,9 @@ void ServiceManagerTest::pluginLoaderTest()
     //Test the error message for plugins with invalid metadata
     QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in '(.*)wrongmetadata_plugin(.*)'. MetaData must contain a list of interfaces"));
     QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in static plugin 'WrongMetadataStaticPlugin'. MetaData must contain a list of interfaces"));
+#ifdef DEBUG_AND_RELEASE
+    QTest::ignoreMessage(QtInfoMsg, QRegularExpression("Found the same plugin in two configurations. Using the '.*' configuration: .*"));
+#endif
     QIviServiceManagerPrivate::get(manager)->searchPlugins();
     QVERIFY(manager->hasInterface("simple_plugin"));
     QList<QIviServiceObject *> services = manager->findServiceByInterface("simple_plugin", QIviServiceManager::IncludeProductionBackends);
@@ -294,6 +327,6 @@ void ServiceManagerTest::pluginLoaderTest()
 Q_IMPORT_PLUGIN(SimpleStaticPlugin)
 Q_IMPORT_PLUGIN(WrongMetadataStaticPlugin)
 
-QTEST_APPLESS_MAIN(ServiceManagerTest)
+QTEST_MAIN(ServiceManagerTest)
 
 #include "tst_servicemanagertest.moc"

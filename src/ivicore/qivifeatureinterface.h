@@ -53,7 +53,6 @@ class Q_QTIVICORE_EXPORT QIviFeatureInterface : public QObject
 
 public:
     explicit QIviFeatureInterface(QObject *parent = nullptr);
-    ~QIviFeatureInterface();
 
     virtual void initialize() = 0;
 

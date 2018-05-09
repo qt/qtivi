@@ -44,7 +44,11 @@
 #ifndef {{oncedefine}}
 #define {{oncedefine}}
 
+{% if interface.module.tags.config.module %}
+#include <{{interface.module.tags.config.module}}/{{module.module_name|lower}}module.h>
+{% else %}
 #include "{{module.module_name|lower}}module.h"
+{% endif %}
 
 {% for inc in interface|struct_includes %}
 {{inc}}

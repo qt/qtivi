@@ -93,7 +93,6 @@ public:
     Q_ENUM(DiscoveryResult)
 
     explicit QIviAbstractFeature(const QString &interface, QObject *parent = nullptr);
-    ~QIviAbstractFeature();
 
     QIviServiceObject *serviceObject() const;
     QIviAbstractFeature::DiscoveryMode discoveryMode() const;
@@ -124,8 +123,8 @@ protected:
     virtual void disconnectFromServiceObject(QIviServiceObject*);
     virtual void clearServiceObject() = 0;
 
-    virtual void classBegin();
-    virtual void componentComplete();
+    void classBegin() override;
+    void componentComplete() override;
 
     QString interfaceName() const;
     QString errorText() const;

@@ -45,7 +45,11 @@
 #ifndef {{oncedefine}}
 #define {{oncedefine}}
 
+{% if module.tags.config.module %}
+#include <{{module.tags.config.module}}/{{module.module_name|lower}}module.h>
+{% else %}
 #include "{{module.module_name|lower}}module.h"
+{% endif %}
 #include <QObject>
 
 {% for struct in module.structs %}

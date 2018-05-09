@@ -42,8 +42,8 @@
 #ifndef QIVIABSTRACTZONEDFEATURE_H
 #define QIVIABSTRACTZONEDFEATURE_H
 
-#include <QtCore/QVariant>
 #include <QtCore/QMap>
+#include <QtCore/QVariant>
 #include <QtIviCore/QIviAbstractFeature>
 #include <QtIviCore/qtiviglobal.h>
 
@@ -64,7 +64,6 @@ class Q_QTIVICORE_EXPORT QIviAbstractZonedFeature : public QIviAbstractFeature
 public:
 
     explicit QIviAbstractZonedFeature(const QString &interface, const QString &zone = QString(), QObject *parent = nullptr);
-    ~QIviAbstractZonedFeature();
 
     QString zone() const;
 
@@ -84,9 +83,9 @@ protected:
     virtual QIviAbstractZonedFeature *createZoneFeature(const QString &zone) = 0;
     QIviZonedFeatureInterface *backend(const QString &interface = QString()) const;
 
-    virtual bool acceptServiceObject(QIviServiceObject *serviceObject) override;
-    virtual void connectToServiceObject(QIviServiceObject *serviceObject) override;
-    virtual void clearServiceObject() override;
+    bool acceptServiceObject(QIviServiceObject *serviceObject) override;
+    void connectToServiceObject(QIviServiceObject *serviceObject) override;
+    void clearServiceObject() override;
 
 private Q_SLOTS:
     void setZone(const QString &zone);

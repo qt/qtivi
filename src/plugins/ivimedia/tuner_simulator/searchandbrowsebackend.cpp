@@ -49,8 +49,8 @@ SearchAndBrowseBackend::SearchAndBrowseBackend(AmFmTunerBackend *tunerBackend, Q
     , m_tunerBackend(tunerBackend)
 {
     qRegisterMetaType<QIviAmFmTunerStation>();
-    registerContentType<QIviAmFmTunerStation>("station");
-    registerContentType<QIviAmFmTunerStation>("presets");
+    registerContentType<QIviAmFmTunerStation>(QStringLiteral("station"));
+    registerContentType<QIviAmFmTunerStation>(QStringLiteral("presets"));
 }
 
 void SearchAndBrowseBackend::initialize()
@@ -72,9 +72,9 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &t
     Q_UNUSED(orderTerms)
     QVector<QIviAmFmTunerStation> stations;
 
-    if (type == "station")
+    if (type == QLatin1String("station"))
         stations = m_tunerBackend->m_bandHash[QIviAmFmTuner::AMBand].m_stations + m_tunerBackend->m_bandHash[QIviAmFmTuner::FMBand].m_stations;
-    else if (type == "presets")
+    else if (type == QLatin1String("presets"))
         stations = m_presets;
     else
         return;
@@ -121,7 +121,7 @@ QString SearchAndBrowseBackend::goForward(const QUuid &identifier, const QString
 
 QIviPendingReply<void> SearchAndBrowseBackend::insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item)
 {
-    if (type != "presets" || item->type() != "amfmtunerstation")
+    if (type != QLatin1String("presets") || item->type() != QLatin1String("amfmtunerstation"))
         return QIviPendingReply<void>::createFailedReply();
 
     const QIviAmFmTunerStation &station = *static_cast<const QIviAmFmTunerStation*>(item);
@@ -136,7 +136,7 @@ QIviPendingReply<void> SearchAndBrowseBackend::insert(const QUuid &identifier, c
 
 QIviPendingReply<void> SearchAndBrowseBackend::remove(const QUuid &identifier, const QString &type, int index)
 {
-    if (type != "presets")
+    if (type != QLatin1String("presets"))
         return QIviPendingReply<void>::createFailedReply();
 
     m_presets.removeAt(index);
@@ -149,7 +149,7 @@ QIviPendingReply<void> SearchAndBrowseBackend::remove(const QUuid &identifier, c
 
 QIviPendingReply<void> SearchAndBrowseBackend::move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex)
 {
-    if (type != "presets")
+    if (type != QLatin1String("presets"))
         return QIviPendingReply<void>::createFailedReply();
 
     int min = qMin(currentIndex, newIndex);
@@ -171,14 +171,14 @@ QIviPendingReply<int> SearchAndBrowseBackend::indexOf(const QUuid &identifier, c
 {
     Q_UNUSED(identifier)
 
-    if (item->type() != "amfmtunerstation")
+    if (item->type() != QLatin1String("amfmtunerstation"))
         return QIviPendingReply<int>::createFailedReply();
 
     QVector<QIviAmFmTunerStation> stations;
 
-    if (type == "station")
+    if (type == QLatin1String("station"))
         stations = m_tunerBackend->m_bandHash[QIviAmFmTuner::AMBand].m_stations + m_tunerBackend->m_bandHash[QIviAmFmTuner::FMBand].m_stations;
-    else if (type == "presets")
+    else if (type == QLatin1String("presets"))
         stations = m_presets;
     else
         return QIviPendingReply<int>::createFailedReply();

@@ -9,5 +9,6 @@ DISTFILES += \
     $$PWD/*.qdocconf \
     $$PWD/online/*.qdocconf \
     $$PWD/src/*.qdoc \
+    $$PWD/src/ivigenerator/*.qdoc \
     $$PWD/images/*.jpg \
     $$PWD/images/*.png

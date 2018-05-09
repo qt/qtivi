@@ -53,8 +53,9 @@
 // We mean it.
 //
 
-#include <private/qtiviglobal_p.h>
 #include <QtCore/QObject>
+#include <QtIviCore/QIviProperty>
+#include <private/qtiviglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 

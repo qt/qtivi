@@ -55,14 +55,14 @@
 
 #include <QtCore/QAbstractListModel>
 #include <QtCore/QLoggingCategory>
-#include <QtCore/QVariantMap>
-#include <QtCore/QStringList>
 #include <QtCore/QMap>
-#include <QtCore/QSet>
 #include <QtCore/QPluginLoader>
+#include <QtCore/QSet>
+#include <QtCore/QStringList>
+#include <QtCore/QVariantMap>
 
-#include <private/qtiviglobal_p.h>
 #include <QtIviCore/qiviservicemanager.h>
+#include <private/qtiviglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -74,6 +74,7 @@ Q_DECLARE_LOGGING_CATEGORY(qLcIviServiceManagement)
 
 struct Backend{
     QString name;
+    bool debug;
     QVariantMap metaData;
     QIviServiceInterface *interface;
     QObject *interfaceObject;

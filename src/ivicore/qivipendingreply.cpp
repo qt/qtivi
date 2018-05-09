@@ -42,12 +42,13 @@
 #include "qivipendingreply.h"
 #include "qivipendingreply_p.h"
 #include "qiviqmlconversion_helper.h"
+
 #include "private/qjsengine_p.h"
 #include "private/qjsvalue_p.h"
 
-#include <QtQml>
 #include <QDebug>
 #include <QJSEngine>
+#include <QtQml>
 
 QT_BEGIN_NAMESPACE
 
@@ -71,19 +72,6 @@ struct QIviPendingReplyRegistrator {
 static QIviPendingReplyRegistrator _registrator;
 
 // TODO make it reentrant
-
-// TODO Add documentation
-//* QSharedPointer<WatcherBase> d
-//* WatcherBase has signals without argumments
-//* WatcherBase has slots which calls the js callback functions
-//* Value stored in WatcherBase
-//* Do we need to pass the value in the signals ?
-//* PendingReply needs a way to set the result
-//* automatic type registration for basic types
-//* Check the type is still correct when using the QVariant success functions
-//* specialization for QVariant
-//* call success/failed when reply already ready and functors are set later.
-//* not for slots, use the old way instead
 
 QIviPendingReplyWatcherPrivate::QIviPendingReplyWatcherPrivate(int userType, QIviPendingReplyWatcher *parent)
     : QObjectPrivate()
@@ -133,47 +121,336 @@ void QIviPendingReplyWatcherPrivate::callFailedCallback()
     }
 }
 
+/*!
+    \class QIviPendingReplyWatcher
+    \inmodule QtIviCore
+    \brief The QIviPendingReplyWatcher provides signals for QIviPendingReply
+
+    The QIviPendingReplyWatcher holds all data of a QIviPendingReply and is implicitly shared
+    between copies of the same QIviPendingReply instance. At the same time the watcher provides
+    signals for when a result is ready or an error happened.
+
+    A QIviPendingReplyWatcher cannot be instantiated on its own. It is always created from a
+    QIviPendingReply internally.
+*/
+
+/*!
+    \class QIviPendingReplyBase
+    \inmodule QtIviCore
+    \brief The QIviPendingReplyBase is the base class for QIviPendingReply
+
+    QIviPendingReplyBase is the base class for QIviPendingReply and provides QVariant based
+    functions and properties for the usage from QML.
+
+    Usually you don't have to use this class, but instead always use the typesafe QIviPendingReply
+    template class.
+*/
+
+/*!
+    \qmltype PendingReply
+    \qmlabstract
+    \instantiates QIviPendingReply
+    \inqmlmodule QtIvi
+
+    \brief A object representing an asynchronous results
+
+    A PendingReply is a way for providing asynchronous results. It can be used as a
+    return value for asynchronous functions.
+
+    The QML API is very similar to
+    \l{https://developers.google.com/web/fundamentals/primers/promises}{JavaScript Promises}.
+
+    This documentation shows how to use the PendingReply from within QML and how to execute code
+    once the asynchronous result is ready.
+
+    \note It is not supported to create a PendingReply from QML. The object is supposed to be
+    created from C++ and returned to QML as a result. For more information on how to use it from
+    C++ see the \l {QIviPendingReply}{QIviPendingReply documentation}.
+
+    When a PendingReply is created from C++ it doesn't have a result set yet and the
+    \l{PendingReply::}{resultAvailable} property is \c false. A result for the pending reply can
+    only be set once and it either indicates a failed(setFailed) or a successful(setSuccess) call.
+    This can be checked using the \l{PendingReply::}{success} property. The actual result is
+    available from the \l{PendingReply::}{value} property, which returns undefined if no result is
+    available or the reply failed.
+
+    \section1 Using a PendingReply
+
+    As explained above, the PendingReply is supposed to be used as a return value for asynchronous
+    operations done in C++. To inform about when a reply result is available there are two ways:
+
+    \section2 The \e then method
+
+    Similar to a JavaScript Promise the PendingReply is then-able, which means it provides a \e then
+    method. This method can be used to add callbacks which are executed when the reply succeeds or
+    fails.
+
+    \qml
+    import QtQuick 2.0
+    import QtIvi 1.0
+
+    Text {
+        id: root
+        text: "not ready"
+
+        Component.onCompleted: {
+            var asyncReply = TestObject.asyncFunction();
+            asyncReply.then(function(value) {
+                                root.text = "reply ready: " + value
+                            },
+                            function() {
+                                root.text = "reply failed"
+                            })
+        }
+    }
+    \endqml
+
+    This simple QML snippet calls the C++ function TestObject::asyncFunction() which returns a
+    PendingReply. See the \l{QIviPendingReply}{C++ part} on how to write such a function and use
+    the PendingReply from C++.
+
+    The then method is used to register two callbacks. The first callback is the result callback
+    and takes the reply value as an argument. This will update the text element accordingly. The
+    second argument is the failed callback, which doesn't take an argument as there is no valid
+    reply value.
+
+    If the failed state is not of interest it is also possible to not add any callback for it e.g.
+    \qml
+    asyncReply.then(function(value) {
+                        root.text = "reply ready: " + value
+                    })
+    \endqml
+
+    In a similar way only the failed callback can be registered by passing \e undefined to the
+    function as the first argument:
+
+    \qml
+    asyncReply.then(undefined,
+                    function() {
+                        root.text = "reply failed"
+                    })
+    \endqml
+
+    \section3 Synchronous results
+
+    When a PendingReply object is used in an API the corresponding function cannot provide the
+    result immediately. But especially for input validation the function can return an error state
+    right away. For this the PendingReply object offers the properties
+    \l{PendingReply::}{resultAvailable} and \l{PendingReply::}{success} to check for this when the
+    object is given for QML.
+
+    Checking this for every PendingReply use in QML can be tedious and produces a lot of
+    boiler-plate code. Because of this the PendingReply works similar to a JavaScript Promise and
+    will execute the callbacks although the result is already available.
+
+    \section2 Signals and Slots
+
+    Although the then method is the recommended way from QML, the PendingReply also provides
+    signals. To make the PendingReply as lightweight as possible it is using Q_GADGET and cannot
+    provide signals directly, but provides it through the QIviPendingReplyWatcher class. The
+    QIviPendingReplyWatcher can be accessed using the \l{PendingReply::}{watcher} property.
+
+    \note The QIviPendingReplyWatcher is owned by the PendingReply. Saving the watcher outside of
+    of the PendingReply is not safe as it is destroyed once all copies of this PendingReply object
+    are destroyed.
+*/
+
+/*!
+    \class QIviPendingReply
+    \inmodule QtIviCore
+    \brief Template class for providing asynchronous results
+
+    A QIviPendingReply is a template class for providing asynchronous results. It can be used as a
+    return value for asynchronous functions, similar to QFuture.
+
+    In contrast to QFuture, QIviPendingReply works also in QML and is especially made for this. The
+    data stored in a QIviPendingReply is implicitly shared between all copies of this reply object.
+    This keeps the memory and performance footprint low.
+
+    The QML API is very similar to
+    \l{https://developers.google.com/web/fundamentals/primers/promises}{JavaScript Promises}, at
+    the same time the C++ API provides support for Qt's signals and slots.
+
+    The QIviPendingReply holds a result of a specific type. The type needs to have a default
+    constructor and a copy constructor. By default the most Qt basic types are supported. New types
+    can be added by using the qIviRegisterPendingReplyType function.
+
+    When a QIviPendingReply is created it does not have a valid result set yet. This can be checked
+    by using the resultAvailable property. A result for a reply can be set by using the setFailed
+    or setSuccess functions. Setting the result with this function can only be done once and cannot
+    be changed later. Whether a QIviPendingReply has succeeded can be determined by the success
+    property.
+
+    \section1 Writing a function returning a QIviPendingReply
+
+    When writing a function returning a QIviPendingReply, it is often needed to do some input
+    validation and return before actual doing something. Without using a QIviPendingReply one would
+    write a function as follows:
+
+    \code
+    QString displayName(const QUuid &id)
+    {
+        if (id.isNull)
+            return QString();
+
+        //do something and wait until the result is ready (synchronous)
+        asyncAPI.getDisplayName(id);
+        asyncAPI.waitForFinished(&displayNameChanged);
+        return asyncAPI.displayName();
+    }
+    \endcode
+
+    This function is using an asynchronous API e.g. provided by an IPC. getDisplayName(id) starts
+    the task and once a result is ready the displayNameChanged signal is emitted and the actual
+    value can be read using the displayName() function. The provided function is using a
+    waitForFinished() method to actual wait for the signal to be emitted and return the value and
+    make this API synchronous.
+
+    When moving this code to using QIviPendingReply the validation check needs to be fixed to
+    return a valid QIviPendingReply. To make it more convenient to return a failed reply, the
+    QIviPendingReply::createFailedReply() function be used.
+
+    Rewriting the above function to be fully asynchronous using a QIviPendingReply it would look
+    like this:
+
+    \code
+    QIviPendingReply<QString> displayName(const QUuid &id)
+    {
+        if (id.isNull)
+            return QIviPendingReply<QString>::createFailedReply();
+
+        QIviPendingReply<QString> reply
+        //connect to the change signal and set the result to the async reply when ready
+        connect(asyncAPI, &displayNameChanged, this, [reply, asyncAPI]() mutable {
+                reply.setSuccess(asyncAPI.displayName());
+        });
+        //start getting the name
+        asyncAPI.getDisplayName(id);
+        return reply;
+    }
+    \endcode
+
+    Now a new QIviPendingReply is created right away and passed to the lamda used in the connect
+    statement. The actual task is started afterwards and the reply object is returned. Once the
+    async API emits the displayNameChanged signal the lamda is executed the QIviPendingReply is
+    marked as successful and the value set to the displayName().
+
+    \note All copies of a QIviPendingReply use implicit sharing. This data is freed once all copies
+    of the pending replies are deleted.
+
+    \section1 Using functions returning a QIviPendingReply
+
+    When using a function which returns a QIviPendingReply, the first thing to do is to check
+    whether a result is already available using the isResultAvailable property and act accordingly.
+    Afterwards you can start to connect the signals provided by the QIviPendingReplyWatcher.
+
+    \section2 Signals and Slots
+
+    In order to keep the memory footprint low, the QIviPendingReply doesn't provide signals
+    directly, as it doesn't need to derive from QObject, but uses the Q_GADGET macro instead. To
+    get notified once a result is ready, the QIviPendingReplyWatcher can be used instead. The
+    watcher can be retrieved using the watcher property.
+
+    Here an example on how this would work when using the API described above:
+
+    \code
+    QUuid uuid = createUuid();
+    QIviPendingReply<QString> reply = displayName(uuid);
+    if (reply.isResultAvailable()) {
+        if (reply.isSuccessfull())
+            useDisplayName(reply.value());
+        else
+            qWarning("getting the displayName failed");
+    } else {
+        connect(reply.watcher(), &QIviPendingReplyWatcher::valueChanged, this, [this, reply]() {
+            if (reply.isSuccessfull())
+                useDisplayName(reply.value());
+            else
+                qWarning("getting the displayName failed");
+        });
+    }
+    \endcode
+
+    As described above, the pending reply is checked first for whether a result is already available
+    and if not, the signals from the watcher are used to react to the valueChanged signal.
+
+    \note The QIviPendingReplyWatcher returned is owned by the QIviPendingReply and all its
+    copies. If all copies of the QIviPendingReply get deleted its QIviPendingReplyWatcher gets
+    deleted as well.
+
+    For usage in QML see the QML documentation.
+*/
+
 QIviPendingReplyWatcher::QIviPendingReplyWatcher(int userType)
     : QObject(*new QIviPendingReplyWatcherPrivate(userType, this))
 {
 }
 
-QIviPendingReplyWatcher::~QIviPendingReplyWatcher()
-{
-}
+/*!
+    \property QIviPendingReplyWatcher::value
+    \brief Holds the current value of the QIviPendingReply
 
-//document default value
-//note about having no changed signal (gadget) and use of watcher which has one
+    If no result is available yet or the reply failed, a default constructed QVariant() is returned.
+    Otherwise a QVariant holding the result is returned.
+*/
 QVariant QIviPendingReplyWatcher::value() const
 {
     Q_D(const QIviPendingReplyWatcher);
     return d->m_data;
 }
 
+/*!
+    \property QIviPendingReplyWatcher::valid
+    \brief Holds whether the watcher is valid
+
+    A watcher can be invalid if a QIviPendingReplyBase is manually created not using the template
+    class QIviPendingReply.
+*/
 bool QIviPendingReplyWatcher::isValid() const
 {
     Q_D(const QIviPendingReplyWatcher);
     return d->m_type == -1 ? false : true;
 }
 
+/*!
+    \property QIviPendingReplyWatcher::resultAvailable
+    \brief Holds whether a result has been set
+
+    This property is \c true once a result has been set by using setSuccess() or setFailed().
+*/
 bool QIviPendingReplyWatcher::isResultAvailable() const
 {
     Q_D(const QIviPendingReplyWatcher);
     return d->m_resultAvailable;
 }
 
+/*!
+    \property QIviPendingReplyWatcher::success
+    \brief Holds whether the reply succeeded
+
+    This property is \c true if the reply has a valid result set by calling setSuccess().
+*/
 bool QIviPendingReplyWatcher::isSuccessful() const
 {
     Q_D(const QIviPendingReplyWatcher);
     return d->m_success;
 }
 
+/*!
+    Sets the result of the reply to \a value and marks the reply as succeeded.
+
+    The given value needs to be of the same type than the reply or convertible to that type.
+
+    \note a result can only be set once and cannot be changed again later.
+
+    \sa setFailed
+*/
 void QIviPendingReplyWatcher::setSuccess(const QVariant &value)
 {
     Q_D(QIviPendingReplyWatcher);
 
     if (d->m_resultAvailable) {
-        qtivi_qmlOrCppWarning(this, QStringLiteral("Result is already set. Ignoring request"));
+        qtivi_qmlOrCppWarning(this, "Result is already set. Ignoring request");
         return;
     }
 
@@ -201,7 +478,7 @@ void QIviPendingReplyWatcher::setSuccess(const QVariant &value)
         if (mEnum.isValid()) {
             isEnumOrFlag = true;
             if (!mEnum.isFlag() && !mEnum.valueToKey(var.toInt())) {
-                qtivi_qmlOrCppWarning(this, QStringLiteral("Enum value out of range"));
+                qtivi_qmlOrCppWarning(this, "Enum value out of range");
                 return;
             }
         }
@@ -216,6 +493,13 @@ void QIviPendingReplyWatcher::setSuccess(const QVariant &value)
     d->setSuccess(var);
 }
 
+/*!
+    Marks the reply as failed.
+
+    \note a result can only be set once and cannot be changed again later.
+
+    \sa setSuccess
+*/
 void QIviPendingReplyWatcher::setFailed()
 {
     Q_D(QIviPendingReplyWatcher);
@@ -225,25 +509,34 @@ void QIviPendingReplyWatcher::setFailed()
     }
 
     d->m_resultAvailable = true;
-    //TODO does it really make sense to emit it again ?
+    //emitting valueChanged is intended here as it makes it easier to react to successful and failed
+    //replies in the same slot.
     emit valueChanged(d->m_data);
     emit replyFailed();
 
     d->callFailedCallback();
 }
 
-//Also document that this function needs to be called from a JSEngine(QMLEngine) only
-//document that multple callbacks are not supported, use the Javascript promise instead
-//check result when using from C++
+/*!
+    Sets the JavaScript callbacks to be called once a result is delivered. If the reply succeeded
+    the \a success callback is called, otherwise the \a failed callback.
+
+    The \a success callback can take the reply value as an argument.
+
+    The provided values need to be \l {QJSValue::isCallable}{callable} and constructed from a
+    QJSEngine. Passing QJSValue objects created by C++ will result in an error.
+
+    Calling this function multiple times will override the existing callbacks.
+*/
 void QIviPendingReplyWatcher::then(const QJSValue &success, const QJSValue &failed)
 {
     if (!success.isUndefined() && !success.isCallable()) {
-        qtivi_qmlOrCppWarning(this, QStringLiteral("The success functor is not callable"));
+        qtivi_qmlOrCppWarning(this, "The success functor is not callable");
         return;
     }
 
     if (!failed.isUndefined() && !failed.isCallable()) {
-        qtivi_qmlOrCppWarning(this, QStringLiteral("The failed functor is not callable"));
+        qtivi_qmlOrCppWarning(this, "The failed functor is not callable");
         return;
     }
 
@@ -255,7 +548,7 @@ void QIviPendingReplyWatcher::then(const QJSValue &success, const QJSValue &fail
         d->m_callbackEngine = QJSValuePrivate::engine(&d->m_failedFunctor)->jsEngine();
 
     if (!d->m_callbackEngine)
-        qtivi_qmlOrCppWarning(this, QStringLiteral("Couldn't access the current QJSEngine. The given callbacks will not be called without a valid QJSEngine"));
+        qtivi_qmlOrCppWarning(this, "Couldn't access the current QJSEngine. The given callbacks will not be called without a valid QJSEngine");
 
     if (d->m_resultAvailable) {
         if (d->m_success)
@@ -263,10 +556,6 @@ void QIviPendingReplyWatcher::then(const QJSValue &success, const QJSValue &fail
         else
             d->callFailedCallback();
     }
-}
-
-QIviPendingReplyBase::QIviPendingReplyBase()
-{
 }
 
 QIviPendingReplyBase::QIviPendingReplyBase(int userType)
@@ -279,16 +568,40 @@ QIviPendingReplyBase::QIviPendingReplyBase(const QIviPendingReplyBase &other)
     this->m_watcher = other.m_watcher;
 }
 
-QIviPendingReplyBase::~QIviPendingReplyBase()
-{
-}
+/*!
+    \qmlproperty QIviPendingReplyWatcher* PendingReply::watcher
+    \brief Holds the watcher for the PendingReply
 
-//Note: this pointer will only be valid as long a there is a PendingReply object left.
+    \note The QIviPendingReplyWatcher returned is owned by the PendingReply and all its copies. If
+    all copies of the PendingReply get deleted its QIviPendingReplyWatcher gets deleted as well.
+ */
+/*!
+    \property QIviPendingReplyBase::watcher
+    \brief Holds the watcher for the QIviPendingReply
+
+    \note The QIviPendingReplyWatcher returned is owned by the QIviPendingReply and all its
+    copies. If all copies of the QIviPendingReply get deleted its QIviPendingReplyWatcher gets
+    deleted as well.
+ */
 QIviPendingReplyWatcher *QIviPendingReplyBase::watcher() const
 {
     return m_watcher.data();
 }
 
+/*!
+    \qmlproperty var PendingReply::value
+    \brief Holds the current value of the PendingReply
+
+    If no result is available yet or the reply failed, a default constructed QVariant() is returned.
+    Otherwise a QVariant holding the result is returned.
+ */
+/*!
+    \property QIviPendingReplyBase::value
+    \brief Holds the current value of the QIviPendingReply
+
+    If no result is available yet or the reply failed, a default constructed QVariant() is returned.
+    Otherwise a QVariant holding the result is returned.
+*/
 QVariant QIviPendingReplyBase::value() const
 {
     if (m_watcher)
@@ -296,6 +609,20 @@ QVariant QIviPendingReplyBase::value() const
     return QVariant();
 }
 
+/*!
+    \qmlproperty bool PendingReply::valid
+    \brief Holds whether the PendingReply is valid
+
+    A watcher can be invalid if a PendingReply is manually created not using the template
+    class QIviPendingReply.
+*/
+/*!
+    \property QIviPendingReplyBase::valid
+    \brief Holds whether the QIviPendingReplyBase is valid
+
+    A watcher can be invalid if a QIviPendingReplyBase is manually created not using the template
+    class QIviPendingReply.
+*/
 bool QIviPendingReplyBase::isValid() const
 {
     if (m_watcher)
@@ -303,6 +630,18 @@ bool QIviPendingReplyBase::isValid() const
     return false;
 }
 
+/*!
+    \qmlproperty bool PendingReply::resultAvailable
+    \brief Holds whether a result has been set
+
+    This property is \c true once a result has been set by using setSuccess() or setFailed().
+*/
+/*!
+    \property QIviPendingReplyBase::resultAvailable
+    \brief Holds whether a result has been set
+
+    This property is \c true once a result has been set by using setSuccess() or setFailed().
+*/
 bool QIviPendingReplyBase::isResultAvailable() const
 {
     if (m_watcher)
@@ -310,6 +649,18 @@ bool QIviPendingReplyBase::isResultAvailable() const
     return false;
 }
 
+/*!
+    \qmlproperty bool PendingReply::success
+    \brief Holds whether the reply succeeded
+
+    This property is \c true if the reply has a valid result set by calling setSuccess().
+*/
+/*!
+    \property QIviPendingReplyBase::success
+    \brief Holds whether the reply succeeded
+
+    This property is \c true if the reply has a valid result set by calling setSuccess().
+*/
 bool QIviPendingReplyBase::isSuccessful() const
 {
     if (m_watcher)
@@ -317,6 +668,29 @@ bool QIviPendingReplyBase::isSuccessful() const
     return false;
 }
 
+/*!
+    \qmlmethod PendingReply::then(success, failed)
+
+    Sets the JavaScript callbacks to be called once a result is delivered. If the reply succeeded
+    the \a success callback is called, otherwise the \a failed callback.
+
+    The \a success callback can take the reply value as an argument.
+
+    See \l{PendingReply#The then method}{The \e then method} for example usage.
+
+    Calling this function multiple times will override the existing callbacks.
+*/
+/*!
+    Sets the JavaScript callbacks to be called once a result is delivered. If the reply succeeded
+    the \a success callback is called, otherwise the \a failed callback.
+
+    The \a success callback can take the reply value as an argument.
+
+    The provided values need to be \l {QJSValue::isCallable}{callable} and constructed from a
+    QJSEngine. Passing QJSValue objects created by C++ will result in an error.
+
+    Calling this function multiple times will override the existing callbacks.
+*/
 void QIviPendingReplyBase::then(const QJSValue &success, const QJSValue &failed)
 {
     if (m_watcher)
@@ -324,6 +698,26 @@ void QIviPendingReplyBase::then(const QJSValue &success, const QJSValue &failed)
     return;
 }
 
+/*!
+    \qmlmethod PendingReply::setSuccess(var value)
+
+    Sets the result of the reply to \a value and marks the reply as succeeded.
+
+    The given value needs to be of the same type as the reply or be convertible to that type.
+
+    \note a result can only be set once and cannot be changed again later.
+
+    \sa setFailed
+*/
+/*!
+    Sets the result of the reply to \a value and marks the reply as succeeded.
+
+    The given value needs to be of the same type as the reply or be convertible to that type.
+
+    \note a result can only be set once and cannot be changed again later.
+
+    \sa setFailed
+*/
 void QIviPendingReplyBase::setSuccess(const QVariant &value)
 {
     if (m_watcher)
@@ -331,6 +725,22 @@ void QIviPendingReplyBase::setSuccess(const QVariant &value)
     return;
 }
 
+/*!
+    \qmlmethod PendingReply::setFailed()
+
+    Marks the reply as failed.
+
+    \note a result can only be set once and cannot be changed again later.
+
+    \sa setSuccess
+*/
+/*!
+    Marks the reply as failed.
+
+    \note a result can only be set once and cannot be changed again later.
+
+    \sa setSuccess
+*/
 void QIviPendingReplyBase::setFailed()
 {
     if (m_watcher)
@@ -338,11 +748,99 @@ void QIviPendingReplyBase::setFailed()
     return;
 }
 
+/*!
+    \internal
+
+    Sets the result of the reply to \a value and marks the reply as succeeded, but without checking
+    if the QVariant can be converted. This is used by the template class as we convert it to a
+    QVariant before anyway and can be sure the type is correct.
+*/
 void QIviPendingReplyBase::setSuccessNoCheck(const QVariant &value)
 {
     if (m_watcher)
         m_watcher->d_func()->setSuccess(value);
     return;
 }
+
+/*!
+    \fn QIviPendingReplyWatcher::replyFailed()
+
+    Emitted when the reply is marked as failed.
+
+    \sa setFailed
+*/
+
+/*!
+    \fn QIviPendingReplyWatcher::replySuccess()
+
+    Emitted when the reply is marked as successful.
+
+    \sa setSuccess
+*/
+
+/*!
+    \fn QIviPendingReplyWatcher::valueChanged(const QVariant &value)
+
+    Emitted when the result for the reply is ready. This signal is called when the reply is
+    successful as well as when it is failed. The \value argument holds the result and is a default
+    constructed QVariant in the failed case.
+
+    \sa setSuccess setFailed
+*/
+
+/*!
+    \fn QIviPendingReply::createFailedReply()
+
+    Creates a reply object which is marked as failed. This is convenient in error cases inside
+    functions returning a reply e.g.
+
+    \code
+    QIviPendingReply<QString> doSomething(int value)
+    {
+        if (value <= 0) {
+            qWarning("The value needs to be bigger than 0");
+            return QIviPendingReply<QString>::createFailedReply()
+        }
+
+        QIviPendingReply<QString> reply;
+        ...
+        return reply;
+    }
+    \endcode
+*/
+
+/*!
+    \fn QIviPendingReply::reply() const
+
+    Returns the result of the reply. If no result has been set yet or when the reply is marked as
+    failed, a default constructed value is returned.
+
+    \sa setSuccess setFailed
+*/
+
+/*!
+    \fn QIviPendingReply::setSuccess(const T &value)
+
+    Sets the result of the reply to \a value and marks the reply as succeeded.
+
+    \note a result can only be set once and cannot be changed again later.
+
+    \sa setFailed
+*/
+
+/*!
+    \fn qIviRegisterPendingReplyType(const char *typeName)
+    \relates QIviPendingReply
+
+    Registers the type name \a typeName for the type \c{T} for usage inside a QIviPendingReply. Any
+    class or struct that has a public default constructor, a public copy constructor and a public
+    destructor can be registered.
+
+    This function requires that \c{T} is a fully defined type at the point where the function is
+    called. For pointer types, it also requires that the pointed-to type is fully defined. Use
+    Q_DECLARE_OPAQUE_POINTER() to be able to register pointers to forward declared types.
+
+    Please see qRegisterMetaType for more information.
+*/
 
 QT_END_NAMESPACE

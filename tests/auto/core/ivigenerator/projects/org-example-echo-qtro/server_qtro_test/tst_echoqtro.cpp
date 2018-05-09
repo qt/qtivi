@@ -91,10 +91,11 @@ void EchoQtroTest::testInit()
     QVERIFY(!client.isInitialized());
     QCOMPARE(client.error(), QIviAbstractFeature::NoError);
 
-    QVERIFY(server.start());
-
     //wait until the client has connected and initial values are set
     QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
+
+    QVERIFY(server.start());
+
     QVERIFY(initSpy.isValid());
     initSpy.wait(1000);
     QCOMPARE(initSpy.count(), 1);
@@ -138,6 +139,10 @@ void EchoQtroTest::testReconnect()
     disconnectSpy.wait(1000);
     QCOMPARE(disconnectSpy.count(), 1);
     QCOMPARE(client.error(), QIviAbstractFeature::Unknown);
+
+    //test that a remote call fails on a disconnected replica
+    QIviPendingReply<QString> idReply = client.id();
+    QVERIFY(idReply.isResultAvailable() && !idReply.watcher()->isSuccessful());
 
     //test reconnection
     QSignalSpy reconnectSpy(&client, SIGNAL(errorChanged(QIviAbstractFeature::Error,QString)));

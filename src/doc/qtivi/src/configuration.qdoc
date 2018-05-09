@@ -57,6 +57,12 @@ summary".
         the needed code for the simulation backends to communicate over QtSimulator. In addition,
         it also provides a new template to generate a controller application to communicate with
         the simulation backend.
+\row
+    \li QtRemoteObjects Support
+        \keyword feature-qtremoteobjects
+    \li QtRemoteObjects module
+    \li The QtRemoteObjects Support is needed to generate qtivi backends, using QtRemoteObjects as
+    it's IPC. It also provides templates to generate the server part of this IPC.
 \endtable
 
 Additional command-line options to tailor the build-system to your needs:

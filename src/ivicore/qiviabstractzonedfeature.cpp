@@ -53,10 +53,6 @@ QIviAbstractZonedFeaturePrivate::QIviAbstractZonedFeaturePrivate(const QString &
     , m_zone(zone)
 {}
 
-QIviAbstractZonedFeaturePrivate::~QIviAbstractZonedFeaturePrivate()
-{
-}
-
 /*!
     \class QIviAbstractZonedFeature
     \inmodule QtIviCore
@@ -92,18 +88,11 @@ QIviAbstractZonedFeature::QIviAbstractZonedFeature(const QString &interface, con
 }
 
 /*!
-    Destroys vehicle feature
-*/
-QIviAbstractZonedFeature::~QIviAbstractZonedFeature()
-{
-}
-
-/*!
     \reimp
 */
 bool QIviAbstractZonedFeature::acceptServiceObject(QIviServiceObject *serviceObject)
 {
-    if (QIviAbstractZonedFeature *parentFeature = qobject_cast<QIviAbstractZonedFeature*>(parent()))
+    if (auto *parentFeature = qobject_cast<QIviAbstractZonedFeature*>(parent()))
         return parentFeature->acceptServiceObject(serviceObject);
     else if (serviceObject)
         return serviceObject->interfaces().contains(interfaceName());
@@ -116,7 +105,7 @@ bool QIviAbstractZonedFeature::acceptServiceObject(QIviServiceObject *serviceObj
 void QIviAbstractZonedFeature::connectToServiceObject(QIviServiceObject *serviceObject)
 {
     QIviZonedFeatureInterface *backend = nullptr;
-    if (QIviAbstractZonedFeature* parentFeature = qobject_cast<QIviAbstractZonedFeature*>(parent()))
+    if (auto *parentFeature = qobject_cast<QIviAbstractZonedFeature*>(parent()))
         backend = parentFeature->backend();
     else if (serviceObject)
         backend = qobject_cast<QIviZonedFeatureInterface*>(serviceObject->interfaceInstance(interfaceName()));
@@ -151,12 +140,12 @@ QIviZonedFeatureInterface *QIviAbstractZonedFeature::backend(const QString &inte
     if (iface.isEmpty())
         iface = interfaceName();
 
-    if (QIviAbstractZonedFeature *parentFeature = qobject_cast<QIviAbstractZonedFeature*>(parent())) {
+    if (auto *parentFeature = qobject_cast<QIviAbstractZonedFeature*>(parent())) {
         return parentFeature->backend();
     } else if (QIviServiceObject *so = serviceObject()) {
         return qobject_cast<QIviZonedFeatureInterface*>(so->interfaceInstance(iface));
     }
-    return 0;
+    return nullptr;
 }
 
 
@@ -278,7 +267,7 @@ QIviAbstractZonedFeature *QIviAbstractZonedFeature::zoneAt(const QString &zone) 
     for (QIviAbstractZonedFeature *f : d->m_zoneFeatures)
         if (f->zone() == zone)
             return f;
-    return 0;
+    return nullptr;
 }
 
 /*!

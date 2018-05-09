@@ -42,12 +42,12 @@
 #include "qivisearchandbrowsemodel.h"
 #include "qivisearchandbrowsemodel_p.h"
 
+#include "qiviqmlconversion_helper.h"
 #include "qivisearchandbrowsemodelinterface.h"
 #include "queryparser/qiviqueryparser_p.h"
-#include "qiviqmlconversion_helper.h"
 
-#include <QMetaObject>
 #include <QDebug>
+#include <QMetaObject>
 
 QT_BEGIN_NAMESPACE
 
@@ -237,7 +237,7 @@ void QIviSearchAndBrowseModelPrivate::parseQuery()
         return;
 
     if (!m_capabilities.testFlag(QIviSearchAndBrowseModel::SupportsFiltering) && !m_capabilities.testFlag(QIviSearchAndBrowseModel::SupportsSorting)) {
-        qtivi_qmlOrCppWarning(q_ptr, QLatin1String("The backend doesn't support filtering or sorting. Changing the query will have no effect"));
+        qtivi_qmlOrCppWarning(q_ptr, QStringLiteral("The backend doesn't support filtering or sorting. Changing the query will have no effect"));
         return;
     }
 
@@ -260,7 +260,7 @@ void QIviSearchAndBrowseModelPrivate::checkType()
         return;
 
     if (!m_availableContentTypes.contains(m_contentType)) {
-        QString error = QString(QLatin1String("Unsupported type: \"%1\" \n Supported types are: \n")).arg(m_contentType);
+        QString error = QString(QStringLiteral("Unsupported type: \"%1\" \n Supported types are: \n")).arg(m_contentType);
         for (const QString &type : qAsConst(m_availableContentTypes))
             error.append(type + QLatin1String("\n"));
         qtivi_qmlOrCppWarning(q_ptr, error);
@@ -307,7 +307,7 @@ void QIviSearchAndBrowseModelPrivate::setCanGoBack(bool canGoBack)
     emit q->canGoBackChanged(m_canGoBack);
 }
 
-void QIviSearchAndBrowseModelPrivate::setAvailableContenTypes(QStringList contentTypes)
+void QIviSearchAndBrowseModelPrivate::setAvailableContenTypes(const QStringList &contentTypes)
 {
     Q_Q(QIviSearchAndBrowseModel);
     if (m_availableContentTypes == contentTypes)
@@ -331,7 +331,7 @@ QIviSearchAndBrowseModelInterface *QIviSearchAndBrowseModelPrivate::searchBacken
     Q_Q(const QIviSearchAndBrowseModel);
     QIviServiceObject *so = q->serviceObject();
     if (so)
-        return qobject_cast<QIviSearchAndBrowseModelInterface*>(so->interfaceInstance(QLatin1String(QIviSearchAndBrowseModel_iid)));
+        return qobject_cast<QIviSearchAndBrowseModelInterface*>(so->interfaceInstance(QStringLiteral(QIviSearchAndBrowseModel_iid)));
 
     return nullptr;
 }
@@ -446,7 +446,7 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
 
     \section1 Loading Types
 
-    Multiple loading types are supported, as the QIviSearchAndBrowseModel is made to work with asynchrounous requests to
+    Multiple loading types are supported, as the QIviSearchAndBrowseModel is made to work with asynchronous requests to
     fetch its data. The FetchMore loading type is the default and is using the \l{QAbstractItemModel::}{canFetchMore()}/\l{QAbstractItemModel::}{fetchMore()} functions of
     QAbstractItemModel to fetch new data once the view hits the end of the currently available data. As fetching can take
     some time, there is the fetchMoreThreshold property which controls how much in advance a new fetch should be started.
@@ -669,7 +669,7 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
 
     \section1 Loading Types
 
-    Multiple loading types are supported, as the SearchAndBrowseModel is made to work with asynchrounous requests to
+    Multiple loading types are supported, as the SearchAndBrowseModel is made to work with asynchronous requests to
     fetch its data. The FetchMore loading type is the default and is using the \l{QAbstractItemModel::}{canFetchMore()}/\l{QAbstractItemModel::}{fetchMore()} functions of
     QAbstractItemModel to fetch new data once the view hits the end of the currently available data. As fetching can take
     some time, there is the fetchMoreThreshold property which controls how much in advance a new fetch should be started.
@@ -688,11 +688,7 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
     The \a parent argument is passed on to the \l QIviAbstractFeatureListModel base class.
 */
 QIviSearchAndBrowseModel::QIviSearchAndBrowseModel(QObject *parent)
-    : QIviAbstractFeatureListModel(*new QIviSearchAndBrowseModelPrivate(QLatin1String(QIviSearchAndBrowseModel_iid), this), parent)
-{
-}
-
-QIviSearchAndBrowseModel::~QIviSearchAndBrowseModel()
+    : QIviAbstractFeatureListModel(*new QIviSearchAndBrowseModelPrivate(QStringLiteral(QIviSearchAndBrowseModel_iid), this), parent)
 {
 }
 
@@ -700,7 +696,7 @@ QIviSearchAndBrowseModel::~QIviSearchAndBrowseModel()
     \qmlproperty enumeration SearchAndBrowseModel::capabilities
     \brief Holds the capabilities of the backend for the current content of the model.
 
-    The capabilties controls what the current contentType supports. e.g. filtering or sorting.
+    The capabilities controls what the current contentType supports. e.g. filtering or sorting.
     It can be a combination of the following values:
 
     \value NoExtras
@@ -734,7 +730,7 @@ QIviSearchAndBrowseModel::~QIviSearchAndBrowseModel()
     \property QIviSearchAndBrowseModel::capabilities
     \brief Holds the capabilities of the backend for the current content of the model.
 
-    The capabilties controls what the current contentType supports. e.g. filtering or sorting.
+    The capabilities controls what the current contentType supports. e.g. filtering or sorting.
 */
 
 QIviSearchAndBrowseModel::Capabilities QIviSearchAndBrowseModel::capabilities() const
@@ -970,7 +966,7 @@ void QIviSearchAndBrowseModel::setLoadingType(QIviSearchAndBrowseModel::LoadingT
         return;
 
     if (loadingType == QIviSearchAndBrowseModel::DataChanged && !d->m_capabilities.testFlag(QIviSearchAndBrowseModel::SupportsGetSize)) {
-        qtivi_qmlOrCppWarning(this, QLatin1String("The backend doesn't support the DataChanged loading type. This call will have no effect"));
+        qtivi_qmlOrCppWarning(this, "The backend doesn't support the DataChanged loading type. This call will have no effect");
         return;
     }
 
@@ -1076,12 +1072,12 @@ void QIviSearchAndBrowseModel::goBack()
     QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
 
     if (!backend) {
-        qtivi_qmlOrCppWarning(this, QLatin1String("No backend connected"));
+        qtivi_qmlOrCppWarning(this, "No backend connected");
         return;
     }
 
     if (!backend->canGoBack(d->m_identifier, d->m_contentType)) {
-        qtivi_qmlOrCppWarning(this, QLatin1String("Can't go backward anymore"));
+        qtivi_qmlOrCppWarning(this, "Can't go backward anymore");
         return;
     }
 
@@ -1110,7 +1106,7 @@ bool QIviSearchAndBrowseModel::canGoForward(int i) const
         return false;
 
     if (!backend) {
-        qtivi_qmlOrCppWarning(this, QLatin1String("No backend connected"));
+        qtivi_qmlOrCppWarning(this, "No backend connected");
         return false;
     }
 
@@ -1159,7 +1155,7 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
         return nullptr;
 
     if (!backend) {
-        qtivi_qmlOrCppWarning(this, QLatin1String("No backend connected"));
+        qtivi_qmlOrCppWarning(this, "No backend connected");
         return nullptr;
     }
 
@@ -1168,17 +1164,17 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
         return nullptr;
 
     if (!backend->canGoForward(d->m_identifier, d->m_contentType, item->id())) {
-        qtivi_qmlOrCppWarning(this, QLatin1String("Can't go forward anymore"));
+        qtivi_qmlOrCppWarning(this, "Can't go forward anymore");
         return nullptr;
     }
 
     if (navigationType == OutOfModelNavigation) {
         if (d->m_capabilities.testFlag(QIviSearchAndBrowseModel::SupportsStatelessNavigation)) {
             QString newContentType = backend->goForward(d->m_identifier, d->m_contentType, item->id());
-            QIviSearchAndBrowseModel* newModel = new QIviSearchAndBrowseModel(serviceObject(), newContentType);
+            auto newModel = new QIviSearchAndBrowseModel(serviceObject(), newContentType);
             return newModel;
         } else {
-            qtivi_qmlOrCppWarning(this, QLatin1String("The backend doesn't support the OutOfModelNavigation"));
+            qtivi_qmlOrCppWarning(this, "The backend doesn't support the OutOfModelNavigation");
             return nullptr;
         }
     } else {
@@ -1211,18 +1207,18 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
 QIviPendingReply<void> QIviSearchAndBrowseModel::insert(int index, const QVariant &variant)
 {
     Q_D(QIviSearchAndBrowseModel);
-    const QIviSearchAndBrowseModelItem *item = qtivi_gadgetFromVariant<QIviSearchAndBrowseModelItem>(this, variant);
+    const auto item = qtivi_gadgetFromVariant<QIviSearchAndBrowseModelItem>(this, variant);
     if (!item)
         return QIviPendingReply<void>::createFailedReply();
 
     QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
     if (!backend) {
-        qtivi_qmlOrCppWarning(this, QLatin1String("Can't insert itmes without a connected backend"));
+        qtivi_qmlOrCppWarning(this, "Can't insert itmes without a connected backend");
         return QIviPendingReply<void>::createFailedReply();
     }
 
     if (!d->m_capabilities.testFlag(SupportsInsert)) {
-        qtivi_qmlOrCppWarning(this, QLatin1String("The backend doesn't support inserting items"));
+        qtivi_qmlOrCppWarning(this, "The backend doesn't support inserting items");
         return QIviPendingReply<void>::createFailedReply();
     }
 
@@ -1249,12 +1245,12 @@ QIviPendingReply<void> QIviSearchAndBrowseModel::remove(int index)
     Q_D(QIviSearchAndBrowseModel);
     QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
     if (!backend) {
-        qtivi_qmlOrCppWarning(this, QLatin1String("Can't remove items without a connected backend"));
+        qtivi_qmlOrCppWarning(this, "Can't remove items without a connected backend");
         return QIviPendingReply<void>::createFailedReply();
     }
 
     if (!d->m_capabilities.testFlag(SupportsRemove)) {
-        qtivi_qmlOrCppWarning(this, QLatin1String("The backend doesn't support removing of items"));
+        qtivi_qmlOrCppWarning(this, "The backend doesn't support removing of items");
         return QIviPendingReply<void>::createFailedReply();
     }
 
@@ -1281,12 +1277,12 @@ QIviPendingReply<void> QIviSearchAndBrowseModel::move(int cur_index, int new_ind
     Q_D(QIviSearchAndBrowseModel);
     QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
     if (!backend) {
-        qtivi_qmlOrCppWarning(this, QLatin1String("Can't move items without a connected backend"));
+        qtivi_qmlOrCppWarning(this, "Can't move items without a connected backend");
         return QIviPendingReply<void>::createFailedReply();
     }
 
     if (!d->m_capabilities.testFlag(SupportsMove)) {
-        qtivi_qmlOrCppWarning(this, QLatin1String("The backend doesn't support moving of items"));
+        qtivi_qmlOrCppWarning(this, "The backend doesn't support moving of items");
         return QIviPendingReply<void>::createFailedReply();
     }
 
@@ -1311,13 +1307,13 @@ QIviPendingReply<void> QIviSearchAndBrowseModel::move(int cur_index, int new_ind
 QIviPendingReply<int> QIviSearchAndBrowseModel::indexOf(const QVariant &variant)
 {
     Q_D(QIviSearchAndBrowseModel);
-    const QIviSearchAndBrowseModelItem *item = qtivi_gadgetFromVariant<QIviSearchAndBrowseModelItem>(this, variant);
+    const auto *item = qtivi_gadgetFromVariant<QIviSearchAndBrowseModelItem>(this, variant);
     if (!item)
         return QIviPendingReply<int>::createFailedReply();
 
     QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
     if (!backend) {
-        qtivi_qmlOrCppWarning(this, QLatin1String("Can't get the index without a connected backend"));
+        qtivi_qmlOrCppWarning(this, "Can't get the index without a connected backend");
         return QIviPendingReply<int>::createFailedReply();
     }
 
@@ -1444,10 +1440,10 @@ void QIviSearchAndBrowseModel::connectToServiceObject(QIviServiceObject *service
 */
 void QIviSearchAndBrowseModel::disconnectFromServiceObject(QIviServiceObject *serviceObject)
 {
-    QIviSearchAndBrowseModelInterface *backend = qobject_cast<QIviSearchAndBrowseModelInterface*>(serviceObject->interfaceInstance(QLatin1String(QIviSearchAndBrowseModel_iid)));
+    auto backend = qobject_cast<QIviSearchAndBrowseModelInterface*>(serviceObject->interfaceInstance(QStringLiteral(QIviSearchAndBrowseModel_iid)));
 
     if (backend)
-        disconnect(backend, 0, this, 0);
+        disconnect(backend, nullptr, this, nullptr);
 }
 
 /*!

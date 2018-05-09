@@ -43,8 +43,8 @@
 #define QUERYTERM_H
 
 #include <QObject>
-#include <QVariant>
 #include <QSharedData>
+#include <QVariant>
 
 #include <QtIviCore/qtiviglobal.h>
 
@@ -75,7 +75,7 @@ public:
     };
 
     explicit QIviConjunctionTerm();
-    ~QIviConjunctionTerm();
+    ~QIviConjunctionTerm() override;
 
     QIviAbstractQueryTerm::Type type() const override;
     QString toString() const override;
@@ -95,7 +95,7 @@ class Q_QTIVICORE_EXPORT QIviScopeTerm : public QIviAbstractQueryTerm
 public:
 
     explicit QIviScopeTerm();
-    ~QIviScopeTerm();
+    ~QIviScopeTerm() override;
 
     QIviAbstractQueryTerm::Type type() const override;
     QString toString() const override;
@@ -124,7 +124,7 @@ public:
     };
 
     explicit QIviFilterTerm();
-    ~QIviFilterTerm();
+    ~QIviFilterTerm() override;
 
     QIviAbstractQueryTerm::Type type() const override;
     QString toString() const override;

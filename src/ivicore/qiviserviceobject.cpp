@@ -72,14 +72,6 @@ QIviServiceObject::QIviServiceObject(QObject *parent)
 }
 
 /*!
-    Destructor.
-*/
-QIviServiceObject::~QIviServiceObject()
-{
-
-}
-
-/*!
     \property QIviServiceObject::id
     \brief A unique ID for the service object instance.
 

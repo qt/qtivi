@@ -50,11 +50,6 @@ QIviProxyServiceObject::QIviProxyServiceObject(QIviServiceInterface *interface)
 
 }
 
-QIviProxyServiceObject::~QIviProxyServiceObject()
-{
-
-}
-
 QStringList QIviProxyServiceObject::interfaces() const
 {
     return m_interface->interfaces();

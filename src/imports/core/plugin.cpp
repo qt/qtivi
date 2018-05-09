@@ -47,7 +47,9 @@ QT_BEGIN_NAMESPACE
 
 QObject* serviceManagerSingelton(QQmlEngine *, QJSEngine *)
 {
-    return QIviServiceManager::instance();
+    auto manager = QIviServiceManager::instance();
+    QQmlEngine::setObjectOwnership(manager, QQmlEngine::CppOwnership);
+    return manager;
 }
 
 class QIviCorePlugin : public QQmlExtensionPlugin
@@ -55,14 +57,14 @@ class QIviCorePlugin : public QQmlExtensionPlugin
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
 public:
-    virtual void registerTypes(const char *uri)
+    void registerTypes(const char *uri) override
     {
         Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi"));
         qRegisterMetaType<QIviServiceObject*>();
         qRegisterMetaType<QList<QIviServiceObject*>>("QList<QIviServiceObject*>");
 
-        qmlRegisterUncreatableType<QIviAbstractFeature>(uri, 1, 0, "AbstractFeature", "AbstractFeature is not accessible directly");
-        qmlRegisterUncreatableType<QIviAbstractZonedFeature>(uri, 1, 0, "AbstractZonedFeature", "AbstractZonedFeature is not accessible directly");
+        qmlRegisterUncreatableType<QIviAbstractFeature>(uri, 1, 0, "AbstractFeature", QStringLiteral("AbstractFeature is not accessible directly"));
+        qmlRegisterUncreatableType<QIviAbstractZonedFeature>(uri, 1, 0, "AbstractZonedFeature", QStringLiteral("AbstractZonedFeature is not accessible directly"));
         qmlRegisterType<QIviSearchAndBrowseModel>(uri, 1, 0, "SearchAndBrowseModel");
         qmlRegisterSingletonType<QIviServiceManager>(uri, 1, 0, "ServiceManager", &serviceManagerSingelton);
     }

@@ -48,9 +48,9 @@
 #include <QImage>
 #include <QSqlError>
 #include <QSqlQuery>
-#include <QtDebug>
-#include <QThreadPool>
 #include <QStandardPaths>
+#include <QThreadPool>
+#include <QtDebug>
 
 #ifndef QTIVI_NO_TAGLIB
 #include <attachedpictureframe.h>
@@ -141,7 +141,7 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
         qCInfo(media) << "Removing content: " << mediaDir;
         QSqlQuery query(m_db);
 
-        bool ret = query.exec(QString("DELETE from track WHERE file LIKE '%1%'").arg(mediaDir));
+        bool ret = query.exec(QStringLiteral("DELETE from track WHERE file LIKE '%1%'").arg(mediaDir));
 
         if (!ret) {
             setState(QIviMediaIndexerControl::Error);
@@ -171,7 +171,7 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
         if (qApp->closingDown())
             return false;
 
-        QString defaultCoverArtUrl = fileName + QLatin1Literal(".png");
+        QString defaultCoverArtUrl = fileName + QStringLiteral(".png");
         QString coverArtUrl;
 #ifndef QTIVI_NO_TAGLIB
         TagLib::FileRef f(TagLib::FileName(QFile::encodeName(fileName)));
@@ -181,19 +181,18 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
         QString albumName = TStringToQString(f.tag()->album());
         QString artistName = TStringToQString(f.tag()->artist());
         QString genre = TStringToQString(f.tag()->genre());
-        int number = f.tag()->track();
+        unsigned int number = f.tag()->track();
 
         // Extract cover art
         if (fileName.endsWith(QLatin1String("mp3"))) {
-            TagLib::MPEG::File *file = static_cast<TagLib::MPEG::File*>(f.file());
+            auto *file = static_cast<TagLib::MPEG::File*>(f.file());
             TagLib::ID3v2::Tag *tag = file->ID3v2Tag(true);
             TagLib::ID3v2::FrameList frameList = tag->frameList("APIC");
 
             if (frameList.isEmpty()) {
                 qCWarning(media) << "No cover art was found";
             } else if (!QFile::exists(defaultCoverArtUrl)) {
-                TagLib::ID3v2::AttachedPictureFrame *coverImage =
-                    static_cast<TagLib::ID3v2::AttachedPictureFrame *>(frameList.front());
+                auto *coverImage = static_cast<TagLib::ID3v2::AttachedPictureFrame *>(frameList.front());
 
                 QImage coverQImg;
                 coverArtUrl = defaultCoverArtUrl;
@@ -210,13 +209,13 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
         query.prepare("INSERT OR IGNORE INTO track (trackName, albumName, artistName, genre, number, file, coverArtUrl) "
                       "VALUES (:trackName, :albumName, :artistName, :genre, :number, :file, :coverArtUrl)");
 
-        query.bindValue(":trackName", trackName);
-        query.bindValue(":albumName", albumName);
-        query.bindValue(":artistName", artistName);
-        query.bindValue(":genre", genre);
-        query.bindValue(":number", number);
-        query.bindValue(":file", fileName);
-        query.bindValue(":coverArtUrl", coverArtUrl);
+        query.bindValue(QStringLiteral(":trackName"), trackName);
+        query.bindValue(QStringLiteral(":albumName"), albumName);
+        query.bindValue(QStringLiteral(":artistName"), artistName);
+        query.bindValue(QStringLiteral(":genre"), genre);
+        query.bindValue(QStringLiteral(":number"), number);
+        query.bindValue(QStringLiteral(":file"), fileName);
+        query.bindValue(QStringLiteral(":coverArtUrl"), coverArtUrl);
 
         bool ret = query.exec();
 

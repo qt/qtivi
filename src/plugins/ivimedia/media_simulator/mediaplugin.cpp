@@ -39,25 +39,25 @@
 **
 ****************************************************************************/
 
+#include "logging.h"
 #include "mediadiscoverybackend.h"
 #include "mediaindexerbackend.h"
 #include "mediaplayerbackend.h"
 #include "mediaplugin.h"
 #include "searchandbrowsebackend.h"
-#include "logging.h"
 
 #include <QtIviCore/QIviSearchAndBrowseModel>
 #include <QtIviMedia/QIviMediaPlayer>
 
+#include <QCoreApplication>
+#include <QDir>
+#include <QFileInfo>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QStandardPaths>
 #include <QStringList>
 #include <QTemporaryFile>
-#include <QCoreApplication>
-#include <QSqlQuery>
-#include <QSqlError>
 #include <QtDebug>
-#include <QFileInfo>
-#include <QStandardPaths>
-#include <QDir>
 
 MediaPlugin::MediaPlugin(QObject *parent)
     : QObject(parent)
@@ -65,7 +65,7 @@ MediaPlugin::MediaPlugin(QObject *parent)
 {
     const QByteArray database = qgetenv("QTIVIMEDIA_SIMULATOR_DATABASE");
     if (qEnvironmentVariableIsSet("QTIVIMEDIA_TEMPORARY_DATABASE")) {
-        QTemporaryFile *tempFile = new QTemporaryFile(qApp);
+        auto *tempFile = new QTemporaryFile(qApp);
         tempFile->open();
         m_dbFile = tempFile->fileName();
         qCInfo(media) << "QTIVIMEDIA_TEMPORARY_DATABASE environment variable is set.\n"
@@ -82,8 +82,8 @@ MediaPlugin::MediaPlugin(QObject *parent)
         qCInfo(media) << "Used media database:" << m_dbFile;
     }
 
-    QSqlDatabase db = createDatabaseConnection("main");
-    QSqlQuery query = db.exec(QLatin1String("CREATE TABLE IF NOT EXISTS \"queue\" (\"id\" INTEGER PRIMARY KEY, \"qindex\" INTEGER, \"track_index\" INTEGER)"));
+    QSqlDatabase db = createDatabaseConnection(QStringLiteral("main"));
+    QSqlQuery query = db.exec(QStringLiteral("CREATE TABLE IF NOT EXISTS \"queue\" (\"id\" INTEGER PRIMARY KEY, \"qindex\" INTEGER, \"track_index\" INTEGER)"));
     if (query.lastError().isValid())
         qFatal("Couldn't create Database Tables: %s", qPrintable(query.lastError().text()));
 
@@ -102,9 +102,9 @@ MediaPlugin::MediaPlugin(QObject *parent)
         qFatal("Couldn't create Database Tables: %s", qPrintable(query.lastError().text()));
     db.commit();
 
-    m_player = new MediaPlayerBackend(createDatabaseConnection("player"), this);
-    m_browse = new SearchAndBrowseBackend(createDatabaseConnection("model"), this);
-    m_indexer = new MediaIndexerBackend(createDatabaseConnection("indexer"), this);
+    m_player = new MediaPlayerBackend(createDatabaseConnection(QStringLiteral("player")), this);
+    m_browse = new SearchAndBrowseBackend(createDatabaseConnection(QStringLiteral("model")), this);
+    m_indexer = new MediaIndexerBackend(createDatabaseConnection(QStringLiteral("indexer")), this);
 
     connect(m_discovery, &MediaDiscoveryBackend::mediaDirectoryAdded,
             m_indexer, &MediaIndexerBackend::addMediaFolder);
@@ -115,22 +115,22 @@ MediaPlugin::MediaPlugin(QObject *parent)
 QStringList MediaPlugin::interfaces() const
 {
     QStringList list;
-    list << QIviMediaPlayer_iid;
-    list << QIviSearchAndBrowseModel_iid;
-    list << QIviMediaDeviceDiscovery_iid;
-    list << QIviMediaIndexer_iid;
+    list << QStringLiteral(QIviMediaPlayer_iid);
+    list << QStringLiteral(QIviSearchAndBrowseModel_iid);
+    list << QStringLiteral(QIviMediaDeviceDiscovery_iid);
+    list << QStringLiteral(QIviMediaIndexer_iid);
     return list;
 }
 
 QIviFeatureInterface *MediaPlugin::interfaceInstance(const QString &interface) const
 {
-    if (interface == QIviMediaPlayer_iid)
+    if (interface == QStringLiteral(QIviMediaPlayer_iid))
         return m_player;
-    else if (interface == QIviSearchAndBrowseModel_iid)
+    else if (interface == QStringLiteral(QIviSearchAndBrowseModel_iid))
         return m_browse;
-    else if (interface == QIviMediaDeviceDiscovery_iid)
+    else if (interface == QStringLiteral(QIviMediaDeviceDiscovery_iid))
         return m_discovery;
-    else if (interface == QIviMediaIndexer_iid)
+    else if (interface == QStringLiteral(QIviMediaIndexer_iid))
         return m_indexer;
 
     return nullptr;
@@ -138,7 +138,7 @@ QIviFeatureInterface *MediaPlugin::interfaceInstance(const QString &interface) c
 
 QSqlDatabase MediaPlugin::createDatabaseConnection(const QString &connectionName)
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
+    QSqlDatabase db = QSqlDatabase::addDatabase(QStringLiteral("QSQLITE"), connectionName);
     db.setDatabaseName(m_dbFile);
     if (!db.open())
         qFatal("Couldn't couldn't open database: %s", qPrintable(db.lastError().text()));

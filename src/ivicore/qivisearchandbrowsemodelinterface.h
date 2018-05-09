@@ -42,15 +42,15 @@
 #ifndef QIVISEARCHMODELINTERFACE_H
 #define QIVISEARCHMODELINTERFACE_H
 
-#include <QObject>
-#include <QSet>
 #include <QMetaObject>
 #include <QMetaProperty>
+#include <QObject>
+#include <QSet>
 #include <QUuid>
-#include <QtIviCore/QIviSearchAndBrowseModelItem>
-#include <QtIviCore/QIviSearchAndBrowseModel>
 #include <QtIviCore/QIviAbstractQueryTerm>
 #include <QtIviCore/QIviFeatureInterface>
+#include <QtIviCore/QIviSearchAndBrowseModel>
+#include <QtIviCore/QIviSearchAndBrowseModelItem>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,7 +62,6 @@ class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModelInterface : public QIviFeatureI
 
 public:
     explicit QIviSearchAndBrowseModelInterface(QObject *parent = nullptr);
-    ~QIviSearchAndBrowseModelInterface();
 
     virtual QSet<QString> availableContentTypes() const;
     virtual QSet<QString> supportedIdentifiers(const QString &contentType) const;

@@ -39,16 +39,16 @@
 **
 ****************************************************************************/
 
+#include "logging.h"
 #include "mediaplayerbackend.h"
 #include "searchandbrowsebackend.h"
-#include "logging.h"
 
 #include <QtConcurrent/QtConcurrent>
 
-#include <QThreadPool>
 #include <QFuture>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QThreadPool>
 #include <QtDebug>
 
 MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *parent)
@@ -160,7 +160,7 @@ bool MediaPlayerBackend::canReportCount()
 
 void MediaPlayerBackend::fetchData(int start, int count)
 {
-    QString queryString = QString(QLatin1String("SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id ORDER BY queue.qindex LIMIT %4, %5"))
+    QString queryString = QStringLiteral("SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id ORDER BY queue.qindex LIMIT %4, %5")
             .arg(start)
             .arg(count);
 
@@ -177,28 +177,28 @@ void MediaPlayerBackend::fetchData(int start, int count)
 void MediaPlayerBackend::insert(int index, const QIviPlayableItem *item)
 {
     QString queryString;
-    if (item->type() == "audiotrack") {
+    if (item->type() == QStringLiteral("audiotrack")) {
         int track_index = item->id().toInt();
-        queryString = QString(QLatin1String("UPDATE queue SET qindex = qindex + 1 WHERE qindex >= %1;"
-                                            "INSERT INTO queue(qindex, track_index) VALUES( %1, %2);"
-                                            "SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id WHERE qindex=%1"))
+        queryString = QStringLiteral("UPDATE queue SET qindex = qindex + 1 WHERE qindex >= %1;"
+                                     "INSERT INTO queue(qindex, track_index) VALUES( %1, %2);"
+                                     "SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id WHERE qindex=%1")
                 .arg(index)
                 .arg(track_index);
     } else {
         QString whereClause;
-        if (item->type() == "artist") {
-            whereClause = QString("artistName == \"%1\"").arg(item->name());
-        } else if (item->type() == "album") {
-            whereClause = QString("albumName == \"%1\"").arg(item->name());
+        if (item->type() == QStringLiteral("artist")) {
+            whereClause = QStringLiteral("artistName == \"%1\"").arg(item->name());
+        } else if (item->type() == QStringLiteral("album")) {
+            whereClause = QStringLiteral("albumName == \"%1\"").arg(item->name());
         } else {
             qCWarning(media) << "Can't insert item: Given type is not supported.";
-            emit errorChanged(QIviAbstractFeature::InvalidOperation, "Can't insert item: Given type is not supported.");
+            emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("Can't insert item: Given type is not supported."));
             return;
         }
-        queryString = QString(QLatin1String("UPDATE queue SET qindex = qindex + (SELECT count(*) from track WHERE %2) WHERE qindex >= %1;"
-                                            "INSERT INTO queue(qindex, track_index) SELECT (SELECT COUNT(*) FROM track t1 WHERE t1.id <= t2.id AND %2)"
-                                            "+ %1 - 1, id from track t2 WHERE %2;"
-                                            "SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id ORDER BY queue.qindex LIMIT %1, (SELECT count(*) from track WHERE %2)"))
+        queryString = QStringLiteral("UPDATE queue SET qindex = qindex + (SELECT count(*) from track WHERE %2) WHERE qindex >= %1;"
+                                     "INSERT INTO queue(qindex, track_index) SELECT (SELECT COUNT(*) FROM track t1 WHERE t1.id <= t2.id AND %2)"
+                                     "+ %1 - 1, id from track t2 WHERE %2;"
+                                     "SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id ORDER BY queue.qindex LIMIT %1, (SELECT count(*) from track WHERE %2)")
                 .arg(index)
                 .arg(whereClause);
     }
@@ -212,8 +212,8 @@ void MediaPlayerBackend::insert(int index, const QIviPlayableItem *item)
 
 void MediaPlayerBackend::remove(int index)
 {
-    QString queryString = QString(QLatin1String("DELETE FROM queue WHERE qindex=%1;"
-                                                "UPDATE queue SET qindex = qindex - 1 WHERE qindex >= %1"))
+    QString queryString = QStringLiteral("DELETE FROM queue WHERE qindex=%1;"
+                                         "UPDATE queue SET qindex = qindex - 1 WHERE qindex >= %1")
             .arg(index);
     QStringList queries = queryString.split(';');
 
@@ -229,15 +229,15 @@ void MediaPlayerBackend::move(int cur_index, int new_index)
     if (delta == 0)
         return;
 
-    QString queryString = QString(QLatin1String("UPDATE queue SET qindex = ( SELECT MAX(qindex) + 1 FROM queue) WHERE qindex=%1;"
-                                                "UPDATE queue SET qindex = qindex %5 1 WHERE qindex >= %3 AND qindex <= %4;"
-                                                "UPDATE queue SET qindex = %2 WHERE qindex= ( SELECT MAX(qindex) FROM queue);"
-                                                "SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id WHERE qindex >= %3 AND qindex <= %4 ORDER BY qindex"))
+    QString queryString = QStringLiteral("UPDATE queue SET qindex = ( SELECT MAX(qindex) + 1 FROM queue) WHERE qindex=%1;"
+                                         "UPDATE queue SET qindex = qindex %5 1 WHERE qindex >= %3 AND qindex <= %4;"
+                                         "UPDATE queue SET qindex = %2 WHERE qindex= ( SELECT MAX(qindex) FROM queue);"
+                                         "SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id WHERE qindex >= %3 AND qindex <= %4 ORDER BY qindex")
             .arg(cur_index)
             .arg(new_index)
             .arg(qMin(cur_index, new_index))
             .arg(qMax(cur_index, new_index))
-            .arg(delta > 0 ? "-" : "+");
+            .arg(delta > 0 ? QStringLiteral("-") : QStringLiteral("+"));
     QStringList queries = queryString.split(';');
 
     QtConcurrent::run(m_threadPool, this,
@@ -277,7 +277,7 @@ void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, 
     }
 
     query.clear();
-    if (query.exec(QLatin1String("SELECT COUNT(*) FROM queue"))) {
+    if (query.exec(QStringLiteral("SELECT COUNT(*) FROM queue"))) {
         query.next();
         m_count = query.value(0).toInt();
         emit countChanged(m_count);
@@ -289,11 +289,11 @@ void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, 
         emit dataFetched(list, start, list.count() >= count);
     } else if (type == MediaPlayerBackend::SetIndex) {
         if (list.isEmpty()) {
-            emit errorChanged(QIviAbstractFeature::InvalidOperation, "SIMULATION: Can't set index in an empty queue");
+            emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("SIMULATION: Can't set index in an empty queue"));
             return;
         }
 
-        QIviAudioTrackItem item = list.at(0).value<QIviAudioTrackItem>();
+        auto item = list.at(0).value<QIviAudioTrackItem>();
         emit playTrack(item.url());
         emit currentIndexChanged(start);
         emit currentTrackChanged(list.at(0));
@@ -368,7 +368,7 @@ void MediaPlayerBackend::setCurrentIndex(int index)
         return;
 
     m_currentIndex = index;
-    QString queryString = QString(QLatin1String("SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id WHERE queue.qindex=%1 ORDER BY queue.qindex"))
+    QString queryString = QStringLiteral("SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id WHERE queue.qindex=%1 ORDER BY queue.qindex")
             .arg(m_currentIndex);
 
     QStringList queries;

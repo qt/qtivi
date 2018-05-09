@@ -52,9 +52,11 @@
 
 import QtQuick 2.7
 import QtQuick.Window 2.2
+//! [0]
 import IviClimate 1.0
 
 Window {
+
     visible: true
     width: 640
     height: 480
@@ -71,6 +73,7 @@ Window {
         Text {
             text: "Air Conditioning: " + climateCtrl.airConditioning
         }
+//! [0]
         Text {
             text: "Heater: " + climateCtrl.heater
         }

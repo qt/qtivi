@@ -42,10 +42,10 @@
 #ifndef QIVIPENDINGREPLY_H
 #define QIVIPENDINGREPLY_H
 
-#include <QObject>
-#include <QVariant>
 #include <QJSValue>
+#include <QObject>
 #include <QSharedPointer>
+#include <QVariant>
 
 #include <QtIviCore/qtiviglobal.h>
 
@@ -62,8 +62,6 @@ class Q_QTIVICORE_EXPORT QIviPendingReplyWatcher : public QObject
     Q_PROPERTY(bool success READ isSuccessful NOTIFY valueChanged)
 
 public:
-    ~QIviPendingReplyWatcher();
-
     QVariant value() const;
     bool isValid() const;
     bool isResultAvailable() const;
@@ -94,10 +92,10 @@ class Q_QTIVICORE_EXPORT QIviPendingReplyBase
     Q_PROPERTY(bool success READ isSuccessful)
 
 public:
-    QIviPendingReplyBase();
     explicit QIviPendingReplyBase(int userType);
+    QIviPendingReplyBase() = default;
     QIviPendingReplyBase(const QIviPendingReplyBase & other);
-    virtual ~QIviPendingReplyBase();
+    ~QIviPendingReplyBase() = default;
 
     QIviPendingReplyWatcher* watcher() const;
     QVariant value() const;

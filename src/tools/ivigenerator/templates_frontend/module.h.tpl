@@ -45,7 +45,11 @@
 #ifndef {{oncedefine}}
 #define {{oncedefine}}
 
+{% if module.tags.config.module %}
+#include <{{module.tags.config.module}}/{{module.module_name|lower}}global.h>
+{% else %}
 #include "{{module.module_name|lower}}global.h"
+{% endif %}
 #include <QObject>
 
 QT_BEGIN_NAMESPACE

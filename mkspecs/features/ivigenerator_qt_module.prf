@@ -13,6 +13,10 @@
     error("Invalid qface file provided: The file needs to end with .qface")
 }
 
+isEmpty(QFACE_MODULE_NAME) {
+    error("QFACE_MODULE_NAME needs to be set when a qt module should be generated")
+}
+
 QFACE_PWD = $$dirname(QFACE_SOURCES)
 QFACE_ABS_PWD = $$absolute_path($$QFACE_PWD, $$_PRO_FILE_PWD_)
 

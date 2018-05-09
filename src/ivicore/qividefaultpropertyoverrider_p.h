@@ -53,9 +53,9 @@
 // We mean it.
 //
 
+#include <QMetaProperty>
 #include <private/qtiviglobal_p.h>
 #include <vector>
-#include <QMetaProperty>
 
 #include "qiviabstractfeature_p.h"
 
@@ -67,7 +67,7 @@ class Q_QTIVICORE_EXPORT QIviDefaultPropertyOverrider: public QObject, public QI
 
 public:
     explicit QIviDefaultPropertyOverrider(QIviAbstractFeature *carrier, QObject *parent = nullptr);
-    ~QIviDefaultPropertyOverrider();
+    ~QIviDefaultPropertyOverrider() override;
 
     void addCarrier(QIviAbstractFeature *carrier);
     void removeCarrier(QIviAbstractFeature *carrier);

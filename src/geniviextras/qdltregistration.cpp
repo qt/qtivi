@@ -174,8 +174,8 @@ void QDltRegistrationPrivate::dltLogLevelChanged(char context_id[], uint8_t log_
         end = QtInfoMsg;
 #endif
 
-        for(int i = (int)QtDebugMsg; i <= (int)end; i++) {
-            QtMsgType type = (QtMsgType)i;
+        for (auto i = int(QtDebugMsg); i <= int(end); i++) {
+            auto type = QtMsgType(i);
             bool enabled = true;
             if (!msgTypes.contains(type))
                 enabled = !enabled;

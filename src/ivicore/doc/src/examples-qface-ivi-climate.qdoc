@@ -200,10 +200,7 @@ behavior implementations. More on that in the \l {Backend Simulator Plugin} sect
 In order to call the autogenerator for our shared library, the qmake project file needs to use the
 \e ivigenerator qmake feature. The following snippet shows how it can be added:
 
-\code
-CONFIG += ivigenerator
-QFACE_SOURCES = ../example-ivi-climate.qface
-\endcode
+\snippet ../../../../examples/ivicore/qface-ivi-climate/frontend/frontend.pro 1
 
 By adding \e ivigenerator to the \e CONFIG variable, the \e ivigenerator feature file will be
 loaded and interpret the \e QFACE_SOURCES variable similar to \e SOURCES variable of normal qmake
@@ -212,10 +209,7 @@ Activating the qmake feature using the \e CONFIG variable has the disadvantage t
 report any errors if the feature is not available. Because of this, it is encouraged to use the
 following additional code to report errors:
 
-\code
-QT_FOR_CONFIG += ivicore
-!qtConfig(ivigenerator): error("No ivigenerator available")
-\endcode
+\snippet ../../../../examples/ivicore/qface-ivi-climate/frontend/frontend.pro 0
 
 The other part of the project file is a normal library setup which is supposed to work on
 Linux, macOS and Windows.
@@ -229,11 +223,7 @@ backend_simulator template from the same IDL file as the \e frontend library. Th
 works in the same way, but it is using the \e QFACE_FORMAT variable to tell the ivigenerator to use
 a different generation template.
 
-\code
-CONFIG += ivigenerator
-QFACE_FORMAT = backend_simulator
-QFACE_SOURCES = ../example-ivi-climate.qface
-\endcode
+\snippet ../../../../examples/ivicore/qface-ivi-climate/backend_simulator/backend_simulator.pro 2
 
 As we want to generate a plugin instead of a plain library, we need to instrument qmake to do so by
 adding \e plugin to the \e CONFIG variable. For the plugin to compile correctly it needs to get the
@@ -241,9 +231,7 @@ backend interface header from the previously created library. As this header is 
 is not part of our source tree, but part of the build tree. We do this by adding it to the include
 path using the following construct:
 
-\code
-INCLUDEPATH += $$OUT_PWD/../frontend
-\endcode
+\snippet ../../../../examples/ivicore/qface-ivi-climate/backend_simulator/backend_simulator.pro 1
 
 The \e backend_simulator template will make use of the \b @config_simulator annotations explained
 above. This means the generated backend will provide the default values defined in the annotations
@@ -267,22 +255,8 @@ In our QML application, we still need to import the module using the name we pro
 {ClimateModule::registerQmlTypes}. Afterwards the interface can be instantiated like any other
 QML item.
 
-\badcode
-import IviClimate 1.0
-
-Item {
-
-...
-
-    UiClimateControl {
-        id: climateCtrl
-    }
-
-    Text {
-        text: "Air Conditioning: " + climateCtrl.airConditioning
-    }
-}
-\endcode
+\snippet ../../../../examples/ivicore/qface-ivi-climate/demo/main.qml 0
+\dots 0
 
 As our application doesn't know about the existence of our backend plugin, we need to put this
 plugin in a folder where our application searches for plugins. By default Qt either search in the
@@ -290,7 +264,6 @@ plugin in a folder where our application searches for plugins. By default Qt eit
 application. For QtIvi plugins to be found, they need to be provided within a \b qtivi sub-folder.
 This is achieved automatically by adding the following line to our backend project file:
 
-\code
-DESTDIR = ../qtivi
-\endcode
+\snippet ../../../../examples/ivicore/qface-ivi-climate/backend_simulator/backend_simulator.pro 0
+
 */

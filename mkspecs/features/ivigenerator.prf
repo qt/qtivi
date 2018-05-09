@@ -64,7 +64,7 @@ IVI_GENERATOR = $$VIRTUALENV_PYTHON $$IVI_GENERATOR_PATH/generate.py
 # during the run of the meta Makefile to only generate the code once.
 PRI = $$QFACE_OUTPUT_DIR/$$lower($${QFACE_BASE_NAME}).pri
 IVI_GENERATOR_OPTIONS = --format=$$QFACE_FORMAT --force
-!isEmpty(QFACE_MODULE_NAME): IVI_GENERATOR_OPTIONS += --module=$$QFACE_MODULE
+!isEmpty(QFACE_MODULE_NAME): IVI_GENERATOR_OPTIONS += --module=$${QFACE_MODULE_NAME}
 
 # Windows doesn't offer any other way to sleep for a time inside non-interactive scripts
 equals(QMAKE_HOST.os, Windows): SLEEP = ping -n 2 127.0.0.1 >nul
@@ -79,6 +79,8 @@ qface_sources.depends = $$QFACE_ABS_PWD/$${QFACE_FILE}
 QFACE_TEMPLATE_PWD = $$IVI_GENERATOR_PATH/templates_$${QFACE_FORMAT}
 exists($$QFACE_TEMPLATE_PWD) {
     qface_sources.depends += $$files($${QFACE_TEMPLATE_PWD}/*)
+} else {
+    error("Invalid QFACE_FORMAT: Couldn't find the template folder: $$QFACE_TEMPLATE_PWD")
 }
 
 # Add the configuration yaml as dependency and to other files

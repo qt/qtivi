@@ -42,9 +42,9 @@
 #ifndef QDLTREGISTRATION_H
 #define QDLTREGISTRATION_H
 
-#include <QString>
 #include <QMap>
 #include <QObject>
+#include <QString>
 #include <QtGeniviExtras/qgeniviextrasglobal.h>
 #include <stdint.h>
 
@@ -59,7 +59,7 @@ class Q_GENIVIEXTRAS_EXPORT QDltRegistration : public QObject
 
 public:
     QDltRegistration(QObject *parent = nullptr);
-    ~QDltRegistration();
+    ~QDltRegistration() override;
 
     void registerApplication(const char *dltAppID, const char *dltAppDescription);
     void unregisterApplication();

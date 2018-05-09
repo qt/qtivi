@@ -68,10 +68,6 @@ QIviFeatureInterface::QIviFeatureInterface(QObject *parent)
 {
 }
 
-QIviFeatureInterface::~QIviFeatureInterface()
-{
-}
-
 QIviFeatureInterface::QIviFeatureInterface(QObjectPrivate &dd, QObject *parent)
     : QObject(dd, parent)
 {

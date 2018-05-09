@@ -51,17 +51,17 @@ MediaPlayerBackend::MediaPlayerBackend(const QString &dbusServiceName, const QDB
     qDBusRegisterMetaType<QList<QVariantMap> >();
 
     m_dbusPlayer = new OrgMprisMediaPlayer2PlayerInterface(dbusServiceName,
-                                                           "/org/mpris/MediaPlayer2",
+                                                           QStringLiteral("/org/mpris/MediaPlayer2"),
                                                            dbusConnection,
                                                            this);
 
     m_dbusPlayerProperties = new OrgFreedesktopDBusPropertiesInterface(dbusServiceName,
-                                                                     "/org/mpris/MediaPlayer2",
+                                                                     QStringLiteral("/org/mpris/MediaPlayer2"),
                                                                      dbusConnection,
                                                                      this);
 
     m_dbusTrackList = new OrgMprisMediaPlayer2TrackListInterface(dbusServiceName,
-                                                                 "/org/mpris/MediaPlayer2",
+                                                                 QStringLiteral("/org/mpris/MediaPlayer2"),
                                                                  dbusConnection,
                                                                  this);
     if (!m_dbusPlayer->isValid())
@@ -82,7 +82,7 @@ MediaPlayerBackend::MediaPlayerBackend(const QString &dbusServiceName, const QDB
             this, &MediaPlayerBackend::onSeeked);
 
     /* Check for current position using timer */
-    QTimer *timer = new QTimer(this);
+    auto *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, [=]() {
         onSeeked(m_dbusPlayer->position());
     });
@@ -96,26 +96,26 @@ QIviAudioTrackItem MediaPlayerBackend::audioTrackFromMPRIS2Object(const QVariant
 
     for (QVariantMap::const_iterator i = variantMap.cbegin(); i != variantMap.cend(); ++i) {
         if (i.key() == QLatin1String("mpris:trackid")) {
-            const QString id = variantMap["mpris:trackid"].value<QDBusObjectPath>().path();
+            const QString id = variantMap[QStringLiteral("mpris:trackid")].value<QDBusObjectPath>().path();
             audioItem.setId(id);
         } else if (i.key() == QLatin1String("xesam:url")) {
-            const QString url = variantMap["xesam:url"].toString();
+            const QString url = variantMap[QStringLiteral("xesam:url")].toString();
             audioItem.setUrl(url);
         } else if (i.key() == QLatin1String("mpris:artUrl")) {
-            const QString url = variantMap["mpris:artUrl"].toString();
+            const QString url = variantMap[QStringLiteral("mpris:artUrl")].toString();
             audioItem.setCoverArtUrl(url);
         } else if (i.key() == QLatin1String("mpris:length")) {
-            const qlonglong length = variantMap["mpris:length"].toLongLong();
+            const qlonglong length = variantMap[QStringLiteral("mpris:length")].toLongLong();
             audioItem.setDuration(length);
         } else if (i.key() == QLatin1String("xesam:artist")) {
-            const QStringList artists = variantMap["xesam:artist"].toStringList();
+            const QStringList artists = variantMap[QStringLiteral("xesam:artist")].toStringList();
             if (artists.length() > 0)
                 audioItem.setArtist(artists[0]);
         } else if (i.key() == QLatin1String("xesam:title")) {
-            const QString title = variantMap["xesam:title"].toString();
+            const QString title = variantMap[QStringLiteral("xesam:title")].toString();
             audioItem.setTitle(title);
         } else if (i.key() == QLatin1String("xesam:album")) {
-            const QString title = variantMap["xesam:album"].toString();
+            const QString title = variantMap[QStringLiteral("xesam:album")].toString();
             audioItem.setAlbum(title);
         }
     }
@@ -126,7 +126,7 @@ QIviAudioTrackItem MediaPlayerBackend::audioTrackFromMPRIS2Object(const QVariant
 void MediaPlayerBackend::updateTrackIndex(const QVariantMap &newTrack)
 {
     if (newTrack.contains(QStringLiteral("mpris:trackid"))) {
-        QDBusObjectPath newTrackId = newTrack[QStringLiteral("mpris:trackid")].value<QDBusObjectPath>();
+        auto newTrackId = newTrack[QStringLiteral("mpris:trackid")].value<QDBusObjectPath>();
         updateTrackIndex(newTrackId);
     }
 }
@@ -254,24 +254,24 @@ void MediaPlayerBackend::previous()
 void MediaPlayerBackend::setPlayMode(QIviMediaPlayer::PlayMode playMode)
 {
     bool shuffle = false;
-    QString loopStatus = "None";
+    QString loopStatus = QStringLiteral("None");
 
     switch (playMode) {
         case QIviMediaPlayer::Normal:
             shuffle = false;
-            loopStatus = "None";
+            loopStatus = QStringLiteral("None");
             break;
         case QIviMediaPlayer::RepeatTrack:
             shuffle = false;
-            loopStatus = "Track";
+            loopStatus = QStringLiteral("Track");
             break;
         case QIviMediaPlayer::RepeatAll:
             shuffle = false;
-            loopStatus = "Playlist";
+            loopStatus = QStringLiteral("Playlist");
             break;
         case QIviMediaPlayer::Shuffle:
             shuffle = true;
-            loopStatus = "None";
+            loopStatus = QStringLiteral("None");
             break;
         default:
             qWarning() << "Illegal play mode: " << playMode;
@@ -295,7 +295,7 @@ bool MediaPlayerBackend::canReportCount()
 /* This doesn't need to be a Future right now, since it is only called from
  * fetchOrUpdate, but I keep this as a Future so that it can be used
  * asynchronously if needed.. in the future. */
-QFuture<QVariantList> MediaPlayerBackend::itemsForMPRIS2Object(QList<QDBusObjectPath> objs)
+QFuture<QVariantList> MediaPlayerBackend::itemsForMPRIS2Object(const QList<QDBusObjectPath> &objs)
 {
     /* Get track metadata in own thread, since this may take a while */
     return QtConcurrent::run(&m_threadPool, [=]() -> QVariantList {
@@ -304,9 +304,8 @@ QFuture<QVariantList> MediaPlayerBackend::itemsForMPRIS2Object(QList<QDBusObject
         reply.waitForFinished();
         QVariantList items;
 
-        QList<QMap<QString, QVariant> > objects = reply.argumentAt<0>();
-        for (int i = 0; i < objects.length(); ++i) {
-            QMap<QString, QVariant> dbusItem = objects.at(i);
+        const QList<QMap<QString, QVariant> > objects = reply.argumentAt<0>();
+        for (const QMap<QString, QVariant> &dbusItem : objects) {
             QIviAudioTrackItem item;
             item = audioTrackFromMPRIS2Object(dbusItem);
             items.append(QVariant::fromValue(item));

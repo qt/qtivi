@@ -56,10 +56,10 @@ class SearchAndBrowseItem : public QIviPlayableItem
     Q_GADGET
 
 public:
-    virtual QString id() const { return m_name; }
-    virtual QString name() const { return m_name; }
+    QString id() const override { return m_name; }
+    QString name() const override { return m_name; }
     void setName(const QString &name) { m_name = name; }
-    virtual QString type() const { return m_type; }
+    QString type() const override { return m_type; }
     void setType(const QString &type) { m_type = type; }
 
 private:
@@ -74,17 +74,17 @@ class SearchAndBrowseBackend : public QIviSearchAndBrowseModelInterface
 public:
     explicit SearchAndBrowseBackend(const QSqlDatabase &database, QObject *parent = nullptr);
 
-    virtual void initialize() override;
-    virtual void fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count) override;
-    virtual bool canGoBack(const QUuid &identifier, const QString &type) override;
-    virtual QString goBack(const QUuid &identifier, const QString &type) override;
-    virtual bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) override;
-    virtual QString goForward(const QUuid &identifier, const QString &type, const QString &itemId) override;
+    void initialize() override;
+    void fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count) override;
+    bool canGoBack(const QUuid &identifier, const QString &type) override;
+    QString goBack(const QUuid &identifier, const QString &type) override;
+    bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) override;
+    QString goForward(const QUuid &identifier, const QString &type, const QString &itemId) override;
 
-    virtual QIviPendingReply<void> insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item) override;
-    virtual QIviPendingReply<void> remove(const QUuid &identifier, const QString &type, int index) override;
-    virtual QIviPendingReply<void> move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) override;
-    virtual QIviPendingReply<int> indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item) override;
+    QIviPendingReply<void> insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item) override;
+    QIviPendingReply<void> remove(const QUuid &identifier, const QString &type, int index) override;
+    QIviPendingReply<void> move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) override;
+    QIviPendingReply<int> indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item) override;
 
 private slots:
     void search(const QUuid &identifier, const QString &queryString, const QString &type, int start, int count);

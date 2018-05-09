@@ -1,6 +1,6 @@
 project                       = QtAutomotiveSuite
 description                   = Qt Automotive Suite Documentation
-version                       = 2.0
+version                       = $QT_VERSION
 url                           = http://doc.qt.io/QtAutomotiveSuite
 
 sourcedirs                   += src
@@ -40,7 +40,7 @@ depends += \
      qtquick \
      neptuneui
 
-buildversion = "Qt Automotive Suite 2.0"
+buildversion = "Qt Automotive Suite $QT_VERSION"
 
 macro.QAS = "Qt Automotive Suite"
 macro.B2Q = "Boot to Qt"

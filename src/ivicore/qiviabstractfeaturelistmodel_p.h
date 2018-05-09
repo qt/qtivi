@@ -53,8 +53,8 @@
 // We mean it.
 //
 
-#include <private/qtiviglobal_p.h>
 #include <private/qabstractitemmodel_p.h>
+#include <private/qtiviglobal_p.h>
 
 #include "qiviabstractfeaturelistmodel.h"
 
@@ -86,9 +86,11 @@ class Q_QTIVICORE_EXPORT QIviAbstractFeatureListModelPrivate : public QAbstractI
 {
 public:
     QIviAbstractFeatureListModelPrivate(const QString &interface, QIviAbstractFeatureListModel *model);
-    ~QIviAbstractFeatureListModelPrivate();
+    ~QIviAbstractFeatureListModelPrivate() override;
 
     virtual void initialize();
+
+    Q_DISABLE_COPY(QIviAbstractFeatureListModelPrivate)
 
     QIviHelperFeature *m_feature;
     bool m_qmlCreation;

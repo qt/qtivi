@@ -42,8 +42,8 @@
 #ifndef QIVISERVICEINTERFACE_H
 #define QIVISERVICEINTERFACE_H
 
-#include <QtIviCore/qtiviglobal.h>
 #include <QtIviCore/qivifeatureinterface.h>
+#include <QtIviCore/qtiviglobal.h>
 
 #include <QtCore/QtPlugin>
 

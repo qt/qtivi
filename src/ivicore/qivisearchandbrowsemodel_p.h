@@ -53,16 +53,16 @@
 // We mean it.
 //
 
-#include <private/qtiviglobal_p.h>
 #include <QtIviCore/private/qiviabstractfeaturelistmodel_p.h>
+#include <private/qtiviglobal_p.h>
 
-#include "qivisearchandbrowsemodelinterface.h"
-#include "qivisearchandbrowsemodel.h"
-#include "qivisearchandbrowsemodelitem.h"
 #include "qiviqueryterm.h"
+#include "qivisearchandbrowsemodel.h"
+#include "qivisearchandbrowsemodelinterface.h"
+#include "qivisearchandbrowsemodelitem.h"
 
-#include <QUuid>
 #include <QBitArray>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
@@ -70,9 +70,9 @@ class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModelPrivate : public QIviAbstractFe
 {
 public:
     QIviSearchAndBrowseModelPrivate(const QString &interface, QIviSearchAndBrowseModel *model);
-    ~QIviSearchAndBrowseModelPrivate();
+    ~QIviSearchAndBrowseModelPrivate() override;
 
-    virtual void initialize() override;
+    void initialize() override;
     void onCapabilitiesChanged(const QUuid &identifier, QIviSearchAndBrowseModel::Capabilities capabilities);
     void onDataFetched(const QUuid &identifer, const QList<QVariant> &items, int start, bool moreAvailable);
     void onCountChanged(const QUuid &identifier, int new_length);
@@ -83,7 +83,7 @@ public:
     void checkType();
     void clearToDefaults();
     void setCanGoBack(bool canGoBack);
-    void setAvailableContenTypes(QStringList contentTypes);
+    void setAvailableContenTypes(const QStringList &contentTypes);
     const QIviSearchAndBrowseModelItem *itemAt(int i) const;
     void fetchData(int startIndex);
 
