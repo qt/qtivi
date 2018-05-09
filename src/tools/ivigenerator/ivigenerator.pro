@@ -128,6 +128,10 @@ INSTALLS += generator \
     templates_generation_validator \
     templates_test \
 
+OTHER_FILES += deploy-virtualenv.bat \
+    deploy-virtualenv.sh \
+    deploy-virtualenv-files.txt \
+
 # Ensure files are installed to qtbase for non-prefixed builds
 !force_independent:if(!debug_and_release|!build_all|CONFIG(release, debug|release)) {
     for (install_target, INSTALLS) {

@@ -107,6 +107,9 @@ if [ "$PLATFORM" == "linux" ]; then
     fi
 fi
 
+# some files might have wrong permissions, e.g. readonly
+chmod -R ug+rw $VIRTUALENV
+
 if [ "$(readlink -- "$VIRTUALENV/lib64")" != "lib" ] ; then
     rm -f "$VIRTUALENV/lib64"
     cd "$VIRTUALENV"
