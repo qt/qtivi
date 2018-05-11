@@ -38,39 +38,68 @@
 ** SPDX-License-Identifier: LGPL-3.0
 **
 ****************************************************************************/
-#include <QtQml/qqmlextensionplugin.h>
-#include <qqml.h>
 
-#include <QtIviCore/QtIviCore>
+#ifndef QIVIPAGINGMODEL_P_H
+#define QIVIPAGINGMODEL_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail. This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <QtIviCore/private/qiviabstractfeaturelistmodel_p.h>
+#include <private/qtiviglobal_p.h>
+
+#include "qivipagingmodel.h"
+#include "qivipagingmodelinterface.h"
+#include "qivisearchandbrowsemodelitem.h"
+
+#include <QBitArray>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
-QObject* serviceManagerSingelton(QQmlEngine *, QJSEngine *)
+class Q_QTIVICORE_EXPORT QIviPagingModelPrivate : public QIviAbstractFeatureListModelPrivate
 {
-    auto manager = QIviServiceManager::instance();
-    QQmlEngine::setObjectOwnership(manager, QQmlEngine::CppOwnership);
-    return manager;
-}
-
-class QIviCorePlugin : public QQmlExtensionPlugin
-{
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
 public:
-    void registerTypes(const char *uri) override
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi"));
-        qRegisterMetaType<QIviServiceObject*>();
-        qRegisterMetaType<QList<QIviServiceObject*>>("QList<QIviServiceObject*>");
+    QIviPagingModelPrivate(const QString &interface, QIviPagingModel *model);
+    ~QIviPagingModelPrivate() override;
 
-        qmlRegisterUncreatableType<QIviAbstractFeature>(uri, 1, 0, "AbstractFeature", QStringLiteral("AbstractFeature is not accessible directly"));
-        qmlRegisterUncreatableType<QIviAbstractZonedFeature>(uri, 1, 0, "AbstractZonedFeature", QStringLiteral("AbstractZonedFeature is not accessible directly"));
-        qmlRegisterType<QIviPagingModel>(uri, 1, 0, "PagingModel");
-        qmlRegisterType<QIviSearchAndBrowseModel>(uri, 1, 0, "SearchAndBrowseModel");
-        qmlRegisterSingletonType<QIviServiceManager>(uri, 1, 0, "ServiceManager", &serviceManagerSingelton);
-    }
+    void initialize() override;
+    void onCapabilitiesChanged(const QUuid &identifier, QIviPagingModel::Capabilities capabilities);
+    void onDataFetched(const QUuid &identifier, const QList<QVariant> &items, int start, bool moreAvailable);
+    void onCountChanged(const QUuid &identifier, int new_length);
+    void onDataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count);
+    void onFetchMoreThresholdReached();
+    void resetModel();
+    void clearToDefaults();
+    const QIviSearchAndBrowseModelItem *itemAt(int i) const;
+    void fetchData(int startIndex);
+
+    QIviPagingModelInterface *backend() const;
+
+    QIviPagingModel * const q_ptr;
+    Q_DECLARE_PUBLIC(QIviPagingModel)
+
+    QIviPagingModel::Capabilities m_capabilities;
+    int m_chunkSize;
+
+    QList<QVariant> m_itemList;
+    QBitArray m_availableChunks;
+    bool m_moreAvailable;
+
+    QUuid m_identifier;
+    int m_fetchMoreThreshold;
+    int m_fetchedDataCount;
+    QIviPagingModel::LoadingType m_loadingType;
 };
 
 QT_END_NAMESPACE
 
-#include "plugin.moc"
+#endif // QIVIPAGINGMODEL_P_H

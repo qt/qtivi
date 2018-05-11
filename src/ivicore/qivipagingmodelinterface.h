@@ -38,39 +38,36 @@
 ** SPDX-License-Identifier: LGPL-3.0
 **
 ****************************************************************************/
-#include <QtQml/qqmlextensionplugin.h>
-#include <qqml.h>
 
-#include <QtIviCore/QtIviCore>
+#ifndef QIVIPAGINGMODELINTERFACE_H
+#define QIVIPAGINGMODELINTERFACE_H
+
+#include <QUuid>
+#include <QtIviCore/QIviFeatureInterface>
+#include <QtIviCore/QIviPagingModel>
 
 QT_BEGIN_NAMESPACE
 
-QObject* serviceManagerSingelton(QQmlEngine *, QJSEngine *)
-{
-    auto manager = QIviServiceManager::instance();
-    QQmlEngine::setObjectOwnership(manager, QQmlEngine::CppOwnership);
-    return manager;
-}
+class QIviPagingModelInterfacePrivate;
 
-class QIviCorePlugin : public QQmlExtensionPlugin
+class Q_QTIVICORE_EXPORT QIviPagingModelInterface : public QIviFeatureInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
-public:
-    void registerTypes(const char *uri) override
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi"));
-        qRegisterMetaType<QIviServiceObject*>();
-        qRegisterMetaType<QList<QIviServiceObject*>>("QList<QIviServiceObject*>");
 
-        qmlRegisterUncreatableType<QIviAbstractFeature>(uri, 1, 0, "AbstractFeature", QStringLiteral("AbstractFeature is not accessible directly"));
-        qmlRegisterUncreatableType<QIviAbstractZonedFeature>(uri, 1, 0, "AbstractZonedFeature", QStringLiteral("AbstractZonedFeature is not accessible directly"));
-        qmlRegisterType<QIviPagingModel>(uri, 1, 0, "PagingModel");
-        qmlRegisterType<QIviSearchAndBrowseModel>(uri, 1, 0, "SearchAndBrowseModel");
-        qmlRegisterSingletonType<QIviServiceManager>(uri, 1, 0, "ServiceManager", &serviceManagerSingelton);
-    }
+public:
+    explicit QIviPagingModelInterface(QObject *parent = nullptr);
+
+    virtual void fetchData(const QUuid &identifier, int start, int count) = 0;
+
+Q_SIGNALS:
+    void supportedCapabilitiesChanged(const QUuid &identifier, QIviPagingModel::Capabilities capabilities);
+    void countChanged(const QUuid &identifier, int newLength);
+    void dataFetched(const QUuid &identifier, const QList<QVariant> &data, int start, bool moreAvailable);
+    void dataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count);
 };
+
+#define QIviPagingModel_iid "org.qt-project.qtivi.PagingModel/1.0"
 
 QT_END_NAMESPACE
 
-#include "plugin.moc"
+#endif // QIVIPAGINGMODELINTERFACE_H

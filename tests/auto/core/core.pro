@@ -6,6 +6,7 @@ SUBDIRS = servicemanagertest \
           qiviabstractfeature \
           qivipendingreply \
           queryparser \
+          qivipagingmodel \
           qivisearchandbrowsemodel \
 
 QT_FOR_CONFIG += ivicore

@@ -41,6 +41,9 @@ HEADERS += \
     qiviabstractfeaturelistmodel.h \
     qiviabstractfeaturelistmodel_p.h \
     qtiviglobal_p.h \
+    qivipagingmodel.h \
+    qivipagingmodel_p.h \
+    qivipagingmodelinterface.h \
     qivisearchandbrowsemodel.h \
     qivisearchandbrowsemodel_p.h \
     qivisearchandbrowsemodelinterface.h \
@@ -63,6 +66,8 @@ SOURCES += \
     qiviproperty.cpp \
     qivipropertyfactory.cpp \
     qiviabstractfeaturelistmodel.cpp \
+    qivipagingmodel.cpp \
+    qivipagingmodelinterface.cpp \
     qivisearchandbrowsemodel.cpp \
     qivisearchandbrowsemodelinterface.cpp \
     qivisearchandbrowsemodelitem.cpp \
