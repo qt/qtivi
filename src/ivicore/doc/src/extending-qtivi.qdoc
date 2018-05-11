@@ -133,9 +133,9 @@ Zones is a standard way to provide a single API for multiple points in the vehic
 For instance, climate control commonly has a driver and passenger zones, and might also have
 a rear seat zone. The same goes for wheels, doors, mirrors, windows and more.
 
-A common pattern is to combine zones with \l {Extending Qt IVI#property-attributes}
-{property attributes} to handle small differences in capabilities between zones; for example, no
-steering wheel heater for the passenger side of the car.
+A common pattern is to combine zones with property attributes to handle small differences in
+capabilities between zones; for example, no steering wheel heater for the passenger side of the
+car.
 
 Technically, a zoned feature consists of two interfaces, one top level interface derived
 from QIviAbstractZonedFeature, and one zone specific API derived from QObject.

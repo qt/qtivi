@@ -3,9 +3,19 @@ TARGET = QtIviCore
 QT = core core-private qml qml-private
 CONFIG += c++11
 
-OTHER_FILES += \
+build_online_docs: {
+    QMAKE_DOCS = $$PWD/doc/online/qtivi.qdocconf
+} else {
+    QMAKE_DOCS = $$PWD/doc/qtivi.qdocconf
+}
+
+DISTFILES += \
     $$PWD/doc/*.qdocconf \
-    $$PWD/doc/src/*.qdoc
+    $$PWD/doc/online/*.qdocconf \
+    $$PWD/doc/src/*.qdoc \
+    $$PWD/doc/src/ivigenerator/*.qdoc \
+    $$PWD/doc/images/*.jpg \
+    $$PWD/doc/images/*.png
 
 CMAKE_MODULE_TESTS = '-'
 
@@ -64,3 +74,4 @@ SOURCES += \
 include(queryparser/queryparser.pri)
 
 load(qt_module)
+QMAKE_DOCS_TARGETDIR = qtivi

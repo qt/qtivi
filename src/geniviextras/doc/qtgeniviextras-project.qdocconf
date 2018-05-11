@@ -5,9 +5,15 @@ url                           = http://doc.qt.io/QtGeniviExtras
 
 sourcedirs                   += .
 headerdirs                   += .
+headerdirs                   += ..
+sourcedirs                   += ..
 
-# include sub-modules' sources and headers
-include(../../geniviextras/doc/qtgeniviextras.qdocconf)
+exampledirs                  += ../../../examples/geniviextras \
+                                snippets
+
+examplesinstallpath           = geniviextras
+
+imagedirs                    += images
 
 qhp.projects                  = QtGeniviExtras
 

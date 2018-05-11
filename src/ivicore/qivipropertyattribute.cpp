@@ -93,7 +93,7 @@ void QIviPropertyAttributeBase::registerTypes()
 */
 
 /*!
-    \fn QIviPropertyAttribute::QIviPropertyAttribute()
+    \fn template <class T> QIviPropertyAttribute<T>::QIviPropertyAttribute()
     Constructs an invalid QIviPropertyAttribute.
 
     This constructor can be used to indicate that the property is not available.
@@ -101,67 +101,67 @@ void QIviPropertyAttributeBase::registerTypes()
 */
 
 /*!
-    \fn QIviPropertyAttribute::QIviPropertyAttribute(bool available)
+    \fn template <class T> QIviPropertyAttribute<T>::QIviPropertyAttribute(bool available)
     Constructs an QIviPropertyAttribute of type NoAttributes.
 
     The argument \a available defines whether the property is supported by the backend.
 */
 
 /*!
-    \fn QIviPropertyAttribute::QIviPropertyAttribute(const T &minValue, const T &maxValue)
+    \fn template <class T> QIviPropertyAttribute<T>::QIviPropertyAttribute(const T &minValue, const T &maxValue)
     Constructs an QIviPropertyAttribute of type MinimumMaximum.
 
     The arguments \a minValue and \a maxValue define the boundaries the value of the property.
 */
 
 /*!
-    \fn QIviPropertyAttribute::QIviPropertyAttribute(const QVector<T> &avValues)
+    \fn template <class T> QIviPropertyAttribute<T>::QIviPropertyAttribute(const QVector<T> &avValues)
     Constructs an QIviPropertyAttribute of type AvailableValues.
 
     The argument \a avValues defines the valid values for the property.
 */
 
 /*!
-    \fn AttributeType QIviPropertyAttribute::type() const
+    \fn template <class T> AttributeType QIviPropertyAttribute<T>::type() const
 
     Returns the type of the attribute.
 */
 
 /*!
-    \fn bool QIviPropertyAttribute::isAvailable() const
+    \fn template <class T> bool QIviPropertyAttribute<T>::isAvailable() const
 
     Returns true if the property is available for this backend.
 */
 
 /*!
-    \fn T QIviPropertyAttribute::minimumValue() const
+    \fn template <class T> T QIviPropertyAttribute<T>::minimumValue() const
 
     Returns the minimum value of the property.
     If the attributeType is not MinimumMaximum, a default constructed value is returned.
 */
 
 /*!
-    \fn T QIviPropertyAttribute::maximumValue() const
+    \fn template <class T> T QIviPropertyAttribute<T>::maximumValue() const
 
     Returns the maximum value of the property.
     If the attributeType is not MinimumMaximum, a default constructed value is returned.
 */
 
 /*!
-    \fn QList<T> QIviPropertyAttribute::availableValues() const
+    \fn template <class T> QList<T> QIviPropertyAttribute<T>::availableValues() const
 
     Returns a list of valid values for this property.
     If the attributeType is not AvailableValues an empty list is returned.
 */
 
 /*!
-    \fn QString QIviPropertyAttribute::toString() const
+    \fn template <class T> QString QIviPropertyAttribute<T>::toString() const
 
     Returns a QString with a string representation of the attribute.
 */
 
 /*!
-    \fn bool QIviPropertyAttribute::operator==(const QIviPropertyAttribute& other) const
+    \fn template <class T> bool QIviPropertyAttribute<T>::operator==(const QIviPropertyAttribute& other) const
 
     Returns \c true if this QIviPropertyAttribute is equal to the \a other QIviPropertyAttribute; otherwise returns \c false.
 
@@ -169,7 +169,7 @@ void QIviPropertyAttributeBase::registerTypes()
 */
 
 /*!
-    \fn bool QIviPropertyAttribute::operator!=(const QIviPropertyAttribute& other) const
+    \fn template <class T> bool QIviPropertyAttribute<T>::operator!=(const QIviPropertyAttribute& other) const
 
     Returns \c true if this QIviPropertyAttribute is NOT equal to the \a other QIviPropertyAttribute; otherwise returns \c false.
 

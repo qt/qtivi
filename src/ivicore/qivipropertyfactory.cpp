@@ -66,7 +66,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn QIviPropertyFactory::create(const QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal, valueSlotFunc valueSlot)
+    \fn template <class T, typename attributeGetterFunc, typename attributeSignalFunc, typename valueGetterFunc, typename valueSignalFunc, typename valueSlotFunc> QIviPropertyFactory<T>::create(const typename QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal, valueSlotFunc valueSlot)
 
     Returns an new QIviProperty instance for a attribute and value of type T.
 
@@ -75,12 +75,10 @@ QT_BEGIN_NAMESPACE
     These arguments need to be of QIviPropertyAttribute<T>.
     \a valueGetter, \a valueSignal, and \a valueSlot need to be function pointers to the getter, signal, and setter for the value that should be stored in this QIviQmlProperty instance.
     The value functions need to have arguments and return values of type T.
-
-    \sa QIviPropertyFactory::create(const QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal)
 */
 
 /*!
-    \fn QIviPropertyFactory::create(const QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal)
+    \fn template <class T, typename attributeGetterFunc, typename attributeSignalFunc, typename valueGetterFunc, typename valueSignalFunc>  QIviPropertyFactory<T>::create(const typename QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal)
 
     Returns a new QIviProperty instance for an attribute and value of type T.
 
@@ -91,36 +89,34 @@ QT_BEGIN_NAMESPACE
     The value functions need to have arguments and return values of type T.
 
     \note This factory function will create a readonly property as no value setter needs to be provided
-
-    \sa QIviPropertyFactory::create(const QtPrivate::FunctionPointer<attributeGetterFunc>::Object *sender, attributeGetterFunc attributeGetter, attributeSignalFunc attributeSignal, valueGetterFunc valueGetter, valueSignalFunc valueSignal, valueSlotFunc valueSlot)
 */
 
 /*!
-    \fn bool QIviPropertyFactory::isAvailable() const
+    \fn template <class T> bool QIviPropertyFactory<T>::isAvailable() const
 
     \reimp
 */
 
 /*!
-    \fn bool QIviPropertyFactory::minimumValue() const
+    \fn template <class T> bool QIviPropertyFactory<T>::minimumValue() const
 
     \reimp
 */
 
 /*!
-    \fn bool QIviPropertyFactory::maximumValue() const
+    \fn template <class T> bool QIviPropertyFactory<T>::maximumValue() const
 
     \reimp
 */
 
 /*!
-    \fn bool QIviPropertyFactory::availableValues() const
+    \fn template <class T> bool QIviPropertyFactory<T>::availableValues() const
 
     \reimp
 */
 
 /*!
-    \fn bool QIviPropertyFactory::value() const
+    \fn template <class T> bool QIviPropertyFactory<T>::value() const
 
     \reimp
 */

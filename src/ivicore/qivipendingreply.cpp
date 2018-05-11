@@ -782,14 +782,14 @@ void QIviPendingReplyBase::setSuccessNoCheck(const QVariant &value)
     \fn QIviPendingReplyWatcher::valueChanged(const QVariant &value)
 
     Emitted when the result for the reply is ready. This signal is called when the reply is
-    successful as well as when it is failed. The \value argument holds the result and is a default
+    successful as well as when it is failed. The \a value argument holds the result and is a default
     constructed QVariant in the failed case.
 
     \sa setSuccess setFailed
 */
 
 /*!
-    \fn QIviPendingReply::createFailedReply()
+    \fn template <class T> QIviPendingReply<T>::createFailedReply()
 
     Creates a reply object which is marked as failed. This is convenient in error cases inside
     functions returning a reply e.g.
@@ -810,7 +810,7 @@ void QIviPendingReplyBase::setSuccessNoCheck(const QVariant &value)
 */
 
 /*!
-    \fn QIviPendingReply::reply() const
+    \fn template <class T> QIviPendingReply<T>::reply() const
 
     Returns the result of the reply. If no result has been set yet or when the reply is marked as
     failed, a default constructed value is returned.
@@ -819,7 +819,7 @@ void QIviPendingReplyBase::setSuccessNoCheck(const QVariant &value)
 */
 
 /*!
-    \fn QIviPendingReply::setSuccess(const T &value)
+    \fn template <class T> QIviPendingReply<T>::setSuccess(const T &value)
 
     Sets the result of the reply to \a value and marks the reply as succeeded.
 
@@ -829,10 +829,10 @@ void QIviPendingReplyBase::setSuccessNoCheck(const QVariant &value)
 */
 
 /*!
-    \fn qIviRegisterPendingReplyType(const char *typeName)
+    \fn qIviRegisterPendingReplyType(const char *name)
     \relates QIviPendingReply
 
-    Registers the type name \a typeName for the type \c{T} for usage inside a QIviPendingReply. Any
+    Registers the type name \a name for the type \c{T} for usage inside a QIviPendingReply. Any
     class or struct that has a public default constructor, a public copy constructor and a public
     destructor can be registered.
 

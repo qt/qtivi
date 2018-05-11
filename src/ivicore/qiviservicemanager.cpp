@@ -418,6 +418,17 @@ QIviServiceInterface *QIviServiceManagerPrivate::loadServiceBackendInterface(str
 */
 
 /*!
+    \enum QIviServiceManager::Roles
+    \value NameRole
+          The name of the backend e.g. MediaPlugin
+    \value ServiceObjectRole
+          The actual QIviServiceObject, which can be used to connect a frontend API to this backend.
+          \note When using this role in the data() function, the backend plugin will be loaded and instantiated.
+    \value InterfacesRole
+          A list of interefaces the backend implements.
+*/
+
+/*!
     \enum QIviServiceManager::SearchFlag
 
     \value IncludeProductionBackends

@@ -1,10 +1,2 @@
-headerdirs  += ..
-
-sourcedirs  += ..
-
-exampledirs += ../../../examples/geniviextras \
-               snippets
-
-examplesinstallpath = geniviextras
-
-imagedirs   += images
+include($QT_INSTALL_DOCS/global/qt-module-defaults-offline.qdocconf)
+include(qtgeniviextras-project.qdocconf)

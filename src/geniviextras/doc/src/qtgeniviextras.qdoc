@@ -24,6 +24,41 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+/*!
+    \page qtgeniviextras-index.html
+    \title Qt GENIVI Extras
+    \keyword QtGeniviExtras
+
+    The Qt GENIVI Extras module provides C++ classes for interacting with
+    services from the \l {https://www.genivi.org/}{GENIVI Automotive Alliance}.
+    The module contains helper functions to interact with the
+    Diagnostic Log and Trace (DLT) daemon. This daemon is used on many
+    automotive systems to catch all logs from different application.
+
+    \section1 Getting Started
+
+    To include the definitions of the module's classes and functions, use the
+    following directive:
+
+    \code
+    #include <QtGeniviExtras>
+    \endcode
+
+    To link against the module, add this line to your qmake \c .pro file:
+
+    \badcode
+    QT += geniviextras
+    \endcode
+
+    See \l {Qt DLT Declarations} for more information about how to use the DLT API.
+
+    \section1 Reference
+
+    \list
+      \li \l {Qt GENIVI Extras C++ Classes}{C++ Classes}
+      \li \l {Qt GENIVI Extras Examples}{Examples}
+    \endlist
+*/
 
 /*!
     \module QtGeniviExtras

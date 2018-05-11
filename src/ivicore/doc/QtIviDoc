@@ -1,0 +1,3 @@
+#include <QtIviCore/QtIviCore>
+#include <QtIviVehicleFunctions/QtIviVehicleFunctions>
+#include <QtIviMedia/QtIviMedia>
