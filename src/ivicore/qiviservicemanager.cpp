@@ -448,6 +448,47 @@ QIviServiceInterface *QIviServiceManagerPrivate::loadServiceBackendInterface(str
           A backend used for development as it's only returning simulation values and won't be deployed to the final hardware
 */
 
+/*!
+    \qmltype ServiceManager
+    \instantiates QIviServiceManager
+    \inqmlmodule QtIvi
+
+    \brief The ServiceManager is the central instance loading the backends and providing ServiceObjects
+
+    The ServiceManager singleton provides a model which can be used to list all available backends
+    and their interfaces.
+
+    This can be useful when you want to query all available backends for a specific interface.
+    E.g. showing a list of all available backends which implement the MediaPlayer interface. This
+    could be used to provide the user the options, to select between multiple options. e.g. local
+    playback, or playback using a bluetooth device.
+
+    The ServiceManager implements the QAbstractListModel interface and provides the following roles:
+
+    \table
+    \header
+        \li Role name
+        \li Type
+        \li Description
+    \row
+        \li \c name
+        \li string
+        \li The name of the backend e.g. MediaPlugin
+    \row
+        \li \c serviceObject
+        \li ServiceObject
+        \li The actual QIviServiceObject, which can be used to connect a frontend API to this backend.
+            \note When using this role in the data() function, the backend plugin will be loaded and instantiated.
+    \row
+        \li \c interfaces
+        \li list<string>
+        \li A list of interfaces implemented by the backend.
+    \endtable
+
+    \note Please see the \l{QIviServiceManager}{C++ documentation} for more information about what the QIviServiceManager is and
+    how it works.
+*/
+
 QIviServiceManager::QIviServiceManager()
     : QAbstractListModel(nullptr)
     , d_ptr(new QIviServiceManagerPrivate(this))
@@ -464,6 +505,20 @@ QIviServiceManager *QIviServiceManager::instance()
     return instance;
 }
 
+/*!
+    \qmlmethod list<ServiceObject> ServiceManager::findServiceByInterface(interface, searchFlags)
+
+    Returns a list of backends implementing the specified \a interface.
+
+    The \a searchFlags argument can be used to control which type of backends are included in the search result:
+
+    \value IncludeProductionBackends
+          Include production backends in the search result. See also \l {QIviServiceManager::}{ProductionBackend}
+    \value IncludeSimulationBackends
+          Include simulation backends in the search result. See also \l {QIviServiceManager::}{SimulationBackend}
+    \value IncludeAll
+          Include production and simulation backends in the search result
+*/
 /*!
     Returns a list of backends implementing the specified \a interface.
 
@@ -504,7 +559,12 @@ void QIviServiceManager::unloadAllBackends()
 }
 
 /*!
-    Returns true if the specified \a interface has been registered.
+    \qmlmethod bool ServiceManager::hasInterface(interface)
+
+    Returns \c true if the specified \a interface has been registered.
+*/
+/*!
+    Returns \c true if the specified \a interface has been registered.
 */
 bool QIviServiceManager::hasInterface(const QString &interface) const
 {
