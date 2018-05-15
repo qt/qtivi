@@ -75,13 +75,13 @@ void SearchAndBrowseBackend::initialize()
 
 void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count)
 {
-    emit supportedCapabilitiesChanged(identifier, QIviSearchAndBrowseModel::Capabilities(
-                                          QIviSearchAndBrowseModel::SupportsFiltering |
-                                          QIviSearchAndBrowseModel::SupportsSorting |
-                                          QIviSearchAndBrowseModel::SupportsAndConjunction |
-                                          QIviSearchAndBrowseModel::SupportsOrConjunction |
-                                          QIviSearchAndBrowseModel::SupportsStatelessNavigation |
-                                          QIviSearchAndBrowseModel::SupportsGetSize
+    emit supportedCapabilitiesChanged(identifier, QtIviCoreModule::ModelCapabilities(
+                                          QtIviCoreModule::SupportsFiltering |
+                                          QtIviCoreModule::SupportsSorting |
+                                          QtIviCoreModule::SupportsAndConjunction |
+                                          QtIviCoreModule::SupportsOrConjunction |
+                                          QtIviCoreModule::SupportsStatelessNavigation |
+                                          QtIviCoreModule::SupportsGetSize
                                           ));
 
     qCDebug(media) << "FETCH" << identifier << type << start << count;

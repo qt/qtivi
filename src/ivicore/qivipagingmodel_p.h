@@ -72,7 +72,7 @@ public:
     ~QIviPagingModelPrivate() override;
 
     void initialize() override;
-    void onCapabilitiesChanged(const QUuid &identifier, QIviPagingModel::Capabilities capabilities);
+    void onCapabilitiesChanged(const QUuid &identifier, QtIviCoreModule::ModelCapabilities capabilities);
     void onDataFetched(const QUuid &identifier, const QList<QVariant> &items, int start, bool moreAvailable);
     void onCountChanged(const QUuid &identifier, int new_length);
     void onDataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count);
@@ -87,7 +87,7 @@ public:
     QIviPagingModel * const q_ptr;
     Q_DECLARE_PUBLIC(QIviPagingModel)
 
-    QIviPagingModel::Capabilities m_capabilities;
+    QtIviCoreModule::ModelCapabilities m_capabilities;
     int m_chunkSize;
 
     QList<QVariant> m_itemList;

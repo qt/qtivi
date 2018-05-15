@@ -43,6 +43,7 @@
 #define QIVIPAGINGMODEL_H
 
 #include <QtIviCore/QIviAbstractFeatureListModel>
+#include <QtIviCore/QtIviCoreModule>
 #include <QtIviCore/QIviServiceObject>
 
 QT_BEGIN_NAMESPACE
@@ -53,7 +54,7 @@ class Q_QTIVICORE_EXPORT QIviPagingModel : public QIviAbstractFeatureListModel
 {
     Q_OBJECT
 
-    Q_PROPERTY(QIviPagingModel::Capabilities capabilities READ capabilities NOTIFY capabilitiesChanged)
+    Q_PROPERTY(QtIviCoreModule::ModelCapabilities capabilities READ capabilities NOTIFY capabilitiesChanged)
     Q_PROPERTY(int chunkSize READ chunkSize WRITE setChunkSize NOTIFY chunkSizeChanged)
     Q_PROPERTY(int fetchMoreThreshold READ fetchMoreThreshold WRITE setFetchMoreThreshold NOTIFY fetchMoreThresholdChanged)
     Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
@@ -76,17 +77,9 @@ public:
     };
     Q_ENUM(LoadingType)
 
-    //TODO Do we need to split this further into backend dependent and contentType dependent caps ?
-    enum Capability {
-        NoExtras = 0x0,
-        SupportsGetSize = 0x01, // (the backend knows the size of the model when the query is done and the user can select a different way for loading the model content)
-    };
-    Q_DECLARE_FLAGS(Capabilities, Capability)
-    Q_FLAG(Capabilities)
-
     explicit QIviPagingModel(QObject *parent = nullptr);
 
-    QIviPagingModel::Capabilities capabilities() const;
+    QtIviCoreModule::ModelCapabilities capabilities() const;
 
     int chunkSize() const;
     void setChunkSize(int chunkSize);
@@ -113,7 +106,7 @@ public:
     }
 
 Q_SIGNALS:
-    void capabilitiesChanged(QIviPagingModel::Capabilities capabilities);
+    void capabilitiesChanged(QtIviCoreModule::ModelCapabilities capabilities);
     void chunkSizeChanged(int chunkSize);
     void countChanged();
     void fetchMoreThresholdChanged(int fetchMoreThreshold);
@@ -130,7 +123,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QIviPagingModel)
-    Q_PRIVATE_SLOT(d_func(), void onCapabilitiesChanged(const QUuid &identifier, QIviPagingModel::Capabilities capabilities))
+    Q_PRIVATE_SLOT(d_func(), void onCapabilitiesChanged(const QUuid &identifier, QtIviCoreModule::ModelCapabilities capabilities))
     Q_PRIVATE_SLOT(d_func(), void onDataFetched(const QUuid &identifer, const QList<QVariant> &items, int start, bool moreAvailable))
     Q_PRIVATE_SLOT(d_func(), void onCountChanged(const QUuid &identifier, int new_length))
     Q_PRIVATE_SLOT(d_func(), void onDataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count))

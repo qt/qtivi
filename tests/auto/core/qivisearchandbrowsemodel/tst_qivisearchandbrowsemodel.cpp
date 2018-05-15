@@ -50,7 +50,7 @@ public:
     }
 
     //Sets the capabilities this instance should report
-    void setCapabilities(QIviSearchAndBrowseModel::Capabilities capabilities)
+    void setCapabilities(QtIviCoreModule::ModelCapabilities capabilities)
     {
         m_caps = capabilities;
     }
@@ -120,7 +120,7 @@ public:
 
         QList<QIviSearchAndBrowseModelItem> list = m_lists.value(type);
 
-        if (m_caps.testFlag(QIviSearchAndBrowseModel::SupportsFiltering) && term) {
+        if (m_caps.testFlag(QtIviCoreModule::SupportsFiltering) && term) {
             if (term->type() != QIviAbstractQueryTerm::FilterTerm) {
                 qWarning("Only filtering is supported");
                 return;
@@ -166,7 +166,7 @@ public:
             list = resultList;
         }
 
-        if (m_caps.testFlag(QIviSearchAndBrowseModel::SupportsSorting) && orderTerms.count()) {
+        if (m_caps.testFlag(QtIviCoreModule::SupportsSorting) && orderTerms.count()) {
             if (orderTerms.count() > 1) {
                 qWarning("Only one order term is supported");
                 return;
@@ -194,7 +194,7 @@ public:
             });
         }
 
-        if (m_caps.testFlag(QIviSearchAndBrowseModel::SupportsGetSize))
+        if (m_caps.testFlag(QtIviCoreModule::SupportsGetSize))
             emit countChanged(identifier, list.count());
 
         QVariantList requestedItems;
@@ -309,7 +309,7 @@ public:
 
 private:
     QHash<QString, QList<QIviSearchAndBrowseModelItem>> m_lists;
-    QIviSearchAndBrowseModel::Capabilities m_caps;
+    QtIviCoreModule::ModelCapabilities m_caps;
 };
 
 class TestServiceObject : public QIviServiceObject
@@ -428,7 +428,7 @@ void tst_QIviSearchAndBrowseModel::testClearServiceObject()
     TestServiceObject *service = new TestServiceObject();
     manager->registerService(service, service->interfaces());
     service->testBackend()->initializeSimpleData();
-    service->testBackend()->setCapabilities(QIviSearchAndBrowseModel::SupportsGetSize);
+    service->testBackend()->setCapabilities(QtIviCoreModule::SupportsGetSize);
 
     QIviSearchAndBrowseModel defaultModel;
     QIviSearchAndBrowseModel model;
@@ -580,7 +580,7 @@ void tst_QIviSearchAndBrowseModel::testDataChangedMode()
 {
     TestServiceObject *service = new TestServiceObject();
     manager->registerService(service, service->interfaces());
-    service->testBackend()->setCapabilities(QIviSearchAndBrowseModel::SupportsGetSize);
+    service->testBackend()->setCapabilities(QtIviCoreModule::SupportsGetSize);
     service->testBackend()->initializeSimpleData();
 
     QIviSearchAndBrowseModel model;
@@ -623,7 +623,7 @@ void tst_QIviSearchAndBrowseModel::testReload()
 {
     TestServiceObject *service = new TestServiceObject();
     manager->registerService(service, service->interfaces());
-    service->testBackend()->setCapabilities(QIviSearchAndBrowseModel::SupportsGetSize);
+    service->testBackend()->setCapabilities(QtIviCoreModule::SupportsGetSize);
     service->testBackend()->initializeSimpleData();
 
     QIviSearchAndBrowseModel model;
@@ -652,7 +652,7 @@ void tst_QIviSearchAndBrowseModel::testDataChangedMode_jump()
 {
     TestServiceObject *service = new TestServiceObject();
     manager->registerService(service, service->interfaces());
-    service->testBackend()->setCapabilities(QIviSearchAndBrowseModel::SupportsGetSize);
+    service->testBackend()->setCapabilities(QtIviCoreModule::SupportsGetSize);
     service->testBackend()->initializeSimpleData();
 
     QIviSearchAndBrowseModel model;
@@ -698,7 +698,7 @@ void tst_QIviSearchAndBrowseModel::testNavigation()
 
     QStack<QIviSearchAndBrowseModel*> modelStack;
     TestServiceObject *service = new TestServiceObject();
-    service->testBackend()->setCapabilities(QIviSearchAndBrowseModel::SupportsStatelessNavigation);
+    service->testBackend()->setCapabilities(QtIviCoreModule::SupportsStatelessNavigation);
     manager->registerService(service, service->interfaces());
     service->testBackend()->initializeNavigationData();
 
@@ -790,8 +790,8 @@ void tst_QIviSearchAndBrowseModel::testFilter()
 
     TestServiceObject *service = new TestServiceObject();
     manager->registerService(service, service->interfaces());
-    service->testBackend()->setCapabilities(QIviSearchAndBrowseModel::Capabilities( QIviSearchAndBrowseModel::SupportsFiltering |
-                                                                                    QIviSearchAndBrowseModel::SupportsSorting));
+    service->testBackend()->setCapabilities(QtIviCoreModule::ModelCapabilities( QtIviCoreModule::SupportsFiltering |
+                                                                                QtIviCoreModule::SupportsSorting));
     service->testBackend()->initializeFilterData();
 
     QIviSearchAndBrowseModel model;
@@ -825,9 +825,9 @@ void tst_QIviSearchAndBrowseModel::testEditing()
 {
     TestServiceObject *service = new TestServiceObject();
     manager->registerService(service, service->interfaces());
-    service->testBackend()->setCapabilities(QIviSearchAndBrowseModel::Capabilities( QIviSearchAndBrowseModel::SupportsInsert |
-                                                                                    QIviSearchAndBrowseModel::SupportsRemove |
-                                                                                    QIviSearchAndBrowseModel::SupportsMove));
+    service->testBackend()->setCapabilities(QtIviCoreModule::ModelCapabilities( QtIviCoreModule::SupportsInsert |
+                                                                                QtIviCoreModule::SupportsRemove |
+                                                                                QtIviCoreModule::SupportsMove));
     service->testBackend()->initializeSimpleData();
 
     QIviSearchAndBrowseModel model;
@@ -904,8 +904,8 @@ void tst_QIviSearchAndBrowseModel::testInputErrors()
     TestServiceObject *service = new TestServiceObject();
     manager->registerService(service, service->interfaces());
     service->testBackend()->initializeSimpleData();
-    service->testBackend()->setCapabilities(QIviSearchAndBrowseModel::Capabilities( QIviSearchAndBrowseModel::SupportsFiltering |
-                                                                                    QIviSearchAndBrowseModel::SupportsSorting));
+    service->testBackend()->setCapabilities(QtIviCoreModule::ModelCapabilities( QtIviCoreModule::SupportsFiltering |
+                                                                                QtIviCoreModule::SupportsSorting));
 
     QIviSearchAndBrowseModel model;
     model.setServiceObject(service);

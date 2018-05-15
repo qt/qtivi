@@ -68,6 +68,7 @@ public:
         qmlRegisterType<QIviPagingModel>(uri, 1, 0, "PagingModel");
         qmlRegisterType<QIviSearchAndBrowseModel>(uri, 1, 0, "SearchAndBrowseModel");
         qmlRegisterSingletonType<QIviServiceManager>(uri, 1, 0, "ServiceManager", &serviceManagerSingelton);
+        QtIviCoreModule::registerQmlTypes(uri, 1, 0);
     }
 };
 

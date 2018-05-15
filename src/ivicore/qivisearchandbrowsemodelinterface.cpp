@@ -208,7 +208,7 @@ void QIviSearchAndBrowseModelInterface::registerContentType(const QMetaObject &o
 */
 
 /*!
-    \fn void QIviSearchAndBrowseModelInterface::supportedCapabilitiesChanged(const QUuid &identifier, QIviSearchAndBrowseModel::Capabilities capabilities)
+    \fn void QIviSearchAndBrowseModelInterface::supportedCapabilitiesChanged(const QUuid &identifier, QtIviCoreModule::ModelCapabilities capabilities)
 
     Emitted when the \a capabilities of the model instance identified by \a identifier changed.
 */

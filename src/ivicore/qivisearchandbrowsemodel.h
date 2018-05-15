@@ -43,6 +43,7 @@
 #define QIVISEARCHANDBROWSEMODEL_H
 
 #include <QtIviCore/QIviAbstractFeatureListModel>
+#include <QtIviCore/QtIviCoreModule>
 #include <QtIviCore/QIviPendingReply>
 #include <QtIviCore/QIviServiceObject>
 #include <QtQml/QJSValue>
@@ -55,7 +56,7 @@ class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModel : public QIviAbstractFeatureLi
 {
     Q_OBJECT
 
-    Q_PROPERTY(QIviSearchAndBrowseModel::Capabilities capabilities READ capabilities NOTIFY capabilitiesChanged)
+    Q_PROPERTY(QtIviCoreModule::ModelCapabilities capabilities READ capabilities NOTIFY capabilitiesChanged)
     Q_PROPERTY(QString query READ query WRITE setQuery NOTIFY queryChanged)
     Q_PROPERTY(QString contentType READ contentType WRITE setContentType NOTIFY contentTypeChanged)
     Q_PROPERTY(QStringList availableContentTypes READ availableContentTypes NOTIFY availableContentTypesChanged)
@@ -90,25 +91,9 @@ public:
     };
     Q_ENUM(LoadingType)
 
-    //TODO Do we need to split this further into backend dependent and contentType dependent caps ?
-    enum Capability {
-        NoExtras = 0x0,
-        SupportsFiltering = 0x1,
-        SupportsSorting = 0x2,
-        SupportsAndConjunction = 0x4,
-        SupportsOrConjunction = 0x8,
-        SupportsStatelessNavigation = 0x10, // (the backend supports to have multiple models showing different contentTypes and filters at the same time)
-        SupportsGetSize = 0x20, // (the backend knows the size of the model when the query is done and the user can select a different way for loading the model content)
-        SupportsInsert = 0x40,
-        SupportsMove = 0x80,
-        SupportsRemove = 0x100
-    };
-    Q_DECLARE_FLAGS(Capabilities, Capability)
-    Q_FLAG(Capabilities)
-
     explicit QIviSearchAndBrowseModel(QObject *parent = nullptr);
 
-    QIviSearchAndBrowseModel::Capabilities capabilities() const;
+    QtIviCoreModule::ModelCapabilities capabilities() const;
 
     QString query() const;
     void setQuery(const QString &query);
@@ -152,7 +137,7 @@ public:
     }
 
 Q_SIGNALS:
-    void capabilitiesChanged(QIviSearchAndBrowseModel::Capabilities capabilities);
+    void capabilitiesChanged(QtIviCoreModule::ModelCapabilities capabilities);
     void queryChanged(const QString &query);
     void chunkSizeChanged(int chunkSize);
     void countChanged();
@@ -173,7 +158,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QIviSearchAndBrowseModel)
-    Q_PRIVATE_SLOT(d_func(), void onCapabilitiesChanged(const QUuid &identifier, QIviSearchAndBrowseModel::Capabilities capabilities))
+    Q_PRIVATE_SLOT(d_func(), void onCapabilitiesChanged(const QUuid &identifier, QtIviCoreModule::ModelCapabilities))
     Q_PRIVATE_SLOT(d_func(), void onDataFetched(const QUuid &identifer, const QList<QVariant> &items, int start, bool moreAvailable))
     Q_PRIVATE_SLOT(d_func(), void onCountChanged(const QUuid &identifier, int new_length))
     Q_PRIVATE_SLOT(d_func(), void onDataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count))

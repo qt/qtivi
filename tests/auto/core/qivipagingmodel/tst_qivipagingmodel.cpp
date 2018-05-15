@@ -47,7 +47,7 @@ class TestBackend : public QIviPagingModelInterface
 public:
 
     //Sets the capabilities this instance should report
-    void setCapabilities(QIviPagingModel::Capabilities capabilities)
+    void setCapabilities(QtIviCoreModule::ModelCapabilities capabilities)
     {
         m_caps = capabilities;
     }
@@ -82,7 +82,7 @@ public:
     {
         emit supportedCapabilitiesChanged(identifier, m_caps);
 
-        if (m_caps.testFlag(QIviPagingModel::SupportsGetSize))
+        if (m_caps.testFlag(QtIviCoreModule::SupportsGetSize))
             emit countChanged(identifier, m_list.count());
 
         QVariantList requestedItems;
@@ -124,7 +124,7 @@ public:
 
 private:
     QList<QIviSearchAndBrowseModelItem> m_list;
-    QIviPagingModel::Capabilities m_caps;
+    QtIviCoreModule::ModelCapabilities m_caps;
 };
 
 class TestServiceObject : public QIviServiceObject
@@ -207,7 +207,7 @@ void tst_QIviPagingModel::testClearServiceObject()
     TestServiceObject *service = new TestServiceObject();
     manager->registerService(service, service->interfaces());
     service->testBackend()->initializeSimpleData();
-    service->testBackend()->setCapabilities(QIviPagingModel::SupportsGetSize);
+    service->testBackend()->setCapabilities(QtIviCoreModule::SupportsGetSize);
 
     QIviPagingModel defaultModel;
     QIviPagingModel model;
@@ -338,7 +338,7 @@ void tst_QIviPagingModel::testDataChangedMode()
 {
     TestServiceObject *service = new TestServiceObject();
     manager->registerService(service, service->interfaces());
-    service->testBackend()->setCapabilities(QIviPagingModel::SupportsGetSize);
+    service->testBackend()->setCapabilities(QtIviCoreModule::SupportsGetSize);
     service->testBackend()->initializeSimpleData();
 
     QIviPagingModel model;
@@ -378,7 +378,7 @@ void tst_QIviPagingModel::testReload()
 {
     TestServiceObject *service = new TestServiceObject();
     manager->registerService(service, service->interfaces());
-    service->testBackend()->setCapabilities(QIviPagingModel::SupportsGetSize);
+    service->testBackend()->setCapabilities(QtIviCoreModule::SupportsGetSize);
     service->testBackend()->initializeSimpleData();
 
     QIviPagingModel model;
@@ -404,7 +404,7 @@ void tst_QIviPagingModel::testDataChangedMode_jump()
 {
     TestServiceObject *service = new TestServiceObject();
     manager->registerService(service, service->interfaces());
-    service->testBackend()->setCapabilities(QIviPagingModel::SupportsGetSize);
+    service->testBackend()->setCapabilities(QtIviCoreModule::SupportsGetSize);
     service->testBackend()->initializeSimpleData();
 
     QIviPagingModel model;

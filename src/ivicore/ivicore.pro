@@ -52,7 +52,8 @@ HEADERS += \
     qivifeatureinterface.h \
     qividefaultpropertyoverrider_p.h \
     qivipendingreply.h \
-    qivipendingreply_p.h
+    qivipendingreply_p.h \
+    qtivicoremodule.h
 
 SOURCES += \
     qiviservicemanager.cpp \
@@ -74,7 +75,8 @@ SOURCES += \
     qivifeatureinterface.cpp \
     qividefaultpropertyoverrider.cpp \
     qiviqmlconversion_helper.cpp \
-    qivipendingreply.cpp
+    qivipendingreply.cpp \
+    qtivicoremodule.cpp
 
 include(queryparser/queryparser.pri)
 

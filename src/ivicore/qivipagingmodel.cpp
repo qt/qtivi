@@ -53,7 +53,7 @@ QT_BEGIN_NAMESPACE
 QIviPagingModelPrivate::QIviPagingModelPrivate(const QString &interface, QIviPagingModel *model)
     : QIviAbstractFeatureListModelPrivate(interface, model)
     , q_ptr(model)
-    , m_capabilities(QIviPagingModel::NoExtras)
+    , m_capabilities(QtIviCoreModule::NoExtras)
     , m_chunkSize(30)
     , m_moreAvailable(false)
     , m_identifier(QUuid::createUuid())
@@ -86,7 +86,7 @@ void QIviPagingModelPrivate::initialize()
                             this, &QIviPagingModelPrivate::onFetchMoreThresholdReached);
 }
 
-void QIviPagingModelPrivate::onCapabilitiesChanged(const QUuid &identifier, QIviPagingModel::Capabilities capabilities)
+void QIviPagingModelPrivate::onCapabilitiesChanged(const QUuid &identifier, QtIviCoreModule::ModelCapabilities capabilities)
 {
     if (!identifier.isNull() && identifier != m_identifier)
         return;
@@ -235,7 +235,7 @@ void QIviPagingModelPrivate::clearToDefaults()
     m_fetchMoreThreshold = 10;
     m_fetchedDataCount = 0;
     m_loadingType = QIviPagingModel::FetchMore;
-    m_capabilities = QIviPagingModel::NoExtras;
+    m_capabilities = QtIviCoreModule::NoExtras;
     m_itemList.clear();
 }
 
@@ -322,15 +322,6 @@ QIviPagingModelInterface *QIviPagingModelPrivate::backend() const
           The type of the item. E.g. "artist", "track", "contact".
     \value ItemRole
           The item itself. This provides access to the properties which are type specific. E.g. the address of a contact.
-*/
-
-/*!
-    \enum QIviPagingModel::Capability
-    \value NoExtras
-           The backend does only support the minimum feature set and is stateful.
-    \value SupportsGetSize
-           The backend can return the final number of items for a specific request. This makes it possible to support the QIviPagingModel::DataChanged loading
-           type.
 */
 
 /*!
@@ -424,6 +415,26 @@ QIviPagingModel::QIviPagingModel(QObject *parent)
     \value SupportsGetSize
            The backend can return the final number of items for a specific request. This makes it possible to support the QIviPagingModel::DataChanged loading
            type.
+    \value SupportsFiltering
+           The backend supports filtering of the content. QIviSearchAndBrowseModelInterface::availableContentTypes() and QIviSearchAndBrowseModelInterface::supportedIdentifiers() will be used as input for the
+           \l {Qt IVI Query Language}. \sa QIviSearchAndBrowseModelInterface::registerContentType
+    \value SupportsSorting
+           The backend supports sorting of the content. QIviSearchAndBrowseModelInterface::availableContentTypes() and QIviSearchAndBrowseModelInterface::supportedIdentifiers() will be used as input for the
+           \l {Qt IVI Query Language}. \sa QIviSearchAndBrowseModelInterface::registerContentType
+    \value SupportsAndConjunction
+           The backend supports handling multiple filters at the same time and these filters can be combined by using the AND conjunction.
+    \value SupportsOrConjunction
+           The backend supports handling multiple filters at the same time and these filters can be combined by using the OR conjunction.
+    \value SupportsStatelessNavigation
+           The backend is stateless and supports handling multiple instances of a QIviSearchAndBrowseModel requesting different data at the same time.
+           E.g. One request for artists, sorted by name and another request for tracks. The backend has to consider that both request come from models which are
+           currently visible at the same time.
+    \value SupportsInsert
+           The backend supports inserting new items at a given position.
+    \value SupportsMove
+           The backend supports moving items within the model.
+    \value SupportsRemove
+           The backend supports removing items from the model.
 */
 
 /*!
@@ -433,7 +444,7 @@ QIviPagingModel::QIviPagingModel(QObject *parent)
     The capabilities controls what the current contentType supports. e.g. filtering or sorting.
 */
 
-QIviPagingModel::Capabilities QIviPagingModel::capabilities() const
+QtIviCoreModule::ModelCapabilities QIviPagingModel::capabilities() const
 {
     Q_D(const QIviPagingModel);
     return d->m_capabilities;
@@ -555,7 +566,7 @@ void QIviPagingModel::setLoadingType(QIviPagingModel::LoadingType loadingType)
     if (d->m_loadingType == loadingType)
         return;
 
-    if (loadingType == QIviPagingModel::DataChanged && !d->m_capabilities.testFlag(QIviPagingModel::SupportsGetSize)) {
+    if (loadingType == QIviPagingModel::DataChanged && !d->m_capabilities.testFlag(QtIviCoreModule::SupportsGetSize)) {
         qtivi_qmlOrCppWarning(this, "The backend doesn't support the DataChanged loading type. This call will have no effect");
         return;
     }

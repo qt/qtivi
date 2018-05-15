@@ -61,10 +61,10 @@ void UsbBrowseBackend::initialize()
 
 void UsbBrowseBackend::fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count)
 {
-    emit supportedCapabilitiesChanged(identifier, QIviSearchAndBrowseModel::Capabilities(
-                                          QIviSearchAndBrowseModel::SupportsSorting |
-                                          QIviSearchAndBrowseModel::SupportsStatelessNavigation |
-                                          QIviSearchAndBrowseModel::SupportsGetSize
+    emit supportedCapabilitiesChanged(identifier, QtIviCoreModule::ModelCapabilities(
+                                          QtIviCoreModule::SupportsSorting |
+                                          QtIviCoreModule::SupportsStatelessNavigation |
+                                          QtIviCoreModule::SupportsGetSize
                                           ));
 
     Q_UNUSED(term);

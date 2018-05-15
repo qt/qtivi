@@ -39,36 +39,39 @@
 **
 ****************************************************************************/
 
-#ifndef QIVIPAGINGMODELINTERFACE_H
-#define QIVIPAGINGMODELINTERFACE_H
+#ifndef QTIVICOREMODULE_H
+#define QTIVICOREMODULE_H
 
-#include <QUuid>
-#include <QtIviCore/QIviFeatureInterface>
-#include <QtIviCore/QIviPagingModel>
-#include <QtIviCore/QtIviCoreModule>
+#include <QtIviCore/qtiviglobal.h>
+#include <QObject>
 
 QT_BEGIN_NAMESPACE
 
-class QIviPagingModelInterfacePrivate;
-
-class Q_QTIVICORE_EXPORT QIviPagingModelInterface : public QIviFeatureInterface
+class Q_QTIVICORE_EXPORT QtIviCoreModule : public QObject
 {
     Q_OBJECT
-
 public:
-    explicit QIviPagingModelInterface(QObject *parent = nullptr);
+    explicit QtIviCoreModule(QObject *parent = nullptr);
 
-    virtual void fetchData(const QUuid &identifier, int start, int count) = 0;
+    enum ModelCapability {
+        NoExtras = 0x0,
+        SupportsGetSize = 0x1, // (the backend knows the size of the model when the query is done and the user can select a different way for loading the model content)
+        SupportsFiltering = 0x2,
+        SupportsSorting = 0x4,
+        SupportsAndConjunction = 0x8,
+        SupportsOrConjunction = 0x10,
+        SupportsStatelessNavigation = 0x20, // (the backend supports to have multiple models showing different contentTypes and filters at the same time)
+        SupportsInsert = 0x40,
+        SupportsMove = 0x80,
+        SupportsRemove = 0x100
+    };
+    Q_DECLARE_FLAGS(ModelCapabilities, ModelCapability)
+    Q_FLAG(ModelCapabilities)
 
-Q_SIGNALS:
-    void supportedCapabilitiesChanged(const QUuid &identifier, QtIviCoreModule::ModelCapabilities capabilities);
-    void countChanged(const QUuid &identifier, int newLength);
-    void dataFetched(const QUuid &identifier, const QList<QVariant> &data, int start, bool moreAvailable);
-    void dataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count);
+    static void registerTypes();
+    static void registerQmlTypes(const QString& uri, int majorVersion = 1, int minorVersion = 0);
 };
-
-#define QIviPagingModel_iid "org.qt-project.qtivi.PagingModel/1.0"
 
 QT_END_NAMESPACE
 
-#endif // QIVIPAGINGMODELINTERFACE_H
+#endif // QTIVICOREMODULE_H

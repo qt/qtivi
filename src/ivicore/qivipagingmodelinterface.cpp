@@ -88,7 +88,7 @@ QIviPagingModelInterface::QIviPagingModelInterface(QObject *parent)
 */
 
 /*!
-    \fn void QIviPagingModelInterface::supportedCapabilitiesChanged(const QUuid &identifier, QIviPagingModel::Capabilities capabilities)
+    \fn void QIviPagingModelInterface::supportedCapabilitiesChanged(const QUuid &identifier, QtIviCoreModule::ModelCapabilities capabilities)
 
     Emitted when the \a capabilities of the model instance identified by \a identifier changed.
 

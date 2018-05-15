@@ -60,12 +60,12 @@ void SearchAndBrowseBackend::initialize()
 
 void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count)
 {
-    emit supportedCapabilitiesChanged(identifier, QIviSearchAndBrowseModel::Capabilities(
-                                          QIviSearchAndBrowseModel::SupportsStatelessNavigation |
-                                          QIviSearchAndBrowseModel::SupportsGetSize |
-                                          QIviSearchAndBrowseModel::SupportsInsert |
-                                          QIviSearchAndBrowseModel::SupportsMove |
-                                          QIviSearchAndBrowseModel::SupportsRemove
+    emit supportedCapabilitiesChanged(identifier, QtIviCoreModule::ModelCapabilities(
+                                          QtIviCoreModule::SupportsStatelessNavigation |
+                                          QtIviCoreModule::SupportsGetSize |
+                                          QtIviCoreModule::SupportsInsert |
+                                          QtIviCoreModule::SupportsMove |
+                                          QtIviCoreModule::SupportsRemove
                                           ));
 
     Q_UNUSED(term)
