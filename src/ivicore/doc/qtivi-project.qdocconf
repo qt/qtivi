@@ -4,7 +4,8 @@ version                       = $QT_VERSION
 url                           = http://doc.qt.io/QtIVI
 
 moduleheader                  = QtIviDoc
-includepaths                  = -I .
+includepaths                  = -I . \
+                                -I ..
 
 headerdirs                   += . \
                                 .. \
