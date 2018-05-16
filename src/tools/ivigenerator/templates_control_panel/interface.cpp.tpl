@@ -224,7 +224,7 @@ QVariantMap {{class}}::zoneAt() const
 
 {% if interface_zoned %}
 {%   for operation in interface.operations %}
-{{ivi.operation(operation, class, true)}}
+void {{class}}::{{operation}}({{ivi.join_params(operation, zoned=true)}})
 {
     QString z = zone;
     if (z.isEmpty())

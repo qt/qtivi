@@ -102,7 +102,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
 {% for operation in interface.operations %}
-    {{ivi.operation(operation)}};
+    void {{operation}}({{ivi.join_params(operation)}});
 {% endfor %}
 {% if interface_zoned %}
     void currentZoneChanged();
@@ -115,7 +115,7 @@ Q_SIGNALS:
 private Q_SLOTS:
 {% if interface_zoned %}
 {%   for operation in interface.operations %}
-    {{ivi.operation(operation, zoned = true)}};
+    void {{operation}}({{ivi.join_params(operation, zoned=true)}});
 {%   endfor %}
 {% endif %}
 private:

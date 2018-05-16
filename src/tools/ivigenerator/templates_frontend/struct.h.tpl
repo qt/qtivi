@@ -64,7 +64,7 @@ class  {{exportsymbol}} {{class}}
 {
     Q_GADGET
 {% for field in struct.fields %}
-    {{ivi.property(field)}}
+    {{ivi.property(field, notify=false)}}
 {% endfor %}
     Q_CLASSINFO("IviPropertyDomains", "{{ struct.fields|json_domain|replace("\"", "\\\"") }}")
 public:

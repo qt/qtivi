@@ -79,13 +79,18 @@ QIviPendingReply<{{operation|return_type}}> {{scope}}{{operation}}({{join_params
 
 
 {# property declaration, Q_PROPERTY(...) #}
-{% macro property(property) %}
+{% macro property(property, notify = true) %}
 {%   if property.readonly or property.const %}
 {%     set write = '' %}
 {%   else %}
 {%     set write = ' WRITE ' + property|setter_name %}
 {%   endif %}
-Q_PROPERTY({{property|return_type}} {{property}} READ {{property|getter_name}}{{write}} NOTIFY {{property}}Changed)
+{%   if notify %}
+{%     set _notify = ' NOTIFY ' + property|lowerfirst + 'Changed' %}
+{%   else %}
+{%     set _notify = ''%}
+{%   endif %}
+Q_PROPERTY({{property|return_type}} {{property}} READ {{property|getter_name}}{{write}}{{_notify}})
 {% endmacro %}
 
 
