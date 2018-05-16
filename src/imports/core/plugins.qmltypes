@@ -244,22 +244,65 @@ Module {
         }
         Method {
             name: "insert"
+            type: "QIviPendingReply<void>"
             Parameter { name: "index"; type: "int" }
             Parameter { name: "variant"; type: "QVariant" }
         }
         Method {
             name: "remove"
+            type: "QIviPendingReply<void>"
             Parameter { name: "index"; type: "int" }
         }
         Method {
             name: "move"
+            type: "QIviPendingReply<void>"
             Parameter { name: "cur_index"; type: "int" }
             Parameter { name: "new_index"; type: "int" }
         }
         Method {
             name: "indexOf"
+            type: "QIviPendingReply<int>"
             Parameter { name: "variant"; type: "QVariant" }
-            Parameter { name: "functor"; type: "QJSValue" }
+        }
+        Method { name: "reload" }
+    }
+    Component {
+        name: "QIviServiceManager"
+        prototype: "QAbstractListModel"
+        exports: ["QtIvi/ServiceManager 1.0"]
+        isCreatable: false
+        isSingleton: true
+        exportMetaObjectRevisions: [0]
+        Enum {
+            name: "SearchFlags"
+            values: {
+                "IncludeProductionBackends": 1,
+                "IncludeSimulationBackends": 2,
+                "IncludeAll": 3
+            }
+        }
+        Enum {
+            name: "BackendType"
+            values: {
+                "ProductionBackend": 0,
+                "SimulationBackend": 1
+            }
+        }
+        Method {
+            name: "findServiceByInterface"
+            type: "QList<QIviServiceObject*>"
+            Parameter { name: "interface"; type: "string" }
+            Parameter { name: "searchFlags"; type: "SearchFlags" }
+        }
+        Method {
+            name: "findServiceByInterface"
+            type: "QList<QIviServiceObject*>"
+            Parameter { name: "interface"; type: "string" }
+        }
+        Method {
+            name: "hasInterface"
+            type: "bool"
+            Parameter { name: "interface"; type: "string" }
         }
     }
 }

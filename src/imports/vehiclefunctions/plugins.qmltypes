@@ -287,8 +287,8 @@ Module {
             name: "blindStateChanged"
             Parameter { name: "blindState"; type: "QtIviVehicleFunctionsModule::WindowState" }
         }
-        Method { name: "open" }
-        Method { name: "close" }
+        Method { name: "open"; type: "QIviPendingReply<void>" }
+        Method { name: "close"; type: "QIviPendingReply<void>" }
         Method {
             name: "setHeaterMode"
             Parameter { name: "heaterMode"; type: "QtIviVehicleFunctionsModule::HeaterMode" }
