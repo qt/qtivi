@@ -13,4 +13,5 @@ PLUGIN_CLASS_NAME = QIviServiceInterface
 QT += core ivicore
 
 QFACE_FORMAT = backend_simulator
-QFACE_SOURCES = ../../../org.example.echo.noprivate.qface
+QFACE_SOURCES = ../../../org.example.echo.qface
+QFACE_ANNOTATIONS += ../../../no-private.yaml

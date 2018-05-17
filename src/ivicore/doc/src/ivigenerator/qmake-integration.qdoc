@@ -48,6 +48,7 @@ QFACE_FORMAT = frontend
 QFACE_SOURCES = example.qface
 QFACE_MODULE_NAME = myModule
 QFACE_OUTPUT_DIR = myOutputDir
+QFACE_ANNOTATIONS = annotation.yaml
 \endcode
 
 Available QMake Variables:
@@ -65,6 +66,9 @@ Available QMake Variables:
         \li QFACE_OUTPUT_DIR
         \li Output folder where the generated code will be created. The default
             is to use the current build folder
+    \row
+        \li QFACE_ANNOTATIONS
+        \li list of additional annotation YAML files.
 \endtable
 
 

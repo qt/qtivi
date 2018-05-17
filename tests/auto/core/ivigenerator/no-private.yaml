@@ -1,0 +1,4 @@
+org.example.echo:
+    config:
+        disablePrivateIVI: true
+        interfaceBuilder: false

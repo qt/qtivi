@@ -559,11 +559,19 @@ def struct_includes(symbol):
     return includesSet
 
 
-def generate(tplconfig, moduleConfig, src, dst):
+def generate(tplconfig, moduleConfig, annotations, src, dst):
     log.debug('run {0} {1}'.format(src, dst))
     FileSystem.strict = True
     Generator.strict = True
     system = FileSystem.parse(src)
+    for annotations_file in annotations:
+        log.debug('{0}'.format(annotations_file))
+        if not os.path.isabs(annotations_file):
+            annotations_file = Path.getcwd() / str(annotations_file)
+        if not Path(annotations_file).exists():
+            print('no such annotation file: {0}'.format(annotations_file))
+            exit(1)
+        FileSystem.merge_annotations(system, Path(annotations_file))
     generator = Generator(search_path=[tplconfig, here / "common"])
     generator.register_filter('return_type', return_type)
     generator.register_filter('parameter_type', parameter_type)
@@ -632,13 +640,13 @@ def generate(tplconfig, moduleConfig, src, dst):
                     generator.write(rule['dest_file'], rule['template_file'], ctx, preserve, force)
 
 
-def run(format, moduleConfig, src, dst):
+def run(format, moduleConfig, annotations, src, dst):
     if format in IVI_DEFAULT_TEMPLATES:
         tplConfig = 'templates_{0}'.format(format)
-        generate(here / tplConfig, moduleConfig, src, dst)
+        generate(here / tplConfig, moduleConfig, annotations, src, dst)
     else:
         if os.path.exists(format):
-            generate(format, moduleConfig, src, dst)
+            generate(format, moduleConfig, annotations, src, dst)
         else:
             print('Format "{0}" is invalid. Should be one of {1} or an existing template folder'.format(format, IVI_DEFAULT_TEMPLATES))
             exit(1)
@@ -650,10 +658,15 @@ def run(format, moduleConfig, src, dst):
 @click.option('--module', default=False, help='The name of the Qt module the autogenerator is generating. This is automatically used by the qmake integration and passed directly to the qface templates.')
 @click.option('--validation_info', is_flag=True, default=False, help='Annotates every interface with additional JSON code containing all the options used to generate this interface. This can be used to validate the generation of the interface.')
 @click.option('--force', is_flag=True, default=False, help='Always write all output files')
+@click.option('--annotations', '-A', multiple=True, default=False, help=
+    'Merges the given annotation file with annotions already in the qface file and the '
+    'implicit annotation file. The annotation files will be merged in the order they are passed '
+    'to the generator. Providing a duplicate key in the YAML file will override the previously '
+    'set value. This option can be used multiple times.')
 @click.argument('src', nargs=-1, type=click.Path(exists=True))
 @click.argument('dst', nargs=1, type=click.Path(exists=True))
 
-def app(src, dst, format, reload, module, validation_info, force):
+def app(src, dst, format, reload, module, validation_info, force, annotations):
     """
     The QtIvi Autogenerator (ivigenerator)
 
@@ -678,7 +691,7 @@ def app(src, dst, format, reload, module, validation_info, force):
             "validation_info": validation_info,
             "force": force
         }
-        run(format, moduleConfig, src, dst)
+        run(format, moduleConfig, annotations, src, dst)
 
 
 if __name__ == '__main__':

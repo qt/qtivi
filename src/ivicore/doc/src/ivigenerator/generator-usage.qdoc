@@ -55,8 +55,11 @@ The options and parameters are:
         \li  -f, --format [frontend|backend_simulator|control_panel|backend_qtro|server_qtro|<folder>]
         \li see below
     \row
-        \li --help
-        \li Show options and exit.
+        \li -A, --annotations <annotation-file>
+        \li Merges the given annotation file with annotions already in the qface file and the
+        implicit annotation file. The annotation files will be merged in the order they are passed
+        to the generator. Providing a duplicate key in the YAML file will override the previously
+        set value. This option can be used multiple times.
     \row
         \li source
         \li Path or paths to the IDL source files. In case of multiple entries present, each one
@@ -65,6 +68,9 @@ The options and parameters are:
     \row
         \li outputdir
         \li Generation destination folder
+    \row
+        \li --help
+        \li Show options and exit.
 \endtable
 
 At the moment the generator is able to generate 5 kinds of projects given an interface IDL file
@@ -154,6 +160,10 @@ need to define some aspects of generation of the auto-testing code. Such annotat
 the YAML file accompanying the main IDL file and named after it. During the parse phase
 QFace picks this file up automatically and merges annotation specified in this YAML file with those
 defined in the IDL file.
+
+As the accompanying YAML file is automatically picked up in all cases, this doesn't work for
+annoations which are only needed for some specific projects e.g. when generating a backend plugin.
+For this use case you can pass multiple additional annotation YAML files to the generator.
 
 For QtIvi there are following annotations used for the IDL definition:
 

@@ -13,4 +13,5 @@ INCLUDEPATH += $$OUT_PWD/../frontend
 QT += qml quick core ivicore
 
 QFACE_FORMAT = generation_validator
-QFACE_SOURCES = ../../../org.example.echo.noprivate.qface
+QFACE_SOURCES = ../../../org.example.echo.qface
+QFACE_ANNOTATIONS += ../../../no-private.yaml

@@ -11,4 +11,5 @@ LIBS += -L$$OUT_PWD/.. -l$$qtLibraryTarget(echo_noprivate_frontend)
 QMAKE_RPATHDIR += $$OUT_PWD/..
 
 QFACE_FORMAT = test
-QFACE_SOURCES = ../../../org.example.echo.noprivate.qface
+QFACE_SOURCES = ../../../org.example.echo.qface
+QFACE_ANNOTATIONS += ../../../no-private.yaml
