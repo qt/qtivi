@@ -86,7 +86,7 @@ QIviPendingReply<{{operation|return_type}}> {{scope}}{{operation}}({{join_params
 {%     set write = ' WRITE ' + property|setter_name %}
 {%   endif %}
 {%   if notify %}
-{%     set _notify = ' NOTIFY ' + property|lowerfirst + 'Changed' %}
+{%     set _notify = ' NOTIFY ' + property.name + 'Changed' %}
 {%   else %}
 {%     set _notify = ''%}
 {%   endif %}
