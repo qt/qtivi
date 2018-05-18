@@ -47,8 +47,8 @@ public Q_SLOTS:
     virtual QString echo(const QString &msg) override;
     virtual QString id() override;
     virtual Combo getCombo() override;
-    virtual void voidSlot();
-    virtual void voidSlot2(int param);
+    virtual void voidSlot() override;
+    virtual void voidSlot2(int param) override;
 
 Q_SIGNALS:
     void echoSlotCalled(const QString &msg);
