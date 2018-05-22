@@ -8,3 +8,7 @@ SUBDIRS = org-example-echo \
 qtConfig(remoteobjects) {
     SUBDIRS += org-example-echo-qtro
 }
+
+qtConfig(simulator) {
+    SUBDIRS += org-example-echo-simulator
+}
