@@ -73,7 +73,21 @@ void SearchAndBrowseBackend::initialize()
     emit initializationDone();
 }
 
-void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count)
+//TODO fix the growing state map in one of the following commits
+void SearchAndBrowseBackend::setContentType(const QUuid &identifier, const QString &contentType)
+{
+    auto &state = m_state[identifier];
+    state.contentType = contentType;
+}
+
+void SearchAndBrowseBackend::setupFilter(const QUuid &identifier, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms)
+{
+    auto &state = m_state[identifier];
+    state.queryTerm = term;
+    state.orderTerms = orderTerms;
+}
+
+void SearchAndBrowseBackend::fetchData(const QUuid &identifier, int start, int count)
 {
     emit supportedCapabilitiesChanged(identifier, QtIviCoreModule::ModelCapabilities(
                                           QtIviCoreModule::SupportsFiltering |
@@ -84,11 +98,17 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &t
                                           QtIviCoreModule::SupportsGetSize
                                           ));
 
-    qCDebug(media) << "FETCH" << identifier << type << start << count;
+    if (!m_state.contains(identifier)) {
+        qCCritical(media) << "INTERNAL ERROR: No state available for this uuid";
+        return;
+    }
+    auto state = m_state[identifier];
+
+    qCDebug(media) << "FETCH" << identifier << state.contentType << start << count;
 
     //Determine the current type and which items got selected previously to define the base filter.
     QStringList where_clauses;
-    QStringList types = type.split('/');
+    QStringList types = state.contentType.split('/');
     for (const QString &filter_type : types) {
         QStringList parts = filter_type.split('?');
         if (parts.count() != 2)
@@ -100,8 +120,8 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &t
     QString current_type = types.last();
 
     QString order;
-    if (!orderTerms.isEmpty())
-        order = QStringLiteral("ORDER BY %1").arg(createSortOrder(current_type, orderTerms));
+    if (!state.orderTerms.isEmpty())
+        order = QStringLiteral("ORDER BY %1").arg(createSortOrder(current_type, state.orderTerms));
 
     QString columns;
     QString groupBy;
@@ -115,7 +135,7 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &t
         columns = QStringLiteral("artistName, albumName, trackName, genre, number, file, id, coverArtUrl");
     }
 
-    QString filterClause = createWhereClause(current_type, term);
+    QString filterClause = createWhereClause(current_type, state.queryTerm);
     if (!filterClause.isEmpty())
         where_clauses.append(filterClause);
 

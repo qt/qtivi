@@ -74,7 +74,7 @@ QT_BEGIN_NAMESPACE
     The \a parent is sent to the QObject constructor.
 */
 QIviSearchAndBrowseModelInterface::QIviSearchAndBrowseModelInterface(QObject *parent)
-    : QIviFeatureInterface(*new QIviSearchAndBrowseModelInterfacePrivate(), parent)
+    : QIviPagingModelInterface(*new QIviSearchAndBrowseModelInterfacePrivate(), parent)
 {}
 
 /*!
@@ -124,16 +124,23 @@ void QIviSearchAndBrowseModelInterface::registerContentType(const QMetaObject &o
 }
 
 /*!
-    \fn void QIviSearchAndBrowseModelInterface::fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count)
+    \fn void QIviSearchAndBrowseModelInterface::setContentType(const QUuid &identifier, const QString &contentType)
 
-    This function is called whenever new data of the given type \a type needs to be retrieved by a QIviSearchAndBrowseModel identified by \a identifier.
-    The \a term and \a orderTerms properties are representations of the query which is used for filtering and sorting. The \a term pointer is null when the backend
-    doesn't support filtering and sorting or when no query was defined in the QIviSearchAndBrowseModel instance.
+    Sets the \a contentType of the QIviSearchAndBrowseModel instance identified by \a identifier.
+    The given contenType can contain additional path information. The encoding is defined by by the
+    goForward() method.
 
-    The parameters \a start and \a count define the range of data which should be fetched. This method is expected to emit the dataFetched() signal once
-    the new data is ready.
+    Calls to this function are followed by calls to setupFilter() and fetchData()
+*/
 
-    \sa dataFetched()
+/*!
+    \fn void QIviSearchAndBrowseModelInterface::setupFilter(const QUuid &identifier, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms)
+
+    Setup the filter for the QIviSearchAndBrowseModel instance identified by \a identifier.
+
+    The \a term and \a orderTerms arguments are representations of the query which is used for
+    filtering and sorting. The \a term argument is a null-pointer when the backend doesn't support
+    filtering and sorting or when no query was defined in the QIviSearchAndBrowseModel instance.
 */
 
 /*!
@@ -205,59 +212,6 @@ void QIviSearchAndBrowseModelInterface::registerContentType(const QMetaObject &o
     \fn QIviSearchAndBrowseModelInterface::indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item)
 
     Determines the index of \a item in the model identified by \a identifier and \a type.
-*/
-
-/*!
-    \fn void QIviSearchAndBrowseModelInterface::supportedCapabilitiesChanged(const QUuid &identifier, QtIviCoreModule::ModelCapabilities capabilities)
-
-    Emitted when the \a capabilities of the model instance identified by \a identifier changed.
-*/
-
-/*!
-    \fn void QIviSearchAndBrowseModelInterface::countChanged(const QUuid &identifier, int newLength)
-
-    This signal is emitted when the current number of items in the QIviSearchAndBrowseModel instance identified by \a identifier changed.
-    The new number of items is returned as \a newLength.
-
-    This signal is expected to be emitted after the model instance has requested new data for the first time by calling fetchData() and
-    should be emitted before the data is returned by emitting the dataFetched() signal
-
-    \sa fetchData() dataFetched()
-*/
-
-/*!
-    \fn void QIviSearchAndBrowseModelInterface::dataFetched(const QUuid &identifier, const QList<QVariant> &data, int start, bool moreAvailable)
-
-    This signal is emitted as a result of a call to fetchData() and returns the requested data in the argument \a data to the QIviSearchAndBrowseModel instance identified by \a identifier.
-    The arguments \a start holds the index where the data starts and \a moreAvailable holds whether there is more data available and a new fetchData() call can be used to retrieve this data.
-
-    \sa fetchData() dataFetched()
-*/
-
-/*!
-    \fn void QIviSearchAndBrowseModelInterface::dataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count)
-
-    This signal is emitted whenever the data in the QIviSearchAndBrowseModel instance identified by \a identifier changed and the model needs to be updated.
-    The new data is passed as \a data. The arguments \a start and \a count can be used to define the set of items which should be replaced with the new data.
-
-    For inserting a new item, the item is passed in \a data and \a start is used for where the item should be inserted, the \a count argument needs to be 0 as we don't want to replace existing data:
-
-    \code
-    QList<ExampleItem> list;
-    ExampleItem item = ExampleItem();
-    list.insert(index, item);
-    QVariantList items = { QVariant::fromValue(item) };
-    emit dataChanged(items, index, 0);
-    \endcode
-
-    Removing an item is very similar, \a start is used to indicate which item and \a count to indicate how much:
-
-    \code
-    list.removeAt(index);
-    emit dataChanged(identifier, QVariantList(), index, 1);
-    \endcode
-
-    \sa insert() remove() move()
 */
 
 QT_END_NAMESPACE

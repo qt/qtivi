@@ -42,7 +42,7 @@
 #ifndef QIVISEARCHANDBROWSEMODEL_H
 #define QIVISEARCHANDBROWSEMODEL_H
 
-#include <QtIviCore/QIviAbstractFeatureListModel>
+#include <QtIviCore/QIviPagingModel>
 #include <QtIviCore/QtIviCoreModule>
 #include <QtIviCore/QIviPendingReply>
 #include <QtIviCore/QIviServiceObject>
@@ -52,29 +52,20 @@ QT_BEGIN_NAMESPACE
 
 class QIviSearchAndBrowseModelPrivate;
 
-class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModel : public QIviAbstractFeatureListModel
+class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModel : public QIviPagingModel
 {
     Q_OBJECT
 
-    Q_PROPERTY(QtIviCoreModule::ModelCapabilities capabilities READ capabilities NOTIFY capabilitiesChanged)
     Q_PROPERTY(QString query READ query WRITE setQuery NOTIFY queryChanged)
     Q_PROPERTY(QString contentType READ contentType WRITE setContentType NOTIFY contentTypeChanged)
     Q_PROPERTY(QStringList availableContentTypes READ availableContentTypes NOTIFY availableContentTypesChanged)
-    Q_PROPERTY(int chunkSize READ chunkSize WRITE setChunkSize NOTIFY chunkSizeChanged)
-    Q_PROPERTY(int fetchMoreThreshold READ fetchMoreThreshold WRITE setFetchMoreThreshold NOTIFY fetchMoreThresholdChanged)
-    Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
     Q_PROPERTY(bool canGoBack READ canGoBack NOTIFY canGoBackChanged)
-
-    //TODO fix naming
-    Q_PROPERTY(QIviSearchAndBrowseModel::LoadingType loadingType READ loadingType WRITE setLoadingType NOTIFY loadingTypeChanged)
 
 public:
 
     enum Roles {
-        NameRole = Qt::DisplayRole,
-        TypeRole = Qt::UserRole,
-        ItemRole = Qt::UserRole + 1,
-        CanGoForwardRole = Qt::UserRole +2
+        CanGoForwardRole = QIviPagingModel::LastRole + 1,
+        LastRole = CanGoForwardRole
     };
 
     //TODO fix naming
@@ -84,25 +75,10 @@ public:
     };
     Q_ENUM(NavigationType)
 
-    //TODO fix naming
-    enum LoadingType {
-        FetchMore,
-        DataChanged
-    };
-    Q_ENUM(LoadingType)
-
     explicit QIviSearchAndBrowseModel(QObject *parent = nullptr);
-
-    QtIviCoreModule::ModelCapabilities capabilities() const;
 
     QString query() const;
     void setQuery(const QString &query);
-
-    int chunkSize() const;
-    void setChunkSize(int chunkSize);
-
-    int fetchMoreThreshold() const;
-    void setFetchMoreThreshold(int fetchMoreThreshold);
 
     QString contentType() const;
     void setContentType(const QString &contentType);
@@ -111,18 +87,10 @@ public:
 
     bool canGoBack() const;
 
-    QIviSearchAndBrowseModel::LoadingType loadingType() const;
-    void setLoadingType(QIviSearchAndBrowseModel::LoadingType loadingType);
-
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role) const override;
-
-    bool canFetchMore(const QModelIndex &parent) const override;
-    void fetchMore(const QModelIndex &parent) override;
 
     QHash<int, QByteArray> roleNames() const override;
 
-    Q_INVOKABLE QVariant get(int index) const;
     Q_INVOKABLE void goBack();
     Q_INVOKABLE bool canGoForward(int index) const;
     Q_INVOKABLE QIviSearchAndBrowseModel *goForward(int index, QIviSearchAndBrowseModel::NavigationType navigationType);
@@ -130,39 +98,22 @@ public:
     Q_INVOKABLE QIviPendingReply<void> remove(int index);
     Q_INVOKABLE QIviPendingReply<void> move(int cur_index, int new_index);
     Q_INVOKABLE QIviPendingReply<int> indexOf(const QVariant &variant);
-    Q_INVOKABLE void reload();
-
-    template <typename T> T at(int i) const {
-        return data(index(i,0), ItemRole).value<T>();
-    }
 
 Q_SIGNALS:
-    void capabilitiesChanged(QtIviCoreModule::ModelCapabilities capabilities);
     void queryChanged(const QString &query);
-    void chunkSizeChanged(int chunkSize);
-    void countChanged();
-    void fetchMoreThresholdChanged(int fetchMoreThreshold);
-    void fetchMoreThresholdReached() const;
     void contentTypeChanged(const QString &contentType);
     void availableContentTypesChanged(const QStringList &availableContentTypes);
     void canGoBackChanged(bool canGoBack);
-    void loadingTypeChanged(QIviSearchAndBrowseModel::LoadingType loadingType);
 
 protected:
     QIviSearchAndBrowseModel(QIviServiceObject *serviceObject, const QString &contentType, QObject *parent = nullptr);
     QIviSearchAndBrowseModel(QIviSearchAndBrowseModelPrivate &dd, QObject *parent);
-    bool acceptServiceObject(QIviServiceObject *serviceObject) override;
     void connectToServiceObject(QIviServiceObject *serviceObject) override;
     void disconnectFromServiceObject(QIviServiceObject *serviceObject) override;
     void clearServiceObject() override;
 
 private:
     Q_DECLARE_PRIVATE(QIviSearchAndBrowseModel)
-    Q_PRIVATE_SLOT(d_func(), void onCapabilitiesChanged(const QUuid &identifier, QtIviCoreModule::ModelCapabilities))
-    Q_PRIVATE_SLOT(d_func(), void onDataFetched(const QUuid &identifer, const QList<QVariant> &items, int start, bool moreAvailable))
-    Q_PRIVATE_SLOT(d_func(), void onCountChanged(const QUuid &identifier, int new_length))
-    Q_PRIVATE_SLOT(d_func(), void onDataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count))
-    Q_PRIVATE_SLOT(d_func(), void onFetchMoreThresholdReached())
 };
 
 QT_END_NAMESPACE

@@ -253,7 +253,7 @@ QIviPagingModelInterface *QIviPagingModelPrivate::backend() const
     Q_Q(const QIviPagingModel);
     QIviServiceObject *so = q->serviceObject();
     if (so)
-        return qobject_cast<QIviPagingModelInterface*>(so->interfaceInstance(QStringLiteral(QIviPagingModel_iid)));
+        return qobject_cast<QIviPagingModelInterface*>(so->interfaceInstance(q->interfaceName()));
 
     return nullptr;
 }
@@ -322,6 +322,7 @@ QIviPagingModelInterface *QIviPagingModelPrivate::backend() const
           The type of the item. E.g. "artist", "track", "contact".
     \value ItemRole
           The item itself. This provides access to the properties which are type specific. E.g. the address of a contact.
+    \omitvalue LastRole
 */
 
 /*!
@@ -726,16 +727,6 @@ QIviPagingModel::QIviPagingModel(QIviServiceObject *serviceObject, QObject *pare
 QIviPagingModel::QIviPagingModel(QIviPagingModelPrivate &dd, QObject *parent)
     : QIviAbstractFeatureListModel(dd, parent)
 {
-}
-
-/*!
-    \reimp
-*/
-bool QIviPagingModel::acceptServiceObject(QIviServiceObject *serviceObject)
-{
-    if (serviceObject)
-        return serviceObject->interfaces().contains(interfaceName());
-    return false;
 }
 
 /*!

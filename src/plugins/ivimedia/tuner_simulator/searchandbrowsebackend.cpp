@@ -58,7 +58,19 @@ void SearchAndBrowseBackend::initialize()
     emit initializationDone();
 }
 
-void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count)
+void SearchAndBrowseBackend::setContentType(const QUuid &identifier, const QString &contentType)
+{
+    m_contentType[identifier] = contentType;
+}
+
+void SearchAndBrowseBackend::setupFilter(const QUuid &identifier, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms)
+{
+    Q_UNUSED(identifier)
+    Q_UNUSED(term)
+    Q_UNUSED(orderTerms)
+}
+
+void SearchAndBrowseBackend::fetchData(const QUuid &identifier, int start, int count)
 {
     emit supportedCapabilitiesChanged(identifier, QtIviCoreModule::ModelCapabilities(
                                           QtIviCoreModule::SupportsStatelessNavigation |
@@ -68,13 +80,11 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, const QString &t
                                           QtIviCoreModule::SupportsRemove
                                           ));
 
-    Q_UNUSED(term)
-    Q_UNUSED(orderTerms)
     QVector<QIviAmFmTunerStation> stations;
 
-    if (type == QLatin1String("station"))
+    if (m_contentType[identifier] == QLatin1String("station"))
         stations = m_tunerBackend->m_bandHash[QIviAmFmTuner::AMBand].m_stations + m_tunerBackend->m_bandHash[QIviAmFmTuner::FMBand].m_stations;
-    else if (type == QLatin1String("presets"))
+    else if (m_contentType[identifier] == QLatin1String("presets"))
         stations = m_presets;
     else
         return;

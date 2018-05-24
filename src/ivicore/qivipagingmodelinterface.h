@@ -60,6 +60,9 @@ public:
 
     virtual void fetchData(const QUuid &identifier, int start, int count) = 0;
 
+protected:
+    QIviPagingModelInterface(QObjectPrivate &dd, QObject *parent = nullptr);
+
 Q_SIGNALS:
     void supportedCapabilitiesChanged(const QUuid &identifier, QtIviCoreModule::ModelCapabilities capabilities);
     void countChanged(const QUuid &identifier, int newLength);

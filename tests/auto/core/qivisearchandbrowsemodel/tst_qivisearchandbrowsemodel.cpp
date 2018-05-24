@@ -111,27 +111,40 @@ public:
         emit initializationDone();
     }
 
-    virtual void fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count) override
+    void setContentType(const QUuid &identifier, const QString &contentType) override
+    {
+        Q_UNUSED(identifier)
+        m_contentType = contentType;
+    }
+
+    void setupFilter(const QUuid &identifier, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms) override
+    {
+        Q_UNUSED(identifier)
+        m_filterTerm = term;
+        m_orderTerms = orderTerms;
+    }
+
+    virtual void fetchData(const QUuid &identifier, int start, int count) override
     {
         emit supportedCapabilitiesChanged(identifier, m_caps);
 
-        if (!m_lists.contains(type))
+        if (!m_lists.contains(m_contentType))
             return;
 
-        QList<QIviSearchAndBrowseModelItem> list = m_lists.value(type);
+        QList<QIviSearchAndBrowseModelItem> list = m_lists.value(m_contentType);
 
-        if (m_caps.testFlag(QtIviCoreModule::SupportsFiltering) && term) {
-            if (term->type() != QIviAbstractQueryTerm::FilterTerm) {
+        if (m_caps.testFlag(QtIviCoreModule::SupportsFiltering) && m_filterTerm) {
+            if (m_filterTerm->type() != QIviAbstractQueryTerm::FilterTerm) {
                 qWarning("Only filtering is supported");
                 return;
             }
 
-            if (orderTerms.count() > 1) {
+            if (m_orderTerms.count() > 1) {
                 qWarning("Only one order term is supported");
                 return;
             }
 
-            QIviFilterTerm *filterTerm = static_cast<QIviFilterTerm*>(term);
+            QIviFilterTerm *filterTerm = static_cast<QIviFilterTerm*>(m_filterTerm);
 
             if (filterTerm->operatorType() == QIviFilterTerm::EqualsCaseInsensitive) {
                 qWarning("case insensitive comparison is not supported");
@@ -166,19 +179,19 @@ public:
             list = resultList;
         }
 
-        if (m_caps.testFlag(QtIviCoreModule::SupportsSorting) && orderTerms.count()) {
-            if (orderTerms.count() > 1) {
+        if (m_caps.testFlag(QtIviCoreModule::SupportsSorting) && m_orderTerms.count()) {
+            if (m_orderTerms.count() > 1) {
                 qWarning("Only one order term is supported");
                 return;
             }
 
             const QMetaObject mo = QIviSearchAndBrowseModelItem::staticMetaObject;
-            int mpi = mo.indexOfProperty(orderTerms.first().propertyName().toUtf8());
+            int mpi = mo.indexOfProperty(m_orderTerms.first().propertyName().toUtf8());
             Q_ASSERT(mpi != -1);
 
             QMetaProperty mp = mo.property(mpi);
 
-            qSort(list.begin(), list.end(), [mp, orderTerms](const QIviSearchAndBrowseModelItem &s1, const QIviSearchAndBrowseModelItem &s2) {
+            qSort(list.begin(), list.end(), [mp, this](const QIviSearchAndBrowseModelItem &s1, const QIviSearchAndBrowseModelItem &s2) {
                 QVariant var1 = mp.readOnGadget(&s1);
                 QVariant var2 = mp.readOnGadget(&s2);
                 if (var1.canConvert(QMetaType::Int) && var1.canConvert(QMetaType::Int)) {
@@ -187,7 +200,7 @@ public:
                 }
 
                 bool lower = var1 > var2;
-                if (orderTerms.first().isAscending())
+                if (m_orderTerms.first().isAscending())
                     lower = !lower;
 
                 return lower;
@@ -310,6 +323,9 @@ public:
 private:
     QHash<QString, QList<QIviSearchAndBrowseModelItem>> m_lists;
     QtIviCoreModule::ModelCapabilities m_caps;
+    QString m_contentType;
+    QIviAbstractQueryTerm *m_filterTerm = nullptr;
+    QList<QIviOrderTerm> m_orderTerms;
 };
 
 class TestServiceObject : public QIviServiceObject
@@ -364,6 +380,8 @@ private Q_SLOTS:
     void testWithoutBackend();
     void testClearServiceObject();
 
+    //TODO it would be great if we can have a shared test class as most of these tests are also
+    //     part of the qivipagingmodel autotest
     void testBasic_qml();
     void testGetAt();
     void testFetchMore_data();
@@ -597,12 +615,12 @@ void tst_QIviSearchAndBrowseModel::testDataChangedMode()
     QVERIFY(fetchMoreThresholdSpy.count());
     fetchMoreThresholdSpy.clear();
 
-    QSignalSpy loadingTypeChangedSpy(&model, SIGNAL(loadingTypeChanged(QIviSearchAndBrowseModel::LoadingType)));
+    QSignalSpy loadingTypeChangedSpy(&model, SIGNAL(loadingTypeChanged(QIviPagingModel::LoadingType)));
     model.setLoadingType(model.loadingType());
     QVERIFY(!loadingTypeChangedSpy.count());
 
-    model.setLoadingType(QIviSearchAndBrowseModel::DataChanged);
-    QCOMPARE(model.loadingType(), QIviSearchAndBrowseModel::DataChanged);\
+    model.setLoadingType(QIviPagingModel::DataChanged);
+    QCOMPARE(model.loadingType(), QIviPagingModel::DataChanged);
     QVERIFY(loadingTypeChangedSpy.count());
 
     QCOMPARE(model.rowCount(), 100);
@@ -662,11 +680,11 @@ void tst_QIviSearchAndBrowseModel::testDataChangedMode_jump()
     model.setContentType("simple");
     QVERIFY(model.serviceObject());
 
-    QSignalSpy loadingTypeChangedSpy(&model, SIGNAL(loadingTypeChanged(QIviSearchAndBrowseModel::LoadingType)));
+    QSignalSpy loadingTypeChangedSpy(&model, SIGNAL(loadingTypeChanged(QIviPagingModel::LoadingType)));
     model.setLoadingType(model.loadingType());
     QVERIFY(!loadingTypeChangedSpy.count());
 
-    model.setLoadingType(QIviSearchAndBrowseModel::DataChanged);
+    model.setLoadingType(QIviPagingModel::DataChanged);
     QCOMPARE(model.loadingType(), QIviSearchAndBrowseModel::DataChanged);
     QVERIFY(loadingTypeChangedSpy.count());
 

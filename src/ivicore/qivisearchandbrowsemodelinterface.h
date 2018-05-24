@@ -49,7 +49,7 @@
 #include <QUuid>
 #include <QtIviCore/QIviAbstractQueryTerm>
 #include <QtIviCore/QtIviCoreModule>
-#include <QtIviCore/QIviFeatureInterface>
+#include <QtIviCore/QIviPagingModelInterface>
 #include <QtIviCore/QIviSearchAndBrowseModel>
 #include <QtIviCore/QIviSearchAndBrowseModelItem>
 
@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 
 class QIviSearchAndBrowseModelInterfacePrivate;
 
-class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModelInterface : public QIviFeatureInterface
+class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModelInterface : public QIviPagingModelInterface
 {
     Q_OBJECT
 
@@ -67,7 +67,9 @@ public:
     virtual QSet<QString> availableContentTypes() const;
     virtual QSet<QString> supportedIdentifiers(const QString &contentType) const;
 
-    virtual void fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count) = 0;
+    virtual void setContentType(const QUuid &identifier, const QString &contentType) = 0;
+    virtual void setupFilter(const QUuid &identifier, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms) = 0;
+
     virtual bool canGoBack(const QUuid &identifier, const QString &type) = 0;
     virtual QString goBack(const QUuid &identifier, const QString &type) = 0;  // Only used when in-model navigation
     //TODO pass also an pointer here instead of the id ?
@@ -78,12 +80,6 @@ public:
     virtual QIviPendingReply<void> remove(const QUuid &identifier, const QString &type, int index) = 0;
     virtual QIviPendingReply<void> move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) = 0;
     virtual QIviPendingReply<int> indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item) = 0;
-
-Q_SIGNALS:
-    void supportedCapabilitiesChanged(const QUuid &identifier, QtIviCoreModule::ModelCapabilities capabilities);
-    void countChanged(const QUuid &identifier, int newLength);                          // Emitted by the backend if it already knows the total count of items in the model (can be used by the dataChanged display method)
-    void dataFetched(const QUuid &identifier, const QList<QVariant> &data, int start, bool moreAvailable);
-    void dataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count);    //start and count defines which data gets replace by the new data content. If data is empty the rows will be removed, if count is 0, the data will be added.
 
 protected:
     template <typename T>

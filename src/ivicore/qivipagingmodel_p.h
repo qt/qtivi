@@ -77,8 +77,8 @@ public:
     void onCountChanged(const QUuid &identifier, int new_length);
     void onDataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count);
     void onFetchMoreThresholdReached();
-    void resetModel();
-    void clearToDefaults();
+    virtual void resetModel();
+    virtual void clearToDefaults();
     const QIviSearchAndBrowseModelItem *itemAt(int i) const;
     void fetchData(int startIndex);
 

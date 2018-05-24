@@ -75,7 +75,9 @@ public:
     explicit SearchAndBrowseBackend(const QSqlDatabase &database, QObject *parent = nullptr);
 
     void initialize() override;
-    void fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count) override;
+    void setContentType(const QUuid &identifier, const QString &contentType) override;
+    void setupFilter(const QUuid &identifier, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms) override;
+    void fetchData(const QUuid &identifier, int start, int count) override;
     bool canGoBack(const QUuid &identifier, const QString &type) override;
     QString goBack(const QUuid &identifier, const QString &type) override;
     bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) override;
@@ -95,6 +97,12 @@ private:
 
     QSqlDatabase m_db;
     QThreadPool *m_threadPool;
+    struct State {
+        QString contentType;
+        QIviAbstractQueryTerm *queryTerm = nullptr;
+        QList<QIviOrderTerm> orderTerms;
+    };
+    QMap<QUuid, State> m_state;
 };
 
 #endif // SEARCHBACKEND_H

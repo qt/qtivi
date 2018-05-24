@@ -53,7 +53,7 @@
 // We mean it.
 //
 
-#include <QtIviCore/private/qiviabstractfeaturelistmodel_p.h>
+#include <QtIviCore/private/qivipagingmodel_p.h>
 #include <private/qtiviglobal_p.h>
 
 #include "qiviqueryterm.h"
@@ -66,26 +66,19 @@
 
 QT_BEGIN_NAMESPACE
 
-class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModelPrivate : public QIviAbstractFeatureListModelPrivate
+class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModelPrivate : public QIviPagingModelPrivate
 {
 public:
     QIviSearchAndBrowseModelPrivate(const QString &interface, QIviSearchAndBrowseModel *model);
     ~QIviSearchAndBrowseModelPrivate() override;
 
-    void initialize() override;
-    void onCapabilitiesChanged(const QUuid &identifier, QtIviCoreModule::ModelCapabilities capabilities);
-    void onDataFetched(const QUuid &identifer, const QList<QVariant> &items, int start, bool moreAvailable);
-    void onCountChanged(const QUuid &identifier, int new_length);
-    void onDataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count);
-    void onFetchMoreThresholdReached();
-    void resetModel();
+    void resetModel() override;
     void parseQuery();
+    void setupFilter(QIviAbstractQueryTerm* queryTerm, QList<QIviOrderTerm> orderTerms);
     void checkType();
-    void clearToDefaults();
+    void clearToDefaults() override;
     void setCanGoBack(bool canGoBack);
     void setAvailableContenTypes(const QStringList &contentTypes);
-    const QIviSearchAndBrowseModelItem *itemAt(int i) const;
-    void fetchData(int startIndex);
 
     QIviSearchAndBrowseModelInterface *searchBackend() const;
     void updateContentType(const QString &contentType);
@@ -93,23 +86,14 @@ public:
     QIviSearchAndBrowseModel * const q_ptr;
     Q_DECLARE_PUBLIC(QIviSearchAndBrowseModel)
 
-    QtIviCoreModule::ModelCapabilities m_capabilities;
     QString m_query;
-    int m_chunkSize;
 
     QIviAbstractQueryTerm *m_queryTerm;
     QList<QIviOrderTerm> m_orderTerms;
-    QList<QVariant> m_itemList;
-    QBitArray m_availableChunks;
-    bool m_moreAvailable;
 
-    QUuid m_identifier;
-    int m_fetchMoreThreshold;
     QString m_contentType;
-    int m_fetchedDataCount;
     QStringList m_availableContentTypes;
     bool m_canGoBack;
-    QIviSearchAndBrowseModel::LoadingType m_loadingType;
 };
 
 QT_END_NAMESPACE

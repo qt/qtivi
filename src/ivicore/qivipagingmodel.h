@@ -68,6 +68,7 @@ public:
         NameRole = Qt::DisplayRole,
         TypeRole = Qt::UserRole,
         ItemRole = Qt::UserRole + 1,
+        LastRole = ItemRole
     };
 
     //TODO fix naming
@@ -116,7 +117,6 @@ Q_SIGNALS:
 protected:
     QIviPagingModel(QIviServiceObject *serviceObject, QObject *parent = nullptr);
     QIviPagingModel(QIviPagingModelPrivate &dd, QObject *parent);
-    bool acceptServiceObject(QIviServiceObject *serviceObject) override;
     void connectToServiceObject(QIviServiceObject *serviceObject) override;
     void disconnectFromServiceObject(QIviServiceObject *serviceObject) override;
     void clearServiceObject() override;

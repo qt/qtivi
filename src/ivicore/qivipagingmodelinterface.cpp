@@ -76,6 +76,11 @@ QIviPagingModelInterface::QIviPagingModelInterface(QObject *parent)
     : QIviFeatureInterface(parent)
 {}
 
+QIviPagingModelInterface::QIviPagingModelInterface(QObjectPrivate &dd, QObject *parent)
+    : QIviFeatureInterface(dd, parent)
+{
+}
+
 /*!
     \fn void QIviPagingModelInterface::fetchData(const QUuid &identifier, int start, int count)
 

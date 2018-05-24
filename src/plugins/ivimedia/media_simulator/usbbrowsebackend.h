@@ -52,7 +52,9 @@ public:
     UsbBrowseBackend(const QString &path, QObject *parent = nullptr);
 
     void initialize() override;
-    void fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count) override;
+    void setContentType(const QUuid &identifier, const QString &contentType) override;
+    void setupFilter(const QUuid &identifier, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms) override;
+    void fetchData(const QUuid &identifier, int start, int count) override;
     bool canGoBack(const QUuid &identifier, const QString &type) override;
     QString goBack(const QUuid &identifier, const QString &type) override;
     bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) override;
@@ -65,6 +67,7 @@ public:
 
 private:
     QString m_rootFolder;
+    QHash<QUuid, QString> m_contentType;
 };
 
 #endif // USBBROWSEBACKEND_H

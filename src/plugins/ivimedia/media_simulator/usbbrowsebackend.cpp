@@ -59,7 +59,19 @@ void UsbBrowseBackend::initialize()
     emit initializationDone();
 }
 
-void UsbBrowseBackend::fetchData(const QUuid &identifier, const QString &type, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms, int start, int count)
+void UsbBrowseBackend::setContentType(const QUuid &identifier, const QString &contentType)
+{
+    m_contentType[identifier] = contentType;
+}
+
+void UsbBrowseBackend::setupFilter(const QUuid &identifier, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms)
+{
+    Q_UNUSED(identifier)
+    Q_UNUSED(term)
+    Q_UNUSED(orderTerms)
+}
+
+void UsbBrowseBackend::fetchData(const QUuid &identifier, int start, int count)
 {
     emit supportedCapabilitiesChanged(identifier, QtIviCoreModule::ModelCapabilities(
                                           QtIviCoreModule::SupportsSorting |
@@ -67,13 +79,10 @@ void UsbBrowseBackend::fetchData(const QUuid &identifier, const QString &type, Q
                                           QtIviCoreModule::SupportsGetSize
                                           ));
 
-    Q_UNUSED(term);
-    Q_UNUSED(orderTerms);
-
     QVariantList list;
     QString folder = m_rootFolder;
-    if (type != fileLiteral)
-        folder += type;
+    if (m_contentType[identifier] != fileLiteral)
+        folder +=  m_contentType[identifier];
     QDir dir(folder);
     QFileInfoList infoList = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot | QDir::NoSymLinks);
 
