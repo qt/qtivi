@@ -345,6 +345,9 @@ created. All the generated files will be put in this folder. The following files
 The control_panel template is only available if the QtSimulator module was found. Please see the \l{feature-qtsimulator}{Configuration Page}
 for more information.
 
+\note Currently the control_panel template doesn't support all qface features. At the moment models
+and structs are NOT supported.
+
 \table
     \header
         \li File name
