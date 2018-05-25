@@ -38,7 +38,7 @@ depends += \
      qtwebengine \
      qtvirtualkeyboard \
      qtquick \
-     neptuneui
+     neptune3ui
 
 buildversion = "Qt Automotive Suite $QT_VERSION"
 

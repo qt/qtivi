@@ -54,7 +54,7 @@
         \li \l {Qt IVI}{Qt IVI Module Reference Documentation}
         \li \l {Qt Application Manager}
         \li \l {Qt QmlLive}
-        \li \l {Neptune UI}{Reference UI (Neptune)}
+        \li \l {Neptune 3 UI}{Reference UI (Neptune 3 UI)}
         \li \l {GammaRay}
     \endlist
 */
@@ -167,7 +167,7 @@
 
     \section1 Reference Applications
 
-    \QAS includes \l{Neptune UI} that provides a UI implementation for
+    \QAS includes \l{Neptune 3 UI} that provides a UI implementation for
     Qt in IVI (In-Vehichle Infotainment) systems. It demonstrates best practices
     for developing an automotive UI with \QAS.
 
