@@ -29,14 +29,15 @@
     \title Qt IVI
     \keyword QtIvi
 
-    The Qt IVI (In-Vehicle Infotainment) module provides C++ classes and QML types
-    for accessing vehicle features, as well as a core API for implementing
-    new IVI features manually or using a \l {The Qt IVI Autogenerator}{auto generator}.
+    The Qt IVI (In-Vehicle Infotainment) module provides tooling and core classes for implementing
+    interfaces to middleware services. \l {The Qt IVI Autogenerator} provides a flexible way to
+    define new APIs in an IDL (interface definition language) and generate classes usable from
+    C++ as well as from QML.
 
-    The module is built around a pattern based on the separation of API facing the
-    application developer, the so called \e {Feature}, and the code implementing it,
-    the \e {Backend}. There can be multiple backends per feature and the Core module
-    provides support for finding the corresponding backend in an easy-to-use way.
+    The module is built around a pattern based on the separation of API facing the application
+    developer, the so called \e {Feature}, and the code implementing it, the \e {Backend}. There
+    can be multiple backends per feature and the Core module provides support for finding the
+    corresponding backend in an easy-to-use way.
 
     Common use cases driving this separation are:
 
@@ -51,24 +52,36 @@
         meaning that backends come and go over time.
     \endlist
 
-    The module provides an extendable set of reference APIs for automotive
-    features. It can be used to develop automotive applications and to provide
-    automotive features to Qt-based applications in a structured manner.
-
     \section1 Important Topics
 
     \list
     \li \l{Configuration}
     \li \l{Concepts}
-    \li \l{Using the Qt IVI Reference API}
     \li \l{Extending Qt IVI}
-    \li \l{QtIvi Backends}{Available Backends}
     \endlist
 
     \section1 Getting Started
 
     \list
       \li \l {Getting Started Using the Qt IVI Generator}
+    \endlist
+
+    \section1 Reference API
+
+    In addition to the tooling an core APIs, the module also provides an extendable set of
+    reference APIs for automotive features. It can be used to develop automotive applications and
+    to provide automotive features to Qt-based applications in a structured manner.
+    This reference API already contains so called "simulation backends" which provide partially
+    simulated behavior of a real middleware service.
+
+    \list
+    \li \l{Using the Qt IVI Reference API}
+    \li \l{QtIvi Backends}{Available Backends}
+    \endlist
+
+    \section1 Getting Started with the Qt IVI Reference API
+
+    \list
       \li \l {Qt IVI Vehicle Functions C++ Classes#Getting Started}
              {Getting started with Qt IVI Vehicle Functions (C++)}
       \li \l {Qt IVI Vehicle Functions QML Types#Getting Started}
