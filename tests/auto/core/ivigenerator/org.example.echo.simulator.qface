@@ -1,7 +1,7 @@
 /**
  * module
  */
-module org.example.echo.simulator 1.0
+module org.example.simulator.echo 1.0
 
 /**
  * @brief the brief
