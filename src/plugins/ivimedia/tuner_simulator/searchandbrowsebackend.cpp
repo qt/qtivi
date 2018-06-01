@@ -58,6 +58,16 @@ void SearchAndBrowseBackend::initialize()
     emit initializationDone();
 }
 
+void SearchAndBrowseBackend::registerInstance(const QUuid &identifier)
+{
+    m_contentType.insert(identifier, QString());
+}
+
+void SearchAndBrowseBackend::unregisterInstance(const QUuid &identifier)
+{
+    m_contentType.remove(identifier);
+}
+
 void SearchAndBrowseBackend::setContentType(const QUuid &identifier, const QString &contentType)
 {
     m_contentType[identifier] = contentType;

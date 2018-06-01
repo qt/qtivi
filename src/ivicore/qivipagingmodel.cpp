@@ -750,6 +750,8 @@ void QIviPagingModel::connectToServiceObject(QIviServiceObject *serviceObject)
                             d, &QIviPagingModelPrivate::onDataChanged);
 
     QIviAbstractFeatureListModel::connectToServiceObject(serviceObject);
+    //Register this instance with the backend. The backend can initialize the internal structure now
+    backend->registerInstance(d->m_identifier);
 
     d->resetModel();
 }
@@ -759,10 +761,16 @@ void QIviPagingModel::connectToServiceObject(QIviServiceObject *serviceObject)
 */
 void QIviPagingModel::disconnectFromServiceObject(QIviServiceObject *serviceObject)
 {
-    auto backend = qobject_cast<QIviPagingModelInterface*>(serviceObject->interfaceInstance(QStringLiteral(QIviPagingModel_iid)));
+    Q_D(QIviPagingModel);
 
-    if (backend)
+    auto backend = qobject_cast<QIviPagingModelInterface*>(serviceObject->interfaceInstance(interfaceName()));
+
+    if (backend) {
+        backend->unregisterInstance(d->m_identifier);
         disconnect(backend, nullptr, this, nullptr);
+    }
+
+    QIviAbstractFeatureListModel::disconnectFromServiceObject(serviceObject);
 }
 
 /*!

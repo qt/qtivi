@@ -30,12 +30,14 @@
 #include <QIviAbstractFeature>
 #include <QIviServiceManager>
 #include <QIviPagingModel>
+#include <private/qivipagingmodel_p.h>
 #include <QIviPagingModelInterface>
 #include <QIviSearchAndBrowseModelItem>
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QQmlComponent>
 #include <QScopedPointer>
+#include <private/qobject_p.h>
 
 //TODO Add test with multiple model instances, requesting different data at the same time
 //TODO Test the signal without a valid identifier
@@ -76,6 +78,16 @@ public:
     void initialize() override
     {
         emit initializationDone();
+    }
+
+    void registerInstance(const QUuid &identifier) override
+    {
+        emit registerInstanceCalled(identifier);
+    }
+
+    void unregisterInstance(const QUuid &identifier) override
+    {
+        emit unregisterInstanceCalled(identifier);
     }
 
     void fetchData(const QUuid &identifier, int start, int count) override
@@ -121,6 +133,10 @@ public:
 
         emit dataChanged(QUuid(), variantLIst, min, max - min + 1);
     }
+
+Q_SIGNALS:
+    void registerInstanceCalled(const QUuid &identifier);
+    void unregisterInstanceCalled(const QUuid &identifier);
 
 private:
     QList<QIviSearchAndBrowseModelItem> m_list;
@@ -178,6 +194,7 @@ private Q_SLOTS:
 
     void testClearServiceObject();
 
+    void testRegisterInstance();
     void testBasic_qml();
     void testGetAt();
     void testFetchMore_data();
@@ -231,6 +248,37 @@ void tst_QIviPagingModel::testClearServiceObject()
     QVERIFY(model.capabilities() == defaultModel.capabilities());
     QVERIFY(model.loadingType() == defaultModel.loadingType());
     QVERIFY(model.rowCount() == defaultModel.rowCount());
+}
+
+void tst_QIviPagingModel::testRegisterInstance()
+{
+    TestServiceObject *service = new TestServiceObject();
+    manager->registerService(service, service->interfaces());
+    service->testBackend()->initializeSimpleData();
+
+    QSignalSpy registerSpy(service->testBackend(), SIGNAL(registerInstanceCalled(QUuid)));
+    QIviPagingModel firstModel;
+    firstModel.setServiceObject(service);
+    QCOMPARE(registerSpy.count(), 1);
+    auto *firstModelPrivate = reinterpret_cast<QIviPagingModelPrivate*> (QObjectPrivate::get(&firstModel));
+    QUuid firstModelIdentifier = firstModelPrivate->m_identifier;
+    QCOMPARE(registerSpy.at(0).at(0).toUuid(), firstModelIdentifier);
+
+    QIviPagingModel secondModel;
+    secondModel.setServiceObject(service);
+    QCOMPARE(registerSpy.count(), 2);
+    auto *secondModelPrivate = reinterpret_cast<QIviPagingModelPrivate*> (QObjectPrivate::get(&secondModel));
+    QUuid secondModelIdentifier = secondModelPrivate->m_identifier;
+    QCOMPARE(registerSpy.at(1).at(0).toUuid(), secondModelIdentifier);
+
+    QSignalSpy unregisterSpy(service->testBackend(), SIGNAL(unregisterInstanceCalled(QUuid)));
+    secondModel.setServiceObject(nullptr);
+    QCOMPARE(unregisterSpy.count(), 1);
+    QCOMPARE(unregisterSpy.at(0).at(0).toUuid(), secondModelIdentifier);
+
+    firstModel.setServiceObject(nullptr);
+    QCOMPARE(unregisterSpy.count(), 2);
+    QCOMPARE(unregisterSpy.at(1).at(0).toUuid(), firstModelIdentifier);
 }
 
 void tst_QIviPagingModel::testBasic_qml()

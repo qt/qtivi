@@ -73,7 +73,16 @@ void SearchAndBrowseBackend::initialize()
     emit initializationDone();
 }
 
-//TODO fix the growing state map in one of the following commits
+void SearchAndBrowseBackend::registerInstance(const QUuid &identifier)
+{
+    m_state.insert(identifier, {});
+}
+
+void SearchAndBrowseBackend::unregisterInstance(const QUuid &identifier)
+{
+    m_state.remove(identifier);
+}
+
 void SearchAndBrowseBackend::setContentType(const QUuid &identifier, const QString &contentType)
 {
     auto &state = m_state[identifier];

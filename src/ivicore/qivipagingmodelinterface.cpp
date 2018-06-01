@@ -82,6 +82,27 @@ QIviPagingModelInterface::QIviPagingModelInterface(QObjectPrivate &dd, QObject *
 }
 
 /*!
+    \fn void QIviPagingModelInterface::registerInstance(const QUuid &identifier)
+
+    Registers the instance of QIviPagingModel identified by \a identifier with this backend. This
+    function will be called by QIviPagingModel and all its derived classes after the initialize()
+    function, but before any data will be requested e.g. via fetchData().
+
+    \sa unregisterInstance
+*/
+
+/*!
+    \fn void QIviPagingModelInterface::unregisterInstance(const QUuid &identifier)
+
+    Unregisters the instance of QIviPagingModel identified by \a identifier with this backend. This
+    function will be called by QIviPagingModel and all its derived classes before the
+    ServiceObject gets disconnected and can be used to cleanup all cached data for this \a
+    identifier.
+
+    \sa registerInstance
+*/
+
+/*!
     \fn void QIviPagingModelInterface::fetchData(const QUuid &identifier, int start, int count)
 
     This function is called whenever new data needs to be retrieved by a QIviPagingModel identified by \a identifier.

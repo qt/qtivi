@@ -59,6 +59,16 @@ void UsbBrowseBackend::initialize()
     emit initializationDone();
 }
 
+void UsbBrowseBackend::registerInstance(const QUuid &identifier)
+{
+    m_contentType.insert(identifier, QString());
+}
+
+void UsbBrowseBackend::unregisterInstance(const QUuid &identifier)
+{
+    m_contentType.remove(identifier);
+}
+
 void UsbBrowseBackend::setContentType(const QUuid &identifier, const QString &contentType)
 {
     m_contentType[identifier] = contentType;

@@ -1,4 +1,4 @@
-QT       += testlib ivicore quick
+QT       += testlib ivicore quick ivicore-private core-private
 
 TARGET = tst_qivipagingmodel
 QMAKE_PROJECT_NAME = $$TARGET

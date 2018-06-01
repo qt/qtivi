@@ -58,6 +58,9 @@ class Q_QTIVICORE_EXPORT QIviPagingModelInterface : public QIviFeatureInterface
 public:
     explicit QIviPagingModelInterface(QObject *parent = nullptr);
 
+    virtual void registerInstance(const QUuid &identifier) = 0;
+    virtual void unregisterInstance(const QUuid &identifier) = 0;
+
     virtual void fetchData(const QUuid &identifier, int start, int count) = 0;
 
 protected:

@@ -111,6 +111,16 @@ public:
         emit initializationDone();
     }
 
+    void registerInstance(const QUuid &identifier) override
+    {
+        Q_UNUSED(identifier);
+    }
+
+    void unregisterInstance(const QUuid &identifier) override
+    {
+        Q_UNUSED(identifier);
+    }
+
     void setContentType(const QUuid &identifier, const QString &contentType) override
     {
         Q_UNUSED(identifier)

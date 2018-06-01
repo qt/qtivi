@@ -920,6 +920,8 @@ void QIviSearchAndBrowseModel::disconnectFromServiceObject(QIviServiceObject *se
 
     if (backend)
         disconnect(backend, nullptr, this, nullptr);
+
+    QIviPagingModel::disconnectFromServiceObject(serviceObject);
 }
 
 /*!

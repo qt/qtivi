@@ -75,6 +75,8 @@ public:
     explicit SearchAndBrowseBackend(const QSqlDatabase &database, QObject *parent = nullptr);
 
     void initialize() override;
+    void registerInstance(const QUuid &identifier) override;
+    void unregisterInstance(const QUuid &identifier) override;
     void setContentType(const QUuid &identifier, const QString &contentType) override;
     void setupFilter(const QUuid &identifier, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms) override;
     void fetchData(const QUuid &identifier, int start, int count) override;
