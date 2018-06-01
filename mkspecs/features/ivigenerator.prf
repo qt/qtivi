@@ -7,6 +7,7 @@
 #   QFACE_MODULE_NAME = my_module_name
 #   QFACE_FORMAT = frontend (or backend, simulator... -- defaults to "frontend")
 #   QFACE_OUTPUT_DIR = my_output_dir (defaults to current build dir)
+#   QFACE_ANNOTATIONS += additional.yaml
 #
 QT_FOR_CONFIG += ivicore-private
 
@@ -28,7 +29,7 @@ QFACE_ABS_PWD = $$absolute_path($$QFACE_PWD, $$_PRO_FILE_PWD_)
 QFACE_FILE = $$basename(QFACE_SOURCES)
 QFACE_BASE_NAME = $$replace(QFACE_FILE, .qface, )
 QFACE_YAML = $$QFACE_ABS_PWD/$${QFACE_BASE_NAME}.yaml
-OTHER_FILES += $$QFACE_FILE
+OTHER_FILES += $$QFACE_ABS_PWD/$$QFACE_FILE
 
 # The 'click' library used by the generator needs to have a utf8 locale setup.
 equals(QMAKE_HOST.os, Windows): ENV = chcp 65001 &&
@@ -65,6 +66,13 @@ IVI_GENERATOR = $$VIRTUALENV_PYTHON $$IVI_GENERATOR_PATH/generate.py
 PRI = $$QFACE_OUTPUT_DIR/$$lower($${QFACE_BASE_NAME}).pri
 IVI_GENERATOR_OPTIONS = --format=$$QFACE_FORMAT --force
 !isEmpty(QFACE_MODULE_NAME): IVI_GENERATOR_OPTIONS += --module=$${QFACE_MODULE_NAME}
+for (ANNOTATION, QFACE_ANNOTATIONS) {
+    file = $$absolute_path($$ANNOTATION, $$_PRO_FILE_PWD_)
+
+    IVI_GENERATOR_OPTIONS += -A $$shell_path($$file)
+    qface_sources.depends += $$file
+    OTHER_FILES += $$file
+}
 
 # Windows doesn't offer any other way to sleep for a time inside non-interactive scripts
 equals(QMAKE_HOST.os, Windows): SLEEP = ping -n 2 127.0.0.1 >nul

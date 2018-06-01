@@ -4,6 +4,7 @@ QT_FOR_CONFIG += ivicore
 
 SUBDIRS = frontend \
           backend_simulator \
+          control_panel \
           validator \
           test
 

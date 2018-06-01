@@ -1,6 +1,6 @@
 TEMPLATE=lib
-TARGET = $$qtLibraryTarget(echo_noprivate_simulator)
-LIBS += -L$$OUT_PWD/.. -l$$qtLibraryTarget(echo_noprivate_frontend)
+TARGET = $$qtLibraryTarget(echo_backend_simulator)
+LIBS += -L$$OUT_PWD/.. -l$$qtLibraryTarget(echo_simulator_frontend)
 DESTDIR = ../qtivi
 
 CONFIG += warn_off ivigenerator plugin
@@ -13,5 +13,4 @@ PLUGIN_CLASS_NAME = QIviServiceInterface
 QT += core ivicore
 
 QFACE_FORMAT = backend_simulator
-QFACE_SOURCES = ../../../org.example.echo.qface
-QFACE_ANNOTATIONS += ../../../no-private.yaml
+QFACE_SOURCES = ../../../org.example.echo.simulator.qface

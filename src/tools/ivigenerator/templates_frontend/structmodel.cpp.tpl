@@ -39,7 +39,6 @@
 #}
 {% set class = '{0}Model'.format(struct) %}
 {% include 'generated_comment.cpp.tpl' %}
-{% import 'utils.tpl' as utils %}
 
 #include "{{class|lower}}.h"
 #include "{{class|lower}}_p.h"

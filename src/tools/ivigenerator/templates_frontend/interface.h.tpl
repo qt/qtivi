@@ -36,7 +36,13 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
+{% import 'qtivi_macros.j2' as ivi %}
 {% set class = '{0}'.format(interface) %}
+{% if interface.tags.config.zoned %}
+{%   set base_class = 'QIviAbstractZonedFeature' %}
+{% else %}
+{%   set base_class = 'QIviAbstractFeature' %}
+{% endif %}
 {% set oncedefine = '{0}_{1}_H_'.format(module.module_name|upper, class|upper) %}
 {% set exportsymbol = 'Q_{0}_EXPORT'.format(module.module_name|upper) %}
 {% include 'generated_comment.cpp.tpl' %}
@@ -54,11 +60,7 @@
 {{inc}}
 {% endfor %}
 
-{% if interface.tags.config.zoned %}
-#include <QtIviCore/QIviAbstractZonedFeature>
-{% else %}
-#include <QtIviCore/QIviAbstractFeature>
-{% endif %}
+#include <QtIviCore/{{base_class}}>
 #include <QtIviCore/QIviPendingReply>
 
 QT_BEGIN_NAMESPACE
@@ -66,14 +68,10 @@ QT_BEGIN_NAMESPACE
 class {{class}}Private;
 class {{class}}BackendInterface;
 
-{% if interface.tags.config.zoned %}
-class {{exportsymbol}} {{class}} : public QIviAbstractZonedFeature {
-{% else %}
-class {{exportsymbol}} {{class}} : public QIviAbstractFeature {
-{% endif %}
+class {{exportsymbol}} {{class}} : public {{base_class}} {
     Q_OBJECT
 {% for property in interface.properties %}
-    Q_PROPERTY({{property|return_type}} {{property}} READ {{property|getter_name}}{% if not property.readonly and not property.const %} WRITE {{property|setter_name}}{% endif %} NOTIFY {{property}}Changed)
+    {{ivi.property(property)}}
 {% endfor %}
     Q_CLASSINFO("IviPropertyDomains", "{{ interface.properties|json_domain|replace("\"", "\\\"") }}")
 {% if interface.module.tags.config.validation_info %}
@@ -90,25 +88,25 @@ public:
     static void registerQmlTypes(const QString& uri, int majorVersion=1, int minorVersion=0);
 
 {% for property in interface.properties %}
-    {{property|return_type}} {{property|getter_name}}() const;
+    {{ivi.prop_getter(property)}};
 {% endfor %}
 
 public Q_SLOTS:
 {% for operation in interface.operations %}
-    QIviPendingReply<{{operation|return_type}}> {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){% if operation.const %} const{% endif %};
+    {{ ivi.operation(operation) }};
 {% endfor %}
 {% for property in interface.properties %}
 {%   if not property.readonly and not property.const %}
-    void {{property|setter_name}}({{property|parameter_type}});
+    {{ivi.prop_setter(property)}};
 {%   endif %}
 {% endfor %}
 
 Q_SIGNALS:
 {% for signal in interface.signals %}
-    void {{signal}}({{signal.parameters|map('parameter_type')|join(', ')}});
+    {{ivi.signal(signal)}};
 {% endfor %}
 {% for property in interface.properties %}
-    void {{property}}Changed({{property|parameter_type}});
+    {{ivi.prop_notify(property)}};
 {% endfor %}
 
 protected:

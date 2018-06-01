@@ -36,10 +36,10 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
+{% import 'qtivi_macros.j2' as ivi %}
 {% set class = '{0}'.format(interface) %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
 {% include 'generated_comment.cpp.tpl' %}
-{% import 'utils.tpl' as utils %}
 
 #include "{{class|lower}}.h"
 
@@ -166,13 +166,12 @@ QVariantMap {{class}}::zoneAt() const
 {% endif %}
 
 {% for property in interface.properties %}
-
-{{property|return_type}} {{class}}::{{property|getter_name}}() const
+{{ivi.prop_getter(property, class)}}
 {
    return m_{{property}};
 }
 
-void {{class}}::{{property|setter_name}}({{ property|parameter_type }})
+{{ivi.prop_setter(property, class)}}
 {
    if (m_{{property}} == {{property}})
        return;
@@ -192,7 +191,7 @@ void {{class}}::{{property|setter_name}}({{ property|parameter_type }})
 }
 
 {% if interface.tags.config.zoned %}
-void {{class}}::{{property|setter_name}}({{property|parameter_type}}, const QString &zone)
+{{ivi.prop_setter(property, class, true)}}
 {
     QString z = zone;
     if (z.isEmpty())
@@ -214,7 +213,7 @@ void {{class}}::{{property|setter_name}}({{property|parameter_type}}, const QStr
 {% endfor %}
 
 {% for signal in interface.signals %}
-void {{class}}::{{signal}}({{signal.parameters|map('parameter_type')|join(', ')}})
+{{ivi.signal(signal, class)}}
 {
     auto w = worker();
     if (w)
@@ -225,7 +224,7 @@ void {{class}}::{{signal}}({{signal.parameters|map('parameter_type')|join(', ')}
 
 {% if interface_zoned %}
 {%   for operation in interface.operations %}
-void {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}{%if operation.parameters|count %}, {% endif %}const QString &zone)
+void {{class}}::{{operation}}({{ivi.join_params(operation, zoned=true)}})
 {
     QString z = zone;
     if (z.isEmpty())

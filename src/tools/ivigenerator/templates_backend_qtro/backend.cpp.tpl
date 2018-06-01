@@ -36,6 +36,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
+{% import 'qtivi_macros.j2' as ivi %}
 {% include "generated_comment.cpp.tpl" %}
 {% set class = '{0}Backend'.format(interface) %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
@@ -90,7 +91,7 @@ void {{class}}::initialize()
 
 {% for property in interface.properties %}
 {%   if not property.readonly and not property.const %}
-void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
+{{ivi.prop_setter(property, class)}}
 {
 {%     if not property.type.is_model %}
     m_replica->push{{property|upperfirst}}({{property}});
@@ -103,8 +104,7 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {% endfor %}
 
 {% for operation in interface.operations %}
-{%   set operation_parameters = operation.parameters|map('parameter_type')|join(', ') %}
-QIviPendingReply<{{operation|return_type}}> {{class}}::{{operation}}({{operation_parameters}}){%if operation.const %} const{% endif %}
+{{ ivi.operation(operation, class) }}
 {
     if (m_replica->state() != QRemoteObjectReplica::Valid)
         return QIviPendingReply<{{operation|return_type}}>::createFailedReply();

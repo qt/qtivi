@@ -37,6 +37,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
+{% import 'qtivi_macros.j2' as ivi %}
 {% set class = '{0}'.format(struct) %}
 {% set oncedefine = '{0}_{1}_H_'.format(module.module_name|upper, class|upper) %}
 {% set exportsymbol = 'Q_{0}_EXPORT'.format(module.module_name|upper) %}
@@ -63,7 +64,7 @@ class  {{exportsymbol}} {{class}}
 {
     Q_GADGET
 {% for field in struct.fields %}
-    Q_PROPERTY({{field|return_type}} {{field}} READ {{field}}{% if not field.readonly and not field.const %} WRITE set{{field|upperfirst}}{% endif %})
+    {{ivi.property(field, notify=false)}}
 {% endfor %}
     Q_CLASSINFO("IviPropertyDomains", "{{ struct.fields|json_domain|replace("\"", "\\\"") }}")
 public:
@@ -72,9 +73,9 @@ public:
     ~{{class}}();
 
 {% for field in struct.fields %}
-    {{field|return_type}} {{field}}() const;
+    {{ivi.prop_getter(field)}};
 {%   if not field.readonly and not field.const %}
-    void set{{field|upperfirst}}({{field|parameter_type}});
+    {{ivi.prop_setter(field)}};
 {%   endif %}
 {% endfor %}
 

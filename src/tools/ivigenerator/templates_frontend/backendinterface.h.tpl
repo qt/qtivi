@@ -36,7 +36,13 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
+{% import 'qtivi_macros.j2' as ivi %}
 {% set class = '{0}BackendInterface'.format(interface) %}
+{% if interface.tags.config.zoned %}
+{%   set base_class = 'QIviZonedFeatureInterface' %}
+{% else %}
+{%   set base_class = 'QIviFeatureInterface' %}
+{% endif %}
 {% set oncedefine = '{0}_{1}_H_'.format(module.module_name|upper, class|upper) %}
 {% set exportsymbol = 'Q_{0}_EXPORT'.format(module.module_name|upper) %}
 {% include 'generated_comment.cpp.tpl' %}
@@ -54,20 +60,12 @@
 {{inc}}
 {% endfor %}
 
-{% if interface.tags.config.zoned %}
-#include <QtIviCore/QIviZonedFeatureInterface>
-{% else %}
-#include <QtIviCore/QIviFeatureInterface>
-{% endif %}
+#include <QtIviCore/{{base_class}}>
 #include <QtIviCore/QIviPendingReply>
 
 QT_BEGIN_NAMESPACE
 
-{% if interface.tags.config.zoned %}
-class {{exportsymbol}} {{class}} : public QIviZonedFeatureInterface
-{% else %}
-class {{exportsymbol}} {{class}} : public QIviFeatureInterface
-{% endif %}
+class {{exportsymbol}} {{class}} : public {{base_class}}
 {
     Q_OBJECT
 public:
@@ -76,43 +74,19 @@ public:
 
 {% for property in interface.properties %}
 {%   if not property.readonly and not property.const %}
-{%     if interface.tags.config.zoned %}
-    virtual void {{property|setter_name}}({{ property|parameter_type }}, const QString &zone) = 0;
-{%     else %}
-    virtual void {{property|setter_name}}({{ property|parameter_type }}) = 0;
-{%     endif %}
+    virtual {{ivi.prop_setter(property, zoned = interface.tags.config.zoned)}} = 0;
 {%   endif %}
 {% endfor %}
 {% for operation in interface.operations %}
-{%   if interface.tags.config.zoned %}
-{%     if operation.parameters|length %}
-    virtual QIviPendingReply<{{operation|return_type}}> {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}, const QString &zone){%if operation.const %} const{% endif %} = 0;
-{%     else %}
-    virtual QIviPendingReply<{{operation|return_type}}> {{operation}}(const QString &zone){%if operation.const %} const{% endif %} = 0;
-{%     endif %}
-{%   else %}
-    virtual QIviPendingReply<{{operation|return_type}}> {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){%if operation.const %} const{% endif %} = 0;
-{%   endif %}
+    virtual {{ivi.operation(operation, zoned = interface.tags.config.zoned)}} = 0;
 {% endfor %}
 
 Q_SIGNALS:
 {% for signal in interface.signals %}
-{%   if interface.tags.config.zoned %}
-{%     if signal.parameters|length %}
-    void {{signal}}({{signal.parameters|map('parameter_type')|join(', ')}}, const QString &zone = QString());
-{%     else %}
-    void {{signal}}(const QString &zone = QString());
-{%     endif %}
-{%   else %}
-    void {{signal}}({{signal.parameters|map('parameter_type')|join(', ')}});
-{%   endif %}
+    {{ivi.signal(signal, zoned = interface.tags.config.zoned)}};
 {% endfor %}
 {% for property in interface.properties %}
-{%   if interface.tags.config.zoned %}
-    void {{property}}Changed({{ property|parameter_type }}, const QString &zone);
-{%   else %}
-    void {{property}}Changed({{ property|parameter_type }});
-{%   endif %}
+    {{ivi.prop_notify(property, zoned = interface.tags.config.zoned)}};
 {% endfor %}
 };
 

@@ -43,7 +43,7 @@
     have built an image yourself.
 
     The tutorial assumes that you have installed the \QAS to your host platform
-    and flashed it to your target device. That is, the \e{\QAS Neptune UI}
+    and flashed it to your target device. That is, the \e{\QAS Neptune 3 UI}
     appears on the device screen when you power on the device.
 
     \note In Linux, ensure that you have access to plugged in devices.

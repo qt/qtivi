@@ -33,6 +33,7 @@ interface Echo {
     model<Contact> contactList;
     Contact contact;
     WeekDay weekDay;
+    real UPPERCASEPROPERTY;
 
     string echo(string msg);
     string id() const;
@@ -67,6 +68,7 @@ interface EchoZoned {
     int rangedValue;
     int rangedValueWithDefault;
     Contact contact;
+    real UPPERCASEPROPERTY;
 
     string echo(string msg);
     string id();

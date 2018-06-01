@@ -33,6 +33,7 @@ interface Echo {
     list<Contact> contactList;
     Contact contact;
     WeekDay weekDay;
+    real UPPERCASEPROPERTY;
 
     string echo(string msg);
     string id() const;

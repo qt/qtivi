@@ -37,8 +37,8 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
+{% import 'qtivi_macros.j2' as ivi %}
 {% include "generated_comment.cpp.tpl" %}
-{% import 'utils.tpl' as utils %}
 {% set class = '{0}Backend'.format(interface) %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
 #include "{{class|lower}}.h"
@@ -60,7 +60,7 @@ QT_BEGIN_NAMESPACE
 /*!
    \class {{class}}
    \inmodule {{module}}
-{{ utils.format_comments(interface.comment) }}
+{{ ivi.format_comments(interface.comment) }}
 */
 {{class}}::{{class}}(QObject *parent)
     : {{class}}Interface(parent)
@@ -164,15 +164,11 @@ void {{class}}::initialize()
 {% for property in interface.properties %}
 {%   if not property.readonly and not property.const %}
 /*!
-    \fn virtual void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }}{% if interface_zoned %}, const QString &zone){%endif%})
+    \fn virtual {{ivi.prop_setter(property, class, interface_zoned)}}
 
-{{ utils.format_comments(property.comment) }}
+{{ ivi.format_comments(property.comment) }}
 */
-{%   if interface_zoned %}
-void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }}, const QString &zone)
-{%   else %}
-void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
-{%   endif %}
+{{ivi.prop_setter(property, class, interface_zoned)}}
 {
 {%   if property.tags.config_simulator and property.tags.config_simulator.unsupported %}
     Q_UNUSED({{ property }});
@@ -219,20 +215,12 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameter_type }})
 {% endfor %}
 
 {% for operation in interface.operations %}
-{%   set operation_parameters = operation.parameters|map('parameter_type')|join(', ') %}
-{%   if interface_zoned %}
-{%     if operation.parameters|length %}
-{%       set operation_parameters = operation_parameters + ', ' %}
-{%     endif %}
-{%     set operation_parameters = operation_parameters + 'const QString &zone' %}
-{%   endif%}
 /*!
-    \fn virtual void {{class}}::{{operation}}({{operation_parameters}})
+    \fn virtual {{ivi.operation(operation, class, interface_zoned)}}
 
-{{ utils.format_comments(operation.comment) }}
+{{ ivi.format_comments(operation.comment) }}
 */
-QIviPendingReply<{{operation|return_type}}> {{class}}::{{operation}}({{operation_parameters}}){%if operation.const %} const{% endif %}
-
+{{ivi.operation(operation, class, interface_zoned)}}
 {
 {% for operation_parameter in operation.parameters %}
     Q_UNUSED({{operation_parameter.name}});

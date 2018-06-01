@@ -1,5 +1,5 @@
 TEMPLATE=lib
-TARGET= $$qtLibraryTarget(echo_noprivate_frontend)
+TARGET= $$qtLibraryTarget(echo_simulator_frontend)
 DESTDIR = ../
 
 CONFIG += ivigenerator
@@ -10,6 +10,5 @@ DEFINES += QT_BUILD_ECHO_LIB
 
 macos: QMAKE_SONAME_PREFIX = @rpath
 
-QFACE_SOURCES = ../../../org.example.echo.qface
-QFACE_ANNOTATIONS += ../../../no-private.yaml
+QFACE_SOURCES = ../../../org.example.echo.simulator.qface
 

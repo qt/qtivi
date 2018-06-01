@@ -1,5 +1,5 @@
 TEMPLATE=app
-TARGET= echo_noprivate_control_panel
+TARGET= echo_simulator_control_panel
 DESTDIR = ../
 
 CONFIG += ivigenerator
@@ -7,4 +7,4 @@ CONFIG += ivigenerator
 QT += ivicore ivicore-private qml quick
 
 QFACE_FORMAT = control_panel
-QFACE_SOURCES = ../../../org.example.echo.noprivate.qface
+QFACE_SOURCES = ../../../org.example.echo.simulator.qface

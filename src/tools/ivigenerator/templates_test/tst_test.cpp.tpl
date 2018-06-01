@@ -36,6 +36,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
+{% import 'qtivi_macros.j2' as ivi %}
 {% include "generated_comment.cpp.tpl" %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned  %}
 #include "tst_{{interface|lower}}.h"
@@ -130,8 +131,7 @@ public:
 {% endif %}
 
 {% for signal in interface.signals %}
-    virtual void trigger{{signal|upperfirst}}({{signal.parameters|map('parameter_type')|join(', ')}}{% if interface_zoned %}{%
-    if signal.parameters|length %}, {%endif%}const QString &zone{% endif %})
+    virtual void trigger{{signal|upperfirst}}({{ivi.join_params(signal, interface_zoned)}})
     {
         emit {{signal}}({% if signal.parameters|length %}{{signal.parameters|join(', ')}}{% endif %}{%
         if interface_zoned %}{%if signal.parameters|length %}, {%endif%} zone{% endif %});
@@ -139,8 +139,7 @@ public:
 {% endfor %}
 
 {% for operation in interface.operations %}
-    virtual QIviPendingReply<{{operation|return_type}}> {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}{% if interface_zoned %}{%
-    if operation.parameters|length %}, {%endif%}const QString &zone{% endif %}) override
+    virtual {{ivi.operation(operation, zoned = interface_zoned)}} override
     {
         emit {{operation}}Called({% if operation.parameters|length %}{{operation.parameters|join(', ')}}{% endif %}{%
         if interface_zoned %}{%if operation.parameters|length %}, {%endif%} zone{% endif %});
@@ -148,8 +147,7 @@ public:
         return QIviPendingReply<{{operation|return_type}}>::createFailedReply();
     }
 
-    Q_SIGNAL void {{operation}}Called({{operation.parameters|map('parameter_type')|join(', ')}}{% if interface_zoned %}{%
-            if operation.parameters|length %}, {%endif%}const QString &zone{% endif %});
+    Q_SIGNAL void {{operation}}Called({{ivi.join_params(operation, interface_zoned)}});
 
 {% endfor %}
 

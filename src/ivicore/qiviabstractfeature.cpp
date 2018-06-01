@@ -130,7 +130,7 @@ void QIviAbstractFeaturePrivate::onInitializationDone()
     QIviAbstractFeature is an abstract base class that needs to be subclassed to create an API for your
     Feature.
 
-    \chapter Subclassing
+    \section1 Subclassing
 
     When subclassing QIviAbstractFeature, you must provide implementations of the following functions:
     \list

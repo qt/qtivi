@@ -36,6 +36,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
+{% import 'qtivi_macros.j2' as ivi %}
 {% include "generated_comment.cpp.tpl" %}
 {% set class = '{0}Backend'.format(interface) %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
@@ -66,12 +67,12 @@ public:
 public Q_SLOTS:
 {% for property in interface.properties %}
 {%   if not property.readonly and not property.const %}
-    virtual void set{{property|upperfirst}}({{ property|parameter_type }}) override;
+    virtual {{ivi.prop_setter(property)}} override;
 {%   endif %}
 {% endfor %}
 
 {% for operation in interface.operations %}
-    virtual QIviPendingReply<{{operation|return_type}}> {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){%if operation.const %} const{% endif %} override;
+    virtual {{ivi.operation(operation)}} override;
 {% endfor %}
 
 protected Q_SLOTS:

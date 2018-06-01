@@ -36,9 +36,9 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
+{% import 'qtivi_macros.j2' as ivi %}
 {% set class = '{0}BackendInterface'.format(interface) %}
 {% include 'generated_comment.cpp.tpl' %}
-{% import 'utils.tpl' as utils %}
 
 #include "{{class|lower}}.h"
 
@@ -79,11 +79,7 @@ QT_BEGIN_NAMESPACE
 {% for property in interface.properties %}
 {%   if not property.readonly and not property.const %}
 /*!
-{%     if interface.tags.config.zoned %}
-    \fn void {{class}}::{{property|setter_name}}({{ property|parameter_type }}, const QString &zone);
-{%     else %}
-    \fn void {{class}}::{{property|setter_name}}({{ property|parameter_type }});
-{%     endif %}
+    \fn {{ivi.prop_setter(property, class, interface.tags.config.zoned)}};
 
     Setter for {{interface}}::{{property}}.
     Sets the property \e {{property}} to the new value passed by \a {{property}}.
@@ -102,17 +98,9 @@ QT_BEGIN_NAMESPACE
 {% endfor %}
 {% for operation in interface.operations %}
 /*!
-{%   if interface.tags.config.zoned %}
-{%     if operation.parameters|length %}
-    \fn {{operation|return_type}} {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}, const QString &zone){%if operation.const %} const{% endif %};
-{%     else %}
-    \fn {{operation|return_type}} {{class}}::{{operation}}(const QString &zone){%if operation.const %} const{% endif %};
-{%     endif %}
-{%   else %}
-    \fn {{operation|return_type}} {{class}}::{{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}){%if operation.const %} const{% endif %};
-{%   endif %}
+    \fn {{ivi.operation(operation, class, interface.tags.config.zoned)}};
 
-{{ utils.format_comments(operation.comment) }}
+{{ ivi.format_comments(operation.comment) }}
 
 {%   if interface.tags.config.zoned %}
     The value of \a zone indicates the zone this operation should be done in.
@@ -122,16 +110,9 @@ QT_BEGIN_NAMESPACE
 
 {% for signal in interface.signals %}
 /*!
-{%   if interface.tags.config.zoned %}
-{%     if signal.parameters|length %}
-    \fn void {{class}}::{{signal}}({{signal.parameters|map('parameter_type')|join(', ')}}, const QString &zone = QString());
-{%     else %}
-    \fn void {{class}}::{{signal}}(const QString &zone = QString());
-{%     endif %}
-{%   else %}
-    \fn void {{class}}::{{signal}}({{signal.parameters|map('parameter_type')|join(', ')}});
-{%   endif %}
-{{ utils.format_comments(signal.comment) }}
+    \fn {{ivi.signal(signal, class, interface.tags.config.zoned)}};
+
+{{ ivi.format_comments(signal.comment) }}
 
 {%   if interface.tags.config.zoned %}
     The value of \a zone indicates the zone this operation should be done in.
@@ -140,11 +121,7 @@ QT_BEGIN_NAMESPACE
 {% endfor %}
 {% for property in interface.properties %}
 /*!
-{%   if interface.tags.config.zoned %}
-    \fn void {{class}}::{{property}}Changed({{ property|parameter_type }}, const QString &zone);
-{%   else %}
-    \fn void {{class}}::{{property}}Changed({{ property|parameter_type }});
-{%   endif %}
+    \fn {{ivi.prop_notify(property, class, interface.tags.config.zoned)}};
 
     The signal is emitted when the \e {{property}} property changed to \a {{property}}.
 

@@ -103,7 +103,7 @@ QSet<QString> QIviSearchAndBrowseModelInterface::supportedIdentifiers(const QStr
 
 
 /*!
-    \fn registerContentType(const QString &contentType)
+    \fn template <class T> QIviSearchAndBrowseModelInterface::registerContentType(const QString &contentType)
 
     Registers the type T with the name \a contentType.
     In addition all properties of type T will be registered as identifiers for the \l {Qt IVI Query Language}

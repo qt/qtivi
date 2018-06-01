@@ -40,7 +40,6 @@
 {% set class = '{0}ModuleFactory'.format(module.module_name|upperfirst) %}
 {% set oncedefine = '{0}_H_'.format(class|upper) %}
 {% include 'generated_comment.cpp.tpl' %}
-{% import 'utils.tpl' as utils %}
 
 #ifndef {{oncedefine}}
 #define {{oncedefine}}

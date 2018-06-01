@@ -38,7 +38,7 @@
 #}
 {% set class = '{0}Module'.format(module.module_name|upperfirst) %}
 {% include 'generated_comment.cpp.tpl' %}
-{% import 'utils.tpl' as utils %}
+{% import 'qtivi_macros.j2' as ivi %}
 
 #include "{{class|lower}}.h"
 #include "{{class|lower}}factory.h"
@@ -71,11 +71,11 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
 {% for enum in module.enums %}
 /*!
     \enum {{class}}::{{enum}}
-    {{ utils.format_comments(enum.comment) }}
+    {{ ivi.format_comments(enum.comment) }}
 
 {%  for member in enum.members %}
     \value {{member}}
-    {{ utils.format_comments(member.comment) }}
+    {{ ivi.format_comments(member.comment) }}
 {%  endfor %}
 */
 {% endfor %}

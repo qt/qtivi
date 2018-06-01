@@ -1300,7 +1300,7 @@ QIviPendingReply<void> QIviSearchAndBrowseModel::move(int cur_index, int new_ind
 /*!
     \fn void QIviSearchAndBrowseModel::indexOf(const QVariant &variant)
 
-    Determines the index of \a item in this model.
+    Determines the index of \a variant in this model.
 
     The result is returned as a QIviPendingReply.
 */
