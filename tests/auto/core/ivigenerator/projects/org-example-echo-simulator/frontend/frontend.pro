@@ -6,7 +6,7 @@ CONFIG += ivigenerator
 
 QT += ivicore ivicore-private qml quick
 
-DEFINES += QT_BUILD_ECHO_LIB
+DEFINES += QT_BUILD_ORG_EXAMPLE_SIMULATOR_ECHO_LIB
 
 macos: QMAKE_SONAME_PREFIX = @rpath
 

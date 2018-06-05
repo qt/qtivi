@@ -36,7 +36,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% set exportsymbol = '{0}'.format(module.module_name|upper) %}
+{% set exportsymbol = '{0}'.format(module|upper|replace('.', '_')) %}
 {% set oncedefine = '{0}GLOBAL_H_'.format(exportsymbol) %}
 {% include 'generated_comment.cpp.tpl' %}
 
