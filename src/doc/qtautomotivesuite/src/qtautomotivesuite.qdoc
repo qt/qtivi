@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the documentation of the Qt Automotive Suite.
@@ -54,6 +54,9 @@
         \li \l {Qt IVI}{Qt IVI Module Reference Documentation}
         \li \l {Qt Application Manager}
         \li \l {Qt QmlLive}
+        \li \l {Qt Safe Renderer}
+        \li \l {Qt 3D Studio}
+        \li \l {Qt Creator Application Manager Plugin}
         \li \l {Neptune 3 UI}{Reference UI (Neptune 3 UI)}
         \li \l {GammaRay}
     \endlist
@@ -136,6 +139,27 @@
     \l{Qt QmlLive}{QmlLive} provides a live reloader environment for rapid development of
     Qt Quick applications, dramatically reducing the time it takes to
     deploy and test changes in the UI design.
+
+    \section1 Qt Safe Renderer
+
+    The \l{Qt Safe Renderer} module provides a UI rendering component that can be
+    used to render safety-critical items, such as warning indicators, in
+    functional safety systems. Qt Safe Renderer separates the safety-critical
+    rendering from the other parts of the system. This ensures that
+    Qt Safe Renderer is able to render the safety-critical UI elements even if
+    there are failures in the main UI. With separation, Qt can be used in a
+    system requiring certification without changing the Qt libraries.
+
+    \section1 Qt 3D Studio
+
+    \l{Qt 3D Studio} is an artist-centric tool designed for designing and
+    building rich interactive interfaces. Though there is a strong emphasis on
+    3D content - all objects are placed in three dimensional space - it is not
+    a 3D content creation tool. It is also not a drawing program, though it uses
+    2D images and vectors heavily. Studio is a compositing tool.
+
+    You can create your 2D, 3D, and script assets in other programs and
+    then use Qt 3D Studio to place them in your presentation.
 
     \section1 Deployment
 

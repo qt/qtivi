@@ -219,3 +219,13 @@
     \externalpage https://doc.qt.io/QtIVI/index.html#licenses-and-attributions
     \title Qt IVI Licenses and Attributions
 */
+
+/*!
+    \externalpage https://doc.qt.io/qt3dstudio/index.html
+    \title Qt 3D Studio
+*/
+
+/*!
+    \externalpage https://doc.qt.io/QtSafeRenderer/index.html
+    \title Qt Safe Renderer
+*/
