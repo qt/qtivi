@@ -111,6 +111,12 @@
 */
 
 /*!
+    \externalpage https://doc.qt.io/Neptune3UI/neptune3ui-gettingstarted.html
+    \title Neptune 3 UI Getting Started
+*/
+
+
+/*!
     \externalpage https://doc.qt.io/QtIVI/index.html
     \title Qt IVI
 */
@@ -228,4 +234,18 @@
 /*!
     \externalpage https://doc.qt.io/QtSafeRenderer/index.html
     \title Qt Safe Renderer
+
+/*!
+    \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-preparing-hardware-apalis-imx6.html
+    \title Toradex Apalis iMX6
+*/
+
+/*!
+    \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-preparing-hardware-nuc.html
+    \title Intel NUC
+*/
+
+/*!
+    \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-preparing-hardware-jetsontx1.html
+    \title NVIDIA Jetson TX2
 */

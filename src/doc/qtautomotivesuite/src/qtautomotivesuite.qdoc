@@ -221,12 +221,14 @@
     configure these prerequisites on your development host, see
     \l {Requirements for Linux/X11} and \l {Requirements for Windows}.
 
-    \section2 \QAS Prerequisites
-
-    The DriveCX support in \B2Q requires Vibrante 4.1 Linux Drive CX2
-    PDK version 4.1.4.0.
-
     \section1 Installing \QAS
+
+    When you install \QAS, you can select which \QAS components, SD-card
+    images, and toolchains are installed. To use the \QAS components on your host system, you also
+    need to have proper Qt version installed. When you install any of the
+    \QAS components, the suitable Qt version will be automatically installed.
+
+    You can install \QAS as follows:
 
     \list 1
      \li Download the \l{Qt Online Installer Download}{Qt online installer}.
@@ -244,8 +246,11 @@
 
      \li Select \uicontrol Next to see available packages to install from.
 
-     \li Select \b{Qt Automotive Suite} and at least one \b Qt version
-     (v5.7 or later) from the list, and follow the instructions to complete
+     \li Under \uicontrol{Qt Automotive Suite}, you see the available Qt for Automotive Suite
+     software stacks. Under the stack, select the components and Qt Automotive
+     for your hardware.
+
+     \li Select \uicontrol Next and follow the instructions to complete
      the installation.
 
      \borderedimage qtinstaller-qas.png
@@ -258,9 +263,13 @@
     steps in the target device guide:
 
     \list
-        \li \l{NVIDIA DRIVE CX Guide}
+        \li \l{Intel NUC}
+        \li \l{NVIDIA Jetson TX2}
+        \li \l{Toradex Apalis iMX6}
     \endlist
 
     Once the installation is complete, start Qt Creator and try running one of the
-    examples against an automotive target or the Qt Automotive emulator.
+    examples against an automotive target. With \l{Neptune 3 UI} you can test
+    the reference UI for Qt in IVI (in-vehicle infotainment). For more information,
+    see \l{Neptune 3 UI Getting Started}.
 */
