@@ -58,6 +58,8 @@ QIviMediaPlayerPrivate::QIviMediaPlayerPrivate(const QString &interface, QIviMed
     , m_currentTrack(nullptr)
     , m_position(-1)
     , m_duration(-1)
+    , m_volume(0)
+    , m_muted(false)
 {
     qRegisterMetaType<QIviPlayQueue*>();
     qRegisterMetaType<QIviPlayableItem>();
@@ -74,9 +76,11 @@ void QIviMediaPlayerPrivate::clearToDefaults()
 {
     m_playMode = QIviMediaPlayer::Normal;
     m_currentTrackData = QVariant();
-    m_currentTrack = 0;
+    m_currentTrack = nullptr;
     m_position = -1;
     m_duration = -1;
+    m_volume = 0;
+    m_muted = false;
     m_playQueue->d_func()->clearToDefaults();
 }
 
@@ -135,6 +139,24 @@ void QIviMediaPlayerPrivate::onDurationChanged(qint64 duration)
     Q_Q(QIviMediaPlayer);
     m_duration = duration;
     emit q->durationChanged(duration);
+}
+
+void QIviMediaPlayerPrivate::onVolumeChanged(int volume)
+{
+    if (m_volume == volume)
+        return;
+    Q_Q(QIviMediaPlayer);
+    m_volume = volume;
+    emit q->volumeChanged(volume);
+}
+
+void QIviMediaPlayerPrivate::onMutedChanged(bool muted)
+{
+    if (m_muted == muted)
+        return;
+    Q_Q(QIviMediaPlayer);
+    m_muted = muted;
+    emit q->mutedChanged(muted);
 }
 
 QIviMediaPlayerBackendInterface *QIviMediaPlayerPrivate::playerBackend() const
@@ -317,6 +339,39 @@ qint64 QIviMediaPlayer::duration() const
     return d->m_duration;
 }
 
+/*!
+    \qmlproperty int MediaPlayer::volume
+    \brief Holds the sound volume level (0..100)
+    \sa muted
+*/
+/*!
+    \property QIviMediaPlayer::volume
+    \brief Holds the sound volume level (0..100)
+    \sa muted
+*/
+int QIviMediaPlayer::volume() const
+{
+    Q_D(const QIviMediaPlayer);
+    return d->m_volume;
+}
+
+
+/*!
+    \qmlproperty bool MediaPlayer::muted
+    \brief This property holds whether the audio output is muted.
+    \sa volume
+*/
+/*!
+    \property QIviMediaPlayer::muted
+    \brief This property holds whether the audio output is muted.
+    \sa volume
+*/
+bool QIviMediaPlayer::isMuted() const
+{
+    Q_D(const QIviMediaPlayer);
+    return d->m_muted;
+}
+
 void QIviMediaPlayer::setPlayMode(QIviMediaPlayer::PlayMode playMode)
 {
     Q_D(QIviMediaPlayer);
@@ -479,6 +534,20 @@ void QIviMediaPlayer::previous()
     backend->previous();
 }
 
+void QIviMediaPlayer::setVolume(int volume)
+{
+    Q_IVI_BACKEND(QIviMediaPlayer, d->playerBackend(), "Can't set the volume without a connected backend");
+
+    backend->setVolume(volume);
+}
+
+void QIviMediaPlayer::setMuted(bool muted)
+{
+    Q_IVI_BACKEND(QIviMediaPlayer, d->playerBackend(), "Can't set muted without a connected backend");
+
+    backend->setMuted(muted);
+}
+
 /*!
     \internal
 */
@@ -510,6 +579,10 @@ void QIviMediaPlayer::connectToServiceObject(QIviServiceObject *serviceObject)
                             d, &QIviMediaPlayerPrivate::onCurrentTrackChanged);
     QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::durationChanged,
                             d, &QIviMediaPlayerPrivate::onDurationChanged);
+    QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::volumeChanged,
+                            d, &QIviMediaPlayerPrivate::onVolumeChanged);
+    QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::mutedChanged,
+                            d, &QIviMediaPlayerPrivate::onMutedChanged);
     QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::dataFetched,
                             d->m_playQueue->d_func(), &QIviPlayQueuePrivate::onDataFetched);
     QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::countChanged,

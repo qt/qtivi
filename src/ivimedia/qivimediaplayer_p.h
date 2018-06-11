@@ -73,6 +73,8 @@ public:
     void onCurrentTrackChanged(const QVariant &currentTrack);
     void onPositionChanged(qint64 position);
     void onDurationChanged(qint64 duration);
+    void onVolumeChanged(int volume);
+    void onMutedChanged(bool muted);
 
     QIviMediaPlayerBackendInterface *playerBackend() const;
 
@@ -84,6 +86,8 @@ public:
     const QIviPlayableItem *m_currentTrack;
     qint64 m_position;
     qint64 m_duration;
+    int m_volume;
+    bool m_muted;
     Q_DECLARE_PUBLIC(QIviMediaPlayer)
 };
 

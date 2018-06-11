@@ -170,6 +170,8 @@ void MediaPlayerBackend::onPropertiesChanged(const QString &interface, const QVa
 
                 /* Adjust current playing index according to track ID */
                 updateTrackIndex(variantMap);
+            } else if (i.key() == QLatin1String("Volume")) {
+                emit volumeChanged(qRound(i.value().toDouble() * 100));
             } else if (i.key() == QLatin1String("Rate")) {
                 ; /* Not handled */
             } else if (i.key() == QLatin1String("CanPlay")) {
@@ -370,4 +372,14 @@ void MediaPlayerBackend::setCurrentIndex(int index)
         emit currentIndexChanged(index);
     } else
         qWarning() << "Supplied index is out of range";
+}
+
+void MediaPlayerBackend::setVolume(int volume)
+{
+    m_dbusPlayer->setVolume(volume/100);
+}
+
+void MediaPlayerBackend::setMuted(bool)
+{
+    qWarning() << "Mute is not supported";
 }

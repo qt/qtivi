@@ -66,6 +66,8 @@ public:
     virtual void setPlayMode(QIviMediaPlayer::PlayMode playMode) = 0;
     virtual void setPosition(qint64 position) = 0;
     virtual void setCurrentIndex(int currentIndex) = 0;
+    virtual void setVolume(int volume) = 0;
+    virtual void setMuted(bool muted) = 0;
 
     virtual bool canReportCount() = 0;
     virtual void fetchData(int start, int count) = 0;
@@ -82,6 +84,8 @@ Q_SIGNALS:
     //TODO do we need durationChanged, we can get that from the currentTrack metadata.
     void durationChanged(qint64 duration);
     void currentIndexChanged(int currentIndex);
+    void volumeChanged(int volume);
+    void mutedChanged(bool muted);
     void countChanged(int newLength);
     void dataFetched(const QList<QVariant> &data, int start, bool moreAvailable);
     void dataChanged(const QList<QVariant> &data, int start, int count);

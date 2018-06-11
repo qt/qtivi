@@ -62,6 +62,8 @@ class Q_QTIVIMEDIA_EXPORT QIviMediaPlayer : public QIviAbstractFeature
     Q_PROPERTY(QVariant currentTrack READ currentTrack NOTIFY currentTrackChanged)
     Q_PROPERTY(qint64 position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(qint64 duration READ duration NOTIFY durationChanged)
+    Q_PROPERTY(int volume READ volume WRITE setVolume NOTIFY volumeChanged)
+    Q_PROPERTY(bool muted READ isMuted WRITE setMuted NOTIFY mutedChanged)
 
 public:
     enum PlayMode {
@@ -87,6 +89,8 @@ public:
     QVariant currentTrack() const;
     qint64 position() const;
     qint64 duration() const;
+    int volume() const;
+    bool isMuted() const;
 
 public Q_SLOTS:
     void setPlayMode(QIviMediaPlayer::PlayMode playMode);
@@ -97,6 +101,8 @@ public Q_SLOTS:
     void seek(qint64 offset);
     void next();
     void previous();
+    void setVolume(int volume);
+    void setMuted(bool muted);
 
 Q_SIGNALS:
     void playModeChanged(QIviMediaPlayer::PlayMode playMode);
@@ -104,6 +110,8 @@ Q_SIGNALS:
     void currentTrackChanged(const QVariant &currentTrack);
     void positionChanged(qint64 position);
     void durationChanged(qint64 duration);
+    void volumeChanged(int volume);
+    void mutedChanged(bool muted);
 
 protected:
     QIviMediaPlayer(QIviMediaPlayerPrivate &dd, QObject *parent = nullptr);
@@ -118,6 +126,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onCurrentTrackChanged(const QVariant &currentTrack))
     Q_PRIVATE_SLOT(d_func(), void onPositionChanged(qint64 position))
     Q_PRIVATE_SLOT(d_func(), void onDurationChanged(qint64 duration))
+    Q_PRIVATE_SLOT(d_func(), void onVolumeChanged(int volume))
+    Q_PRIVATE_SLOT(d_func(), void onMutedChanged(bool muted))
 
     friend class QIviPlayQueuePrivate;
 };

@@ -76,6 +76,8 @@ public:
     void setPlayMode(QIviMediaPlayer::PlayMode playMode) override;
     void setPosition(qint64 position) override;
     void setCurrentIndex(int index) override;
+    void setVolume(int volume) override;
+    void setMuted(bool muted) override;
 
     bool canReportCount() override;
     void fetchData(int start, int count) override;

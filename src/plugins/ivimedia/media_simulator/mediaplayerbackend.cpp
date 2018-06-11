@@ -70,6 +70,10 @@ MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *pa
             this, &MediaPlayerBackend::onStateChanged);
     connect(m_player, &QMediaPlayer::mediaStatusChanged,
             this, &MediaPlayerBackend::onMediaStatusChanged);
+    connect(m_player, &QMediaPlayer::volumeChanged,
+            this, &MediaPlayerBackend::volumeChanged);
+    connect(m_player, &QMediaPlayer::mutedChanged,
+            this, &MediaPlayerBackend::mutedChanged);
     connect(this, &MediaPlayerBackend::playTrack,
             this, &MediaPlayerBackend::onPlayTrack,
             Qt::QueuedConnection);
@@ -81,6 +85,8 @@ void MediaPlayerBackend::initialize()
 {
     emit durationChanged(0);
     emit positionChanged(0);
+    emit volumeChanged(m_player->volume());
+    emit mutedChanged(m_player->isMuted());
     emit initializationDone();
 }
 
@@ -378,6 +384,24 @@ void MediaPlayerBackend::setCurrentIndex(int index)
                       &MediaPlayerBackend::doSqlOperation,
                       MediaPlayerBackend::SetIndex,
                       queries, m_currentIndex, 0);
+}
+
+void MediaPlayerBackend::setVolume(int volume)
+{
+    qCDebug(media) << Q_FUNC_INFO << volume;
+    if (volume != m_player->volume()) {
+        m_player->setVolume(volume);
+        emit volumeChanged(volume);
+    }
+}
+
+void MediaPlayerBackend::setMuted(bool muted)
+{
+    qCDebug(media) << Q_FUNC_INFO << muted;
+    if (muted != m_player->isMuted()) {
+        m_player->setMuted(muted);
+        emit mutedChanged(muted);
+    }
 }
 
 void MediaPlayerBackend::onStateChanged(QMediaPlayer::State state)
