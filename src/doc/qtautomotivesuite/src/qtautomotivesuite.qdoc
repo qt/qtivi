@@ -271,5 +271,5 @@
     Once the installation is complete, start Qt Creator and try running one of the
     examples against an automotive target. With \l{Neptune 3 UI} you can test
     the reference UI for Qt in IVI (in-vehicle infotainment). For more information,
-    see \l{Neptune 3 UI Getting Started}.
+    see \l{Neptune 3 UI Insights}.
 */
