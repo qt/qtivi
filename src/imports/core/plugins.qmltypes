@@ -146,17 +146,10 @@ Module {
         }
     }
     Component {
-        name: "QIviSearchAndBrowseModel"
+        name: "QIviPagingModel"
         prototype: "QIviAbstractFeatureListModel"
-        exports: ["QtIvi/SearchAndBrowseModel 1.0"]
+        exports: ["QtIvi/PagingModel 1.0"]
         exportMetaObjectRevisions: [0]
-        Enum {
-            name: "NavigationType"
-            values: {
-                "InModelNavigation": 0,
-                "OutOfModelNavigation": 1
-            }
-        }
         Enum {
             name: "LoadingType"
             values: {
@@ -164,41 +157,14 @@ Module {
                 "DataChanged": 1
             }
         }
-        Enum {
-            name: "Capabilities"
-            values: {
-                "NoExtras": 0,
-                "SupportsFiltering": 1,
-                "SupportsSorting": 2,
-                "SupportsAndConjunction": 4,
-                "SupportsOrConjunction": 8,
-                "SupportsStatelessNavigation": 16,
-                "SupportsGetSize": 32,
-                "SupportsInsert": 64,
-                "SupportsMove": 128,
-                "SupportsRemove": 256
-            }
-        }
-        Property {
-            name: "capabilities"
-            type: "QIviSearchAndBrowseModel::Capabilities"
-            isReadonly: true
-        }
-        Property { name: "query"; type: "string" }
-        Property { name: "contentType"; type: "string" }
-        Property { name: "availableContentTypes"; type: "QStringList"; isReadonly: true }
+        Property { name: "capabilities"; type: "QtIviCoreModule::ModelCapabilities"; isReadonly: true }
         Property { name: "chunkSize"; type: "int" }
         Property { name: "fetchMoreThreshold"; type: "int" }
         Property { name: "count"; type: "int"; isReadonly: true }
-        Property { name: "canGoBack"; type: "bool"; isReadonly: true }
-        Property { name: "loadingType"; type: "QIviSearchAndBrowseModel::LoadingType" }
+        Property { name: "loadingType"; type: "QIviPagingModel::LoadingType" }
         Signal {
             name: "capabilitiesChanged"
-            Parameter { name: "capabilities"; type: "QIviSearchAndBrowseModel::Capabilities" }
-        }
-        Signal {
-            name: "queryChanged"
-            Parameter { name: "query"; type: "string" }
+            Parameter { name: "capabilities"; type: "QtIviCoreModule::ModelCapabilities" }
         }
         Signal {
             name: "chunkSizeChanged"
@@ -210,6 +176,37 @@ Module {
         }
         Signal { name: "fetchMoreThresholdReached" }
         Signal {
+            name: "loadingTypeChanged"
+            Parameter { name: "loadingType"; type: "QIviPagingModel::LoadingType" }
+        }
+        Method {
+            name: "get"
+            type: "QVariant"
+            Parameter { name: "index"; type: "int" }
+        }
+        Method { name: "reload" }
+    }
+    Component {
+        name: "QIviSearchAndBrowseModel"
+        prototype: "QIviPagingModel"
+        exports: ["QtIvi/SearchAndBrowseModel 1.0"]
+        exportMetaObjectRevisions: [0]
+        Enum {
+            name: "NavigationType"
+            values: {
+                "InModelNavigation": 0,
+                "OutOfModelNavigation": 1
+            }
+        }
+        Property { name: "query"; type: "string" }
+        Property { name: "contentType"; type: "string" }
+        Property { name: "availableContentTypes"; type: "QStringList"; isReadonly: true }
+        Property { name: "canGoBack"; type: "bool"; isReadonly: true }
+        Signal {
+            name: "queryChanged"
+            Parameter { name: "query"; type: "string" }
+        }
+        Signal {
             name: "contentTypeChanged"
             Parameter { name: "contentType"; type: "string" }
         }
@@ -220,15 +217,6 @@ Module {
         Signal {
             name: "canGoBackChanged"
             Parameter { name: "canGoBack"; type: "bool" }
-        }
-        Signal {
-            name: "loadingTypeChanged"
-            Parameter { name: "loadingType"; type: "QIviSearchAndBrowseModel::LoadingType" }
-        }
-        Method {
-            name: "get"
-            type: "QVariant"
-            Parameter { name: "index"; type: "int" }
         }
         Method { name: "goBack" }
         Method {
@@ -264,7 +252,6 @@ Module {
             type: "QIviPendingReply<int>"
             Parameter { name: "variant"; type: "QVariant" }
         }
-        Method { name: "reload" }
     }
     Component {
         name: "QIviServiceManager"
@@ -303,6 +290,29 @@ Module {
             name: "hasInterface"
             type: "bool"
             Parameter { name: "interface"; type: "string" }
+        }
+    }
+    Component {
+        name: "QtIviCoreModule"
+        prototype: "QObject"
+        exports: ["QtIvi/QtIviCoreModule 1.0"]
+        isCreatable: false
+        isSingleton: true
+        exportMetaObjectRevisions: [0]
+        Enum {
+            name: "ModelCapabilities"
+            values: {
+                "NoExtras": 0,
+                "SupportsGetSize": 1,
+                "SupportsFiltering": 2,
+                "SupportsSorting": 4,
+                "SupportsAndConjunction": 8,
+                "SupportsOrConjunction": 16,
+                "SupportsStatelessNavigation": 32,
+                "SupportsInsert": 64,
+                "SupportsMove": 128,
+                "SupportsRemove": 256
+            }
         }
     }
 }
