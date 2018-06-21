@@ -700,6 +700,7 @@ void QIviAbstractFeature::disconnectFromServiceObject(QIviServiceObject *service
         disconnect(backend, nullptr, this, nullptr);
 
     d->m_isInitialized = false;
+    emit isInitializedChanged(false);
     d->m_isConnected = false;
 }
 

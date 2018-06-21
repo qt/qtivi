@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QIVIPROXYSERVICEOBJECT_H
-#define QIVIPROXYSERVICEOBJECT_H
+#ifndef QIVIPROXYSERVICEOBJECT_P_H
+#define QIVIPROXYSERVICEOBJECT_P_H
 
 //
 //  W A R N I N G
@@ -53,27 +53,27 @@
 // We mean it.
 //
 
+#include <QtCore/QHash>
 #include <QtIviCore/QIviServiceObject>
 #include <private/qtiviglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 
-class Q_QTIVICORE_EXPORT QIviProxyServiceObject : public QIviServiceObject
+class Q_QTIVICORE_EXPORT QIviProxyServiceObjectPrivate
 {
-    Q_OBJECT
 
 public:
-    explicit QIviProxyServiceObject(QIviServiceInterface *interface);
+    explicit QIviProxyServiceObjectPrivate(QIviServiceInterface *interface);
+    explicit QIviProxyServiceObjectPrivate(const QHash<QString, QIviFeatureInterface *> &interfaceMap);
 
-    QStringList interfaces() const override;
-    QIviFeatureInterface *interfaceInstance(const QString &interface) const override;
+    virtual ~QIviProxyServiceObjectPrivate() = default;
 
-    QIviServiceInterface *serviceInterface() const;
-private:
+    Q_DISABLE_COPY(QIviProxyServiceObjectPrivate)
 
-    QIviServiceInterface *m_interface;
+    QIviServiceInterface *m_serviceInterface;
+    QHash<QString, QIviFeatureInterface*> m_interfaceMap;
 };
 
 QT_END_NAMESPACE
 
-#endif // QIVIPROXYSERVICEOBJECT_H
+#endif // QIVIPROXYSERVICEOBJECT_P_H

@@ -39,30 +39,35 @@
 **
 ****************************************************************************/
 
-#include "qiviproxyserviceobject_p.h"
+#ifndef QIVIPROXYSERVICEOBJECT_H
+#define QIVIPROXYSERVICEOBJECT_H
+
+#include <QtIviCore/QIviServiceObject>
+#include <QtIviCore/qtiviglobal.h>
+
+class ServiceManagerTest;
 
 QT_BEGIN_NAMESPACE
 
-QIviProxyServiceObject::QIviProxyServiceObject(QIviServiceInterface *interface)
-    : QIviServiceObject()
-    , m_interface(interface)
-{
+class QIviProxyServiceObjectPrivate;
 
-}
-
-QStringList QIviProxyServiceObject::interfaces() const
+class Q_QTIVICORE_EXPORT QIviProxyServiceObject : public QIviServiceObject
 {
-    return m_interface->interfaces();
-}
+    Q_OBJECT
 
-QIviFeatureInterface *QIviProxyServiceObject::interfaceInstance(const QString &interface) const
-{
-    return m_interface->interfaceInstance(interface);
-}
+public:
+    explicit QIviProxyServiceObject(QIviServiceInterface *interface);
+    explicit QIviProxyServiceObject(const QHash<QString, QIviFeatureInterface*> &interfaceMap);
 
-QIviServiceInterface *QIviProxyServiceObject::serviceInterface() const
-{
-    return m_interface;
-}
+    QStringList interfaces() const override;
+    QIviFeatureInterface *interfaceInstance(const QString &interface) const override;
+
+private:
+    Q_DECLARE_PRIVATE(QIviProxyServiceObject)
+    QIviProxyServiceObjectPrivate *d_ptr;
+    friend class ::ServiceManagerTest;
+};
 
 QT_END_NAMESPACE
+
+#endif // QIVIPROXYSERVICEOBJECT_H

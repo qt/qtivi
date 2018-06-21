@@ -32,6 +32,7 @@
 #include <QQmlComponent>
 #include <QQmlContext>
 #include <QIviServiceObject>
+#include <QIviProxyServiceObject>
 #include <QIviServiceInterface>
 #include <QIviAbstractFeatureListModel>
 #include <QIviServiceManager>
@@ -176,7 +177,7 @@ public:
     }
 };
 
-class TestBackend : public QObject, QIviServiceInterface
+class TestBackend : public QObject, public QIviServiceInterface
 {
     Q_OBJECT
     Q_INTERFACES(QIviServiceInterface)
@@ -230,6 +231,7 @@ private Q_SLOTS:
     void testAutoDiscovery_data();
     void testAutoDiscovery();
     void testAutoDiscovery_qml();
+    void testProxyServiceObject();
     void testErrors_data();
     void testErrors();
     void testServiceObjectDestruction();
@@ -432,6 +434,45 @@ void BaseTest::testAutoDiscovery_qml()
 
     delete defaultItem;
     delete autoDiscoveryDisabledItem;
+}
+
+void BaseTest::testProxyServiceObject()
+{
+    TestBackend* backend = new TestBackend();
+
+    QIviFeatureTester *f = createTester();
+    QVERIFY(!f->serviceObject());
+    QVERIFY(!f->isValid());
+    QVERIFY(!f->isInitialized());
+
+    //Test setting a ProxyServiceObject using the QIviServiceInterface constructor
+    QIviProxyServiceObject proxyObject(backend);
+
+    f->setServiceObject(&proxyObject);
+    QVERIFY(f->serviceObject());
+    QVERIFY(f->isValid());
+    QVERIFY(f->isInitialized());
+
+    f->setServiceObject(nullptr);
+    QVERIFY(!f->serviceObject());
+    QVERIFY(!f->isValid());
+    QVERIFY(!f->isInitialized());
+
+    //Test setting a ProxyServiceObject using the QHash constructor
+    QString interface = backend->interfaces().at(0);
+    QIviProxyServiceObject proxyObject2({{interface, backend->interfaceInstance(interface)}});
+
+    f->setServiceObject(&proxyObject2);
+    QVERIFY(f->serviceObject());
+    QVERIFY(f->isValid());
+    QVERIFY(f->isInitialized());
+
+    f->setServiceObject(nullptr);
+    QVERIFY(!f->serviceObject());
+    QVERIFY(!f->isValid());
+    QVERIFY(!f->isInitialized());
+
+    delete backend;
 }
 
 void BaseTest::testErrors_data()

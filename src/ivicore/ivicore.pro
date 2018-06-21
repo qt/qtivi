@@ -27,6 +27,7 @@ HEADERS += \
     qiviabstractfeature.h \
     qiviabstractzonedfeature.h \
     qtiviglobal.h \
+    qiviproxyserviceobject.h \
     qiviproxyserviceobject_p.h \
     qivizonedfeatureinterface.h \
     qivipropertyattribute.h \
@@ -61,7 +62,7 @@ SOURCES += \
     qiviserviceobject.cpp \
     qiviabstractfeature.cpp \
     qiviabstractzonedfeature.cpp \
-    qiviproxyserviceobject_p.cpp \
+    qiviproxyserviceobject.cpp \
     qivizonedfeatureinterface.cpp \
     qivipropertyattribute.cpp \
     qiviproperty.cpp \

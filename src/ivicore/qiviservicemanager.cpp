@@ -41,7 +41,7 @@
 
 #include "qiviservicemanager.h"
 
-#include "qiviproxyserviceobject_p.h"
+#include "qiviproxyserviceobject.h"
 #include "qiviservicemanager_p.h"
 
 #include <QCoreApplication>

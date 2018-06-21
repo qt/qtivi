@@ -34,6 +34,7 @@
 #include <QtIviCore/private/qiviservicemanager_p.h>
 #include <qiviserviceinterface.h>
 #include <qiviserviceobject.h>
+#include <QIviProxyServiceObject>
 #include <private/qiviproxyserviceobject_p.h>
 
 class MockServiceBackend : public QObject, public QIviServiceInterface
@@ -265,7 +266,7 @@ void ServiceManagerTest::testManagerListModel()
     QCOMPARE(manager->rowCount(), 1);
     //QCOMPARE(manager->data(manager->index(0), Qt::DisplayRole).value<QIviServiceInterface*>(), backend0);
     QCOMPARE(manager->data(manager->index(0), QIviServiceManager::NameRole).toString(), QStringLiteral("MockServiceBackend"));
-    QCOMPARE(manager->data(manager->index(0), QIviServiceManager::ServiceObjectRole).value<QIviProxyServiceObject*>()->serviceInterface(), backend0);
+    QCOMPARE(manager->data(manager->index(0), QIviServiceManager::ServiceObjectRole).value<QIviProxyServiceObject*>()->d_ptr->m_serviceInterface, backend0);
     QCOMPARE(manager->data(manager->index(0), QIviServiceManager::InterfacesRole).toStringList(), QStringList() << "Interface0");
     QCOMPARE(managerModelSpy.count(), 1);
     // Extendend sanity check
@@ -277,10 +278,10 @@ void ServiceManagerTest::testManagerListModel()
     QCOMPARE(regResult, true);
     QCOMPARE(manager->rowCount(), 2);
     QCOMPARE(manager->data(manager->index(0), QIviServiceManager::NameRole).toString(), QStringLiteral("MockServiceBackend"));
-    QCOMPARE(manager->data(manager->index(0), QIviServiceManager::ServiceObjectRole).value<QIviProxyServiceObject*>()->serviceInterface(), backend0);
+    QCOMPARE(manager->data(manager->index(0), QIviServiceManager::ServiceObjectRole).value<QIviProxyServiceObject*>()->d_ptr->m_serviceInterface, backend0);
     QCOMPARE(manager->data(manager->index(0), QIviServiceManager::InterfacesRole).toStringList(), QStringList() << "Interface0");
     QCOMPARE(manager->data(manager->index(1), QIviServiceManager::NameRole).toString(), QStringLiteral("MockServiceBackend"));
-    QCOMPARE(manager->data(manager->index(1), QIviServiceManager::ServiceObjectRole).value<QIviProxyServiceObject*>()->serviceInterface(), backend1);
+    QCOMPARE(manager->data(manager->index(1), QIviServiceManager::ServiceObjectRole).value<QIviProxyServiceObject*>()->d_ptr->m_serviceInterface, backend1);
     QCOMPARE(manager->data(manager->index(1), QIviServiceManager::InterfacesRole).toStringList(), QStringList() << "Interface1" << "Interface2");
     QCOMPARE(managerModelSpy.count(), 2);
 
