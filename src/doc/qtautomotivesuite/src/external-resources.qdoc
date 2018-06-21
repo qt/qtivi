@@ -111,8 +111,8 @@
 */
 
 /*!
-    \externalpage https://doc.qt.io/Neptune3UI/neptune3ui-gettingstarted.html
-    \title Neptune 3 UI Getting Started
+    \externalpage https://doc.qt.io/Neptune3UI/index.html#ui-insights
+    \title Neptune 3 UI Insights
 */
 
 
@@ -234,6 +234,7 @@
 /*!
     \externalpage https://doc.qt.io/QtSafeRenderer/index.html
     \title Qt Safe Renderer
+*/
 
 /*!
     \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-preparing-hardware-apalis-imx6.html
