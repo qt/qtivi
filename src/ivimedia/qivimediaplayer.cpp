@@ -161,12 +161,7 @@ void QIviMediaPlayerPrivate::onMutedChanged(bool muted)
 
 QIviMediaPlayerBackendInterface *QIviMediaPlayerPrivate::playerBackend() const
 {
-    Q_Q(const QIviMediaPlayer);
-    QIviServiceObject *so = q->serviceObject();
-    if (so)
-        return qobject_cast<QIviMediaPlayerBackendInterface*>(so->interfaceInstance(QLatin1String(QIviMediaPlayer_iid)));
-
-    return nullptr;
+    return qobject_cast<QIviMediaPlayerBackendInterface*>(backend());
 }
 
 /*!

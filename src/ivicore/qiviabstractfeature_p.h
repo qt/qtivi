@@ -57,6 +57,7 @@
 #include <private/qtiviglobal_p.h>
 
 #include "qiviabstractfeature.h"
+#include "qivifeatureinterface.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -81,6 +82,8 @@ public:
 
     virtual void initialize();
     virtual bool notify(const QByteArray &propertyName, const QVariant &value);
+
+    QIviFeatureInterface *backend() const;
 
     void setDiscoveryResult(QIviAbstractFeature::DiscoveryResult discoveryResult);
     void onInitializationDone();

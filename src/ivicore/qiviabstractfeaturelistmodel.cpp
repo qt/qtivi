@@ -85,6 +85,18 @@ void QIviHelperFeature::clearServiceObject()
     m_model->clearServiceObject();
 }
 
+QIviAbstractFeaturePrivate *QIviHelperFeature::iviPrivate()
+{
+    Q_D(QIviAbstractFeature);
+    return d;
+}
+
+const QIviAbstractFeaturePrivate *QIviHelperFeature::iviPrivate() const
+{
+    Q_D(const QIviAbstractFeature);
+    return d;
+}
+
 QIviAbstractFeatureListModelPrivate::QIviAbstractFeatureListModelPrivate(const QString &interface, QIviAbstractFeatureListModel *model)
     : QAbstractItemModelPrivate()
     , m_feature(new QIviHelperFeature(interface, model))
@@ -100,6 +112,11 @@ QIviAbstractFeatureListModelPrivate::~QIviAbstractFeatureListModelPrivate()
 
 void QIviAbstractFeatureListModelPrivate::initialize()
 {
+}
+
+QIviFeatureInterface *QIviAbstractFeatureListModelPrivate::backend() const
+{
+    return m_feature->iviPrivate()->backend();
 }
 
 /*!

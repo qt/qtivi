@@ -147,12 +147,7 @@ void QIviAmFmTunerPrivate::onScanStatusChanged(bool scanRunning)
 
 QIviAmFmTunerBackendInterface *QIviAmFmTunerPrivate::tunerBackend() const
 {
-    Q_Q(const QIviAmFmTuner);
-    QIviServiceObject *so = q->serviceObject();
-    if (so)
-        return qobject_cast<QIviAmFmTunerBackendInterface*>(so->interfaceInstance(QLatin1String(QIviAmFmTuner_iid)));
-
-    return nullptr;
+    return qobject_cast<QIviAmFmTunerBackendInterface*>(backend());
 }
 
 /*!

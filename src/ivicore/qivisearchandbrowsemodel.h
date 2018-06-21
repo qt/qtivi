@@ -109,7 +109,6 @@ protected:
     QIviSearchAndBrowseModel(QIviServiceObject *serviceObject, const QString &contentType, QObject *parent = nullptr);
     QIviSearchAndBrowseModel(QIviSearchAndBrowseModelPrivate &dd, QObject *parent);
     void connectToServiceObject(QIviServiceObject *serviceObject) override;
-    void disconnectFromServiceObject(QIviServiceObject *serviceObject) override;
     void clearServiceObject() override;
 
 private:

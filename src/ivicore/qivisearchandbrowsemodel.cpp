@@ -173,12 +173,7 @@ void QIviSearchAndBrowseModelPrivate::setAvailableContenTypes(const QStringList 
 
 QIviSearchAndBrowseModelInterface *QIviSearchAndBrowseModelPrivate::searchBackend() const
 {
-    Q_Q(const QIviSearchAndBrowseModel);
-    QIviServiceObject *so = q->serviceObject();
-    if (so)
-        return qobject_cast<QIviSearchAndBrowseModelInterface*>(so->interfaceInstance(q->interfaceName()));
-
-    return nullptr;
+    return qobject_cast<QIviSearchAndBrowseModelInterface*>(QIviPagingModelPrivate::backend());
 }
 
 void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentType)
@@ -909,19 +904,6 @@ void QIviSearchAndBrowseModel::connectToServiceObject(QIviServiceObject *service
     d->setCanGoBack(backend->canGoBack(d->m_identifier, d->m_contentType));
 
     d->resetModel();
-}
-
-/*!
-    \reimp
-*/
-void QIviSearchAndBrowseModel::disconnectFromServiceObject(QIviServiceObject *serviceObject)
-{
-    auto backend = qobject_cast<QIviSearchAndBrowseModelInterface*>(serviceObject->interfaceInstance(QStringLiteral(QIviSearchAndBrowseModel_iid)));
-
-    if (backend)
-        disconnect(backend, nullptr, this, nullptr);
-
-    QIviPagingModel::disconnectFromServiceObject(serviceObject);
 }
 
 /*!

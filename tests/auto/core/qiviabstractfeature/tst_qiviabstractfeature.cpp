@@ -91,11 +91,6 @@ public:
         QIviAbstractFeature::connectToServiceObject(serviceObject);
     }
 
-    virtual void disconnectFromServiceObject(QIviServiceObject*)
-    {
-        disconnect();
-    }
-
     virtual void clearServiceObject()
     {
     }
@@ -138,11 +133,6 @@ public:
         connect(testInterface, &TestFeatureInterface::errorChanged, this, &TestFeatureListModel::onErrorChanged);
 
         QIviAbstractFeatureListModel::connectToServiceObject(serviceObject);
-    }
-
-    virtual void disconnectFromServiceObject(QIviServiceObject*)
-    {
-        disconnect();
     }
 
     virtual void clearServiceObject()
@@ -519,7 +509,7 @@ void BaseTest::testResetServiceObject()
 
     m_manager->unloadAllBackends();
     QCOMPARE(soDestroyedSpy.count(), 1);
-    QCOMPARE(serviceObjectChangedSpy.count(), 0);
+    QCOMPARE(serviceObjectChangedSpy.count(), 1);
 }
 
 //This construction is used to run the test twice once for a Feature and once for the FeatureListModel but show the results as separate tests.

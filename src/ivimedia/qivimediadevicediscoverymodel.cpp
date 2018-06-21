@@ -124,12 +124,7 @@ void QIviMediaDeviceDiscoveryModelPrivate::onDeviceRemoved(QIviServiceObject *de
 
 QIviMediaDeviceDiscoveryModelBackendInterface *QIviMediaDeviceDiscoveryModelPrivate::discoveryBackend() const
 {
-    Q_Q(const QIviMediaDeviceDiscoveryModel);
-    QIviServiceObject *so = q->serviceObject();
-    if (so)
-        return qobject_cast<QIviMediaDeviceDiscoveryModelBackendInterface*>(so->interfaceInstance(QLatin1String(QIviMediaDeviceDiscovery_iid)));
-
-    return nullptr;
+    return qobject_cast<QIviMediaDeviceDiscoveryModelBackendInterface*>(backend());
 }
 
 /*!

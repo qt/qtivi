@@ -54,6 +54,7 @@
 //
 
 #include <private/qabstractitemmodel_p.h>
+#include <private/qiviabstractfeature_p.h>
 #include <private/qtiviglobal_p.h>
 
 #include "qiviabstractfeaturelistmodel.h"
@@ -75,6 +76,9 @@ public:
     void disconnectFromServiceObjectDefaultImpl(QIviServiceObject *so);
     void clearServiceObject() override;
 
+    QIviAbstractFeaturePrivate *iviPrivate();
+    const QIviAbstractFeaturePrivate *iviPrivate() const;
+
     using QIviAbstractFeature::interfaceName;
     using QIviAbstractFeature::errorText;
     using QIviAbstractFeature::setError;
@@ -89,6 +93,7 @@ public:
     ~QIviAbstractFeatureListModelPrivate() override;
 
     virtual void initialize();
+    QIviFeatureInterface *backend() const;
 
     Q_DISABLE_COPY(QIviAbstractFeatureListModelPrivate)
 

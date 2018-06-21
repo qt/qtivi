@@ -140,6 +140,7 @@ private:
     Q_DECLARE_PRIVATE(QIviAbstractFeature)
     Q_PRIVATE_SLOT(d_func(), void onInitializationDone())
     friend class QIviFeatureTester;
+    friend class QIviHelperFeature;
 };
 
 QT_END_NAMESPACE

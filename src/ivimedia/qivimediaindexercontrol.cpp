@@ -83,12 +83,7 @@ void QIviMediaIndexerControlPrivate::onStateChanged(QIviMediaIndexerControl::Sta
 
 QIviMediaIndexerControlBackendInterface *QIviMediaIndexerControlPrivate::indexerBackend() const
 {
-    Q_Q(const QIviMediaIndexerControl);
-    QIviServiceObject *so = q->serviceObject();
-    if (so)
-        return qobject_cast<QIviMediaIndexerControlBackendInterface*>(so->interfaceInstance(QLatin1String(QIviMediaIndexer_iid)));
-
-    return nullptr;
+    return qobject_cast<QIviMediaIndexerControlBackendInterface*>(backend());
 }
 
 /*!

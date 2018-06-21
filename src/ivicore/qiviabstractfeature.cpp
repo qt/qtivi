@@ -82,6 +82,25 @@ bool QIviAbstractFeaturePrivate::notify(const QByteArray &propertyName, const QV
     return false;
 }
 
+/*!
+    \internal Returns the backend object retrieved from calling interfaceInstance() with the
+    interfaceName of this private class.
+
+    This is the is a sane default for most classes and provides a convenient way to get the backend
+    interface and also allow manually overwritting it to something else.
+
+    If the derived class needs to connect to a different interface than defined by interfaceName or
+    to an additional interface, it can still manually ask for the needed interfaceInstance using
+    the QIviServiceObject directly.
+*/
+QIviFeatureInterface *QIviAbstractFeaturePrivate::backend() const
+{
+    Q_Q(const QIviAbstractFeature);
+    if (m_serviceObject)
+        return m_serviceObject->interfaceInstance(q->interfaceName());
+    return nullptr;
+}
+
 QIviAbstractFeaturePrivate *QIviAbstractFeaturePrivate::get(QIviAbstractFeature *q)
 {
     return static_cast<QIviAbstractFeaturePrivate *>(q->d_ptr.data());
@@ -642,7 +661,7 @@ void QIviAbstractFeature::connectToServiceObject(QIviServiceObject *serviceObjec
 {
     Q_D(QIviAbstractFeature);
     Q_ASSERT(serviceObject);
-    QIviFeatureInterface *backend = serviceObject->interfaceInstance(interfaceName());
+    QIviFeatureInterface *backend = d->backend();
 
     if (backend) {
         connect(backend, &QIviFeatureInterface::errorChanged, this, &QIviAbstractFeature::onErrorChanged);
@@ -655,14 +674,19 @@ void QIviAbstractFeature::connectToServiceObject(QIviServiceObject *serviceObjec
 }
 
 /*!
-    This method is expected to be implemented by any class subclassing QIviAbstractFeature.
-
-    The implementation should disconnect all connections to the \a serviceObject.
+    This method disconnects all connections to the \a serviceObject.
 
     There is no need to reset internal variables to safe defaults. A call to this function is
     always followed by a call to \l connectToServiceObject or \l clearServiceObject.
 
     The default implementation disconnects all signals from the serviceObject to this instance.
+
+    Most of the times you don't have to reimplement this method. A reimplementation is only needed
+    if multiple interfaces have been connected before or special cleanup calls need to be done
+    to the backend before disconnecting as well.
+    If you need to reimplement this function, please make sure to use the interfaceName() method to
+    retrieve the backend instance and not hardcode it to a particular interfaceName, as otherwise
+    the disconnect calls don't work anymore with derived interfaces.
 
     \sa acceptServiceObject(), connectToServiceObject(), clearServiceObject()
 */
@@ -670,7 +694,7 @@ void QIviAbstractFeature::disconnectFromServiceObject(QIviServiceObject *service
 {
     Q_D(QIviAbstractFeature);
     Q_ASSERT(serviceObject);
-    QObject *backend = serviceObject->interfaceInstance(interfaceName());
+    QObject *backend = d->backend();
 
     if (backend)
         disconnect(backend, nullptr, this, nullptr);

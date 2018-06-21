@@ -250,12 +250,7 @@ const QIviSearchAndBrowseModelItem *QIviPagingModelPrivate::itemAt(int i) const
 
 QIviPagingModelInterface *QIviPagingModelPrivate::backend() const
 {
-    Q_Q(const QIviPagingModel);
-    QIviServiceObject *so = q->serviceObject();
-    if (so)
-        return qobject_cast<QIviPagingModelInterface*>(so->interfaceInstance(q->interfaceName()));
-
-    return nullptr;
+    return qobject_cast<QIviPagingModelInterface*>(QIviAbstractFeatureListModelPrivate::backend());
 }
 
 /*!
@@ -763,12 +758,10 @@ void QIviPagingModel::disconnectFromServiceObject(QIviServiceObject *serviceObje
 {
     Q_D(QIviPagingModel);
 
-    auto backend = qobject_cast<QIviPagingModelInterface*>(serviceObject->interfaceInstance(interfaceName()));
+    auto backend = d->backend();
 
-    if (backend) {
+    if (backend)
         backend->unregisterInstance(d->m_identifier);
-        disconnect(backend, nullptr, this, nullptr);
-    }
 
     QIviAbstractFeatureListModel::disconnectFromServiceObject(serviceObject);
 }
