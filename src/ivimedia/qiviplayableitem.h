@@ -44,7 +44,7 @@
 
 #include <QtIviMedia/qtivimediaglobal.h>
 #include <QtIviCore/QIviSearchAndBrowseModel>
-#include <QtIviCore/QIviSearchAndBrowseModelItem>
+#include <QtIviCore/QIviStandardItem>
 #include <QtCore/QUrl>
 
 QT_BEGIN_NAMESPACE
@@ -52,7 +52,7 @@ QT_BEGIN_NAMESPACE
 class QIviPlayableItemPrivate;
 class QIviAudioTrackItemPrivate;
 
-class Q_QTIVIMEDIA_EXPORT QIviPlayableItem : public QIviSearchAndBrowseModelItem
+class Q_QTIVIMEDIA_EXPORT QIviPlayableItem : public QIviStandardItem
 {
     Q_GADGET
 

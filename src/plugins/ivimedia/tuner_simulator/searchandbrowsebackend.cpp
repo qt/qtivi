@@ -139,7 +139,7 @@ QString SearchAndBrowseBackend::goForward(const QUuid &identifier, const QString
     return QString();
 }
 
-QIviPendingReply<void> SearchAndBrowseBackend::insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item)
+QIviPendingReply<void> SearchAndBrowseBackend::insert(const QUuid &identifier, const QString &type, int index, const QIviStandardItem *item)
 {
     if (type != QLatin1String("presets") || item->type() != QLatin1String("amfmtunerstation"))
         return QIviPendingReply<void>::createFailedReply();
@@ -187,7 +187,7 @@ QIviPendingReply<void> SearchAndBrowseBackend::move(const QUuid &identifier, con
     return reply;
 }
 
-QIviPendingReply<int> SearchAndBrowseBackend::indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item)
+QIviPendingReply<int> SearchAndBrowseBackend::indexOf(const QUuid &identifier, const QString &type, const QIviStandardItem *item)
 {
     Q_UNUSED(identifier)
 

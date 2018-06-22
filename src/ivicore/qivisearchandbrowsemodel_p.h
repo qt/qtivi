@@ -59,7 +59,7 @@
 #include "qiviqueryterm.h"
 #include "qivisearchandbrowsemodel.h"
 #include "qivisearchandbrowsemodelinterface.h"
-#include "qivisearchandbrowsemodelitem.h"
+#include "qivistandarditem.h"
 
 #include <QBitArray>
 #include <QUuid>

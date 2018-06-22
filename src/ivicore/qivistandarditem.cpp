@@ -39,72 +39,72 @@
 **
 ****************************************************************************/
 
-#include "qivisearchandbrowsemodelitem.h"
+#include "qivistandarditem.h"
 
 QT_BEGIN_NAMESPACE
 
-class QIviSearchAndBrowseModelItemPrivate : public QSharedData
+class QIviStandardItemPrivate : public QSharedData
 {
 public:
-    QIviSearchAndBrowseModelItemPrivate() = default;
-    QIviSearchAndBrowseModelItemPrivate(const QIviSearchAndBrowseModelItemPrivate &other) = default;
+    QIviStandardItemPrivate() = default;
+    QIviStandardItemPrivate(const QIviStandardItemPrivate &other) = default;
 
     QString m_id;
     QVariantMap m_data;
 };
 
 /*!
-    \class QIviSearchAndBrowseModelItem
+    \class QIviStandardItem
     \inmodule QtIviCore
-    \brief The QIviSearchAndBrowseModelItem is the base class of a row in the QIviSearchAndBrowseModel model.
+    \brief The QIviStandardItem is the base class of a row in the QIviSearchAndBrowseModel model.
 */
 
 /*!
-    \qmltype SearchAndBrowseModelItem
+    \qmltype StandardItem
     \qmlabstract
-    \instantiates QIviSearchAndBrowseModelItem
+    \instantiates QIviStandardItem
     \inqmlmodule QtIvi
-    \brief The SearchAndBrowseModelItem is the base class of a row in the SearchAndBrowseModel model.
+    \brief The StandardItem is the base class of a row in the SearchAndBrowseModel model.
 
     \note This item is not creatable from QML.
 */
 
 /*!
-    \qmlproperty string SearchAndBrowseModelItem::id
+    \qmlproperty string StandardItem::id
     A unique identifier, which can be used to identify this item.
 
     This is mainly used by the backend to implement filtering or browsing.
 */
 
 /*!
-    \property QIviSearchAndBrowseModelItem::id
+    \property QIviStandardItem::id
     A unique identifier, which can be used to identify this item.
 
     This is mainly used by the backend to implement filtering or browsing.
 */
 
 /*!
-    \qmlproperty string SearchAndBrowseModelItem::name
+    \qmlproperty string StandardItem::name
     The name of the item. E.g. The name of a contact in a addressbook, or the artist-name in a list of artists.
 */
 
 /*!
-    \property QIviSearchAndBrowseModelItem::name
+    \property QIviStandardItem::name
     The name of the item. E.g. The name of a contact in a addressbook, or the artist-name in a list of artists.
 */
 
 /*!
-    \qmlproperty string SearchAndBrowseModelItem::type
+    \qmlproperty string StandardItem::type
     The type of the item. E.g. "artist", "track", "contact".
 */
 
 /*!
-    \property QIviSearchAndBrowseModelItem::type
+    \property QIviStandardItem::type
     The type of the item. E.g. "artist", "track", "contact".
 */
 
 /*!
-    \qmlproperty object SearchAndBrowseModelItem::data
+    \qmlproperty object StandardItem::data
     A generic data field which can hold any data.
 
     This can be moved for storing additional data which is not part of the base class.
@@ -112,23 +112,23 @@ public:
 */
 
 /*!
-    \property QIviSearchAndBrowseModelItem::data
+    \property QIviStandardItem::data
     A generic data field which can hold any data.
 
     This can be moved for storing additional data which is not part of the base class.
     E.g. the "composer" of an audio track.
 */
 
-QIviSearchAndBrowseModelItem::QIviSearchAndBrowseModelItem()
-    : d(new QIviSearchAndBrowseModelItemPrivate)
+QIviStandardItem::QIviStandardItem()
+    : d(new QIviStandardItemPrivate)
 {
 
 }
 
 //defined here as a inline default copy constructor leads to compilation errors
-QIviSearchAndBrowseModelItem::QIviSearchAndBrowseModelItem(const QIviSearchAndBrowseModelItem &rhs) = default;
+QIviStandardItem::QIviStandardItem(const QIviStandardItem &rhs) = default;
 
-QIviSearchAndBrowseModelItem &QIviSearchAndBrowseModelItem::operator=(const QIviSearchAndBrowseModelItem &rhs)
+QIviStandardItem &QIviStandardItem::operator=(const QIviStandardItem &rhs)
 {
     if (this != &rhs)
         d.operator=(rhs.d);
@@ -136,34 +136,34 @@ QIviSearchAndBrowseModelItem &QIviSearchAndBrowseModelItem::operator=(const QIvi
 }
 
 //defined here as a inline default destructor leads to compilation errors
-QIviSearchAndBrowseModelItem::~QIviSearchAndBrowseModelItem() = default;
+QIviStandardItem::~QIviStandardItem() = default;
 
-QString QIviSearchAndBrowseModelItem::id() const
+QString QIviStandardItem::id() const
 {
     return d->m_id;
 }
 
-void QIviSearchAndBrowseModelItem::setId(const QString &id)
+void QIviStandardItem::setId(const QString &id)
 {
     d->m_id = id;
 }
 
-QString QIviSearchAndBrowseModelItem::name() const
+QString QIviStandardItem::name() const
 {
     return QString();
 }
 
-QString QIviSearchAndBrowseModelItem::type() const
+QString QIviStandardItem::type() const
 {
     return QString();
 }
 
-QVariantMap QIviSearchAndBrowseModelItem::data() const
+QVariantMap QIviStandardItem::data() const
 {
     return d->m_data;
 }
 
-void QIviSearchAndBrowseModelItem::setData(const QVariantMap &data)
+void QIviStandardItem::setData(const QVariantMap &data)
 {
     d->m_data = data;
 }
@@ -173,13 +173,13 @@ void QIviSearchAndBrowseModelItem::setData(const QVariantMap &data)
 
     \sa operator!=()
 */
-bool QIviSearchAndBrowseModelItem::operator==(const QIviSearchAndBrowseModelItem &other)
+bool QIviStandardItem::operator==(const QIviStandardItem &other)
 {
     return (d->m_id == other.d->m_id);
 }
 
 /*!
-    \fn bool QIviSearchAndBrowseModelItem::operator!=(const QIviSearchAndBrowseModelItem &other)
+    \fn bool QIviStandardItem::operator!=(const QIviStandardItem &other)
 
     Returns \e true if this item is not equal to \a other; otherwise returns false.
 

@@ -62,7 +62,8 @@ QIviPagingModelPrivate::QIviPagingModelPrivate(const QString &interface, QIviPag
     , m_loadingType(QIviPagingModel::FetchMore)
 {
     qRegisterMetaType<QIviPagingModel::LoadingType>();
-    qRegisterMetaType<QIviSearchAndBrowseModelItem>();
+    qRegisterMetaType<QIviStandardItem>();
+    qRegisterMetaType<QIviStandardItem>("QIviSearchAndBrowseModelItem");
 }
 
 QIviPagingModelPrivate::~QIviPagingModelPrivate()
@@ -239,13 +240,13 @@ void QIviPagingModelPrivate::clearToDefaults()
     m_itemList.clear();
 }
 
-const QIviSearchAndBrowseModelItem *QIviPagingModelPrivate::itemAt(int i) const
+const QIviStandardItem *QIviPagingModelPrivate::itemAt(int i) const
 {
     const QVariant &var = m_itemList.at(i);
     if (!var.isValid())
         return nullptr;
 
-    return qtivi_gadgetFromVariant<QIviSearchAndBrowseModelItem>(q_ptr, var);
+    return qtivi_gadgetFromVariant<QIviStandardItem>(q_ptr, var);
 }
 
 QIviPagingModelInterface *QIviPagingModelPrivate::backend() const
@@ -333,7 +334,7 @@ QIviPagingModelInterface *QIviPagingModelPrivate::backend() const
     The model only fetches the data it really needs and can it can be configured how this can be done using
     the loadingType property.
 
-    All rows in the model need to be subclassed from SearchAndBrowseModelItem.
+    All rows in the model need to be subclassed from StandardItem.
 
     The following roles are available in this model:
 
@@ -615,7 +616,7 @@ QVariant QIviPagingModel::data(const QModelIndex &index, int role) const
     if (row >= d->m_fetchedDataCount - d->m_fetchMoreThreshold && canFetchMore(QModelIndex()))
         emit fetchMoreThresholdReached();
 
-    const QIviSearchAndBrowseModelItem *item = d->itemAt(row);
+    const QIviStandardItem *item = d->itemAt(row);
     if (!item) {
         //qWarning() << "Cache miss: Waiting for fetched Data";
         return QVariant();

@@ -32,7 +32,7 @@
 #include <QIviPagingModel>
 #include <private/qivipagingmodel_p.h>
 #include <QIviPagingModelInterface>
-#include <QIviSearchAndBrowseModelItem>
+#include <QIviStandardItem>
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QQmlComponent>
@@ -60,11 +60,11 @@ public:
         m_list = createItemList("simple");
     }
 
-    QList<QIviSearchAndBrowseModelItem> createItemList(const QString &name)
+    QList<QIviStandardItem> createItemList(const QString &name)
     {
-        QList<QIviSearchAndBrowseModelItem> list;
+        QList<QIviStandardItem> list;
         for (int i=0; i<100; i++) {
-            QIviSearchAndBrowseModelItem item;
+            QIviStandardItem item;
             item.setId(name + QLatin1String(" ") + QString::number(i));
             QVariantMap map;
             map.insert("type", name);
@@ -106,7 +106,7 @@ public:
         emit dataFetched(identifier, requestedItems, start, start + count < m_list.count());
     }
 
-    void insert(int index, const QIviSearchAndBrowseModelItem item)
+    void insert(int index, const QIviStandardItem item)
     {
         m_list.insert(index, item);
         QVariantList variantList = { QVariant::fromValue(item) };
@@ -139,7 +139,7 @@ Q_SIGNALS:
     void unregisterInstanceCalled(const QUuid &identifier);
 
 private:
-    QList<QIviSearchAndBrowseModelItem> m_list;
+    QList<QIviStandardItem> m_list;
     QtIviCoreModule::ModelCapabilities m_caps;
 };
 
@@ -304,11 +304,11 @@ void tst_QIviPagingModel::testGetAt()
     QIviPagingModel model;
     model.setServiceObject(service);
 
-    QIviSearchAndBrowseModelItem item = model.at<QIviSearchAndBrowseModelItem>(0);
+    QIviStandardItem item = model.at<QIviStandardItem>(0);
     QCOMPARE(item.id(), QLatin1String("simple 0"));
 
     QVariant var = model.get(0);
-    QCOMPARE(var.value<QIviSearchAndBrowseModelItem>().id(), item.id());
+    QCOMPARE(var.value<QIviStandardItem>().id(), item.id());
 }
 
 void tst_QIviPagingModel::testFetchMore_data()
@@ -361,13 +361,13 @@ void tst_QIviPagingModel::testFetchMore()
 
     // Ask for an item before the threshold, shouldn't trigger the threshold reached signal and fetch new data.
     int offset = model.fetchMoreThreshold() + 1;
-    QCOMPARE(model.at<QIviSearchAndBrowseModelItem>(model.chunkSize() - offset).id(),
+    QCOMPARE(model.at<QIviStandardItem>(model.chunkSize() - offset).id(),
              QLatin1String("simple ") + QString::number(model.chunkSize() - offset));
     QVERIFY(!fetchMoreThresholdSpy.count());
 
     QCOMPARE(model.rowCount(), model.chunkSize());
     // By using model.at we already prefetch the next chunk of data
-    QCOMPARE(model.at<QIviSearchAndBrowseModelItem>(model.chunkSize() - 1).id(), QLatin1String("simple ") + QString::number(model.chunkSize() - 1));
+    QCOMPARE(model.at<QIviStandardItem>(model.chunkSize() - 1).id(), QLatin1String("simple ") + QString::number(model.chunkSize() - 1));
 
     QVERIFY(fetchMoreThresholdSpy.count());
     fetchMoreThresholdSpy.clear();
@@ -396,7 +396,7 @@ void tst_QIviPagingModel::testDataChangedMode()
     //TODO remove this section once we have fixed the capability race
     QSignalSpy fetchMoreThresholdSpy(&model, SIGNAL(fetchMoreThresholdReached()));
     QCOMPARE(model.rowCount(), model.chunkSize());
-    QCOMPARE(model.at<QIviSearchAndBrowseModelItem>(model.chunkSize() - 1).id(), QLatin1String("simple ") + QString::number(model.chunkSize() - 1));
+    QCOMPARE(model.at<QIviStandardItem>(model.chunkSize() - 1).id(), QLatin1String("simple ") + QString::number(model.chunkSize() - 1));
     QVERIFY(fetchMoreThresholdSpy.count());
     fetchMoreThresholdSpy.clear();
 
@@ -414,7 +414,7 @@ void tst_QIviPagingModel::testDataChangedMode()
 
     // Asking for an item near inside the threshold range should trigger a new fetch.
     QSignalSpy fetchDataSpy(service->testBackend(), SIGNAL(dataFetched(const QUuid &, const QList<QVariant> &, int , bool )));
-    QCOMPARE(model.at<QIviSearchAndBrowseModelItem>(testIndex).id(), QLatin1String("simple ") + QString::number(testIndex));
+    QCOMPARE(model.at<QIviStandardItem>(testIndex).id(), QLatin1String("simple ") + QString::number(testIndex));
     QVERIFY(fetchMoreThresholdSpy.count());
     QVERIFY(fetchDataSpy.count());
 
@@ -474,7 +474,7 @@ void tst_QIviPagingModel::testDataChangedMode_jump()
     QSignalSpy fetchDataSpy(service->testBackend(), SIGNAL(dataFetched(const QUuid &, const QList<QVariant> &, int , bool )));
     model.get(99);
     dataChangedSpy.wait();
-    QCOMPARE(model.at<QIviSearchAndBrowseModelItem>(99).id(), QLatin1String("simple ") + QString::number(99));
+    QCOMPARE(model.at<QIviStandardItem>(99).id(), QLatin1String("simple ") + QString::number(99));
     QVERIFY(fetchDataSpy.count());
 
     // Test that we really fetched new data
@@ -491,9 +491,9 @@ void tst_QIviPagingModel::testEditing()
     QIviPagingModel model;
     model.setServiceObject(service);
 
-    QCOMPARE(model.at<QIviSearchAndBrowseModelItem>(0).id(), QLatin1String("simple 0"));
+    QCOMPARE(model.at<QIviStandardItem>(0).id(), QLatin1String("simple 0"));
 
-    QIviSearchAndBrowseModelItem newItem;
+    QIviStandardItem newItem;
     newItem.setId(QLatin1String("testItem"));
 
     // Add a new Item
@@ -503,7 +503,7 @@ void tst_QIviPagingModel::testEditing()
     QCOMPARE(insertSpy.at(0).at(1).toInt(), 0);
     QCOMPARE(insertSpy.at(0).at(2).toInt(), 0);
 
-    QCOMPARE(model.at<QIviSearchAndBrowseModelItem>(0).id(), newItem.id());
+    QCOMPARE(model.at<QIviStandardItem>(0).id(), newItem.id());
 
     // Move the item to a new location
     QSignalSpy moveSpy(&model, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &, const QVector<int> &)));
@@ -513,7 +513,7 @@ void tst_QIviPagingModel::testEditing()
     QCOMPARE(moveSpy.at(0).at(0).toModelIndex().row(), 0);
     QCOMPARE(moveSpy.at(0).at(1).toModelIndex().row(), newIndex);
 
-    QCOMPARE(model.at<QIviSearchAndBrowseModelItem>(newIndex).id(), newItem.id());
+    QCOMPARE(model.at<QIviStandardItem>(newIndex).id(), newItem.id());
 
     // Remove the item again
     QSignalSpy removedSpy(&model, SIGNAL(rowsRemoved(const QModelIndex &, int , int )));
@@ -522,7 +522,7 @@ void tst_QIviPagingModel::testEditing()
     QCOMPARE(removedSpy.at(0).at(1).toInt(), newIndex);
     QCOMPARE(removedSpy.at(0).at(2).toInt(), newIndex);
 
-    QCOMPARE(model.at<QIviSearchAndBrowseModelItem>(newIndex).id(), QLatin1String("simple 10"));
+    QCOMPARE(model.at<QIviStandardItem>(newIndex).id(), QLatin1String("simple 10"));
 }
 
 void tst_QIviPagingModel::testMissingCapabilities()

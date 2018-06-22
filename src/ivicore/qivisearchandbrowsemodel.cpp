@@ -319,7 +319,7 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
     they are created instead of retrieving everything and sort or filter it locally. In addition the SearchAndBrowseModel
     only fetches the data it really needs and can it can be configured how this can be done.
 
-    All rows in the model need to be subclassed from SearchAndBrowseModelItem.
+    All rows in the model need to be subclassed from StandardItem.
 
     The following roles are available in this model:
 
@@ -647,7 +647,7 @@ bool QIviSearchAndBrowseModel::canGoForward(int i) const
         return false;
     }
 
-    const QIviSearchAndBrowseModelItem *item = d->itemAt(i);
+    const QIviStandardItem *item = d->itemAt(i);
     if (!item)
         return false;
 
@@ -696,7 +696,7 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
         return nullptr;
     }
 
-    const QIviSearchAndBrowseModelItem *item = d->itemAt(i);
+    const QIviStandardItem *item = d->itemAt(i);
     if (!item)
         return nullptr;
 
@@ -723,7 +723,7 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
 }
 
 /*!
-    \qmlmethod SearchAndBrowseModel::insert(int index, SearchAndBrowseModelItem item)
+    \qmlmethod SearchAndBrowseModel::insert(int index, StandardItem item)
 
     Insert the \a item at the position \a index.
 
@@ -744,7 +744,7 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
 QIviPendingReply<void> QIviSearchAndBrowseModel::insert(int index, const QVariant &variant)
 {
     Q_D(QIviSearchAndBrowseModel);
-    const auto item = qtivi_gadgetFromVariant<QIviSearchAndBrowseModelItem>(this, variant);
+    const auto item = qtivi_gadgetFromVariant<QIviStandardItem>(this, variant);
     if (!item)
         return QIviPendingReply<void>::createFailedReply();
 
@@ -827,7 +827,7 @@ QIviPendingReply<void> QIviSearchAndBrowseModel::move(int cur_index, int new_ind
 }
 
 /*!
-    \qmlmethod SearchAndBrowseModel::indexOf(SearchAndBrowseModelItem item)
+    \qmlmethod SearchAndBrowseModel::indexOf(StandardItem item)
 
     Determines the index of \a item in this model.
 
@@ -844,7 +844,7 @@ QIviPendingReply<void> QIviSearchAndBrowseModel::move(int cur_index, int new_ind
 QIviPendingReply<int> QIviSearchAndBrowseModel::indexOf(const QVariant &variant)
 {
     Q_D(QIviSearchAndBrowseModel);
-    const auto *item = qtivi_gadgetFromVariant<QIviSearchAndBrowseModelItem>(this, variant);
+    const auto *item = qtivi_gadgetFromVariant<QIviStandardItem>(this, variant);
     if (!item)
         return QIviPendingReply<int>::createFailedReply();
 

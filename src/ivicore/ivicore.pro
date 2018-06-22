@@ -49,7 +49,7 @@ HEADERS += \
     qivisearchandbrowsemodel_p.h \
     qivisearchandbrowsemodelinterface.h \
     qivisearchandbrowsemodelinterface_p.h \
-    qivisearchandbrowsemodelitem.h \
+    qivistandarditem.h \
     qivifeatureinterface.h \
     qividefaultpropertyoverrider_p.h \
     qivipendingreply.h \
@@ -72,7 +72,7 @@ SOURCES += \
     qivipagingmodelinterface.cpp \
     qivisearchandbrowsemodel.cpp \
     qivisearchandbrowsemodelinterface.cpp \
-    qivisearchandbrowsemodelitem.cpp \
+    qivistandarditem.cpp \
     qivifeatureinterface.cpp \
     qividefaultpropertyoverrider.cpp \
     qiviqmlconversion_helper.cpp \

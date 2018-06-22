@@ -101,7 +101,7 @@ public:
     \qmltype PlayableItem
     \instantiates QIviPlayableItem
     \inqmlmodule QtIvi.Media
-    \inherits SearchAndBrowseModelItem
+    \inherits StandardItem
     \brief The PlayableItem is the base class of a row in the PlayQueue model.
 
     \note This item is not creatable from QML.
@@ -124,20 +124,20 @@ public:
 */
 
 QIviPlayableItem::QIviPlayableItem()
-    : QIviSearchAndBrowseModelItem()
+    : QIviStandardItem()
     , d(new QIviPlayableItemPrivate)
 {
 }
 
 QIviPlayableItem::QIviPlayableItem(const QIviPlayableItem &rhs)
-    : QIviSearchAndBrowseModelItem(rhs)
+    : QIviStandardItem(rhs)
     , d(rhs.d)
 {
 }
 
 QIviPlayableItem &QIviPlayableItem::operator=(const QIviPlayableItem &rhs)
 {
-    QIviSearchAndBrowseModelItem::operator=(rhs);
+    QIviStandardItem::operator=(rhs);
     if (this != &rhs)
         d.operator=(rhs.d);
     return *this;
@@ -172,7 +172,7 @@ QString QIviPlayableItem::type() const
 */
 bool QIviPlayableItem::operator==(const QIviPlayableItem &other)
 {
-    return (QIviSearchAndBrowseModelItem::operator==(other) &&
+    return (QIviStandardItem::operator==(other) &&
             d->m_url == other.d->m_url);
 }
 

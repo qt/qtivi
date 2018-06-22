@@ -65,10 +65,10 @@ public:
     bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) override;
     QString goForward(const QUuid &identifier, const QString &type, const QString &itemId) override;
 
-    QIviPendingReply<void> insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item) override;
+    QIviPendingReply<void> insert(const QUuid &identifier, const QString &type, int index, const QIviStandardItem *item) override;
     QIviPendingReply<void> remove(const QUuid &identifier, const QString &type, int index) override;
     QIviPendingReply<void> move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) override;
-    QIviPendingReply<int> indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item) override;
+    QIviPendingReply<int> indexOf(const QUuid &identifier, const QString &type, const QIviStandardItem *item) override;
 private:
 
     AmFmTunerBackend *m_tunerBackend;

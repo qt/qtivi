@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QIVISEARCHANDBROWSEMODELITEM_H
-#define QIVISEARCHANDBROWSEMODELITEM_H
+#ifndef QIviStandardItem_H
+#define QIviStandardItem_H
 
 #include <QtCore/QMetaType>
 #include <QtCore/QSharedDataPointer>
@@ -50,9 +50,9 @@
 
 QT_BEGIN_NAMESPACE
 
-class QIviSearchAndBrowseModelItemPrivate;
+class QIviStandardItemPrivate;
 
-class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModelItem
+class Q_QTIVICORE_EXPORT QIviStandardItem
 {
     Q_GADGET
 
@@ -62,10 +62,10 @@ class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModelItem
     Q_PROPERTY(QVariantMap data READ data WRITE setData)
 
 public:
-    QIviSearchAndBrowseModelItem();
-    QIviSearchAndBrowseModelItem(const QIviSearchAndBrowseModelItem &);
-    QIviSearchAndBrowseModelItem &operator=(const QIviSearchAndBrowseModelItem &);
-    virtual ~QIviSearchAndBrowseModelItem();
+    QIviStandardItem();
+    QIviStandardItem(const QIviStandardItem &);
+    QIviStandardItem &operator=(const QIviStandardItem &);
+    virtual ~QIviStandardItem();
 
     virtual QString id() const;
     virtual void setId(const QString &id);
@@ -74,17 +74,19 @@ public:
     virtual QVariantMap data() const;
     virtual void setData(const QVariantMap &data);
 
-    bool operator==(const QIviSearchAndBrowseModelItem &other);
-    inline bool operator!=(const QIviSearchAndBrowseModelItem &other) { return !(*this == other); }
+    bool operator==(const QIviStandardItem &other);
+    inline bool operator!=(const QIviStandardItem &other) { return !(*this == other); }
 
 private:
-    QSharedDataPointer<QIviSearchAndBrowseModelItemPrivate> d;
+    QSharedDataPointer<QIviStandardItemPrivate> d;
 };
 
-Q_DECLARE_TYPEINFO(QIviSearchAndBrowseModelItem, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(QIviStandardItem, Q_MOVABLE_TYPE);
+
+using QIviSearchAndBrowseModelItem = QIviStandardItem;
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(QIviSearchAndBrowseModelItem)
+Q_DECLARE_METATYPE(QIviStandardItem)
 
-#endif // QIVISEARCHANDBROWSEMODELITEM_H
+#endif // QIviStandardItem_H

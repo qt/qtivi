@@ -94,7 +94,7 @@ public:
     \qmltype TunerStation
     \instantiates QIviTunerStation
     \inqmlmodule QtIvi.Media
-    \inherits SearchAndBrowseModelItem
+    \inherits StandardItem
     \brief The TunerStation represents a tuner station.
 
     \note This item is not creatable from QML.
@@ -193,20 +193,20 @@ public:
 */
 
 QIviTunerStation::QIviTunerStation()
-    : QIviSearchAndBrowseModelItem()
+    : QIviStandardItem()
     , d(new QIviTunerStationPrivate)
 {
 }
 
 QIviTunerStation::QIviTunerStation(const QIviTunerStation &rhs)
-    : QIviSearchAndBrowseModelItem(rhs)
+    : QIviStandardItem(rhs)
     , d(rhs.d)
 {
 }
 
 QIviTunerStation &QIviTunerStation::operator=(const QIviTunerStation &rhs)
 {
-    QIviSearchAndBrowseModelItem::operator=(rhs);
+    QIviStandardItem::operator=(rhs);
     if (this != &rhs)
         d.operator=(rhs.d);
     return *this;
@@ -299,7 +299,7 @@ QString QIviTunerStation::type() const
 */
 bool QIviTunerStation::operator==(const QIviTunerStation &other)
 {
-    return (QIviSearchAndBrowseModelItem::operator==(other) &&
+    return (QIviStandardItem::operator==(other) &&
             d->m_stationName == other.d->m_stationName &&
             d->m_frequency == other.d->m_frequency &&
             d->m_stationLogoUrl == other.d->m_stationLogoUrl &&

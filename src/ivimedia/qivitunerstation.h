@@ -44,14 +44,14 @@
 
 #include <QtIviMedia/qtivimediaglobal.h>
 #include <QtIviMedia/QIviAmFmTuner>
-#include <QtIviCore/QIviSearchAndBrowseModelItem>
+#include <QtIviCore/QIviStandardItem>
 
 QT_BEGIN_NAMESPACE
 
 class QIviTunerStationPrivate;
 class QIviAmFmTunerStationPrivate;
 
-class Q_QTIVIMEDIA_EXPORT QIviTunerStation : public QIviSearchAndBrowseModelItem
+class Q_QTIVIMEDIA_EXPORT QIviTunerStation : public QIviStandardItem
 {
     Q_GADGET
 

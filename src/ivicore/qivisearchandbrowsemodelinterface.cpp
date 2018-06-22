@@ -184,7 +184,7 @@ void QIviSearchAndBrowseModelInterface::registerContentType(const QMetaObject &o
 */
 
 /*!
-    \fn QIviSearchAndBrowseModelInterface::insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item)
+    \fn QIviSearchAndBrowseModelInterface::insert(const QUuid &identifier, const QString &type, int index, const QIviStandardItem *item)
 
     Adds the browsable \a item into the current dataset of the QIviSearchAndBrowseModel instance identified by \a identifier and the current content type \a type at \a index.
     The provided item could be owned by another model or QML, because of that it's expected that the backend stores its internal representation.
@@ -209,7 +209,7 @@ void QIviSearchAndBrowseModelInterface::registerContentType(const QMetaObject &o
 */
 
 /*!
-    \fn QIviSearchAndBrowseModelInterface::indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item)
+    \fn QIviSearchAndBrowseModelInterface::indexOf(const QUuid &identifier, const QString &type, const QIviStandardItem *item)
 
     Determines the index of \a item in the model identified by \a identifier and \a type.
 */

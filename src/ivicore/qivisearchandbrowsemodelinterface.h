@@ -51,7 +51,7 @@
 #include <QtIviCore/QtIviCoreModule>
 #include <QtIviCore/QIviPagingModelInterface>
 #include <QtIviCore/QIviSearchAndBrowseModel>
-#include <QtIviCore/QIviSearchAndBrowseModelItem>
+#include <QtIviCore/QIviStandardItem>
 
 QT_BEGIN_NAMESPACE
 
@@ -76,10 +76,10 @@ public:
     virtual bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) = 0; //Every Item has a id property which is filled by the backend implementation.
     virtual QString goForward(const QUuid &identifier, const QString &type, const QString &itemId) = 0; //Returns the new type identifier used for the next level. The identifier will stay the same for the following calls but the type might differ.
 
-    virtual QIviPendingReply<void> insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item) = 0;
+    virtual QIviPendingReply<void> insert(const QUuid &identifier, const QString &type, int index, const QIviStandardItem *item) = 0;
     virtual QIviPendingReply<void> remove(const QUuid &identifier, const QString &type, int index) = 0;
     virtual QIviPendingReply<void> move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) = 0;
-    virtual QIviPendingReply<int> indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item) = 0;
+    virtual QIviPendingReply<int> indexOf(const QUuid &identifier, const QString &type, const QIviStandardItem *item) = 0;
 
 protected:
     template <typename T>

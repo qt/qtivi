@@ -58,7 +58,7 @@
 
 #include "qivipagingmodel.h"
 #include "qivipagingmodelinterface.h"
-#include "qivisearchandbrowsemodelitem.h"
+#include "qivistandarditem.h"
 
 #include <QBitArray>
 #include <QUuid>
@@ -79,7 +79,7 @@ public:
     void onFetchMoreThresholdReached();
     virtual void resetModel();
     virtual void clearToDefaults();
-    const QIviSearchAndBrowseModelItem *itemAt(int i) const;
+    const QIviStandardItem *itemAt(int i) const;
     void fetchData(int startIndex);
 
     QIviPagingModelInterface *backend() const;

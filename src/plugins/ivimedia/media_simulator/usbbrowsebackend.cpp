@@ -146,7 +146,7 @@ QString UsbBrowseBackend::goForward(const QUuid &identifier, const QString &type
         return itemId;
 }
 
-QIviPendingReply<void> UsbBrowseBackend::insert(const QUuid &identifier, const QString &type, int index, const QIviSearchAndBrowseModelItem *item)
+QIviPendingReply<void> UsbBrowseBackend::insert(const QUuid &identifier, const QString &type, int index, const QIviStandardItem *item)
 {
     Q_UNUSED(identifier)
     Q_UNUSED(type)
@@ -175,7 +175,7 @@ QIviPendingReply<void> UsbBrowseBackend::move(const QUuid &identifier, const QSt
     return QIviPendingReply<void>::createFailedReply();
 }
 
-QIviPendingReply<int> UsbBrowseBackend::indexOf(const QUuid &identifier, const QString &type, const QIviSearchAndBrowseModelItem *item)
+QIviPendingReply<int> UsbBrowseBackend::indexOf(const QUuid &identifier, const QString &type, const QIviStandardItem *item)
 {
     Q_UNUSED(identifier)
     Q_UNUSED(type)
