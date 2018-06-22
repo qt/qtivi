@@ -45,6 +45,34 @@
 
 QT_BEGIN_NAMESPACE
 
+class {{class}}Private : public QSharedData
+{
+public:
+    {{class}}Private()
+{% for field in struct.fields %}
+    {% if loop.first %}:{% else %},{% endif %} m_{{field}}({{field|default_type_value}})
+{% endfor %}
+    {}
+
+    {{class}}Private(const {{class}}Private &other)
+        : QSharedData(other)
+{% for field in struct.fields %}
+        , m_{{field}}(other.m_{{field}})
+{% endfor %}
+    {}
+
+    {{class}}Private({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %})
+        : QSharedData()
+{% for field in struct.fields %}
+        , m_{{field}}({{field}})
+{% endfor %}
+    {}
+
+{% for field in struct.fields %}
+    {{field|return_type}} m_{{field}};
+{% endfor %}
+};
+
 /*!
     \class {{struct}}
     \inmodule {{module}}
@@ -52,22 +80,39 @@ QT_BEGIN_NAMESPACE
 */
 
 {{class}}::{{class}}()
-{% for field in struct.fields %}
-    {% if loop.first %}:{% else %},{% endif %} m_{{field}}({{field|default_type_value}})
-{% endfor %}
+    : QIviStandardItem()
+    , d(new {{class}}Private)
 {
 }
 
+{{class}}::{{class}}(const {{class}} &rhs)
+    : QIviStandardItem(rhs)
+    , d(rhs.d)
+{
+}
+
+{{class}} &{{class}}::operator=(const {{class}} &rhs)
+{
+    QIviStandardItem::operator=(rhs);
+    if (this != &rhs)
+        d.operator=(rhs.d);
+    return *this;
+}
+
 {{class}}::{{class}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %})
-{% for field in struct.fields %}
-    {% if loop.first %}:{% else %},{% endif %} m_{{field}}({{field}})
-{% endfor %}
+    : QIviStandardItem()
+    , d(new {{class}}Private({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field}}{% endfor %}))
 {
 }
 
 /*! \internal */
 {{class}}::~{{class}}()
 {
+}
+
+QString {{class}}::type() const
+{
+    return QLatin1String("{{struct|lower}}");
 }
 
 {% for field in struct.fields %}
@@ -81,13 +126,13 @@ QT_BEGIN_NAMESPACE
 */
 {{ivi.prop_getter(field, class)}}
 {
-    return m_{{field}};
+    return d->m_{{field}};
 }
 {%   if not field.readonly and not field.const %}
 
 {{ivi.prop_setter(field, class)}}
 {
-    m_{{field}} = {{field}};
+    d->m_{{field}} = {{field}};
 }
 {%   endif %}
 
@@ -95,6 +140,9 @@ QT_BEGIN_NAMESPACE
 
 bool operator==(const {{class}} &left, const {{class}} &right) Q_DECL_NOTHROW
 {
+    if (left.d == right.d)
+        return true;
+    //FIX me for inheritance
     return (
 {% for field in struct.fields %}
         left.{{field}}() == right.{{field}}() {% if not loop.last %}&&{% endif %}
@@ -110,6 +158,7 @@ bool operator!=(const {{class}} &left, const {{class}} &right) Q_DECL_NOTHROW
 
 QDataStream &operator<<(QDataStream &stream, const {{class}} &obj)
 {
+    //FIX me for inheritance
 {% for field in struct.fields %}
     stream << obj.{{field}}();
 {% endfor %}
@@ -118,8 +167,9 @@ QDataStream &operator<<(QDataStream &stream, const {{class}} &obj)
 
 QDataStream &operator>>(QDataStream &stream, {{class}} &obj)
 {
+    //FIX me for inheritance
 {% for field in struct.fields %}
-    stream >> obj.m_{{field}};
+    stream >> obj.d->m_{{field}};
 {% endfor %}
     return stream;
 }

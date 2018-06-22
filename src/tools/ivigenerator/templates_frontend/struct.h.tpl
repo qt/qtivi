@@ -57,10 +57,13 @@
 #include <QObject>
 #include <QDataStream>
 #include <QDebug>
+#include <QIviStandardItem>
 
 QT_BEGIN_NAMESPACE
 
-class  {{exportsymbol}} {{class}}
+class {{class}}Private;
+
+class {{exportsymbol}} {{class}} : public QIviStandardItem
 {
     Q_GADGET
 {% for field in struct.fields %}
@@ -69,8 +72,12 @@ class  {{exportsymbol}} {{class}}
     Q_CLASSINFO("IviPropertyDomains", "{{ struct.fields|json_domain|replace("\"", "\\\"") }}")
 public:
     {{class}}();
+    {{class}}(const {{class}} &rhs);
+    {{class}} &operator=(const {{class}} &);
     {{class}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %});
     ~{{class}}();
+
+    QString type() const override;
 
 {% for field in struct.fields %}
     {{ivi.prop_getter(field)}};
@@ -79,14 +86,12 @@ public:
 {%   endif %}
 {% endfor %}
 
-
 private:
-{% for field in struct.fields %}
-    {{field|return_type}} m_{{field}};
-{% endfor %}
-
+    QSharedDataPointer<{{class}}Private> d;
+    friend {{exportsymbol}} bool operator==(const {{class}} &left, const {{class}} &right) Q_DECL_NOTHROW;
     friend {{exportsymbol}} QDataStream &operator>>(QDataStream &stream, {{class}} &obj);
 };
+Q_DECLARE_TYPEINFO({{class}}, Q_MOVABLE_TYPE);
 
 {{exportsymbol}} bool operator==(const {{class}} &left, const {{class}} &right) Q_DECL_NOTHROW;
 {{exportsymbol}} bool operator!=(const {{class}} &left, const {{class}} &right) Q_DECL_NOTHROW;
