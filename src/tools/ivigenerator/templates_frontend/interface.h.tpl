@@ -62,6 +62,7 @@
 
 #include <QtIviCore/{{base_class}}>
 #include <QtIviCore/QIviPendingReply>
+#include <QtIviCore/QIviPagingModel>
 
 QT_BEGIN_NAMESPACE
 
@@ -96,7 +97,7 @@ public Q_SLOTS:
     {{ ivi.operation(operation) }};
 {% endfor %}
 {% for property in interface.properties %}
-{%   if not property.readonly and not property.const %}
+{%   if not property.readonly and not property.const and not property.type.is_model %}
     {{ivi.prop_setter(property)}};
 {%   endif %}
 {% endfor %}
@@ -125,9 +126,9 @@ private:
 {% else %}
 {% for property in interface.properties %}
 {%   if interface.tags.config.zoned %}
-    Q_PRIVATE_SLOT(d_func(), void on{{property|upperfirst}}Changed({{property|parameter_type}}, const QString &))
+    Q_PRIVATE_SLOT(d_func(), {{ivi.on_prop_changed(property, "", true, true)}})
 {%   else %}
-    Q_PRIVATE_SLOT(d_func(), void on{{property|upperfirst}}Changed({{property|parameter_type}}))
+    Q_PRIVATE_SLOT(d_func(), {{ivi.on_prop_changed(property, "", false, true)}})
 {%   endif %}
 {% endfor %}
     Q_DECLARE_PRIVATE({{class}})

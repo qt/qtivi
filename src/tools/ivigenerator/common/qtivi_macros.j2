@@ -80,7 +80,7 @@ QIviPendingReply<{{operation|return_type}}> {{scope}}{{operation}}({{join_params
 
 {# property declaration, Q_PROPERTY(...) #}
 {% macro property(property, notify = true) %}
-{%   if property.readonly or property.const %}
+{%   if property.readonly or property.const or property.type.is_model %}
 {%     set write = '' %}
 {%   else %}
 {%     set write = ' WRITE ' + property|setter_name %}
@@ -129,7 +129,7 @@ void {{scope}}{{property|setter_name}}({{property|parameter_type}}{{zone}})
 {# helper macro for defining a property notifier and a corresponding callback.
 # This is an internal function and not intended to be used inside a template.
 #}
-{% macro _prop_notify(property, class, zoned, prefix) %}
+{% macro _prop_notify(property, class, zoned, prefix, model_interface) %}
 {%   if prefix|count %}
 {%     set prop = prefix + property|upperfirst %}
 {%   else %}
@@ -145,23 +145,28 @@ void {{scope}}{{property|setter_name}}({{property|parameter_type}}{{zone}})
 {%   else %}
 {%     set zone = '' %}
 {%   endif %}
-void {{scope}}{{prop}}Changed({{property|parameter_type}}{{zone}})
+{%   if property.type.is_model and model_interface %}
+{%     set type = 'QIviPagingModelInterface *'+property.name %}
+{%   else %}
+{%     set type = property|parameter_type %}
+{%   endif %}
+void {{scope}}{{prop}}Changed({{type}}{{zone}})
 {%- endmacro %}
 
 {# signal declaration for property notifier.
 # pass the class parameter in order to add the scope:: -specifier.
 # use zoned to add the zone-specifier
 #}
-{% macro prop_notify(property, class = '', zoned = false) %}
-{{_prop_notify(property, class, zoned, '')}}
+{% macro prop_notify(property, class = '', zoned = false, model_interface = false) %}
+{{_prop_notify(property, class, zoned, '', model_interface)}}
 {%- endmacro %}
 
 {# callback slot declaration for property notifier.
 # pass the class parameter in order to add the scope:: -specifier.
 # use zoned to add the zone-specifier
 #}
-{% macro on_prop_changed(property, class = '', zoned = false) %}
-{{_prop_notify(property, class, zoned, 'on')}}
+{% macro on_prop_changed(property, class = '', zoned = false, model_interface = false) %}
+{{_prop_notify(property, class, zoned, 'on', model_interface)}}
 {%- endmacro %}
 
 

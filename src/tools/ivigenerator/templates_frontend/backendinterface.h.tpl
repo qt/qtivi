@@ -62,6 +62,7 @@
 
 #include <QtIviCore/{{base_class}}>
 #include <QtIviCore/QIviPendingReply>
+#include <QtIviCore/QIviPagingModelInterface>
 
 QT_BEGIN_NAMESPACE
 
@@ -73,7 +74,7 @@ public:
     ~{{class}}();
 
 {% for property in interface.properties %}
-{%   if not property.readonly and not property.const %}
+{%   if not property.readonly and not property.const and not property.type.is_model %}
     virtual {{ivi.prop_setter(property, zoned = interface.tags.config.zoned)}} = 0;
 {%   endif %}
 {% endfor %}
@@ -86,7 +87,7 @@ Q_SIGNALS:
     {{ivi.signal(signal, zoned = interface.tags.config.zoned)}};
 {% endfor %}
 {% for property in interface.properties %}
-    {{ivi.prop_notify(property, zoned = interface.tags.config.zoned)}};
+    {{ivi.prop_notify(property, zoned = interface.tags.config.zoned, model_interface = true)}};
 {% endfor %}
 };
 

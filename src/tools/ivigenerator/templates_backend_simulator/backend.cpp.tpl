@@ -43,17 +43,17 @@
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
 #include "{{class|lower}}.h"
 
-{% for property in interface.properties %}
-{% if property.type.is_model %}
-#include "{{property|model_type|lower}}.h"
-{% endif %}
-{% endfor %}
-
 #include <QDebug>
 
 {% if 'simulator' in features %}
 #include <QtSimulator>
 {% endif %}
+
+{% for property in interface.properties %}
+{%   if property.type.is_model %}
+{% include "pagingmodel.cpp.tpl" %}
+{%   endif %}
+{% endfor %}
 
 QT_BEGIN_NAMESPACE
 
@@ -66,7 +66,11 @@ QT_BEGIN_NAMESPACE
     : {{class}}Interface(parent)
 {% for property in interface.properties %}
 {%   if not property.tags.config_simulator or not property.tags.config_simulator.zoned %}
+{%       if property.type.is_model %}
+    , m_{{ property }}(new {{property|upperfirst}}Model(this))
+{%       else %}
     , m_{{ property }}({{property|default_value}})
+{%       endif %}
 {%   endif %}
 {% endfor %}
 {% if 'simulator' in features %}
@@ -80,7 +84,11 @@ QT_BEGIN_NAMESPACE
     ZoneBackend {{zone_name}}Zone;
 {%   for property in interface.properties %}
 {%     if property.tags.config_simulator and property.tags.config_simulator.zoned %}
+{%       if property.type.is_model %}
+    {{zone_name}}Zone.{{property}} = new {{property|upperfirst}}Model(this);
+{%       else %}
     {{zone_name}}Zone.{{property}} = {{property|default_value(zone_name)}};
+{%       endif %}
 {%     endif %}
 {%   endfor %}
     m_zoneMap.insert("{{zone_id}}", {{zone_name}}Zone);
@@ -162,7 +170,7 @@ void {{class}}::initialize()
 }
 
 {% for property in interface.properties %}
-{%   if not property.readonly and not property.const %}
+{%   if not property.readonly and not property.const and not property.type.is_model %}
 /*!
     \fn virtual {{ivi.prop_setter(property, class, interface_zoned)}}
 

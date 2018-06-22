@@ -60,6 +60,13 @@ private slots:
     void testChangeFromFrontend();
     void testMethods();
     void testSignals();
+{% set once = false %}
+{% for property in interface.properties if not once %}
+{%   if property.type.is_model %}
+{%     set once = true %}
+    void testModels();
+{%   endif %}
+{% endfor %}
 
 private:
     QIviServiceManager *manager;

@@ -142,7 +142,6 @@ bool operator==(const {{class}} &left, const {{class}} &right) Q_DECL_NOTHROW
 {
     if (left.d == right.d)
         return true;
-    //FIX me for inheritance
     return (
 {% for field in struct.fields %}
         left.{{field}}() == right.{{field}}() {% if not loop.last %}&&{% endif %}
@@ -158,7 +157,6 @@ bool operator!=(const {{class}} &left, const {{class}} &right) Q_DECL_NOTHROW
 
 QDataStream &operator<<(QDataStream &stream, const {{class}} &obj)
 {
-    //FIX me for inheritance
 {% for field in struct.fields %}
     stream << obj.{{field}}();
 {% endfor %}
@@ -167,7 +165,6 @@ QDataStream &operator<<(QDataStream &stream, const {{class}} &obj)
 
 QDataStream &operator>>(QDataStream &stream, {{class}} &obj)
 {
-    //FIX me for inheritance
 {% for field in struct.fields %}
     stream >> obj.d->m_{{field}};
 {% endfor %}

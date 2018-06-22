@@ -26,16 +26,15 @@ templates_frontend.files +=  \
     templates_frontend/modulefactory.cpp.tpl \
     templates_frontend/modulefactory.h.tpl \
     templates_frontend/struct.cpp.tpl \
-    templates_frontend/struct.h.tpl \
-    templates_frontend/structmodel.cpp.tpl \
-    templates_frontend/structmodel.h.tpl \
-    templates_frontend/structmodel_p.h.tpl
+    templates_frontend/struct.h.tpl
 templates_frontend.path = $$[QT_HOST_BINS]/ivigenerator/templates_frontend
 
 templates_backend_simulator.files += \
     templates_backend_simulator/backend.cpp.tpl \
     templates_backend_simulator/backend.h.tpl \
     templates_backend_simulator/backend_range.cpp.tpl \
+    templates_backend_simulator/pagingmodel.h.tpl \
+    templates_backend_simulator/pagingmodel.cpp.tpl \
     templates_backend_simulator/plugin.cpp.tpl \
     templates_backend_simulator/plugin.h.tpl \
     templates_backend_simulator/plugin.json \
@@ -90,7 +89,8 @@ templates_test.files += \
     templates_test/tst_test.h.tpl \
     templates_test/tst_test.cpp.tpl \
     templates_test/module.pri.tpl \
-    templates_test/main.cpp.tpl
+    templates_test/main.cpp.tpl \
+    templates_test/pagingmodel.h.tpl
 templates_test.path = $$[QT_HOST_BINS]/ivigenerator/templates_test
 
 generator.files += \

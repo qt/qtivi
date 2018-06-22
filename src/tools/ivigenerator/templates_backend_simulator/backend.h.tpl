@@ -52,6 +52,12 @@
 #include "{{class|lower}}interface.h"
 {% endif %}
 
+{% for property in interface.properties %}
+{%   if property.type.is_model %}
+{% include "pagingmodel.h.tpl" %}
+{%   endif %}
+{% endfor %}
+
 QT_BEGIN_NAMESPACE
 
 {% if 'simulator' in features %}
@@ -74,7 +80,7 @@ public:
     void initialize() override;
 public Q_SLOTS:
 {% for property in interface.properties %}
-{%   if not property.readonly and not property.const %}
+{%   if not property.readonly and not property.const and not property.type.is_model %}
     virtual {{ivi.prop_setter(property, zoned = interface_zoned)}} override;
 {%   endif %}
 {% endfor %}
@@ -86,7 +92,11 @@ public Q_SLOTS:
 protected:
 {% for property in interface.properties %}
 {%   if not property.tags.config_simulator or not property.tags.config_simulator.zoned %}
-    {{ property|return_type }} m_{{ property }};
+{%     if property.type.is_model %}
+QIviPagingModelInterface *m_{{ property }};
+{%     else %}
+{{ property|return_type }} m_{{ property }};
+{%     endif %}
 {%   endif %}
 {% endfor %}
 
@@ -94,7 +104,11 @@ protected:
     struct ZoneBackend {
 {%   for property in interface.properties %}
 {%     if property.tags.config_simulator and property.tags.config_simulator.zoned %}
-        {{ property|return_type }} {{ property }};
+{%       if property.type.is_model %}
+QIviPagingModelInterface *{{ property }};
+{%       else %}
+{{ property|return_type }} {{ property }};
+{%       endif %}
 {%     endif %}
 {%   endfor %}
     };

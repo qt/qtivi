@@ -70,8 +70,10 @@ QT_BEGIN_NAMESPACE
     {% for zone_name, zone_id in zones.items() %}
     addZone(QLatin1String("{{zone_id}}"));
     {%   for property in interface.properties %}
+    {%     if not property.type.is_model %}
     {%     if property.tags.config_simulator and property.tags.config_simulator.zoned %}
     m_zoneHash[QLatin1String("{{zone_id}}")]->m_{{property}} = {{property|default_value(zone_name)}};
+    {%     endif %}
     {%     endif %}
     {%   endfor %}
     {% endfor %}
@@ -96,21 +98,25 @@ QT_BEGIN_NAMESPACE
         while (i != m_zoneHash.constEnd()) {
             i.value()->m_worker = client;
 {%   for property in interface.properties %}
+{%   if not property.type.is_model %}
 {%     set function_name = property|setter_name %}
 {%     if property.readonly or property.const %}
 {%       set function_name = property.name + 'Changed' %}
 {%     endif %}
             m_worker->call("{{function_name}}", i.value()->m_{{property}}, i.value()->m_currentZone);
+{%   endif %}
 {%   endfor %}
             ++i;
         }
 {% else %}
 {%   for property in interface.properties %}
+{%   if not property.type.is_model %}
 {%     set function_name = property|setter_name %}
 {%     if property.readonly or property.const %}
 {%       set function_name = property.name + 'Changed' %}
 {%     endif %}
         m_worker->call("{{function_name}}", m_{{property}});
+{%   endif %}
 {%   endfor %}
 {% endif %}
     });
@@ -166,6 +172,7 @@ QVariantMap {{class}}::zoneAt() const
 {% endif %}
 
 {% for property in interface.properties %}
+{%   if not property.type.is_model %}
 {{ivi.prop_getter(property, class)}}
 {
    return m_{{property}};
@@ -210,6 +217,7 @@ QVariantMap {{class}}::zoneAt() const
 }
 {% endif %}
 
+{% endif %}
 {% endfor %}
 
 {% for signal in interface.signals %}

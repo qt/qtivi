@@ -45,9 +45,6 @@
 {% for interface in module.interfaces %}
 #include "{{interface|lower}}.h"
 {% endfor %}
-{% for struct in module.structs %}
-#include "{{struct|lower}}model.h"
-{% endfor %}
 #include <QtIviCore/QIviPendingReply>
 #include <QQmlEngine>
 #include <QDebug>
@@ -113,10 +110,8 @@ void {{class}}::registerTypes()
 {% endfor %}
 {% for struct in module.structs %}
     qRegisterMetaType<{{struct}}>();
-    qRegisterMetaType<{{struct}}Model*>();
     qRegisterMetaTypeStreamOperators<{{struct}}>();
     qIviRegisterPendingReplyType<{{struct}}>();
-    qIviRegisterPendingReplyType<{{struct}}Model*>();
 {% endfor %}
 }
 

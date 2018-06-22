@@ -1,5 +1,6 @@
 {#
-# Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+# Copyright (C) 2018 Pelagicore AG.
+# Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB)
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -36,44 +37,24 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% set class = '{0}Model'.format(struct) %}
-{% set oncedefine = '{0}_{1}PRIVATE_H_'.format(module.module_name|upper, class|upper) %}
-{% include 'generated_comment.cpp.tpl' %}
+{% set class = '{0}Model'.format(property|upperfirst) %}
 
-#ifndef {{oncedefine}}
-#define {{oncedefine}}
+#include <QIviPagingModelInterface>
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail. This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include "{{struct|lower}}.h"
-
-#include <QtCore/private/qabstractitemmodel_p.h>
-#include <QVector>
-
-QT_BEGIN_NAMESPACE
-
-class {{class}};
-
-class {{class}}Private : public QAbstractItemModelPrivate
+class {{class}} : public QIviPagingModelInterface
 {
+    Q_OBJECT
 public:
-    {{class}}Private();
-    ~{{class}}Private();
+    explicit {{class}}(QObject *parent = nullptr);
+    ~{{class}}();
 
-    QVector<{{struct}}> m_data;
+    void initialize() override;
+    void registerInstance(const QUuid &identifier) override;
+    void unregisterInstance(const QUuid &identifier) override;
 
-    Q_DECLARE_PUBLIC({{class}})
+    void fetchData(const QUuid &identifier, int start, int count) override;
+
+private:
+    QVariantList m_list;
 };
 
-QT_END_NAMESPACE
-
-#endif // {{oncedefine}}

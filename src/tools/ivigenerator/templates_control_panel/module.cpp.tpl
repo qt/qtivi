@@ -93,9 +93,6 @@ void {{class}}::registerTypes()
     qRegisterMetaType<{{class}}::{{enum|flag_type}}>();
     qRegisterMetaTypeStreamOperators<{{class}}::{{enum|flag_type}}>();
 {% endfor %}
-{% for struct in module.structs %}
-    qRegisterMetaType<{{struct}}>();
-{% endfor %}
 }
 
 /*! \internal */

@@ -1,5 +1,6 @@
 {#
 # Copyright (C) 2018 Pelagicore AG.
+# Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB)
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -36,52 +37,48 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% set exportsymbol = 'Q_{0}_EXPORT'.format(module.module_name|upper) %}
-{% set class = '{0}Module'.format(module.module_name|upperfirst) %}
-{% set oncedefine = '{0}_H_'.format(class|upper) %}
-{% include 'generated_comment.cpp.tpl' %}
+{% set class = '{0}Model'.format(property|upperfirst) %}
 
-#ifndef {{oncedefine}}
-#define {{oncedefine}}
+#include "{{property.type.nested|lower}}.h"
+#include <QtDebug>
 
-{% if module.tags.config.module %}
-#include <{{module.tags.config.module}}/{{module.module_name|lower}}global.h>
-{% else %}
-#include "{{module.module_name|lower}}global.h"
-{% endif %}
-#include <QObject>
+{{class}}::{{class}}(QObject* parent)
+    : QIviPagingModelInterface(parent)
+{
+    for(int i=0; i < 100; i++)
+        m_list.append(QVariant::fromValue({{property.type.nested|test_type_value}}));
+}
 
-QT_BEGIN_NAMESPACE
+/*! \internal */
+{{class}}::~{{class}}()
+{
+}
 
-class {{exportsymbol}} {{class}} : public QObject {
-    Q_OBJECT
-public:
-    {{class}}(QObject *parent=nullptr);
+void {{class}}::initialize()
+{
+    emit initializationDone();
+}
 
-{% for enum in module.enums %}
-    enum {{enum}} {
-        {% for member in enum.members %}
-        {{member.name}} = {{member.value}}, {{member.comment}}
-        {% endfor %}
-    };
-{% if enum.is_flag %}
-    Q_DECLARE_FLAGS({{enum|flag_type}}, {{enum}})
-    Q_FLAG({{enum|flag_type}})
-{% else %}
-    Q_ENUM({{enum}})
-{% endif %}
-    static {{enum}} to{{enum}}(quint8 v, bool *ok);
-{% endfor %}
+void {{class}}::registerInstance(const QUuid &identifier)
+{
+    qCritical() << "REGISTER" << identifier;
 
-    static void registerTypes();
-    static void registerQmlTypes(const QString& uri, int majorVersion = 1, int minorVersion = 0);
-};
+    emit countChanged(identifier, 100);
+}
 
-{% for enum in module.enums %}
-{{exportsymbol}} QDataStream &operator<<(QDataStream &out, {{class}}::{{enum|flag_type}} var);
-{{exportsymbol}} QDataStream &operator>>(QDataStream &in, {{class}}::{{enum|flag_type}} &var);
-{% endfor %}
+void {{class}}::unregisterInstance(const QUuid &identifier)
+{
+    qCritical() << "UNREGISTER" << identifier;
+}
 
-QT_END_NAMESPACE
+void {{class}}::fetchData(const QUuid &identifier, int start, int count)
+{
+    qCritical() << "FETCH" << identifier << start << count;
 
-#endif // {{oncedefine}}
+    QVariantList list;
+    int max = qMin(start + count, m_list.count());
+    for(int i=start; i < max; i++)
+        list.append(m_list.at(i));
+
+    emit dataFetched(identifier, list, start, max <  m_list.count());
+}

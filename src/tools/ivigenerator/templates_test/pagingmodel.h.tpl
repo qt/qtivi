@@ -37,59 +37,53 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% set class = '{0}Model'.format(struct) %}
-{% set oncedefine = '{0}_{1}_H_'.format(module.module_name|upper, class|upper) %}
-{% set exportsymbol = 'Q_{0}_EXPORT'.format(module.module_name|upper) %}
-{% include 'generated_comment.cpp.tpl' %}
+{% set class = '{0}Model'.format(property|upperfirst) %}
 
-#ifndef {{oncedefine}}
-#define {{oncedefine}}
+#include "{{property.type.nested|lower}}.h"
+#include <QtDebug>
 
-#include "{{struct|lower}}.h"
-#include <QAbstractListModel>
+#include <QIviPagingModelInterface>
 
-QT_BEGIN_NAMESPACE
-
-class {{class}}Private;
-
-class  {{exportsymbol}} {{class}} : public QAbstractListModel
+class {{class}} : public QIviPagingModelInterface
 {
     Q_OBJECT
-    Q_PROPERTY(int count READ count NOTIFY countChanged)
 public:
-    enum Roles {
-        {% for field in struct.fields %}
-            {{field|upperfirst}}{% if loop.first %} = Qt::UserRole{% endif %},
-        {% endfor %}
-    };
-    Q_ENUM(Roles);
+    explicit {{class}}(QObject *parent = nullptr)
+        : QIviPagingModelInterface(parent)
+    {
+        for(int i=0; i < 100; i++)
+            m_list.append(QVariant::fromValue({{property.type.nested|test_type_value}}));
+    }
 
-    explicit {{class}}(QObject *parent = nullptr);
-    ~{{class}}();
+    ~{{class}}()
+    {
+    }
 
-    int count() const;
+    void initialize() override
+    {
+        emit initializationDone();
+    }
 
-    QHash<int, QByteArray> roleNames() const override;
-    int rowCount(const QModelIndex& parent) const override;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::DisplayRole) override;
-    bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
-    bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
-    bool moveRows(const QModelIndex &sourceParent, int sourceRow, int count, const QModelIndex &destinationParent, int destinationChild) override;
+    void registerInstance(const QUuid &identifier) override
+    {
+        emit countChanged(identifier, 100);
+    }
 
-    Q_INVOKABLE {{struct}} at(int index) const;
-    Q_INVOKABLE void append(const {{struct}}& data);
-    Q_INVOKABLE {{struct}} append({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %});
-    Q_INVOKABLE void remove(int index);
+    void unregisterInstance(const QUuid &identifier) override
+    {
+        Q_UNUSED(identifier);
+    }
 
-Q_SIGNALS:
-    void countChanged(int count);
+    void fetchData(const QUuid &identifier, int start, int count) override
+    {
+        QVariantList list;
+        int max = qMin(start + count, m_list.count());
+        for(int i=start; i < max; i++)
+            list.append(m_list.at(i));
+
+        emit dataFetched(identifier, list, start, max <  m_list.count());
+    }
 
 private:
-    Q_DECLARE_PRIVATE({{class}})
+    QVariantList m_list;
 };
-
-QT_END_NAMESPACE
-
-
-#endif // {{oncedefine}}

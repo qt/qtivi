@@ -67,6 +67,7 @@
 {% else %}
 #include <QtIviCore/private/{{base_class|lower}}_p.h>
 {% endif %}
+#include <QIviPagingModelInterface>
 
 QT_BEGIN_NAMESPACE
 
@@ -96,7 +97,7 @@ public:
     void clearToDefaults();
 
 {% for property in interface.properties %}
-    {{ivi.on_prop_changed(property, zoned = interface.tags.config.zoned)}};
+    {{ivi.on_prop_changed(property, zoned = interface.tags.config.zoned, model_interface = true)}};
 {% endfor %}
 {% for signal in interface.signals %}
     void on{{signal|upperfirst}}({{ivi.join_params(signal, zoned = interface.tags.config.zoned)}});

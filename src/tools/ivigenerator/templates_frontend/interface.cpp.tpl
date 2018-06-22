@@ -44,14 +44,9 @@
 #include "{{class|lower}}_p.h"
 #include "{{class|lower}}backendinterface.h"
 
-{% for property in interface.properties %}
-{% if property.type.is_model %}
-#include "{{property|model_type|lower}}.h"
-{% endif %}
-{% endfor %}
-
 #include <QQmlEngine>
 #include <QIviServiceObject>
+#include <QIviProxyServiceObject>
 
 QT_BEGIN_NAMESPACE
 
@@ -133,6 +128,12 @@ const {{class}}Private *{{class}}Private::get(const {{class}} *v)
 void {{class}}Private::clearToDefaults()
 {
 {% for property in interface.properties %}
+{%   if property.type.is_model %}
+    if (m_{{property}}) {
+        delete m_{{property}}->serviceObject();
+        delete m_{{property}};
+    }
+{%   endif %}
     m_{{property}} = {{property|default_type_value}};
 {% endfor %}
 }
@@ -140,7 +141,7 @@ void {{class}}Private::clearToDefaults()
 {% for property in interface.properties %}
 /*! \internal */
 {%   if interface.tags.config.zoned %}
-void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_type}}, const QString &zone)
+{{ivi.on_prop_changed(property, class+"Private", interface.tags.config.zoned, true)}}
 {
     auto q = getParent();
     auto f = qobject_cast<{{class}}*>(q->zoneAt(zone));
@@ -148,7 +149,7 @@ void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_typ
         f = q;
     if (f->zone() != zone)
         return;
-{% if not module.tags.config.disablePrivateIVI %}
+{% if not module.tags.config.disablePrivateIVI and not property.type.is_model %}
     if (Q_UNLIKELY(m_propertyOverride)) {
         const int pi = f->metaObject()->indexOfProperty("{{property}}");
         if (m_propertyOverride->isOverridden(pi)) {
@@ -158,19 +159,55 @@ void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_typ
         }
     }
 {% endif %}
+{% if property.type.is_model %}
+    {{property|return_type}} old = {{class}}Private::get(f)->m_{{property}};
+    if ({{property}}) {
+        auto model = new QIviPagingModel();
+        model->setServiceObject(new QIviProxyServiceObject({ {QIviPagingModel_iid, {{property}} } }));;
+        {{class}}Private::get(f)->m_{{property}} = model;
+        emit f->{{property}}Changed(model);
+    } else {
+        {{class}}Private::get(f)->m_{{property}} = nullptr;
+        emit f->{{property}}Changed(nullptr);
+    }
+    if (old) {
+        delete old->serviceObject();
+        delete old;
+    }
+{% else %}
     if ({{class}}Private::get(f)->m_{{property}} != {{property}}) {
         {{class}}Private::get(f)->m_{{property}} = {{property}};
         emit f->{{property}}Changed({{property}});
     }
+{% endif %}
 }
 {%   else %}
-void {{class}}Private::on{{property|upperfirst}}Changed({{property|parameter_type}})
+{{ivi.on_prop_changed(property, class+"Private", interface.tags.config.zoned, true)}}
 {
+{% if property.type.is_model %}
+    {{property|return_type}} old = m_{{property}};
+    if ({{property}}) {
+        auto model = new QIviPagingModel();
+        model->setServiceObject(new QIviProxyServiceObject({ {QIviPagingModel_iid, {{property}} } }));
+        m_{{property}} = model;
+        auto q = getParent();
+        emit q->{{property}}Changed(model);
+    } else {
+        m_{{property}} = nullptr;
+        auto q = getParent();
+        emit q->{{property}}Changed(nullptr);
+    }
+    if (old) {
+        delete old->serviceObject();
+        delete old;
+    }
+{% else %}
     if (m_{{property}} != {{property}}) {
         auto q = getParent();
         m_{{property}} = {{property}};
         emit q->{{property}}Changed({{property}});
     }
+{% endif %}
 }
 {%   endif %}
 
@@ -301,7 +338,7 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 {% endif %}
     return d->m_{{property}};
 }
-{%   if not property.readonly and not property.const %}
+{%   if not property.readonly and not property.const and not property.type.is_model %}
 
 {{ivi.prop_setter(property, class)}}
 {

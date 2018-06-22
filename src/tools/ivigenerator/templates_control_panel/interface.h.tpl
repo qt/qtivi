@@ -66,7 +66,9 @@ class {{exportsymbol}} {{class}} : public QObject {
     Q_PROPERTY(QVariantMap zoneAt READ zoneAt NOTIFY zonesChanged)
 {% endif %}
 {% for property in interface.properties %}
+{%   if not property.type.is_model %}
     Q_PROPERTY({{property|return_type}} {{property}} READ {{property|getter_name}} WRITE {{property|setter_name}} NOTIFY {{property}}Changed)
+{%   endif %}
 {% endfor %}
     Q_CLASSINFO("IviPropertyDomains", "{{ interface.properties|json_domain|replace("\"", "\\\"") }}")
 public:
@@ -86,14 +88,18 @@ public:
     QVariantMap zoneAt() const;
 {% endif %}
 {% for property in interface.properties %}
+{%   if not property.type.is_model %}
     {{ivi.prop_getter(property)}};
+{%   endif %}
 {% endfor %}
 
 public Q_SLOTS:
 {% for property in interface.properties %}
+{%   if not property.type.is_model %}
     {{ivi.prop_setter(property)}};
-{%   if interface_zoned %}
+{%     if interface_zoned %}
     {{ivi.prop_setter(property, zoned = true)}};
+{%     endif %}
 {%   endif %}
 {% endfor %}
 {% for signal in interface.signals %}
@@ -109,7 +115,9 @@ Q_SIGNALS:
     void zonesChanged();
 {% endif %}
 {% for property in interface.properties %}
+{%   if not property.type.is_model %}
     {{ivi.prop_notify(property)}};
+{%   endif %}
 {% endfor %}
 
 private Q_SLOTS:
@@ -121,7 +129,9 @@ private Q_SLOTS:
 private:
     QSimulatorConnectionWorker *worker();
 {%   for property in interface.properties %}
+{%     if not property.type.is_model %}
     {{ property|return_type }} m_{{ property }};
+{%     endif %}
 {%   endfor %}
 {% if interface_zoned %}
     QHash<QString,{{class}}*> m_zoneHash;

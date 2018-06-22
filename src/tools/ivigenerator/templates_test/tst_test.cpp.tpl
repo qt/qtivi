@@ -48,9 +48,9 @@
 #include <{{interface|lower}}backendinterface.h>
 
 {% for property in interface.properties %}
-{% if property.is_model and property.type.nested.is_complex %}
-#include <{{property.type.nested.type|lower}}model.h>
-{% endif %}
+{%   if property.type.is_model %}
+{% include "pagingmodel.h.tpl" %}
+{%   endif %}
 {% endfor %}
 
 class {{interface}}TestBackend : public {{interface}}BackendInterface
@@ -61,7 +61,11 @@ public:
     {{interface}}TestBackend()
         : {{interface}}BackendInterface()
 {% for property in interface.properties %}
+{%   if property.type.is_model %}
+        , m_{{property}}(new {{property|upperfirst}}Model(this))
+{%   else %}
         , m_{{property}}({{property|default_type_value}})
+{%   endif %}
 {% endfor %}
     {
 {% if interface.tags.config.zoned %}
@@ -100,6 +104,7 @@ public:
 
 {% if interface.tags.config.zoned %}
 {%   for property in interface.properties %}
+{%     if not property.type.is_model %}
     void set{{property|upperfirst}}({{property|parameter_type}}{% if interface_zoned %}, const QString &z{% endif %}) {% if not property.readonly and not property.const %}override{%endif%}
 
     {
@@ -116,9 +121,11 @@ public:
             emit {{property}}Changed(m_zone{{property|upperfirst}}[z], z);
         }
     }
+{%     endif %}
 {%   endfor %}
 {% else %}
 {%   for property in interface.properties %}
+{%     if not property.type.is_model %}
     void set{{property|upperfirst}}({{property|parameter_type}}{% if interface_zoned %}, const QString &z{%  endif %}) {% if not property.readonly and not property.const %}override{%endif%}
 
     {
@@ -127,6 +134,7 @@ public:
             emit {{property}}Changed(m_{{property}});
         }
     }
+{%     endif %}
 {%   endfor%}
 {% endif %}
 
@@ -153,12 +161,20 @@ public:
 
 private:
 {% for property in interface.properties %}
-    {{property|return_type}} m_{{property}};
+{%       if property.type.is_model %}
+    QIviPagingModelInterface *m_{{ property }};
+{%       else %}
+    {{ property|return_type }} m_{{ property }};
+{%       endif %}
 {% endfor %}
 
 {% if interface.tags.config.zoned %}
 {%   for property in interface.properties %}
+{%       if property.type.is_model %}
+    QMap<QString, QIviPagingModelInterface *> m_zone{{property|upperfirst}};
+{%       else %}
     QMap<QString, {{property|return_type}}> m_zone{{property|upperfirst}};
+{%       endif %}
 {%   endfor %}
 {% endif %}
 
@@ -268,7 +284,7 @@ void {{interface}}Test::testWithoutBackend()
     //Test that the current value of a property is the type default value;
     QCOMPARE({{property}}Value, {{property}}DefaultValue);
 
-{%   if not property.readonly and not property.const %}
+{%   if not property.readonly and not property.const and not property.type.is_model %}
     //Test that this is still the case if we try to change it, as we don't
     //have a connected backend
     QSignalSpy {{property}}Spy(&cc, SIGNAL({{property}}Changed({{property|return_type}})));
@@ -300,7 +316,7 @@ void {{interface}}Test::testInvalidBackend()
     //Test that the current value of a property is the type default value;
     QCOMPARE({{property}}Value, {{property}}DefaultValue);
 
-{%   if not property.readonly and not property.const %}
+{%   if not property.readonly and not property.const and not property.type.is_model %}
     //Test that this is still the case if we try to change it, as we don't
     //have a connected backend
     QSignalSpy {{property}}Spy(&cc, SIGNAL({{property}}Changed({{property|return_type}})));
@@ -323,12 +339,14 @@ void {{interface}}Test::testClearServiceObject()
     manager->registerService(service, service->interfaces());
 
 {% for property in interface.properties %}
+{%   if not property.type.is_model %}
     {{property|parameter_type}}TestValue = {{property|test_type_value}};
 {%     if interface_zoned %}
     service->testBackend()->set{{property|upperfirst}}({{property}}TestValue, QString());
 {%     else %}
     service->testBackend()->set{{property|upperfirst}}({{property}}TestValue);
 {%     endif %}
+{%   endif %}
 {% endfor %}
 
     {{interface}} cc;
@@ -339,13 +357,17 @@ void {{interface}}Test::testClearServiceObject()
 {% endif %}
 
 {% for property in interface.properties %}
+{%   if not property.type.is_model %}
     QCOMPARE(cc.{{property|getter_name}}(), {{property}}TestValue);
+{%   endif %}
 {% endfor %}
 
     cc.setServiceObject(nullptr);
 
 {% for property in interface.properties %}
+{%   if not property.type.is_model %}
     QCOMPARE(cc.{{property|getter_name}}(), {{property|default_type_value}});
+{%   endif %}
 {% endfor %}
 
 {% if interface.tags.config.zoned %}
@@ -362,6 +384,7 @@ void {{interface}}Test::testChangeFromBackend()
     cc.startAutoDiscovery();
 
 {% for property in interface.properties %}
+{%   if not property.type.is_model %}
     //Test {{property}}
     QSignalSpy {{property}}Spy(&cc, SIGNAL({{property}}Changed({{property|return_type}})));
     QCOMPARE({{property}}Spy.count(), 0);
@@ -371,10 +394,11 @@ void {{interface}}Test::testChangeFromBackend()
     service->testBackend()->set{{property|upperfirst}}({{property}}TestValue, QString());
 {%     else %}
     service->testBackend()->set{{property|upperfirst}}({{property}}TestValue);
-{%   endif %}
+{%     endif %}
     QCOMPARE({{property}}Spy.count(), 1);
     QCOMPARE(cc.{{property|getter_name}}(), {{property}}TestValue);
 
+{%   endif %}
 {% endfor %}
 }
 
@@ -387,7 +411,7 @@ void {{interface}}Test::testChangeFromFrontend()
     cc.startAutoDiscovery();
 
 {% for property in interface.properties %}
-{%   if not property.readonly and not property.const %}
+{%   if not property.readonly and not property.const and not property.type.is_model %}
     //Test {{property}}
     QSignalSpy {{property}}Spy(&cc, SIGNAL({{property}}Changed({{property|return_type}})));
     QCOMPARE({{property}}Spy.count(), 0);
@@ -441,5 +465,43 @@ void {{interface}}Test::testSignals()
 
 {% endfor %}
 }
+
+{% set once = false %}
+{% for property in interface.properties if not once %}
+{%   if property.type.is_model %}
+{%     set once = true %}
+void {{interface}}Test::testModels()
+{
+    {{interface}}TestServiceObject *service = new {{interface}}TestServiceObject();
+    manager->registerService(service, service->interfaces());
+
+    {{interface}} cc;
+{%      for property in interface.properties %}
+{%        if property.type.is_model %}
+    //Test {{property}}Model without ServiceObject
+    QCOMPARE(cc.{{property|getter_name}}(), nullptr);
+    QSignalSpy {{property}}Spy(&cc, SIGNAL({{property}}Changed({{property|return_type}})));
+{%        endif %}
+{%     endfor %}
+
+    cc.startAutoDiscovery();
+    QVERIFY(cc.isValid());
+
+{%      for property in interface.properties %}
+{%        if property.type.is_model %}
+    QCOMPARE({{property}}Spy.count(), 1);
+    //Test {{property}}Model
+    QIviPagingModel *{{property}} = cc.{{property|getter_name}}();
+    QVERIFY({{property}});
+    QVERIFY({{property}}->isValid());
+    QVERIFY({{property}}->serviceObject());
+
+    QVERIFY({{property}}->rowCount());
+    QCOMPARE({{property}}->at<{{property.type.nested}}>(0), {{property.type.nested|test_type_value}});
+{%        endif %}
+{%     endfor %}
+}
+{%   endif %}
+{% endfor %}
 
 #include "tst_{{interface|lower}}.moc"

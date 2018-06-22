@@ -165,7 +165,7 @@ def test_type_value(symbol):
         values_string = ', '.join(test_type_value(e) for e in symbol.type.reference.fields)
         return '{0}{1}({2})'.format(prefix, symbol.type, values_string)
     elif symbol.type.is_model:
-        return 'new {0}{1}Model()'.format(prefix, symbol.type.nested)
+        return 'new QIviPagingModel()'
     return 'XXX'
 
 def default_value(symbol, zone='='):
@@ -176,7 +176,8 @@ def default_value(symbol, zone='='):
     if symbol.type.is_model:
         nested = symbol.type.nested
         # TODO: find a way of passing parent object
-        return 'new {0}Model(parent)'.format(nested)
+        return 'nullptr'
+        #return 'new {0}Model(parent)'.format(nested)
     if 'config_simulator' in symbol.tags and 'default' in symbol.tags['config_simulator']:
         res = symbol.tags['config_simulator']['default']
         if isinstance(res, dict):
@@ -222,7 +223,7 @@ def parameter_type(symbol):
         if nested.is_primitive:
             return '{0}VariantModel *{1}'.format(prefix, symbol)
         elif nested.is_complex:
-            return '{0}{1}Model *{2}'.format(prefix, nested, symbol)
+            return 'QIviPagingModel *{0}'.format(symbol)
     else:
         return 'const {0}{1} &{2}'.format(prefix, symbol.type, symbol)
     return 'QFace Error: Unknown parameter {0} of type {1}'.format(symbol, symbol.type)
@@ -251,7 +252,7 @@ def return_type(symbol):
         if nested.is_primitive:
             return '{0}VariantModel *'.format(prefix)
         elif nested.is_complex:
-            return '{0}{1}Model *'.format(prefix, nested)
+            return 'QIviPagingModel *'
     else:
         return '{0}{1}'.format(prefix, symbol.type)
     return 'QFace Error: Unknown symbol {0} of type {1}'.format(symbol, symbol.type)
