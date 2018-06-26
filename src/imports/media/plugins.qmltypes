@@ -283,6 +283,8 @@ Module {
         Property { name: "currentTrack"; type: "QVariant"; isReadonly: true }
         Property { name: "position"; type: "qlonglong" }
         Property { name: "duration"; type: "qlonglong"; isReadonly: true }
+        Property { name: "volume"; type: "int" }
+        Property { name: "muted"; type: "bool" }
         Signal {
             name: "playModeChanged"
             Parameter { name: "playMode"; type: "QIviMediaPlayer::PlayMode" }
@@ -303,6 +305,14 @@ Module {
             name: "durationChanged"
             Parameter { name: "duration"; type: "qlonglong" }
         }
+        Signal {
+            name: "volumeChanged"
+            Parameter { name: "volume"; type: "int" }
+        }
+        Signal {
+            name: "mutedChanged"
+            Parameter { name: "muted"; type: "bool" }
+        }
         Method {
             name: "setPlayMode"
             Parameter { name: "playMode"; type: "QIviMediaPlayer::PlayMode" }
@@ -320,6 +330,14 @@ Module {
         }
         Method { name: "next" }
         Method { name: "previous" }
+        Method {
+            name: "setVolume"
+            Parameter { name: "volume"; type: "int" }
+        }
+        Method {
+            name: "setMuted"
+            Parameter { name: "muted"; type: "bool" }
+        }
     }
     Component {
         name: "QIviMediaUsbDevice"
