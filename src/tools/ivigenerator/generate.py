@@ -160,7 +160,10 @@ def test_type_value(symbol):
         value = next(iter(t.reference.members))
         return '{0}{1}Module::{2}'.format(prefix, upper_first(module_name), value)
     elif symbol.type.is_list:
-        return 'QVariantList({})'
+        value = test_type_value(t.nested.type)
+        if not (t.nested.type.is_primitive ):
+            value = 'QVariant::fromValue({0})'.format(value)
+        return 'QVariantList({{{0}}})'.format(value)
     elif symbol.type.is_struct:
         values_string = ', '.join(test_type_value(e) for e in symbol.type.reference.fields)
         return '{0}{1}({2})'.format(prefix, symbol.type, values_string)
@@ -168,35 +171,54 @@ def test_type_value(symbol):
         return 'new QIviPagingModel()'
     return 'XXX'
 
+def default_value_helper(symbol, res):
+    t = symbol.type
+    if t.is_struct:
+        if not (isinstance(res, dict) or isinstance(res, list)):
+            return 'QFace Error: value in annotation is supposed to be a dict or list'
+        if len(res) != len(t.reference.fields):
+            return 'QFace Error: argument count in annotation and number of struct fields does not match'
+        values_string = ', '.join(default_value_helper(list(t.reference.fields)[idx], property) for idx, property in enumerate(res))
+        return '{0}({{{1}}})'.format(t.type, values_string)
+    if t.is_model or t.is_list:
+        if not isinstance(res, list):
+            return 'QFace Error: value in annotation is supposed to be a list'
+        row_string = ''
+        if t.nested.is_struct and t.is_list:
+            row_string = ', '.join(('QVariant::fromValue({0})'.format(default_value_helper(t.nested, row))) for row in res)
+        else:
+            row_string = ', '.join(default_value_helper(t.nested, row) for row in res)
+        return '{{{0}}}'.format(row_string)
+    if t.is_enum or t.is_flag:
+        module_name = t.reference.module.module_name
+        return enum_value(res, module_name)
+    # in case it's bool, Python True is sent to the C++ as "True", let's take care of that
+    if t.is_bool:
+        if res:
+            return 'true'
+        else:
+            return 'false'
+    if t.is_string:
+        return 'QLatin1String("{0}")'.format(re.escape(res))
+
+    return '{0}'.format(res)
+
 def default_value(symbol, zone='='):
     """
     Find the default value used by the simulator backend
     """
     res = default_type_value(symbol)
     if symbol.type.is_model:
-        nested = symbol.type.nested
-        # TODO: find a way of passing parent object
-        return 'nullptr'
-        #return 'new {0}Model(parent)'.format(nested)
+        res = '{}';
     if 'config_simulator' in symbol.tags and 'default' in symbol.tags['config_simulator']:
         res = symbol.tags['config_simulator']['default']
         if isinstance(res, dict):
             if zone in res:
                 res = res[zone]
-            else:
+            elif '=' in res:
                 res = res['=']
-        t = symbol.type
-        if t.is_enum:
-            module_name = t.reference.module.module_name
-            return enum_value(res, module_name)
-        # in case it's bool, Python True is sent to the C++ as "True", let's take care of that
-        if t.is_bool:
-            if res:
-                return 'true'
-            else:
-                return 'false'
-        if t.is_string:
-            return '"{0}"'.format(re.escape(res))
+        return default_value_helper(symbol, res)
+
     return res
 
 

@@ -39,14 +39,10 @@
 #}
 {% set class = '{0}Model'.format(property|upperfirst) %}
 
-#include "{{property.type.nested|lower}}.h"
-#include <QtDebug>
-
 {{class}}::{{class}}(QObject* parent)
     : QIviPagingModelInterface(parent)
 {
-    for(int i=0; i < 100; i++)
-        m_list.append(QVariant::fromValue({{property.type.nested|test_type_value}}));
+    m_list = {{property|default_value}};
 }
 
 /*! \internal */
@@ -78,7 +74,7 @@ void {{class}}::fetchData(const QUuid &identifier, int start, int count)
     QVariantList list;
     int max = qMin(start + count, m_list.count());
     for(int i=start; i < max; i++)
-        list.append(m_list.at(i));
+        list.append(QVariant::fromValue(m_list.at(i)));
 
     emit dataFetched(identifier, list, start, max <  m_list.count());
 }

@@ -40,6 +40,7 @@
 {% set class = '{0}Model'.format(property|upperfirst) %}
 
 #include <QIviPagingModelInterface>
+#include "{{property.type.nested|lower}}.h"
 
 class {{class}} : public QIviPagingModelInterface
 {
@@ -55,6 +56,6 @@ public:
     void fetchData(const QUuid &identifier, int start, int count) override;
 
 private:
-    QVariantList m_list;
+    QList<{{property.type.nested}}> m_list;
 };
 

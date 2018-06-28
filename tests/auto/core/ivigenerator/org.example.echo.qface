@@ -32,6 +32,9 @@ interface Echo {
     string stringValue;
     model<Contact> contactList;
     Contact contact;
+    Combo combo;
+    list<int> intList;
+    list<Combo> comboList;
     WeekDay weekDay;
     real UPPERCASEPROPERTY;
 
@@ -68,6 +71,9 @@ interface EchoZoned {
     int rangedValue;
     int rangedValueWithDefault;
     Contact contact;
+    Combo combo;
+    list<int> intList;
+    list<Combo> comboList;
     real UPPERCASEPROPERTY;
 
     string echo(string msg);
