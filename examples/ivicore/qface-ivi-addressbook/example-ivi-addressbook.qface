@@ -1,0 +1,16 @@
+module Example.IVI.AddressBook 1.0;
+
+@config: { qml_type: "UiAddressBook" }
+//! [0]
+interface AddressBook {
+    model<Contact> contacts;
+
+    void insertContact(int index, Contact contact);
+}
+
+struct Contact {
+    string forename;
+    string name;
+    int phone;
+}
+//! [0]

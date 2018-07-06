@@ -237,7 +237,9 @@ annotations used for defining various aspects of the generation of the backend-s
         \li For the backend simulator defines a list of zones supported by the simulation code
         with their names
     \row
-        \li \code
+        \li
+        \target config_simulator_default
+        \code
         config_simulator:
         default: AirflowDirection.Floor | AirflowDirection.Dashboard
         \endcode

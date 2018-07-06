@@ -132,6 +132,7 @@ QIviSearchAndBrowseModel provides some generic methods for modifying the content
 \endlist
 
 \section1 Models as properties of a QtIvi Feature
+\target models_as_properties
 
 In a lot of cases you might need a model as a property of a specific QtIvi Feature. A good example
 is a MediaPlayer feature, where you provide the basic player functionality like the play-state. In
