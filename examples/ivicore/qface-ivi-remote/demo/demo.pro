@@ -1,4 +1,5 @@
 TARGET = qface-ivi-remote
+QMAKE_PROJECT_NAME = $$TARGET
 TEMPLATE = app
 
 QT += qml quick

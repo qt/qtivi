@@ -1,4 +1,5 @@
 TARGET = qface-ivi-climate
+QMAKE_PROJECT_NAME = $$TARGET
 TEMPLATE = app
 
 QT += qml quick
