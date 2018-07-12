@@ -56,7 +56,7 @@ public:
 /*!
     \class QIviStandardItem
     \inmodule QtIviCore
-    \brief The QIviStandardItem is the base class of a row in the QIviSearchAndBrowseModel model.
+    \brief The QIviStandardItem is the base class of a row in the QIviPagingModel model and derived models.
 */
 
 /*!
@@ -64,7 +64,7 @@ public:
     \qmlabstract
     \instantiates QIviStandardItem
     \inqmlmodule QtIvi
-    \brief The StandardItem is the base class of a row in the SearchAndBrowseModel model.
+    \brief The StandardItem is the base class of a row in the PagingModel and derived models.
 
     \note This item is not creatable from QML.
 */

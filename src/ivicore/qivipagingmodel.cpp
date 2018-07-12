@@ -293,6 +293,8 @@ QIviPagingModelInterface *QIviPagingModelPrivate::backend() const
 
     Please see the documentation of \l{QIviPagingModel::}{LoadingType} for more details on how the modes work and
     when they are suitable to use.
+
+    See the \l{Models} section for more information about all models in QtIvi.
 */
 
 /*!
@@ -388,6 +390,8 @@ QIviPagingModelInterface *QIviPagingModelPrivate::backend() const
 
     Please see the documentation of loadingType for more details on how the modes work and
     when they are suitable to use.
+
+    See the \l{Models} section for more information about all models in QtIvi.
 */
 
 /*!

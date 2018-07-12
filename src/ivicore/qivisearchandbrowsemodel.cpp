@@ -284,7 +284,8 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
         QIviSearchAndBrowseModel *albumModel = artistModel->goForward(0, QIviSearchAndBrowseModel::OutOfModelNavigation);
     \endcode
 
-    \note Please also see the \l{QIviPagingModel}{QIviPagingModel documentation} for how the data loading works.
+    \note Please also see the \l{QIviPagingModel}{QIviPagingModel documentation} for how the data loading works and
+          the \l{Models} section for more information about all models in QtIvi.
 */
 
 /*!
@@ -448,7 +449,8 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
         }
     \endqml
 
-    \note Please also see the \l{PagingModel}{PagingModel documentation} for how the data loading works.
+    \note Please also see the \l{PagingModel}{PagingModel documentation} for how the data loading works and
+          the \l{Models} section for more information about all models in QtIvi.
 */
 
 /*!

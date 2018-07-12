@@ -45,41 +45,50 @@ list form.
 QtIviCore provides QIviAbstractFeatureListModel for this use-case. The class is derived from
 QAbstractListModel, but also provides all the functionality from QIviAbstractFeature.
 
-\section1 The QIviSearchAndBrowseModel
+\section1 The QIviPagingModel
 
-The QIviSearchAndBrowseModel is not directly a base class, but intended to be used as-is. As the
-name suggests, it provides a model, that supports searching the model content as well as browsing
-through a set of model data. Let's go through all its features in more detail:
+The QIviPagingModel is a simple list model which uses the so-called "Pagination" concept known
+from the web-world to load its content from the backend when it's really needed. The model
+provides multiple different modes when and how the data should be retrieved and how many items
+should be fetched in every stage.
 
 \section2 Fetch Modes
 
 As we don't have control over the interfaces of the data providers, the
-QIviSearchAndBrowseModel
+QIviPagingModel
 supports two distinct fetch modes:
 \list 1
 \li If the number of items in the model is \b not known from the
-beginning, the \l{QIviSearchAndBrowseModel::FetchMore}{FetchMore} mode should be used. This mode
+beginning, the \l{QIviPagingModel::FetchMore}{FetchMore} mode should be used. This mode
 will fetch a number of items from the backend once they are needed and the backend tells the
 frontend whether there is more data to be fetched.
 
-\li The second fetch mode - \l{QIviSearchAndBrowseModel::DataChanged}{DataChanged} - will fill the
+\li The second fetch mode - \l{QIviPagingModel::DataChanged}{DataChanged} - will fill the
 complete model with empty data and use the \l{QAbstractItemModel::dataChanged()} signal to tell the
 View about the actual content. For this mode to work correctly, the number of items in the list
 needs to be known from the beginning.
 \endlist
 
-See the QIviSearchAndBrowseModel documentation for a more detailed description of the fetch modes
+See the QIviPagingModel documentation for a more detailed description of the fetch modes
 and their (dis)advantages.
 
-\section2 Modifying the Content
+\section2 Model Data
 
-QIviSearchAndBrowseModel provides some generic methods for modifying the content of the model:
+QIviPagingModel provides a classic item-based approach to working with the model. The items in a
+QIviPagingModel are provided by QIviStandardItem or classes derived from it. The best way to
+provide the data to the QIviPagingModel is to create a new class derived from QIviStandardItem and
+override the "name" and "type" accessor functions. The "name" and "type" properties of every
+QIviStandardItem can be retrieved directly from the data() function of the model. This also exposes
+those properties to delegates in item views (e.g. ListView). In addition the \l{ItemRole} provides
+a const pointer to the stored QIviStandardItem. Using the MetaObject-System all the properties of
+the derived type are also available in QML directly using this pointer. From C++ the at() template
+function can be used to cast it directly to the needed type.
 
-\list
-  \li \l{QIviSearchAndBrowseModel::insert}{insert()}
-  \li \l{QIviSearchAndBrowseModel::remove}{remove()}
-  \li \l{QIviSearchAndBrowseModel::move}{move()}
-\endlist
+\section1 The QIviSearchAndBrowseModel
+
+The QIviSearchAndBrowseModel is derived from the QIviPagingModel and extends its functionality.
+As the name suggests, it provides a model, that supports searching the model content as well as browsing
+through a set of model data. Let's go through all of its features in more detail:
 
 \section2 Filtering and Sorting (Search)
 
@@ -112,4 +121,58 @@ them. In this case, there is a capability system within the QIviSearchAndBrowseM
 reports which capabilities it can support. Based on that information, only the supported
 functionalities are enabled in the frontend API.
 
+\section2 Modifying the Content
+
+QIviSearchAndBrowseModel provides some generic methods for modifying the content of the model:
+
+\list
+  \li \l{QIviSearchAndBrowseModel::insert}{insert()}
+  \li \l{QIviSearchAndBrowseModel::remove}{remove()}
+  \li \l{QIviSearchAndBrowseModel::move}{move()}
+\endlist
+
+\section1 Models as properties of a QtIvi Feature
+
+In a lot of cases you might need a model as a property of a specific QtIvi Feature. A good example
+is a MediaPlayer feature, where you provide the basic player functionality like the play-state. In
+addition you also want to provide the current play queue as a model to display it nicely inside a
+ListView.
+As the play queue might be pretty long, a vector or list is not a suitable container for it and it
+makes sense to use the QIviPagingModel to only load the items actually needed.
+
+As the QIviPagingModel is a also a QtIvi Feature, it has its own backend interface which needs
+to be implemented by the backend plugin.
+
+\image models_as_properties.png
+
+Every model property needs to map to an unique model interface implementation in the backend, as
+every model is filled with different data and the data is requested at a different time and they
+all need to maintain their own state.
+
+To implement this concept the QIviProxyServiceObject are used to connect the provided instance of
+the QIviPagingModel with the correct instance of the backend interface.
+
+\image models_as_properties_details.png
+
+For the mediaplayer play queue example this would work as follows:
+
+\list a
+    \li On Backend side
+    \list 1
+        \li Implements the QIviPagingModelInterface to retrieve the playqueue items
+        \li Implements the MediaPlayer feature interface and returns an pointer
+            to the QIviPagingModelInterface implementation for the playqueue property
+    \endlist
+
+    \li On Frontend side
+    \list 1
+        \li Retrieves the QIviPagingModelInterface pointer from the backend
+        \li Creates a QIviProxyServiceObject which holds the QIviPagingModelInterface
+        \li Creates a QIviPagingModel instance and sets the QIviProxyServiceObject on it
+        \li Returns the QIviPagingModel instance to the user
+    \endlist
+\endlist
+
+All these steps are already implemented in the ivigenerator by using the \e model type for a
+property in an \e interface.
 */

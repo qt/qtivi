@@ -127,6 +127,8 @@ QIviFeatureInterface *QIviAbstractFeatureListModelPrivate::backend() const
     See QIviAbstractFeature for more details on how a Feature works. This base class is needed to avoid a diamond
     inheritance from QAbstractListModel and QIviAbstractFeature.
 
+    See the \l{Models} section for more information about all models in QtIvi.
+
     \section1 Subclassing
 
     //TODO add docs here.
@@ -144,6 +146,8 @@ QIviFeatureInterface *QIviAbstractFeatureListModelPrivate::backend() const
 
     This element is not directly accessible from QML. It provides the
     base QML properties for the feature, like autoDiscovery and isValid.
+
+    See the \l{Models} section for more information about all models in QtIvi.
 
     \sa AbstractFeature
 */

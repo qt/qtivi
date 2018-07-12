@@ -26,7 +26,7 @@
 ****************************************************************************/
 /*!
 \page concepts.html
-\title Concepts
+\title Concepts / Architecture
 
 All Qt IVI feature APIs depend on a set of key concepts. These are explained in the
 following sections.

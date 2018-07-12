@@ -65,15 +65,6 @@ plugins. Please see \l {How to Create Qt Plugins} for more details about Qt's pl
 
 \image backendtypes.jpg "Backend types"
 
-\section1 ServiceObjects
-
-To keep the features very flexible and to make it possible to change the backends at runtime, we
-introduced a concept called ServiceObject. A QIviServiceObject is a handle, which is used by the
-feature to connect to the correct backend interface. It provides methods to query the available
-backend interfaces that the ServiceObject is implementing. Plugins are automatically wrapped by
-ServiceObjects. This makes it possible to share the ServiceObject between multiple features and to
-explicltly select which backend should be used for your feature instance.
-
 \section1 qtivicore - the Glue
 
 The qtivicore module provides all the classes that are needed to glue the parts together. In
@@ -91,6 +82,35 @@ which are actually needed by a Feature in order to reduce the startup time. All 
 is collected in the manager in form of a model, which enables the user to pick and choose the
 plugin he wants to use.
 
+\section1 ServiceObjects
+
+To keep the features very flexible and to make it possible to change the backends at runtime, we
+introduced a concept called ServiceObject. A QIviServiceObject is a handle, which is used by the
+feature to connect to the correct backend interface. It provides methods to query the available
+backend interfaces that the ServiceObject is implementing. Plugins are automatically wrapped by
+ServiceObjects. This makes it possible to share the ServiceObject between multiple features and to
+explicltly select which backend should be used for your feature instance.
+
+\image app-serviceobject-backend.png "App / Backend Plugin Relation"
+
+As you can see in the image, the ServiceObject is the handle for a specific plugin. \b {Feature A}
+and \b {Feature B} are both using the same ServiceObject, which returns an instance of \b
+Feature_A_Interface for \b {Feature A} and \b Feature_B_Interface for \b {Feature B}. The Feature
+classes are derived from QIviAbstractFeature and the backend interfaces from QIviFeatureInterface.
+
+\section2 ProxyServiceObjects
+
+In contrast to the normal QIviServiceObject, which represents a handle to a backend plugin, the
+QIviProxyServiceObject doesn't need a plugin to work. It can be instantiated on the application
+side and filled with any QIviFeatureInterface derived class. This is for example useful when
+a backend implementation of a feature should not be done inside a separate plugin, but inside
+the application code base.
+
+\image proxyserviceobjects.png "ProxyServiceObjects"
+
+The ProxyServiceObjects are also used for models which are a properties of another feature.
+See more about this in the \l{Models}{Model Documentation}.
+
 \section1 How a Feature Finds its Backend
 
 Usually every Feature is using the so called auto discovery mode. From QML, you can set the
@@ -104,6 +124,19 @@ QIviAbstractFeature::AutoDiscovery). The resulting backend type can be retrieved
 QIviAbstractFeature::discoveryResult. After the feature has successfully loaded a backend, the
 QIviAbstractFeature::serviceObject property holds the loaded ServiceObject and
 QIviAbstractFeature::isValid returns \c true.
+
+\section2 Detailed connection order
+
+\list 1
+    \li A ClimateControl element is created in QML.
+    \li ClimateControl will call QIviAbstractFeature::startAutoDiscovery on its completion.
+    \li QIviAbstractFeature::startAutoDiscovery will ask QIviServiceManager for all backends.
+    \li QIviServiceManager searches for all available plugins and the interfaces they are implementing
+        (this happens only once).
+    \li QIviAbstractFeature will accept the first QIviServiceObject and connect to the
+        corresponding interface.
+    \li The ClimateControl element is ready to be used.
+\endlist
 
 \section2 Manual Assignment
 
@@ -124,16 +157,4 @@ a ServiceObject for every device found. The concept of a discovery model is not 
 phones, it can be used for all backends that are not hard-wired to the system, like internet
 services or controlling multiple rearseat systems.
 
-\section2 Detailed connection order
-
-\list 1
-    \li A ClimateControl element is created in QML.
-    \li ClimateControl will call QIviAbstractFeature::startAutoDiscovery on its completion.
-    \li QIviAbstractFeature::startAutoDiscovery will ask QIviServiceManager for all backends.
-    \li QIviServiceManager searches for all available plugins and the interfaces they are implementing
-        (this happens only once).
-    \li QIviAbstractFeature will accept the first QIviServiceObject and connect to the
-        corresponding interface.
-    \li The ClimateControl element is ready to be used.
-\endlist
 */
