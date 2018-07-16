@@ -44,6 +44,12 @@ write_file($$OUT_PWD/forceRebuild)
 
 PYTHON3_SHORT_VERSION_SPLITTED = $$split(QMAKE_PYTHON3_VERSION, .)
 PYTHON3_SHORT_VERSION = $$member(PYTHON3_SHORT_VERSION_SPLITTED, 0).$$member(PYTHON3_SHORT_VERSION_SPLITTED, 1)
+
+# On the CI we use the special wheel folder when available to not download all packages again on each build
+PYTHON3_WHEEL_CACHE=$$(PYTHON3_WHEEL_CACHE)
+!isEmpty(PYTHON3_WHEEL_CACHE): PIP3_INSTALL_COMMAND = pip3 install --no-index --find-links=$$shell_path($$PYTHON3_WHEEL_CACHE) $$shell_path($$QFACE_SOURCE_DIR) --verbose
+else: PIP3_INSTALL_COMMAND = pip3 install --upgrade $$shell_path($$QFACE_SOURCE_DIR)
+
 # Always run this target
 equals(QMAKE_HOST.os, Windows): qtivi_qface_install.target = qtivi_qface_virtualenv/Lib/site-packages/qface
 else: qtivi_qface_install.target = qtivi_qface_virtualenv/lib/python$${PYTHON3_SHORT_VERSION}/site-packages/qface
@@ -52,7 +58,7 @@ qtivi_qface_install.depends += $$QFACE_SOURCE_DIR/setup.py
 qtivi_qface_install.depends += $$QFACE_SOURCE_DIR/requirements.txt
 qtivi_qface_install.depends += $$QFACE_SOURCE_DIR/qface/__about__.py
 qtivi_qface_install.commands = $$VIRTUALENV_ACTIVATION \
-        pip3 install --upgrade $$shell_path($$QFACE_SOURCE_DIR) $$escape_expand(\n\t) \
+        $$PIP3_INSTALL_COMMAND $$escape_expand(\n\t) \
         @echo "Installed qface development version into qtivi_qface_virtualenv" $$escape_expand(\n\t)
 equals(QMAKE_HOST.os, Windows): qtivi_qface_install.commands += @COPY /B $$shell_path($$OUT_PWD/forceRebuild)+,, $$shell_path($$OUT_PWD/forceRebuild) >NUL
 else: qtivi_qface_install.commands += @touch $$OUT_PWD/forceRebuild
