@@ -9,7 +9,7 @@
 #   QFACE_OUTPUT_DIR = my_output_dir (defaults to current build dir)
 #   QFACE_ANNOTATIONS += additional.yaml
 #
-QT_FOR_CONFIG += ivicore-private
+QT_FOR_CONFIG += ivicore ivicore-private
 
 isEmpty(QFACE_FORMAT): QFACE_FORMAT = frontend
 isEmpty(QFACE_OUTPUT_DIR): QFACE_OUTPUT_DIR = $$OUT_PWD
@@ -51,13 +51,23 @@ QT_FOR_CONFIG *= ivicore-private
     else: ENV += IVIGENERATOR_CONFIG="$$shell_path($$QTIVI_BUILD_ROOT/src/tools/ivigenerator/.config)"
 }
 
-equals(QMAKE_HOST.os, Windows) {
-    VIRTUALENV_PYTHON = $$VIRTUALENV_PATH/Scripts/python.exe
+qtConfig(system-qface) {
+    isEmpty(QMAKE_PYTHON3_LOCATION): error("Couldn't find the QMAKE_PYTHON3_LOCATION variable, Please reconfigure qtivi")
+    PYTHON = $$QMAKE_PYTHON3_LOCATION
+    !exists($$PYTHON) {
+        PYTHON = $$[QT_HOST_BINS]/python3
+        equals(QMAKE_HOST.os, Windows): PYTHON = $${PYTHON}.exe
+        warning("The Python binary in QMAKE_PYTHON3_LOCATION variable doesn't exist, falling back to use QT_HOST_BINS")
+    }
 } else {
-    VIRTUALENV_PYTHON = $$VIRTUALENV_PATH/bin/python
-    ENV += LD_LIBRARY_PATH="$$shell_path($$VIRTUALENV_PATH/bin)"
+    equals(QMAKE_HOST.os, Windows) {
+        PYTHON = $$VIRTUALENV_PATH/Scripts/python.exe
+    } else {
+        PYTHON = $$VIRTUALENV_PATH/bin/python
+        ENV += LD_LIBRARY_PATH="$$shell_path($$VIRTUALENV_PATH/bin)"
+    }
 }
-IVI_GENERATOR = $$VIRTUALENV_PYTHON $$IVI_GENERATOR_PATH/generate.py
+IVI_GENERATOR = $$PYTHON $$IVI_GENERATOR_PATH/generate.py
 
 # TODO make this work with multiple input files, or only support one QFACE_SOURCE
 # Although this could be extra_compiler it is a normal EXTRA_TARGET for a reason.
@@ -116,7 +126,8 @@ Makefile.depends = $$relative_path($$PRI, $$OUT_PWD)
 # In this case we create the target with a dependency to the forceRebuild file.
 # This file is created during the qmake run and updated once the virtualenv is ready
 # and will then cause a rerun of qmake
-!isEmpty(QTIVI_BUILD_ROOT):!exists($$VIRTUALENV_PATH): {
+# When using qface from the system, we don't need to wait for the virtualenv to be setup
+!qtConfig(system-qface):!isEmpty(QTIVI_BUILD_ROOT):!exists($$VIRTUALENV_PATH): {
     Makefile.depends = $$shadowed($$IVI_GENERATOR_PATH)/forceRebuild
 } else {
     !isEmpty(QFACE_HEADERS_OUTPUT_TARGET) {

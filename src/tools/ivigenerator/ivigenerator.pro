@@ -1,8 +1,11 @@
 TEMPLATE = aux
 
+# We need the include here as we don't have a hard build dependency against ivicore, but we still
+# need to have the config, so we just include that, even if ivicore itself is not build.
+include($$OUT_PWD/../../ivicore/qtivicore-config.pri)
 QT_FOR_CONFIG += ivicore
 
-!contains(CONFIG, no_internal_qface): include(qface_internal_build.pri)
+!qtConfig(system-qface): include(qface_internal_build.pri)
 
 # Make sure to only build this once in a debug_and_release config
 # This needs to be the last step as it unsets other configs and may have side effects

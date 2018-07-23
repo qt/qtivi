@@ -39,8 +39,14 @@ defineTest(qtConfTest_python3) {
 defineTest(qtConfTest_python3_package) {
     python3_exe = $$eval($${currentConfig}.tests.python3.value)
     package = $$eval($${1}.package)
+    version = $$eval($${1}.version)
 
-    qtRunLoggedCommand("$$python3_exe -c \"import $${package}\"", package_exists)|return(false)
+    qtRunLoggedCommand("$$python3_exe -c \"import pkg_resources; print(pkg_resources.get_distribution('$${package}').version)\"", package_version)|return(false)
+    !isEmpty(version) {
+        qtLog("Also checking for the exact version:")
+        qtLog("Expected: $$version")
+        !equals(version, $$package_version): return(false)
+    }
 
     return(true)
 }

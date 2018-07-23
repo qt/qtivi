@@ -5,6 +5,7 @@
     "commandline": {
         "options": {
             "ivigenerator": { "type": "enum", "values": [ "no", "qt", "system" ] },
+            "qface": { "type": "enum", "values": [ "no", "qt", "system" ] },
             "host-tools-only": "boolean",
             "force-ivigenerator-qtsimulator": "boolean",
             "force-ivigenerator-qtremoteobjects": "boolean"
@@ -23,7 +24,13 @@
             "package": "virtualenv"
         },
         "qface": {
-            "label": "qface",
+            "label": "qface 1.10",
+            "type": "python3_package",
+            "package": "qface",
+            "version": "1.10"
+        },
+        "qface-submodule": {
+            "label": "qface-submodule",
             "type": "qface_submodule"
         }
     },
@@ -34,14 +41,21 @@
             "condition": "tests.python3",
             "output": [
                 "privateFeature",
-                { "type": "varAssign", "name": "QMAKE_PYTHON3_LOCATION", "value": "tests.python3.value" },
-                { "type": "varAssign", "name": "QMAKE_PYTHON3_VERSION", "value": "tests.python3.version" }
+                { "type": "varAssign", "public": true, "name": "QMAKE_PYTHON3_LOCATION", "value": "tests.python3.value" },
+                { "type": "varAssign", "public": true, "name": "QMAKE_PYTHON3_VERSION", "value": "tests.python3.version" }
             ]
         },
         "python3-virtualenv": {
             "label": "virtualenv",
             "condition": "features.python3 && tests.virtualenv",
             "output": [ "privateFeature" ]
+        },
+        "system-qface": {
+            "label": "System QFace",
+            "enable": "input.qface == 'system'",
+            "disable": "input.qface == 'no' || input.qface == 'qt'",
+            "condition": "tests.qface",
+            "output": [ "publicFeature" ]
         },
         "system-ivigenerator": {
             "label": "System IVI Generator",
@@ -53,7 +67,7 @@
             "label": "IVI Generator",
             "enable": "input.ivigenerator == 'qt' || input.ivigenerator == 'system'",
             "disable": "input.ivigenerator == 'no'",
-            "condition": "features.ivicore && features.python3 && features.python3-virtualenv && tests.qface || features.system-ivigenerator",
+            "condition": "features.ivicore && features.python3 && ((features.python3-virtualenv && tests.qface-submodule) || (features.system-qface)) || features.system-ivigenerator",
             "output": [ "publicFeature" ]
         },
         "host-tools-only": {
@@ -87,7 +101,7 @@ Make sure python3 and its 'virtualenv' packages are installed.
 E.g. by running
     apt-get install python3 python3-virtualenv
 
-And make sure the qface submodule is initialized.
+And make sure the qface submodule is initialized or the correct qface version is installed on your system.
 E.g. by running the following command:
     git submodule init && git submodule update"
         },
@@ -115,7 +129,8 @@ The QtSimulator Support is needed for the communication between the simulation b
                         {
                             "type": "python3"
                         },
-                        "python3-virtualenv"
+                        "python3-virtualenv",
+                        "system-qface"
                     ]
                },
                "ivigenerator",
