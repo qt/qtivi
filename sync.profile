@@ -9,7 +9,7 @@
 %classnames = (
      "qdlt.h" => "QtDlt",
      "qiviqueryterm.h" => "QIviAbstractQueryTerm", "QIviConjunctionTerm", "QIviScopeTerm", "QIviFilterTerm", "QIviOrderTerm",
-     "qivistandarditem.h" => "QIviStandardItem", "QIviSearchAndBrowseModelItem",
+     "qivistandarditem.h" => "QIviSearchAndBrowseModelItem"
 );
 %deprecatedheaders = (
 );
