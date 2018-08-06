@@ -201,7 +201,7 @@
     \page qtas-install.html
     \title Installing Qt Automotive Suite
     \previouspage {Qt Automotive Suite Overview}{Overview}
-    \nextpage qtas-preparing-hardware-drivecx.html
+    \nextpage qtautomotive-tutorial-deploying.html
 
     \QAS is a commercial product and requires a license to install and
     explore its possibilities. Use the guide on the
