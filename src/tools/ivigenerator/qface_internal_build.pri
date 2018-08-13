@@ -81,7 +81,7 @@ INSTALLS += virtualenv
 
 # On osx the hidden .Python file is needed in the installed virtualenv as well
 # this file is not installed by the directory config, so we need to install it manually
-osx {
+osx|ios {
     virtualenv-python.files = $$OUT_PWD/qtivi_qface_virtualenv/.Python
     virtualenv-python.path = $$[QT_HOST_BINS]/ivigenerator/qtivi_qface_virtualenv
     # In case the file doesn't exist, touch creates it and fixes the install target
