@@ -20,3 +20,7 @@ PLUGIN_CLASS_NAME = AddressBookPlugin
 CONFIG += install_ok  # Do not cargo-cult this!
 target.path = $$[QT_INSTALL_EXAMPLES]/ivicore/qface-ivi-addressbook/qtivi/
 INSTALLS += target
+
+#! [0]
+RESOURCES += plugin_resource.qrc
+#! [0]

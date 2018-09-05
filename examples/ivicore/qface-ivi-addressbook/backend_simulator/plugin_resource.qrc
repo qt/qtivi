@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugin_resource">
+        <file>simulation.qml</file>
+    </qresource>
+</RCC>

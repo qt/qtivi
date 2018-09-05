@@ -228,6 +228,7 @@ annotations used for defining various aspects of the generation of the backend-s
         \li Purpose
     \row
         \li
+        \target config_simulator_simulationFile
         \code
         config_simulator:
              simulationFile: ":/qrc/simulation.qml"

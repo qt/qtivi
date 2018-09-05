@@ -50,48 +50,22 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.11
-import QtQuick.Controls 2.2
-import QtQuick.Layouts 1.3
-import QtQuick.Window 2.2
-import IviAddressBook 1.0
+//! [0]
+import QtQuick 2.0
+import example.ivi.addressbook.simulation 1.0
 
-Window {
-    id: root
-    visible: true
-    width: 640
-    height: 480
-    title: qsTr("QtIVI AddressBook")
+Item {
+    AddressBookBackend {
 
-    UiAddressBook {
-        id: addressBook
-    }
-    GroupBox {
-        anchors.fill: parent
-        anchors.margins: 10
-        title: "Contacts"
+        function insertContact(reply, index, contact) {
+            print("BACKEND SIMULATION INSERT CONTACT")
+            contacts.insert(index, contact);
+            reply.setSuccess(true);
+        }
 
-        ColumnLayout {
-            anchors.fill: parent
-            //! [0]
-            ListView {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                model: addressBook.contacts
-                clip: true
-
-                delegate: ItemDelegate {
-                    width: parent.width
-                    height: 100
-                    text: model.item.forename + " " + model.item.name
-                }
-            }
-            //! [0]
-            Button {
-                Layout.fillWidth: true
-                text: "New Contact"
-                onClicked: addressBook.insertContact(0, AddressBookModule.contact("Foo", "Bar", "12234"))
-            }
+        Component.onCompleted: {
+            console.log("BACKEND SIMULATION CREATED")
         }
     }
 }
+//! [0]
