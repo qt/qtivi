@@ -80,9 +80,17 @@ public:
     QString type() const override;
 
 {% for field in struct.fields %}
+{%   if field.name == "id" or field.name == "name" or field.name == "type" or field.name == "data" %}
+    {{ivi.prop_getter(field)}} override;
+{%   else %}
     {{ivi.prop_getter(field)}};
+{%   endif %}
 {%   if not field.readonly and not field.const %}
+{%     if field.name == "id" or field.name == "data" %}
+    {{ivi.prop_setter(field)}} override;
+{%     else %}
     {{ivi.prop_setter(field)}};
+{%   endif %}
 {%   endif %}
 {% endfor %}
 
