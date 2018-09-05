@@ -113,9 +113,9 @@ Q_SIGNALS:
 protected:
 {% if interface.tags.config.zoned %}
     QIviAbstractZonedFeature *createZoneFeature(const QString &zone) Q_DECL_OVERRIDE;
-{% else %}
-    {{class}}BackendInterface *backend() const;
 {% endif %}
+    {{class}}BackendInterface *{{interface|lower}}Backend() const;
+
     void connectToServiceObject(QIviServiceObject *service) Q_DECL_OVERRIDE;
     void clearServiceObject() Q_DECL_OVERRIDE;
 

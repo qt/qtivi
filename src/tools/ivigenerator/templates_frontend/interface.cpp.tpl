@@ -100,7 +100,7 @@ QT_BEGIN_NAMESPACE
 {% if module.tags.config.disablePrivateIVI %}
     return v->m_helper;
 {% else %}
-    return ({{class}}Private *) v->d_ptr.data();
+    return reinterpret_cast<{{class}}Private *>(v->d_ptr.data());
 {% endif %}
 }
 
@@ -110,7 +110,7 @@ const {{class}}Private *{{class}}Private::get(const {{class}} *v)
 {% if module.tags.config.disablePrivateIVI %}
     return v->m_helper;
 {% else %}
-    return (const {{class}}Private *) v->d_ptr.data();
+    return reinterpret_cast<const {{class}}Private *>(v->d_ptr.data());
 {% endif %}
 }
 
@@ -360,7 +360,7 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 {% endif %}
     if (!forceUpdate && d->m_{{property}} == {{property}})
         return;
-    if ({{class}}BackendInterface *backend = qobject_cast<{{class}}BackendInterface *>(this->backend()))
+    if ({{class}}BackendInterface *backend = {{interface|lower}}Backend())
         backend->{{property|setter_name}}({{property}}{% if interface.tags.config.zoned %}, zone(){% endif %});
     else
         emit {{property}}Changed(d->m_{{property}});
@@ -379,7 +379,7 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 */
 {{ivi.operation(operation, class)}}
 {
-    if ({{class}}BackendInterface *backend = ({{class}}BackendInterface *) this->backend())
+    if ({{class}}BackendInterface *backend = {{interface|lower}}Backend())
 {% if interface.tags.config.zoned %}
 {%   if operation.parameters|length %}
         return backend->{{operation}}({{operation.parameters|join(', ')}}, zone());
@@ -407,7 +407,7 @@ void {{class}}::connectToServiceObject(QIviServiceObject *serviceObject)
 {
     auto d = {{class}}Private::get(this);
 
-    auto *backend = qobject_cast<{{class}}BackendInterface*>(this->backend());
+    auto *backend = {{interface|lower}}Backend();
     if (!backend)
         return;
 
@@ -441,9 +441,15 @@ void {{class}}::clearServiceObject()
 {% endif %}
 }
 
-{% if not interface.tags.config.zoned %}
+{% if interface.tags.config.zoned %}
 /*! \internal */
-{{class}}BackendInterface *{{class}}::backend() const
+{{class}}BackendInterface *{{class}}::{{interface|lower}}Backend() const
+{
+    return qobject_cast<{{class}}BackendInterface*>(backend());
+}
+{% else %}
+/*! \internal */
+{{class}}BackendInterface *{{class}}::{{interface|lower}}Backend() const
 {
     if (QIviServiceObject *so = serviceObject())
         return qobject_cast<{{class}}BackendInterface*>(so->interfaceInstance(interfaceName()));
