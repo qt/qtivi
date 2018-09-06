@@ -142,6 +142,7 @@ private Q_SLOTS:
     void initTestCase();
     void testSuccess();
     void testSuccess_qml();
+    void testSuccessFromQml();
     void testConversion_qml();
     void testFailed();
     void testFailed_qml();
@@ -329,6 +330,41 @@ void tst_QIviPendingReply::testSuccess_qml()
     testQml<TestObject::TestFlags>(&testObject, "test_TestFlags(TestObject.TestFlag_2 | TestObject.TestFlag_1)", false,
                                            TestObject::TestFlags(TestObject::TestFlag_2 | TestObject::TestFlag_1));
     testQml<TestGadget>(&testObject, "test_TestGadget(testObject.createGadget('FOO', 5))", false, TestGadget("FOO", 5));
+}
+
+void tst_QIviPendingReply::testSuccessFromQml()
+{
+    // Instead of using the PendingReply in QML and react on the result using then()
+    // we test here to set the result using the setSuccess function
+
+    QIviPendingReply<void> voidReply;
+    QIviPendingReply<int> intReply;
+
+    QVERIFY(!voidReply.isResultAvailable());
+    QVERIFY(!intReply.isResultAvailable());
+
+    QQmlEngine engine;
+    engine.rootContext()->setContextProperty("voidReply", QVariant::fromValue(QIviPendingReplyBase(voidReply)));
+    engine.rootContext()->setContextProperty("intReply", QVariant::fromValue(QIviPendingReplyBase(intReply)));
+
+    QByteArray qml ("import QtQuick 2.0; \n\
+                     QtObject { \n\
+                         Component.onCompleted: { \n\
+                             voidReply.setSuccess(true) \n\
+                             intReply.setSuccess(5) \n\
+                         }\n\
+                     }");
+    QQmlComponent component(&engine);
+    component.setData(qml, QUrl());
+    QScopedPointer<QObject> obj(component.create());
+    QVERIFY2(obj, qPrintable(component.errorString()));
+
+    QVERIFY(voidReply.isResultAvailable());
+    QVERIFY(voidReply.isSuccessful());
+
+    QVERIFY(intReply.isResultAvailable());
+    QVERIFY(intReply.isSuccessful());
+    QCOMPARE(intReply.value(), 5);
 }
 
 void tst_QIviPendingReply::testConversion_qml()

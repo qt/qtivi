@@ -454,8 +454,8 @@ void QIviPendingReplyWatcher::setSuccess(const QVariant &value)
         return;
     }
 
-    //no type checking needed when we expect a QVariant
-    if (d->m_type == qMetaTypeId<QVariant>()) {
+    //no type checking needed when we expect a QVariant or void
+    if (d->m_type == qMetaTypeId<QVariant>() || d->m_type == qMetaTypeId<void>()) {
         d->setSuccess(value);
         return;
     }

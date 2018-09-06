@@ -1,6 +1,6 @@
 QT       += testlib ivicore qml
 
-TARGET = tst_qiviasyncreply
+TARGET = tst_qivipendingreply
 QMAKE_PROJECT_NAME = $$TARGET
 CONFIG   += testcase
 
