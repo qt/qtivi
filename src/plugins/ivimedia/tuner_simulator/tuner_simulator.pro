@@ -1,8 +1,8 @@
 TARGET = tuner_simulator
 
 PLUGIN_TYPE = qtivi
-PLUGIN_EXTENDS = qtivi
-PLUGIN_CLASS_NAME = QIviServiceInterface
+PLUGIN_EXTENDS = ivimedia
+PLUGIN_CLASS_NAME = TunerPlugin
 
 QT       += core ivicore ivimedia
 

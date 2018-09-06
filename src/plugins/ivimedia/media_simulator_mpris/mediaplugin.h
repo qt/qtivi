@@ -39,22 +39,21 @@
 **
 ****************************************************************************/
 
-
-#ifndef MEDIAPLUGIN_H
-#define MEDIAPLUGIN_H
+#ifndef MPRISMEDIAPLUGIN_H
+#define MPRISMEDIAPLUGIN_H
 
 #include <QtIviCore/QIviServiceInterface>
 
 class MediaPlayerBackend;
 
-class MediaPlugin : public QObject, QIviServiceInterface
+class MPrisMediaPlugin : public QObject, QIviServiceInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QIviServiceInterface_iid FILE "media_simulator_mpris.json")
     Q_INTERFACES(QIviServiceInterface)
 
 public:
-    explicit MediaPlugin(QObject *parent = nullptr);
+    explicit MPrisMediaPlugin(QObject *parent = nullptr);
 
     QStringList interfaces() const override;
     QIviFeatureInterface *interfaceInstance(const QString &interface) const override;
@@ -63,4 +62,4 @@ private:
     MediaPlayerBackend *m_player;
 };
 
-#endif // MEDIAPLUGIN_H
+#endif // MPRISMEDIAPLUGIN_H

@@ -19,7 +19,6 @@ CONFIG += ivigenerator plugin
 QFACE_FORMAT = backend_simulator
 QFACE_SOURCES = ../example-ivi-climate.qface
 PLUGIN_TYPE = qtivi
-PLUGIN_EXTENDS = qtivi
 PLUGIN_CLASS_NAME = ClimatePlugin
 #! [2]
 CONFIG += install_ok  # Do not cargo-cult this!

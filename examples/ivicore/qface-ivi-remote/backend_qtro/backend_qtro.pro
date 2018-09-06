@@ -19,7 +19,6 @@ CONFIG += ivigenerator plugin
 QFACE_FORMAT = backend_qtro
 QFACE_SOURCES = ../example-ivi-remote.qface
 PLUGIN_TYPE = qtivi
-PLUGIN_EXTENDS = qtivi
 PLUGIN_CLASS_NAME = RemoteClientPlugin
 #! [2]
 CONFIG += install_ok  # Do not cargo-cult this!

@@ -19,6 +19,8 @@ DISTFILES += \
 
 CMAKE_MODULE_TESTS = '-'
 
+MODULE_PLUGIN_TYPES = qtivi
+
 HEADERS += \
     qiviservicemanager.h \
     qiviserviceinterface.h \
@@ -83,3 +85,4 @@ include(queryparser/queryparser.pri)
 
 load(qt_module)
 QMAKE_DOCS_TARGETDIR = qtivi
+

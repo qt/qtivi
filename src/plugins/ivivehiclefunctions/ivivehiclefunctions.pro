@@ -21,7 +21,7 @@ OTHER_FILES += \
     $$PWD/doc/src/*.qdoc
 
 PLUGIN_TYPE = qtivi
-PLUGIN_EXTENDS = qtivi
-PLUGIN_CLASS_NAME = QIviClimateControlBackendInterface
+PLUGIN_EXTENDS = ivivehiclefunctions
+PLUGIN_CLASS_NAME = QtIviVehicleFunctionsPlugin
 
 load(qt_plugin)

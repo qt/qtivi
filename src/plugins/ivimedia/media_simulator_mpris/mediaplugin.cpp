@@ -49,20 +49,20 @@
 
 #include "mediaplayer2_interface.h"
 
-MediaPlugin::MediaPlugin(QObject *parent)
+MPrisMediaPlugin::MPrisMediaPlugin(QObject *parent)
     : QObject(parent)
 {
     m_player = new MediaPlayerBackend(QStringLiteral("org.mpris.MediaPlayer2.vlc"), QDBusConnection::sessionBus(), this);
 }
 
-QStringList MediaPlugin::interfaces() const
+QStringList MPrisMediaPlugin::interfaces() const
 {
     QStringList list;
     list << QStringLiteral(QIviMediaPlayer_iid);
     return list;
 }
 
-QIviFeatureInterface *MediaPlugin::interfaceInstance(const QString &interface) const
+QIviFeatureInterface *MPrisMediaPlugin::interfaceInstance(const QString &interface) const
 {
     if (interface == QLatin1String(QIviMediaPlayer_iid))
         return m_player;

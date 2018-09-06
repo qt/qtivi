@@ -2,8 +2,8 @@ TARGET = media_simulator_mpris
 QT_FOR_CONFIG += ivimedia-private
 
 PLUGIN_TYPE = qtivi
-PLUGIN_EXTENDS = qtivi
-PLUGIN_CLASS_NAME = QIviServiceInterface
+PLUGIN_EXTENDS = ivimedia
+PLUGIN_CLASS_NAME = MPrisMediaPlugin
 
 QT += core ivicore ivimedia dbus
 

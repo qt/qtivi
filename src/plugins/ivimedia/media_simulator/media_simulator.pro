@@ -2,8 +2,8 @@ TARGET = media_simulator
 QT_FOR_CONFIG += ivimedia-private
 
 PLUGIN_TYPE = qtivi
-PLUGIN_EXTENDS = qtivi
-PLUGIN_CLASS_NAME = QIviServiceInterface
+PLUGIN_EXTENDS = ivimedia
+PLUGIN_CLASS_NAME = MediaPlugin
 
 QT       += core ivicore ivimedia sql multimedia
 
