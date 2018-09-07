@@ -129,7 +129,7 @@ void QIviAbstractFeaturePrivate::onInitializationDone()
 /*!
     \class QIviAbstractFeature
     \inmodule QtIviCore
-    \brief The QIviAbstractFeature is the base class for all QtIvi Features
+    \brief The QIviAbstractFeature is the base class for all QtIvi Features.
 
     QIviAbstractFeature is the base class for the front facing API towards the developer.
     The QIviAbstractFeature provides you with a way to automatically connect to a backend implementing

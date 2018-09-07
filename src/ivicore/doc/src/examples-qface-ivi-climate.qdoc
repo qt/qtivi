@@ -29,7 +29,7 @@
 \example ivicore/qface-ivi-climate
 \brief This Example shows how to use the Qt IVI Generator.
 \ingroup qtivicore-examples
-\title Qt IVI Generator Example
+\title Qt IVI Generator Climate Example
 \image examples_qface_ivi_climate.png
 
 \section1 Introduction

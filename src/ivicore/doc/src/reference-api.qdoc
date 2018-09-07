@@ -33,7 +33,7 @@
 The Qt IVI module contains a reference API providing interfaces to common automotive
 functionality. These APIs rely on the separation of the front-end API and the backend
 implementation. The Qt IVI module also introduces a set of concepts used in the APIs:
-zones and property attributes. More about the concepts can be read \l {Concepts} {here}.
+zones and property attributes. More about the concepts can be read \l {Concepts / Architecture} {here}.
 
 \section1 Modules
 

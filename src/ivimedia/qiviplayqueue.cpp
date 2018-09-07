@@ -216,7 +216,7 @@ QIviMediaPlayerBackendInterface *QIviPlayQueuePrivate::playerBackend() const
 /*!
     \class QIviPlayQueue
     \inmodule QtIviMedia
-    \brief Provides a play queue for the QIviMediaPlayer
+    \brief Provides a play queue for the QIviMediaPlayer.
 
     The QIviPlayQueue is a model which is used by the QIviMediaPlayer to control the
     play order of QIviPlayableItems.
@@ -278,7 +278,7 @@ QIviMediaPlayerBackendInterface *QIviPlayQueuePrivate::playerBackend() const
     \instantiates QIviPlayQueue
     \inqmlmodule QtIvi.Media
     \inherits QAbstractListModel
-    \brief Provides a play queue for the MediaPlayer
+    \brief Provides a play queue for the MediaPlayer.
 
     The PlayQueue is a model which is used by the MediaPlayer to control the
     play order of PlayableItems.

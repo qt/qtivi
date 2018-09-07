@@ -59,7 +59,7 @@ QIviProxyServiceObjectPrivate::QIviProxyServiceObjectPrivate(const QHash<QString
     \class QIviProxyServiceObject
     \inmodule QtIviCore
     \brief QIviProxyServiceObject is a helper class to connect a Feature to already instantiated
-    QIviServiceInterface classes
+    QIviServiceInterface classes.
 
     In constrast to the QIviServiceObject which is created for you by the QIviServiceManager for
     every backend plugin, the QIviProxyServiceObject can be instantiated by the user and then

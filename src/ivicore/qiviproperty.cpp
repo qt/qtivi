@@ -78,7 +78,7 @@ void QIviPropertyPrivate::throwError(QObject *object, const QString &error)
     \class QIviProperty
     \obsolete
     \inmodule QtIviCore
-    \brief The QIviProperty combines a normal property and a QIviPropertyAttribute
+    \brief The QIviProperty combines a normal property and a QIviPropertyAttribute.
 
     The QIviProperty is used to retrieve the value of a property and its corresponding
     QIviPropertyAttribute in an easy way. It's designed for QML (but is not limited to)

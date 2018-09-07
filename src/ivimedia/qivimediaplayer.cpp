@@ -167,7 +167,7 @@ QIviMediaPlayerBackendInterface *QIviMediaPlayerPrivate::playerBackend() const
 /*!
     \class QIviMediaPlayer
     \inmodule QtIviMedia
-    \brief Provides a interface to control a media player
+    \brief Provides an interface to control a media player.
 
     The QIviMediaPlayer provides methods to control a media player. This media player can
     be local or even a remote device you are connected to e.g. over bluetooth.
@@ -181,7 +181,7 @@ QIviMediaPlayerBackendInterface *QIviMediaPlayerPrivate::playerBackend() const
     \instantiates QIviMediaPlayer
     \inqmlmodule QtIvi.Media
     \inherits AbstractFeature
-    \brief Provides a interface to control a media player
+    \brief Provides an interface to control a media player.
 
     The MediaPlayer provides methods to control a media player. This media player can
     be local or even a remote device you are connected to e.g. over bluetooth.

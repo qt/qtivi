@@ -46,7 +46,7 @@ QT_BEGIN_NAMESPACE
 /*!
     \class QIviMediaDevice
     \inmodule QtIviMedia
-    \brief QIviMediaDevice is the base class for all Media Devices
+    \brief QIviMediaDevice is the base class for all media devices.
 
     A Media Device is an externally or internally connected device on which media is stored.
     It can be a physical medium like a USB thumbdrive or a CD/DVD, but it could also be a DLNA Media Server running
@@ -67,7 +67,7 @@ QT_BEGIN_NAMESPACE
     \instantiates QIviMediaDevice
     \inqmlmodule QtIvi.Media
     \inherits ServiceObject
-    \brief MediaDevice is the base item for all Media Devices
+    \brief MediaDevice is the base item for all Media Devices.
 
     A Media Device is an externally or internally connected device on which media is stored.
     It can be a physical medium like a USB thumbdrive or a CD/DVD, but it could also be a DLNA Media Server running

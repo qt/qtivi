@@ -153,9 +153,9 @@ QIviAmFmTunerBackendInterface *QIviAmFmTunerPrivate::tunerBackend() const
 /*!
     \class QIviAmFmTuner
     \inmodule QtIviMedia
-    \brief Provides a interface to control the am fm tuner
+    \brief Provides a interface to control the AM/FM tuner.
 
-    The QIviAmFmTuner provides the methods to control a am/fm tuner.
+    The QIviAmFmTuner provides the methods to control a AM/FM tuner.
 */
 
 /*!
@@ -163,9 +163,9 @@ QIviAmFmTunerBackendInterface *QIviAmFmTunerPrivate::tunerBackend() const
     \instantiates QIviAmFmTuner
     \inqmlmodule QtIvi.Media
     \inherits AbstractFeature
-    \brief Provides a interface to control the am fm tuner
+    \brief Provides a interface to control the AM/FM tuner.
 
-    The AmFmTuner provides the methods to control a am/fm tuner.
+    The AmFmTuner provides the methods to control a AM/FM tuner.
 */
 
 /*!

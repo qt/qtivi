@@ -47,7 +47,7 @@ QT_BEGIN_NAMESPACE
     \class QIviPropertyFactory
     \obsolete
     \inmodule QtIviCore
-    \brief The QIviPropertyFactory is used as a factory class for creating instances of QIviProperty
+    \brief The QIviPropertyFactory is used as a factory class for creating instances of QIviProperty.
 
     QIviPropertyFactory will preserve the type information about the template type in QIviProperty and
     does a compile time check whether all provided functions and signals match this type and each other.

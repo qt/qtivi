@@ -144,6 +144,22 @@ QIviMediaPlayerBackendInterface::QIviMediaPlayerBackendInterface(QObject *parent
 */
 
 /*!
+    \fn QIviMediaPlayerBackendInterface::setVolume(int volume)
+
+    Sets the current player \a volume. The value needs to be between 0 and 100.
+
+    \sa volumeChanged
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::setMuted(bool muted)
+
+    When \a muted is set to \e true, the player will be muted and un-muted otherwise.
+
+    \sa mutedChanged
+*/
+
+/*!
     \fn QIviMediaPlayerBackendInterface::canReportCount()
 
     Returns \e true if the backend can return the final number of items for a specific request. This makes it possible to support the QIviPlayQueue::DataChanged loading
@@ -220,6 +236,18 @@ QIviMediaPlayerBackendInterface::QIviMediaPlayerBackendInterface(QObject *parent
     \fn QIviMediaPlayerBackendInterface::currentIndexChanged(int currentIndex)
 
     Emitted when the currently played playable item in the play queue changed. The index of the new current playable item will be passed as \a currentIndex.
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::volumeChanged(int volume)
+
+    Emitted when the volume of this player changed. The new volume of the player will be passed as \a volume.
+*/
+
+/*!
+    \fn QIviMediaPlayerBackendInterface::mutedChanged(bool muted)
+
+    Emitted when the player changes its mute state. The player is muted when \a muted is set to \e true.
 */
 
 /*!

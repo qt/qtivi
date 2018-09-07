@@ -79,10 +79,11 @@ QIviPagingModel are provided by QIviStandardItem or classes derived from it. The
 provide the data to the QIviPagingModel is to create a new class derived from QIviStandardItem and
 override the "name" and "type" accessor functions. The "name" and "type" properties of every
 QIviStandardItem can be retrieved directly from the data() function of the model. This also exposes
-those properties to delegates in item views (e.g. ListView). In addition the \l{ItemRole} provides
-a const pointer to the stored QIviStandardItem. Using the MetaObject-System all the properties of
-the derived type are also available in QML directly using this pointer. From C++ the at() template
-function can be used to cast it directly to the needed type.
+those properties to delegates in item views (e.g. ListView). In addition the
+\l{QIviPagingModel::}{ItemRole} provides a const pointer to the stored QIviStandardItem. Using the
+MetaObject-System all the properties of the derived type are also available in QML directly using
+this pointer. From C++ the at() template function can be used to cast it directly to the needed
+type.
 
 \section1 The QIviSearchAndBrowseModel
 

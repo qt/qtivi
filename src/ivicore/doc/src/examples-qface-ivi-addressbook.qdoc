@@ -27,7 +27,7 @@
 
 /*!
 \example ivicore/qface-ivi-addressbook
-\brief This example shows how to generate models using the Qt IVI Generator
+\brief This example shows how to generate models using the Qt IVI Generator.
 \ingroup qtivicore-examples
 \title Qt IVI Generator Addressbook Example
 \image examples_qface_ivi_addressbook.png
@@ -38,8 +38,8 @@ This example shows how to generate a model using the \e model type in a qface fi
 Generator.
 
 It will only explain the details on how to use the \e model type and how it works internally. For a
-general introduction to the Qt IVI Generator, please have a look at the \l qface-ivi-climate
-example.
+general introduction to the Qt IVI Generator, please have a look at the
+\l {ivicore/qface-ivi-climate} {Qt IVI Generator Climate Example}.
 
 \section2 Walkthrough
 

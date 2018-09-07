@@ -388,7 +388,7 @@ QIviServiceInterface *QIviServiceManagerPrivate::loadServiceBackendInterface(str
 /*!
     \class QIviServiceManager
     \inmodule QtIviCore
-    \brief QIviServiceManager provides the Backends to QIviAbstractFeature
+    \brief QIviServiceManager provides the backends to QIviAbstractFeature.
 
     QIviServiceManager is the heart of QtIvi and provides you with an easy way to detect which
     backends and interfaces are available.
@@ -453,7 +453,7 @@ QIviServiceInterface *QIviServiceManagerPrivate::loadServiceBackendInterface(str
     \instantiates QIviServiceManager
     \inqmlmodule QtIvi
 
-    \brief The ServiceManager is the central instance loading the backends and providing ServiceObjects
+    \brief The ServiceManager is the central instance loading the backends and providing ServiceObjects.
 
     The ServiceManager singleton provides a model which can be used to list all available backends
     and their interfaces.

@@ -89,7 +89,7 @@ QIviOrderTermPrivate::QIviOrderTermPrivate(const QIviOrderTermPrivate &other)
 /*!
     \class QIviAbstractQueryTerm
     \inmodule QtIviCore
-    \brief The base class of all query terms
+    \brief The base class of all query terms.
 
     Following terms are supported:
     \annotatedlist qtivi_queryterms
@@ -127,7 +127,7 @@ QIviAbstractQueryTerm::~QIviAbstractQueryTerm()
     \class QIviConjunctionTerm
     \inmodule QtIviCore
     \ingroup qtivi_queryterms
-    \brief The QIviConjunctionTerm is the representation of a conjunction between two query terms
+    \brief The QIviConjunctionTerm is the representation of a conjunction between two query terms.
 */
 
 /*!
@@ -197,7 +197,7 @@ QList<QIviAbstractQueryTerm *> QIviConjunctionTerm::terms() const
     \class QIviScopeTerm
     \inmodule QtIviCore
     \ingroup qtivi_queryterms
-    \brief The QIviScopeTerm is the representation of a scope which can hold another term
+    \brief The QIviScopeTerm is the representation of a scope which can hold another term.
 */
 QIviScopeTerm::QIviScopeTerm()
     : d_ptr(new QIviScopeTermPrivate)
@@ -256,7 +256,7 @@ QIviAbstractQueryTerm *QIviScopeTerm::term() const
     \class QIviFilterTerm
     \inmodule QtIviCore
     \ingroup qtivi_queryterms
-    \brief The QIviFilterTerm is the representation of a filter
+    \brief The QIviFilterTerm is the representation of a filter.
 
     The filter is either in the form:
 
@@ -362,7 +362,7 @@ bool QIviFilterTerm::isNegated() const
 /*!
     \class QIviOrderTerm
     \inmodule QtIviCore
-    \brief The QIviOrderTerm is the representation of a scope which can hold another term
+    \brief The QIviOrderTerm is the representation of a scope which can hold another term.
 */
 QIviOrderTerm::QIviOrderTerm()
     : d(new QIviOrderTermPrivate)

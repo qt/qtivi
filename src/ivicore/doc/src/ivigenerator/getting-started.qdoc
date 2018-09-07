@@ -67,7 +67,7 @@ how Qt locates and loads its plugins, please see \l {How to Create Qt Plugins} {
 
 \section1 In Depth Walkthrough
 
-For more in-depth information, the \l {Qt IVI Generator Example} comes with a step by step documentation.
+For more in-depth information, the \l {Qt IVI Generator Climate Example} comes with a step by step documentation.
 */
 
 /*

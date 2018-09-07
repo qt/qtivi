@@ -89,7 +89,7 @@ QIviMediaIndexerControlBackendInterface *QIviMediaIndexerControlPrivate::indexer
 /*!
     \class QIviMediaIndexerControl
     \inmodule QtIviMedia
-    \brief Provides a interface to control the media indexer
+    \brief Provides an interface to control the media indexer.
 
     The QIviMediaIndexerControl controls the media indexer. It provides a way to temporarily pause the indexing
     and resume it, as well as to inquire about the current state and progress of the indexing operation.
@@ -103,7 +103,7 @@ QIviMediaIndexerControlBackendInterface *QIviMediaIndexerControlPrivate::indexer
     \instantiates QIviMediaIndexerControl
     \inqmlmodule QtIvi.Media
     \inherits AbstractFeature
-    \brief Provides a interface to control the media indexer
+    \brief Provides an interface to control the media indexer.
 
     The MediaIndexerControl controls the media indexer. It provides a way to temporarily pause the indexing
     and resume it, as well as to inquire about the current state and progress of the indexing operation.

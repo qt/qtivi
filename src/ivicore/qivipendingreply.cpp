@@ -124,7 +124,7 @@ void QIviPendingReplyWatcherPrivate::callFailedCallback()
 /*!
     \class QIviPendingReplyWatcher
     \inmodule QtIviCore
-    \brief The QIviPendingReplyWatcher provides signals for QIviPendingReply
+    \brief The QIviPendingReplyWatcher provides signals for QIviPendingReply.
 
     The QIviPendingReplyWatcher holds all data of a QIviPendingReply and is implicitly shared
     between copies of the same QIviPendingReply instance. At the same time the watcher provides
@@ -137,7 +137,7 @@ void QIviPendingReplyWatcherPrivate::callFailedCallback()
 /*!
     \class QIviPendingReplyBase
     \inmodule QtIviCore
-    \brief The QIviPendingReplyBase is the base class for QIviPendingReply
+    \brief The QIviPendingReplyBase is the base class for QIviPendingReply.
 
     QIviPendingReplyBase is the base class for QIviPendingReply and provides QVariant based
     functions and properties for the usage from QML.
@@ -152,7 +152,7 @@ void QIviPendingReplyWatcherPrivate::callFailedCallback()
     \instantiates QIviPendingReply
     \inqmlmodule QtIvi
 
-    \brief A object representing an asynchronous results
+    \brief An object representing asynchronous results.
 
     A PendingReply is a way for providing asynchronous results. It can be used as a
     return value for asynchronous functions.
@@ -258,7 +258,7 @@ void QIviPendingReplyWatcherPrivate::callFailedCallback()
 /*!
     \class QIviPendingReply
     \inmodule QtIviCore
-    \brief Template class for providing asynchronous results
+    \brief Template class for providing asynchronous results.
 
     A QIviPendingReply is a template class for providing asynchronous results. It can be used as a
     return value for asynchronous functions, similar to QFuture.

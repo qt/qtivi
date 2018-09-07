@@ -56,7 +56,8 @@ QT_BEGIN_NAMESPACE
     \keyword {{interface.tags.config.id | default(interface.qualified_name)}}
 
     \brief Backend interface for {{interface}}.
-    The {{class}} is the interface used by \l {{interface}}
+
+    The {{class}} is the interface used by \l {{interface}}.
 
     The interface is discovered by a \l {{interface}} object, which connects to it and sets up
     the connections to it.

@@ -64,7 +64,7 @@ void QIviPropertyAttributeBase::registerTypes()
     \class QIviPropertyAttribute
     \obsolete
     \inmodule QtIviCore
-    \brief The QIviPropertyAttribute encapsulates the attributes of a property
+    \brief The QIviPropertyAttribute encapsulates the attributes of a property.
 
     QIviPropertyAttribute sets the boundaries for a property in Qt IVI. In a
     Qt IVI backend interface, the QIviPropertyAttributes are used to control
