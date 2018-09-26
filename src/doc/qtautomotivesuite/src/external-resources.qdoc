@@ -26,12 +26,12 @@
 ****************************************************************************/
 
 /*!
-    \externalpage http://www.genivi.org/
+    \externalpage https://www.genivi.org/
     \title GENIVI
 */
 
 /*!
-    \externalpage http://doc.qt.io/
+    \externalpage https://doc.qt.io/
     \title Qt Reference Documentation
 */
 
@@ -111,6 +111,12 @@
 */
 
 /*!
+    \externalpage https://doc.qt.io/Neptune3UI/index.html#ui-insights
+    \title Neptune 3 UI Insights
+*/
+
+
+/*!
     \externalpage https://doc.qt.io/QtIVI/index.html
     \title Qt IVI
 */
@@ -121,92 +127,92 @@
 */
 
 /*!
-    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-supported-platforms.html#supported-target-device-groups
+    \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-supported-platforms.html#supported-target-device-groups
     \title Supported Target Devices
 */
 
 /*!
-    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-supported-platforms.html#supported-development-hosts
+    \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-supported-platforms.html#supported-development-hosts
     \title Supported Development Hosts
 */
 
 /*!
-    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-requirements-x11.html
+    \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-requirements-x11.html
     \title Requirements for Linux/X11
 */
 
 /*!
-    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-requirements-windows.html
+    \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-requirements-windows.html
     \title Requirements for Windows
 */
 
 /*!
-    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-building-and-running.html#building-and-running-an-example
+    \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-building-and-running.html#building-and-running-an-example
     \title Building and Running an Example
 */
 
 /*!
-    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-custom-embedded-linux-image.html
+    \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-custom-embedded-linux-image.html
     \title Building Your Own Embedded Linux Image
 */
 
 /*!
-    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-about-b2qt.html
+    \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-about-b2qt.html
     \title About Boot to Qt
 */
 
 /*!
-    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-custom-embedded-linux-image.html#configuring-qt-creator
+    \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-custom-embedded-linux-image.html#configuring-qt-creator
     \title Configuring Qt Creator
 */
 
 /*!
-    \externalpage http://doc.qt.io/QtForDeviceCreation/qtee-custom-embedded-linux-image.html#using-toolchain-without-qt-creator
+    \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-custom-embedded-linux-image.html#using-toolchain-without-qt-creator
     \title Using Toolchain without Qt Creator
 */
 
 /*!
-    \externalpage http://www.yoctoproject.org/
+    \externalpage https://www.yoctoproject.org/
     \title Yocto Project
 */
 
 /*!
-    \externalpage http://www.yoctoproject.org/documentation/current
+    \externalpage https://www.yoctoproject.org/documentation/current
     \title Yocto Project Documentation for the Latest Release
 */
 
 /*!
-    \externalpage http://www.nvidia.com/object/drive-cx-request.html
+    \externalpage https://www.nvidia.com/object/drive-cx-request.html
     \title NVIDIA DRIVE™ CX
 */
 
 /*!
-    \externalpage http://doc.qt.io/emulator/
+    \externalpage https://doc.qt.io/emulator/
     \title Emulator
 */
 
 /*!
-    \externalpage http://doc.qt.io/qtcreator/creator-overview-qtasam.html
+    \externalpage https://doc.qt.io/qtcreator/creator-overview-qtasam.html
     \title Qt Creator Application Manager Plugin
 */
 
 /*!
-    \externalpage http://doc.qt.io/archives/qt-5.9-devicecreation/qtee-requirements-x11.html#setting-up-usb-access-to-embedded-devices
+    \externalpage https://doc.qt.io/archives/qt-5.9-devicecreation/qtee-requirements-x11.html#setting-up-usb-access-to-embedded-devices
     \title Setting Up USB Access to Embedded Devices
 */
 
 /*!
-    \externalpage http://doc.qt.io/QtForDeviceCreation/b2qt-deploying-b2qt.html
+    \externalpage https://doc.qt.io/QtForDeviceCreation/b2qt-deploying-b2qt.html
     \title Deploying Qt Projects with Boot to Qt
 */
 
 /*!
-    \externalpage http://doc.qt.io/qtcreator/quick-projects.html#creating-qt-quick-applications
+    \externalpage https://doc.qt.io/qtcreator/quick-projects.html#creating-qt-quick-applications
     \title Creating Qt Quick Applications
 */
 
 /*!
-    \externalpage http://doc.qt.io/qt-5/all-examples.html
+    \externalpage https://doc.qt.io/qt-5/all-examples.html
     \title Qt Examples
 */
 
@@ -219,3 +225,129 @@
     \externalpage https://doc.qt.io/QtIVI/index.html#licenses-and-attributions
     \title Qt IVI Licenses and Attributions
 */
+
+/*!
+    \externalpage https://doc.qt.io/qt3dstudio/index.html
+    \title Qt 3D Studio
+*/
+
+/*!
+    \externalpage https://doc.qt.io/QtSafeRenderer/index.html
+    \title Qt Safe Renderer
+*/
+
+/*!
+    \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-preparing-hardware-apalis-imx6.html
+    \title Toradex Apalis iMX6
+*/
+
+/*!
+    \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-preparing-hardware-nuc.html
+    \title Intel NUC
+*/
+
+/*!
+    \externalpage https://doc.qt.io/QtForDeviceCreation/qtee-preparing-hardware-jetsontx1.html
+    \title NVIDIA Jetson TX2
+*/
+
+/*!
+    \externalpage https://doc.qt.io/qtinstallerframework/
+    \title Qt Installer Framework
+*/
+
+/*!
+    \externalpage https://doc.qt.io/qtinstallerframework/ifw-overview.html
+    \title Qt Installer Framework Overview
+*/
+
+/*!
+    \externalpage https://doc.qt.io/qtinstallerframework/ifw-globalconfig.html
+    \title Configuration File
+*/
+
+/*!
+    \externalpage https://doc.qt.io/qtinstallerframework/ifw-tools.html
+    \title Qt Installer Framework Tools
+*/
+
+/*!
+    \externalpage https://doc.qt.io/qtinstallerframework/ifw-creating-installers.html
+    \title Creating Installers
+*/
+
+/*!
+    \externalpage https://doc.qt.io/qtinstallerframework/ifw-online-installers.html
+    \title Creating Online Installers
+*/
+
+/*!
+    \externalpage https://doc.qt.io/qtinstallerframework/ifw-getting-started.html
+    \title Getting Started with Qt IFW
+*/
+
+/*!
+    \externalpage https://doc.qt.io/qtinstallerframework/ifw-updates.html
+    \title Promoting Updates
+*/
+
+/*!
+    \externalpage https://doc.qt.io/qtinstallerframework/ifw-component-description.html
+    \title Package Directory
+*/
+
+/*!
+    \externalpage  https://doc.qt.io/qtinstallerframework/ifw-updates.html#partially-updating-repositories
+    \title Partially Updating Repositories
+*/
+
+/*!
+    \externalpage https://code.qt.io/cgit/qtsdk/qtsdk.git/
+    \title Qt SDK Git Repository
+*/
+
+/*!
+    \externalpage https://code.qt.io/cgit/qtsdk/qtsdk.git/tree/packaging-tools
+    \title Packaging Tools Directory
+*/
+
+/*!
+    \externalpage https://code.qt.io/cgit/qtsdk/qtsdk.git/tree/packaging-tools/build_wrapper.py
+    \title Build Wrapper Script
+*/
+
+/*!
+    \externalpage https://code.qt.io/cgit/qtsdk/qtsdk.git/tree/packaging-tools/localbuild.ini
+    \title Local Build INI file
+*/
+
+/*!
+    \externalpage https://code.qt.io/cgit/qtsdk/qtsdk.git/tree/packaging-tools/bld_ifw_tools.py
+    \title Build Installer Framework Tools Script
+*/
+
+/*!
+    \externalpage https://code.qt.io/cgit/qtsdk/qtsdk.git/tree/packaging-tools/create_installer.py
+    \title Create Installer Script
+*/
+
+/*!
+    \externalpage https://www.python.org/download/releases/2.7/
+    \title Python 2.7
+*/
+
+/*!
+    \externalpage https://www.7-zip.org/
+    \title 7-Zip
+*/
+
+/*!
+    \externalpage https://wiki.qt.io/Building_Qt_5_from_Git
+    \title Building Qt 5 from Git
+*/
+
+/*!
+    \externalpage https://wiki.qt.io/Building_Qt_Creator_from_Git
+    \title Building Qt Creator from Git
+*/
+

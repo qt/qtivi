@@ -40,7 +40,7 @@
 {% import 'qtivi_macros.j2' as ivi %}
 {% set class = '{0}'.format(struct) %}
 {% set oncedefine = '{0}_{1}_H_'.format(module.module_name|upper, class|upper) %}
-{% set exportsymbol = 'Q_{0}_EXPORT'.format(module.module_name|upper) %}
+{% set exportsymbol = 'Q_{0}_EXPORT'.format(module|upper|replace('.', '_')) %}
 {% include 'generated_comment.cpp.tpl' %}
 
 #ifndef {{oncedefine}}

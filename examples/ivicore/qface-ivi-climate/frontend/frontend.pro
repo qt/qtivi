@@ -8,7 +8,7 @@ QT_FOR_CONFIG += ivicore
 #! [0]
 QT += ivicore ivicore-private qml quick
 
-DEFINES += QT_BUILD_CLIMATE_LIB
+DEFINES += QT_BUILD_EXAMPLE_IVI_CLIMATE_LIB
 #! [1]
 CONFIG += ivigenerator
 QFACE_SOURCES = ../example-ivi-climate.qface

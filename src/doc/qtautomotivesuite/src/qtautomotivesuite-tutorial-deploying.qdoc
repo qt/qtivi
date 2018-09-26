@@ -27,7 +27,7 @@
 /*!
     \page qtautomotive-tutorial-deploying.html
     \title Tutorial: Deploying Your First Project with Qt Automotive Suite
-    \previouspage qtas-preparing-hardware-drivecx.html
+    \previouspage qtas-install.html
     \nextpage qtautomotive-byos.html
 
     You can deploy all kinds of Qt projects to your target device:

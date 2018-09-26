@@ -56,6 +56,9 @@ QT_BEGIN_NAMESPACE
 {% if interface.tags.config.zoned %}
 {{class}}::{{class}}(const QString &zone, QObject *parent)
     : QObject(parent)
+    {% for property in interface.properties %}
+    , m_{{ property }}({{property|default_value}})
+    {% endfor %}
     , m_currentZone(zone)
 {
     if (!zone.isEmpty()) {
