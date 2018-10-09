@@ -42,6 +42,7 @@
 {{class}}::{{class}}(QObject* parent)
     : QIviPagingModelInterface(parent)
 {
+    qRegisterMetaType<QIviPagingModelInterface*>();
     m_list = {{property|default_value}};
 }
 
@@ -84,4 +85,48 @@ void {{class}}::fetchData(const QUuid &identifier, int start, int count)
         list.append(QVariant::fromValue(m_list.at(i)));
 
     emit dataFetched(identifier, list, start, max <  m_list.count());
+}
+
+void {{class}}::insert(int index, const {{property.type.nested}} &item)
+{
+    m_list.insert(index, item);
+
+    emit dataChanged(QUuid(), { QVariant::fromValue(item) }, index, 0);
+}
+
+void {{class}}::remove(int index)
+{
+    m_list.removeAt(index);
+
+    emit dataChanged(QUuid(), QVariantList(), index, 1);
+}
+
+void {{class}}::move(int currentIndex, int newIndex)
+{
+    int min = qMin(currentIndex, newIndex);
+    int max = qMax(currentIndex, newIndex);
+
+    m_list.move(currentIndex, newIndex);
+    QVariantList variantList;
+    for (int i = min; i <= max; i++)
+        variantList.append(QVariant::fromValue(m_list.at(i)));
+
+    emit dataChanged(QUuid(), variantList, min, max - min + 1);
+}
+
+void {{class}}::reset()
+{
+    emit dataChanged(QUuid(), QVariantList(), 0, m_list.count());
+    m_list.clear();
+}
+
+void {{class}}::update(int index, const {{property.type.nested}} &item)
+{
+    m_list[index] = item;
+    emit dataChanged(QUuid(), { QVariant::fromValue(item) }, index, 1);
+}
+
+const {{property.type.nested}} &{{class}}::at(int index) const
+{
+    return m_list.at(index);
 }

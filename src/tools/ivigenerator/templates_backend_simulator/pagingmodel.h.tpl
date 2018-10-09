@@ -49,11 +49,19 @@ public:
     explicit {{class}}(QObject *parent = nullptr);
     ~{{class}}();
 
-    void initialize() override;
-    void registerInstance(const QUuid &identifier) override;
-    void unregisterInstance(const QUuid &identifier) override;
+    Q_INVOKABLE void initialize() override;
+    Q_INVOKABLE void registerInstance(const QUuid &identifier) override;
+    Q_INVOKABLE void unregisterInstance(const QUuid &identifier) override;
 
-    void fetchData(const QUuid &identifier, int start, int count) override;
+    Q_INVOKABLE void fetchData(const QUuid &identifier, int start, int count) override;
+
+public Q_SLOTS:
+    void insert(int index, const {{property.type.nested}} &item);
+    void remove(int index);
+    void move(int currentIndex, int newIndex);
+    void reset();
+    void update(int index, const {{property.type.nested}} &item);
+    const {{property.type.nested}} &at(int index) const;
 
 private:
     QList<{{property.type.nested}}> m_list;
