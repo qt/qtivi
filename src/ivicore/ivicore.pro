@@ -56,6 +56,8 @@ HEADERS += \
     qividefaultpropertyoverrider_p.h \
     qivipendingreply.h \
     qivipendingreply_p.h \
+    qivisimulationengine.h \
+    qivisimulationproxy.h \
     qtivicoremodule.h
 
 SOURCES += \
@@ -79,6 +81,8 @@ SOURCES += \
     qividefaultpropertyoverrider.cpp \
     qiviqmlconversion_helper.cpp \
     qivipendingreply.cpp \
+    qivisimulationengine.cpp \
+    qivisimulationproxy.cpp \
     qtivicoremodule.cpp
 
 include(queryparser/queryparser.pri)
