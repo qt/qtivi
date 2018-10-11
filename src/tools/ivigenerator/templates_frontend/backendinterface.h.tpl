@@ -87,7 +87,7 @@ Q_SIGNALS:
     {{ivi.signal(signal, zoned = interface.tags.config.zoned)}};
 {% endfor %}
 {% for property in interface.properties %}
-    {{ivi.prop_notify(property, zoned = interface.tags.config.zoned, model_interface = true)}};
+    {{ivi.prop_notify(property, zoned = interface.tags.config.zoned, model_interface = true, default_values = true)}};
 {% endfor %}
 };
 

@@ -230,6 +230,17 @@ annotations used for defining various aspects of the generation of the backend-s
         \li
         \code
         config_simulator:
+             simulationFile: ":/qrc/simulation.qml"
+        \endcode
+        \li Accompanying YAML file
+        \li Module
+        \li Defines which simulation QML file should be loaded by the simulation backend. The
+        provided snippet loads the QML file from the resource system, which needs to be embedded
+        by the developer.
+    \row
+        \li
+        \code
+        config_simulator:
              zones: { left : FrontLeft, right : FrontRight, rear: Rear }
         \endcode
         \li Accompanying YAML file

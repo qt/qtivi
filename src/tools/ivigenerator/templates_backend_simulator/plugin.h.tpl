@@ -49,6 +49,8 @@
 
 QT_BEGIN_NAMESPACE
 
+class QIviSimulationEngine;
+
 class {{class}} : public QObject, QIviServiceInterface
 {
     Q_OBJECT
@@ -65,6 +67,7 @@ public:
 
 private:
     QVector<QIviFeatureInterface *> m_interfaces;
+    QIviSimulationEngine *m_simulationEngine;
 };
 
 QT_END_NAMESPACE

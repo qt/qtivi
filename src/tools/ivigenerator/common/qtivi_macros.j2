@@ -48,8 +48,12 @@
 {# join operation parameters, with type and name, into a comma separated list,
 # optionally including the zone.
 #}
-{% macro join_params(operation, zoned = false) %}
-{%   set params = operation.parameters|map('parameter_type')|join(', ') %}
+{% macro join_params(operation, zoned = false, default_values = false) %}
+{%   if  default_values %}
+{%     set params = operation.parameters|map('parameter_type_default')|join(', ') %}
+{%   else %}
+{%     set params = operation.parameters|map('parameter_type')|join(', ') %}
+{%   endif %}
 {%   if zoned %}
 {%     if params|length %}
 {%       set params = params + ', const QString &zone' %}
@@ -98,44 +102,8 @@ Q_PROPERTY({{property|return_type}} {{property}} READ {{property|getter_name}}{{
 # pass the class parameter in order to add the scope:: -specifier.
 # use zoned to add the zone-specifier
 #}
-{% macro prop_setter(property, class = '', zoned = false) %}
+{% macro prop_setter(property, class = '', zoned = false, model_interface = false) %}
 {%   if  class|count %}
-{%     set scope = class+'::' %}
-{%   else %}
-{%     set scope = '' %}
-{%   endif %}
-{%   if zoned %}
-{%     set zone = ', const QString &zone' %}
-{%   else %}
-{%     set zone = '' %}
-{%   endif %}
-void {{scope}}{{property|setter_name}}({{property|parameter_type}}{{zone}})
-{%- endmacro %}
-
-
-{# function header for a property getter.
-# pass the class parameter in order to add the scope:: -specifier.
-#}
-{% macro prop_getter(property, class = '') %}
-{%   if  class|count %}
-{%     set scope = class+'::' %}
-{%   else %}
-{%     set scope = '' %}
-{%   endif %}
-{{property|return_type}} {{scope}}{{property|getter_name}}() const
-{%- endmacro %}
-
-
-{# helper macro for defining a property notifier and a corresponding callback.
-# This is an internal function and not intended to be used inside a template.
-#}
-{% macro _prop_notify(property, class, zoned, prefix, model_interface) %}
-{%   if prefix|count %}
-{%     set prop = prefix + property|upperfirst %}
-{%   else %}
-{%     set prop = property %}
-{%   endif %}
-{%   if class|count %}
 {%     set scope = class+'::' %}
 {%   else %}
 {%     set scope = '' %}
@@ -150,6 +118,61 @@ void {{scope}}{{property|setter_name}}({{property|parameter_type}}{{zone}})
 {%   else %}
 {%     set type = property|parameter_type %}
 {%   endif %}
+void {{scope}}{{property|setter_name}}({{type}}{{zone}})
+{%- endmacro %}
+
+
+{# function header for a property getter.
+# pass the class parameter in order to add the scope:: -specifier.
+#}
+{% macro prop_getter(property, class = '', model_interface = false) %}
+{%   if  class|count %}
+{%     set scope = class+'::' %}
+{%   else %}
+{%     set scope = '' %}
+{%   endif %}
+{%   if property.type.is_model and model_interface %}
+{%     set type = 'QIviPagingModelInterface *' %}
+{%   else %}
+{%     set type = property|return_type %}
+{%   endif %}
+{{type}} {{scope}}{{property|getter_name}}() const
+{%- endmacro %}
+
+
+{# helper macro for defining a property notifier and a corresponding callback.
+# This is an internal function and not intended to be used inside a template.
+#}
+{% macro _prop_notify(property, class, zoned, prefix, model_interface, default_values = false) %}
+{%   if prefix|count %}
+{%     set prop = prefix + property|upperfirst %}
+{%   else %}
+{%     set prop = property %}
+{%   endif %}
+{%   if class|count %}
+{%     set scope = class+'::' %}
+{%   else %}
+{%     set scope = '' %}
+{%   endif %}
+{%   if zoned %}
+{%     if default_values %}
+{%       set zone = ', const QString &zone=QString()' %}
+{%     else %}
+{%       set zone = ', const QString &zone' %}
+{%     endif %}
+{%   else %}
+{%     set zone = '' %}
+{%   endif %}
+{%   if property.type.is_model and model_interface %}
+{%     set type = 'QIviPagingModelInterface *'+property.name %}
+{%     set default_value = type + '=nullptr'%}
+{%   else %}
+{%     set type = property|parameter_type %}
+{%     set default_value = property|parameter_type_default %}
+{%   endif %}
+{%   if default_values %}
+{%     set type = default_value %}
+{%   endif %}
 void {{scope}}{{prop}}Changed({{type}}{{zone}})
 {%- endmacro %}
 
@@ -157,8 +180,8 @@ void {{scope}}{{prop}}Changed({{type}}{{zone}})
 # pass the class parameter in order to add the scope:: -specifier.
 # use zoned to add the zone-specifier
 #}
-{% macro prop_notify(property, class = '', zoned = false, model_interface = false) %}
-{{_prop_notify(property, class, zoned, '', model_interface)}}
+{% macro prop_notify(property, class = '', zoned = false, model_interface = false, default_values = false) %}
+{{_prop_notify(property, class, zoned, '', model_interface, default_values)}}
 {%- endmacro %}
 
 {# callback slot declaration for property notifier.
@@ -173,7 +196,7 @@ void {{scope}}{{prop}}Changed({{type}}{{zone}})
 {# helper macro for defining a signal and a corresponding callback.
 # This is an internal function and not intended to be used inside a template.
 #}
-{% macro _signal(signal, class, zoned, prefix) %}
+{% macro _signal(signal, class, zoned, prefix, default_values = false) %}
 {%   if prefix|count %}
 {%     set sig = prefix + signal|upperfirst %}
 {%   else %}
@@ -184,7 +207,7 @@ void {{scope}}{{prop}}Changed({{type}}{{zone}})
 {%   else %}
 {%     set scope = '' %}
 {%   endif %}
-void {{scope}}{{sig}}({{join_params(signal, zoned)}})
+void {{scope}}{{sig}}({{join_params(signal, zoned, default_values)}})
 {%- endmacro %}
 
 {# custom signal declaration

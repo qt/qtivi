@@ -47,6 +47,7 @@
 {% endfor %}
 
 #include <QStringList>
+#include <QtIviCore/QIviSimulationEngine>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,14 +63,23 @@ extern {{class}}::InterfaceBuilder {{module.tags.config.interfaceBuilder}};
 /*! \internal */
 {{class}}::{{class}}(QObject *parent)
     : QObject(parent)
+    , m_simulationEngine(new QIviSimulationEngine(this))
 {
 {% if module.tags.config.interfaceBuilder %}
     m_interfaces = {{module.tags.config.interfaceBuilder}}(this);
     Q_ASSERT(m_interfaces.size() == interfaces().size());
 {% else %}
 {%   for interface in module.interfaces %}
-    m_interfaces << new {{interface}}Backend(this);
+    auto {{interface}}Instance = new {{interface}}Backend(m_simulationEngine, this);
+    m_simulationEngine->registerSimulationInstance({{interface}}Instance, "{{module.name|lower}}.simulation", 1, 0, "{{interface}}Backend");
+    m_interfaces << {{interface}}Instance;
 {%   endfor %}
+{% if module.tags.config_simulator and module.tags.config_simulator.simulationFile %}
+{%   set simulationFile = module.tags.config_simulator.simulationFile %}
+{% else %}
+{%   set simulationFile = module.module_name|lower + '_simulation.qml' %}
+{% endif %}
+    m_simulationEngine->loadSimulation(QStringLiteral("{{simulationFile}}"));
 {% endif %}
 }
 

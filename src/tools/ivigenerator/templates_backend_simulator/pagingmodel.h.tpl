@@ -37,7 +37,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% set class = '{0}Model'.format(property|upperfirst) %}
+{% set class = '{0}ModelBackend'.format(property|upperfirst) %}
 
 #include <QIviPagingModelInterface>
 #include "{{property.type.nested|lower}}.h"

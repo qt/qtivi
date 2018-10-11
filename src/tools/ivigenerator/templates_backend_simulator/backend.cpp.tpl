@@ -44,6 +44,7 @@
 #include "{{class|lower}}.h"
 
 #include <QDebug>
+#include <QtIviCore/QIviSimulationEngine>
 
 {% if 'simulator' in features %}
 #include <QtSimulator>
@@ -63,12 +64,15 @@ QT_BEGIN_NAMESPACE
 {{ ivi.format_comments(interface.comment) }}
 */
 {{class}}::{{class}}(QObject *parent)
+    : {{class}}(nullptr, parent)
+{
+}
+
+{{class}}::{{class}}(QIviSimulationEngine *engine, QObject *parent)
     : {{class}}Interface(parent)
 {% for property in interface.properties %}
 {%   if not property.tags.config_simulator or not property.tags.config_simulator.zoned %}
-{%       if property.type.is_model %}
-    , m_{{ property }}(new {{property|upperfirst}}Model(this))
-{%       else %}
+{%       if not property.type.is_model %}
     , m_{{ property }}({{property|default_value}})
 {%       endif %}
 {%   endif %}
@@ -77,6 +81,18 @@ QT_BEGIN_NAMESPACE
     , mWorker(nullptr)
 {% endif %}
 {
+    //In some cases the engine is unused, this doesn't do any harm if it is still used
+    Q_UNUSED(engine)
+
+{% for property in interface.properties %}
+{%   if not property.tags.config_simulator or not property.tags.config_simulator.zoned %}
+{%       if property.type.is_model %}
+    auto {{ property }}Model = (new {{property|upperfirst}}ModelBackend(this));
+    m_{{ property }} = {{ property }}Model;
+    engine->registerSimulationInstance({{ property }}Model, "{{module.name|lower}}.simulation", 1, 0, "{{property|upperfirst}}ModelBackend");
+{%       endif %}
+{%   endif %}
+{% endfor %}
 
     {{module.module_name|upperfirst}}Module::registerTypes();
 {% set zones = interface.tags.config_simulator.zones if interface.tags.config_simulator and interface.tags.config_simulator.zones else {} %}
@@ -129,6 +145,7 @@ QStringList {{class}}::availableZones() const
 */
 void {{class}}::initialize()
 {
+    QIVI_SIMULATION_TRY_CALL({{class}}, "initialize", void);
 {% for property in interface.properties %}
 {%   if not interface_zoned  %}
     emit {{property}}Changed(m_{{property}});
@@ -169,15 +186,23 @@ void {{class}}::initialize()
     emit initializationDone();
 }
 
+
 {% for property in interface.properties %}
-{%   if not property.readonly and not property.const and not property.type.is_model %}
+{% if not interface_zoned %}
+{{ivi.prop_getter(property, class, model_interface = true)}}
+{
+    return m_{{property}};
+}
+{% endif %}
+
 /*!
     \fn virtual {{ivi.prop_setter(property, class, interface_zoned)}}
 
 {{ ivi.format_comments(property.comment) }}
 */
-{{ivi.prop_setter(property, class, interface_zoned)}}
+{{ivi.prop_setter(property, class, interface_zoned, model_interface = true)}}
 {
+    QIVI_SIMULATION_TRY_CALL({{class}}, "{{property|setter_name}}", void, {{property}});
 {%   if property.tags.config_simulator and property.tags.config_simulator.unsupported %}
     Q_UNUSED({{ property }});
 {%     if interface_zoned %}
@@ -219,7 +244,6 @@ void {{class}}::initialize()
 {%   endif %}
 }
 
-{% endif %}
 {% endfor %}
 
 {% for operation in interface.operations %}
@@ -230,12 +254,6 @@ void {{class}}::initialize()
 */
 {{ivi.operation(operation, class, interface_zoned)}}
 {
-{% for operation_parameter in operation.parameters %}
-    Q_UNUSED({{operation_parameter.name}});
-{% endfor %}
-{% if interface_zoned %}
-    Q_UNUSED(zone);
-{% endif %}
 {%   set function_parameters = operation.parameters|join(', ') %}
 {%   if interface_zoned %}
 {%     if operation.parameters|length %}
@@ -243,6 +261,12 @@ void {{class}}::initialize()
 {%     endif %}
 {%     set function_parameters = function_parameters + 'zone' %}
 {%   endif%}
+    QIviPendingReply<{{operation|return_type}}> pendingReply;
+    QIVI_SIMULATION_TRY_CALL_FUNC({{class}}, "{{operation}}", return pendingReply, QIviPendingReplyBase(pendingReply){% if function_parameters is not equalto "" %}, {{function_parameters}} {% endif %});
+
+{% if interface_zoned %}
+    Q_UNUSED(zone);
+{% endif %}
 
 {% if 'simulator' in features %}
     if (mWorker)

@@ -122,7 +122,8 @@ def default_type_value(symbol):
         value = next(iter(t.reference.members))
         return '{0}{1}Module::{2}'.format(prefix, upper_first(module_name), value)
     elif t.is_flag:
-        return '0'
+        module_name = t.reference.module.module_name
+        return '{0}{1}Module::{2}()'.format(prefix, upper_first(module_name), flag_type(symbol))
     elif symbol.type.is_list:
         nested = Filters.returnType(symbol.type.nested)
         return 'QVariantList()'.format(nested)
@@ -221,6 +222,33 @@ def default_value(symbol, zone='='):
 
     return res
 
+def parameter_type_default(symbol):
+    """
+    Return the parameter declaration for properties, handle camel case module name
+    """
+    prefix = Filters.classPrefix
+    if symbol.type.is_enum or symbol.type.is_flag:
+        return '{0}{1}Module::{2} {3}={4}'.format(prefix, upper_first(symbol.module.module_name), flag_type(symbol), symbol, default_type_value(symbol))
+    if symbol.type.is_void or symbol.type.is_primitive:
+        if symbol.type.name == 'string':
+            return 'const QString &{0}=QString()'.format(symbol)
+        if symbol.type.name == 'var':
+            return 'const QVariant &{0}=QVariant()'.format(symbol)
+        if symbol.type.name == 'real':
+            return 'qreal {0}=qreal()'.format(symbol)
+        return '{0} {1}={2}'.format(symbol.type, symbol, default_type_value(symbol))
+    elif symbol.type.is_list:
+        nested = return_type(symbol.type.nested)
+        return 'const QVariantList &{1}=QVariantList()'.format(nested, symbol)
+    elif symbol.type.is_model:
+        nested = symbol.type.nested
+        if nested.is_primitive:
+            return '{0}VariantModel *{1}=QVariantModel'.format(prefix, symbol)
+        elif nested.is_complex:
+            return 'QIviPagingModel *{0}=nullptr'.format(symbol)
+    else:
+        return 'const {0}{1} &{2}={0}{1}()'.format(prefix, symbol.type, symbol)
+    return 'QFace Error: Unknown parameter {0} of type {1}'.format(symbol, symbol.type)
 
 def parameter_type(symbol):
     """
@@ -597,6 +625,7 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
         FileSystem.merge_annotations(system, Path(annotations_file))
     generator = Generator(search_path=[tplconfig, here / "common"])
     generator.register_filter('return_type', return_type)
+    generator.register_filter('parameter_type_default', parameter_type_default)
     generator.register_filter('parameter_type', parameter_type)
     generator.register_filter('getter_name', getter_name)
     generator.register_filter('setter_name', setter_name)

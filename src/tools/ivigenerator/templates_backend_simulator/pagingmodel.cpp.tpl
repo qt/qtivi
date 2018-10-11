@@ -37,7 +37,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% set class = '{0}Model'.format(property|upperfirst) %}
+{% set class = '{0}ModelBackend'.format(property|upperfirst) %}
 
 {{class}}::{{class}}(QObject* parent)
     : QIviPagingModelInterface(parent)
@@ -52,11 +52,14 @@
 
 void {{class}}::initialize()
 {
+    QIVI_SIMULATION_TRY_CALL({{class}}, "initialize", void);
+
     emit initializationDone();
 }
 
 void {{class}}::registerInstance(const QUuid &identifier)
 {
+    QIVI_SIMULATION_TRY_CALL({{class}}, "registerInstance", void, identifier);
     qCritical() << "REGISTER" << identifier;
 
     emit countChanged(identifier, 100);
@@ -64,11 +67,15 @@ void {{class}}::registerInstance(const QUuid &identifier)
 
 void {{class}}::unregisterInstance(const QUuid &identifier)
 {
+    QIVI_SIMULATION_TRY_CALL({{class}}, "unregisterInstance", void, identifier);
+
     qCritical() << "UNREGISTER" << identifier;
 }
 
 void {{class}}::fetchData(const QUuid &identifier, int start, int count)
 {
+    QIVI_SIMULATION_TRY_CALL({{class}}, "fetchData", void, identifier, start, count);
+
     qCritical() << "FETCH" << identifier << start << count;
 
     QVariantList list;
