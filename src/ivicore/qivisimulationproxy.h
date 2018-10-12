@@ -144,7 +144,8 @@ namespace qtivi_private {
         // as the handler for all static meta calls
         static void qt_static_metacall(QObject *obj, QMetaObject::Call call, int methodId, void **a)
         {
-            Q_UNUSED(obj);
+            if (!obj)
+                return;
             Q_ASSERT_X(m_instance, "qt_static_metacall()", "QIviSimulationProxy::registerInstance needs to be called first");
             // As the class acts as a proxy, forward all calls here to the registered instance
             if (call == QMetaObject::ReadProperty) {
