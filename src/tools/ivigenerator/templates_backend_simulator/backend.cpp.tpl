@@ -40,6 +40,7 @@
 {% import 'qtivi_macros.j2' as ivi %}
 {% include "generated_comment.cpp.tpl" %}
 {% set class = '{0}Backend'.format(interface) %}
+{% set zone_class = '{0}Zone'.format(interface) %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
 #include "{{class|lower}}.h"
 
@@ -58,6 +59,38 @@
 
 QT_BEGIN_NAMESPACE
 
+{% if interface_zoned %}
+{{zone_class}}::{{zone_class}}(const QString &zone, {{class}}Interface *parent)
+    : QObject(parent)
+    , m_parent(parent)
+    , m_zone(zone)
+{% for property in interface.properties %}
+{%   if not property.type.is_model %}
+    , m_{{ property }}({{property|default_value}})
+{%   endif %}
+{% endfor %}
+{
+}
+
+{% for property in interface.properties %}
+{{ivi.prop_getter(property, zone_class, model_interface = true)}}
+{
+    return m_{{property}};
+}
+{% endfor %}
+
+{% for property in interface.properties %}
+{{ivi.prop_setter(property, zone_class, model_interface = true)}}
+{
+    if (m_{{property}} == {{property}})
+        return;
+    m_{{property}} = {{property}};
+    emit {{property}}Changed({{property}});
+    emit m_parent->{{property}}Changed({{property}}, m_zone);
+}
+{% endfor %}
+{% endif %}
+
 /*!
    \class {{class}}
    \inmodule {{module}}
@@ -71,18 +104,18 @@ QT_BEGIN_NAMESPACE
 {{class}}::{{class}}(QIviSimulationEngine *engine, QObject *parent)
     : {{class}}Interface(parent)
 {% for property in interface.properties %}
-{%   if not property.tags.config_simulator or not property.tags.config_simulator.zoned %}
 {%       if not property.type.is_model %}
     , m_{{ property }}({{property|default_value}})
 {%       endif %}
-{%   endif %}
 {% endfor %}
+    , m_zones(new QQmlPropertyMap(this))
 {% if 'simulator' in features %}
     , mWorker(nullptr)
 {% endif %}
 {
     //In some cases the engine is unused, this doesn't do any harm if it is still used
     Q_UNUSED(engine)
+    qRegisterMetaType<QQmlPropertyMap*>();
 
 {% for property in interface.properties %}
 {%   if not property.tags.config_simulator or not property.tags.config_simulator.zoned %}
@@ -95,20 +128,6 @@ QT_BEGIN_NAMESPACE
 {% endfor %}
 
     {{module.module_name|upperfirst}}Module::registerTypes();
-{% set zones = interface.tags.config_simulator.zones if interface.tags.config_simulator and interface.tags.config_simulator.zones else {} %}
-{% for zone_id in zones %}
-    ZoneBackend {{zone_id|lowerfirst}}Zone;
-{%   for property in interface.properties %}
-{%     if property.tags.config_simulator and property.tags.config_simulator.zoned %}
-{%       if property.type.is_model %}
-    {{zone_id|lowerfirst}}Zone.{{property}} = new {{property|upperfirst}}Model(this);
-{%       else %}
-    {{zone_id|lowerfirst}}Zone.{{property}} = {{property|default_value(zone_id)}};
-{%       endif %}
-{%     endif %}
-{%   endfor %}
-    m_zoneMap.insert("{{zone_id}}", {{zone_id|lowerfirst}}Zone);
-{% endfor %}
 }
 
 {{class}}::~{{class}}()
@@ -128,11 +147,12 @@ QT_BEGIN_NAMESPACE
 */
 QStringList {{class}}::availableZones() const
 {
-{%   if interface.tags.config_simulator and interface.tags.config_simulator.zoned %}
-    return m_zoneMap.keys();
-{%   else %}
-    return QStringList();
-{%   endif%}
+    QStringList zones;
+    QIVI_SIMULATION_TRY_CALL_FUNC({{class}}, "availableZones", zones = return_value.toStringList());
+
+    for (const QString &zone : zones)
+        const_cast<{{class}}*>(this)->addZone(zone);
+    return zones;
 }
 {% endif %}
 
@@ -155,12 +175,10 @@ void {{class}}::initialize()
 {% endfor %}
 
 {% if interface.tags.config.zoned %}
-    const auto zones = availableZones();
-    for (const QString &zone : zones) {
+    for (const QString &zone : m_zones->keys()) {
+        {{interface}}Zone *zo = zoneAt(zone);
 {%   for property in interface.properties %}
-{%     if property.tags.config_simulator and property.tags.config_simulator.zoned %}
-        emit {{property}}Changed(m_zoneMap[zone].{{property}}, zone);
-{%     endif %}
+        emit {{property}}Changed(zo->{{property|getter_name}}(), zone);
 {%   endfor %}
     }
 {% endif %}
@@ -186,15 +204,26 @@ void {{class}}::initialize()
     emit initializationDone();
 }
 
+{% if interface_zoned %}
+void {{class}}::addZone(const QString &zone)
+{
+    m_zones->insert(zone, QVariant::fromValue(new {{zone_class}}(zone, this)));
+}
+
+{{zone_class}}* {{class}}::zoneAt(const QString &zone)
+{
+    return m_zones->value(zone).value<{{zone_class}}*>();
+}
+{% endif %}
 
 {% for property in interface.properties %}
-{% if not interface_zoned %}
 {{ivi.prop_getter(property, class, model_interface = true)}}
 {
     return m_{{property}};
 }
-{% endif %}
+{% endfor %}
 
+{% for property in interface.properties %}
 /*!
     \fn virtual {{ivi.prop_setter(property, class, interface_zoned)}}
 
@@ -203,45 +232,26 @@ void {{class}}::initialize()
 {{ivi.prop_setter(property, class, interface_zoned, model_interface = true)}}
 {
     QIVI_SIMULATION_TRY_CALL({{class}}, "{{property|setter_name}}", void, {{property}});
-{%   if property.tags.config_simulator and property.tags.config_simulator.unsupported %}
-    Q_UNUSED({{ property }});
-{%     if interface_zoned %}
-    Q_UNUSED(zone);
-{%     endif %}
-    qWarning() << "SIMULATION Setting {{ property | upperfirst }} is not supported!";
 
-{%   else %}
-{%     set zoned = property.tags.config_simulator and property.tags.config_simulator.zoned %}
-{%     if zoned and interface_zoned %}
-    if (!m_zoneMap.contains(zone))
+{% if interface_zoned %}
+    if (zone.isEmpty()) {
+        if (m_{{property}} == {{property}})
+            return;
+        m_{{property}} = {{property}};
+        emit {{property}}Changed({{property}}, QString());
+    } else {
+        {{interface}}Zone *zo = zoneAt(zone);
+        if (zo)
+            zo->{{property|setter_name}}({{property}});
+        else
+            qWarning() << "No such Zone";
+    }
+{% else %}
+    if (m_{{property}} == {{property}})
         return;
-
-    if (m_zoneMap[zone].{{property}} == {{property}})
-        return;
-{% include "backend_range.cpp.tpl" %}
-    qWarning() << "SIMULATION {{ property | upperfirst }} for Zone" << zone << "changed to" << {{property}};
-
-    m_zoneMap[zone].{{property}} = {{property}};
-    emit {{ property }}Changed({{property}}, zone);
-
-{%       if 'simulator' in features %}
-    if (mWorker)
-        mWorker->call("{{property|setter_name}}", {{property}}, zone);
-{%       endif %}
-{%     else %}
-    if ({% if interface_zoned %}!zone.isEmpty() || {%endif%}m_{{ property }} == {{property}})
-        return;
-{% include "backend_range.cpp.tpl" %}
-    qWarning() << "SIMULATION {{ property | upperfirst }} changed to" << {{property}};
-
     m_{{property}} = {{property}};
-    emit {{property}}Changed(m_{{property}}{% if interface_zoned%}, QString(){% endif %});
-{%       if 'simulator' in features %}
-    if (mWorker)
-        mWorker->call("{{property|setter_name}}", {{property}}{% if interface_zoned%}, QString(){% endif %});
-{%       endif %}
-{%     endif %}
-{%   endif %}
+    emit {{property}}Changed(m_{{property}});
+{% endif %}
 }
 
 {% endfor %}

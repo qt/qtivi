@@ -133,9 +133,9 @@ QIviConcreteWindowControlBackend::~QIviConcreteWindowControlBackend()
 
 void QIviConcreteWindowControlBackend::setBlindMode(QtIviVehicleFunctionsModule::BlindMode blindMode, const QString &zone)
 {
-    if (!m_zoneMap.contains(zone))
+    if (!availableZones().contains(zone))
         return;
-    if (m_zoneMap[zone].blindMode == blindMode)
+    if (zoneAt(zone)->blindMode() == blindMode)
         return;
 
     if (blindMode == QtIviVehicleFunctionsModule::BlindOpen)
@@ -148,10 +148,10 @@ void QIviConcreteWindowControlBackend::setBlindMode(QtIviVehicleFunctionsModule:
 
 QIviPendingReply<void> QIviConcreteWindowControlBackend::open(const QString &zone)
 {
-    if (!m_zoneMap.contains(zone))
+    if (!availableZones().contains(zone))
         return QIviPendingReply<void>::createFailedReply();
 
-    if (m_zoneMap[zone].state == QtIviVehicleFunctionsModule::Open)
+    if (zoneAt(zone)->state() == QtIviVehicleFunctionsModule::Open)
         return QIviPendingReply<void>::createFailedReply();
 
     qWarning() << "SIMULATION open Window:" << zone;
@@ -163,10 +163,10 @@ QIviPendingReply<void> QIviConcreteWindowControlBackend::open(const QString &zon
 
 QIviPendingReply<void> QIviConcreteWindowControlBackend::close(const QString &zone)
 {
-    if (!m_zoneMap.contains(zone))
+    if (!availableZones().contains(zone))
         return QIviPendingReply<void>::createFailedReply();
 
-    if (m_zoneMap[zone].state == QtIviVehicleFunctionsModule::Closed)
+    if (zoneAt(zone)->state() == QtIviVehicleFunctionsModule::Closed)
         return QIviPendingReply<void>::createFailedReply();
 
     qWarning() << "SIMULATION close Window:" << zone;
@@ -178,31 +178,31 @@ QIviPendingReply<void> QIviConcreteWindowControlBackend::close(const QString &zo
 
 QtIviVehicleFunctionsModule::WindowState QIviConcreteWindowControlBackend::windowState(QString zone)
 {
-    Q_ASSERT(m_zoneMap.contains(zone));
-    return m_zoneMap[zone].state;
+    Q_ASSERT(availableZones().contains(zone));
+    return zoneAt(zone)->state();
 }
 
 void QIviConcreteWindowControlBackend::setWindowState(QtIviVehicleFunctionsModule::WindowState state, const QString &zone)
 {
-    if (m_zoneMap[zone].state == state)
+    if (zoneAt(zone)->state() == state)
         return;
     qWarning() << "SIMULATION window state for Zone" << zone << "changed to" << state;
-    m_zoneMap[zone].state = state;
+    zoneAt(zone)->setState(state);
     emit stateChanged(state, zone);
 }
 
 QtIviVehicleFunctionsModule::WindowState QIviConcreteWindowControlBackend::blindState(QString zone)
 {
-    Q_ASSERT(m_zoneMap.contains(zone));
-    return m_zoneMap[zone].blindState;
+    Q_ASSERT(availableZones().contains(zone));
+    return zoneAt(zone)->blindState();
 }
 
 void QIviConcreteWindowControlBackend::setBlindState(QtIviVehicleFunctionsModule::WindowState state, const QString &zone)
 {
-    if (m_zoneMap[zone].blindState == state)
+    if (zoneAt(zone)->blindState() == state)
         return;
     qWarning() << "SIMULATION blind state for Zone" << zone << "changed to" << state;
-    m_zoneMap[zone].blindState = state;
+    zoneAt(zone)->setBlindState(state);
     emit blindStateChanged(state, zone);
 }
 

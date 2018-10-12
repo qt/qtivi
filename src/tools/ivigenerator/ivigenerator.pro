@@ -35,7 +35,6 @@ templates_frontend.path = $$[QT_HOST_BINS]/ivigenerator/templates_frontend
 templates_backend_simulator.files += \
     templates_backend_simulator/backend.cpp.tpl \
     templates_backend_simulator/backend.h.tpl \
-    templates_backend_simulator/backend_range.cpp.tpl \
     templates_backend_simulator/pagingmodel.h.tpl \
     templates_backend_simulator/pagingmodel.cpp.tpl \
     templates_backend_simulator/plugin.cpp.tpl \

@@ -40,12 +40,14 @@
 {% import 'qtivi_macros.j2' as ivi %}
 {% include "generated_comment.cpp.tpl" %}
 {% set class = '{0}Backend'.format(interface) %}
+{% set zone_class = '{0}Zone'.format(interface) %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
 {% set oncedefine = '{0}_{1}_H_'.format(module.module_name|upper, class|upper) %}
 #ifndef {{oncedefine}}
 #define {{oncedefine}}
 
 #include <QObject>
+#include <QQmlPropertyMap>
 {% if module.tags.config.module %}
 #include <{{module.tags.config.module}}/{{class}}Interface>
 {% else %}
@@ -67,20 +69,61 @@ class QSimulatorConnectionWorker;
 
 class QIviSimulationEngine;
 
-class {{class}} : public {{class}}Interface
+{% if interface_zoned %}
+class {{zone_class}} : public QObject
 {
     Q_OBJECT
-
 {% for property in interface.properties %}
-{% if not interface_zoned %}
 {%   if property.type.is_model %}
 {%     set type = 'QIviPagingModelInterface *' %}
 {%   else %}
 {%     set type = property|return_type %}
 {%   endif %}
     Q_PROPERTY({{type}} {{property}} READ {{property|getter_name}} WRITE {{property|setter_name}}  NOTIFY {{property.name}}Changed FINAL)
-{% endif %}
 {% endfor %}
+public:
+    explicit {{zone_class}}(const QString &zone, {{class}}Interface *parent = nullptr);
+
+{% for property in interface.properties %}
+    {{ivi.prop_getter(property, model_interface = true)}};
+{% endfor %}
+
+public Q_SLOTS:
+{% for property in interface.properties %}
+    {{ivi.prop_setter(property, model_interface = true)}};
+{% endfor %}
+
+signals:
+{% for property in interface.properties %}
+    {{ivi.prop_notify(property, model_interface = true)}};
+{% endfor %}
+
+private:
+    {{class}}Interface *m_parent;
+    QString m_zone;
+{% for property in interface.properties %}
+{%   if property.type.is_model %}
+    QIviPagingModelInterface *m_{{ property }};
+{%   else %}
+    {{ property|return_type }} m_{{ property }};
+{%   endif %}
+{% endfor %}
+};
+{% endif %}
+
+class {{class}} : public {{class}}Interface
+{
+    Q_OBJECT
+
+{% for property in interface.properties %}
+{%   if property.type.is_model %}
+{%     set type = 'QIviPagingModelInterface *' %}
+{%   else %}
+{%     set type = property|return_type %}
+{%   endif %}
+    Q_PROPERTY({{type}} {{property}} READ {{property|getter_name}} WRITE {{property|setter_name}}  NOTIFY {{property.name}}Changed FINAL)
+{% endfor %}
+    Q_PROPERTY(QQmlPropertyMap *zones READ zones CONSTANT)
 public:
     explicit {{class}}(QObject *parent = nullptr);
     explicit {{class}}(QIviSimulationEngine *engine, QObject *parent = nullptr);
@@ -91,15 +134,21 @@ public:
 {%   endif %}
 
     Q_INVOKABLE void initialize() override;
+{% if interface_zoned %}
+    void addZone(const QString &zone);
+    {{zone_class}}* zoneAt(const QString &zone);
+{% endif %}
 
 {% for property in interface.properties %}
-{% if not interface_zoned %}
     {{ivi.prop_getter(property, model_interface = true)}};
-{% endif %}
 {% endfor %}
+    QQmlPropertyMap *zones() const { return m_zones; }
 
 public Q_SLOTS:
 {% for property in interface.properties %}
+{%   if interface_zoned %}
+    {{ivi.prop_setter(property)}} { {{property|setter_name}}({{property}}, QString()); }
+{%   endif %}
 {%   if not property.readonly and not property.const and not property.type.is_model %}
     virtual {{ivi.prop_setter(property, zoned = interface_zoned)}} override;
 {%   else %}
@@ -113,29 +162,16 @@ public Q_SLOTS:
 
 protected:
 {% for property in interface.properties %}
-{%   if not property.tags.config_simulator or not property.tags.config_simulator.zoned %}
+{#{%   if not property.tags.config_simulator or not property.tags.config_simulator.zoned %}#}
 {%     if property.type.is_model %}
     QIviPagingModelInterface *m_{{ property }};
 {%     else %}
     {{ property|return_type }} m_{{ property }};
 {%     endif %}
-{%   endif %}
+{#{%   endif %}#}
 {% endfor %}
+    QQmlPropertyMap *m_zones;
 
-{% if interface_zoned %}
-    struct ZoneBackend {
-{%   for property in interface.properties %}
-{%     if property.tags.config_simulator and property.tags.config_simulator.zoned %}
-{%       if property.type.is_model %}
-QIviPagingModelInterface *{{ property }};
-{%       else %}
-{{ property|return_type }} {{ property }};
-{%       endif %}
-{%     endif %}
-{%   endfor %}
-    };
-    QMap<QString,ZoneBackend> m_zoneMap;
-{% endif %}
 {% if 'simulator' in features %}
     QSimulatorConnection *mConnection;
     QSimulatorConnectionWorker *mWorker;
