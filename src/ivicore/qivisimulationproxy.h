@@ -120,11 +120,11 @@ namespace qtivi_private {
         QHash<int, int> m_methodMap;
     };
 
-    template <typename T> class Q_QTIVICORE_EXPORT QIviSimulationProxy: public QIviSimulationProxyBase
+    template <typename T> class QIviSimulationProxy: public QIviSimulationProxyBase
     {
     public:
         QIviSimulationProxy(QObject *parent=nullptr)
-            : QIviSimulationProxyBase(&staticMetaObject, m_instance, m_methodMap, parent)
+            : QIviSimulationProxyBase(&staticMetaObject, m_instance, methodMap(), parent)
         {
             Q_ASSERT_X(m_instance, "QIviSimulationProxy()", "QIviSimulationProxy::registerInstance needs to be called first");
         }
@@ -163,20 +163,24 @@ namespace qtivi_private {
             m_instance = instance;
         }
 
+        static QHash<int, int> &methodMap()
+        {
+            static QHash<int, int> map;
+            return map;
+        }
+
         static QMetaObject staticMetaObject;
         static QList<QIviSimulationProxy<T> *> proxies;
 
     private:
         static QIviSimulationEngine *m_engine;
         static T *m_instance;
-        static QHash<int, int> m_methodMap;
     };
 
-    template <typename T> QMetaObject QIviSimulationProxy<T>::staticMetaObject = QIviSimulationProxy<T>::buildObject(&T::staticMetaObject, QIviSimulationProxy::m_methodMap, &QIviSimulationProxy<T>::qt_static_metacall);
+    template <typename T> QMetaObject QIviSimulationProxy<T>::staticMetaObject = QIviSimulationProxy<T>::buildObject(&T::staticMetaObject, QIviSimulationProxy<T>::methodMap(), &QIviSimulationProxy<T>::qt_static_metacall);
     template <typename T> T *QIviSimulationProxy<T>::m_instance = nullptr;
     template <typename T> QIviSimulationEngine *QIviSimulationProxy<T>::m_engine = nullptr;
     template <typename T> QList<QIviSimulationProxy<T> *> QIviSimulationProxy<T>::proxies =  QList<QIviSimulationProxy<T> *>();
-    template <typename T> QHash<int, int> QIviSimulationProxy<T>::m_methodMap = QHash<int, int>();
 }
 
 #define QIVI_SIMULATION_TRY_CALL_FUNC(instance_type, function, ret_func, ...) \
