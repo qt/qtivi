@@ -1,6 +1,6 @@
 Example.IVI.AddressBook:
     config_simulator:
-        simulationFile: ":/plugin_resource/simulation.qml"
+        simulationFile: "qrc:/plugin_resource/simulation.qml"
 
 Example.IVI.AddressBook.AddressBook#contacts:
     config_simulator:

@@ -63,7 +63,7 @@ public:
         qmlRegisterType< qtivi_private::QIviSimulationProxy<T> >(uri, versionMajor, versionMinor, qmlName);
     }
 
-    void loadSimulation(const QString &file);
+    void loadSimulation(const QUrl &file);
 };
 
 QT_END_NAMESPACE

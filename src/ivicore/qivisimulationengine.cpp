@@ -225,10 +225,9 @@ QIviSimulationEngine::QIviSimulationEngine(QObject *parent)
     In addition to QQmlApplicationEngine::load(), this function provides functionality to change
     the used simulation file by using an environment variable.
 */
-void QIviSimulationEngine::loadSimulation(const QString &file)
+void QIviSimulationEngine::loadSimulation(const QUrl &file)
 {
-    if (QFile::exists(file))
-        load(file);
+    load(file);
 }
 
 /*!
