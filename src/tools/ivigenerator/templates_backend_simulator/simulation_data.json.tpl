@@ -1,5 +1,5 @@
 {#
-# Copyright (C) 2018 Pelagicore AG.
+# Copyright (C) 2017 Pelagicore AG
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -36,29 +36,5 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-#############################################################################
-## This is an auto-generated file.
-## Do not edit! All changes made to it will be lost.
-#############################################################################
 
-{% if 'simulator' in features %}
-QT += simulator
-{% endif %}
-
-HEADERS += \
-{% for interface in module.interfaces %}
-    $$PWD/{{interface|lower}}backend.h \
-{% endfor %}
-    $$PWD/{{module.module_name|lower}}plugin.h
-
-SOURCES += \
-{% for interface in module.interfaces %}
-    $$PWD/{{interface|lower}}backend.cpp \
-{% endfor %}
-    $$PWD/{{module.module_name|lower}}plugin.cpp
-
-RESOURCES += $$PWD/{{module.module_name|lower}}.qrc
-
-OTHER_FILES += \
-    $$PWD/{{module.module_name|lower}}.json \
-    $$PWD/{{module.module_name|lower}}_simulation_data.json
+{{module|simulationData}}

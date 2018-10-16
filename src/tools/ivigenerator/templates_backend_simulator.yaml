@@ -6,6 +6,10 @@ generate_rules:
             template_file:  "plugin.cpp.tpl"
         -   dest_file:  "{{module.module_name|lower}}.json"
             template_file:  "plugin.json"
+        -   dest_file:  "{{module.module_name|lower}}_simulation_data.json"
+            template_file:  "simulation_data.json.tpl"
+        -   dest_file:  "{{module.module_name|lower}}.qrc"
+            template_file:  "data.qrc.tpl"
         -   dest_file:  "{{srcBase|lower}}.pri"
             template_file:  "plugin.pri.tpl"
     interface_rules:

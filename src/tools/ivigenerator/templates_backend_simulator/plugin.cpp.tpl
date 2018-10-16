@@ -81,6 +81,7 @@ extern {{class}}::InterfaceBuilder {{module.tags.config.interfaceBuilder}};
 {% else %}
 {%   set simulationFile = module.module_name|lower + '_simulation.qml' %}
 {% endif %}
+    m_simulationEngine->loadSimulationData(QStringLiteral(":/simulation/{{module.module_name|lower}}_simulation_data.json"));
     m_simulationEngine->loadSimulation(QStringLiteral("{{simulationFile}}"));
 {% endif %}
 }

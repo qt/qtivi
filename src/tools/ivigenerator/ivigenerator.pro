@@ -41,7 +41,9 @@ templates_backend_simulator.files += \
     templates_backend_simulator/plugin.h.tpl \
     templates_backend_simulator/plugin.json \
     templates_backend_simulator/plugin.pri.tpl \
-    templates_backend_simulator/plugin.pro
+    templates_backend_simulator/plugin.pro \
+    templates_backend_simulator/simulation_data.json.tpl \
+    templates_backend_simulator/data.qrc.tpl
 templates_backend_simulator.path = $$[QT_HOST_BINS]/ivigenerator/templates_backend_simulator
 
 templates_generation_validator.files += \

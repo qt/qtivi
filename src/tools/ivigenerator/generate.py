@@ -413,6 +413,46 @@ def json_domain(properties):
                     data[property.name][p] = property.tags['config_simulator'][p]
     return json.dumps(data, separators=(',', ':'))
 
+def simulationData(module):
+#    if type(module) is not Module:
+#        return
+
+    found = False
+    data = {}
+    for interface in module.interfaces:
+        iData = {}
+        if 'config_simulator' in interface.tags:
+            iData = interface.tags['config_simulator']
+        for property in interface.properties:
+            if 'config_simulator' in property.tags:
+                for p in ['range', 'domain', 'minimum', 'maximum', 'default']:
+                    if p in property.tags['config_simulator']:
+                        if not property.name in iData:
+                            iData[property.name] = {}
+                        iData[property.name][p] = symbolToJson(property.tags['config_simulator'][p], property.type)
+        data[interface.name] = iData
+    return json.dumps(data, indent='  ')
+
+def symbolToJson(data, symbol):
+    if symbol.type.is_struct:
+        t = symbol.type
+        if not (isinstance(data, dict) or isinstance(data, list)):
+            return 'QFace Error: value in annotation is supposed to be a dict or list'
+        if len(data) != len(t.reference.fields):
+            return 'QFace Error: argument count in annotation and number of struct fields does not match'
+        newList = list(symbolToJson(property, list(t.reference.fields)[idx]) for idx, property in enumerate(data))
+        return { "type": symbol.type.name, "value": newList }
+    elif symbol.type.is_enum or symbol.type.is_flag:
+        module_name = symbol.type.reference.module.module_name
+        return { "type": "enum", "value": enum_value(data, module_name) }
+    elif symbol.type.is_list or symbol.type.is_model:
+        nested = symbol.type.nested
+        if nested.is_complex:
+            newList = []
+            for value in data:
+                newList.append(symbolToJson(value, nested))
+            return newList
+    return data
 
 def jsonify(obj):
     """
@@ -645,6 +685,7 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
     generator.register_filter("conf_sim_tag", conf_sim_tag)
     generator.register_filter('jsonify', jsonify)
     generator.register_filter('has_domains', has_domains)
+    generator.register_filter('simulationData', simulationData)
     generator.register_filter('json_domain', json_domain)
     generator.register_filter('qml_type', qml_type)
     generator.register_filter('qml_control', qml_control)

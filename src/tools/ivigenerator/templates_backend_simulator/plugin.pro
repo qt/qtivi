@@ -60,4 +60,5 @@ HEADERS += {{module.module_name|lower}}plugin.h \
     {% endif%}
 {% endfor %}
 
-DISTFILES += {{module.module_name|lower}}_simulator.json
+DISTFILES += {{module.module_name|lower}}.json \
+             {{module.module_name|lower}}_simulation_data.json
