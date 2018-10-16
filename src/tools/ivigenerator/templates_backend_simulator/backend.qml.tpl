@@ -36,12 +36,38 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-<RCC>
-    <qresource prefix="/simulation">
-        <file>{{module.module_name|lower}}_simulation_data.json</file>
-        <file>{{module.module_name|lower}}_simulation.qml</file>
-{% for iface in module.interfaces %}
-        <file>{{iface|upperfirst}}Simulation.qml</file>
+
+import QtQuick 2.0
+import {{module.name|lower}}.simulation 1.0
+
+{% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
+
+QtObject {
+    property var settings : IviSimulator.findData(IviSimulator.simulationData, "{{interface}}")
+    property var backend : {{interface|upperfirst}}Backend {
+
+
+        function initialize() {
+            print("{{interface}}Simulation INITIALIZE")
+            IviSimulator.initializeDefault(settings, backend)
+            Base.initialize()
+        }
+
+{% if interface_zoned %}
+        function availableZones() {
+            return settings.zones;
+        }
+{% endif %}
+
+{% for property in interface.properties %}
+        function {{property|setter_name}}({{property}}) {
+            if (IviSimulator.checkSettings({{property}}, settings["{{property}}"])) {
+                console.log("SIMULATION {{ property }} changed to: " + {{property}});
+                backend.{{property}} = {{property}}
+            } else {
+                setError("SIMULATION changing {{property}} is not possible: provided: " + {{property}} + "constraint: " + IviSimulator.constraint_string(settings["{{property}}"]));
+            }
+        }
 {% endfor %}
-    </qresource>
-</RCC>
+    }
+}

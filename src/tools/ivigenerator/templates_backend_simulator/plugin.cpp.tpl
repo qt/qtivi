@@ -79,10 +79,10 @@ extern {{class}}::InterfaceBuilder {{module.tags.config.interfaceBuilder}};
 {% if module.tags.config_simulator and module.tags.config_simulator.simulationFile %}
 {%   set simulationFile = module.tags.config_simulator.simulationFile %}
 {% else %}
-{%   set simulationFile = module.module_name|lower + '_simulation.qml' %}
+{%   set simulationFile = "qrc:///simulation/" + module.module_name|lower + '_simulation.qml' %}
 {% endif %}
     m_simulationEngine->loadSimulationData(QStringLiteral(":/simulation/{{module.module_name|lower}}_simulation_data.json"));
-    m_simulationEngine->loadSimulation(QStringLiteral("{{simulationFile}}"));
+    m_simulationEngine->loadSimulation(QUrl(QStringLiteral("{{simulationFile}}")));
 {% endif %}
 }
 

@@ -36,12 +36,14 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-<RCC>
-    <qresource prefix="/simulation">
-        <file>{{module.module_name|lower}}_simulation_data.json</file>
-        <file>{{module.module_name|lower}}_simulation.qml</file>
+
+import QtQuick 2.0
+import {{module.name|lower}}.simulation 1.0
+
+QtObject {
 {% for iface in module.interfaces %}
-        <file>{{iface|upperfirst}}Simulation.qml</file>
+    property var {{iface|lower}} : {{iface|upperfirst}}Simulation {
+        id: {{iface|lower}}
+    }
 {% endfor %}
-    </qresource>
-</RCC>
+}

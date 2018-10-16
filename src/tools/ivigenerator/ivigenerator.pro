@@ -35,6 +35,7 @@ templates_frontend.path = $$[QT_HOST_BINS]/ivigenerator/templates_frontend
 templates_backend_simulator.files += \
     templates_backend_simulator/backend.cpp.tpl \
     templates_backend_simulator/backend.h.tpl \
+    templates_backend_simulator/backend.qml.tpl \
     templates_backend_simulator/pagingmodel.h.tpl \
     templates_backend_simulator/pagingmodel.cpp.tpl \
     templates_backend_simulator/plugin.cpp.tpl \
@@ -42,6 +43,7 @@ templates_backend_simulator.files += \
     templates_backend_simulator/plugin.json \
     templates_backend_simulator/plugin.pri.tpl \
     templates_backend_simulator/plugin.pro \
+    templates_backend_simulator/plugin.qml.tpl \
     templates_backend_simulator/simulation_data.json.tpl \
     templates_backend_simulator/data.qrc.tpl
 templates_backend_simulator.path = $$[QT_HOST_BINS]/ivigenerator/templates_backend_simulator

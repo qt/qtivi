@@ -4,6 +4,8 @@ generate_rules:
             template_file:  "plugin.h.tpl"
         -   dest_file:  "{{module.module_name|lower}}plugin.cpp"
             template_file:  "plugin.cpp.tpl"
+        -   dest_file:  "{{module.module_name|lower}}_simulation.qml"
+            template_file:  "plugin.qml.tpl"
         -   dest_file:  "{{module.module_name|lower}}.json"
             template_file:  "plugin.json"
         -   dest_file:  "{{module.module_name|lower}}_simulation_data.json"
@@ -17,5 +19,7 @@ generate_rules:
             template_file: 'backend.h.tpl'
         -   dest_file: '{{interface|lower}}backend.cpp'
             template_file: 'backend.cpp.tpl'
+        -   dest_file: '{{interface|upperfirst}}Simulation.qml'
+            template_file: 'backend.qml.tpl'
     struct_rules:
 
