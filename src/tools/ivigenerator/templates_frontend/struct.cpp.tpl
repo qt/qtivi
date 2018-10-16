@@ -43,6 +43,8 @@
 
 #include "{{class|lower}}.h"
 
+#include <qiviqmlconversion_helper.h>
+
 QT_BEGIN_NAMESPACE
 
 class {{class}}Private : public QSharedData
@@ -103,6 +105,31 @@ public:
     : QIviStandardItem()
     , d(new {{class}}Private({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field}}{% endfor %}))
 {
+}
+
+{{class}}::{{class}}(const QVariant &variant)
+    : {{class}}()
+{
+    QVariant value = convertFromJSON(variant);
+    // First try to convert the values to a Map or a List
+    // This is needed as it could also store a QStringList or a Hash
+    if (value.canConvert(QVariant::Map))
+        value.convert(QVariant::Map);
+    if (value.canConvert(QVariant::List))
+        value.convert(QVariant::List);
+
+    if (value.type() == QVariant::Map) {
+        QVariantMap map = value.toMap();
+{% for field in struct.fields %}
+        if (map.contains(QStringLiteral("{{field}}")))
+            d->m_{{field}} = map.value(QStringLiteral("{{field}}")).value<{{field|return_type}}>();
+{% endfor %}
+    } else if (value.type() == QVariant::List) {
+        QVariantList values = value.toList();
+{% for field in struct.fields %}
+        d->m_{{field}} = values.value({{loop.index0}}).value<{{field|return_type}}>();
+{% endfor %}
+    }
 }
 
 /*! \internal */

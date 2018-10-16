@@ -54,6 +54,8 @@ QT_BEGIN_NAMESPACE
 Q_QTIVICORE_EXPORT void qtivi_qmlOrCppWarning(const QObject *obj, const char *errorString);
 Q_QTIVICORE_EXPORT void qtivi_qmlOrCppWarning(const QObject *obj, const QString& errorString);
 
+Q_QTIVICORE_EXPORT QVariant convertFromJSON(const QVariant &val);
+
 template <typename T>  QVariant qtivi_convertValue(const T &val)
 {
     QVariant var;

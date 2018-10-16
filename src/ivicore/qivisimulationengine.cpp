@@ -40,8 +40,13 @@
 ****************************************************************************/
 
 #include "qivisimulationengine.h"
+#include <qivisimulationglobalobject_p.h>
 
+#include <QDir>
 #include <QFile>
+#include <QJsonDocument>
+#include <QDebug>
+#include <QQmlContext>
 
 QT_BEGIN_NAMESPACE
 
@@ -216,7 +221,24 @@ QT_BEGIN_NAMESPACE
 
 QIviSimulationEngine::QIviSimulationEngine(QObject *parent)
     : QQmlApplicationEngine (parent)
+    , m_globalObject(new QIviSimulationGlobalObject)
 {
+    rootContext()->setContextProperty(QStringLiteral("IviSimulator"), m_globalObject);
+}
+
+void QIviSimulationEngine::loadSimulationData(const QString &dataFile)
+{
+    if (!QFile::exists(dataFile))
+        return;
+
+    QFile file(QDir::current().absoluteFilePath(dataFile));
+    if (file.open(QFile::ReadOnly)) {
+        QJsonParseError pe;
+        QJsonDocument document = QJsonDocument::fromJson(file.readAll(), &pe);
+        if (pe.error != QJsonParseError::NoError)
+            qCritical() << "Error parsing the provided simulation data: " << pe.errorString();
+        m_globalObject->setSimulationData(document.toVariant());
+    }
 }
 
 /*!

@@ -71,10 +71,11 @@ class {{exportsymbol}} {{class}} : public QIviStandardItem
 {% endfor %}
     Q_CLASSINFO("IviPropertyDomains", "{{ struct.fields|json_domain|replace("\"", "\\\"") }}")
 public:
-    {{class}}();
-    {{class}}(const {{class}} &rhs);
+    Q_INVOKABLE {{class}}();
+    Q_INVOKABLE {{class}}(const {{class}} &rhs);
     {{class}} &operator=(const {{class}} &);
-    {{class}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %});
+    Q_INVOKABLE {{class}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %});
+    Q_INVOKABLE {{class}}(const QVariant &variant);
     ~{{class}}();
 
     QString type() const override;

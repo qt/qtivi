@@ -39,38 +39,47 @@
 **
 ****************************************************************************/
 
-#ifndef QIVISIMULATIONENGINE_H
-#define QIVISIMULATIONENGINE_H
+#ifndef QIVISIMULATIONGLOBALOBJECT_P_H
+#define QIVISIMULATIONGLOBALOBJECT_P_H
 
-#include <QtIviCore/QtIviCoreModule>
+#include <qiviqmlconversion_helper.h>
+#include <QIviPagingModelInterface>
 
-#include <QtQml/QQmlApplicationEngine>
-#include <QtIviCore/qivisimulationproxy.h>
+#include <QtCore/QObject>
+#include <QtCore/QVariantMap>
+#include <QtCore/QMetaType>
+#include <QtCore/QMetaObject>
+#include <QtCore/QMetaEnum>
+#include <QJSValue>
+#include <QQmlPropertyMap>
+
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 
-class QIviSimulationGlobalObject;
-
-class Q_QTIVICORE_EXPORT QIviSimulationEngine : public QQmlApplicationEngine
+class QIviSimulationGlobalObject : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QVariant simulationData READ simulationData CONSTANT)
+
 public:
-    QIviSimulationEngine(QObject *parent = nullptr);
+    explicit QIviSimulationGlobalObject(QObject *parent = nullptr);
 
-    template <typename T> void registerSimulationInstance(T* instance, const char *uri, int versionMajor, int versionMinor, const char *qmlName)
-    {
-        //pass engine here to check that it's only used in this engine
-        qtivi_private::QIviSimulationProxy<T>::registerInstance(this, instance);
-        qmlRegisterType< qtivi_private::QIviSimulationProxy<T> >(uri, versionMajor, versionMinor, qmlName);
-    }
+    QVariant simulationData() const;
+    void setSimulationData(const QVariant &simulationData);
 
-    void loadSimulationData(const QString &dataFile);
-    void loadSimulation(const QUrl &file);
+    Q_INVOKABLE QVariantMap findData(const QVariantMap &data, const QString &interface);
+    Q_INVOKABLE void initializeDefault(const QVariantMap &data, QObject *object);
+    Q_INVOKABLE QVariant defaultValue(const QVariantMap &data, const QString &zone = QString());
+    Q_INVOKABLE QString constraint(const QVariantMap &data, const QString &zone = QString());
+    Q_INVOKABLE bool checkSettings(const QVariantMap &data, const QVariant &value, const QString &zone = QString());
+    Q_INVOKABLE QVariant parseDomainValue(const QVariantMap &data, const QString &domain, const QString &zone = QString());
 
 private:
-    QIviSimulationGlobalObject *m_globalObject;
+    QGenericArgument createArgument(const QVariant &variant);
+    QVariant m_simulationData;
 };
 
 QT_END_NAMESPACE
 
-#endif // QIVISIMULATIONENGINE_H
+#endif // QIVISIMULATIONGLOBALOBJECT_P_H

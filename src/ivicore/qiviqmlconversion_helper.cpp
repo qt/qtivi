@@ -49,6 +49,13 @@
 
 QT_BEGIN_NAMESPACE
 
+namespace qtivi_helper {
+    static const QString valueLiteral = QStringLiteral("value");
+    static const QString typeLiteral = QStringLiteral("type");
+}
+
+using namespace qtivi_helper;
+
 void qtivi_qmlOrCppWarning(const QObject *obj, const char *errorString)
 {
     qtivi_qmlOrCppWarning(obj, QLatin1String(errorString));
@@ -82,6 +89,69 @@ void qtivi_qmlOrCppWarning(const QObject *obj, const QString &errorString)
     }
 
     v4->throwError(errorString);
+}
+
+QVariant convertFromJSON(const QVariant &val)
+{
+    QVariant value = val;
+    // First try to convert the values to a Map or a List
+    // This is needed as it could also store a QStringList or a Hash
+    if (value.canConvert(QVariant::Map))
+        value.convert(QVariant::Map);
+    if (value.canConvert(QVariant::List))
+        value.convert(QVariant::List);
+
+    if (value.type() == QVariant::Map) {
+        const QVariantMap map = value.toMap();
+        if (map.contains(typeLiteral) && map.contains(valueLiteral)) {
+            const QString type = map.value(typeLiteral).toString();
+            const QVariant value = map.value(valueLiteral);
+
+            if (type == QStringLiteral("enum")) {
+                QString enumValue = value.toString();
+                const int lastIndex = enumValue.lastIndexOf(QStringLiteral("::"));
+                const QString className = enumValue.left(lastIndex - 1 );
+                enumValue = enumValue.right(enumValue.count() - lastIndex - 2);
+                const QMetaObject *mo = QMetaType::metaObjectForType(QMetaType::type(className.toLatin1()));
+                if (!mo)
+                    return QVariant();
+
+                for (int i = mo->enumeratorOffset(); i < mo->enumeratorCount(); ++i) {
+                    QMetaEnum me = mo->enumerator(i);
+                    bool ok = false;
+                    int value = me.keysToValue(enumValue.toLatin1(), &ok);
+                    if (ok)
+                        return value;
+                }
+                qWarning() << "Couldn't parse the enum definition" << map;
+                return QVariant();
+            } else {
+                int typeId = QMetaType::type(type.toLatin1());
+                const QMetaObject *mo = QMetaType::metaObjectForType(typeId);
+                if (!mo)
+                    return QVariant();
+
+                QVariantList values = value.toList();
+                for (auto i = values.begin(); i != values.end(); ++i)
+                    *i = convertFromJSON(*i);
+
+                void *gadget = mo->newInstance(Q_ARG(QVariant, QVariant(values)));
+                return QVariant(typeId, gadget);
+            }
+        }
+
+        QVariantMap convertedValues;
+        for (auto i = map.constBegin(); i != map.constEnd(); ++i)
+            convertedValues.insert(i.key(), convertFromJSON(i.value()));
+        return convertedValues;
+    } else if (value.type() == QVariant::List) {
+        QVariantList values = value.toList();
+        for (auto i = values.begin(); i != values.end(); ++i)
+            *i = convertFromJSON(*i);
+        return values;
+    }
+
+    return value;
 }
 
 QT_END_NAMESPACE

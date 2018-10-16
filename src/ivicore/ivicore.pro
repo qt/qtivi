@@ -58,7 +58,8 @@ HEADERS += \
     qivipendingreply_p.h \
     qivisimulationengine.h \
     qivisimulationproxy.h \
-    qtivicoremodule.h
+    qtivicoremodule.h \
+    qivisimulationglobalobject_p.h
 
 SOURCES += \
     qiviservicemanager.cpp \
@@ -83,7 +84,8 @@ SOURCES += \
     qivipendingreply.cpp \
     qivisimulationengine.cpp \
     qivisimulationproxy.cpp \
-    qtivicoremodule.cpp
+    qtivicoremodule.cpp \
+    qivisimulationglobalobject.cpp
 
 include(queryparser/queryparser.pri)
 
