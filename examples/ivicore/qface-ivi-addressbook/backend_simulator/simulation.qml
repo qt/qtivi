@@ -56,6 +56,14 @@ import example.ivi.addressbook.simulation 1.0
 
 Item {
     AddressBookBackend {
+        id: backend
+        property var settings : IviSimulator.findData(IviSimulator.simulationData, "AddressBook")
+
+        function initialize() {
+            print("AddressBookSimulation INITIALIZE")
+            IviSimulator.initializeDefault(settings, backend)
+            Base.initialize()
+        }
 
         function insertContact(reply, index, contact) {
             print("BACKEND SIMULATION INSERT CONTACT")
