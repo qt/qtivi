@@ -1,6 +1,6 @@
 org.example.echo.EchoZoned:
     config_simulator:
-        zones: { left : FrontLeft, right : FrontRight, rear: Rear }
+        zones: [ FrontLeft, FrontRight, Rear ]
 
 org.example.echo.EchoZoned#stringValue:
     config_simulator:

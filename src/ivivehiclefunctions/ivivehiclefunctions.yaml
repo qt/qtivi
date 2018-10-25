@@ -1,7 +1,7 @@
 QtIviVehicleFunctions.QIviClimateControl:
     config_simulator:
         zoned: true
-        zones: { left : FrontLeft, right : FrontRight, rear: Rear }
+        zones: { FrontLeft, FrontRight, Rear }
 
 QtIviVehicleFunctions.QIviClimateControl#airConditioningEnabled:
     config_simulator:
@@ -52,7 +52,7 @@ QtIviVehicleFunctions.QIviClimateControl#automaticClimateFanIntensityLevel:
 
 QtIviVehicleFunctions.QIviClimateControl#targetTemperature:
     config_simulator:
-        default: { left: 21.0, right: 22.5, =: 0.0 }
+        default: { FrontLeft: 21.0, FrontRight: 22.5, =: 0.0 }
         zoned: true
 
 QtIviVehicleFunctions.QIviClimateControl#seatCooler:
@@ -72,7 +72,7 @@ QtIviVehicleFunctions.QIviClimateControl#outsideTemperature:
 QtIviVehicleFunctions.QIviWindowControl:
     config_simulator:
         zoned: true
-        zones: { left : FrontLeft, right : FrontRight, rearLeft: RearLeft, rearRight: RearRight, rear: Rear, roof: Roof }
+        zones: [ FrontLeft, FrontRight, RearLeft, RearRight, Rear, Roof ]
 
 QtIviVehicleFunctions.QIviWindowControl#heaterMode:
     config_simulator:

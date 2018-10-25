@@ -96,18 +96,18 @@ QT_BEGIN_NAMESPACE
 
     {{module.module_name|upperfirst}}Module::registerTypes();
 {% set zones = interface.tags.config_simulator.zones if interface.tags.config_simulator and interface.tags.config_simulator.zones else {} %}
-{% for zone_name, zone_id in zones.items() %}
-    ZoneBackend {{zone_name}}Zone;
+{% for zone_id in zones %}
+    ZoneBackend {{zone_id|lowerfirst}}Zone;
 {%   for property in interface.properties %}
 {%     if property.tags.config_simulator and property.tags.config_simulator.zoned %}
 {%       if property.type.is_model %}
-    {{zone_name}}Zone.{{property}} = new {{property|upperfirst}}Model(this);
+    {{zone_id|lowerfirst}}Zone.{{property}} = new {{property|upperfirst}}Model(this);
 {%       else %}
-    {{zone_name}}Zone.{{property}} = {{property|default_value(zone_name)}};
+    {{zone_id|lowerfirst}}Zone.{{property}} = {{property|default_value(zone_id)}};
 {%       endif %}
 {%     endif %}
 {%   endfor %}
-    m_zoneMap.insert("{{zone_id}}", {{zone_name}}Zone);
+    m_zoneMap.insert("{{zone_id}}", {{zone_id|lowerfirst}}Zone);
 {% endfor %}
 }
 

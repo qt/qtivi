@@ -242,12 +242,11 @@ annotations used for defining various aspects of the generation of the backend-s
         \li
         \code
         config_simulator:
-             zones: { left : FrontLeft, right : FrontRight, rear: Rear }
+             zones: { FrontLeft, FrontRight, Rear }
         \endcode
         \li Accompanying YAML file
         \li Interface
-        \li For the backend simulator defines a list of zones supported by the simulation code
-        with their names
+        \li For the backend simulator defines a list of zones supported by the simulation code.
     \row
         \li
         \target config_simulator_default
@@ -262,7 +261,7 @@ annotations used for defining various aspects of the generation of the backend-s
         For zoned properties a mapping from a zone to a default value can be used. The default key of the map is "=".
         \code
         config_simulator:
-        default: { left: 21.0, right: 22.5, =: 0.0 }
+        default: { FrontLeft: 21.0, FrontRight: 22.5, =: 0.0 }
         \endcode
     \row
         \li \code
