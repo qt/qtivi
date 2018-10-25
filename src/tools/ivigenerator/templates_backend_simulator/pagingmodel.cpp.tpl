@@ -43,7 +43,6 @@
     : QIviPagingModelInterface(parent)
 {
     qRegisterMetaType<QIviPagingModelInterface*>();
-    m_list = {{property|default_value}};
 }
 
 /*! \internal */
