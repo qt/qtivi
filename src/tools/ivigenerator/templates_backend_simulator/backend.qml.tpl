@@ -44,12 +44,15 @@ import {{module.name|lower}}.simulation 1.0
 
 QtObject {
     property var settings : IviSimulator.findData(IviSimulator.simulationData, "{{interface}}")
+    property bool defaultInitialized: false
     property var backend : {{interface|upperfirst}}Backend {
-
 
         function initialize() {
             print("{{interface}}Simulation INITIALIZE")
-            IviSimulator.initializeDefault(settings, backend)
+            if (!defaultInitialized) {
+                IviSimulator.initializeDefault(settings, backend)
+                defaultInitialized = true
+            }
             Base.initialize()
         }
 
