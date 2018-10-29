@@ -61,16 +61,32 @@ QtObject {
             return settings.zones;
         }
 {% endif %}
-
 {% for property in interface.properties %}
+
+{% if interface_zoned %}
+        function {{property|setter_name}}({{property}}, zone) {
+            if (IviSimulator.checkSettings({{property}}, settings["{{property}}"], zone)) {
+                if (zone) {
+                    console.log("SIMULATION {{ property }} for zone: " + zone + " changed to: " + {{property}});
+                    backend.zones[zone].{{property}} = {{property}}
+                } else {
+                    console.log("SIMULATION {{ property }} changed to: " + {{property}});
+                    backend.{{property}} = {{property}}
+                }
+            } else {
+                setError("SIMULATION changing {{property}} is not possible: provided: " + {{property}} + " constraint: " + IviSimulator.constraint_string(settings["{{property}}"]));
+            }
+        }
+{% else %}
         function {{property|setter_name}}({{property}}) {
             if (IviSimulator.checkSettings({{property}}, settings["{{property}}"])) {
                 console.log("SIMULATION {{ property }} changed to: " + {{property}});
                 backend.{{property}} = {{property}}
             } else {
-                setError("SIMULATION changing {{property}} is not possible: provided: " + {{property}} + "constraint: " + IviSimulator.constraint_string(settings["{{property}}"]));
+                setError("SIMULATION changing {{property}} is not possible: provided: " + {{property}} + " constraint: " + IviSimulator.constraint_string(settings["{{property}}"]));
             }
         }
+{% endif %}
 {% endfor %}
     }
 }

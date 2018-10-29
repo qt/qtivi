@@ -231,7 +231,11 @@ void {{class}}::addZone(const QString &zone)
 */
 {{ivi.prop_setter(property, class, interface_zoned, model_interface = true)}}
 {
-    QIVI_SIMULATION_TRY_CALL({{class}}, "{{property|setter_name}}", void, {{property}});
+{%   set parameters = property.name %}
+{%   if interface_zoned %}
+{%     set parameters = parameters + ', zone' %}
+{%   endif%}
+    QIVI_SIMULATION_TRY_CALL({{class}}, "{{property|setter_name}}", void, {{parameters}});
 
 {% if interface_zoned %}
     if (zone.isEmpty()) {
