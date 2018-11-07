@@ -1,4 +1,5 @@
-@config: { qml_name: "QtIvi.VehicleFunctions", interfaceBuilder: "vehicleFunctionsInterfaceBuilder" }
+@config: { qml_name: "QtIvi.VehicleFunctions" }
+@config_simulator: { simulationFile: "qrc:/simulation/simulation.qml" }
 module QtIviVehicleFunctions 1.0;
 
 /**

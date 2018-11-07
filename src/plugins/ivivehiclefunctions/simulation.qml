@@ -1,7 +1,6 @@
 /****************************************************************************
 **
 ** Copyright (C) 2018 Pelagicore AG
-** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the QtIvi module of the Qt Toolkit.
@@ -40,58 +39,14 @@
 **
 ****************************************************************************/
 
-#ifndef QTIVIVEHICLEFUNCTIONS_QIVICONCRETEWINDOWCONTROLBACKEND_H_
-#define QTIVIVEHICLEFUNCTIONS_QIVICONCRETEWINDOWCONTROLBACKEND_H_
+import QtQuick 2.0
+import qtivivehiclefunctions.simulation 1.0
 
-#include "qiviwindowcontrolbackend.h"
-#include <QTimer>
-
-QT_BEGIN_NAMESPACE
-
-class QIviConcreteWindowControlBackend;
-class WindowTimer : public QObject
-{
-public:
-    WindowTimer(const QString &zone, bool isBlind, QIviConcreteWindowControlBackend *backend);
-
-    void setOpeningTime(int intervalInSeconds);
-    void open(QIviPendingReply<void> reply);
-    void close(QIviPendingReply<void> reply);
-
-public slots:
-    void checkValue();
-
-private:
-    QTimer *m_timer;
-    bool m_opening;
-    int m_currentValue;
-    int m_interval;
-    QString m_zone;
-    bool m_blind;
-    QIviConcreteWindowControlBackend *m_backend;
-    QIviPendingReply<void> m_pendingReply;
-};
-
-class QIviConcreteWindowControlBackend : public QIviWindowControlBackend
-{
-public:
-    explicit QIviConcreteWindowControlBackend(QObject *parent = nullptr);
-    ~QIviConcreteWindowControlBackend();
-
-    virtual void setBlindMode(QtIviVehicleFunctionsModule::BlindMode blindMode, const QString &zone) override;
-    virtual QIviPendingReply<void> open(const QString &zone) override;
-    virtual QIviPendingReply<void> close(const QString &zone) override;
-
-    QtIviVehicleFunctionsModule::WindowState windowState(QString zone);
-    void setWindowState(QtIviVehicleFunctionsModule::WindowState state, const QString &zone);
-    QtIviVehicleFunctionsModule::WindowState blindState(QString zone);
-    void setBlindState(QtIviVehicleFunctionsModule::WindowState state, const QString &zone);
-
-private:
-    QMap<QString,WindowTimer*> m_zoneWindowTimers;
-    QMap<QString,WindowTimer*> m_zoneBlindTimers;
-};
-
-QT_END_NAMESPACE
-
-#endif // QTIVIVEHICLEFUNCTIONS_QIVICONCRETEWINDOWCONTROLBACKEND_H_
+QtObject {
+    property var qiviclimatecontrol : QIviClimateControlSimulation {
+        id: qiviclimatecontrol
+    }
+    property var qiviwindowcontrol : QIviConcreteWindowControlSimulation {
+        id: qiviwindowcontrol
+    }
+}
