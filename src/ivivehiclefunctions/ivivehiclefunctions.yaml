@@ -1,7 +1,7 @@
 QtIviVehicleFunctions.QIviClimateControl:
     config_simulator:
         zoned: true
-        zones: { FrontLeft, FrontRight, Rear }
+        zones: [ FrontLeft, FrontRight, Rear ]
 
 QtIviVehicleFunctions.QIviClimateControl#airConditioningEnabled:
     config_simulator:
