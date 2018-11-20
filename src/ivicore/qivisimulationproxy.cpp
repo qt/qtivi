@@ -43,7 +43,6 @@
 #include "qivisimulationengine.h"
 
 #include <QDebug>
-#include <QLoggingCategory>
 #include <QQmlInfo>
 
 #include <private/qmetaobjectbuilder_p.h>

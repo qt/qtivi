@@ -47,6 +47,7 @@
 #include <QJsonDocument>
 #include <QDebug>
 #include <QQmlContext>
+#include <QLoggingCategory>
 
 QT_BEGIN_NAMESPACE
 
@@ -228,17 +229,22 @@ QIviSimulationEngine::QIviSimulationEngine(QObject *parent)
 
 void QIviSimulationEngine::loadSimulationData(const QString &dataFile)
 {
-    if (!QFile::exists(dataFile))
-        return;
+    qCDebug(qLcIviSimulationEngine) << "loading SimulationData" << dataFile;
 
-    QFile file(QDir::current().absoluteFilePath(dataFile));
-    if (file.open(QFile::ReadOnly)) {
-        QJsonParseError pe;
-        QJsonDocument document = QJsonDocument::fromJson(file.readAll(), &pe);
-        if (pe.error != QJsonParseError::NoError)
-            qCritical() << "Error parsing the provided simulation data: " << pe.errorString();
-        m_globalObject->setSimulationData(document.toVariant());
+    QFile file(dataFile);
+    if (!file.open(QFile::ReadOnly)) {
+        qCCritical(qLcIviSimulationEngine, "Cannot open the simulation data file %s: %s", qPrintable(dataFile), qPrintable(file.errorString()));
+        return;
     }
+
+    QJsonParseError pe;
+    QByteArray data = file.readAll();
+    QJsonDocument document = QJsonDocument::fromJson(data, &pe);
+    if (pe.error != QJsonParseError::NoError) {
+        qCCritical(qLcIviSimulationEngine, "Error parsing the simulation data in %s: %s", qPrintable(dataFile), qPrintable(pe.errorString()));
+        qCCritical(qLcIviSimulationEngine, "Error context:\n %s", data.mid(qMax(pe.offset - 20, 0), 40).data());
+    }
+    m_globalObject->setSimulationData(document.toVariant());
 }
 
 /*!

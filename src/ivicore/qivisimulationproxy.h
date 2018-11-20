@@ -45,11 +45,14 @@
 #include <QtIviCore/QtIviCoreModule>
 
 #include <QtCore/QObject>
+#include <QtCore/QLoggingCategory>
 #include <QtCore/QVariant>
 #include <QtCore/QMetaObject>
 #include <QtQml/QQmlParserStatus>
 
 QT_BEGIN_NAMESPACE
+
+Q_DECLARE_LOGGING_CATEGORY(qLcIviSimulationEngine)
 
 class QIviSimulationEngine;
 
