@@ -55,7 +55,8 @@ class Q_QTIVICORE_EXPORT QIviSimulationEngine : public QQmlApplicationEngine
 {
     Q_OBJECT
 public:
-    QIviSimulationEngine(QObject *parent = nullptr);
+    explicit QIviSimulationEngine(QObject *parent = nullptr);
+    explicit QIviSimulationEngine(const QString &identifier, QObject *parent = nullptr);
 
     template <typename T> void registerSimulationInstance(T* instance, const char *uri, int versionMajor, int versionMinor, const char *qmlName)
     {
@@ -69,6 +70,7 @@ public:
 
 private:
     QIviSimulationGlobalObject *m_globalObject;
+    QString m_identifier;
 };
 
 QT_END_NAMESPACE

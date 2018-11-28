@@ -48,8 +48,70 @@
 #include <QDebug>
 #include <QQmlContext>
 #include <QLoggingCategory>
+#include <QRegularExpression>
 
 QT_BEGIN_NAMESPACE
+
+namespace qtivi_helper {
+    static const QString qrcUrlLiteral = QStringLiteral("qrc:");
+    static const QString qrcLiteral = QStringLiteral("qrc");
+    static const QString resourceLiteral = QStringLiteral(":/");
+
+    QUrl toQmlUrl(const QString &path) {
+        if (path.startsWith(qrcUrlLiteral))
+            return path;
+        else if (path.startsWith(resourceLiteral))
+            return QString(path).prepend(qrcLiteral);
+        return path;
+    }
+
+    class QIviSimulationOverrideParser {
+    public:
+        static QIviSimulationOverrideParser* instance() {
+            static QIviSimulationOverrideParser* s_parser = new QIviSimulationOverrideParser();
+            return s_parser;
+        }
+
+        QHash<QString, QString> simulationOverrides;
+        QHash<QString, QString> simulationDataOverrides;
+
+    private:
+        QIviSimulationOverrideParser() {
+            parseEnv(qgetenv("QTIVI_SIMULATION_OVERRIDE"), simulationOverrides);
+            parseEnv(qgetenv("QTIVI_SIMULATION_DATA_OVERRIDE"), simulationDataOverrides);
+        }
+
+        void parseEnv(const QByteArray &rulesSrc, QHash<QString, QString> &hash) {
+            const QString content = QString::fromLocal8Bit(rulesSrc);
+            const auto lines = content.splitRef(QLatin1Char(';'));
+            for (auto line : lines) {
+                // Remove whitespace at start and end of line:
+                line = line.trimmed();
+
+                int equalPos = line.indexOf(QLatin1Char('='));
+                if (equalPos != -1) {
+                    if (line.lastIndexOf(QLatin1Char('=')) == equalPos) {
+                        const auto key = line.left(equalPos).trimmed();
+                        const auto valueStr = line.mid(equalPos + 1).trimmed();
+
+                        auto fixedStr = valueStr;
+                        if (fixedStr.startsWith(qrcUrlLiteral))
+                            fixedStr = fixedStr.mid(3);
+
+                        if (QFile::exists(fixedStr.toString()))
+                            hash.insert(key.toString(), valueStr.toString());
+                        else
+                            qCWarning(qLcIviSimulationEngine, "Ignoring malformed override: File does not exist: '%s'", fixedStr.toUtf8().constData());
+                    } else {
+                        qCWarning(qLcIviSimulationEngine, "Ignoring malformed override: '%s'", line.toUtf8().constData());
+                    }
+                }
+            }
+        }
+    };
+}
+
+using namespace qtivi_helper;
 
 /*!
     \class QIviSimulationEngine
@@ -221,19 +283,31 @@ QT_BEGIN_NAMESPACE
 */
 
 QIviSimulationEngine::QIviSimulationEngine(QObject *parent)
+    : QIviSimulationEngine(QString(), parent)
+{
+}
+
+QIviSimulationEngine::QIviSimulationEngine(const QString &identifier, QObject *parent)
     : QQmlApplicationEngine (parent)
     , m_globalObject(new QIviSimulationGlobalObject)
+    , m_identifier(identifier)
 {
     rootContext()->setContextProperty(QStringLiteral("IviSimulator"), m_globalObject);
 }
 
 void QIviSimulationEngine::loadSimulationData(const QString &dataFile)
 {
-    qCDebug(qLcIviSimulationEngine) << "loading SimulationData" << dataFile;
+    QString filePath = dataFile;
+    if (!m_identifier.isEmpty() && QIviSimulationOverrideParser::instance()->simulationDataOverrides.contains(m_identifier)) {
+        filePath = QIviSimulationOverrideParser::instance()->simulationDataOverrides.value(m_identifier);
+        qCWarning(qLcIviSimulationEngine, "Detected matching simulation data override: %s=%s", qPrintable(m_identifier), qPrintable(filePath));
+    }
 
-    QFile file(dataFile);
+    qCDebug(qLcIviSimulationEngine, "loading SimulationData for engine %s: %s", qPrintable(m_identifier), qPrintable(filePath));
+
+    QFile file(filePath);
     if (!file.open(QFile::ReadOnly)) {
-        qCCritical(qLcIviSimulationEngine, "Cannot open the simulation data file %s: %s", qPrintable(dataFile), qPrintable(file.errorString()));
+        qCCritical(qLcIviSimulationEngine, "Cannot open the simulation data file %s: %s", qPrintable(filePath), qPrintable(file.errorString()));
         return;
     }
 
@@ -241,7 +315,7 @@ void QIviSimulationEngine::loadSimulationData(const QString &dataFile)
     QByteArray data = file.readAll();
     QJsonDocument document = QJsonDocument::fromJson(data, &pe);
     if (pe.error != QJsonParseError::NoError) {
-        qCCritical(qLcIviSimulationEngine, "Error parsing the simulation data in %s: %s", qPrintable(dataFile), qPrintable(pe.errorString()));
+        qCCritical(qLcIviSimulationEngine, "Error parsing the simulation data in %s: %s", qPrintable(filePath), qPrintable(pe.errorString()));
         qCCritical(qLcIviSimulationEngine, "Error context:\n %s", data.mid(qMax(pe.offset - 20, 0), 40).data());
     }
     m_globalObject->setSimulationData(document.toVariant());
@@ -255,7 +329,15 @@ void QIviSimulationEngine::loadSimulationData(const QString &dataFile)
 */
 void QIviSimulationEngine::loadSimulation(const QUrl &file)
 {
-    load(file);
+    QUrl filePath = file.toLocalFile();
+    if (!m_identifier.isEmpty() && QIviSimulationOverrideParser::instance()->simulationOverrides.contains(m_identifier)) {
+        filePath = toQmlUrl(QIviSimulationOverrideParser::instance()->simulationOverrides.value(m_identifier));
+        qCWarning(qLcIviSimulationEngine, "Detected matching simulation override: %s=%s", qPrintable(m_identifier), qPrintable(filePath.toString()));
+    }
+
+    qCDebug(qLcIviSimulationEngine, "loading simulation for engine %s: %s", qPrintable(m_identifier), qPrintable(filePath.toString()));
+
+    load(filePath);
 }
 
 /*!

@@ -63,7 +63,7 @@ extern {{class}}::InterfaceBuilder {{module.tags.config.interfaceBuilder}};
 /*! \internal */
 {{class}}::{{class}}(QObject *parent)
     : QObject(parent)
-    , m_simulationEngine(new QIviSimulationEngine(this))
+    , m_simulationEngine(new QIviSimulationEngine("{{module.name|lower}}", this))
 {
 {% if module.tags.config.interfaceBuilder %}
     m_interfaces = {{module.tags.config.interfaceBuilder}}(this);
