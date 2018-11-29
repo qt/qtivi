@@ -53,11 +53,208 @@ namespace qtivi_helper {
 
 using namespace qtivi_helper;
 
+/*!
+    \qmltype IviSimulator
+
+    \brief The global object for parsing simulation data inside a QIviSimulationEngine.
+
+    The IviSimulator global object provides access to the simulation data of a QIviSimulationEngine
+    and provides helper functions for parsing and checking boundaries.
+
+    \note This object is only available inside a QIviSimulationEngine and cannot be accessed
+    outside of it.
+
+    \section1 Data Format
+
+    The IviSimulator expects its data already in a parsed form. Usually this is done by the
+    QIviSimulationEngine::loadSimulationData() function, which expects the file to be in the JSON
+    format.
+
+    \section2 Interfaces
+
+    Because a simulation QML file can use multiple interfaces, the simulation data supports
+    multiple data sets as well. These are identified by the interface name in a reverse DNS
+    notation:
+
+    \badcode
+    {
+      "QIviClimateControl": {
+        ...
+      },
+      "org.qt-project.QIviWindowControl": {
+        ...
+      }
+    }
+    \endcode
+
+    The findData() method can be used to find the data for a specific interface.
+
+    \section2 Properties
+
+    The settings (e.g. boundaries) for every property of the interface are defined inside a data
+    set.
+
+    \badcode
+    {
+      "QIviClimateControl": {
+        "airConditioningEnabled": {
+          "default": true
+        },
+        "steeringWheelHeater": {
+          "minimum": 0,
+          "default": 0
+        }
+      }
+    }
+    \endcode
+
+    For the interface named \e QIviClimateControl, there are settings defined for the properties
+    \e airConditioningEnabled and \e steeringWheelHeater.
+
+    The settings object can store multiple constraints which are called \e domains. The following
+    domains are currently supported:
+
+    \list
+        \value default Holds the default value the property should have when the frontend is
+               connected.
+        \value minimum Every newly set value needs to be bigger than this value
+        \value maximum Every newly set value needs to be smaller than this value
+        \value domain Every newly set value needs to be part of this list
+        \value unsupported Changing the property is not possible and will show an "unsupported"
+               error message
+    \endlist
+
+    The value for a specific domain can be loaded using the parseDomainValue() function or using
+    defaultValue() when only the \e default domain is of interest.
+
+    \section2 Structures and Enums
+
+    As JSON is not typesafe, structures and enums need to be stored in a special format. An enum
+    can be stored like this:
+
+    \badcode
+    {
+      "QIviClimateControl": {
+        "recirculationMode": {
+          "default": {
+            "type": "enum",
+            "value": "QtIviVehicleFunctionsModule::RecirculationOff"
+          }
+        }
+      }
+    }
+    \endcode
+
+    Structures can be stored in a similar fashion using the name of the structure as \e type:
+
+    \badcode
+    {
+      "AddressBook": {
+        "contactList": {
+          "default": [
+            {
+              "type": "Contact",
+              "value": [
+                "foo",
+                23,
+                true
+              ]
+            },
+            {
+              "type": "Contact",
+              "value": [
+                "bar",
+                12,
+                false
+              ]
+            }
+          ]
+        }
+      },
+      }
+    }
+    \endcode
+
+    To correctly initialize the structure with these values, the structure needs to provide a
+    constructor taking a QVariant as argument. For the given \e contact example this constructor
+    can look like this:
+
+    \code
+    Contact::Contact(const QVariant &variant)
+        : Contact()
+    {
+        QVariant value = convertFromJSON(variant);
+        // First try to convert the values to a Map or a List
+        // This is needed as it could also store a QStringList or a Hash
+        if (value.canConvert(QVariant::Map))
+            value.convert(QVariant::Map);
+        if (value.canConvert(QVariant::List))
+            value.convert(QVariant::List);
+
+        if (value.type() == QVariant::Map) {
+            QVariantMap map = value.toMap();
+            if (map.contains(QStringLiteral("name")))
+                d->m_name = map.value(QStringLiteral("name")).value<QString>();
+            if (map.contains(QStringLiteral("age")))
+                d->m_age = map.value(QStringLiteral("age")).value<int>();
+            if (map.contains(QStringLiteral("isMarried")))
+                d->m_isMarried = map.value(QStringLiteral("isMarried")).value<bool>();
+        } else if (value.type() == QVariant::List) {
+            QVariantList values = value.toList();
+            d->m_name = values.value(0).value<QString>();
+            d->m_age = values.value(1).value<int>();
+            d->m_isMarried = values.value(2).value<bool>();
+        }
+    }
+    \endcode
+
+    \section2 Zones
+
+    For zoned interfaces, the supported zones are usually stored as list in the \e zones property:
+
+    \badcode
+    {
+      "QIviClimateControl": {
+        "zones": [
+          "FrontLeft",
+          "FrontRight",
+          "Rear"
+        ]
+      }
+    }
+    \endcode
+
+    For every supported domain it is also possible to provide zone specific values e.g.:
+
+    \badcode
+    {
+      "QIviClimateControl": {
+        "targetTemperature": {
+          "maximum": 30.0,
+          "default": {
+            "FrontLeft": 21.0,
+            "FrontRight": 22.5,
+            "=": 0.0
+          }
+        }
+      }
+    }
+    \endcode
+
+    This defines that the maximum value for the \e targetTemperature property is \e 30, the default
+    value is zone specific and is \e 21.5 for the \e FrontLeft zone, while it is \e 22.5 for the
+    FrontRight zone. The unzoned \e targetTemperature temperature is initialized with \e 0.0.
+*/
 QIviSimulationGlobalObject::QIviSimulationGlobalObject(QObject *parent)
     : QObject(parent)
 {
 }
 
+/*!
+    \qmlproperty object IviSimulator::simulationData
+
+    Provides the simulation data parsed in QIviSimulationEngine::loadSimulationData()
+*/
 QVariant QIviSimulationGlobalObject::simulationData() const
 {
     return m_simulationData;
@@ -68,6 +265,24 @@ void QIviSimulationGlobalObject::setSimulationData(const QVariant &simulationDat
     m_simulationData = simulationData;
 }
 
+/*!
+    \qmlmethod IviSimulator::findData(object data, string interface)
+
+    Searches for the key \a interface within \a data and returns the stored values. Returns
+    undefined if no data was found for this \a interface.
+
+    If \a interface is a reverse NDS name, it first searches for the full string. If no key was
+    found, it starts to search again with a reduced name until it finds a key with this name.
+
+    E.g. for the interface \e org.qt-project.ClimateControl it searches for keys in the following
+    order:
+
+    \list 1
+        \li org.qt-project.ClimateControl
+        \li qt-project.ClimateControl
+        \li ClimateControl
+    \endlist
+*/
 QVariantMap QIviSimulationGlobalObject::findData(const QVariantMap &data, const QString &interface)
 {
     QString key = interface;
@@ -84,6 +299,13 @@ QVariantMap QIviSimulationGlobalObject::findData(const QVariantMap &data, const 
     return QVariantMap();
 }
 
+/*!
+    \qmlmethod IviSimulator::initializeDefault(object data, QObject* object)
+
+    Applies the default values read from \a data to \a object.
+
+    If \a object supports zoneing, the default value is only applied to the correct zone.
+*/
 void QIviSimulationGlobalObject::initializeDefault(const QVariantMap &data, QObject *object)
 {
     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
@@ -115,11 +337,30 @@ void QIviSimulationGlobalObject::initializeDefault(const QVariantMap &data, QObj
     }
 }
 
+/*!
+    \qmlmethod IviSimulator::defaultValue(object data, string zone)
+
+    Provides the default value stored in \a data for the given \a zone. If \a zone is undefined or
+    the data doesn't provide a default value for the given \a zone, it returns the unzoned default
+    value if available.
+
+    This is just a convenience function calling parseDomainValue() with the domain \e default.
+*/
 QVariant QIviSimulationGlobalObject::defaultValue(const QVariantMap &data, const QString &zone)
 {
     return parseDomainValue(data, QStringLiteral("default"), zone);
 }
 
+/*!
+    \qmlmethod IviSimulator::constraint(object data, string zone)
+
+    Searches for all boundary settings in \a data for the given \a zone and returns the constraint
+    (which is enforced for newly set values) in a human readable form.
+
+    This is useful for error messages in connection with checkSettings().
+
+    \sa checkSettings()
+*/
 QString QIviSimulationGlobalObject::constraint(const QVariantMap &data, const QString &zone)
 {
     const QVariant unsupportedDomain = parseDomainValue(data, unsupportedLiteral, zone);
@@ -141,6 +382,17 @@ QString QIviSimulationGlobalObject::constraint(const QVariantMap &data, const QS
     return QString();
 }
 
+/*!
+    \qmlmethod IviSimulator::checkSettings(object data, var data, string zone)
+
+    Searches for all boundary settings in \a data for the given \a zone and returns whether the
+    provided \a value meets this contraint.
+
+    To show meaningful error messages when the value is not within the boundaries, the contraint()
+    function can be used.
+
+    \sa constraint()
+*/
 bool QIviSimulationGlobalObject::checkSettings(const QVariantMap &data, const QVariant &value, const QString &zone)
 {
     const QVariant unsupportedDomain = parseDomainValue(data, unsupportedLiteral, zone);
@@ -162,6 +414,13 @@ bool QIviSimulationGlobalObject::checkSettings(const QVariantMap &data, const QV
     return true;
 }
 
+/*!
+    \qmlmethod IviSimulator::parseDomainValue(object data, string domain, string zone)
+
+    Search for the \a domain in \a data for the given \a zone. If \a zone is undefined or
+    the data doesn't provide this domain for the given \a zone, it returns the unzoned domain
+    value if available.
+*/
 QVariant QIviSimulationGlobalObject::parseDomainValue(const QVariantMap &data, const QString &domain, const QString &zone)
 {
     if (!data.contains(domain))

@@ -1,0 +1,170 @@
+/****************************************************************************
+**
+** Copyright (C) 2018 Pelagicore AG
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL-QTAS$
+** Commercial License Usage
+** Licensees holding valid commercial Qt Automotive Suite licenses may use
+** this file in accordance with the commercial license agreement provided
+** with the Software or, alternatively, in accordance with the terms
+** contained in a written agreement between you and The Qt Company.  For
+** licensing terms and conditions see https://www.qt.io/terms-conditions.
+** For further information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+/*!
+\page simulation-system.html
+\title The Qt IVI Simulation System
+\keyword SimulationSystem
+\previouspage The Qt IVI Query Language
+
+When developing new APIs, it is not always a given that a particular service already exists for this
+API. Often the API is already designed while the service itself is still in development. E.g. For new
+concepts like autonomous driving, the UI interaction and its API is already designed while the
+autonomous drive service is not ready yet. This development cycle requires the need to split the
+development of APIs and the actual service. The \l{Dynamic Backend System} provides an architecture
+to enable this split.
+
+The next step for the API development is a good way to simulate a similar behavior like the
+original service. The Qt IVI Simulation System enables the following use cases:
+
+\list
+    \li Easy to define simulation logic in QML
+    \li Flexible system to provide a simulation for any C++ API
+    \li Split between simulation data and simulation logic
+    \li Override mechanism to change the simulation at runtime (e.g. for autotests)
+    \li Integrated in the IVIGenerator autogenerator tooling
+\endlist
+
+\section1 Overview
+
+Because the simulation system builds on top of the \l{Dynamic Backend System}, the API split
+follows the same schema:
+
+\image feature_backend.jpg "Feature backend relation"
+
+Every backend plugin needs to implement the backend interface to provide the needed functionality
+to the frontend: E.g. The QIviClimateControlBackendInterface class for the QIviClimateControl
+frontend API.
+
+In the backend, every call from the frontend get forwarded to QML, where a simulation behavior can
+be scripted easily.
+
+\image simulationsystem.png "QtIvi Simulation System"
+
+\section1 QML API
+
+The core part of the Qt IVI Simulation System is the QIviSimulationEngine. It is an extended
+QQmlApplicationEngine which provides extra functionality to glue C++ and QML logic together.
+
+Every backend uses its own simulation engine to keep the frontend and backend QML code separated.
+To provide an easy binding between QML and C++ objects, the C++ instance needs to be registered with
+the QIviSimulationEngine under a certain name. The engine creates a proxy object for every
+registered C++ instance and provides it as a QML type to QML. These types can be used to
+provide the behavior for functions or to update properties.
+
+More detailed documentation about how to work with the simulation engine can be found \l
+{QIviSimulationEngine}{here}
+
+\section1 Data / Logic Split
+
+Using the simulation system it is possible to separate the simulation business logic from the
+actual simulation data. The simulation data can be stored in JSON files and is loaded by the
+QIviSimulationEngine::loadSimulationData() function.
+Once the simulation data is loaded, the content is provided to all simulation QML files via the
+IviSimulator global object.
+
+E.g. to read only the data for a specific interface the IviSimulator::findData function can be used:
+
+\qml
+property var settings : IviSimulator.findData(IviSimulator.simulationData, "QIviClimateControl")
+\endqml
+
+\section2 Boundary Checks
+
+The IviSimulator global object also provides additional functions to make boundary checks easier.
+The boundaries of properties can be defined in the JSON files while the QML code stays generic to
+work with multiple different boundary checks:
+
+\qml
+function setAirConditioningEnabled(airConditioningEnabled) {
+    if (IviSimulator.checkSettings(airConditioningEnabled, settings["airConditioningEnabled"])) {
+        console.log("SIMULATION airConditioningEnabled changed to: " + airConditioningEnabled);
+        backend.airConditioningEnabled = airConditioningEnabled
+    } else {
+        setError("SIMULATION changing airConditioningEnabled is not possible: provided: " + airConditioningEnabled + " constraint: " + IviSimulator.constraint_string(settings["airConditioningEnabled"]));
+    }
+}
+\endqml
+
+The IviSimulator::checkSettings() function is used to check the provided \e airConditioningEnabled
+argument against the boundaries defined in the JSON data. If the value is within the boundaries
+the value will be updated, otherwise an error is returned which also provides the constraint in a
+human readable form.
+
+Please see the \l{IviSimulator}{global object documentation} for more information about the usage
+and the simulation data format.
+
+\section1 Overriding Mechanism
+
+For app development or unit testing it is often useful to trigger a certain behavior of a backend.
+E.g. when implementing message boxes for error recovery, the app developer wants a way to easily
+trigger this exact error condition. The simulation behavior provided by the backend developer might
+not be sufficient for this usecase.
+
+Because of this the Qt IVI Simulation System provides an override system to load your own
+simulation behavior- or data- file by setting an environment variable.
+
+Every QIviSimulationEngine can have an additional identifier which can be used to override the
+default behavior- or data- file using the following environment variables:
+
+\badcode
+QTIVI_SIMULATION_OVERRIDE=<identifier>=<file>[;<identifier>=<file>]
+QTIVI_SIMULATION_DATA_OVERRIDE=<identifier>=<file>[;<identifier>=<file>]
+\endcode
+
+\section1 Ivigenerator Integration
+
+The simulation system is already integrated into the ivigenerator autogenerator tooling and it will
+automatically be used when generating code with the \l{Backend simulator}{backend_simulator} format.
+
+The autogenerated plugin will use the qface module name as the QIviSimulationEngine identifier to
+allow overriding at runtime.
+
+All boundary annotations defined in \l{config_simulator_default}{config_simulator} will be
+transformed into a JSON file and embedded as a resource file into the backend.
+
+For every interface, a QML simulation file will be created which provides a default
+implementation for checking the boundaries of every property.
+
+\section2 Define your own simulation files
+
+As it is not always convenient to use the autogenerated QML simulation files, you can also define
+your own QML file by using the \l{config_simulator_simulationFile}{simulationFile annotation}.
+
+\note When your qface file provides multiple interfaces, the provided simulation file should also
+provide a simulation for all interfaces.
+
+To reuse the autogenerated simulation files, you can either load them using an QML import statement
+like this:
+
+\qml
+import 'qrc:/simulation/'
+\endqml
+
+or provide your own simulation file in a resource file using the 'simulation' prefix.
+
+Afterwards you should be able to load the autogenerated simulation files like every other QML file.
+*/
