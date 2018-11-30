@@ -62,7 +62,7 @@ void {{class}}::registerInstance(const QUuid &identifier)
     QIVI_SIMULATION_TRY_CALL({{class}}, "registerInstance", void, identifier);
     qCritical() << "REGISTER" << identifier;
 
-    emit countChanged(identifier, 100);
+    emit countChanged(identifier, m_list.count());
 }
 
 void {{class}}::unregisterInstance(const QUuid &identifier)
