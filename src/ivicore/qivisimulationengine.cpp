@@ -329,7 +329,7 @@ void QIviSimulationEngine::loadSimulationData(const QString &dataFile)
 */
 void QIviSimulationEngine::loadSimulation(const QUrl &file)
 {
-    QUrl filePath = file.toLocalFile();
+    QUrl filePath = file;
     if (!m_identifier.isEmpty() && QIviSimulationOverrideParser::instance()->simulationOverrides.contains(m_identifier)) {
         filePath = toQmlUrl(QIviSimulationOverrideParser::instance()->simulationOverrides.value(m_identifier));
         qCWarning(qLcIviSimulationEngine, "Detected matching simulation override: %s=%s", qPrintable(m_identifier), qPrintable(filePath.toString()));
