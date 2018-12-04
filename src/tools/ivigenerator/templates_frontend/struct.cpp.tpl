@@ -110,7 +110,7 @@ public:
 {{class}}::{{class}}(const QVariant &variant)
     : {{class}}()
 {
-    QVariant value = convertFromJSON(variant);
+    QVariant value = qtivi_convertFromJSON(variant);
     // First try to convert the values to a Map or a List
     // This is needed as it could also store a QStringList or a Hash
     if (value.canConvert(QVariant::Map))

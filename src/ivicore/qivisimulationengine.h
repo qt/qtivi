@@ -46,6 +46,7 @@
 
 #include <QtQml/QQmlApplicationEngine>
 #include <QtIviCore/qivisimulationproxy.h>
+#include <QtIviCore/qiviqmlconversion_helper.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -65,6 +65,7 @@ using namespace qtivi_helper;
     outside of it.
 
     \section1 Data Format
+    \target IviSimulatorDataFormat
 
     The IviSimulator expects its data already in a parsed form. Usually this is done by the
     QIviSimulationEngine::loadSimulationData() function, which expects the file to be in the JSON
@@ -183,7 +184,7 @@ using namespace qtivi_helper;
     Contact::Contact(const QVariant &variant)
         : Contact()
     {
-        QVariant value = convertFromJSON(variant);
+        QVariant value = qtivi_convertFromJSON(variant);
         // First try to convert the values to a Map or a List
         // This is needed as it could also store a QStringList or a Hash
         if (value.canConvert(QVariant::Map))
@@ -434,10 +435,10 @@ QVariant QIviSimulationGlobalObject::parseDomainValue(const QVariantMap &data, c
             z = QStringLiteral("=");
 
         if (domainMap.contains(zone))
-            return convertFromJSON(domainMap.value(zone));
+            return qtivi_convertFromJSON(domainMap.value(zone));
     }
 
-    return convertFromJSON(domainData);
+    return qtivi_convertFromJSON(domainData);
 }
 
 QGenericArgument QIviSimulationGlobalObject::createArgument(const QVariant &variant)
