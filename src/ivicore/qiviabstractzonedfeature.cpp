@@ -227,7 +227,7 @@ void QIviAbstractZonedFeature::initializeZones()
             else
                 f = createZoneFeature(zone);
             if (f) {
-                dynamic_cast<QIviAbstractZonedFeaturePrivate *>(f->d_ptr.data())->m_serviceObject = d->m_serviceObject;
+                f->d_func()->m_serviceObject = d->m_serviceObject;
                 d->m_zoneFeatures.append(f);
                 d->m_zoneFeatureList.append(QVariant::fromValue(f));
                 d->m_zoneFeatureMap.insert(f->zone(), QVariant::fromValue(f));
