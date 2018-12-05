@@ -64,7 +64,7 @@ public:
 
 {% for struct in module.structs %}
     Q_INVOKABLE {{struct}} {{struct|lowerfirst}}() const;
-    Q_INVOKABLE {{struct}} {{struct|lowerfirst}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %}) const;
+    Q_INVOKABLE {{struct}} {{struct|lowerfirst}}({{struct.fields|map('parameter_type')|join(', ')}}) const;
 {% endfor %}
 };
 

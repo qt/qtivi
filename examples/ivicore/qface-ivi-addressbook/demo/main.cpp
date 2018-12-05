@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
     AddressBookModule::registerTypes();
     AddressBookModule::registerQmlTypes(QLatin1String("IviAddressBook"), 1, 0);
 
-    QQuickStyle::setStyle("Material");
+    QQuickStyle::setStyle(QStringLiteral("Material"));
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

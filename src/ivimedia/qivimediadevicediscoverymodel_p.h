@@ -68,7 +68,7 @@ public:
 
     virtual void initialize() override;
     void clearToDefaults();
-    void resetModel(const QList<QIviServiceObject *> deviceList);
+    void resetModel(const QList<QIviServiceObject *> &deviceList);
     void onDeviceAdded(QIviServiceObject *device);
     void onDeviceRemoved(QIviServiceObject *device);
 

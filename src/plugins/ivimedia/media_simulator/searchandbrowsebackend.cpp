@@ -148,7 +148,7 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, int start, int c
     if (!filterClause.isEmpty())
         where_clauses.append(filterClause);
 
-    QString whereClause = where_clauses.join(" AND ");
+    QString whereClause = where_clauses.join(QStringLiteral(" AND "));
 
     QString countQuery = QStringLiteral("SELECT count() FROM (SELECT %1 FROM track %2 %3)")
             .arg(columns,
@@ -287,7 +287,7 @@ QString SearchAndBrowseBackend::createWhereClause(const QString &type, QIviAbstr
     switch (term->type()) {
     case QIviAbstractQueryTerm::ScopeTerm: {
         auto *scope = static_cast<QIviScopeTerm*>(term);
-        return QStringLiteral("%1 (%2)").arg(scope->isNegated() ? QStringLiteral("NOT") : QStringLiteral(""),createWhereClause(type, scope->term()));
+        return QStringLiteral("%1 (%2)").arg(scope->isNegated() ? QStringLiteral("NOT") : QString(), createWhereClause(type, scope->term()));
     }
     case QIviAbstractQueryTerm::ConjunctionTerm: {
         auto *conjunctionTerm = static_cast<QIviConjunctionTerm*>(term);

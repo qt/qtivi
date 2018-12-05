@@ -73,11 +73,11 @@ public:
     virtual int frequency() const;
     virtual void setFrequency(int frequency);
     QString stationLogoUrl() const;
-    void setStationLogoUrl(QString stationLogoUrl);
+    void setStationLogoUrl(const QString &stationLogoUrl);
     QString category() const;
-    void setCategory(QString category);
+    void setCategory(const QString &category);
     QString radioText() const;
-    void setRadioText(QString radioText);
+    void setRadioText(const QString &radioText);
     int receptionQuality() const;
     void setReceptionQuality(int receptionQuality);
     virtual QString name() const override;

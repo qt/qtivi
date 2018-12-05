@@ -74,7 +74,7 @@ public:
 
     void resetModel() override;
     void parseQuery();
-    void setupFilter(QIviAbstractQueryTerm* queryTerm, QList<QIviOrderTerm> orderTerms);
+    void setupFilter(QIviAbstractQueryTerm* queryTerm, const QList<QIviOrderTerm> &orderTerms);
     void checkType();
     void clearToDefaults() override;
     void setCanGoBack(bool canGoBack);

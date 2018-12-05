@@ -241,7 +241,7 @@ QString QIviTunerStation::stationLogoUrl() const
     return d->m_stationLogoUrl;
 }
 
-void QIviTunerStation::setStationLogoUrl(QString stationLogoUrl)
+void QIviTunerStation::setStationLogoUrl(const QString &stationLogoUrl)
 {
     d->m_stationLogoUrl = stationLogoUrl;
 }
@@ -251,7 +251,7 @@ QString QIviTunerStation::category() const
     return d->m_category;
 }
 
-void QIviTunerStation::setCategory(QString category)
+void QIviTunerStation::setCategory(const QString &category)
 {
     d->m_category = category;
 }
@@ -261,7 +261,7 @@ QString QIviTunerStation::radioText() const
     return d->m_radioText;
 }
 
-void QIviTunerStation::setRadioText(QString radioText)
+void QIviTunerStation::setRadioText(const QString &radioText)
 {
     d->m_radioText = radioText;
 }

@@ -100,7 +100,7 @@ void UsbBrowseBackend::fetchData(const QUuid &identifier, int start, int count)
 
     for (int i = start; i < infoList.count() && i < count; i++) {
         SearchAndBrowseItem item;
-        item.setType("file");
+        item.setType(fileLiteral);
         item.setName(infoList.at(i).fileName());
         list.append(QVariant::fromValue(item));
     }

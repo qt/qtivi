@@ -140,11 +140,10 @@ QIviZonedFeatureInterface *QIviAbstractZonedFeature::backend(const QString &inte
     if (iface.isEmpty())
         iface = interfaceName();
 
-    if (auto *parentFeature = qobject_cast<QIviAbstractZonedFeature*>(parent())) {
+    if (auto *parentFeature = qobject_cast<QIviAbstractZonedFeature*>(parent()))
         return parentFeature->backend();
-    } else if (QIviServiceObject *so = serviceObject()) {
+    else if (QIviServiceObject *so = serviceObject())
         return qobject_cast<QIviZonedFeatureInterface*>(so->interfaceInstance(iface));
-    }
     return nullptr;
 }
 

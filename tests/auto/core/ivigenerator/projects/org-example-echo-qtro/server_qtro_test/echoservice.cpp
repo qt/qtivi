@@ -29,8 +29,8 @@
 #include "echoservice.h"
 
 EchoService::EchoService()
-    :m_testCombo(Contact("Antti", 34, true), EchoModule::Friday),
-     m_testId("id123")
+    :m_testCombo(Contact(QStringLiteral("Antti"), 34, true), EchoModule::Friday),
+     m_testId(QStringLiteral("id123"))
 {
 
 }

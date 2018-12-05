@@ -31,7 +31,7 @@
 
 bool Server::start()
 {
-    return Core::instance()->host()->enableRemoting(&m_service, "org.example.echo.Echo");
+    return Core::instance()->host()->enableRemoting(&m_service, QStringLiteral("org.example.echo.Echo"));
 }
 
 bool Server::stop()

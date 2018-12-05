@@ -74,7 +74,7 @@ public:
     Q_INVOKABLE {{class}}();
     Q_INVOKABLE {{class}}(const {{class}} &rhs);
     {{class}} &operator=(const {{class}} &);
-    Q_INVOKABLE {{class}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %});
+    Q_INVOKABLE {{class}}({{struct.fields|map('parameter_type')|join(', ')}});
     Q_INVOKABLE {{class}}(const QVariant &variant);
     ~{{class}}();
 

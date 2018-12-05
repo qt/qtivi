@@ -73,7 +73,7 @@ void QIviMediaDeviceDiscoveryModelPrivate::clearToDefaults()
     m_deviceList.clear();
 }
 
-void QIviMediaDeviceDiscoveryModelPrivate::resetModel(const QList<QIviServiceObject*> deviceList)
+void QIviMediaDeviceDiscoveryModelPrivate::resetModel(const QList<QIviServiceObject*> &deviceList)
 {
     Q_Q(QIviMediaDeviceDiscoveryModel);
     q->beginResetModel();

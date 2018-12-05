@@ -184,9 +184,9 @@ void {{class}}::initialize()
 {% endif %}
 
 {% if 'simulator' in features %}
-    mConnection = new QSimulatorConnection("{{interface}}", QVersionNumber(1, 0, 0));
-    mConnection->addPeerInfo("versionInfo", "1.0.0");
-    mConnection->addPeerInfo("name", "{{class}}");
+    mConnection = new QSimulatorConnection(QStringLiteral("{{interface}}"), QVersionNumber(1, 0, 0));
+    mConnection->addPeerInfo(QStringLiteral("versionInfo"), QStringLiteral("1.0.0"));
+    mConnection->addPeerInfo(QStringLiteral("name"), QStringLiteral("{{class}}"));
     QString hostname = QSimulatorConnection::simulatorHostName(false);
     if (hostname.isEmpty()) {
         qWarning() << "SIMULATOR_HOSTNAME environment variable not set! Disabling the QtSimulator connection";
