@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
@@ -390,7 +391,7 @@ void tst_QIviProperty::setValueError_qml()
     QVERIFY(warningsSpy.at(0).count());
     QList<QQmlError> errorList = warningsSpy.at(0).at(0).value<QList<QQmlError>>();
     QCOMPARE(errorList.count(), 1);
-    QCOMPARE(errorList.at(0).toString(), QUrl::fromLocalFile(testData).toString() + ":41: Error: Enum value out of range");
+    QCOMPARE(errorList.at(0).toString(), QUrl::fromLocalFile(testData).toString() + ":42: Error: Enum value out of range");
     warningsSpy.clear();
 
     QVERIFY(QMetaObject::invokeMethod(obj, "intTest"));
@@ -402,7 +403,7 @@ void tst_QIviProperty::setValueError_qml()
     QVERIFY(warningsSpy.at(0).count());
     errorList = warningsSpy.at(0).at(0).value<QList<QQmlError>>();
     QCOMPARE(errorList.count(), 1);
-    QCOMPARE(errorList.at(0).toString(), QUrl::fromLocalFile(testData).toString() + ":37: Error: Expected: int but got QString");
+    QCOMPARE(errorList.at(0).toString(), QUrl::fromLocalFile(testData).toString() + ":38: Error: Expected: int but got QString");
 }
 
 void tst_QIviProperty::readOnly()
