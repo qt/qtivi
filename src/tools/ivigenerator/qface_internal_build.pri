@@ -9,10 +9,10 @@ debug_and_release:build_pass:CONFIG(release, debug|release) {
 
 include($$shadowed($$PWD/../../ivicore/qtivicore-config.pri))
 
-VIRTUALENV_EXE = $$QMAKE_PYTHON3_LOCATION -m virtualenv
+VIRTUALENV_EXE = $$shell_quote($$QMAKE_PYTHON3_LOCATION) -m virtualenv
 # virtualenv is always using the default interpreter, which is python2 on many systems"
 # by adding -p we enforce that the python3 interpreter is used and make sure python3 is installed in the virtualenv
-VIRTUALENV_EXE += " -p $$QMAKE_PYTHON3_LOCATION"
+VIRTUALENV_EXE += " -p $$shell_quote($$QMAKE_PYTHON3_LOCATION)"
 
 # Use a Python virtualenv for installing qface, so we don't pollute the user environment
 # On some systems virtualenv --always-copy doesn't work (https://github.com/pypa/virtualenv/issues/565).

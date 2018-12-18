@@ -13,9 +13,9 @@ defineTest(qtConfTest_python3) {
         isEmpty(python3_exe): \
             next();
 
-        qtRunLoggedCommand("$$python3_exe -c \"import platform; print(platform.python_version_tuple()[0])\"", py_major_version)|next()
+        qtRunLoggedCommand("$$shell_quote($$python3_exe) -c \"import platform; print(platform.python_version_tuple()[0])\"", py_major_version)|next()
         equals(py_major_version, 3) {
-            qtRunLoggedCommand("$$python3_exe -c \"import platform; print(platform.python_version())\"", python_version)|next()
+            qtRunLoggedCommand("$$shell_quote($$python3_exe) -c \"import platform; print(platform.python_version())\"", python_version)|next()
             break()
         }
     }
@@ -41,7 +41,7 @@ defineTest(qtConfTest_python3_package) {
     package = $$eval($${1}.package)
     version = $$eval($${1}.version)
 
-    qtRunLoggedCommand("$$python3_exe -c \"import pkg_resources; print(pkg_resources.get_distribution('$${package}').version)\"", package_version)|return(false)
+    qtRunLoggedCommand("$$shell_quote($$python3_exe) -c \"import pkg_resources; print(pkg_resources.get_distribution('$${package}').version)\"", package_version)|return(false)
     !isEmpty(version) {
         qtLog("Also checking for the exact version:")
         qtLog("Expected: $$version")
