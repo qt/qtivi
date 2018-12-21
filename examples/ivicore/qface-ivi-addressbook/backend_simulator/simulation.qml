@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
@@ -56,6 +57,14 @@ import example.ivi.addressbook.simulation 1.0
 
 Item {
     AddressBookBackend {
+        id: backend
+        property var settings : IviSimulator.findData(IviSimulator.simulationData, "AddressBook")
+
+        function initialize() {
+            print("AddressBookSimulation INITIALIZE")
+            IviSimulator.initializeDefault(settings, backend)
+            Base.initialize()
+        }
 
         function insertContact(reply, index, contact) {
             print("BACKEND SIMULATION INSERT CONTACT")

@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
@@ -54,7 +55,8 @@ QIviScopeTermPrivate::QIviScopeTermPrivate()
 }
 
 QIviFilterTermPrivate::QIviFilterTermPrivate()
-    : m_negated(false)
+    : m_property(QIviFilterTerm::Equals)
+    , m_negated(false)
 {
 }
 

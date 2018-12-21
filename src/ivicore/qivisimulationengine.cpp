@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
@@ -120,7 +121,8 @@ using namespace qtivi_helper;
 
     This class is an extended QQmlApplicationEngine which can be used to load QML files. It is made
     especially for \l {Dynamic Backend System}{simulation backends} to script the behavior of a
-    simulation backend from QML.
+    simulation backend from QML. An overview of the functionality is also provided
+    \l{The Qt IVI Simulation System}{here}.
 
     In contrast to a normal QQmlEngine the QIviSimulationEngine provides an extra template function
     called registerSimulationInstance().
@@ -280,6 +282,17 @@ using namespace qtivi_helper;
     Forwarding C++ function calls to QML is limited. Every call is forwarded to only one QML
     instance as the return value is used from this call. If multiple QML instances define the same
     method, the C++ call is always forwarded to the first registered QML instance.
+
+    \section1 Runtime overriding
+
+    Every QIviSimulationEngine can take an extra identifier which can be used to override the
+    simulation QML file or the simulation data file at runtime. The environment variables need to
+    be in the following format:
+
+    \badcode
+    QTIVI_SIMULATION_OVERRIDE=<identifier>=<file>[;<identifier>=<file>]
+    QTIVI_SIMULATION_DATA_OVERRIDE=<identifier>=<file>[;<identifier>=<file>]
+    \endcode
 */
 
 QIviSimulationEngine::QIviSimulationEngine(QObject *parent)
@@ -295,6 +308,21 @@ QIviSimulationEngine::QIviSimulationEngine(const QString &identifier, QObject *p
     rootContext()->setContextProperty(QStringLiteral("IviSimulator"), m_globalObject);
 }
 
+/*!
+    Loads the simulation data file provided as \a dataFile.
+
+    The given file needs to be in the JSON format and is parsed here for errors before it is passed
+    to the IviSimulator global object where it can be accessed from QML. The file can be overridden
+    at runtime using the following environment variable:
+
+    \badcode
+    QTIVI_SIMULATION_DATA_OVERRIDE=<identifier>=<file>[;<identifier>=<file>]
+    \endcode
+
+    The identifier of the simulation engine can be set in its constructor.
+
+    \sa IviSimulator
+*/
 void QIviSimulationEngine::loadSimulationData(const QString &dataFile)
 {
     QString filePath = dataFile;
@@ -325,11 +353,17 @@ void QIviSimulationEngine::loadSimulationData(const QString &dataFile)
     Loads the QML \a file as the simulation behavior.
 
     In addition to QQmlApplicationEngine::load(), this function provides functionality to change
-    the used simulation file by using an environment variable.
+    the used simulation file by using an environment variable in the following format.
+
+    \badcode
+    QTIVI_SIMULATION_OVERRIDE=<identifier>=<file>[;<identifier>=<file>]
+    \endcode
+
+    The identifier of the simulation engine can be set in its constructor.
 */
 void QIviSimulationEngine::loadSimulation(const QUrl &file)
 {
-    QUrl filePath = file.toLocalFile();
+    QUrl filePath = file;
     if (!m_identifier.isEmpty() && QIviSimulationOverrideParser::instance()->simulationOverrides.contains(m_identifier)) {
         filePath = toQmlUrl(QIviSimulationOverrideParser::instance()->simulationOverrides.value(m_identifier));
         qCWarning(qLcIviSimulationEngine, "Detected matching simulation override: %s=%s", qPrintable(m_identifier), qPrintable(filePath.toString()));

@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
@@ -29,8 +30,8 @@
 #include "echoservice.h"
 
 EchoService::EchoService()
-    :m_testCombo(Contact("Antti", 34, true), EchoModule::Friday),
-     m_testId("id123")
+    :m_testCombo(Contact(QStringLiteral("Antti"), 34, true), EchoModule::Friday),
+     m_testId(QStringLiteral("id123"))
 {
 
 }

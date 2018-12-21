@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
@@ -54,7 +55,7 @@ QT_BEGIN_NAMESPACE
 Q_QTIVICORE_EXPORT void qtivi_qmlOrCppWarning(const QObject *obj, const char *errorString);
 Q_QTIVICORE_EXPORT void qtivi_qmlOrCppWarning(const QObject *obj, const QString& errorString);
 
-Q_QTIVICORE_EXPORT QVariant convertFromJSON(const QVariant &val);
+Q_QTIVICORE_EXPORT QVariant qtivi_convertFromJSON(const QVariant &val);
 
 template <typename T>  QVariant qtivi_convertValue(const T &val)
 {

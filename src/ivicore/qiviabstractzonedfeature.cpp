@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
@@ -140,11 +141,10 @@ QIviZonedFeatureInterface *QIviAbstractZonedFeature::backend(const QString &inte
     if (iface.isEmpty())
         iface = interfaceName();
 
-    if (auto *parentFeature = qobject_cast<QIviAbstractZonedFeature*>(parent())) {
+    if (auto *parentFeature = qobject_cast<QIviAbstractZonedFeature*>(parent()))
         return parentFeature->backend();
-    } else if (QIviServiceObject *so = serviceObject()) {
+    else if (QIviServiceObject *so = serviceObject())
         return qobject_cast<QIviZonedFeatureInterface*>(so->interfaceInstance(iface));
-    }
     return nullptr;
 }
 
@@ -228,7 +228,7 @@ void QIviAbstractZonedFeature::initializeZones()
             else
                 f = createZoneFeature(zone);
             if (f) {
-                dynamic_cast<QIviAbstractZonedFeaturePrivate *>(f->d_ptr.data())->m_serviceObject = d->m_serviceObject;
+                f->d_func()->m_serviceObject = d->m_serviceObject;
                 d->m_zoneFeatures.append(f);
                 d->m_zoneFeatureList.append(QVariant::fromValue(f));
                 d->m_zoneFeatureMap.insert(f->zone(), QVariant::fromValue(f));

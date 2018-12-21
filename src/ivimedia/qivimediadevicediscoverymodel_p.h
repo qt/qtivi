@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
@@ -68,7 +69,7 @@ public:
 
     virtual void initialize() override;
     void clearToDefaults();
-    void resetModel(const QList<QIviServiceObject *> deviceList);
+    void resetModel(const QList<QIviServiceObject *> &deviceList);
     void onDeviceAdded(QIviServiceObject *device);
     void onDeviceRemoved(QIviServiceObject *device);
 

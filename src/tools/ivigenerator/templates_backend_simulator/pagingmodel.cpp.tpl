@@ -1,4 +1,5 @@
 {#
+# Copyright (C) 2019 Luxoft Sweden AB
 # Copyright (C) 2018 Pelagicore AG.
 # Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB)
 # Contact: https://www.qt.io/licensing/
@@ -62,7 +63,7 @@ void {{class}}::registerInstance(const QUuid &identifier)
     QIVI_SIMULATION_TRY_CALL({{class}}, "registerInstance", void, identifier);
     qCritical() << "REGISTER" << identifier;
 
-    emit countChanged(identifier, 100);
+    emit countChanged(identifier, m_list.count());
 }
 
 void {{class}}::unregisterInstance(const QUuid &identifier)

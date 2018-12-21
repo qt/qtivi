@@ -67,7 +67,7 @@ qtConfig(system-qface) {
         ENV += LD_LIBRARY_PATH="$$shell_path($$VIRTUALENV_PATH/bin)"
     }
 }
-IVI_GENERATOR = $$PYTHON $$IVI_GENERATOR_PATH/generate.py
+IVI_GENERATOR = $$shell_quote($$PYTHON) $$IVI_GENERATOR_PATH/generate.py
 
 # TODO make this work with multiple input files, or only support one QFACE_SOURCE
 # Although this could be extra_compiler it is a normal EXTRA_TARGET for a reason.

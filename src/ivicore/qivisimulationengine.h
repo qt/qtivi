@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
@@ -46,6 +47,7 @@
 
 #include <QtQml/QQmlApplicationEngine>
 #include <QtIviCore/qivisimulationproxy.h>
+#include <QtIviCore/qiviqmlconversion_helper.h>
 
 QT_BEGIN_NAMESPACE
 

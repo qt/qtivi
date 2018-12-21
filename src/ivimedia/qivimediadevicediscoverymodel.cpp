@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
@@ -73,7 +74,7 @@ void QIviMediaDeviceDiscoveryModelPrivate::clearToDefaults()
     m_deviceList.clear();
 }
 
-void QIviMediaDeviceDiscoveryModelPrivate::resetModel(const QList<QIviServiceObject*> deviceList)
+void QIviMediaDeviceDiscoveryModelPrivate::resetModel(const QList<QIviServiceObject*> &deviceList)
 {
     Q_Q(QIviMediaDeviceDiscoveryModel);
     q->beginResetModel();

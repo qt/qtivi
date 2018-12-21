@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
@@ -79,7 +80,6 @@ QIviPendingReplyWatcherPrivate::QIviPendingReplyWatcherPrivate(int userType, QIv
     , m_type(userType)
     , m_resultAvailable(false)
     , m_success(false)
-    , m_data()
     , m_callbackEngine(nullptr)
 {
 
@@ -409,7 +409,7 @@ QVariant QIviPendingReplyWatcher::value() const
 bool QIviPendingReplyWatcher::isValid() const
 {
     Q_D(const QIviPendingReplyWatcher);
-    return d->m_type == -1 ? false : true;
+    return d->m_type != -1;
 }
 
 /*!
@@ -695,7 +695,6 @@ void QIviPendingReplyBase::then(const QJSValue &success, const QJSValue &failed)
 {
     if (m_watcher)
         m_watcher->then(success, failed);
-    return;
 }
 
 /*!
@@ -722,7 +721,6 @@ void QIviPendingReplyBase::setSuccess(const QVariant &value)
 {
     if (m_watcher)
         m_watcher->setSuccess(value);
-    return;
 }
 
 /*!
@@ -745,7 +743,6 @@ void QIviPendingReplyBase::setFailed()
 {
     if (m_watcher)
         m_watcher->setFailed();
-    return;
 }
 
 /*!
@@ -759,7 +756,6 @@ void QIviPendingReplyBase::setSuccessNoCheck(const QVariant &value)
 {
     if (m_watcher)
         m_watcher->d_func()->setSuccess(value);
-    return;
 }
 
 /*!

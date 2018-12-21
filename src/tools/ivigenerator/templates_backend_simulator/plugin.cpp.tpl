@@ -1,6 +1,7 @@
 {#
-# Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+# Copyright (C) 2019 Luxoft Sweden AB
 # Copyright (C) 2018 Pelagicore AG
+# Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -63,7 +64,7 @@ extern {{class}}::InterfaceBuilder {{module.tags.config.interfaceBuilder}};
 /*! \internal */
 {{class}}::{{class}}(QObject *parent)
     : QObject(parent)
-    , m_simulationEngine(new QIviSimulationEngine("{{module.name|lower}}", this))
+    , m_simulationEngine(new QIviSimulationEngine(QStringLiteral("{{module.name|lower}}"), this))
 {
 {% if module.tags.config.interfaceBuilder %}
     m_interfaces = {{module.tags.config.interfaceBuilder}}(this);
@@ -72,7 +73,7 @@ extern {{class}}::InterfaceBuilder {{module.tags.config.interfaceBuilder}};
 {%   for interface in module.interfaces %}
     auto {{interface}}Instance = new {{interface}}Backend(m_simulationEngine, this);
     //Register the types for the SimulationEngine
-    {{module.module_name|upperfirst}}Module::registerQmlTypes("{{module.name|lower}}.simulation", 1, 0);
+    {{module.module_name|upperfirst}}Module::registerQmlTypes(QStringLiteral("{{module.name|lower}}.simulation"), 1, 0);
     m_simulationEngine->registerSimulationInstance({{interface}}Instance, "{{module.name|lower}}.simulation", 1, 0, "{{interface}}Backend");
     m_interfaces << {{interface}}Instance;
 {%   endfor %}

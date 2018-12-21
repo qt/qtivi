@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
@@ -76,7 +77,7 @@ namespace qtivi_helper {
     static const QString debugSuffixLiteral = QStringLiteral("_debug");
 #endif
 
-    QString backendBaseName(const QString fileName)
+    QString backendBaseName(const QString &fileName)
     {
         if (fileName.isEmpty())
             return fileName;
@@ -285,9 +286,8 @@ void QIviServiceManagerPrivate::unloadAllBackends()
         if (backend->loader) {
             backend->loader->unload();
             delete backend->loader;
-        } else if (backend->interfaceObject) {
-            delete backend->interfaceObject;
         }
+        delete backend->interfaceObject;
         delete backend->proxyServiceObject;
 
         i.remove();

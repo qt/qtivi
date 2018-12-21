@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
@@ -111,7 +112,7 @@ void QIviSearchAndBrowseModelPrivate::parseQuery()
     setupFilter(queryTerm, orderTerms);
 }
 
-void QIviSearchAndBrowseModelPrivate::setupFilter(QIviAbstractQueryTerm* queryTerm, QList<QIviOrderTerm> orderTerms)
+void QIviSearchAndBrowseModelPrivate::setupFilter(QIviAbstractQueryTerm* queryTerm, const QList<QIviOrderTerm> &orderTerms)
 {
     //1. Tell the backend about the new filter (or none)
     QIviSearchAndBrowseModelInterface* backend = searchBackend();

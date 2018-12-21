@@ -1,6 +1,7 @@
 #line 11 "/home/gagi/work/qtas/tqtc-qtivi/src/ivicore/queryparser/qiviqueryparser.l"
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **

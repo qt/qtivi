@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
@@ -91,18 +92,26 @@ void qtivi_qmlOrCppWarning(const QObject *obj, const QString &errorString)
     v4->throwError(errorString);
 }
 
-QVariant convertFromJSON(const QVariant &val)
+/*!
+    \relates QIviSimulationEngine
+
+    Converts \a value from JSON to valid C++ types.
+
+    The provided JSON value needs to follow the \l{IviSimulatorDataFormat}{IviSimulator Data
+    Format}.
+*/
+QVariant qtivi_convertFromJSON(const QVariant &value)
 {
-    QVariant value = val;
+    QVariant val = value;
     // First try to convert the values to a Map or a List
     // This is needed as it could also store a QStringList or a Hash
-    if (value.canConvert(QVariant::Map))
-        value.convert(QVariant::Map);
-    if (value.canConvert(QVariant::List))
-        value.convert(QVariant::List);
+    if (val.canConvert(QVariant::Map))
+        val.convert(QVariant::Map);
+    if (val.canConvert(QVariant::List))
+        val.convert(QVariant::List);
 
-    if (value.type() == QVariant::Map) {
-        const QVariantMap map = value.toMap();
+    if (val.type() == QVariant::Map) {
+        const QVariantMap map = val.toMap();
         if (map.contains(typeLiteral) && map.contains(valueLiteral)) {
             const QString type = map.value(typeLiteral).toString();
             const QVariant value = map.value(valueLiteral);
@@ -133,7 +142,7 @@ QVariant convertFromJSON(const QVariant &val)
 
                 QVariantList values = value.toList();
                 for (auto i = values.begin(); i != values.end(); ++i)
-                    *i = convertFromJSON(*i);
+                    *i = qtivi_convertFromJSON(*i);
 
                 void *gadget = mo->newInstance(Q_ARG(QVariant, QVariant(values)));
                 return QVariant(typeId, gadget);
@@ -142,16 +151,16 @@ QVariant convertFromJSON(const QVariant &val)
 
         QVariantMap convertedValues;
         for (auto i = map.constBegin(); i != map.constEnd(); ++i)
-            convertedValues.insert(i.key(), convertFromJSON(i.value()));
+            convertedValues.insert(i.key(), qtivi_convertFromJSON(i.value()));
         return convertedValues;
-    } else if (value.type() == QVariant::List) {
-        QVariantList values = value.toList();
+    } else if (val.type() == QVariant::List) {
+        QVariantList values = val.toList();
         for (auto i = values.begin(); i != values.end(); ++i)
-            *i = convertFromJSON(*i);
+            *i = qtivi_convertFromJSON(*i);
         return values;
     }
 
-    return value;
+    return val;
 }
 
 QT_END_NAMESPACE

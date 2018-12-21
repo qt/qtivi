@@ -2,7 +2,8 @@
 
 #############################################################################
 ##
-## Copyright (C) 2018 Pelagicore AG
+## Copyright (C) 2019 Luxoft Sweden AB
+# Copyright (C) 2018 Pelagicore AG
 ## Contact: https://www.qt.io/licensing/
 ##
 ## This file is part of the QtIvi module of the Qt Toolkit.

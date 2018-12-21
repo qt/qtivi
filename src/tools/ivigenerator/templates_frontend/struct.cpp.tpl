@@ -1,4 +1,5 @@
 {#
+# Copyright (C) 2019 Luxoft Sweden AB
 # Copyright (C) 2018 Pelagicore AG.
 # Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB)
 # Contact: https://www.qt.io/licensing/
@@ -51,8 +52,9 @@ class {{class}}Private : public QSharedData
 {
 public:
     {{class}}Private()
+        : QSharedData()
 {% for field in struct.fields %}
-    {% if loop.first %}:{% else %},{% endif %} m_{{field}}({{field|default_type_value}})
+        , m_{{field}}({{field|default_type_value}})
 {% endfor %}
     {}
 
@@ -63,7 +65,7 @@ public:
 {% endfor %}
     {}
 
-    {{class}}Private({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %})
+    {{class}}Private({{struct.fields|map('parameter_type')|join(', ')}})
         : QSharedData()
 {% for field in struct.fields %}
         , m_{{field}}({{field}})
@@ -101,16 +103,16 @@ public:
     return *this;
 }
 
-{{class}}::{{class}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %})
+{{class}}::{{class}}({{struct.fields|map('parameter_type')|join(', ')}})
     : QIviStandardItem()
-    , d(new {{class}}Private({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field}}{% endfor %}))
+    , d(new {{class}}Private({{struct.fields|join(', ')}}))
 {
 }
 
 {{class}}::{{class}}(const QVariant &variant)
     : {{class}}()
 {
-    QVariant value = convertFromJSON(variant);
+    QVariant value = qtivi_convertFromJSON(variant);
     // First try to convert the values to a Map or a List
     // This is needed as it could also store a QStringList or a Hash
     if (value.canConvert(QVariant::Map))

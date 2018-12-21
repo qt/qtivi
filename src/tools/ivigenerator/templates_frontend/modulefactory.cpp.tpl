@@ -1,4 +1,5 @@
 {#
+# Copyright (C) 2019 Luxoft Sweden AB
 # Copyright (C) 2018 Pelagicore AG.
 # Contact: https://www.qt.io/licensing/
 #
@@ -70,9 +71,9 @@ QT_BEGIN_NAMESPACE
 
     \sa {{struct}}
 */
-{{struct}} {{class}}::{{struct|lowerfirst}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field|return_type}} {{field}}{% endfor %}) const
+{{struct}} {{class}}::{{struct|lowerfirst}}({{struct.fields|map('parameter_type')|join(', ')}}) const
 {
-    return {{struct}}({% for field in struct.fields %}{% if not loop.first %}, {% endif %}{{field}}{% endfor %});
+    return {{struct}}({{struct.fields|join(', ')}});
 }
 
 {% endfor %}

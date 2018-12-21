@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
@@ -74,7 +75,7 @@ public:
 
     void resetModel() override;
     void parseQuery();
-    void setupFilter(QIviAbstractQueryTerm* queryTerm, QList<QIviOrderTerm> orderTerms);
+    void setupFilter(QIviAbstractQueryTerm* queryTerm, const QList<QIviOrderTerm> &orderTerms);
     void checkType();
     void clearToDefaults() override;
     void setCanGoBack(bool canGoBack);

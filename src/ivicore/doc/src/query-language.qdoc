@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
@@ -29,6 +30,7 @@
 \title The Qt IVI Query Language
 \keyword Qt IVI Query Language
 \previouspage Models
+\nextpage The Qt IVI Simulation System
 \contentspage Concepts
 
 Automotive systems are getting bigger and bigger and with it also the feature-set in areas like

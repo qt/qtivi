@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
@@ -100,7 +101,7 @@ void UsbBrowseBackend::fetchData(const QUuid &identifier, int start, int count)
 
     for (int i = start; i < infoList.count() && i < count; i++) {
         SearchAndBrowseItem item;
-        item.setType("file");
+        item.setType(fileLiteral);
         item.setName(infoList.at(i).fileName());
         list.append(QVariant::fromValue(item));
     }

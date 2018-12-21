@@ -1,6 +1,7 @@
 {#
-# Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+# Copyright (C) 2019 Luxoft Sweden AB
 # Copyright (C) 2018 Pelagicore AG
+# Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -184,9 +185,9 @@ void {{class}}::initialize()
 {% endif %}
 
 {% if 'simulator' in features %}
-    mConnection = new QSimulatorConnection("{{interface}}", QVersionNumber(1, 0, 0));
-    mConnection->addPeerInfo("versionInfo", "1.0.0");
-    mConnection->addPeerInfo("name", "{{class}}");
+    mConnection = new QSimulatorConnection(QStringLiteral("{{interface}}"), QVersionNumber(1, 0, 0));
+    mConnection->addPeerInfo(QStringLiteral("versionInfo"), QStringLiteral("1.0.0"));
+    mConnection->addPeerInfo(QStringLiteral("name"), QStringLiteral("{{class}}"));
     QString hostname = QSimulatorConnection::simulatorHostName(false);
     if (hostname.isEmpty()) {
         qWarning() << "SIMULATOR_HOSTNAME environment variable not set! Disabling the QtSimulator connection";

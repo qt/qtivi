@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
@@ -31,7 +32,7 @@
 
 bool Server::start()
 {
-    return Core::instance()->host()->enableRemoting(&m_service, "org.example.echo.Echo");
+    return Core::instance()->host()->enableRemoting(&m_service, QStringLiteral("org.example.echo.Echo"));
 }
 
 bool Server::stop()
