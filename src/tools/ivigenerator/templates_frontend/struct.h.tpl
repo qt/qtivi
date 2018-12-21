@@ -71,6 +71,7 @@ class {{exportsymbol}} {{class}} : public QIviStandardItem
     {{ivi.property(field, notify=false)}}
 {% endfor %}
     Q_CLASSINFO("IviPropertyDomains", "{{ struct.fields|json_domain|replace("\"", "\\\"") }}")
+
 public:
     Q_INVOKABLE {{class}}();
     Q_INVOKABLE {{class}}(const {{class}} &rhs);

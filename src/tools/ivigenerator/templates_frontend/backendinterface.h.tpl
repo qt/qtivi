@@ -69,6 +69,7 @@ QT_BEGIN_NAMESPACE
 class {{exportsymbol}} {{class}} : public {{base_class}}
 {
     Q_OBJECT
+
 public:
     explicit {{class}}(QObject *parent = nullptr);
     ~{{class}}();

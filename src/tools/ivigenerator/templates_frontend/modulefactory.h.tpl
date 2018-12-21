@@ -58,8 +58,10 @@
 
 QT_BEGIN_NAMESPACE
 
-class {{exportsymbol}} {{class}} : public {{module.module_name|upperfirst}}Module {
+class {{exportsymbol}} {{class}} : public {{module.module_name|upperfirst}}Module
+{
     Q_OBJECT
+
 public:
     {{class}}(QObject *parent = nullptr);
 

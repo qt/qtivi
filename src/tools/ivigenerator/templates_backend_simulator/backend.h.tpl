@@ -124,7 +124,9 @@ class {{class}} : public {{class}}Interface
 {%   endif %}
     Q_PROPERTY({{type}} {{property}} READ {{property|getter_name}} WRITE {{property|setter_name}}  NOTIFY {{property.name}}Changed FINAL)
 {% endfor %}
+{% if interface_zoned %}
     Q_PROPERTY(QQmlPropertyMap *zones READ zones CONSTANT)
+{% endif %}
 public:
     explicit {{class}}(QObject *parent = nullptr);
     explicit {{class}}(QIviSimulationEngine *engine, QObject *parent = nullptr);
@@ -143,7 +145,9 @@ public:
 {% for property in interface.properties %}
     {{ivi.prop_getter(property, model_interface = true)}};
 {% endfor %}
+{% if interface_zoned %}
     QQmlPropertyMap *zones() const { return m_zones; }
+{% endif %}
 
 public Q_SLOTS:
 {% for property in interface.properties %}
@@ -171,7 +175,9 @@ protected:
 {%     endif %}
 {#{%   endif %}#}
 {% endfor %}
+{% if interface_zoned %}
     QQmlPropertyMap *m_zones;
+{% endif %}
 
 {% if 'simulator' in features %}
     QSimulatorConnection *mConnection;
