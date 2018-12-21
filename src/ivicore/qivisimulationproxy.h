@@ -152,9 +152,9 @@ namespace qtivi_private {
                 return;
             Q_ASSERT_X(m_instance, "qt_static_metacall()", "QIviSimulationProxy::registerInstance needs to be called first");
             // As the class acts as a proxy, forward all calls here to the registered instance
-            if (call == QMetaObject::ReadProperty) {
-                void *_v = a[0];
-                *reinterpret_cast< T**>(_v) = m_instance;
+            // The methodIds start at 0 for the first property of this class. We need to add the
+            // offset to get the absolute property index for the normal qt_metacall
+            if (call == QMetaObject::ReadProperty || call == QMetaObject::WriteProperty) {
                 obj->qt_metacall(call, methodId + staticMetaObject.propertyOffset(), a);
                 return;
             }

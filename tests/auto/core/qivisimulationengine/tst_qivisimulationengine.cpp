@@ -252,6 +252,7 @@ private Q_SLOTS:
     void testPropertyWrite();
     void testPropertyWriteDerived_data();
     void testPropertyWriteDerived();
+    void testAnimations();
 
     void testFunctionCalls_data();
     void testFunctionCalls();
@@ -558,6 +559,43 @@ void tst_QIviSimulationEngine::testPropertyWriteDerived()
     QCOMPARE(obj->property("updatedPropertyValue"), value);
     //A bound property should work as well
     QCOMPARE(obj->property("bindingProperty"), value);
+}
+
+//Animations use a different way to access the properties, so we need to test this explicitly
+void tst_QIviSimulationEngine::testAnimations()
+{
+    QIviSimulationEngine engine;
+
+    DerivedClass testObject;
+    engine.registerSimulationInstance<DerivedClass>(&testObject, "TestAPI", 1, 0, "DerivedClass");
+    QSignalSpy spy(&testObject, SIGNAL(propertyInBaseChanged(int)));
+
+    QByteArray qml ("import QtQuick 2.0; \n\
+                     import TestAPI 1.0; \n\
+                     DerivedClass { \n\
+                        id: backend \n\
+                        property var animation: SequentialAnimation { \n\
+                            NumberAnimation { target: backend; property: \"propertyInBase\"; from: 0; to: 130; duration: 500 } \n\
+                            ScriptAction { script: backend.animationDone() } \n\
+                            running: true \n\
+                        } \n\
+                        signal animationDone(); \n\
+                     }");
+
+    QQmlComponent component(&engine);
+    component.setData(qml, QUrl());
+    QScopedPointer<QObject> obj(component.create());
+    QVERIFY2(obj, qPrintable(component.errorString()));
+
+    //wait until the animation ended
+    QSignalSpy animationSpy(obj.data(), SIGNAL(animationDone()));
+    animationSpy.wait();
+
+    //Check that the animation has reached it's final value
+    QCOMPARE(obj->property("propertyInBase"), 130);
+
+    //we expect at least 10 animation steps
+    QVERIFY2(spy.count() > 10, qPrintable(QStringLiteral("Emitted signals: ") + QString::number(spy.count())));
 }
 
 void tst_QIviSimulationEngine::testFunctionCalls_data()
