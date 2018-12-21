@@ -25,6 +25,8 @@ GCOV_EXCLUDE = /usr/* \
                $$[QT_INSTALL_PREFIX]/* \
                $$[QT_INSTALL_PREFIX/src]/* \
                $$_PRO_FILE_PWD_/tests/* \
+               $$_PRO_FILE_PWD_/src/3rdparty* \
+               $$_PRO_FILE_PWD_/src/ivicore/queryparser/qiviqueryparser.l \
                $$OUT_PWD/*/.moc/* \
                $$OUT_PWD/*/.rcc/* \
                $$OUT_PWD/*/.uic/* \
