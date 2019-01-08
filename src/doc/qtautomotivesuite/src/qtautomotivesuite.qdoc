@@ -55,6 +55,7 @@
         \li \l {Qt Application Manager}
         \li \l {Qt QmlLive}
         \li \l {Qt Safe Renderer}
+        \li \l {Qt Design Studio}
         \li \l {Qt 3D Studio}
         \li \l {Qt Creator Application Manager Plugin}
         \li \l {Neptune 3 UI}{Reference UI (Neptune 3 UI)}
@@ -149,6 +150,13 @@
     Qt Safe Renderer is able to render the safety-critical UI elements even if
     there are failures in the main UI. With separation, Qt can be used in a
     system requiring certification without changing the Qt libraries.
+
+    \section1 Qt Design Studio
+
+    \l {Qt Design Studio} is a UI design and development environment for rapid
+    prototyping of animated UIs. It provides you with tools for accomplishing
+    your tasks throughout the whole application design process, from prototyping
+    to production.
 
     \section1 Qt 3D Studio
 
