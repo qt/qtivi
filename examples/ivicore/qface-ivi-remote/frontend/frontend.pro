@@ -1,7 +1,7 @@
 TARGET = $$qtLibraryTarget(QtIviRemoteExample)
 TEMPLATE = lib
 DESTDIR = ..
-macos: CONFIG += debug_and_release build_all
+
 #! [0]
 QT_FOR_CONFIG += ivicore
 !qtConfig(ivigenerator): error("No ivigenerator available")

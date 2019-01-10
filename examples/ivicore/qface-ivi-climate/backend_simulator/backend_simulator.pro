@@ -1,6 +1,5 @@
 TEMPLATE=lib
 TARGET = $$qtLibraryTarget(example_ivi_climate)
-macos: CONFIG += debug_and_release build_all
 
 QT_FOR_CONFIG += ivicore
 !qtConfig(ivigenerator): error("No ivigenerator available")

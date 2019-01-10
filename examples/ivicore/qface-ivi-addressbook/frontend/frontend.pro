@@ -1,7 +1,7 @@
 TARGET = $$qtLibraryTarget(QtIviAdressBookExample)
 TEMPLATE = lib
 DESTDIR = ..
-macos: CONFIG += debug_and_release build_all
+
 QT_FOR_CONFIG += ivicore
 !qtConfig(ivigenerator): error("No ivigenerator available")
 QT += ivicore ivicore-private qml quick
