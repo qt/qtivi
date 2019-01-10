@@ -44,6 +44,18 @@
 
 QT_BEGIN_NAMESPACE
 
+/*!
+    \fn template <class T> T qivi_interface_cast(QObject *backend)
+    \relates QIviServiceInterface
+
+    Casts the given \a backend to the interface type T.
+
+    When implementing a QtIvi Feature this function should be used, as it shows a meaningful error
+    message when the cast fails.
+
+    \sa qobject_cast
+*/
+
 QIviServiceInterface::~QIviServiceInterface()
 {
 }

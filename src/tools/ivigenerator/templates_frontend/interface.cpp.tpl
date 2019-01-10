@@ -446,14 +446,14 @@ void {{class}}::clearServiceObject()
 /*! \internal */
 {{class}}BackendInterface *{{class}}::{{interface|lower}}Backend() const
 {
-    return qobject_cast<{{class}}BackendInterface*>(backend());
+    return qivi_interface_cast<{{class}}BackendInterface*>(backend());
 }
 {% else %}
 /*! \internal */
 {{class}}BackendInterface *{{class}}::{{interface|lower}}Backend() const
 {
     if (QIviServiceObject *so = serviceObject())
-        return qobject_cast<{{class}}BackendInterface*>(so->interfaceInstance(interfaceName()));
+        return so->interfaceInstance<{{class}}BackendInterface*>(interfaceName());
     return nullptr;
 }
 {% endif %}

@@ -59,6 +59,7 @@
 
 #include "qiviabstractfeature.h"
 #include "qivifeatureinterface.h"
+#include "qiviserviceobject.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -85,6 +86,13 @@ public:
     virtual bool notify(const QByteArray &propertyName, const QVariant &value);
 
     QIviFeatureInterface *backend() const;
+    template <class T> T backend() const
+    {
+        Q_Q(const QIviAbstractFeature);
+        if (m_serviceObject)
+            return m_serviceObject->interfaceInstance<T>(q->interfaceName());
+        return nullptr;
+    }
 
     void setDiscoveryResult(QIviAbstractFeature::DiscoveryResult discoveryResult);
     void onInitializationDone();

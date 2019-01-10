@@ -50,6 +50,20 @@
 
 QT_BEGIN_NAMESPACE
 
+template <class T> T qivi_interface_cast(QObject *backend)
+{
+    T inst = qobject_cast<T>(backend);
+    static bool showOnce = true;
+    if (!inst && showOnce) {
+        typedef typename std::remove_cv<typename std::remove_pointer<T>::type>::type ObjType;
+        qCritical("Casting the backend to the interface %s failed.\n"
+                  "Either the backend pointer is not of the correct type or casting failed because "
+                  "debug and release libraries were mixed.", ObjType::staticMetaObject.className());
+        showOnce = false;
+    }
+    return inst;
+}
+
 class Q_QTIVICORE_EXPORT QIviServiceInterface
 {
 public:
@@ -57,6 +71,11 @@ public:
 
     virtual QStringList interfaces() const = 0;
     virtual QIviFeatureInterface *interfaceInstance(const QString &interface) const = 0;
+
+    template <class T> T interfaceInstance(const QString &interface) const {
+        T inst = qivi_interface_cast<T>(interfaceInstance(interface));
+        return inst;
+    }
 };
 
 #define QIviServiceInterface_iid "org.qt-project.qtivi.QIviServiceInterface/1.0"

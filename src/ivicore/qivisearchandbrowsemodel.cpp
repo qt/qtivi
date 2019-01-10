@@ -174,7 +174,7 @@ void QIviSearchAndBrowseModelPrivate::setAvailableContenTypes(const QStringList 
 
 QIviSearchAndBrowseModelInterface *QIviSearchAndBrowseModelPrivate::searchBackend() const
 {
-    return qobject_cast<QIviSearchAndBrowseModelInterface*>(QIviPagingModelPrivate::backend());
+    return QIviAbstractFeatureListModelPrivate::backend<QIviSearchAndBrowseModelInterface*>();
 }
 
 void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentType)

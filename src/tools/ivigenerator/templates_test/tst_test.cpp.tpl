@@ -306,7 +306,10 @@ void {{interface}}Test::testInvalidBackend()
     {{interface}}InvalidServiceObject *service = new {{interface}}InvalidServiceObject();
     manager->registerService(service, service->interfaces());
     {{interface}} cc;
-    QTest::ignoreMessage(QtWarningMsg, "The QIviServiceObject got accepted but QIviAbstractFeature::connectToServiceObject wasn't called");
+    QTest::ignoreMessage(QtCriticalMsg, QRegularExpression(".*accepted the given QIviServiceObject, "
+                                                           "but didn't connect to it completely, as "
+                                                           "QIviAbstractFeature::connectToServiceObject "
+                                                           "wasn't called."));
     cc.startAutoDiscovery();
 
     // Running without a backend means that changes do not propagate

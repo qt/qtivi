@@ -62,7 +62,7 @@
 
 QT_BEGIN_NAMESPACE
 
-class QIviHelperFeature : public QIviAbstractFeature
+class Q_QTIVICORE_EXPORT QIviHelperFeature : public QIviAbstractFeature
 {
     Q_OBJECT
 
@@ -95,6 +95,10 @@ public:
 
     virtual void initialize();
     QIviFeatureInterface *backend() const;
+    template <class T> T backend() const
+    {
+        return m_feature->iviPrivate()->backend<T>();
+    }
 
     Q_DISABLE_COPY(QIviAbstractFeatureListModelPrivate)
 
