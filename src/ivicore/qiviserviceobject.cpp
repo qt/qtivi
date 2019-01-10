@@ -91,34 +91,4 @@ QString QIviServiceObject::id() const
     return m_id;
 }
 
-/*!
-    \class QIviServiceInterface
-    \inmodule QtIviCore
-    \brief Interface class for services.
-
-    The QIviServiceInterface class defines the interface of services registered with QIviServiceManager.
-
-    Commonly, service objects inherit the concrete class QIviServiceObject instead of using QIviServiceInterface directly.
-
-    \sa QIviServiceObject
-*/
-
-/*!
-    \fn QIviServiceInterface::~QIviServiceInterface()
-
-    Destructs the QIviServiceInterface instance.
-*/
-
-/*!
-    \fn QStringList QIviServiceInterface::interfaces() const
-
-    Returns a list of service interface names supported by the service object instance.
-*/
-
-/*!
-    \fn QObject* QIviServiceInterface::interfaceInstance(const QString& interface) const
-
-    Returns an object implementing the service interface requested through \a interface.
-*/
-
 QT_END_NAMESPACE
