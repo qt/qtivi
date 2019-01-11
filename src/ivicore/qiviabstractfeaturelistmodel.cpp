@@ -252,7 +252,7 @@ QIviAbstractFeature::DiscoveryMode QIviAbstractFeatureListModel::discoveryMode()
 }
 
 /*!
-    \qmlproperty enumeration AbstractFeatureListModel::autoDiscoveryResult
+    \qmlproperty enumeration AbstractFeatureListModel::discoveryResult
     \brief The result of the last autoDiscovery attempt
 
     Available values are:

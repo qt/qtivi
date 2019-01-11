@@ -407,7 +407,7 @@ QIviAbstractFeature::DiscoveryMode QIviAbstractFeature::discoveryMode() const
 }
 
 /*!
-    \qmlproperty enumeration AbstractFeature::autoDiscoveryResult
+    \qmlproperty enumeration AbstractFeature::discoveryResult
     \brief The result of the last autoDiscovery
 
     Available values are:
