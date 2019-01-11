@@ -67,15 +67,15 @@ echo "copying files from %ORIG_LIB% to %VIRTUALENV_LIB%"
 FOR /f %%i in (%SCRIPT%\deploy-virtualenv-files.txt) DO (
     IF EXIST "%ORIG_LIB%%%i\" (
         IF NOT EXIST %VIRTUALENV_LIB%\%%i mkdir %VIRTUALENV_LIB%\%%i
-        xcopy %ORIG_LIB%%%i %VIRTUALENV_LIB%\%%i /E /Q /H /Y >NUL 2>&1
+        xcopy "%ORIG_LIB%%%i" "%VIRTUALENV_LIB%\%%i" /E /Q /H /Y >NUL 2>&1
     ) else (
-        xcopy %ORIG_LIB%%%i %VIRTUALENV_LIB% /H /Q /Y >NUL 2>&1
+        xcopy "%ORIG_LIB%%%i" "%VIRTUALENV_LIB%" /H /Q /Y >NUL 2>&1
     )
 )
 
 IF EXIST %ORIG_PREFIX%\DLLs\ (
     IF NOT EXIST %VIRTUALENV%\DLLs mkdir %VIRTUALENV%\DLLs
-    xcopy %ORIG_PREFIX%\DLLs %VIRTUALENV%\DLLs /E /Q /H /Y >NUL 2>&1
+    xcopy "%ORIG_PREFIX%\DLLs" "%VIRTUALENV%\DLLs" /E /Q /H /Y >NUL 2>&1
 )
 
 echo "done"
