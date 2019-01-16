@@ -26,7 +26,6 @@ GCOV_EXCLUDE = /usr/* \
                $$[QT_INSTALL_PREFIX/src]/* \
                $$_PRO_FILE_PWD_/tests/* \
                $$_PRO_FILE_PWD_/src/3rdparty* \
-               $$_PRO_FILE_PWD_/src/ivicore/queryparser/qiviqueryparser.l \
                $$OUT_PWD/*/.moc/* \
                $$OUT_PWD/*/.rcc/* \
                $$OUT_PWD/*/.uic/* \
@@ -51,7 +50,7 @@ global-check-coverage.commands = ( \
     lcov --rc lcov_branch_coverage=1 -o $$OUT_PWD/temp.gcov-info `find . -name \"*.gcov-info\" | xargs -n1 echo -a` && \
     lcov --rc lcov_branch_coverage=1 -o $$OUT_PWD/qtivi.gcov-info -r temp.gcov-info $$GCOV_EXCLUDE_STR && \
     rm -f base.gcov-info test.gcov-info temp.gcov-info && \
-    genhtml -o branch-coverage -s -f --legend --branch-coverage --rc lcov_branch_coverage=1 --demangle-cpp qtivi.gcov-info && echo \"\\n\\nCoverage info is available at file://`pwd`/branch-coverage/index.html\" \
+    genhtml -o branch-coverage -s -f --legend --branch-coverage --rc lcov_branch_coverage=1 --demangle-cpp qtivi.gcov-info --ignore-errors source && echo \"\\n\\nCoverage info is available at file://`pwd`/branch-coverage/index.html\" \
 )
 
 QMAKE_EXTRA_TARGETS -= sub-check-coverage
