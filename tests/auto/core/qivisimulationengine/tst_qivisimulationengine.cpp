@@ -594,8 +594,8 @@ void tst_QIviSimulationEngine::testAnimations()
     //Check that the animation has reached it's final value
     QCOMPARE(obj->property("propertyInBase"), 130);
 
-    //we expect at least 10 animation steps
-    QVERIFY2(spy.count() > 10, qPrintable(QStringLiteral("Emitted signals: ") + QString::number(spy.count())));
+    //we expect at least 2 animation steps (intermediate step and final step)
+    QVERIFY2(spy.count() > 2, qPrintable(QStringLiteral("Emitted signals: ") + QString::number(spy.count())));
 }
 
 void tst_QIviSimulationEngine::testFunctionCalls_data()
