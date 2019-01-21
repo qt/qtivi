@@ -91,7 +91,7 @@ Window {
             Button {
                 Layout.fillWidth: true
                 text: "New Contact"
-                onClicked: addressBook.insertContact(0, AddressBookModule.contact("Foo", "Bar", "12234"))
+                onClicked: addressBook.insertContact(0, AddressBook.contact("Foo", "Bar", "12234"))
             }
         }
     }

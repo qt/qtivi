@@ -50,7 +50,7 @@ from qface.generator import FileSystem, Generator
 from qface.helper.qtcpp import Filters
 from qface.helper.doc import parse_doc
 from qface.watch import monitor
-from qface.idl.domain import Interface, Property, Parameter, Field, Struct
+from qface.idl.domain import Module, Interface, Property, Parameter, Field, Struct
 import qface.filters
 
 here = Path(__file__).dirname()
@@ -606,16 +606,18 @@ def qml_struct_control(symbol):
         return result
 
 
-def qml_type(interface):
+def qml_type(symbol):
     """
     :param interface:
     :return: Returns the name of the interface for using in QML. This name is defined in the IDL under
     the "config" tag as "qml_type". This annotation is optional, if not provided, the interface name is
     used.
     """
-    result = interface.name
-    if 'qml_type' in interface.tags['config']:
-        result = interface.tags['config']['qml_type']
+    result = symbol.name
+    if 'qml_type' in symbol.tags['config']:
+        result = symbol.tags['config']['qml_type']
+    elif 'qml_name' in symbol.tags['config']:
+        result = symbol.tags['config']['qml_name']
     return result
 
 

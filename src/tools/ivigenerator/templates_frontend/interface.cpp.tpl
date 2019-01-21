@@ -60,9 +60,7 @@ QT_BEGIN_NAMESPACE
 /*!
     \qmltype {{interface|qml_type}}
     \instantiates {{interface}}
-{% if module.tags.config.qml_name is defined %}
-    \inqmlmodule {{module.tags.config.qml_name}}
-{% endif %}
+    \inqmlmodule {{module|qml_type}}
 {% if interface.tags.config.zoned %}
     \inherits AbstractZonedFeature
 {% else %}

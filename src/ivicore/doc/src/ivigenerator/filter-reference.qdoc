@@ -167,8 +167,9 @@ Returns the property domains for the given properties formated in JSON.
 \target qml_type(interface)
 \section1 qml_type(interface)
 
-Returns the name of the interface for use in QML. This name is defined by the \c @qml_type
-annotation. This annotation is optional: if not provided, the interface name is used.
+Returns the name of the interface/module for use in QML. This name is defined by the \c @qml_type
+annotation. This annotation is optional: if not provided, the interface name is used, for modules
+module_name is used.
 
 \target qml_control(symbol, backend_obj)
 \section1 qml_control(symbol, backend_obj)

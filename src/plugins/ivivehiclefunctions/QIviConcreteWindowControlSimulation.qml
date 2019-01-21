@@ -86,19 +86,19 @@ QtObject {
                 else
                     currentValue--
 
-                var state = QtIviVehicleFunctionsModule.Closed
+                var state = VehicleFunctions.Closed
                 if (currentValue <= 0) {
                     timer.stop();
-                    state = QtIviVehicleFunctionsModule.Closed
+                    state = VehicleFunctions.Closed
                     if (currentReply)
                         currentReply.setSuccess(true)
                 } else if (currentValue >= goal) {
                     timer.stop();
-                    state = QtIviVehicleFunctionsModule.FullyOpen
+                    state = VehicleFunctions.FullyOpen
                     if (currentReply)
                         currentReply.setSuccess(true)
                 } else {
-                    state = QtIviVehicleFunctionsModule.Open
+                    state = VehicleFunctions.Open
                 }
 
                 if (isBlind)
@@ -183,9 +183,9 @@ QtObject {
         }
 
         function setBlindMode(blindMode, zone) {
-            if (blindMode == QtIviVehicleFunctionsModule.BlindOpen)
+            if (blindMode == VehicleFunctions.BlindOpen)
                 blindTimers[zone].open(undefined)
-            else if (blindMode == QtIviVehicleFunctionsModule.BlindClosed)
+            else if (blindMode == VehicleFunctions.BlindClosed)
                 blindTimers[zone].close(undefined)
         }
 

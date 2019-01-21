@@ -118,8 +118,9 @@ void {{class}}::registerTypes()
 /*! \internal */
 void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minorVersion)
 {
+{% set qml_name = (module|qml_type).split('.')[-1] %}
     qmlRegisterSingletonType<{{class}}>(uri.toLatin1(), majorVersion, minorVersion,
-                                        "{{module.module_name|upperfirst}}Module",
+                                        "{{qml_name|upperfirst}}",
                                         {{class|lower}}_singletontype_provider);
 {% for interface in module.interfaces %}
     {{interface}}::registerQmlTypes(uri, majorVersion, minorVersion);
