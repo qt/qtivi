@@ -57,6 +57,43 @@ QObject* qtivicoremodule_singletontype_provider(QQmlEngine*, QJSEngine*)
 
     \brief The QtIviCoreModule class holds enums which are used by multiple classes of QtIviCore.
 */
+
+/*!
+    \qmltype QtIvi
+    \instantiates QtIviCoreModule
+    \inqmlmodule QtIvi
+
+    \brief The QtIvi singleton holds enums, which are used by multiple Items of the QtIviCore module.
+
+    The following enums are exported from this object:
+
+    \section3 ModelCapability
+    \value NoExtras
+           The backend does only support the minimum feature set and is stateful.
+    \value SupportsGetSize
+           The backend can return the final number of items for a specific request. This makes it possible to support the QIviSearchAndBrowseModel::DataChanged loading
+           type.
+    \value SupportsFiltering
+           The backend supports filtering of the content. QIviSearchAndBrowseModelInterface::availableContentTypes() and QIviSearchAndBrowseModelInterface::supportedIdentifiers() will be used as input for the
+           \l {Qt IVI Query Language}. \sa QIviSearchAndBrowseModelInterface::registerContentType
+    \value SupportsSorting
+           The backend supports sorting of the content. QIviSearchAndBrowseModelInterface::availableContentTypes() and QIviSearchAndBrowseModelInterface::supportedIdentifiers() will be used as input for the
+           \l {Qt IVI Query Language}. \sa QIviSearchAndBrowseModelInterface::registerContentType
+    \value SupportsAndConjunction
+           The backend supports handling multiple filters at the same time and these filters can be combined by using the AND conjunction.
+    \value SupportsOrConjunction
+           The backend supports handling multiple filters at the same time and these filters can be combined by using the OR conjunction.
+    \value SupportsStatelessNavigation
+           The backend is stateless and supports handling multiple instances of a QIviSearchAndBrowseModel requesting different data at the same time.
+           E.g. One request for artists, sorted by name and another request for tracks. The backend has to consider that both request come from models which are
+           currently visible at the same time.
+    \value SupportsInsert
+           The backend supports inserting new items at a given position.
+    \value SupportsMove
+           The backend supports moving items within the model.
+    \value SupportsRemove
+           The backend supports removing items from the model.
+*/
 QtIviCoreModule::QtIviCoreModule(QObject *parent)
     : QObject(parent)
 {
