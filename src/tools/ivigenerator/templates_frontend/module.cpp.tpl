@@ -38,6 +38,7 @@
 # SPDX-License-Identifier: LGPL-3.0
 #}
 {% set class = '{0}Module'.format(module.module_name|upperfirst) %}
+{% set qml_name = (module|qml_type).split('.')[-1]|upperfirst %}
 {% include 'generated_comment.cpp.tpl' %}
 {% import 'qtivi_macros.j2' as ivi %}
 
@@ -65,7 +66,6 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
 
     \brief The {{class}} class holds all the enums defined in the {{module}} module.
 */
-
 {% for enum in module.enums %}
 /*!
     \enum {{class}}::{{enum}}
@@ -118,9 +118,8 @@ void {{class}}::registerTypes()
 /*! \internal */
 void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minorVersion)
 {
-{% set qml_name = (module|qml_type).split('.')[-1] %}
     qmlRegisterSingletonType<{{class}}>(uri.toLatin1(), majorVersion, minorVersion,
-                                        "{{qml_name|upperfirst}}",
+                                        "{{qml_name}}",
                                         {{class|lower}}_singletontype_provider);
 {% for interface in module.interfaces %}
     {{interface}}::registerQmlTypes(uri, majorVersion, minorVersion);

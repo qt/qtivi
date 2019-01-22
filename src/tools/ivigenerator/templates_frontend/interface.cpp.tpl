@@ -324,6 +324,11 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 /*!
     \qmlproperty {{property|return_type}} {{interface|qml_type}}::{{property}}
 {{ ivi.format_comments(property.comment) }}
+
+{% if property.type.is_enum or property.type.is_flag %}
+    Available values are:
+    \include {{interface.module|lower}}module_enum.qdocinc {{property.type}}
+{% endif %}
 {% if property.const %}
     \note This property is constant and the value will not change once the plugin is initialized.
 {% endif %}
@@ -372,6 +377,18 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 /*!
     \qmlmethod {{interface|qml_type}}::{{operation}}({{ivi.join_params(operation)}})
 {{ ivi.format_comments(operation.comment) }}
+
+{% for param in operation.parameters %}
+{%   if param.type.is_enum or param.type.is_flag %}
+    Available values for {{param}} are:
+    \include {{interface.module|lower}}module_enum.qdocinc {{param.type}}
+{%   endif %}
+
+{% endfor %}
+{%   if operation.type.is_enum or operation.type.is_flag%}
+    Returns the following values:
+    \include {{interface.module|lower}}module_enum.qdocinc {{param.type}}
+{%   endif %}
 */
 /*!
 {{ ivi.format_comments(operation.comment) }}
@@ -456,6 +473,24 @@ void {{class}}::clearServiceObject()
 }
 {% endif %}
 
+{% for signal in interface.signals %}
+/*!
+    \qmlsignal {{interface|qml_type}}::{{signal}}({{ivi.join_params(signal)}})
+{{ ivi.format_comments(signal.comment) }}
+
+{% for param in signal.parameters %}
+{%   if param.type.is_enum or param.type.is_flag %}
+
+    Available values for {{param}} are:
+    \include {{interface.module|lower}}module_enum.qdocinc {{param.type}}
+{%   endif %}
+{% endfor %}
+*/
+/*!
+    \fn {{ivi.signal(signal, class)}}
+{{ ivi.format_comments(signal.comment) }}
+*/
+{% endfor %}
 QT_END_NAMESPACE
 
 #include "moc_{{class|lower}}.cpp"

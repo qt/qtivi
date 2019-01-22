@@ -1,6 +1,5 @@
 {#
 # Copyright (C) 2019 Luxoft Sweden AB
-# Copyright (C) 2018 Pelagicore AG.
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -37,54 +36,16 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% set exportsymbol = 'Q_{0}_EXPORT'.format(module|upper|replace('.', '_')) %}
-{% set class = '{0}Module'.format(module.module_name|upperfirst) %}
-{% set oncedefine = '{0}_H_'.format(class|upper) %}
-{% include 'generated_comment.cpp.tpl' %}
-
-#ifndef {{oncedefine}}
-#define {{oncedefine}}
-
-{% if module.tags.config.module %}
-#include <{{module.tags.config.module}}/{{module.module_name|lower}}global.h>
-{% else %}
-#include "{{module.module_name|lower}}global.h"
-{% endif %}
-#include <QObject>
-
-QT_BEGIN_NAMESPACE
-
-class {{exportsymbol}} {{class}} : public QObject
-{
-    Q_OBJECT
-
-public:
-    {{class}}(QObject *parent=nullptr);
 
 {% for enum in module.enums %}
-    enum {{enum}} {
-        {% for member in enum.members %}
-        {{member.name}} = {{member.value}},
-        {% endfor %}
-    };
-{% if enum.is_flag %}
-    Q_DECLARE_FLAGS({{enum|flag_type}}, {{enum}})
-    Q_FLAG({{enum|flag_type}})
-{% else %}
-    Q_ENUM({{enum}})
-{% endif %}
-    static {{enum}} to{{enum}}(quint8 v, bool *ok);
+//! [{{enum}}]
+{%   for member in enum.members %}
+{%     with doc = member.comment|parse_doc %}
+\value {{member.name}}
+{%       if doc.description %}
+       {{doc.description|join(' ')| wordwrap(width=100, wrapstring='\n       ')}}
+{%       endif %}
+{%     endwith %}
+{%   endfor %}
+//! [{{enum}}]
 {% endfor %}
-
-    static void registerTypes();
-    static void registerQmlTypes(const QString& uri, int majorVersion = 1, int minorVersion = 0);
-};
-
-{% for enum in module.enums %}
-{{exportsymbol}} QDataStream &operator<<(QDataStream &out, {{class}}::{{enum|flag_type}} var);
-{{exportsymbol}} QDataStream &operator>>(QDataStream &in, {{class}}::{{enum|flag_type}} &var);
-{% endfor %}
-
-QT_END_NAMESPACE
-
-#endif // {{oncedefine}}

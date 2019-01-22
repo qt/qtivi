@@ -25,6 +25,7 @@ templates_frontend.files +=  \
     templates_frontend/interface_p.h.tpl \
     templates_frontend/module.cpp.tpl \
     templates_frontend/module.h.tpl \
+    templates_frontend/module_qml_enum.qdocinc.tpl \
     templates_frontend/module.pri.tpl \
     templates_frontend/modulefactory.cpp.tpl \
     templates_frontend/modulefactory.h.tpl \

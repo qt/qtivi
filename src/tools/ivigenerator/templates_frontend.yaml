@@ -6,6 +6,8 @@ generate_rules:
           template_file:  "module.h.tpl"
         - dest_file:  "{{module.module_name|lower}}module.cpp"
           template_file:  "module.cpp.tpl"
+        - dest_file:  "{{module.module_name|lower}}module_enum.qdocinc"
+          template_file:  "module_qml_enum.qdocinc.tpl"
         - dest_file:  "{{module.module_name|lower}}modulefactory.h"
           template_file:  "modulefactory.h.tpl"
         - dest_file:  "{{module.module_name|lower}}modulefactory.cpp"
