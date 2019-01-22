@@ -298,4 +298,60 @@ Module {
             Parameter { name: "blindMode"; type: "QtIviVehicleFunctionsModule::BlindMode" }
         }
     }
+    Component {
+        name: "QtIviVehicleFunctionsModule"
+        prototype: "QObject"
+        exports: ["QtIvi.VehicleFunctions/VehicleFunctions 1.0"]
+        isCreatable: false
+        isSingleton: true
+        exportMetaObjectRevisions: [0]
+        Enum {
+            name: "AirflowDirections"
+            values: {
+                "Windshield": 1,
+                "Dashboard": 2,
+                "Floor": 4
+            }
+        }
+        Enum {
+            name: "RecirculationMode"
+            values: {
+                "RecirculationOff": 0,
+                "RecirculationOn": 1,
+                "AutoRecirculation": 2
+            }
+        }
+        Enum {
+            name: "ClimateMode"
+            values: {
+                "ClimateOff": 0,
+                "ClimateOn": 1,
+                "AutoClimate": 2
+            }
+        }
+        Enum {
+            name: "HeaterMode"
+            values: {
+                "HeaterOn": 0,
+                "HeaterOff": 1,
+                "AutoHeater": 2
+            }
+        }
+        Enum {
+            name: "BlindMode"
+            values: {
+                "BlindOpen": 0,
+                "BlindClosed": 1,
+                "AutoBlind": 2
+            }
+        }
+        Enum {
+            name: "WindowState"
+            values: {
+                "FullyOpen": 0,
+                "Open": 1,
+                "Closed": 2
+            }
+        }
+    }
 }

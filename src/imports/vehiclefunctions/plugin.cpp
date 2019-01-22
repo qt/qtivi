@@ -43,8 +43,7 @@
 #include <QtQml/qqmlextensionplugin.h>
 #include <qqml.h>
 
-#include <QtIviVehicleFunctions/QIviClimateControl>
-#include <QtIviVehicleFunctions/QIviWindowControl>
+#include <QtIviVehicleFunctions/QtIviVehicleFunctionsModuleFactory>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,8 +57,7 @@ public:
         Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi.VehicleFunctions"));
         Q_UNUSED(uri);
 
-        QIviClimateControl::registerQmlTypes(uri, 1, 0);
-        QIviWindowControl::registerQmlTypes(uri, 1, 0);
+        QtIviVehicleFunctionsModuleFactory::registerQmlTypes(uri, 1, 0);
     }
 };
 
