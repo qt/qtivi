@@ -30,7 +30,9 @@ templates_frontend.files +=  \
     templates_frontend/modulefactory.cpp.tpl \
     templates_frontend/modulefactory.h.tpl \
     templates_frontend/struct.cpp.tpl \
-    templates_frontend/struct.h.tpl
+    templates_frontend/struct.h.tpl \
+    templates_frontend/plugins.qmltypes.tpl \
+    templates_frontend/qmldir.tpl
 templates_frontend.path = $$[QT_HOST_BINS]/ivigenerator/templates_frontend
 
 templates_backend_simulator.files += \

@@ -653,6 +653,26 @@ def qml_struct_control(symbol):
         return result
 
 
+def qml_info_type(symbol):
+    """
+    Returns the correct type for the symbol, to be used inside the qmltype templates
+    """
+    prefix = Filters.classPrefix
+    if symbol.type.is_enum or symbol.type.is_flag:
+        return('{0}{1}Module::{2}'.format(prefix, upper_first(symbol.module.module_name), flag_type(symbol)))
+    elif symbol.type.is_void or symbol.type.is_primitive:
+        if symbol.type.is_real:
+            return 'double'
+        return symbol.type.name
+    elif symbol.type.is_struct:
+        return 'QVariant'
+    elif symbol.type.is_list:
+        return 'QVariantList'
+    elif symbol.type.is_model:
+        return 'QIviPagingModel'
+    else:
+        jinja_error('qml_info_type: Unknown symbol {0} of type {1}'.format(symbol, symbol.type))
+
 def qml_type(symbol):
     """
     :param interface:
@@ -666,7 +686,6 @@ def qml_type(symbol):
     elif 'qml_name' in symbol.tags['config']:
         result = symbol.tags['config']['qml_name']
     return result
-
 
 def model_type(symbol):
     if symbol.type.is_model:
@@ -762,6 +781,7 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
     generator.register_filter('has_domains', has_domains)
     generator.register_filter('simulationData', simulationData)
     generator.register_filter('json_domain', json_domain)
+    generator.register_filter('qml_info_type', qml_info_type)
     generator.register_filter('qml_type', qml_type)
     generator.register_filter('qml_control', qml_control)
     generator.register_filter('qml_binding_property', qml_binding_property)

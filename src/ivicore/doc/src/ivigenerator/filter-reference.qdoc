@@ -202,6 +202,11 @@ strings are complete and in format #include "struct.h".
 
 Returns the text of the passed comment without the leading/trailing comment tokens ('/**', '*').
 
+\target qml_info_type(symbol)
+\section2 qml_info_type(symbol)
+
+Returns the correct type for the symbol, to be used inside the qmltype templates.
+
 \section1 Global Functions
 
 \target error(msg)
