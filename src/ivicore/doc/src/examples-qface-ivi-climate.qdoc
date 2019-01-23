@@ -137,29 +137,27 @@ Here's an overview of all the annotations used in this example and what they do:
 
 \table
 \row
-    \li \code {@config: {zoned: true}} \endcode
+    \li \c {@config: {zoned: true}}
     \li indicates the interface supports different zones
 \row
-    \li \code {@config: {qml_type: "UiClimateControl"}} \endcode
+    \li \c {@config: {qml_type: "UiClimateControl"}}
     \li the component name when used from QML
 \row
-    \li \code {@config: {id: "example.qtivi.ClimateControl/1.0"}} \endcode
+    \li \c {@config: {id: "example.qtivi.ClimateControl/1.0"}}
     \li indicates the id used for matching backend plugins
 \row
-    \li \code {@config_simulator: { range:[0, 50] }} \endcode
+    \li \c {@config_simulator: { range:[0, 50] }}
     \li range of valid values for number type properties
 \row
-    \li \code
-    {@config_simulator: { minimum: 0 }}
-    {@config_simulator: { maximum: 50 }} \endcode
+    \li \c {@config_simulator: { minimum: 0; maximum: 50 }}
     \li minimum and maximum values for number type properties.
     \note \c {range} annotation is a shortcut to specifying both minimum and
     maximum values.
 \row
-    \li \code {@config_simulator: { domain: ["cold", "mild", "warm" ] }} \endcode
+    \li \c {@config_simulator: { domain: ["cold", "mild", "warm" ] }}
     \li list of valid values for properties
 \row
-    \li \code {@config: {interfaceBuilder: "echoInterfaceBuilder"}} \endcode
+    \li \c {@config: {interfaceBuilder: "echoInterfaceBuilder"}}
     \li indicates the plugin should use a custom function to generate the backend instances
 \endtable
 In addition to the IDL file, a YAML file (with the same basename) is used to add extra

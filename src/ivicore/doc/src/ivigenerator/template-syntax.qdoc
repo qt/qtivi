@@ -256,8 +256,8 @@ For example, {{ name|striptags|title }} will remove all HTML Tags from variable 
 title-case the output (title(striptags(name))).
 
 Filters that accept arguments have parentheses around the arguments, just like a function call.
-For example: \code {{ listx|join(', ') }}\endcode will join a list with commas (equivalent to
-\code str.join(', ', listx)\endcode). Nevertheless, the variable filter is applying to is always
+For example: \c {{{ listx|join(', ') }}} will join a list with commas (equivalent to
+\c {str.join(', ', listx)} ). Nevertheless, the variable filter is applying to is always
 passed as a first argument to the filter function.
 
 One can define custom filters by registering a Python function as a new filter with the
