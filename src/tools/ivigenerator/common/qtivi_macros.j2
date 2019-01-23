@@ -229,11 +229,5 @@ void {{scope}}{{sig}}({{join_params(signal, zoned, default_values)}})
 
 
 {% macro format_comments(comments) -%}
-{% with doc = comments|parse_doc -%}
-{% if doc.brief %}    \brief {{doc.brief|join(' ')| wordwrap(width=100, wrapstring='\n    ')}}
-{% endif %}
-
-{% if doc.description %}
-    {{doc.description|join(' ')| wordwrap(width=100, wrapstring='\n    ')}}{% endif %}
-{% endwith -%}
+{{comments|comment_text|join('\n    ')}}
 {% endmacro -%}

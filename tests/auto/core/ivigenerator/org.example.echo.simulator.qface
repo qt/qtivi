@@ -4,23 +4,16 @@
 module org.example.simulator.echo 1.0
 
 /**
- * @brief the brief
- * @description the description
- * continues {@link http://qt.io}
- * @deprecated
- * @see org.example.echo.Echo
- * @see org.example
- * @see http://qt.io
- * @anything hello
+ * \brief the brief
+ * the description
+ * continues \l http://qt.io
  */
 @config: {"id": "org.foo.id.1.0"}
 interface Echo {
     /**
-     * @brief brief message
-     * @details long message
+     * \brief brief message
      *
-     * @param msg the message
-     * @return the echo
+     * Some more documentation
      */
     readonly string lastMessage;
     int intValue;
@@ -35,11 +28,9 @@ interface Echo {
 @config: {"id": "org.foo.idz.1.0", "zoned": true}
 interface EchoZoned {
     /**
-     * @brief brief message
-     * @details long message
+     * \brief brief message
      *
-     * @param msg the message
-     * @return the echo
+     * Some more documentation
      */
     readonly string lastMessage;
     int intValue;

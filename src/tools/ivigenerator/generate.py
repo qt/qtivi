@@ -652,6 +652,31 @@ def struct_includes(symbol):
 
     return includesSet
 
+def comment_text(comment):
+    """
+    Returns the text of the passed comment without the leading/trailing comment tokens e.g. /**, *
+    """
+    comment_start = [ '/**', '/*!', '/*']
+    processed = []
+    isComment = False
+
+    # No comment is NOT a error
+    if len(comment) == 0:
+        return processed
+
+    for token in comment_start:
+        if (comment.startswith(token)):
+            isComment = True
+            break;
+    if isComment:
+        comment = comment[3:-2]
+    else:
+        return "The provided comment needs to be start with one of these strings: {}".format(comment_start)
+
+    for line in comment.splitlines():
+        line = line.lstrip(" *")
+        processed.append(line)
+    return processed
 
 def generate(tplconfig, moduleConfig, annotations, src, dst):
     log.debug('run {0} {1}'.format(src, dst))
@@ -695,6 +720,7 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
     generator.register_filter('qml_binding_property', qml_binding_property)
     generator.register_filter('qml_control_signal_parameters', qml_control_signal_parameters)
     generator.register_filter('struct_includes', struct_includes)
+    generator.register_filter('comment_text', comment_text)
     generator.register_filter('hash', qface.filters.hash)
 
 

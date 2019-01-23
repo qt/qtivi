@@ -10,111 +10,111 @@ module Example.IVI.Climate 1.0;
 @config: { zoned: true, id: "example.qtivi.ClimateControl/1.0", qml_type: "UiClimateControl" }
 interface ClimateControl {
     /**
-     * @brief Value is true if the air conditioning is enabled.
+     * \brief Value is true if the air conditioning is enabled.
      */
     bool airConditioning;
     /**
-     * @brief value is true if the heater is enabled.
+     * \brief value is true if the heater is enabled.
      */
     bool heater;
     /**
-     * @brief value holds the fan speed level, where the level can be between
+     * \brief value holds the fan speed level, where the level can be between
      * minimumValue(off) to maximumValue (strongest).
      */
     @config_simulator: { range: [0, 50] }
     int fanSpeedLevel;
     /**
-     * @brief value holds the steering wheel heater level, where the level can
+     * \brief value holds the steering wheel heater level, where the level can
      * be between minimumValue(off) to maximumValue (warmest).
      */
     @config_simulator: { minimum: 0 }
     int steeringWheelHeater;
     /**
-     * @brief value holds the target temperature of the zone expressed
+     * \brief value holds the target temperature of the zone expressed
      * in centigrades, where the temperature can be between
      * minimumValue(coolest) to maximumValue (warmest).
      */
     @config_simulator: { maximum: 30.0 }
     real targetTemperature;
     /**
-     * @brief value holds the seat cooler level, where the level can be
+     * \brief value holds the seat cooler level, where the level can be
      * between minimumValue(off) to maximumValue (coolest).
      */
     int seatCooler;
     /**
-     * @brief value holds the seat heater level, where the level can be between
+     * \brief value holds the seat heater level, where the level can be between
      * minimumValue(off) to maximumValue (warmest).
      */
     int seatHeater;
     /**
-     * @brief value holds the outside temperature of the zone expressed in
+     * \brief value holds the outside temperature of the zone expressed in
      * centigrades, where the temperature can be between
      * minimumValue(coolest) to maximumValue (warmest).
      */
     int outsideTemperature;
     /**
-     * @brief outside temp lable
+     * \brief outside temp lable
      */
     @config_simulator: { domain: ["cold", "mild", "warm" ] }
     string outsideTemperatureLabel;
     /**
-     * @brief value is true if the zone synchronization is enabled.
+     * \brief value is true if the zone synchronization is enabled.
      *
      * Which zones and properties are synchronized is controlled
      * by the backend implementing it.
      */
     bool zoneSynchronization;
     /**
-     * @brief value is true if defrost is enabled. Usually that means that the fans
+     * \brief value is true if defrost is enabled. Usually that means that the fans
      * are on the highest level to remove ice from the windshield.
      */
     bool defrost;
     /**
-     * @brief value holds the recirculation mode
+     * \brief value holds the recirculation mode
      */
     RecirculationMode recirculationMode;
     /**
-     * @brief value is true if the recirculation is currently running.
+     * \brief value is true if the recirculation is currently running.
      */
     bool recirculation;
     /**
-     * @brief value holds the sensitivity level of the recirculation
+     * \brief value holds the sensitivity level of the recirculation
      * system when the recirculationMode is set to AutoRecirculation,
      * where the level can be between minimumValue(least sensitive)
      * to maximumValue(most sensitive).
      */
     int recirculationSensitivityLevel;
     /**
-     * @brief value holds the climate mode
+     * \brief value holds the climate mode
      */
     ClimateMode climateMode;
     /**
-     * @brief value holds the intensity level of the fan when the climateMode
+     * \brief value holds the intensity level of the fan when the climateMode
      * is set to AutoClimate, where the level can be between
      * minimumValue(least intensity) to maximumValue(most intensity).
      */
     int automaticClimateFanIntensityLevel;
     /**
-     * @brief value holds the combination of flags indicating the areas
+     * \brief value holds the combination of flags indicating the areas
      * where airflow is on.
      */
     AirflowDirection airflowDirections;
 }
 
 /**
- * @brief Control where the airflow goes
+ * \brief Control where the airflow goes
  */
 flag AirflowDirection {
     /**
-     * @brief Airflow to the windshield
+     * \brief Airflow to the windshield
      */
     Windshield = 1,
     /**
-     * @brief Airflow to the dashboard
+     * \brief Airflow to the dashboard
      */
     Dashboard = 2,
     /**
-     * @brief Airflow to the floor
+     * \brief Airflow to the floor
      */
     Floor = 4
 }

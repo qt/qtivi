@@ -194,5 +194,10 @@ Returns the parameters for calling the signal using the values from the UI contr
 
 Returns the includes for the structs that the interface or a struct depends on. The returned
 strings are complete and in format #include "struct.h".
+
+\target comment_text(comment)
+\section1 comment_text(comment)
+
+Returns the text of the passed comment without the leading/trailing comment tokens ('/**', '*').
 */
 

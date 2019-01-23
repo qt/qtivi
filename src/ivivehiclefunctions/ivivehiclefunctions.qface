@@ -3,7 +3,7 @@
 module QtIviVehicleFunctions 1.0;
 
 /**
- * @brief Provides an interface to the climate control.
+ * \brief Provides an interface to the climate control.
  *
  * The QIviClimateControl provides an interface to the climate control of the vehicle.
  *
@@ -168,7 +168,7 @@ enum ClimateMode {
 }
 
 /**
- * @brief Provides an interface to the window control.
+ * \brief Provides an interface to the window control.
  *
  * The QIviWindowControl provides an interface to control the physical windows of the vehicle.
  *
