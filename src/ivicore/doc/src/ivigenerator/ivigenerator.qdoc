@@ -41,7 +41,11 @@ library, which provides a generic autogeneration framework.
     \li \l {Filter Reference}
     \li \l {QMake Integration}
     \li \l {QtIVI Remote backends}{Remote backends}
-    \li \l {ivicore/qface-ivi-climate}{Generator Example}
-    \li \l {ivicore/qface-ivi-remote}{Remote Backend Example}
+\endlist
+
+\section3 Getting Started
+
+\list
+  \li \l {Getting Started Using the Qt IVI Generator}
 \endlist
 */
