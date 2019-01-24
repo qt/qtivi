@@ -129,7 +129,7 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 
 QDataStream &operator<<(QDataStream &out, {{class}}::{{enum|flag_type}} var)
 {
-    out << (quint8)var;
+    out << quint8(var);
     return out;
 }
 
