@@ -27,38 +27,32 @@ interface QIviClimateControl {
     @config: { getter_name: "isHeaterEnabled" }
     bool heaterEnabled;
     /**
-     * Holds the fan speed level, where the level can be between
-     * minimumValue(off) to maximumValue (strongest).
+     * Holds the fan speed level
      */
     @config_simulator: { range: [0, 50] }
     int fanSpeedLevel;
     /**
-     * Holds the steering wheel heater level, where the level can
-     * be between minimumValue(off) to maximumValue (warmest).
+     * Holds the steering wheel heater level
      */
     @config_simulator: { minimum: 0 }
     int steeringWheelHeater;
     /**
      * Holds the target temperature of the zone expressed
-     * in centigrades, where the temperature can be between
-     * minimumValue(coolest) to maximumValue (warmest).
+     * in centigrades
      */
     @config_simulator: { maximum: 30.0 }
     real targetTemperature;
     /**
-     * Holds the seat cooler level, where the level can be
-     * between minimumValue(off) to maximumValue (coolest).
+     * Holds the seat cooler level
      */
     int seatCooler;
     /**
-     * Holds the seat heater level, where the level can be between
-     * minimumValue(off) to maximumValue (warmest).
+     * Holds the seat heater level
      */
     int seatHeater;
     /**
      * Holds the outside temperature of the zone expressed in
-     * centigrades, where the temperature can be between
-     * minimumValue(coolest) to maximumValue (warmest).
+     * centigrades
      */
     int outsideTemperature;
     /**
@@ -91,9 +85,7 @@ interface QIviClimateControl {
     bool recirculationEnabled;
     /**
      * Holds the sensitivity level of the recirculation
-     * system when the recirculationMode is set to AutoRecirculation,
-     * where the level can be between minimumValue(least sensitive)
-     * to maximumValue(most sensitive).
+     * system when the recirculationMode is set to AutoRecirculation.
      */
     int recirculationSensitivityLevel;
     /**
@@ -102,8 +94,7 @@ interface QIviClimateControl {
     ClimateMode climateMode;
     /**
      * Holds the intensity level of the fan when the climateMode
-     * is set to AutoClimate, where the level can be between
-     * minimumValue(least intensity) to maximumValue(most intensity).
+     * is set to AutoClimate.
      */
     int automaticClimateFanIntensityLevel;
     /**
