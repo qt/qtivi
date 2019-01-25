@@ -53,14 +53,61 @@ from qface.watch import monitor
 from qface.idl.domain import Module, Interface, Property, Parameter, Field, Struct
 import qface.filters
 
+from jinja2 import TemplateAssertionError
+import inspect
+
 here = Path(__file__).dirname()
 
 log = logging.getLogger(__file__)
 
 Filters.classPrefix = ''
+currentQFaceSrcFile = ''
 
 builtin_config = {}
 IVI_DEFAULT_TEMPLATES = ['frontend', 'backend_simulator', 'generation_validator', 'control_panel', 'backend_qtro', 'server_qtro', 'test']
+
+def jinjaTrace():
+    """
+    Collects all jinja template files and the line numbers from the current calltrace
+    """
+    frame = inspect.currentframe()
+    infos = []
+    while frame:
+        template = frame.f_globals.get('__jinja_template__')
+        if template is not None:
+            infos.append((inspect.getsourcefile(frame), template.get_corresponding_lineno(frame.f_lineno)))
+        frame = frame.f_back
+
+    return infos
+
+def jinja_error(msg):
+    """
+    Throws an error for the current jinja template and the templates this is included from
+    This can be used inside a filter to indicate problems with the passed arguments or direclty inside
+    an template
+    """
+    infos = jinjaTrace()
+    if len(infos):
+        message = msg
+        if len(infos) > 1:
+            for info in infos[1:]:
+                message = message + "\n{0}:{1}: instantiated from here".format(info[0], info[1])
+        message = message + "\n{0}: instantiated from here".format(currentQFaceSrcFile)
+        raise TemplateAssertionError(message, infos[0][1], "", infos[0][0])
+    raise TemplateAssertionError(msg, -1, "", "unknown")
+
+def jinja_warning(msg):
+    """
+    Reports an warning in the current jinja template.
+    This can be used inside a filter to indicate problems with the passed arguments or direclty inside
+    an template
+    """
+    file, lineno = jinjaTrace()[0]
+    if file:
+        message = '{0}:{1}: warning: {2}'.format(file, lineno, msg)
+    else:
+        message = '<unknown-file>: warning: {0}'.format(msg)
+    click.secho(message, fg='yellow', err=True)
 
 def tag_by_path(symbol, path, default_value=False):
     """
@@ -671,7 +718,7 @@ def comment_text(comment):
     if isComment:
         comment = comment[3:-2]
     else:
-        return "The provided comment needs to be start with one of these strings: {}".format(comment_start)
+        jinja_error("The provided comment needs to be start with one of these strings: {}".format(comment_start))
 
     for line in comment.splitlines():
         line = line.lstrip(" *")
@@ -723,9 +770,14 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
     generator.register_filter('comment_text', comment_text)
     generator.register_filter('hash', qface.filters.hash)
 
+    #Register global functions
+    generator.env.globals["error"] = jinja_error
+    generator.env.globals["warning"] = jinja_warning
 
     srcFile = os.path.basename(src[0])
     srcBase = os.path.splitext(srcFile)[0]
+    global currentQFaceSrcFile
+    currentQFaceSrcFile = src[0]
     ctx = {'dst': dst, 'qtASVersion': builtin_config["VERSION"], 'srcFile':srcFile, 'srcBase':srcBase, 'features': builtin_config["FEATURES"]}
     gen_config = yaml.load(open(here / '{0}.yaml'.format(os.path.basename(tplconfig))))
     for module in system.modules:
