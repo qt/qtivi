@@ -179,7 +179,7 @@ def default_type_value(symbol):
         return '{0}{1}()'.format(prefix, symbol.type)
     elif symbol.type.is_model:
         return 'nullptr'
-    return 'XXX'
+    jinja_error('default_type_value: Unknown parameter {0} of type {1}'.format(symbol, symbol.type))
 
 def test_type_value(symbol):
     """
@@ -218,20 +218,20 @@ def test_type_value(symbol):
         return '{0}{1}({2})'.format(prefix, symbol.type, values_string)
     elif symbol.type.is_model:
         return 'new QIviPagingModel()'
-    return 'XXX'
+    jinja_error('test_type_value: Unknown parameter {0} of type {1}'.format(symbol, symbol.type))
 
 def default_value_helper(symbol, res):
     t = symbol.type
     if t.is_struct:
         if not (isinstance(res, dict) or isinstance(res, list)):
-            return 'QFace Error: value in annotation is supposed to be a dict or list'
+            jinja_error('default_value: value in annotation is supposed to be a dict or list')
         if len(res) != len(t.reference.fields):
-            return 'QFace Error: argument count in annotation and number of struct fields does not match'
+            jinja_error('default_value: argument count in annotation and number of struct fields does not match')
         values_string = ', '.join(default_value_helper(list(t.reference.fields)[idx], property) for idx, property in enumerate(res))
         return '{0}({{{1}}})'.format(t.type, values_string)
     if t.is_model or t.is_list:
         if not isinstance(res, list):
-            return 'QFace Error: value in annotation is supposed to be a list'
+            jinja_error('default_value: value in annotation is supposed to be a list')
         row_string = ''
         if t.nested.is_struct and t.is_list:
             row_string = ', '.join(('QVariant::fromValue({0})'.format(default_value_helper(t.nested, row))) for row in res)
@@ -296,7 +296,7 @@ def parameter_type_default(symbol):
             return 'QIviPagingModel *{0}=nullptr'.format(symbol)
     else:
         return 'const {0}{1} &{2}={0}{1}()'.format(prefix, symbol.type, symbol)
-    return 'QFace Error: Unknown parameter {0} of type {1}'.format(symbol, symbol.type)
+    jinja_error('parameter_type_default: Unknown parameter {0} of type {1}'.format(symbol, symbol.type))
 
 def parameter_type(symbol):
     """
@@ -324,7 +324,7 @@ def parameter_type(symbol):
             return 'QIviPagingModel *{0}'.format(symbol)
     else:
         return 'const {0}{1} &{2}'.format(prefix, symbol.type, symbol)
-    return 'QFace Error: Unknown parameter {0} of type {1}'.format(symbol, symbol.type)
+    jinja_error('parameter_type: Unknown parameter {0} of type {1}'.format(symbol, symbol.type))
 
 
 def return_type(symbol):
@@ -353,7 +353,7 @@ def return_type(symbol):
             return 'QIviPagingModel *'
     else:
         return '{0}{1}'.format(prefix, symbol.type)
-    return 'QFace Error: Unknown symbol {0} of type {1}'.format(symbol, symbol.type)
+    jinja_error('return_type: Unknown symbol {0} of type {1}'.format(symbol, symbol.type))
 
 
 def flag_type(symbol):
@@ -485,9 +485,9 @@ def symbolToJson(data, symbol):
     if symbol.type.is_struct:
         t = symbol.type
         if not (isinstance(data, dict) or isinstance(data, list)):
-            return 'QFace Error: value in annotation is supposed to be a dict or list'
+            jinja_error('simulationData: value in annotation is supposed to be a dict or list')
         if len(data) != len(t.reference.fields):
-            return 'QFace Error: argument count in annotation and number of struct fields does not match'
+            jinja_error('simulationData: argument count in annotation and number of struct fields does not match')
         newList = list(symbolToJson(property, list(t.reference.fields)[idx]) for idx, property in enumerate(data))
         return { "type": symbol.type.name, "value": newList }
     elif symbol.type.is_enum or symbol.type.is_flag:
@@ -718,7 +718,7 @@ def comment_text(comment):
     if isComment:
         comment = comment[3:-2]
     else:
-        jinja_error("The provided comment needs to be start with one of these strings: {}".format(comment_start))
+        jinja_error("comment_text: The provided comment needs to be start with one of these strings: {}".format(comment_start))
 
     for line in comment.splitlines():
         line = line.lstrip(" *")
