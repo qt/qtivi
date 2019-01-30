@@ -1,5 +1,6 @@
 requires(!integrity) # temporary hack for the Qt CI
 requires(!winrt) # temporary hack for the Qt CI
+requires(!wasm)
 
 enable-examples {
     QTIVI_BUILD_PARTS = $$QT_BUILD_PARTS
