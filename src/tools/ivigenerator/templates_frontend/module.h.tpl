@@ -77,7 +77,7 @@ public:
 {% endfor %}
 
     static void registerTypes();
-    static void registerQmlTypes(const QString& uri = QStringLiteral("{{module|qml_type}}"), int majorVersion = 1, int minorVersion = 0);
+    static void registerQmlTypes(const QString& uri = QStringLiteral("{{module|qml_type}}"), int majorVersion = {{module.majorVersion}}, int minorVersion = {{module.minorVersion}});
 };
 
 {% for enum in module.enums %}

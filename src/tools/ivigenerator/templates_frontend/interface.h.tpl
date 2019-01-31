@@ -89,7 +89,7 @@ public:
 {% endif %}
     ~{{class}}();
 
-    static void registerQmlTypes(const QString& uri, int majorVersion=1, int minorVersion=0);
+    static void registerQmlTypes(const QString& uri, int majorVersion={{interface.module.majorVersion}}, int minorVersion={{interface.module.minorVersion}});
 
 {% for property in interface.properties %}
     {{ivi.prop_getter(property)}};

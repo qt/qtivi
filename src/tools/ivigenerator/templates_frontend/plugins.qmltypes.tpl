@@ -58,7 +58,7 @@ Module {
     Component {
         name: "{{class}}"
         prototype: "{{base_class}}"
-        exports: ["{{module|qml_type}}/{{interface|qml_type}} 1.0"]
+        exports: ["{{module|qml_type}}/{{interface|qml_type}} {{module.majorVersion}}.{{module.minorVersion}}"]
         exportMetaObjectRevisions: [0]
 {%   for property in interface.properties %}
 {%     if property.readonly or property.const or property.type.is_model %}
@@ -106,7 +106,7 @@ Module {
     Component {
         name: "{{module.module_name|upperfirst}}Module"
         prototype: "QObject"
-        exports: ["{{module|qml_type}}/{{module_qml_name}} 1.0"]
+        exports: ["{{module|qml_type}}/{{module_qml_name}} {{module.majorVersion}}.{{module.minorVersion}}"]
         isCreatable: false
         isSingleton: true
         exportMetaObjectRevisions: [0]
