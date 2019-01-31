@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     ClimateModule::registerTypes();
-    ClimateModule::registerQmlTypes(QLatin1String("IviClimate"), 1, 0);
+    ClimateModule::registerQmlTypes();
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

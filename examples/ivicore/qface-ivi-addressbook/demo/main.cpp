@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     AddressBookModule::registerTypes();
-    AddressBookModule::registerQmlTypes(QLatin1String("IviAddressBook"), 1, 0);
+    AddressBookModule::registerQmlTypes();
 
     QQuickStyle::setStyle(QStringLiteral("Material"));
 

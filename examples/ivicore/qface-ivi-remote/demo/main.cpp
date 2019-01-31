@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     RemoteModule::registerTypes();
-    RemoteModule::registerQmlTypes(QLatin1String("IviRemote"), 1, 0);
+    RemoteModule::registerQmlTypes();
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
