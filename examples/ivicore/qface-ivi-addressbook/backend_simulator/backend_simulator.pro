@@ -23,3 +23,5 @@ INSTALLS += target
 #! [0]
 RESOURCES += plugin_resource.qrc
 #! [0]
+
+QML_IMPORT_PATH = $$OUT_PWD/qml

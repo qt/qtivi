@@ -14,6 +14,14 @@ generate_rules:
             template_file:  "data.qrc.tpl"
         -   dest_file:  "{{srcBase|lower}}.pri"
             template_file:  "plugin.pri.tpl"
+        -   dest_file: "qml/{{module|qml_type|replace('.', '/')}}/simulation/plugins.qmltypes"
+            template_file:  "simulation.qmltypes.tpl"
+        -   dest_file: "qml/{{module|qml_type|replace('.', '/')}}/simulation/qmldir"
+            template_file:  "qmldir.tpl"
+        -   dest_file: "qml/{{module|qml_type|replace('.', '/')}}/plugins.qmltypes"
+            template_file:  "plugins.qmltypes.tpl"
+        -   dest_file: "qml/{{module|qml_type|replace('.', '/')}}/qmldir"
+            template_file:  "qmldir.tpl"
     interface_rules:
         -   dest_file: '{{interface|lower}}backend.h'
             template_file: 'backend.h.tpl'

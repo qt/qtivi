@@ -21,3 +21,5 @@ load(qt_plugin)
 
 RESOURCES += \
     qml.qrc
+
+QML_IMPORT_PATH = $$OUT_PWD/qml
