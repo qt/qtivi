@@ -125,7 +125,7 @@ QT_BEGIN_NAMESPACE
 {%       if property.type.is_model %}
     auto {{ property }}Model = (new {{property|upperfirst}}ModelBackend(this));
     m_{{ property }} = {{ property }}Model;
-    engine->registerSimulationInstance({{ property }}Model, "{{module.name|lower}}.simulation", 1, 0, "{{property|upperfirst}}ModelBackend");
+    engine->registerSimulationInstance({{ property }}Model, "{{module|qml_type}}.simulation", {{module.majorVersion}}, {{module.minorVersion}}, "{{property|upperfirst}}ModelBackend");
 {%       endif %}
 {%   endif %}
 {% endfor %}

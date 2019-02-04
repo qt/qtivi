@@ -41,7 +41,7 @@
 ****************************************************************************/
 
 import QtQuick 2.0
-import qtivivehiclefunctions.simulation 1.0
+import QtIvi.VehicleFunctions.simulation 1.0
 
 QtObject {
     property var settings : IviSimulator.findData(IviSimulator.simulationData, "QIviWindowControl")

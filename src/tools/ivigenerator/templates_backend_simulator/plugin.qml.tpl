@@ -39,7 +39,7 @@
 #}
 
 import QtQuick 2.0
-import {{module.name|lower}}.simulation 1.0
+import {{module|qml_type}}.simulation {{module.majorVersion}}.{{module.minorVersion}}
 
 QtObject {
 {% for iface in module.interfaces %}
