@@ -252,7 +252,7 @@ const QIviStandardItem *QIviPagingModelPrivate::itemAt(int i) const
 
 QIviPagingModelInterface *QIviPagingModelPrivate::backend() const
 {
-    return qobject_cast<QIviPagingModelInterface*>(QIviAbstractFeatureListModelPrivate::backend());
+    return QIviAbstractFeatureListModelPrivate::backend<QIviPagingModelInterface*>();
 }
 
 /*!

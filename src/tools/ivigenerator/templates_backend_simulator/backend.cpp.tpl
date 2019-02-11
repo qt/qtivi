@@ -109,7 +109,9 @@ QT_BEGIN_NAMESPACE
     , m_{{ property }}({{property|default_value}})
 {%       endif %}
 {% endfor %}
+{% if interface_zoned %}
     , m_zones(new QQmlPropertyMap(this))
+{% endif %}
 {% if 'simulator' in features %}
     , mWorker(nullptr)
 {% endif %}

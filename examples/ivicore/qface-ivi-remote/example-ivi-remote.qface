@@ -9,7 +9,7 @@ module Example.IVI.Remote 1.0;
  * all sorts of heavy processing
  */
 //! [1]
-@config: { id: "example.qtivi.ProcessingService/1.0", qml_type: "UiProcessingService" }
+@config: { qml_type: "UiProcessingService" }
 interface ProcessingService {
 
     string lastMessage;

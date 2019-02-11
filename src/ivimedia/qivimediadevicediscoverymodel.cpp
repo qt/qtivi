@@ -125,7 +125,7 @@ void QIviMediaDeviceDiscoveryModelPrivate::onDeviceRemoved(QIviServiceObject *de
 
 QIviMediaDeviceDiscoveryModelBackendInterface *QIviMediaDeviceDiscoveryModelPrivate::discoveryBackend() const
 {
-    return qobject_cast<QIviMediaDeviceDiscoveryModelBackendInterface*>(backend());
+    return backend<QIviMediaDeviceDiscoveryModelBackendInterface*>();
 }
 
 /*!

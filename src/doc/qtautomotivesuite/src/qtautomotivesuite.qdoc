@@ -55,6 +55,7 @@
         \li \l {Qt Application Manager}
         \li \l {Qt QmlLive}
         \li \l {Qt Safe Renderer}
+        \li \l {Qt Design Studio}
         \li \l {Qt 3D Studio}
         \li \l {Qt Creator Application Manager Plugin}
         \li \l {Neptune 3 UI}{Reference UI (Neptune 3 UI)}
@@ -66,57 +67,48 @@
     \page qtas-overview.html
     \title Qt Automotive Suite Overview
     \previouspage {Qt Automotive Suite}
-    \nextpage {Installing Qt Automotive Suite}
+    \nextpage {Install Qt Automotive Suite}
 
-    \QAS includes several components built on Qt and the \l {Qt Creator}
-    integrated development environment. The following picture illustrates
-    the structure and environment of \QAS. The parts outlined in grey are
-    specific to \QAS:
+    \QAS comprises of several components built on Qt and \l {Qt Creator}. The
+    following diagram illustrates the structure and environment of \QAS,
+    particularly the \e {Application Manager}, \e{Qt IVI}, \e{QmlLive},
+    \e{GammaRay}, and \e{QtIVI Emulation}.
 
     \image qtas-architecture.png
 
     \section1 Qt and Qt for Device Creation
 
-    \QAS is built on top of the \l {Qt for Device Creation} offering.
-    In addition to Qt, Qt for Device Creation contains an embedded development
-    environment built around Qt Creator. Especially, Qt for Device Creation provides
-    Boot to Qt, a light-weight software stack for embedded systems. It supports
-    building your own Linux image for customizing the Boot to Qt stack.
-
-    Qt is a cross-platform \l {http://www.qt.io/}{Qt} development framework
-    that provides libraries and core tools, developed through an open-source
-    collaboration model. Qt is designed to streamline the creation of
-    applications and user interfaces for desktop, embedded, and mobile
-    platforms.
+    \QAS is built on top of the \l {Qt for Device Creation} offering, which
+    includes Qt and an embedded development environment built around Qt Creator.
+    This environment, called Boot to Qt, is a light-weight software stack that
+    supports building your own highly-customized Linux image.
 
     The Qt libraries provide high-level APIs for a large variety of both
-    non-GUI and GUI related functionality. For UI creation, Qt provides a
-    number of approaches: traditional C++, declarative UI design with
-    \l {Qt Quick} or HTML5/hybrid user interfaces with the \l {Qt WebEngine}
-    module.
+    non-GUI and GUI related functionality. For UI creation, Qt provides three
+    options: traditional C++, declarative UI design with \l {Qt Quick}, or
+    HTML5/hybrid user interfaces with the \l {Qt WebEngine} module.
 
     For an overview of Qt libraries, see the \l {Qt Reference Documentation}.
 
-    Qt modules that are especially useful for embedded and IVI application
-    development include:
+    Qt modules that are useful for embedded and IVI application development
+    include:
 
     \list
-        \li \l {Qt Virtual Keyboard} - complete virtual keyboard solution with
-            word-prediction and multiple languages supported.
-        \li \l {Qt Quick Controls 2} - provides a set of controls for building
+        \li \l {Qt Virtual Keyboard} - a complete virtual keyboard solution with
+            support for predictive-text and multiple languages.
+        \li \l {Qt Quick Controls 2} - a set of controls for building
             complete user interfaces in Qt Quick.
-        \li \l {Qt Quick Compiler} - enables compiling .qml source files into
+        \li \l {Qt Quick Compiler} - enables compiling \c{.qml} source files into
             application binaries, improving load times and security for code
             assets.
-        \li \l {Qt WebEngine} - provides a web browser engine based on the
-            \l {http://www.chromium.org}{Chromium} project.
+        \li \l {Qt WebEngine} - a web browser engine based on the
+            \l {https://www.chromium.org}{Chromium} project.
     \endlist
 
     \section1 Development Environment
 
-    The development environment in \QAS is built around \l {Qt Creator}.
-    The following topics provide more information about Qt Creator as a
-    development environment:
+    The development environment in \QAS is built with \l {Qt Creator}.
+    The following topics provide more information about Qt Creator:
 
     \list
       \li \l {Qt Creator: Developing Qt Quick Applications}
@@ -149,6 +141,13 @@
     Qt Safe Renderer is able to render the safety-critical UI elements even if
     there are failures in the main UI. With separation, Qt can be used in a
     system requiring certification without changing the Qt libraries.
+
+    \section1 Qt Design Studio
+
+    \l {Qt Design Studio} is a UI design and development environment for rapid
+    prototyping of animated UIs. It provides you with tools for accomplishing
+    your tasks throughout the whole application design process, from prototyping
+    to production.
 
     \section1 Qt 3D Studio
 
@@ -199,7 +198,7 @@
 
 /*!
     \page qtas-install.html
-    \title Installing Qt Automotive Suite
+    \title Install Qt Automotive Suite
     \previouspage {Qt Automotive Suite Overview}{Overview}
     \nextpage qtautomotive-tutorial-deploying.html
 
@@ -217,16 +216,16 @@
     \section1 Prerequisites
 
     \QAS is based on the \l {Qt for Device Creation} offering so the
-    prerequisites are the same for both. For more information about how to install and
+    prerequisites are identical. For more information about how to install and
     configure these prerequisites on your development host, see
     \l {Requirements for Linux/X11} and \l {Requirements for Windows}.
 
-    \section1 Installing \QAS
+    \section1 Install \QAS
 
     When you install \QAS, you can select which \QAS components, SD-card
-    images, and toolchains are installed. To use the \QAS components on your host system, you also
-    need to have proper Qt version installed. When you install any of the
-    \QAS components, the suitable Qt version will be automatically installed.
+    images, and toolchains to install. To use the \QAS components on your host system, you also
+    need to have a proper Qt version installed. Consequently, when you install any of the
+    \QAS components, the suitable Qt version is automatically installed.
 
     You can install \QAS as follows:
 
@@ -244,11 +243,10 @@
 
      \li Select \uicontrol Next again to choose an install path.
 
-     \li Select \uicontrol Next to see available packages to install from.
+     \li Select \uicontrol Next to see the packages available to install from.
 
-     \li Under \uicontrol{Qt Automotive Suite}, you see the available Qt for Automotive Suite
-     software stacks. Under the stack, select the components and Qt Automotive
-     for your hardware.
+     \li Under \uicontrol{Qt Automotive Suite}, you can see the Qt for Automotive Suite
+     software stacks available. Under the stack, select the components and your hardware.
 
      \li Select \uicontrol Next and follow the instructions to complete
      the installation.
@@ -256,7 +254,9 @@
      \borderedimage qtinstaller-qas.png
     \endlist
 
-    \section1 Installing \B2Q on Target Devices
+    \note On macOS, currently only local development is supported.
+
+    \section1 Install \B2Q on Target Devices
 
     Before you can test \QAS applications on the target device, you must
     flash the target device with an image containing the \B2Q stack. Follow the
@@ -270,6 +270,6 @@
 
     Once the installation is complete, start Qt Creator and try running one of the
     examples against an automotive target. With \l{Neptune 3 UI} you can test
-    the reference UI for Qt in IVI (in-vehicle infotainment). For more information,
+    the reference UI for Qt in IVI. For more information,
     see \l{Neptune 3 UI Insights}.
 */

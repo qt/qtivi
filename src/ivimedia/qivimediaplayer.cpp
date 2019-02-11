@@ -162,7 +162,7 @@ void QIviMediaPlayerPrivate::onMutedChanged(bool muted)
 
 QIviMediaPlayerBackendInterface *QIviMediaPlayerPrivate::playerBackend() const
 {
-    return qobject_cast<QIviMediaPlayerBackendInterface*>(backend());
+    return backend<QIviMediaPlayerBackendInterface*>();
 }
 
 /*!

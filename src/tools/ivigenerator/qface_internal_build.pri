@@ -68,7 +68,7 @@ QMAKE_EXTRA_TARGETS += qtivi_qface_install
 # Otherwise it still needs some modules from the system
 deploy_virtualenv.target = .stamp-deploy_virtualenv
 equals(QMAKE_HOST.os, Windows) {
-    deploy_virtualenv.commands = $$PWD/deploy-virtualenv.bat qtivi_qface_virtualenv $$escape_expand(\n\t)
+    deploy_virtualenv.commands = $$shell_path($$PWD/deploy-virtualenv.bat) qtivi_qface_virtualenv $$escape_expand(\n\t)
     deploy_virtualenv.commands += @type nul > $$shell_path($$OUT_PWD/.stamp-deploy_virtualenv)
 } else {
     deploy_virtualenv.commands = $$PWD/deploy-virtualenv.sh qtivi_qface_virtualenv $$escape_expand(\n\t)

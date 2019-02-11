@@ -44,8 +44,47 @@
 
 QT_BEGIN_NAMESPACE
 
+/*!
+    \fn template <class T> T qivi_interface_cast(QObject *backend)
+    \relates QIviServiceInterface
+
+    Casts the given \a backend to the interface type T.
+
+    When implementing a QtIvi Feature this function should be used, as it shows a meaningful error
+    message when the cast fails.
+
+    \sa qobject_cast
+*/
+
+/*!
+    \class QIviServiceInterface
+    \inmodule QtIviCore
+    \brief Interface class for services.
+
+    The QIviServiceInterface class defines the interface of services registered with QIviServiceManager.
+
+    Commonly, service objects inherit the concrete class QIviServiceObject instead of using QIviServiceInterface directly.
+
+    \sa QIviServiceObject
+*/
+
+/*!
+    Destructs the QIviServiceInterface instance.
+*/
 QIviServiceInterface::~QIviServiceInterface()
 {
 }
+
+/*!
+    \fn QStringList QIviServiceInterface::interfaces() const
+
+    Returns a list of service interface names supported by the service object instance.
+*/
+
+/*!
+    \fn QObject* QIviServiceInterface::interfaceInstance(const QString& interface) const
+
+    Returns an object implementing the service interface requested through \a interface.
+*/
 
 QT_END_NAMESPACE

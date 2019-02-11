@@ -144,7 +144,7 @@ QIviZonedFeatureInterface *QIviAbstractZonedFeature::backend(const QString &inte
     if (auto *parentFeature = qobject_cast<QIviAbstractZonedFeature*>(parent()))
         return parentFeature->backend();
     else if (QIviServiceObject *so = serviceObject())
-        return qobject_cast<QIviZonedFeatureInterface*>(so->interfaceInstance(iface));
+        return so->interfaceInstance<QIviZonedFeatureInterface*>(iface);
     return nullptr;
 }
 

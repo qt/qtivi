@@ -54,8 +54,10 @@
 
 QT_BEGIN_NAMESPACE
 
-class {{exportsymbol}} {{class}} : public QObject {
+class {{exportsymbol}} {{class}} : public QObject
+{
     Q_OBJECT
+
 public:
     {{class}}(QObject *parent=nullptr);
 

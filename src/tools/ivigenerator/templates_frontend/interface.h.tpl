@@ -70,7 +70,8 @@ QT_BEGIN_NAMESPACE
 class {{class}}Private;
 class {{class}}BackendInterface;
 
-class {{exportsymbol}} {{class}} : public {{base_class}} {
+class {{exportsymbol}} {{class}} : public {{base_class}}
+{
     Q_OBJECT
 {% for property in interface.properties %}
     {{ivi.property(property)}}
@@ -79,6 +80,7 @@ class {{exportsymbol}} {{class}} : public {{base_class}} {
 {% if interface.module.tags.config.validation_info %}
     Q_CLASSINFO("IviJson", "{{ module|jsonify|replace("\"", "\\\"")|replace("\n", " \\\n") }}")
 {% endif %}
+
 public:
 {% if interface.tags.config.zoned %}
     explicit {{class}}(const QString &zone = QString(), QObject *parent = nullptr);

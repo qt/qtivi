@@ -96,7 +96,7 @@ QIviPendingReply<{{operation|return_type}}> {{scope}}{{operation}}({{join_params
 {%     set _notify = ''%}
 {%   endif %}
 Q_PROPERTY({{property|return_type}} {{property}} READ {{property|getter_name}}{{write}}{{_notify}})
-{% endmacro %}
+{%- endmacro %}
 
 
 {# function header for a property setter: setProperty(...)

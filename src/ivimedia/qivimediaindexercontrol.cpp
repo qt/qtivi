@@ -84,7 +84,7 @@ void QIviMediaIndexerControlPrivate::onStateChanged(QIviMediaIndexerControl::Sta
 
 QIviMediaIndexerControlBackendInterface *QIviMediaIndexerControlPrivate::indexerBackend() const
 {
-    return qobject_cast<QIviMediaIndexerControlBackendInterface*>(backend());
+    return backend<QIviMediaIndexerControlBackendInterface*>();
 }
 
 /*!

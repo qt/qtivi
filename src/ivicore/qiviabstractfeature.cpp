@@ -312,8 +312,12 @@ bool QIviAbstractFeature::setServiceObject(QIviServiceObject *so)
 
     if (so) {
         connectToServiceObject(d->m_serviceObject);
-        if (!d->m_isConnected)
-            qWarning("The QIviServiceObject got accepted but QIviAbstractFeature::connectToServiceObject wasn't called");
+        if (!d->m_isConnected) {
+            qCritical() << this <<
+                      "accepted the given QIviServiceObject, but didn't connect to it completely"
+                      ", as QIviAbstractFeature::connectToServiceObject wasn't called.";
+            return false;
+        }
         connect(so, &QObject::destroyed, this, &QIviAbstractFeature::serviceObjectDestroyed);
     }
 
@@ -403,7 +407,7 @@ QIviAbstractFeature::DiscoveryMode QIviAbstractFeature::discoveryMode() const
 }
 
 /*!
-    \qmlproperty enumeration AbstractFeature::autoDiscoveryResult
+    \qmlproperty enumeration AbstractFeature::discoveryResult
     \brief The result of the last autoDiscovery
 
     Available values are:

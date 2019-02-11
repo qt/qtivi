@@ -84,18 +84,17 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
 
 {% for enum in module.enums %}
 /*! \internal */
-{{class}}::{{enum}} {{class}}::to{{enum}}(quint8 v, bool *ok) {
-    if (ok) {
+{{class}}::{{enum}} {{class}}::to{{enum}}(quint8 v, bool *ok)
+{
+    if (ok)
         *ok = true;
-    }
     switch (v) {
 {% for member in enum.members %}
     case {{member.value}}: return {{member.name}};
 {% endfor %}
     default:
-        if (ok) {
+        if (ok)
             *ok = false;
-        }
         return {{enum.members|first}};
     }
 }
@@ -140,9 +139,8 @@ QDataStream &operator>>(QDataStream &in, {{class}}::{{enum|flag_type}} &var)
     quint8 val;
     in >> val;
     var = {{class}}::to{{enum}}(val, &ok);
-    if (!ok) {
+    if (!ok)
         qWarning() << "Received an invalid enum value for type {{class}}::{{enum|flag_type}}, value =" << var;
-    }
     return in;
 }
 {% endfor %}
