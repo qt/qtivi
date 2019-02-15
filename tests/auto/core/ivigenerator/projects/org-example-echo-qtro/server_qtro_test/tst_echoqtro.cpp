@@ -80,9 +80,9 @@ void EchoQtroTest::testInit()
     float floatValue2TestValue(2.71);
     QString stringValueTestValue("test string");
     QVariantList contactListTestValue(
-                    { QVariant::fromValue<Contact>(Contact("Mr A.", 20, false)),
-                      QVariant::fromValue<Contact>(Contact("Mr B.", 40, true)) });
-    Contact contactTestValue("Nemo", 47, true);
+                    { QVariant::fromValue<Contact>(Contact("Mr A.", 20, false, "foo")),
+                      QVariant::fromValue<Contact>(Contact("Mr B.", 40, true, "bar")) });
+    Contact contactTestValue("Nemo", 47, true, 1);
     EchoModule::WeekDay weekDayTestValue = EchoModule::Wednesday;
 
 
@@ -209,8 +209,8 @@ void EchoQtroTest::testClient2Server()
     QSignalSpy contactListSpy(&server.m_service, SIGNAL(contactListChanged(QVariantList)));
     QVERIFY(contactListSpy.isValid());
     QVariantList contactListTestValue(
-                    { QVariant::fromValue<Contact>(Contact("Mr A.", 20, false)),
-                      QVariant::fromValue<Contact>(Contact("Mr B.", 40, true)) });
+                    { QVariant::fromValue<Contact>(Contact("Mr A.", 20, false, "foo")),
+                      QVariant::fromValue<Contact>(Contact("Mr B.", 40, true, "bar")) });
     client.setContactList(contactListTestValue);
     WAIT_AND_COMPARE(contactListSpy, 1);
     QCOMPARE(server.m_service.contactList().count(),contactListTestValue.count());
@@ -222,7 +222,7 @@ void EchoQtroTest::testClient2Server()
 
     QSignalSpy contactSpy(&server.m_service, SIGNAL(contactChanged(Contact)));
     QVERIFY(contactSpy.isValid());
-    Contact contactTestValue("Nemo", 47, true);
+    Contact contactTestValue("Nemo", 47, true, 1);
     client.setContact(contactTestValue);
     WAIT_AND_COMPARE(contactSpy, 1);
     QCOMPARE(server.m_service.contact(), contactTestValue);
@@ -288,8 +288,8 @@ void EchoQtroTest::testServer2Client()
     QSignalSpy contactListSpy(&client, SIGNAL(contactListChanged(QVariantList)));
     QVERIFY(contactListSpy.isValid());
     QVariantList contactListTestValue(
-                    { QVariant::fromValue<Contact>(Contact("Mr A.", 20, false)),
-                      QVariant::fromValue<Contact>(Contact("Mr B.", 40, true)) });
+                    { QVariant::fromValue<Contact>(Contact("Mr A.", 20, false, "foo")),
+                      QVariant::fromValue<Contact>(Contact("Mr B.", 40, true, "bar")) });
     server.m_service.setContactList(contactListTestValue);
     WAIT_AND_COMPARE(contactListSpy, 1);
     QCOMPARE(client.contactList().count(),contactListTestValue.count());
@@ -301,7 +301,7 @@ void EchoQtroTest::testServer2Client()
 
     QSignalSpy contactSpy(&client, SIGNAL(contactChanged(Contact)));
     QVERIFY(contactSpy.isValid());
-    Contact contactTestValue("Nemo", 47, true);
+    Contact contactTestValue("Nemo", 47, true, 1);
     server.m_service.setContact(contactTestValue);
     WAIT_AND_COMPARE(contactSpy, 1);
     QCOMPARE(client.contact(), contactTestValue);

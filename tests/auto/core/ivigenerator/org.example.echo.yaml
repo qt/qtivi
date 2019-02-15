@@ -44,12 +44,12 @@ org.example.echo.Echo#intValue:
 org.example.echo.EchoZoned#contact:
     config_simulator:
         zoned: true
-        default: [ "foo", 23, true ]
+        default: [ "foo", 23, true, 1234 ]
 
 org.example.echo.EchoZoned#combo:
     config_simulator:
         zoned: true
-        default: [ [ "foo", 23, true ], WeekDay.Monday ]
+        default: [ [ "foo", 23, true, 1234 ], WeekDay.Monday ]
 
 org.example.echo.EchoZoned#intList:
     config_simulator:
@@ -57,8 +57,8 @@ org.example.echo.EchoZoned#intList:
 
 org.example.echo.EchoZoned#comboList:
     config_simulator:
-        default: [[ [ "foo", 23, true ], WeekDay.Monday ], [ [ "bar", 21, false ], WeekDay.Tuesday ]]
+        default: [[ [ "foo", 23, true, 1234 ], WeekDay.Monday ], [ [ "bar", 21, false, "foo" ], WeekDay.Tuesday ]]
 
 org.example.echo.Echo#contactList:
     config_simulator:
-        default: [[ "foo", 23, true ], [ "bar", 12, false ]]
+        default: [[ "foo", 23, true, WeekDay.Monday ], [ "bar", 12, false, false ]]

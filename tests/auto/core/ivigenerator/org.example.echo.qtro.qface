@@ -18,6 +18,7 @@ interface Echo {
      */
     readonly string lastMessage;
     int intValue;
+    var varValue;
     @config_simulator: {minimum: 10.}
     real floatValue1;
     @config_simulator: {maximum: 10.}
@@ -36,6 +37,7 @@ interface Echo {
     signal anotherChanged(AnotherStruct another);
     signal foobar(string foo);
     signal somethingHappened();
+    signal newValueAvailable(var newValue);
 }
 
 enum WeekDay {
@@ -53,6 +55,7 @@ struct Contact {
     string name;
     int age;
     bool isMarried;
+    var additionalData;
 }
 
 struct Combo {

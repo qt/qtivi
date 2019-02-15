@@ -161,7 +161,7 @@ def default_type_value(symbol):
             return 'QString()'
         if t.is_real:
             return 'qreal(0.0)'
-        if t.is_variant:
+        if t.is_var:
             return 'QVariant()'
     elif t.is_void:
         return ''
@@ -196,7 +196,7 @@ def test_type_value(symbol):
             return '"TEST STRING"'
         if t.is_real:
             return '1234.5678'
-        if t.is_variant:
+        if t.is_var:
             return 'QVariant("TEST VARIANT")'
     elif t.is_void:
         return ''
@@ -249,6 +249,10 @@ def default_value_helper(symbol, res):
             return 'false'
     if t.is_string:
         return 'QLatin1String("{0}")'.format(re.escape(res))
+    if t.is_var:
+        if isinstance(res, str):
+            res = 'QLatin1String("{0}")'.format(res)
+        return 'QVariant({0})'.format(res)
 
     return '{0}'.format(res)
 
