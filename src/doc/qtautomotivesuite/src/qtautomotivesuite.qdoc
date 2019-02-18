@@ -53,6 +53,7 @@
         \li \l {Qt GENIVI Extras}{Qt GENIVI Extras Module Reference Documentation}
         \li \l {Qt IVI}{Qt IVI Module Reference Documentation}
         \li \l {Qt Application Manager}
+        \li \l {Qt Automotive Suite Deployment Server}
         \li \l {Qt QmlLive}
         \li \l {Qt Safe Renderer}
         \li \l {Qt Design Studio}
@@ -176,6 +177,12 @@
     Already defined interfaces from the GENIVI alliance are exposed in the
     \l {Qt GENIVI Extras} module.
 
+    \section1 Reference Applications
+
+    \QAS includes \l{Neptune 3 UI} that provides a UI implementation for
+    Qt in IVI (In-Vehichle Infotainment) systems. It demonstrates best practices
+    for developing an automotive UI with \QAS.
+
     \section1 Qt Application Manager
 
     \l {Qt Application Manager} provides a basis for a multi-application
@@ -188,12 +195,10 @@
     that facilitates the development of 3rd party applications within
     a Qt Application Manager setup by automating the underlying processes.
 
-    \section1 Reference Applications
-
-    \QAS includes \l{Neptune 3 UI} that provides a UI implementation for
-    Qt in IVI (In-Vehichle Infotainment) systems. It demonstrates best practices
-    for developing an automotive UI with \QAS.
-
+    \l {Qt Automotive Suite Deployment Server} is a lightweight HTTP server
+    for installing application packages by a Qt Application Manager instance.
+    The UI counterpart for the Deployment Server is the \e Downloads app in
+    the Neptune 3 UI.
 */
 
 /*!

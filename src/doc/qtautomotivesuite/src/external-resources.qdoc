@@ -76,6 +76,11 @@
 */
 
 /*!
+    \externalpage https://doc.qt.io/QtAutoDeploymentServer/index.html
+    \title Qt Automotive Suite Deployment Server
+*/
+
+/*!
     \externalpage https://doc.qt.io/QtForDeviceCreation/index.html
     \title Qt for Device Creation
 */
