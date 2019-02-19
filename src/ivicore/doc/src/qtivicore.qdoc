@@ -47,7 +47,7 @@
     QT += ivicore
     \endcode
 
-    For more information, see \l{Using the Qt IVI Reference API}.
+    For more information, see \l{Use the Qt IVI Reference API}.
 */
 
 /*!

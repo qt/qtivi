@@ -27,16 +27,15 @@
 ****************************************************************************/
 /*!
 \page concepts.html
-\title Concepts / Architecture
+\title Concepts and Architecture
 
-All Qt IVI feature APIs depend on a set of key concepts. These are explained in the
-following sections.
+All Qt IVI feature APIs depend on the following set of key concepts:
 
 \list
     \li \l {Dynamic Backend System}
-    \li \l {The Qt IVI Autogenerator}
+    \li \l {Qt IVI Autogenerator}
     \li \l {Models}
-    \li \l {The Qt IVI Query Language}
-    \li \l {The Qt IVI Simulation System}
+    \li \l {Qt IVI Query Language}
+    \li \l {Qt IVI Simulation System}
 \endlist
 */

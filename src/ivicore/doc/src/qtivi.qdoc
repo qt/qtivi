@@ -28,56 +28,50 @@
 /*!
     \page qtivi-index.html
     \title Qt IVI
-    \keyword QtIvi
+    \brief Overview of the Qt IVI Module
 
-    The Qt IVI (In-Vehicle Infotainment) module provides tooling and core classes for implementing
-    interfaces to middleware services. \l {The Qt IVI Autogenerator} provides a flexible way to
-    define new APIs in an IDL (interface definition language) and generate classes usable from
-    C++ as well as from QML.
+    The Qt In-Vehicle Infotainment (IVI) module provides both, the tools and the core APIs, for you
+    to implement interfaces to middleware services. The \l {Qt IVI Autogenerator} provides a
+    flexible way to define new APIs via an Interface Definition Language (IDL) and generate
+    classes for use, from C++ and QML.
 
-    The module is built around a pattern based on the separation of API facing the application
-    developer, the so called \e {Feature}, and the code implementing it, the \e {Backend}. There
-    can be multiple backends per feature and the Core module provides support for finding the
-    corresponding backend in an easy-to-use way.
+    Qt IVI is built around a pattern that separates the API exposed to the application developer,
+    the so called \e {feature}, and the code that implements it, the \e {backend}. There can be
+    multiple backends per feature; the Core module provides support for finding the corresponding
+    backend in an easy-to-use way.
 
-    Common use cases driving this separation are:
+    This pattern of separation is necessary to drive the following use cases:
 
     \list
-    \li \e {Early development}, where the UI can rely on a feature with a very basic backend
-        implementation.
-    \li \e {Testing / Simulation}, where the backends can be tested separately from the app and the
+    \li Early development - where the UI can rely on a feature with a basic backend implementation.
+    \li Testing and Simulation - where the backends can be tested separately from the app and the
         app can be tested using a specialized testing backend.
-    \li \e {Targets with different hardware configurations}, where certain parts of the system are
+    \li Targets with different hardware configurations - where certain parts of the system are
         represented by simulated backends while others use a real hardware integration.
-    \li \e {Dynamically appearing services}, when services are available sometimes, but not always,
-        meaning that backends come and go over time.
+    \li Dynamic services - when services are only available intermittently, with backends that come
+        and go over time.
     \endlist
 
-    \section1 Important Topics
+    The following are some key topics that provide more details on the Qt IVI module:
 
     \list
-    \li \l{Configuration}
-    \li \l{Concepts / Architecture}
-    \li \l{Extending Qt IVI}
+       \li \l{Configuration}
+       \li \l{Concepts and Architecture}
+       \li \l{Getting Started with the Qt IVI Generator}
+       \li \l{Extending Qt IVI}
     \endlist
 
-    \section1 Getting Started
+    \section1 Reference APIs
 
-    \list
-      \li \l {Getting Started Using the Qt IVI Generator}
-    \endlist
-
-    \section1 Reference API
-
-    In addition to the tooling an core APIs, the module also provides an extendable set of
-    reference APIs for automotive features. It can be used to develop automotive applications and
-    to provide automotive features to Qt-based applications in a structured manner.
-    This reference API already contains so called "simulation backends" which provide partially
+    In addition to the tools and core APIs, the Qt IVI module also provides an extendable set of
+    reference APIs for automotive features. This module can be used to develop automotive
+    applications and to provide automotive features to Qt-based applications in a structured
+    manner. This reference API already contains some simulation backends, which provide partially
     simulated behavior of a real middleware service.
 
     \list
-    \li \l{Using the Qt IVI Reference API}
-    \li \l{QtIvi Backends}{Available Backends}
+    \li \l{Use the Qt IVI Reference API}
+    \li \l{QtIvi Backends}
     \endlist
 
     \section1 Getting Started with the Qt IVI Reference API

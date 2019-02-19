@@ -121,8 +121,8 @@ using namespace qtivi_helper;
 
     This class is an extended QQmlApplicationEngine which can be used to load QML files. It is made
     especially for \l {Dynamic Backend System}{simulation backends} to script the behavior of a
-    simulation backend from QML. An overview of the functionality is also provided
-    \l{The Qt IVI Simulation System}{here}.
+    simulation backend from QML. An overview of the functionality is also provided in
+    \l{Qt IVI Simulation System}.
 
     In contrast to a normal QQmlEngine the QIviSimulationEngine provides an extra template function
     called registerSimulationInstance().

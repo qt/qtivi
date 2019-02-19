@@ -27,7 +27,7 @@
 ****************************************************************************/
 /*!
 \page ivigenerator.html
-\title The Qt IVI Autogenerator
+\title Qt IVI Autogenerator
 \keyword QFace
 
 Qt IVI provides a way to describe interfaces using its own IDL (interface definition language) and

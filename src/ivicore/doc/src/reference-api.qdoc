@@ -27,14 +27,14 @@
 ****************************************************************************/
 /*!
 \page reference-api.html
-\title Using the Qt IVI Reference API
+\title Use the Qt IVI Reference API
 
 \section1 Overview
 
-The Qt IVI module contains a reference API providing interfaces to common automotive
-functionality. These APIs rely on the separation of the front-end API and the backend
-implementation. The Qt IVI module also introduces a set of concepts used in the APIs:
-zones and property attributes. More about the concepts can be read \l {Concepts / Architecture} {here}.
+The Qt IVI module contains a reference API that provides interfaces to common automotive
+functionality. These APIs rely on the separation of the frontend API from the backend
+implementation. The Qt IVI module also introduces a set of concepts used in the APIs, such as
+zones and property attributes. For more about concepts, see \l{Concepts and Architecture}.
 
 \section1 Modules
 
@@ -42,20 +42,17 @@ Qt IVI consists of the following C++ modules:
 
 \annotatedlist qtivi_modules
 
-\b {Qt IVI Core} provides core base classes for the Qt IVI features,
-and handles the discovery of Qt IVI backend plugins. Application
-developers do not need to use Qt IVI Core directly. It is only needed
-when implementing a new IVI feature, such as Qt IVI Vehicle Functions
+\b {Qt IVI Core} provides core base classes for the Qt IVI features, and handles the discovery of
+Qt IVI backend plugins. Application developers do not need to use Qt IVI Core directly. This
+module is only necessary when you implement a new IVI feature, such as Qt IVI Vehicle Functions
 ClimateControl.
 
-\b {Qt IVI Vehicle Functions} provides interfaces to access vehicle
-features.
+\b {Qt IVI Vehicle Functions} provides interfaces to access vehicle features.
 
-\b {Qt IVI Media} provides interfaces to access media related APIs e.g.
-Managing your music playlist or controlling the radio tuner.
+\b {Qt IVI Media} provides interfaces to access media related APIs, such as to manage your music
+playlist or to control the radio tuner.
 
-The functionality provided by these modules is available to QML
-applications:
+The functionality provided by these modules is available to QML applications:
 
 \annotatedlist qtivi_qmlmodules
 */
