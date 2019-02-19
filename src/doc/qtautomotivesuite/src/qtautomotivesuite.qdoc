@@ -151,14 +151,11 @@
 
     \section1 Qt 3D Studio
 
-    \l{Qt 3D Studio} is an artist-centric tool designed for designing and
-    building rich interactive interfaces. Though there is a strong emphasis on
-    3D content - all objects are placed in three dimensional space - it is not
-    a 3D content creation tool. It is also not a drawing program, though it uses
-    2D images and vectors heavily. Studio is a compositing tool.
-
-    You can create your 2D, 3D, and script assets in other programs and
-    then use Qt 3D Studio to place them in your presentation.
+    \l{Qt 3D Studio} is an artist-centric tool for designing and building rich
+    user interfaces. Qt 3D Studio allows you to build and prototype 2D and 3D
+    user interfaces rapidly. With this tool, you can tap into the built-in
+    material and effects library, as well as import design assets from popular
+    3D design tools using FBX and COLLADA exchange formats.
 
     \section1 Deployment
 
