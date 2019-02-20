@@ -16,7 +16,8 @@ common.files += \
     common/qtivi_macros.j2 \
     common/simulation.qmltypes.tpl \
     common/plugins.qmltypes.tpl \
-    common/qmldir.tpl
+    common/qmldir.tpl \
+    common/interface.rep.tpl
 common.path = $$[QT_HOST_BINS]/ivigenerator/common
 
 templates_frontend.files +=  \
@@ -84,15 +85,13 @@ templates_backend_qtro.files += \
     templates_backend_qtro/plugin.cpp.tpl \
     templates_backend_qtro/plugin.h.tpl \
     templates_backend_qtro/plugin.json \
-    templates_backend_qtro/plugin.pri.tpl \
-    templates_backend_qtro/interface.rep.tpl
+    templates_backend_qtro/plugin.pri.tpl
 templates_backend_qtro.path = $$[QT_HOST_BINS]/ivigenerator/templates_backend_qtro
 
 templates_server_qtro.files += \
     templates_server_qtro/core.cpp.tpl \
     templates_server_qtro/core.h.tpl \
-    templates_server_qtro/server.pri.tpl \
-    templates_server_qtro/interface.rep.tpl
+    templates_server_qtro/server.pri.tpl
 templates_server_qtro.path = $$[QT_HOST_BINS]/ivigenerator/templates_server_qtro
 
 templates_test.files += \
