@@ -459,7 +459,7 @@ def json_domain(properties):
     for property in properties:
         if 'config_simulator' in property.tags:
             for p in ['range', 'domain', 'minimum', 'maximum']:
-                if p in property.tags['config_simulator']:
+                if property.tags['config_simulator'] is not None and p in property.tags['config_simulator']:
                     if not property.name in data:
                         data[property.name] = {}
                     data[property.name][p] = property.tags['config_simulator'][p]
@@ -478,7 +478,7 @@ def simulationData(module):
         for property in interface.properties:
             if 'config_simulator' in property.tags:
                 for p in ['range', 'domain', 'minimum', 'maximum', 'default']:
-                    if p in property.tags['config_simulator']:
+                    if property.tags['config_simulator'] is not None and p in property.tags['config_simulator']:
                         if not property.name in iData:
                             iData[property.name] = {}
                         iData[property.name][p] = symbolToJson(property.tags['config_simulator'][p], property.type)
