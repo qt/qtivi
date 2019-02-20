@@ -306,6 +306,12 @@ QIviSimulationEngine::QIviSimulationEngine(const QString &identifier, QObject *p
     , m_identifier(identifier)
 {
     rootContext()->setContextProperty(QStringLiteral("IviSimulator"), m_globalObject);
+    setOutputWarningsToStandardError(false);
+
+    connect(this, &QQmlApplicationEngine::warnings, this, [](const QList<QQmlError> &warnings) {
+        for (const QQmlError &error : warnings)
+            qCWarning(qLcIviSimulationEngine, "%s", qPrintable(error.toString()));
+    });
 }
 
 /*!

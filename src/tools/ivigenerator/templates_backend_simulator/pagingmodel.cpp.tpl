@@ -61,7 +61,6 @@ void {{class}}::initialize()
 void {{class}}::registerInstance(const QUuid &identifier)
 {
     QIVI_SIMULATION_TRY_CALL({{class}}, "registerInstance", void, identifier);
-    qCritical() << "REGISTER" << identifier;
 
     emit countChanged(identifier, m_list.count());
 }
@@ -69,15 +68,11 @@ void {{class}}::registerInstance(const QUuid &identifier)
 void {{class}}::unregisterInstance(const QUuid &identifier)
 {
     QIVI_SIMULATION_TRY_CALL({{class}}, "unregisterInstance", void, identifier);
-
-    qCritical() << "UNREGISTER" << identifier;
 }
 
 void {{class}}::fetchData(const QUuid &identifier, int start, int count)
 {
     QIVI_SIMULATION_TRY_CALL({{class}}, "fetchData", void, identifier, start, count);
-
-    qCritical() << "FETCH" << identifier << start << count;
 
     QVariantList list;
     int max = qMin(start + count, m_list.count());
