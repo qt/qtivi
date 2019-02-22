@@ -91,7 +91,8 @@ else: SLEEP = sleep 1
 qface_sources.target = $$relative_path($$PRI, $$OUT_PWD)
 qface_sources.commands = $$SLEEP && $$ENV $$shell_path($$IVI_GENERATOR) $$IVI_GENERATOR_OPTIONS $$shell_path($$QFACE_ABS_PWD/$${QFACE_FILE}) $$shell_path($$QFACE_OUTPUT_DIR)
 qface_sources.depends = $$IVI_GENERATOR_PATH/generate.py
-qface_sources.depends = $$QFACE_ABS_PWD/$${QFACE_FILE}
+qface_sources.depends += $$QFACE_ABS_PWD/$${QFACE_FILE}
+qface_sources.depends += $$files($$IVI_GENERATOR_PATH/common/*)
 
 # Add all templates of the generator format as dependency
 QFACE_TEMPLATE_PWD = $$IVI_GENERATOR_PATH/templates_$${QFACE_FORMAT}
