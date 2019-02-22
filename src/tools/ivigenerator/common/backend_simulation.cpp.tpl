@@ -220,10 +220,29 @@ void {{class}}::addZone(const QString &zone)
 {% endif %}
 
 {% for property in interface.properties %}
+{%   if interface_zoned %}
+{%     if property.type.is_model %}
+{%       set type = 'QIviPagingModelInterface *' %}
+{%     else %}
+{%       set type = property|return_type %}
+{%     endif %}
+{{type}} {{class}}::{{property|getter_name}}(const QString &zone)
+{
+    if (zone.isEmpty())
+        return m_{{property}};
+    {{interface}}Zone *zo = zoneAt(zone);
+    if (zo)
+        return zo->{{property|getter_name}}();
+    else
+        qWarning() << "No such Zone";
+    return {{type}}();
+}
+{%   else %}
 {{ivi.prop_getter(property, class, model_interface = true)}}
 {
     return m_{{property}};
 }
+{%   endif %}
 {% endfor %}
 
 {% for property in interface.properties %}

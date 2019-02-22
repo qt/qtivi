@@ -103,14 +103,18 @@ Q_PROPERTY({{property|return_type}} {{property}} READ {{property|getter_name}}{{
 # pass the class parameter in order to add the scope:: -specifier.
 # use zoned to add the zone-specifier
 #}
-{% macro prop_setter(property, class = '', zoned = false, model_interface = false) %}
+{% macro prop_setter(property, class = '', zoned = false, model_interface = false, default_zone = false) %}
 {%   if  class|count %}
 {%     set scope = class+'::' %}
 {%   else %}
 {%     set scope = '' %}
 {%   endif %}
 {%   if zoned %}
-{%     set zone = ', const QString &zone' %}
+{%     if default_zone %}
+{%       set zone = ', const QString &zone = QString()' %}
+{%     else %}
+{%       set zone = ', const QString &zone' %}
+{%     endif %}
 {%   else %}
 {%     set zone = '' %}
 {%   endif %}

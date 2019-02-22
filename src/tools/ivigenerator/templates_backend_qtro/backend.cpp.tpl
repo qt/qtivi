@@ -234,7 +234,7 @@ QStringList {{class}}::availableZones() const
 {% for operation in interface.operations %}
 {{ ivi.operation(operation, class, zoned=interface_zoned) }}
 {
-    if (m_replica->state() != QRemoteObjectReplica::Valid)
+    if (static_cast<QRemoteObjectReplica*>(m_replica.get())->state() != QRemoteObjectReplica::Valid)
         return QIviPendingReply<{{operation|return_type}}>::createFailedReply();
 
     QIviPendingReply<{{operation|return_type}}> iviReply;
@@ -258,7 +258,7 @@ QStringList {{class}}::availableZones() const
         self->deleteLater();
     });
 {%   else %}
-    m_replica->{{operation}}({{operation.parameters|join(', ')}});
+    m_replica->{{operation}}({{function_parameters}});
     iviReply.setSuccess();
 {%   endif %}
     return iviReply;

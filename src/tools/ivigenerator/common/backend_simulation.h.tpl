@@ -143,7 +143,16 @@ public:
 {% endif %}
 
 {% for property in interface.properties %}
+{%   if interface_zoned %}
+{%     if property.type.is_model and model_interface %}
+{%       set type = 'QIviPagingModelInterface *' %}
+{%     else %}
+{%       set type = property|return_type %}
+{%     endif %}
+    {{type}} {{property|getter_name}}(const QString &zone = QString());
+{%   else %}
     {{ivi.prop_getter(property, model_interface = true)}};
+{%   endif %}
 {% endfor %}
 {% if interface_zoned %}
     QQmlPropertyMap *zones() const { return m_zones; }
@@ -151,13 +160,10 @@ public:
 
 public Q_SLOTS:
 {% for property in interface.properties %}
-{%   if interface_zoned %}
-    {{ivi.prop_setter(property)}} { {{property|setter_name}}({{property}}, QString()); }
-{%   endif %}
 {%   if not property.readonly and not property.const and not property.type.is_model %}
-    virtual {{ivi.prop_setter(property, zoned = interface_zoned)}} override;
+    virtual {{ivi.prop_setter(property, zoned = interface_zoned, default_zone = true)}} override;
 {%   else %}
-    {{ivi.prop_setter(property, zoned = interface_zoned, model_interface = true)}};
+    {{ivi.prop_setter(property, zoned = interface_zoned, model_interface = true, default_zone = true)}};
 {%   endif %}
 {% endfor %}
 
