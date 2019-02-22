@@ -126,11 +126,11 @@ void EchoQtroTest::testReconnect()
     QVERIFY(server.start());
 
     Echo client;
+    QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
+    QVERIFY(initSpy.isValid());
     QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
 
     //wait until the client has connected and initial values are set
-    QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
-    QVERIFY(initSpy.isValid());
     WAIT_AND_COMPARE(initSpy, 1);
     QVERIFY(client.isInitialized());
 
@@ -164,12 +164,11 @@ void EchoQtroTest::testClient2Server()
     QVERIFY(server.start());
 
     Echo client;
-    QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
-
-
-    //wait until the client has connected and initial values are set
     QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
     QVERIFY(initSpy.isValid());
+    QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
+
+    //wait until the client has connected and initial values are set
     WAIT_AND_COMPARE(initSpy, 1);
     QVERIFY(client.isInitialized());
 
@@ -243,12 +242,12 @@ void EchoQtroTest::testServer2Client()
     QVERIFY(server.start());
 
     Echo client;
+    QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
+    QVERIFY(initSpy.isValid());
     QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
 
 
     //wait until the client has connected and initial values are set
-    QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
-    QVERIFY(initSpy.isValid());
     WAIT_AND_COMPARE(initSpy, 1);
     QVERIFY(client.isInitialized());
 
@@ -322,12 +321,12 @@ void EchoQtroTest::testSlots()
     server.start();
 
     Echo client;
-    client.startAutoDiscovery();
+    QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
+    QVERIFY(initSpy.isValid());
+    QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
 
 
     //wait until the client has connected and initial values are set
-    QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
-    QVERIFY(initSpy.isValid());
     WAIT_AND_COMPARE(initSpy, 1);
     QVERIFY(client.isInitialized());
 
@@ -378,12 +377,12 @@ void EchoQtroTest::testMultipleSlotCalls()
     server.start();
 
     Echo client;
-    client.startAutoDiscovery();
+    QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
+    QVERIFY(initSpy.isValid());
+    QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
 
 
     //wait until the client has connected and initial values are set
-    QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
-    QVERIFY(initSpy.isValid());
     initSpy.wait(1000);
     QCOMPARE(initSpy.count(), 1);
     QVERIFY(client.isInitialized());
@@ -419,12 +418,11 @@ void EchoQtroTest::testSignals()
     server.start();
 
     Echo client;
-    client.startAutoDiscovery();
-
-
-    //wait until the client has connected and initial values are set
     QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
     QVERIFY(initSpy.isValid());
+    QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
+
+    //wait until the client has connected and initial values are set
     WAIT_AND_COMPARE(initSpy, 1);
     QVERIFY(client.isInitialized());
 

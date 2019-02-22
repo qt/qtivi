@@ -29,15 +29,22 @@
 
 #include "server.h"
 #include "core.h"
+#include <QTest>
 
 bool Server::start()
 {
-    return Core::instance()->host()->enableRemoting(&m_service, QStringLiteral("org.example.echo.Echo"));
+    bool val =  Core::instance()->host()->enableRemoting(&m_service, QStringLiteral("org.example.echo.Echo"));
+    //Give QtRO time to announce the service
+    QTest::qWait(200);
+    return val;
 }
 
 bool Server::stop()
 {
-    return Core::instance()->host()->disableRemoting(&m_service);
+    bool val =  Core::instance()->host()->disableRemoting(&m_service);
+    //Give QtRO time to send the disconnect message to the Replica
+    QTest::qWait(200);
+    return  val;
 }
 
 Server::~Server()
