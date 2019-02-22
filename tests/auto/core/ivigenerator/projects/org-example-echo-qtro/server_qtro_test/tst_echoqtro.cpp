@@ -60,7 +60,7 @@ void EchoQtroTest::testInit()
     QCOMPARE(client.stringValue(), QString());
     QCOMPARE(client.contactList(), QVariantList());
     QCOMPARE(client.contact(), Contact());
-    QCOMPARE(client.weekDay(), EchoModule::WeekDay());
+    QCOMPARE(client.weekDay(), EchoModule::Monday);
 
     Server server;
 
@@ -99,6 +99,7 @@ void EchoQtroTest::testInit()
     QCOMPARE(client.error(), QIviAbstractFeature::NoError);
 
     //wait until the client has connected and initial values are set
+    QSignalSpy lastMessageChangedSpy(&client, SIGNAL(lastMessageChanged(QString)));
     QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
 
     QVERIFY(server.start());
@@ -107,8 +108,12 @@ void EchoQtroTest::testInit()
     WAIT_AND_COMPARE(initSpy, 1);
     QVERIFY(client.isInitialized());
 
+    //make sure the change signal is only emitted once with the correct value
+    QCOMPARE(lastMessageChangedSpy.count(), 1);
+    QCOMPARE(lastMessageChangedSpy.at(0).at(0).toString(), lastMessageTestValue);
+
     //test that client gets the same values that were set at the server before connection was established
-    QCOMPARE(client.lastMessage(),lastMessageTestValue);
+    QCOMPARE(client.lastMessage(), lastMessageTestValue);
     QCOMPARE(client.intValue(), intValueTestValue);
     QCOMPARE(client.floatValue1(), floatValue1TestValue);
     QCOMPARE(client.floatValue2(), floatValue2TestValue);
@@ -118,6 +123,27 @@ void EchoQtroTest::testInit()
     QCOMPARE(contactList[1].value<Contact>(), contactListTestValue[1].value<Contact>());
     QCOMPARE(client.contact(), contactTestValue);
     QCOMPARE(client.weekDay(), weekDayTestValue);
+
+
+    lastMessageChangedSpy.clear();
+    //test that a second instance is also initialized with the correct values
+    Echo client2;
+
+    QSignalSpy lastMessageChangedSpy2(&client2, SIGNAL(lastMessageChanged(QString)));
+    QSignalSpy initSpy2(&client2, SIGNAL(isInitializedChanged(bool)));
+
+    QVERIFY(client2.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
+
+    QVERIFY(initSpy2.isValid());
+    WAIT_AND_COMPARE(initSpy2, 1);
+    QVERIFY(client2.isInitialized());
+
+    //make sure the change signal is only emitted once with the correct value
+    QCOMPARE(lastMessageChangedSpy2.count(), 1);
+    QCOMPARE(lastMessageChangedSpy2.at(0).at(0).toString(), lastMessageTestValue);
+
+    //make sure the first instance doesn't emit the change signal again
+    QCOMPARE(lastMessageChangedSpy.count(), 0);
 }
 
 void EchoQtroTest::testReconnect()

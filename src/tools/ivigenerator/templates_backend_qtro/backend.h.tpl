@@ -86,6 +86,7 @@ protected:
 
     QSharedPointer<{{interface}}Replica> m_replica;
     QRemoteObjectNode* m_node= nullptr;
+    QUrl m_url;
 };
 
 QT_END_NAMESPACE
