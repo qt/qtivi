@@ -51,7 +51,7 @@ void EchoQtroTest::cleanup()
 void EchoQtroTest::testInit()
 {
     Echo client;
-    QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
+    QVERIFY(client.startAutoDiscovery() == QIviAbstractFeature::ProductionBackendLoaded);
 
     QCOMPARE(client.lastMessage(), QString());
     QCOMPARE(client.intValue(), 0);
@@ -74,15 +74,15 @@ void EchoQtroTest::testInit()
     QCOMPARE(server.m_service.contact(), Contact());
     QCOMPARE(server.m_service.weekDay(), EchoModule::WeekDay());
 
-    QString lastMessageTestValue("this is the last message");
+    QLatin1String lastMessageTestValue("this is the last message");
     int intValueTestValue(789);
-    float floatValue1TestValue(3.14);
-    float floatValue2TestValue(2.71);
-    QString stringValueTestValue("test string");
+    qreal floatValue1TestValue(3.14);
+    qreal floatValue2TestValue(2.71);
+    QLatin1String stringValueTestValue("test string");
     QVariantList contactListTestValue(
                     { QVariant::fromValue<Contact>(Contact("Mr A.", 20, false, "foo")),
                       QVariant::fromValue<Contact>(Contact("Mr B.", 40, true, "bar")) });
-    Contact contactTestValue("Nemo", 47, true, 1);
+    Contact contactTestValue(QStringLiteral("Nemo"), 47, true, 1);
     EchoModule::WeekDay weekDayTestValue = EchoModule::Wednesday;
 
 
@@ -132,7 +132,7 @@ void EchoQtroTest::testInit()
     QSignalSpy lastMessageChangedSpy2(&client2, SIGNAL(lastMessageChanged(QString)));
     QSignalSpy initSpy2(&client2, SIGNAL(isInitializedChanged(bool)));
 
-    QVERIFY(client2.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
+    QVERIFY(client2.startAutoDiscovery() == QIviAbstractFeature::ProductionBackendLoaded);
 
     QVERIFY(initSpy2.isValid());
     WAIT_AND_COMPARE(initSpy2, 1);
@@ -154,7 +154,7 @@ void EchoQtroTest::testReconnect()
     Echo client;
     QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
     QVERIFY(initSpy.isValid());
-    QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
+    QVERIFY(client.startAutoDiscovery() == QIviAbstractFeature::ProductionBackendLoaded);
 
     //wait until the client has connected and initial values are set
     WAIT_AND_COMPARE(initSpy, 1);
@@ -162,7 +162,7 @@ void EchoQtroTest::testReconnect()
 
     //test disconnection
     QCOMPARE(client.error(), QIviAbstractFeature::NoError);
-    QSignalSpy disconnectSpy(&client, SIGNAL(errorChanged(QIviAbstractFeature::Error,QString)));
+    QSignalSpy disconnectSpy(&client, SIGNAL(errorChanged(QIviAbstractFeature::Error, QString)));
     QVERIFY(disconnectSpy.isValid());
 
     server.stop();
@@ -175,7 +175,7 @@ void EchoQtroTest::testReconnect()
     QVERIFY(idReply.isResultAvailable() && !idReply.watcher()->isSuccessful());
 
     //test reconnection
-    QSignalSpy reconnectSpy(&client, SIGNAL(errorChanged(QIviAbstractFeature::Error,QString)));
+    QSignalSpy reconnectSpy(&client, SIGNAL(errorChanged(QIviAbstractFeature::Error, QString)));
     QVERIFY(reconnectSpy.isValid());
 
     server.start();
@@ -192,7 +192,7 @@ void EchoQtroTest::testClient2Server()
     Echo client;
     QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
     QVERIFY(initSpy.isValid());
-    QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
+    QVERIFY(client.startAutoDiscovery() == QIviAbstractFeature::ProductionBackendLoaded);
 
     //wait until the client has connected and initial values are set
     WAIT_AND_COMPARE(initSpy, 1);
@@ -225,7 +225,7 @@ void EchoQtroTest::testClient2Server()
 
     QSignalSpy stringValueSpy(&server.m_service, SIGNAL(stringValueChanged(QString)));
     QVERIFY(stringValueSpy.isValid());
-    QString stringValueTestValue = "hello test";
+    QString stringValueTestValue = QStringLiteral("hello test");
     client.setStringValue(stringValueTestValue);
     WAIT_AND_COMPARE(stringValueSpy, 1);
     QCOMPARE(server.m_service.stringValue(), stringValueTestValue);
@@ -239,15 +239,15 @@ void EchoQtroTest::testClient2Server()
     client.setContactList(contactListTestValue);
     WAIT_AND_COMPARE(contactListSpy, 1);
     QCOMPARE(server.m_service.contactList().count(),contactListTestValue.count());
-    QCOMPARE(server.m_service.contactList()[0].value<Contact>(), contactListTestValue[0].value<Contact>());
-    QCOMPARE(server.m_service.contactList()[1].value<Contact>(), contactListTestValue[1].value<Contact>());
+    QCOMPARE(server.m_service.contactList().at(0).value<Contact>(), contactListTestValue[0].value<Contact>());
+    QCOMPARE(server.m_service.contactList().at(1).value<Contact>(), contactListTestValue[1].value<Contact>());
     QVariantList signalArgs = contactListSpy[0][0].toList();
     QCOMPARE(signalArgs[0].value<Contact>(), contactListTestValue[0].value<Contact>());
     QCOMPARE(signalArgs[1].value<Contact>(), contactListTestValue[1].value<Contact>());
 
     QSignalSpy contactSpy(&server.m_service, SIGNAL(contactChanged(Contact)));
     QVERIFY(contactSpy.isValid());
-    Contact contactTestValue("Nemo", 47, true, 1);
+    Contact contactTestValue(QStringLiteral("Nemo"), 47, true, 1);
     client.setContact(contactTestValue);
     WAIT_AND_COMPARE(contactSpy, 1);
     QCOMPARE(server.m_service.contact(), contactTestValue);
@@ -270,7 +270,7 @@ void EchoQtroTest::testServer2Client()
     Echo client;
     QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
     QVERIFY(initSpy.isValid());
-    QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
+    QVERIFY(client.startAutoDiscovery() == QIviAbstractFeature::ProductionBackendLoaded);
 
 
     //wait until the client has connected and initial values are set
@@ -304,7 +304,7 @@ void EchoQtroTest::testServer2Client()
 
     QSignalSpy stringValueSpy(&client, SIGNAL(stringValueChanged(QString)));
     QVERIFY(stringValueSpy.isValid());
-    QString stringValueTestValue = QString("hello test");
+    QLatin1String stringValueTestValue("hello test");
     server.m_service.setStringValue(stringValueTestValue);
     WAIT_AND_COMPARE(stringValueSpy, 1);
     QCOMPARE(client.stringValue(), stringValueTestValue);
@@ -318,15 +318,15 @@ void EchoQtroTest::testServer2Client()
     server.m_service.setContactList(contactListTestValue);
     WAIT_AND_COMPARE(contactListSpy, 1);
     QCOMPARE(client.contactList().count(),contactListTestValue.count());
-    QCOMPARE(client.contactList()[0].value<Contact>(), contactListTestValue[0].value<Contact>());
-    QCOMPARE(client.contactList()[1].value<Contact>(), contactListTestValue[1].value<Contact>());
+    QCOMPARE(client.contactList().at(0).value<Contact>(), contactListTestValue[0].value<Contact>());
+    QCOMPARE(client.contactList().at(1).value<Contact>(), contactListTestValue[1].value<Contact>());
     QVariantList signalArgs = contactListSpy[0][0].toList();
     QCOMPARE(signalArgs[0].value<Contact>(), contactListTestValue[0].value<Contact>());
     QCOMPARE(signalArgs[1].value<Contact>(), contactListTestValue[1].value<Contact>());
 
     QSignalSpy contactSpy(&client, SIGNAL(contactChanged(Contact)));
     QVERIFY(contactSpy.isValid());
-    Contact contactTestValue("Nemo", 47, true, 1);
+    Contact contactTestValue(QStringLiteral("Nemo"), 47, true, 1);
     server.m_service.setContact(contactTestValue);
     WAIT_AND_COMPARE(contactSpy, 1);
     QCOMPARE(client.contact(), contactTestValue);
@@ -349,7 +349,7 @@ void EchoQtroTest::testSlots()
     Echo client;
     QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
     QVERIFY(initSpy.isValid());
-    QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
+    QVERIFY(client.startAutoDiscovery() == QIviAbstractFeature::ProductionBackendLoaded);
 
 
     //wait until the client has connected and initial values are set
@@ -359,12 +359,12 @@ void EchoQtroTest::testSlots()
     //test slots by calling them on the client
     QSignalSpy echoSpy(&server.m_service, SIGNAL(echoSlotCalled(const QString&)));
     QVERIFY(echoSpy.isValid());
-    QString echoTestValue("this will be echoed");
+    QLatin1String echoTestValue("this will be echoed");
     QIviPendingReply<QString> echoReply = client.echo(echoTestValue);
     QSignalSpy echoReplySpy(echoReply.watcher(), SIGNAL(replySuccess()));
     WAIT_AND_COMPARE(echoReplySpy, 1);
     QCOMPARE(echoReply.reply(), echoTestValue);
-    QCOMPARE(echoSpy.count(),1);
+    QCOMPARE(echoSpy.count(), 1);
     QCOMPARE(echoSpy[0][0].toString(), echoTestValue);
 
     QSignalSpy idSpy(&server.m_service, SIGNAL(idSlotCalled()));
@@ -373,7 +373,7 @@ void EchoQtroTest::testSlots()
     QSignalSpy idReplySpy(idReply.watcher(), SIGNAL(replySuccess()));
     WAIT_AND_COMPARE(idReplySpy, 1);
     QCOMPARE(idReply.reply(), server.m_service.m_testId);
-    QCOMPARE(idSpy.count(),1);
+    QCOMPARE(idSpy.count(), 1);
 
     QSignalSpy getComboSpy(&server.m_service, SIGNAL(getComboSlotCalled()));
     QVERIFY(getComboSpy.isValid());
@@ -381,7 +381,7 @@ void EchoQtroTest::testSlots()
     QSignalSpy comboReplySpy(comboReply.watcher(), SIGNAL(replySuccess()));
     WAIT_AND_COMPARE(comboReplySpy, 1);
     QCOMPARE(comboReply.reply(), server.m_service.m_testCombo);
-    QCOMPARE(getComboSpy.count(),1);
+    QCOMPARE(getComboSpy.count(), 1);
 
     QSignalSpy voidSlotSpy(&server.m_service, SIGNAL(voidSlotCalled()));
     QVERIFY(voidSlotSpy.isValid());
@@ -393,7 +393,7 @@ void EchoQtroTest::testSlots()
     QVERIFY(voidSlot2Spy.isValid());
     client.voidSlot2(voidSlot2TestValue);
     voidSlot2Spy.wait(1000);
-    QCOMPARE(voidSlot2Spy.count(),1);
+    QCOMPARE(voidSlot2Spy.count(), 1);
     QCOMPARE(voidSlot2Spy[0][0].toInt(), voidSlot2TestValue);
 }
 
@@ -405,7 +405,7 @@ void EchoQtroTest::testMultipleSlotCalls()
     Echo client;
     QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
     QVERIFY(initSpy.isValid());
-    QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
+    QVERIFY(client.startAutoDiscovery() == QIviAbstractFeature::ProductionBackendLoaded);
 
 
     //wait until the client has connected and initial values are set
@@ -416,9 +416,9 @@ void EchoQtroTest::testMultipleSlotCalls()
     //test the pending replies by calling the same slot with 3 different values
     QSignalSpy echoSpy(&server.m_service, SIGNAL(echoSlotCalled(const QString&)));
     QVERIFY(echoSpy.isValid());
-    QString echoTestValue("first");
-    QString echoTestValue2("second");
-    QString echoTestValue3("third");
+    QLatin1String echoTestValue("first");
+    QLatin1String echoTestValue2("second");
+    QLatin1String echoTestValue3("third");
     QIviPendingReply<QString> echoReply = client.echo(echoTestValue);
     QIviPendingReply<QString> echoReply2 = client.echo(echoTestValue2);
     QIviPendingReply<QString> echoReply3 = client.echo(echoTestValue3);
@@ -432,7 +432,7 @@ void EchoQtroTest::testMultipleSlotCalls()
     QCOMPARE(echoReply.reply(), echoTestValue);
     QCOMPARE(echoReply2.reply(), echoTestValue2);
     QCOMPARE(echoReply3.reply(), echoTestValue3);
-    QCOMPARE(echoSpy.count(),3);
+    QCOMPARE(echoSpy.count(), 3);
     QCOMPARE(echoSpy[0][0].toString(), echoTestValue);
     QCOMPARE(echoSpy[1][0].toString(), echoTestValue2);
     QCOMPARE(echoSpy[2][0].toString(), echoTestValue3);
@@ -446,7 +446,7 @@ void EchoQtroTest::testSignals()
     Echo client;
     QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
     QVERIFY(initSpy.isValid());
-    QVERIFY(client.startAutoDiscovery()==QIviAbstractFeature::ProductionBackendLoaded);
+    QVERIFY(client.startAutoDiscovery() == QIviAbstractFeature::ProductionBackendLoaded);
 
     //wait until the client has connected and initial values are set
     WAIT_AND_COMPARE(initSpy, 1);
@@ -462,7 +462,7 @@ void EchoQtroTest::testSignals()
 
     QSignalSpy foobarSpy(&client, SIGNAL(foobar(QString)));
     QVERIFY(foobarSpy.isValid());
-    QString foobarTestValue("foo and bar");
+    QLatin1String foobarTestValue("foo and bar");
     server.m_service.foobar(foobarTestValue);
     WAIT_AND_COMPARE(foobarSpy, 1);
     QCOMPARE(foobarSpy[0][0].toString(), foobarTestValue);
