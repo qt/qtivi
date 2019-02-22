@@ -43,10 +43,14 @@ public:
 private slots:
     void cleanup();
     void testInit();
+    void testZonedInit();
     void testReconnect();
     void testClient2Server();
+    void testZonedClient2Server();
     void testServer2Client();
+    void testZonedServer2Client();
     void testSlots();
+    void testZonedSlots();
     void testMultipleSlotCalls();
     void testSignals();
 };

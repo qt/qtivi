@@ -40,6 +40,7 @@
 {% import 'qtivi_macros.j2' as ivi %}
 {% include "generated_comment.cpp.tpl" %}
 {% set class = '{0}Backend'.format(interface) %}
+{% set zone_class = '{0}Zone'.format(interface) %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
 {% set oncedefine = '{0}_{1}_H_'.format(module.module_name|upper, class|upper) %}
 #ifndef {{oncedefine}}
@@ -55,6 +56,44 @@
 
 QT_BEGIN_NAMESPACE
 
+{% if interface_zoned %}
+class {{class}};
+
+class {{zone_class}} : public QObject
+{
+    Q_OBJECT
+
+public:
+    explicit {{zone_class}}(const QString &zone, {{class}} *parent = nullptr);
+
+    bool isSyncing();
+    void sync();
+
+public Q_SLOTS:
+{% for property in interface.properties %}
+    {{ivi.prop_setter(property, model_interface = true)}};
+{% endfor %}
+    void emitCurrentState();
+
+signals:
+    void syncDone();
+
+private:
+    void checkSync();
+
+    {{class}} *m_parent;
+    QString m_zone;
+{% for property in interface.properties %}
+{%   if property.type.is_model %}
+    QIviPagingModelInterface *m_{{ property }};
+{%   else %}
+    {{ property|return_type }} m_{{ property }};
+{%   endif %}
+{% endfor %}
+    QStringList m_propertiesToSync;
+};
+{% endif %}
+
 class {{class}} : public {{class}}Interface
 {
     Q_OBJECT
@@ -68,18 +107,26 @@ public:
 public Q_SLOTS:
 {% for property in interface.properties %}
 {%   if not property.readonly and not property.const %}
-    virtual {{ivi.prop_setter(property)}} override;
+    virtual {{ivi.prop_setter(property, zoned=interface_zoned)}} override;
 {%   endif %}
 {% endfor %}
 
+{% if interface_zoned %}
+    virtual QStringList availableZones() const override;
+{% endif %}
+
 {% for operation in interface.operations %}
-    virtual {{ivi.operation(operation)}} override;
+    virtual {{ivi.operation(operation, zoned=interface_zoned)}} override;
 {% endfor %}
 
 protected Q_SLOTS:
     void onReplicaStateChanged(QRemoteObjectReplica::State newState,
                         QRemoteObjectReplica::State oldState);
     void onNodeError(QRemoteObjectNode::ErrorCode code);
+{% if interface_zoned %}
+    void syncZones();
+    void onZoneSyncDone();
+{% endif %}
 
 protected:
     void setupConnections();
@@ -87,6 +134,13 @@ protected:
     QSharedPointer<{{interface}}Replica> m_replica;
     QRemoteObjectNode* m_node= nullptr;
     QUrl m_url;
+{% if interface_zoned %}
+    bool m_synced;
+    QHash<QString, {{zone_class}}*> m_zoneMap;
+    QStringList m_zones;
+
+    friend class {{zone_class}};
+{% endif %}
 };
 
 QT_END_NAMESPACE

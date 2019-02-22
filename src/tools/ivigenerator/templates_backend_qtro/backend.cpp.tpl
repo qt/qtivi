@@ -40,6 +40,7 @@
 {% import 'qtivi_macros.j2' as ivi %}
 {% include "generated_comment.cpp.tpl" %}
 {% set class = '{0}Backend'.format(interface) %}
+{% set zone_class = '{0}Zone'.format(interface) %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
 #include "{{class|lower}}.h"
 
@@ -55,8 +56,71 @@
 
 QT_BEGIN_NAMESPACE
 
+{% if interface_zoned %}
+{{zone_class}}::{{zone_class}}(const QString &zone, {{class}} *parent)
+    : QObject(parent)
+    , m_parent(parent)
+    , m_zone(zone)
+{% for property in interface.properties %}
+{%   if not property.type.is_model %}
+    , m_{{ property }}({{property|default_value}})
+{%   endif %}
+{% endfor %}
+{
+}
+
+bool {{zone_class}}::isSyncing()
+{
+    return !m_propertiesToSync.isEmpty();
+}
+
+void {{zone_class}}::sync()
+{
+{% for property in interface.properties %}
+    m_propertiesToSync.append(QStringLiteral("{{property}}"));
+{% endfor %}
+
+{% for property in interface.properties %}
+    QRemoteObjectPendingReply<{{property|return_type}}> {{property}}Reply = m_parent->m_replica->{{property|getter_name}}(m_zone);
+    auto {{property}}Watcher = new QRemoteObjectPendingCallWatcher({{property}}Reply);
+    connect({{property}}Watcher, &QRemoteObjectPendingCallWatcher::finished, this, [this](QRemoteObjectPendingCallWatcher *self) mutable {
+        if (self->error() == QRemoteObjectPendingCallWatcher::NoError) {
+            m_{{property}} = self->returnValue().value<{{property|return_type}}>();
+            m_propertiesToSync.removeAll(QStringLiteral("{{property}}"));
+            checkSync();
+        }
+        self->deleteLater();
+    });
+{% endfor %}
+}
+
+void {{zone_class}}::checkSync()
+{
+    if (m_propertiesToSync.isEmpty())
+        emit syncDone();
+}
+
+void {{zone_class}}::emitCurrentState()
+{
+{% for property in interface.properties %}
+    m_parent->{{property}}Changed(m_{{property}}, m_zone);
+{% endfor %}
+}
+
+{% for property in interface.properties %}
+{{ivi.prop_setter(property, zone_class, model_interface = true)}}
+{
+    m_{{property}} = {{property}};
+    emit m_parent->{{property}}Changed({{property}}, m_zone);
+}
+{% endfor %}
+{% endif %}
+
 {{class}}::{{class}}(QObject *parent)
     : {{class}}Interface(parent)
+{% if interface_zoned %}
+    , m_synced(false)
+{% endif %}
 {
     {{module.module_name|upperfirst}}Module::registerTypes();
 
@@ -72,6 +136,12 @@ QT_BEGIN_NAMESPACE
     connect(m_node, &QRemoteObjectNode::error, this, &{{class}}::onNodeError);
     m_replica.reset(m_node->acquire<{{interface}}Replica>(QStringLiteral("{{interface.qualified_name}}")));
     setupConnections();
+
+{% if interface_zoned %}
+    auto zoneObject = new {{zone_class}}(QString(), this);
+    m_zoneMap.insert(QString(), zoneObject);
+    connect(zoneObject, &{{zone_class}}::syncDone, this, &{{class}}::onZoneSyncDone);
+{% endif %}
 }
 
 {{class}}::~{{class}}()
@@ -81,22 +151,65 @@ QT_BEGIN_NAMESPACE
 
 void {{class}}::initialize()
 {
+{% if interface_zoned %}
+    if (m_synced)
+        onZoneSyncDone();
+{% else %}
     if (m_replica->isInitialized()) {
-{% for property in interface.properties %}
-{%   if not property.is_model %}
-    emit {{property}}Changed(m_replica->{{property}}());
-{%   endif %}
-{% endfor %}
+{%   for property in interface.properties %}
+{%     if not property.is_model %}
+        emit {{property}}Changed(m_replica->{{property}}());
+{%     endif %}
+{%   endfor %}
         emit initializationDone();
     }
+{% endif %}
 }
+
+{% if interface_zoned %}
+void {{class}}::syncZones()
+{
+    QRemoteObjectPendingReply<QStringList> zoneReply = m_replica->availableZones();
+    auto zoneWatcher = new QRemoteObjectPendingCallWatcher(zoneReply);
+    connect(zoneWatcher, &QRemoteObjectPendingCallWatcher::finished, this, [this, zoneReply](QRemoteObjectPendingCallWatcher *self) mutable {
+        if (self->error() == QRemoteObjectPendingCallWatcher::NoError) {
+            if (!m_synced) {
+                m_zones = zoneReply.returnValue();
+                for (const QString& zone : qAsConst(m_zones)) {
+                    if (m_zoneMap.contains(zone))
+                        continue;
+                    auto zoneObject = new {{zone_class}}(zone, this);
+                    m_zoneMap.insert(zone, zoneObject);
+                    connect(zoneObject, &{{zone_class}}::syncDone, this, &{{class}}::onZoneSyncDone);
+                }
+                emit availableZonesChanged(m_zones);
+
+                for (const QString& zone : m_zoneMap.keys())
+                    m_zoneMap.value(zone)->sync();
+            } else {
+                onZoneSyncDone();
+            }
+        }
+        self->deleteLater();
+    });
+}
+
+QStringList {{class}}::availableZones() const
+{
+    return m_zones;
+}
+{% endif %}
 
 {% for property in interface.properties %}
 {%   if not property.readonly and not property.const %}
-{{ivi.prop_setter(property, class)}}
+{{ivi.prop_setter(property, class, zoned=interface_zoned)}}
 {
 {%     if not property.type.is_model %}
+{%     if interface_zoned %}
+    m_replica->set{{property|upperfirst}}({{property}}, zone);
+{%     else %}
     m_replica->push{{property|upperfirst}}({{property}});
+{%     endif %}
 {%     else %}
     qCritical() << "{{class}}::{{property}}, remote models not supported";
 {%     endif %}
@@ -106,14 +219,21 @@ void {{class}}::initialize()
 {% endfor %}
 
 {% for operation in interface.operations %}
-{{ ivi.operation(operation, class) }}
+{{ ivi.operation(operation, class, zoned=interface_zoned) }}
 {
     if (m_replica->state() != QRemoteObjectReplica::Valid)
         return QIviPendingReply<{{operation|return_type}}>::createFailedReply();
 
     QIviPendingReply<{{operation|return_type}}> iviReply;
+{% set function_parameters = operation.parameters|join(', ') %}
+{% if interface_zoned %}
+{%   if operation.parameters|length %}
+{%     set function_parameters = function_parameters + ', ' %}
+{%   endif %}
+{%   set function_parameters = function_parameters + 'zone' %}
+{% endif%}
 {% if not operation.type.is_void %}
-    QRemoteObjectPendingReply<{{operation|return_type}}> reply = m_replica->{{operation}}({{operation.parameters|join(', ')}});
+    QRemoteObjectPendingReply<{{operation|return_type}}> reply = m_replica->{{operation}}({{function_parameters}});
     auto watcher = new QRemoteObjectPendingCallWatcher(reply);
     connect(watcher, &QRemoteObjectPendingCallWatcher::finished, this, [this, iviReply](QRemoteObjectPendingCallWatcher *self) mutable {
         if (self->error() == QRemoteObjectPendingCallWatcher::NoError) {
@@ -135,10 +255,25 @@ void {{class}}::initialize()
 
 void {{class}}::setupConnections()
 {
+{% if interface_zoned %}
+    connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &{{class}}::syncZones);
+{% else %}
     connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &QIviFeatureInterface::initializationDone);
+{% endif %}
     connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, this, &{{class}}::onReplicaStateChanged);
 {% for property in interface.properties if not property.type.is_model %}
+{%   if interface_zoned %}
+    connect(m_replica.data(), &{{interface}}Replica::{{property}}Changed, this, [this]({{property|parameter_type}}, const QString &zone) {
+        auto zoneObject = m_zoneMap.value(zone);
+        if (!zoneObject) {
+            qCritical() << "{{class}}: Backend got changed signal for a zone which doesn't exist. Ignoring it.";
+            return;
+        }
+        zoneObject->{{property|setter_name}}({{property}});
+    });
+{%   else %}
     connect(m_replica.data(), &{{interface}}Replica::{{property}}Changed, this, &{{class}}::{{property}}Changed);
+{%   endif %}
 {% endfor %}
 {% for signal in interface.signals %}
     connect(m_replica.data(), &{{interface}}Replica::{{signal}}, this, &{{class}}::{{signal}});
@@ -152,6 +287,9 @@ void {{class}}::onReplicaStateChanged(QRemoteObjectReplica::State newState,
         qDebug() << "{{class}}, QRemoteObjectReplica error, connection to the source lost";
         emit errorChanged(QIviAbstractFeature::Unknown,
                         "QRemoteObjectReplica error, connection to the source lost");
+{% if interface_zoned %}
+        m_synced = false;
+{% endif %}
     } else if (newState == QRemoteObjectReplica::SignatureMismatch) {
         qDebug() << "{{class}}, QRemoteObjectReplica error, signature mismatch";
         emit errorChanged(QIviAbstractFeature::Unknown,
@@ -166,5 +304,23 @@ void {{class}}::onNodeError(QRemoteObjectNode::ErrorCode code)
     qDebug() << "{{class}}, QRemoteObjectNode error, code: " << code;
     emit errorChanged(QIviAbstractFeature::Unknown, "QRemoteObjectNode error, code: " + code);
 }
+
+{% if interface_zoned %}
+void {{class}}::onZoneSyncDone()
+{
+    const QStringList zones = m_zoneMap.keys();
+
+    for (const QString& zone : zones) {
+        if (m_zoneMap.value(zone)->isSyncing())
+            return;
+    }
+
+    m_synced = true;
+
+    for (const QString& zone : zones)
+        m_zoneMap.value(zone)->emitCurrentState();
+    emit initializationDone();
+}
+{% endif %}
 
 QT_END_NAMESPACE

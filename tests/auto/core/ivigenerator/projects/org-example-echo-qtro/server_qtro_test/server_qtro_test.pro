@@ -15,7 +15,8 @@ INCLUDEPATH += $$OUT_PWD/../backend_qtro
 SOURCES += main.cpp \
     server.cpp \
     echoservice.cpp \
-    tst_echoqtro.cpp
+    tst_echoqtro.cpp \
+    echozonedservice.cpp
 
 QFACE_FORMAT = server_qtro
 QFACE_SOURCES = ../../../org.example.echo.qtro.qface
@@ -23,7 +24,8 @@ QFACE_SOURCES = ../../../org.example.echo.qtro.qface
 HEADERS += \
     server.h \
     echoservice.h \
-    tst_echoqtro.h
+    tst_echoqtro.h \
+    echozonedservice.h
 
 QMAKE_RPATHDIR += $$OUT_PWD/..
 QMAKE_RPATHDIR += $$OUT_PWD/../qtivi

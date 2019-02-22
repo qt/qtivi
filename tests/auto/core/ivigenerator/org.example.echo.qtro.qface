@@ -66,3 +66,62 @@ struct Combo {
 struct AnotherStruct {
     int justANumber;
 }
+
+
+
+@config: {id: "org.foo.idz.1.0", zoned: true}
+interface EchoZoned {
+
+    /**
+     * \brief brief message
+     *
+     * Some more documentation
+     */
+    readonly string lastMessage;
+    int intValue;
+    var varValue;
+    @config_simulator: {domain: ["one", "two", "three"]}
+    string stringValue;
+    string unsupportedValue;
+    bool zonedValue;
+    bool valueWithDefault;
+    @config: { getter_name: "isEchoEnabled" }
+    bool echoEnabled;
+    AirflowDirection airflowDirection;
+    @config_simulator: {minimum: 10., maximum: 15.}
+    int rangedValue;
+    int rangedValueWithDefault;
+    Contact contact;
+    Combo combo;
+    list<int> intList;
+    list<Combo> comboList;
+    real UPPERCASEPROPERTY;
+
+    string echo(string msg);
+    string id();
+    var varMethod();
+    Combo getCombo();
+
+    signal anotherChanged(AnotherStruct another);
+    signal foobar(string foo);
+    signal somethingHappened();
+    signal newValueAvailable(var newValue);
+}
+
+/**
+ * \brief Control where the airflow goes
+ */
+flag AirflowDirection {
+    /**
+     * \brief Airflow to the windshield
+     */
+    Windshield = 1,
+    /**
+     * \brief Airflow to the dashboard
+     */
+    Dashboard = 2,
+    /**
+     * \brief Airflow to the floor
+     */
+    Floor = 4
+}

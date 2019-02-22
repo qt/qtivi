@@ -45,6 +45,8 @@
 // WARNING! All changes made in this file will be lost!
 /////////////////////////////////////////////////////////////////////////////
 {% set class = '{0}'.format(interface) %}
+{% import 'qtivi_macros.j2' as ivi %}
+{% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
 {% for inc in interface|struct_includes %}
 {{inc}}
 {% endfor %}
@@ -62,15 +64,28 @@ class {{class}}
 {%     set propKeyword = 'READONLY' %}
 {%   endif %}
 {%   if not property.is_model %}
+{%     if interface_zoned %}
+    SLOT({{property|return_type|replace(" *", "")}} {{property|getter_name}}(const QString &zone))
+{%       if not property.readonly %}
+    SLOT({{ivi.prop_setter(property, zoned=true)}})
+{%       endif %}
+    SIGNAL({{property}}Changed({{property|parameter_type}}, const QString &zone))
+
+{%     else %}
     PROP({{property|return_type|replace(" *", "")}} {{property}} {{propKeyword}})
+{%     endif %}
 {%   endif %}
 {% endfor %}
 
+{% if interface_zoned %}
+    SLOT(QStringList availableZones())
+{% endif %}
+
 {% for operation in interface.operations %}
-    SLOT({{operation|return_type}} {{operation}}({{operation.parameters|map('parameter_type')|join(', ')}}))
+    SLOT({{operation|return_type}} {{operation}}({{ivi.join_params(operation, zoned = interface_zoned)}}))
 {% endfor %}
 
 {% for signal in interface.signals %}
-    SIGNAL({{signal}}({{signal.parameters|map('parameter_type')|join(', ')}}))
+    SIGNAL({{signal}}({{ivi.join_params(signal, zoned = interface_zoned)}}))
 {% endfor %}
 };

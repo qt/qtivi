@@ -31,6 +31,7 @@
 #define SERVER_H
 
 #include "echoservice.h"
+#include "echozonedservice.h"
 
 class Server : public QObject
 {
@@ -41,7 +42,8 @@ public Q_SLOTS:
     bool stop();
 
 public:
-    EchoService m_service;
+    EchoService m_echoService;
+    EchoZonedService m_echoZonedService;
 
     ~Server();
 
