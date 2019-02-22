@@ -93,8 +93,6 @@ void QDltRegistrationPrivate::registerCategory(const QLoggingCategory *category,
 
 void QDltRegistrationPrivate::registerCategory(CategoryInfo &info)
 {
-    Q_ASSERT_X(m_dltAppRegistered, "registerCategory", "A DLT Application needs to be registered before registering a Logging Category");
-
 #if GENIVIEXTRAS_DEBUG
     std::cout << "REGISTERING CONTEXT " << info.m_ctxName.constData() << std::endl;
 #endif
