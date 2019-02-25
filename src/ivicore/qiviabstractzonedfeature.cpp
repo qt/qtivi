@@ -111,8 +111,12 @@ void QIviAbstractZonedFeature::connectToServiceObject(QIviServiceObject *service
     else if (serviceObject)
         backend = qobject_cast<QIviZonedFeatureInterface*>(serviceObject->interfaceInstance(interfaceName()));
 
-    if (backend)
-        initializeZones();
+    connect(backend, &QIviZonedFeatureInterface::availableZonesChanged, this, &QIviAbstractZonedFeature::initializeZones);
+
+    if (backend) {
+        QStringList zones = backend->availableZones();
+        initializeZones(zones);
+    }
 
     QIviAbstractFeature::connectToServiceObject(serviceObject);
 }
@@ -213,13 +217,12 @@ void QIviAbstractZonedFeature::setZone(const QString &zone)
     emit zoneChanged();
 }
 
-void QIviAbstractZonedFeature::initializeZones()
+void QIviAbstractZonedFeature::initializeZones(const QStringList &zones)
 {
     if (!backend() || !zone().isEmpty())
         return;
 
     Q_D(QIviAbstractZonedFeature);
-    const auto zones = backend()->availableZones();
     for (const QString &zone : zones) {
         QIviAbstractZonedFeature *f = zoneAt(zone);
         if (!f) {
@@ -251,10 +254,8 @@ void QIviAbstractZonedFeature::initializeZones()
 */
 QStringList QIviAbstractZonedFeature::availableZones() const
 {
-    if (backend()) {
-        return backend()->availableZones();
-    }
-    return QStringList();
+    Q_D(const QIviAbstractZonedFeature);
+    return d->m_zoneFeatureMap.keys();
 }
 
 

@@ -56,6 +56,9 @@ public:
     explicit QIviZonedFeatureInterface(QObject *parent = nullptr);
 
     virtual QStringList availableZones() const = 0;
+
+Q_SIGNALS:
+    void availableZonesChanged(const QStringList &zones);
 };
 
 QT_END_NAMESPACE

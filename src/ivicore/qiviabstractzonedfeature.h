@@ -74,7 +74,7 @@ public:
     QList<QIviAbstractZonedFeature*> zones() const;
 
 Q_SIGNALS:
-    void availableZonesChanged(QStringList zones);
+    void availableZonesChanged(const QStringList &zones);
     void zoneChanged();
     void zonesChanged();
 
@@ -90,10 +90,9 @@ protected:
 
 private Q_SLOTS:
     void setZone(const QString &zone);
+    void initializeZones(const QStringList &zones);
 
 private:
-    void initializeZones();
-
     QVariantList attributeList() const;
     QVariantMap attributeMap() const;
     QVariantMap zoneFeatureMap() const;

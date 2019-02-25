@@ -178,7 +178,19 @@ QIviZonedFeatureInterface::QIviZonedFeatureInterface(QObject *parent)
 
     The returned names must be valid QML property names, i.e. \c {[a-z_][A-Za-z0-9_]*}.
 
-    \sa {Providing Available Zones}
+    \sa availableZonesChanged() {Providing Available Zones}
+*/
+
+/*!
+    \fn void QIviZonedFeatureInterface::availableZonesChanged(const QStringList &zones)
+    \since 5.13
+
+    Emitted when the available zones changed.
+
+    Use this signal when the list of available zones first need to be retrieved and are not available
+    when the backend instance is created.
+
+    \sa availableZones() {Providing Available Zones}
 */
 
 QT_END_NAMESPACE
