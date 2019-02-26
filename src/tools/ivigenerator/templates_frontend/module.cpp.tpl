@@ -84,7 +84,16 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
 
 {% for enum in module.enums %}
 /*! \internal */
-{{class}}::{{enum}} {{class}}::to{{enum}}(quint8 v, bool *ok)
+{%   if enum.is_flag %}
+{{class}}::{{enum|flag_type}} {{class}}::to{{enum|flag_type}}(quint32 v, bool *ok)
+{
+    if (ok)
+        *ok = true;
+
+    return {{class}}::{{enum|flag_type}}(v);
+}
+{%   else %}
+{{class}}::{{enum}} {{class}}::to{{enum}}(quint32 v, bool *ok)
 {
     if (ok)
         *ok = true;
@@ -98,6 +107,7 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
         return {{enum.members|first}};
     }
 }
+{%   endif %}
 
 {% endfor %}
 /*! \internal */
@@ -129,16 +139,16 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 
 QDataStream &operator<<(QDataStream &out, {{class}}::{{enum|flag_type}} var)
 {
-    out << quint8(var);
+    out << quint32(var);
     return out;
 }
 
 QDataStream &operator>>(QDataStream &in, {{class}}::{{enum|flag_type}} &var)
 {
     bool ok;
-    quint8 val;
+    quint32 val;
     in >> val;
-    var = {{class}}::to{{enum}}(val, &ok);
+    var = {{class}}::to{{enum|flag_type}}(val, &ok);
     if (!ok)
         qWarning() << "Received an invalid enum value for type {{class}}::{{enum|flag_type}}, value =" << var;
     return in;
