@@ -25,6 +25,7 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+
 /*!
 \page filter-reference.html
 \title Filter Reference
@@ -217,3 +218,4 @@ Throws an error with the given msg
 \section2 warning(msg)
 Reports a warning with the given msg
 
+*/

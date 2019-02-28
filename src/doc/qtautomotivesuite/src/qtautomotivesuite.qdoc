@@ -96,7 +96,7 @@
     \list
         \li \l {Qt Virtual Keyboard} - a complete virtual keyboard solution with
             support for predictive-text and multiple languages.
-        \li \l {Qt Quick Controls 2} - a set of controls for building
+        \li \l {Qt Quick Controls} - a set of controls for building
             complete user interfaces in Qt Quick.
         \li \l {Qt Quick Compiler} - enables compiling \c{.qml} source files into
             application binaries, improving load times and security for code

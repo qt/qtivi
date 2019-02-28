@@ -187,7 +187,7 @@ QIviZonedFeatureInterface::QIviZonedFeatureInterface(QObject *parent)
 
     Emitted when the available zones changed.
 
-    Use this signal when the list of available zones first need to be retrieved and are not available
+    Use this signal when the list of available \a zones need to be retrieved first, and are not available
     when the backend instance is created.
 
     \sa availableZones() {Providing Available Zones}

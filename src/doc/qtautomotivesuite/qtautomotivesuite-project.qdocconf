@@ -32,7 +32,7 @@ depends += \
      qtgeniviextras \
      applicationmanager \
      qmllive \
-     qtquickcontrols2 \
+     qtquickcontrols \
      qtdatavisualization \
      qtcharts \
      qtwebengine \
