@@ -867,3 +867,49 @@ void EchoQtroTest::testSignals()
     server.m_echoZonedService.somethingHappened(frontLeftZone);
     WAIT_AND_COMPARE(zonedSomethingSpy, 1);
 }
+
+void EchoQtroTest::testModel()
+{
+    Server server;
+    server.start();
+
+    Echo client;
+    QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
+    QVERIFY(initSpy.isValid());
+    QVERIFY(client.startAutoDiscovery() == QIviAbstractFeature::ProductionBackendLoaded);
+
+    //wait until the client has connected and initial values are set
+    WAIT_AND_COMPARE(initSpy, 1);
+    QVERIFY(client.isInitialized());
+
+    //Give QtRO time to actually call our server side
+    QTest::qWait(200);
+
+    QIviPagingModel* model = client.testList();
+    QVERIFY(model->isInitialized());
+    QCOMPARE(model->rowCount(), 0);
+
+    //Test inserting a row
+    Contact testContact(QStringLiteral("Mr A."), 20, false, "foo");
+    QSignalSpy countSpy(model, SIGNAL(countChanged()));
+    server.m_contactsModelService.insert(0, testContact);
+
+    WAIT_AND_COMPARE(countSpy, 1);
+    QCOMPARE(model->rowCount(), 1);
+    QCOMPARE(model->at<Contact>(0), testContact);
+    countSpy.clear();
+
+    //test updating a row
+    QSignalSpy changedSpy(model, SIGNAL(dataChanged( QModelIndex, QModelIndex, QVector<int>)));
+    Contact updatedContact(QStringLiteral("Mr B."), 30, true, QVariant());
+    server.m_contactsModelService.update(0, updatedContact);
+
+    WAIT_AND_COMPARE(changedSpy, 1);
+    QCOMPARE(model->rowCount(), 1);
+    QCOMPARE(model->at<Contact>(0), updatedContact);
+
+    //Test removing a row
+    server.m_contactsModelService.remove(0);
+    WAIT_AND_COMPARE(countSpy, 1);
+    QCOMPARE(model->rowCount(), 0);
+}

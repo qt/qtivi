@@ -1,6 +1,5 @@
 {#
 # Copyright (C) 2019 Luxoft Sweden AB
-# Copyright (C) 2018 Pelagicore AG.
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -37,50 +36,37 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-/////////////////////////////////////////////////////////////////////////////
-// Generated from '{{module}}.qface'
-//
-// Created by: The QFace generator (QtAS {{qtASVersion}})
-//
-// WARNING! All changes made in this file will be lost!
-/////////////////////////////////////////////////////////////////////////////
-{% set class = '{0}'.format(interface) %}
-{% import 'qtivi_macros.j2' as ivi %}
-{% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
-{% for inc in interface|struct_includes %}
-{{inc}}
-{% endfor %}
+{% set class = '{0}ModelBackend'.format(property|upperfirst) %}
 
-class {{class}}
+#include <QIviPagingModelInterface>
+#include "{{property.type.nested|lower}}.h"
+
+#include "rep_pagingmodel_replica.h"
+
+class {{class}} : public QIviPagingModelInterface
 {
-{% for property in interface.properties %}
-{%   set propKeyword = '' %}
-{%   if property.readonly %}
-{%     set propKeyword = 'READONLY' %}
-{%   endif %}
-{%   if not property.is_model %}
-{%     if interface_zoned %}
-    SLOT({{property|return_type|replace(" *", "")}} {{property|getter_name}}(const QString &zone))
-{%       if not property.readonly %}
-    SLOT({{ivi.prop_setter(property, zoned=true)}})
-{%       endif %}
-    SIGNAL({{property}}Changed({{property|parameter_type}}, const QString &zone))
+    Q_OBJECT
+public:
+    explicit {{class}}(QObject *parent = nullptr);
+    ~{{class}}();
 
-{%     else %}
-    PROP({{property|return_type|replace(" *", "")}} {{property}} {{propKeyword}})
-{%     endif %}
-{%   endif %}
-{% endfor %}
+    void initialize() override;
+    void registerInstance(const QUuid &identifier) override;
+    void unregisterInstance(const QUuid &identifier) override;
 
-{% if interface_zoned %}
-    SLOT(QStringList availableZones())
-{% endif %}
+    void fetchData(const QUuid &identifier, int start, int count) override;
 
-{% for operation in interface.operations %}
-    SLOT({{operation|return_type}} {{operation}}({{ivi.join_params(operation, zoned = interface_zoned)}}))
-{% endfor %}
+protected Q_SLOTS:
+    void onReplicaStateChanged(QRemoteObjectReplica::State newState,
+                               QRemoteObjectReplica::State oldState);
+    void onNodeError(QRemoteObjectNode::ErrorCode code);
 
-{% for signal in interface.signals %}
-    SIGNAL({{signal}}({{ivi.join_params(signal, zoned = interface_zoned)}}))
-{% endfor %}
+private:
+    void setupConnections();
+
+    QPointer<PagingModelReplica> m_replica;
+    QRemoteObjectNode *m_node= nullptr;
+    QUrl m_url;
+    QVariantList m_list;
 };
+

@@ -42,13 +42,14 @@
 ## Do not edit! All changes made to it will be lost.
 #############################################################################
 
-QT += remoteobjects
+QT += ivicore remoteobjects
 
 HEADERS += $$PWD/core.h
 
 SOURCES += $$PWD/core.cpp
 
 REPC_SOURCE += \
+    $$PWD/pagingmodel.rep \
 {% for interface in module.interfaces %}
     $$PWD/{{interface|lower}}.rep \
 {% endfor %}

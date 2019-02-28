@@ -27,33 +27,32 @@
 **
 ****************************************************************************/
 
-#ifndef ECHOQTROTEST_H
-#define ECHOQTROTEST_H
+#ifndef CONTACTSMODELSERVICE_H
+#define CONTACTSMODELSERVICE_H
 
-#include <QtTest>
+#include "contact.h"
+#include "rep_pagingmodel_source.h"
 
-QT_FORWARD_DECLARE_CLASS(QIviServiceManager);
-
-class EchoQtroTest : public QObject
+class ContactsModelService : public PagingModelSimpleSource
 {
-    Q_OBJECT
 public:
-    EchoQtroTest();
+    ContactsModelService(QObject* parent = nullptr);
 
-private slots:
-    void cleanup();
-    void testInit();
-    void testZonedInit();
-    void testReconnect();
-    void testClient2Server();
-    void testZonedClient2Server();
-    void testServer2Client();
-    void testZonedServer2Client();
-    void testSlots();
-    void testZonedSlots();
-    void testMultipleSlotCalls();
-    void testSignals();
-    void testModel();
+    void registerInstance(const QUuid &identifier) override;
+    void unregisterInstance(const QUuid &identifier) override;
+
+    void fetchData(const QUuid &identifier, int start, int count) override;
+
+public Q_SLOTS:
+    void insert(int index, const Contact &item);
+    void remove(int index);
+    void move(int currentIndex, int newIndex);
+    void reset();
+    void update(int index, const Contact &item);
+    const Contact &at(int index) const;
+
+private:
+    QList<Contact> m_list;
 };
 
-#endif // ECHOQTROTEST_H
+#endif // CONTACTSMODELSERVICE_H

@@ -38,6 +38,8 @@ interface Echo {
     signal foobar(string foo);
     signal somethingHappened();
     signal newValueAvailable(var newValue);
+
+    model<Contact> testList;
 }
 
 enum WeekDay {

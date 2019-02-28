@@ -44,43 +44,18 @@
 //
 // WARNING! All changes made in this file will be lost!
 /////////////////////////////////////////////////////////////////////////////
-{% set class = '{0}'.format(interface) %}
-{% import 'qtivi_macros.j2' as ivi %}
-{% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
-{% for inc in interface|struct_includes %}
-{{inc}}
-{% endfor %}
 
-class {{class}}
+#include <QtIviCore/QtIviCoreModule>
+#include <QUuid>
+
+class PagingModel
 {
-{% for property in interface.properties %}
-{%   set propKeyword = '' %}
-{%   if property.readonly %}
-{%     set propKeyword = 'READONLY' %}
-{%   endif %}
-{%   if not property.is_model %}
-{%     if interface_zoned %}
-    SLOT({{property|return_type|replace(" *", "")}} {{property|getter_name}}(const QString &zone))
-{%       if not property.readonly %}
-    SLOT({{ivi.prop_setter(property, zoned=true)}})
-{%       endif %}
-    SIGNAL({{property}}Changed({{property|parameter_type}}, const QString &zone))
+    SLOT(void registerInstance(const QUuid &identifier))
+    SLOT(void unregisterInstance(const QUuid &identifier))
+    SLOT(void fetchData(const QUuid &identifier, int start, int count))
 
-{%     else %}
-    PROP({{property|return_type|replace(" *", "")}} {{property}} {{propKeyword}})
-{%     endif %}
-{%   endif %}
-{% endfor %}
-
-{% if interface_zoned %}
-    SLOT(QStringList availableZones())
-{% endif %}
-
-{% for operation in interface.operations %}
-    SLOT({{operation|return_type}} {{operation}}({{ivi.join_params(operation, zoned = interface_zoned)}}))
-{% endfor %}
-
-{% for signal in interface.signals %}
-    SIGNAL({{signal}}({{ivi.join_params(signal, zoned = interface_zoned)}}))
-{% endfor %}
+    SIGNAL(supportedCapabilitiesChanged(const QUuid &identifier, QtIviCoreModule::ModelCapabilities capabilities))
+    SIGNAL(countChanged(const QUuid &identifier, int newLength))
+    SIGNAL(dataFetched(const QUuid &identifier, const QList<QVariant> &data, int start, bool moreAvailable))
+    SIGNAL(dataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count))
 };

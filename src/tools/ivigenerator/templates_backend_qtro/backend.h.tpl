@@ -54,6 +54,12 @@
 {% endif %}
 #include "rep_{{interface|lower}}_replica.h"
 
+{% for property in interface.properties %}
+{%   if property.type.is_model %}
+{% include "pagingmodel.h.tpl" %}
+{%   endif %}
+{% endfor %}
+
 QT_BEGIN_NAMESPACE
 
 {% if interface_zoned %}
@@ -107,7 +113,9 @@ public:
 public Q_SLOTS:
 {% for property in interface.properties %}
 {%   if not property.readonly and not property.const %}
+{%     if not property.is_model %}
     virtual {{ivi.prop_setter(property, zoned=interface_zoned)}} override;
+{%     endif %}
 {%   endif %}
 {% endfor %}
 
@@ -134,6 +142,11 @@ protected:
     QSharedPointer<{{interface}}Replica> m_replica;
     QRemoteObjectNode* m_node= nullptr;
     QUrl m_url;
+{% for property in interface.properties %}
+{%   if property.type.is_model %}
+    QIviPagingModelInterface *m_{{property}};
+{%   endif %}
+{% endfor %}
 {% if interface_zoned %}
     bool m_synced;
     QHash<QString, {{zone_class}}*> m_zoneMap;

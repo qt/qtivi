@@ -17,7 +17,8 @@ common.files += \
     common/simulation.qmltypes.tpl \
     common/plugins.qmltypes.tpl \
     common/qmldir.tpl \
-    common/interface.rep.tpl
+    common/interface.rep.tpl \
+    common/pagingmodel.rep.tpl
 common.path = $$[QT_HOST_BINS]/ivigenerator/common
 
 templates_frontend.files +=  \
@@ -82,6 +83,8 @@ templates_control_panel.path = $$[QT_HOST_BINS]/ivigenerator/templates_control_p
 templates_backend_qtro.files += \
     templates_backend_qtro/backend.cpp.tpl \
     templates_backend_qtro/backend.h.tpl \
+    templates_backend_qtro/pagingmodel.h.tpl \
+    templates_backend_qtro/pagingmodel.cpp.tpl \
     templates_backend_qtro/plugin.cpp.tpl \
     templates_backend_qtro/plugin.h.tpl \
     templates_backend_qtro/plugin.json \

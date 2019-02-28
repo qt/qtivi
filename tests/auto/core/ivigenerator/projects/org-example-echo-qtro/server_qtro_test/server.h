@@ -32,6 +32,7 @@
 
 #include "echoservice.h"
 #include "echozonedservice.h"
+#include "contactsmodelservice.h"
 
 class Server : public QObject
 {
@@ -44,6 +45,7 @@ public Q_SLOTS:
 public:
     EchoService m_echoService;
     EchoZonedService m_echoZonedService;
+    ContactsModelService m_contactsModelService;
 
     ~Server();
 

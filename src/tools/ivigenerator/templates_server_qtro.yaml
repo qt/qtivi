@@ -6,6 +6,8 @@ generate_rules:
             template_file:  "core.h.tpl"
         -   dest_file:  "{{srcBase|lower}}.pri"
             template_file:  "server.pri.tpl"
+        -   dest_file:  "pagingmodel.rep"
+            template_file:  "pagingmodel.rep.tpl"
     interface_rules:
         -   dest_file:  "{{interface|lower}}.rep"
             template_file:  "interface.rep.tpl"

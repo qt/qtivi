@@ -16,7 +16,8 @@ SOURCES += main.cpp \
     server.cpp \
     echoservice.cpp \
     tst_echoqtro.cpp \
-    echozonedservice.cpp
+    echozonedservice.cpp \
+    contactsmodelservice.cpp
 
 QFACE_FORMAT = server_qtro
 QFACE_SOURCES = ../../../org.example.echo.qtro.qface
@@ -25,7 +26,8 @@ HEADERS += \
     server.h \
     echoservice.h \
     tst_echoqtro.h \
-    echozonedservice.h
+    echozonedservice.h \
+    contactsmodelservice.h
 
 QMAKE_RPATHDIR += $$OUT_PWD/..
 QMAKE_RPATHDIR += $$OUT_PWD/../qtivi

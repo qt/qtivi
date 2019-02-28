@@ -8,6 +8,8 @@ generate_rules:
             template_file:  "plugin.json"
         -   dest_file:  "{{srcBase|lower}}.pri"
             template_file:  "plugin.pri.tpl"
+        -   dest_file:  "pagingmodel.rep"
+            template_file:  "pagingmodel.rep.tpl"
     interface_rules:
         -   dest_file: '{{interface|lower}}backend.h'
             template_file: 'backend.h.tpl'

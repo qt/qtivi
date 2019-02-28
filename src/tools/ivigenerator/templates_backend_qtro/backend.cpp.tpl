@@ -44,15 +44,15 @@
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
 #include "{{class|lower}}.h"
 
-{% for property in interface.properties %}
-{% if property.type.is_model %}
-#include "{{property|model_type|lower}}.h"
-{% endif %}
-{% endfor %}
-
 #include <QDebug>
 #include <QSettings>
 #include "{{module.module_name|lower}}module.h"
+
+{% for property in interface.properties %}
+{%   if property.type.is_model %}
+{% include "pagingmodel.cpp.tpl" %}
+{%   endif %}
+{% endfor %}
 
 QT_BEGIN_NAMESPACE
 
@@ -118,6 +118,11 @@ void {{zone_class}}::emitCurrentState()
 
 {{class}}::{{class}}(QObject *parent)
     : {{class}}Interface(parent)
+{% for property in interface.properties %}
+{%   if property.type.is_model %}
+    , m_{{property}}(new {{property|upperfirst}}ModelBackend(this))
+{%   endif %}
+{% endfor %}
 {% if interface_zoned %}
     , m_synced(false)
 {% endif %}
@@ -151,6 +156,12 @@ void {{zone_class}}::emitCurrentState()
 
 void {{class}}::initialize()
 {
+{% for property in interface.properties %}
+{%   if property.type.is_model %}
+    emit {{property}}Changed(m_{{property}});
+{%   endif %}
+{% endfor %}
+
 {% if interface_zoned %}
     if (m_synced)
         onZoneSyncDone();
@@ -202,6 +213,7 @@ QStringList {{class}}::availableZones() const
 
 {% for property in interface.properties %}
 {%   if not property.readonly and not property.const %}
+{%     if not property.is_model %}
 {{ivi.prop_setter(property, class, zoned=interface_zoned)}}
 {
 {%     if not property.type.is_model %}
@@ -215,6 +227,7 @@ QStringList {{class}}::availableZones() const
 {%     endif %}
 }
 
+{%     endif %}
 {%   endif %}
 {% endfor %}
 
