@@ -27,142 +27,172 @@
 ****************************************************************************/
 /*!
 \page query-language.html
-\title The Qt IVI Query Language
+\title Qt IVI Query Language
 \keyword Qt IVI Query Language
 \previouspage Models
-\nextpage The Qt IVI Simulation System
+\nextpage Qt IVI Simulation System
 \contentspage Concepts
 
-Automotive systems are getting bigger and bigger and with it also the feature-set in areas like
-entertainment or connectivity. Modern system can handle phone calls, access the mobile phone's addressbook, and have a mediaplayer
-which can manage a media database similar to desktop tools like iTunes. As addressbooks and media databases
-are quite big these days, it's important to be able to filter, sort and search them in a convenient way.
+Automotive systems are getting bigger and including more features, particularly in entertainment
+and connectivity. Modern systems can handle phone calls, access the mobile phone's address book,
+and have a media player that manages a media database. Since address books and media databases
+can be quite large these days, it's important for users to be able to filter, sort, and search
+through them in a convenient way.
 
-Because of this the Qt IVI Query Language was created and it provides you with an own minimal
-language to express what exactly you want to be displayed and how it should be sorted.
+The Qt IVI Query Language provides you with a minimal language to express what you want to be
+displayed and how it should be sorted. This language is independent from both, the underlying
+architecture and potentially underlying database languages like SQL or PSQL. The Qt IVI Query
+Language does not specify the data itself, but is only used to filter and sort.
 
-It was chosen to create a new language to be independent on the underlying architecture and
-its (potentially) underlying database languages like SQL or PSQL. Other than the two named, the Qt IVI Query Language
-is not specifying the actual data itself and is just used for filtering and sorting.
 
-\section1 Working with the Query Language
+\section1 Work with the Query Language
 
-Currently the QIviSearchAndBrowseModel is the only class which supports the usage of the query language. In this
-case the backend of the model informs the query parser about the identifiers available for filtering and sorting.
+Currently the \l QIviSearchAndBrowseModel is the only class that supports the use of the query
+language. In this case, the model's backend informs the query parser about the identifiers
+available to filter and sort.
 
-An identifier is the name of a column or the property which can be used in the query language. Let's say you use the QIviSearchAndBrowseModel
-to access a list of QIviAudioTrackItems, then the available identfiers will be every property of the QIviAudioTrackItem. Writing the following
-query would result in a search for tracks on the album "Nevermind":
+An identifier is the name of a column or property which can be used in the query language.
+
+Suppose you use the QIviSearchAndBrowseModel to access a list of QIviAudioTrackItems, then
+every property of the QIviAudioTrackItem are your identifiers.
+
+The following query results in a search for tracks on the album "Nevermind":
 
 \code
 album='Nevermind'
 \endcode
 
-\section2 Filtering and Sorting
+\section2 Filter and Sort
 
-The Qt IVI Query Language has two parts: the first part being the filter specification, and the second part defining the sort order.
+The Qt IVI Query Language has two parts:
+
+\list 1
+    \li The filter specification
+    \li The sort order definition
+\endlist
 
 \code
 album='Nevermind' [/trackNumber]
 \endcode
 
-In the query shown above the first part is \c{album='Nevermind'}, and it indicates to only show tracks which are from the album "Nevermind". The second
-part is specified by \c{[]} and defines the ordering: in this case the result should be sorted by trackNumber in ascending order.
+In the query above, the first part is \c{album='Nevermind'}, and it indicates to only show tracks
+which are from the album "Nevermind". The second part is specified by \c{[]} and defines the
+order: the result should be sorted by \c trackNumber in ascending order.
 
-\section3 Filtering
+\section3 Filter
 
-For filtering a result the following operators can be used to match a identifier to a value:
+To filter a result, the following operators can be used to match an identifier to a value:
 
 \table
-\header
-    \li Operator
-    \li Description
-\row
-    \li =
-    \li Tests whether the identifier's value is equal to the passed value. In case of a string the comparison is case-sensitive.
-        The \c{==} operator is an alias and delivers the same result.
+    \header
+        \li Operator
+        \li Description
+    \row
+        \li =
+        \li Tests whether the identifier's value is equal to the given value. For strings, the
+            comparison is case-sensitive.
+            \note The \c{==} operator is an alias and delivers the same result.
 
-\row
-    \li !=
-    \li Tests whether the identifier's value is not equal to the passed value. In case of a string the comparison is case-sensitive.
+    \row
+        \li !=
+        \li Tests whether the identifier's value is not equal to the given value. For strings,
+            the comparison is case-sensitive.
 
-\row
-    \li ~=
-    \li Tests whether the identifier's value is equal to the passed value, but the comparison is done case-insensitive.
+    \row
+        \li ~=
+        \li Tests whether the identifier's value is equal to the given value. For strings,
+            the comparison is case-insensitive.
 
-\row
-    \li >
-    \li Tests whether the lefthand-side value is greater than the righthand-side value. (only works for numbers).
+    \row
+        \li >
+        \li Tests whether the lefthand-side value is greater than the righthand-side value.
+            This comparison only works for numbers.
 
-\row
-    \li >=
-    \li Tests whether the lefthand-side value is greater than or equal to the righthand-side value. (only works for numbers).
+    \row
+        \li >=
+        \li Tests whether the lefthand-side value is greater than or equal to the righthand-side
+            value. This comparison only works for numbers.
 
-\row
-    \li <
-    \li Tests whether the lefthand-side value is less than the righthand-side value. (only works for numbers).
+    \row
+        \li <
+        \li Tests whether the lefthand-side value is less than the righthand-side value. This
+            comparison only works for numbers.
 
-\row
-    \li <=
-    \li Tests whether the lefthand-side value is less than or equal to the righthand-side value. (only works for numbers).
+    \row
+        \li <=
+        \li Tests whether the lefthand-side value is less than or equal to the righthand-side
+            value. This comparison only works for numbers.
 
 \endtable
 
-When comparing an identifier against a string, the string always needs to be encapsulated either between two quotation marks - either single \c{'} or double \c{"} ones.
-Numbers are supported in various formats, including signed and unsigned numbers and floats using an exponent e.g. -5.0E15.
+When you compare an identifier against a string, the string always needs to be encapsulated either
+between two quotation marks - single \c{'} or double \c{"}. Numbers are supported in various
+formats, including signed numbers, unsigned numbers, and floats using an exponent, such as -5.0E15.
 
-\section3 Sorting
+\section3 Sort
 
-The second part of a query is used for sorting the result. It's optional and if not provided, the backend can decide in which order the result
-should be listed. To sort by trackNumber in ascending order use the following code:
+The second part of a query is used to sort the result. It's optional and if not provided, the
+backend can decide the order in which the result should be listed. To sort \c trackNumber in
+ascending order, write the following:
 
 \code
 [/trackNumber]
 \endcode
 
-to sort in descending order:
+To sort in descending order:
 
 \code
 [\trackNumber]
 \endcode
 
-Using this query on a big list of songs might not give the intendend result as there could be two different tracks having the same trackNumber.
-For this case multiple sort orders can be provided.
+Using this query on a big list of songs may not give the intendend result, as there could be two
+different tracks with the same \c trackNumber.
+
+In this case, you can provide multiple sort orders.
 
 \code
 [\trackNumber][/album]
 \endcode
 
-The above query would sort the tracks by trackNumber in descending order and the track with the same trackNumber by album name in ascending order.
+The query above sorts the tracks by \c trackNumber in descending order, and the track with the same
+\c trackNumber by album name in ascending order.
 
 \section2 Conjunctions
 
-Only adding a specific condition and defining the order is often not enough to achieve the wanted result. The Qt IVI Query Language also supports
-basic boolean algebra. Multiple filters can be combined by using AND / OR conjunctions. The following query would only list the first 5 tracks
-of the album 'Metallica':
+Often, to achieve the expected result, it is not sufficient to only add a specific condition and
+define the order. It may be necessary to use basic Boolean algebra, which the Qt IVI Query
+Language supports. You can combine multiple filters by using AND / OR conjunctions.
+
+The following query only lists the first 5 tracks in the album 'Metallica':
 
 \code
 album='Metallica' & trackNumber<=5
 \endcode
 
-Of course it's also supported to use brackets as well as to negate filters:
+You can also use brackets to negate filters:
 
 \code
 (album='Metallica') & !(trackNumber>5)
 \endcode
 
-\section1 Backend integration
+\section1 Integrate with the Backend
 
-For the backend, the query is translated from a string to a binary representation similar to an AST. Like the query itself, the representation is split into two
-parts: the first part is a pointer to a QIviAbstractQueryTerm which can be cast to one of the following types:
+For the backend, the query is translated from a string to a binary representation, similar to an
+Abstract Syntax Tree (AST). Like the query itself, the representation is split into two parts:
 
-\annotatedlist qtivi_queryterms
+\list 1
+    \li A pointer to a QIviAbstractQueryTerm, which can be cast to one of the following types:
+        \annotatedlist qtivi_queryterms
+    \li A QList<QIviOrderTerm> that provides the order in which the user wants the result to be in.
+\endlist
 
-The second part is a QList<QIviOrderTerm> and provides the ordering the user wants the result to be in.
+Usually, this C++ representation is translated into any form the backend supports.
 
-Usually this C++ representation is translated into whatever form the backend supports. For getting the results from an SQL database this can look like this:
+For example, to get the results from an SQL database:
 
-First we need a function to translate the identifiers used in the query to the column names used in the database:
+First we need a function to translate the identifiers used in the query into the column names used
+in the database:
+
 \code
 QString SearchAndBrowseBackend::mapIdentifiers(const QString &type)
 {
@@ -177,7 +207,7 @@ QString SearchAndBrowseBackend::mapIdentifiers(const QString &type)
 }
 \endcode
 
-Next we need functions to translate the QueryTerms and the OrderTerms into SQL clauses:
+Next, we need functions to translate the QueryTerms and the OrderTerms into SQL clauses:
 
 \code
 QString SearchAndBrowseBackend::createSortOrder(const QString &type, const QList<QIviOrderTerm> &orderTerms)
@@ -260,7 +290,7 @@ QString SearchAndBrowseBackend::createWhereClause(QIviAbstractQueryTerm *term)
 }
 \endcode
 
-The actual query can then be created like this:
+Finally, you can then create the following query:
 
 \code
 QString query = QString(QLatin1String("SELECT * FROM tracks WHERE %1 ORDER BY %2")).arg(createWhereClause(queryTerm), createSortOrder(orderTerms));
