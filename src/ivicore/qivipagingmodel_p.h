@@ -73,6 +73,7 @@ public:
     ~QIviPagingModelPrivate() override;
 
     void initialize() override;
+    void onInitializationDone();
     void onCapabilitiesChanged(const QUuid &identifier, QtIviCoreModule::ModelCapabilities capabilities);
     void onDataFetched(const QUuid &identifier, const QList<QVariant> &items, int start, bool moreAvailable);
     void onCountChanged(const QUuid &identifier, int new_length);

@@ -88,6 +88,19 @@ void QIviPagingModelPrivate::initialize()
                             this, &QIviPagingModelPrivate::onFetchMoreThresholdReached);
 }
 
+void QIviPagingModelPrivate::onInitializationDone()
+{
+    Q_Q(QIviPagingModel);
+
+    if (q->isInitialized())
+        return;
+
+    //Register this instance with the backend. The backend can initialize the internal structure now
+    backend()->registerInstance(m_identifier);
+
+    resetModel();
+}
+
 void QIviPagingModelPrivate::onCapabilitiesChanged(const QUuid &identifier, QtIviCoreModule::ModelCapabilities capabilities)
 {
     if (!identifier.isNull() && identifier != m_identifier)
@@ -741,6 +754,8 @@ void QIviPagingModel::connectToServiceObject(QIviServiceObject *serviceObject)
     if (!backend)
         return;
 
+    QObjectPrivate::connect(backend, &QIviPagingModelInterface::initializationDone,
+                            d, &QIviPagingModelPrivate::onInitializationDone);
     QObjectPrivate::connect(backend, &QIviPagingModelInterface::supportedCapabilitiesChanged,
                             d, &QIviPagingModelPrivate::onCapabilitiesChanged);
     QObjectPrivate::connect(backend, &QIviPagingModelInterface::dataFetched,
@@ -751,10 +766,6 @@ void QIviPagingModel::connectToServiceObject(QIviServiceObject *serviceObject)
                             d, &QIviPagingModelPrivate::onDataChanged);
 
     QIviAbstractFeatureListModel::connectToServiceObject(serviceObject);
-    //Register this instance with the backend. The backend can initialize the internal structure now
-    backend->registerInstance(d->m_identifier);
-
-    d->resetModel();
 }
 
 /*!
