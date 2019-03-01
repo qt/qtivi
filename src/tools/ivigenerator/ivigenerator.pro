@@ -18,7 +18,15 @@ common.files += \
     common/plugins.qmltypes.tpl \
     common/qmldir.tpl \
     common/interface.rep.tpl \
-    common/pagingmodel.rep.tpl
+    common/pagingmodel.rep.tpl \
+    common/simulation_data.json.tpl \
+    common/simulation.qrc.tpl \
+    common/module_simulation.qml.tpl \
+    common/backend_simulation.cpp.tpl \
+    common/backend_simulation.h.tpl \
+    common/backend_simulation.qml.tpl \
+    common/pagingmodel_simulation.h.tpl \
+    common/pagingmodel_simulation.cpp.tpl
 common.path = $$[QT_HOST_BINS]/ivigenerator/common
 
 templates_frontend.files +=  \
@@ -39,19 +47,11 @@ templates_frontend.files +=  \
 templates_frontend.path = $$[QT_HOST_BINS]/ivigenerator/templates_frontend
 
 templates_backend_simulator.files += \
-    templates_backend_simulator/backend.cpp.tpl \
-    templates_backend_simulator/backend.h.tpl \
-    templates_backend_simulator/backend.qml.tpl \
-    templates_backend_simulator/pagingmodel.h.tpl \
-    templates_backend_simulator/pagingmodel.cpp.tpl \
     templates_backend_simulator/plugin.cpp.tpl \
     templates_backend_simulator/plugin.h.tpl \
     templates_backend_simulator/plugin.json \
     templates_backend_simulator/plugin.pri.tpl \
-    templates_backend_simulator/plugin.pro \
-    templates_backend_simulator/plugin.qml.tpl \
-    templates_backend_simulator/simulation_data.json.tpl \
-    templates_backend_simulator/data.qrc.tpl
+    templates_backend_simulator/plugin.pro
 templates_backend_simulator.path = $$[QT_HOST_BINS]/ivigenerator/templates_backend_simulator
 
 templates_generation_validator.files += \

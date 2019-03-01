@@ -54,7 +54,7 @@
 
 {% for property in interface.properties %}
 {%   if property.type.is_model %}
-{% include "pagingmodel.cpp.tpl" %}
+{% include "pagingmodel_simulation.cpp.tpl" %}
 {%   endif %}
 {% endfor %}
 

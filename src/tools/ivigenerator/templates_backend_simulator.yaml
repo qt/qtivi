@@ -5,13 +5,13 @@ generate_rules:
         -   dest_file:  "{{module.module_name|lower}}plugin.cpp"
             template_file:  "plugin.cpp.tpl"
         -   dest_file:  "{{module.module_name|lower}}_simulation.qml"
-            template_file:  "plugin.qml.tpl"
+            template_file:  "module_simulation.qml.tpl"
         -   dest_file:  "{{module.module_name|lower}}.json"
             template_file:  "plugin.json"
         -   dest_file:  "{{module.module_name|lower}}_simulation_data.json"
             template_file:  "simulation_data.json.tpl"
         -   dest_file:  "{{module.module_name|lower}}.qrc"
-            template_file:  "data.qrc.tpl"
+            template_file:  "simulation.qrc.tpl"
         -   dest_file:  "{{srcBase|lower}}.pri"
             template_file:  "plugin.pri.tpl"
         -   dest_file: "qml/{{module|qml_type|replace('.', '/')}}/simulation/plugins.qmltypes"
@@ -24,10 +24,10 @@ generate_rules:
             template_file:  "qmldir.tpl"
     interface_rules:
         -   dest_file: '{{interface|lower}}backend.h'
-            template_file: 'backend.h.tpl'
+            template_file: 'backend_simulation.h.tpl'
         -   dest_file: '{{interface|lower}}backend.cpp'
-            template_file: 'backend.cpp.tpl'
+            template_file: 'backend_simulation.cpp.tpl'
         -   dest_file: '{{interface|upperfirst}}Simulation.qml'
-            template_file: 'backend.qml.tpl'
+            template_file: 'backend_simulation.qml.tpl'
     struct_rules:
 
