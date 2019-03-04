@@ -1,25 +1,9 @@
-TARGET = vehiclefunction_simulator
+TEMPLATE = subdirs
 
-QT += core ivicore ivivehiclefunctions
-CONFIG += c++11 ivigenerator
+QT_FOR_CONFIG += ivivehiclefunctions-private
 
-CMAKE_MODULE_TESTS = '-'
-
-QFACE_FORMAT = backend_simulator
-QFACE_MODULE_NAME = QtIviVehicleFunctions
-QFACE_SOURCES += ../../ivivehiclefunctions/ivivehiclefunctions.qface
+qtConfig(vehiclefunctions_simulation_backend): SUBDIRS += vehiclefunctions_simulator
 
 OTHER_FILES += \
     $$PWD/doc/*.qdocconf \
     $$PWD/doc/src/*.qdoc
-
-PLUGIN_TYPE = qtivi
-PLUGIN_EXTENDS = ivivehiclefunctions
-PLUGIN_CLASS_NAME = QtIviVehicleFunctionsPlugin
-
-load(qt_plugin)
-
-RESOURCES += \
-    qml.qrc
-
-QML_IMPORT_PATH = $$OUT_PWD/qml
