@@ -3,3 +3,4 @@
 .gitattributes          export-ignore
 .commit-template        export-ignore
 *.bat text eol=crlf
+src/doc/qtautomotivesuite/src/images/qtas-architecture.xml binary
