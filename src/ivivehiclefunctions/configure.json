@@ -7,10 +7,20 @@
 
     "features": {
         "vehiclefunctions_simulation_backend" : {
-            "label": "Vehicle Functions Simulation Backend",
+            "label": "Simulation Backend",
             "output": [ "privateFeature" ]
         },
-        "ivivehiclefunctions" : {
+        "vehiclefunctions_qtro_backend" : {
+            "label": "Qt Remote Objects Backend",
+            "condition": "features.remoteobjects",
+            "output": [ "privateFeature" ]
+        },
+        "vehiclefunctions_qtro_simulation_server" : {
+            "label": "Qt Remote Objects Simulation Server",
+            "condition": "features.remoteobjects",
+            "output": [ "privateFeature" ]
+        },
+         "ivivehiclefunctions" : {
             "label": "Qt IVI VehicleFunctions",
             "condition": "features.ivicore && features.ivigenerator",
             "output": [ "publicFeature" ]
@@ -31,10 +41,12 @@ The IVI VehicleFunctions module needs the IVI Core module and the IVI Generator.
             "section": "Qt IVI VehicleFunctions",
             "condition": "features.ivivehiclefunctions",
             "entries": [
+                "vehiclefunctions_qtro_simulation_server",
                 {
                     "section": "Backends",
                     "entries": [
-                        "vehiclefunctions_simulation_backend"
+                        "vehiclefunctions_simulation_backend",
+                        "vehiclefunctions_qtro_backend"
                     ]
                 }
             ]
