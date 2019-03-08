@@ -146,6 +146,7 @@ generic methods to modify the contents of the model:
   \li \l{QIviSearchAndBrowseModel::move}{move()}
 \endlist
 
+\target models-as-properties
 \section1 Models as Properties of a QtIvi Feature
 
 In some cases, you might need a model as a property of a specific QtIvi Feature. A good example

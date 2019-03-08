@@ -29,11 +29,14 @@
 \page remotebackends.html
 \title QtIvi Remote Backends
 
-One of the features of the Qt IVI Generator is the possibility to create remote backends
-that utilize the QtRemoteObjects module.
-A remote backend may be an independently running process, even on a separate host machine, that can
-be accessed by multiple clients, or frontends. Such frontends are e.g. the main infotainment system
-UI, different applications running within the UI or mobile devices.
+The Qt IVI Generator makes it possibile to create remote backends that utilize the
+QtRemoteObjects module.
+
+A remote backend is a process that runs independently, sometimes on a separate host machine,
+that can be accessed by multiple clients, or frontends.
+
+These frontends can be, for example, the main Infotainment System UI, or different applications that
+run within the UI or mobile devices.
 
 \section1 Motivation
 

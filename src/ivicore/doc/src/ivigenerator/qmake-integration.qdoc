@@ -27,16 +27,16 @@
 ****************************************************************************/
 /*!
 \page qmake-integration.html
-\title QMake Integration
-\previouspage Autogenerator usage
+\title qmake Integration
+\previouspage Use the Generator
 
-Qt IVI Generator has been integrated with QMake to generate all or part of projects.
+Qt IVI Generator is fully integrated in qmake to generate all or part of a project.
 
-In it's simplest form, QMake can generate all the source code and the project only
-need to configure what type of project is built.
+In it's simplest form, qmake can generate all the source code and the project only needs to
+configure the type of project to build.
 
-For complex setups, generated code can be combined with application specific code
-which can extend and use it.
+For complex setups, you can combine generated code with application specific code to extend
+and use the generated code.
 
 Example:
 \code
@@ -52,47 +52,50 @@ QFACE_OUTPUT_DIR = myOutputDir
 QFACE_ANNOTATIONS = annotation.yaml
 \endcode
 
-Available QMake Variables:
+The following qmake variables are available:
 \table
     \row
         \li QFACE_FORMAT
         \li frontend (default), simulator_backend
     \row
         \li QFACE_SOURCES
-        \li list of .qface input files
+        \li A single \c .qface input file.
     \row
         \li QFACE_MODULE_NAME
-        \li The (optional) name of the module that is using the generated code
+        \li Optional. The name of the module that is using the generated code.
     \row
         \li QFACE_OUTPUT_DIR
-        \li Output folder where the generated code will be created. The default
-            is to use the current build folder
+        \li The output folder where the generated code is placed. The default location is the
+            current build folder.
     \row
         \li QFACE_ANNOTATIONS
-        \li list of additional annotation YAML files.
+        \li A list of additional annotation files in YAML format.
 \endtable
 
-
-See \l {Autogenerator usage} for more details on the generator command line arguments.
+For more details on the generator's command line arguments, see \l {Use the Generator}.
 
 \quotation
-\note As the ivigenerator has specific system dependencies, it may not be available in every QtIviCore installation.
-In this case the ivigenerator qmake feature is also not available and this can result in build errors.
+\note Since the \c ivigenerator has specific system dependencies, it may not be available in all
+      QtIviCore installation. In this case, the \c ivigenerator qmake feature is also not
+      available and this can result in build errors.
 
-The following code snippet makes sure to stop the build and give a meaningful error message in this case:
+In this case, use the following code snippet that makes sure the build stops and provides a
+meaningful error message:
+
 \code
 QT_FOR_CONFIG += ivicore
 !qtConfig(ivigenerator): error("No ivigenerator available")
 \endcode
 \endquotation
 
-\section1 QtModule support
+\section1 QtModule Support
 
-The Qmake Integration also supports generating code which enables you to compile the generated code
-as a qt module. As it needs to work more closely with the Qt's module build system, it shouldn't be
-loaded using the \e CONFIG variable, but using the \e load() function instead. The \e
-ivigenerator_qt_module feature replaces the \e load(qt_module) call. The following shows how the
-integration of the QtIviVehicleFunctions module is done.
+The qmake integration also supports generating code that you can subsequently compile into a Qt
+module. Since this module needs to work more closely with Qt's module building system, it shouldn't
+be loaded using the \c CONFIG variable, but using the \c load() function instead. The
+\c ivigenerator_qt_module feature replaces the \c load(qt_module) call.
+
+The following shows how you can integrate the QtIviVehicleFunctions module:
 
 \badcode
 TARGET = QtIviVehicleFunctions
@@ -110,10 +113,10 @@ QFACE_SOURCES += ivivehiclefunctions.qface
 load(ivigenerator_qt_module)
 \endcode
 
-In addition to the project file for the module library also the \e sync.profile needs to be
-changed, as this is used to call the \e syncqt.pl script which generates the forwarding headers.
-Usually the \e sync.profile is setup to search for the headers in the source folders. Using
-\e $out_basedir it can be extended to also search in the build folder.
+In addition to the project file for the module library, the \c sync.profile also needs to be
+changed, as it's used to call the \c syncqt.pl script that generates the forwarding headers.
+Usually, the \c sync.profile is setup to search for these headers in the source folders. Using
+\c $out_basedir, you can also extend the script to search in the build folder.
 
 \badcode
 ...

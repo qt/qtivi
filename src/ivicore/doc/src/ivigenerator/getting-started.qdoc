@@ -26,18 +26,16 @@
 **
 ****************************************************************************/
 /*!
-\page getting-started-ivigenerator.html
-\title Getting Started with the Qt IVI Generator
+\page get-started-ivigenerator.html
+\title Get Started with the Qt IVI Generator
 
-This topic provides information on how you can get started with the Qt IVI Generator. The
-generator is used to generate source code from an Interface Definition Language (IDL) file.
-The generator also supports multiple templates, to determine what kind of code should be
-generated.
+This topic explains how to get started with the Qt IVI Generator. The generator can generate
+source code from an Interface Definition Language (IDL) file. The kind of code to generate is
+determined by the template that you select.
 
 The Qt IVI Generator is located in the \c bin folder of your Qt installation. If it is not
 available, make sure that your configuration meets all of the prerequisites listed in the
-\l{Configuring qmake} {qmake configuration summary}. For more details on how Qt IVI can
-be configured, see \l {Configuration}.
+qmake configuration summary. For more details on how to configure Qt IVI, see \l {Configuration}.
 
 \section1 Basics
 

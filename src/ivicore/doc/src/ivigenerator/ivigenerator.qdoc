@@ -30,22 +30,18 @@
 \title Qt IVI Autogenerator
 \keyword QFace
 
-Qt IVI provides a way to describe interfaces using its own IDL (interface definition language) and
-then generate Qt/QML API code based on this definition. The generator is based on the QFace
-library, which provides a generic autogeneration framework.
+Qt IVI provides a way for you to describe interfaces using its own Interface Definition Language
+(IDL) and then generate Qt/QML API code based on this definition. This generator is based on the
+QFace library, that provides a generic autogeneration framework.
 
 \list
-    \li \l {QFace IDL syntax}
-    \li \l {Jinja template syntax}
-    \li \l {Autogenerator Usage}
+    \li \l {QFace IDL Syntax}
+    \li \l {Jinja Template Syntax}
+    \li \l {Use the Generator}
     \li \l {Filter Reference}
     \li \l {QMake Integration}
     \li \l {QtIVI Remote backends}{Remote backends}
+    \li \l {Get Started with the Qt IVI Generator}
 \endlist
 
-\section3 Getting Started
-
-\list
-  \li \l {Getting Started Using the Qt IVI Generator}
-\endlist
 */

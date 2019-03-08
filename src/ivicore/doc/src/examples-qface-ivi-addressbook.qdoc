@@ -58,8 +58,8 @@ Pagination concept.
 
 For the backend interface the property type is different and will be a \l QIviPagingModelInterface
 pointer. This is needed as the QIviPagingModel is also a QtIvi feature and, like all features, it
-uses a backend interface for the frontend-backend separation. More on this can be read in the \l
-{models_as_properties}{Concept and Architecture documentation}.
+uses a backend interface for the frontend-backend separation. For more information, see
+\l{Concepts and Architecture}.
 
 The backend plugin needs to implement the \l QIviPagingModelInterface class for every exposed
 property.

@@ -29,7 +29,7 @@
 /*!
 \page filter-reference.html
 \title Filter Reference
-\previouspage Autogenerator Usage
+\previouspage Use the Generator
 \nextpage Qmake Integration
 
 In addition to the built-in Jinja filters listed \l
