@@ -46,6 +46,7 @@
 
 #include <QDebug>
 #include <QSettings>
+#include <QTimer>
 #include "{{module.module_name|lower}}module.h"
 
 Q_LOGGING_CATEGORY(qLcRO{{interface}}, "{{module|qml_type|lower}}.{{interface|lower}}backend.remoteobjects", QtInfoMsg)
@@ -135,7 +136,7 @@ void {{zone_class}}::emitCurrentState()
     if (qEnvironmentVariableIsSet("SERVER_CONF_PATH"))
         configPath = QString::fromLocal8Bit(qgetenv("SERVER_CONF_PATH"));
     else
-        qDebug() << "Environment variable SERVER_CONF_PATH not defined, using " << configPath;
+        qCInfo(qLcRO{{interface}}) << "Environment variable SERVER_CONF_PATH not defined, using " << configPath;
     QSettings settings(configPath, QSettings::IniFormat);
     settings.beginGroup(QStringLiteral("{{module.module_name|lower}}"));
     m_url = QUrl(settings.value(QStringLiteral("Registry"), QStringLiteral("local:{{module.module_name|lower}}")).toString());
@@ -149,6 +150,11 @@ void {{zone_class}}::emitCurrentState()
     m_zoneMap.insert(QString(), zoneObject);
     connect(zoneObject, &{{zone_class}}::syncDone, this, &{{class}}::onZoneSyncDone);
 {% endif %}
+
+    QTimer::singleShot(3000, this, [this](){
+        if(!m_replica->isInitialized())
+            qCCritical(qLcRO{{interface}}) << "{{interface.qualified_name}} wasn't initialized within the timeout period. Please make sure the server is running.";
+    });
 }
 
 {{class}}::~{{class}}()
@@ -300,7 +306,7 @@ void {{class}}::setupConnections()
     connect(m_replica.data(), &{{interface}}Replica::{{property}}Changed, this, [this]({{property|parameter_type}}, const QString &zone) {
         auto zoneObject = m_zoneMap.value(zone);
         if (!zoneObject) {
-            qCritical() << "{{class}}: Backend got changed signal for a zone which doesn't exist. Ignoring it.";
+            qCCritical(qLcRO{{interface}}) << "Backend got changed signal for a zone which doesn't exist. Ignoring it.";
             return;
         }
         zoneObject->{{property|setter_name}}({{property}});
@@ -315,17 +321,17 @@ void {{class}}::setupConnections()
 }
 
 void {{class}}::onReplicaStateChanged(QRemoteObjectReplica::State newState,
-                               QRemoteObjectReplica::State oldState)
+                               QRemoteObjectReplica::State)
 {
     if (newState == QRemoteObjectReplica::Suspect) {
-        qDebug() << "{{class}}, QRemoteObjectReplica error, connection to the source lost";
+        qCWarning(qLcRO{{interface}}) << "QRemoteObjectReplica error, connection to the source lost";
         emit errorChanged(QIviAbstractFeature::Unknown,
                         "QRemoteObjectReplica error, connection to the source lost");
 {% if interface_zoned %}
         m_synced = false;
 {% endif %}
     } else if (newState == QRemoteObjectReplica::SignatureMismatch) {
-        qDebug() << "{{class}}, QRemoteObjectReplica error, signature mismatch";
+        qCWarning(qLcRO{{interface}}) << "QRemoteObjectReplica error, signature mismatch";
         emit errorChanged(QIviAbstractFeature::Unknown,
                         "QRemoteObjectReplica error, signature mismatch");
     } else if (newState==QRemoteObjectReplica::Valid) {
@@ -335,7 +341,7 @@ void {{class}}::onReplicaStateChanged(QRemoteObjectReplica::State newState,
 
 void {{class}}::onNodeError(QRemoteObjectNode::ErrorCode code)
 {
-    qDebug() << "{{class}}, QRemoteObjectNode error, code: " << code;
+    qCWarning(qLcRO{{interface}}) << "QRemoteObjectNode error, code: " << code;
     emit errorChanged(QIviAbstractFeature::Unknown, "QRemoteObjectNode error, code: " + code);
 }
 
