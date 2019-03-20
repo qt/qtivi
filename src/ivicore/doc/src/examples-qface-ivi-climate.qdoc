@@ -35,21 +35,21 @@
 
 \section1 Introduction
 
-This shows an example of using the Qt IVI Generator to build a new component. Based on a single
-qface IDL file, it will generate:
+This example shows you how you can use the Qt IVI Generator to build a new component. Based on a
+single QFace IDL file, the example generates:
 
 \list
-\li a shared library with the front-end code
-\li a back-end simulator plugin
-\li a demo application showing the current model values
+    \li a shared library with the frontend code
+    \li a backend simulator plugin
+    \li a demo application that shows the values in the current module
 \endlist
 
 \section1 The IDL File
 
-The IDL file used in the example represents a simplified climate control interface. It contains a
-single interface and a couple of enumerated types.
+The IDL file used in this example represents a simplified climate control interface that contains a
+single interface and some enumerated types.
 
-Lets first look at a more minimal version of the same QFace IDL file:
+Let's take a look at a minimal version of the same QFace IDL file:
 
 \code
 module Example.IVI.Climate 1.0;
@@ -76,14 +76,14 @@ flag AirflowDirection {
 
 \section2 Walkthrough
 
-First we need to define which \e module we want to describe. The \e module acts as a namespace,
+First, we need to define which \c module we want to describe. The \c module acts as a namespace,
 because the IDL file can contain multiple interfaces.
 
 \code
 module Example.IVI.Climate 1.0;
 \endcode
 
-The most important part is the definition of the \e interface.
+The most important part of the \c module is its \c interface definition.
 
 \code
 interface ClimateControl {
@@ -94,11 +94,10 @@ interface ClimateControl {
 }
 \endcode
 
-In this case, we define an \e interface named \b ClimateControl consisting of a few properties it
-should offer. Every property definition needs to contain at least a type and a name. Most of the
-basic types are builtin and can be found in the \l {QFace IDL syntax} {reference}. The last two
-properties are more special as they use custom types, which are defined after the \e interface
-definition.
+In this case, we define an \c interface named \b ClimateControl consisting of a few properties it
+should offer. Each property definition must contain at least a type and a name. Most of the
+basic types are built-in and can be found in the \l {QFace IDL syntax}. The last two properties
+are special as they use custom types, that are defined after the \c interface definition.
 
 \code
 enum RecirculationMode {
@@ -114,55 +113,54 @@ flag AirflowDirection {
 }
 \endcode
 
-The first definition is an \e enum and all the values it supports, including the numeric value
-of each individual item. The second definition is similar, but using the type \e flag.
+The first definition is an \c enum with all the values it supports, including the numeric value
+of each individual item. The second definition is similar, but using the \c flag type.
 
-The complete reference for the IDL syntax is available \l {QFace IDL syntax}{here}.
+\section2 Comments and Annotations
 
-\section2 Documentation and Annotations
+Compared to the minimal IDL we saw in the previous section,the full
+\l {ivicore/qface-ivi-climate/example-ivi-climate.qface} {IDL file} contains a lot of comments
+and annotations.
 
-In the previous section we walked through a simplified version of the example's IDL file. The
-full \l {ivicore/qface-ivi-climate/example-ivi-climate.qface} {IDL file} also contains a lot of
-documentation comments and annotations.
-
-Comments starting with \e /** define documentation statements and can be converted into common
-documentation languages like QDoc or Doxygen by the generation template.
+Comments starting with \c /** define documentation statements and can be converted into
+documentation markup like QDoc or Doxygen, by the generation template.
 
 \section3 Annotations
 
 Annotations are used to add additional information to the IDL statements. They are YAML fragments
-providing a key-value store. Which annotations are supported is defined by the generation template.
+that provide a key-value store. The generation template defines the supported annotations.
 
 Here's an overview of all the annotations used in this example and what they do:
 
 \table
 \row
     \li \c {@config: {zoned: true}}
-    \li indicates the interface supports different zones
+    \li indicates that the interface supports different zones
 \row
     \li \c {@config: {qml_type: "UiClimateControl"}}
     \li the component name when used from QML
 \row
     \li \c {@config: {id: "example.qtivi.ClimateControl/1.0"}}
-    \li indicates the id used for matching backend plugins
+    \li indicates the ID used to match backend plugins
 \row
     \li \c {@config_simulator: { range:[0, 50] }}
-    \li range of valid values for number type properties
+    \li a range of valid values for numerical properties
 \row
     \li \c {@config_simulator: { minimum: 0; maximum: 50 }}
-    \li minimum and maximum values for number type properties.
-    \note \c {range} annotation is a shortcut to specifying both minimum and
+    \li the minimum and maximum values for numerical properties
+    \note The \c {range} annotation is a shortcut for specifying both minimum and
     maximum values.
 \row
     \li \c {@config_simulator: { domain: ["cold", "mild", "warm" ] }}
-    \li list of valid values for properties
+    \li a list of valid values for properties
 \row
     \li \c {@config: {interfaceBuilder: "echoInterfaceBuilder"}}
-    \li indicates the plugin should use a custom function to generate the backend instances
+    \li indicates that the plugin should use a custom function to generate the backend instances
 \endtable
-In addition to the IDL file, a YAML file (with the same basename) is used to add extra
-configurations. These configurations may also be added directly in to the IDL file, but keeping
-them separate can improve readability.
+
+In addition to the IDL file, a YAML file with the same basename is used to add extra
+configurations. These configurations may also be added directly into the IDL file, but keeping
+them separate improves readability.
 
 Highlights:
 \table
@@ -181,87 +179,88 @@ Highlights:
         config_simulator:
             default: RecirculationMode.RecirculationOff
     \endcode
-    \li the default value assigned to the property in the simulator backend plugin.
+    \li the default value assigned to the property in the simulator backend plugin
 \endtable
 
 
-\section1 Frontend library
+\section1 Frontend Library
 
-What the IDL file is and what it contains, was described in the previous section. Now we want to
-use the ivigenerator to generate a shared library containing a C++ implementation of our module and
-its interface.
+Now we want to use the IVI Generator to generate a shared library that contains a C++
+implementation of our module and its interface.
 
-For this, the \e frontend template is used. This will generate a class derived from \c
-{QIviAbstractZonedFeature} including all the specified properties. The generated library will use
-the \l {Dynamic Backend System} from QtIviCore and by that provide an easy way to change the
-behavior implementations. More on that in the \l {Backend Simulator Plugin} section.
+For this, we use the \c frontend template. This generates a class derived from
+\c {QIviAbstractZonedFeature} including all the specified properties. The generated library uses
+the \l {Dynamic Backend System} from QtIviCore, providing an easy way to change the behavior
+implementations. For more details, see \l {Backend Simulator Plugin}.
 
-In order to call the autogenerator for our shared library, the qmake project file needs to use the
-\e ivigenerator qmake feature. The following snippet shows how it can be added:
+To call the autogenerator for our shared library, the qmake project file needs to use the
+\c ivigenerator qmake feature. The snippet below shows how to do this:
 
 \snippet ../../../../examples/ivicore/qface-ivi-climate/frontend/frontend.pro 1
 
-By adding \e ivigenerator to the \e CONFIG variable, the \e ivigenerator feature file will be
-loaded and interpret the \e QFACE_SOURCES variable similar to \e SOURCES variable of normal qmake
+By adding \c ivigenerator to the \c CONFIG variable, the \c ivigenerator feature file is loaded
+and interprets the \c QFACE_SOURCES variable just like the \c SOURCES variable in normal qmake
 projects.
-Activating the qmake feature using the \e CONFIG variable has the disadvantage that it doesn't
-report any errors if the feature is not available. Because of this, it is encouraged to use the
-following additional code to report errors:
+
+However, activating the qmake feature using the \c CONFIG variable has one disadvantage: it
+doesn't report any errors if this feature is not available. However, you can use the following
+additional code to report errors:
 
 \snippet ../../../../examples/ivicore/qface-ivi-climate/frontend/frontend.pro 0
 
-The other part of the project file is a normal library setup which is supposed to work on
-Linux, macOS and Windows.
+The other part of the project file is a normal library setup which should work on Linux, macOS,
+and Windows.
 
 \section1 Backend Simulator Plugin
 
-As mentioned above, the \e frontend library will use the \l {Dynamic Backend System}. This means
-that for the library to provide some functionality, we also need a \e backend plugin. A mockup
-version of the backend plugin called "Simulator Backend" can be generated using the \e
-backend_simulator template from the same IDL file as the \e frontend library. The qmake integration
-works in the same way, but it is using the \e QFACE_FORMAT variable to tell the ivigenerator to use
-a different generation template.
+Since the \c frontend library uses the \l {Dynamic Backend System}, we need a corresponding
+\c backend plugin, for the library to provide some functionality. To generate a mock version of
+the backend plugin called "Simulator Backend", you can use the \c backend_simulator template from
+the same IDL file as the \c frontend library. The qmake integration works in the same way, but it
+uses the \c QFACE_FORMAT variable to tell the \c ivigenerator to use a different generation
+template.
 
 \snippet ../../../../examples/ivicore/qface-ivi-climate/backend_simulator/backend_simulator.pro 2
 
-As we want to generate a plugin instead of a plain library, we need to instrument qmake to do so by
-adding \e plugin to the \e CONFIG variable. For the plugin to compile correctly it needs to get the
-backend interface header from the previously created library. As this header is also generated, it
-is not part of our source tree, but part of the build tree. We do this by adding it to the include
-path using the following construct:
+As we want to generate a plugin instead of a plain library, we need to instruct qmake to do so by
+adding \c plugin to the \c CONFIG variable. For the plugin to compile correctly it needs to get the
+backend interface header from the previously created library. However, this header is not part of
+our source tree but the build tree, because it is also generated. We provide this header by adding
+it to the include path using the following construct:
 
 \snippet ../../../../examples/ivicore/qface-ivi-climate/backend_simulator/backend_simulator.pro 1
 
-The \e backend_simulator template will make use of the \b @config_simulator annotations explained
-above. This means the generated backend will provide the default values defined in the annotations
-and check the boundaries of new values using the \e minimum/maximum or \e range annotations.
+The \c backend_simulator template makes use of the \b @config_simulator annotations explained
+\l{Annotations}{above}. This means that the generated backend provides the default values defined
+in the annotations and checks the boundaries of new values using the \c minimum/maximum or \c range
+annotations.
 
-Using the \e zones annotations the generated backend will provide individual values for every zone
-and communicate the available zones to the frontend library. More about how to work with zones can
-be seen in the \l {Climate Control QML Example}.
+Using the \c zones annotations, the generated backend provides individual values for every zone
+and communicates the available zones to the frontend library. For more information, see the
+\l {Climate Control QML Example}.
 
 \section1 Demo Application
 
-The demo application presents a simple QML interface with all the properties of
-the generated interface.
+The demo application presents a simple QML interface with all the properties of the generated
+interface.
 
-As we do not provide a QML plugin, the application needs to link to the generated frontend library
-and call the \e {ClimateModule::registerTypes} and \e {ClimateModule::registerQmlTypes} methods
-that are generated in the module singleton to register all autogenerated interfaces and types with
-the QML engine.
+Since we do not provide a QML plugin, the application needs to link to the generated frontend
+library and call the \c {ClimateModule::registerTypes} and \c {ClimateModule::registerQmlTypes}
+methods that are generated in the module singleton to register all autogenerated interfaces and
+types with the QML engine.
 
-In our QML application, we still need to import the module using the same module uri which is used
-in the qface file. Afterwards the interface can be instantiated like any other
-QML item.
+In our QML application, we still need to import the module using the same module URI used
+in the IDL file. Afterwards, the interface can be instantiated like a regular QML item.
 
 \snippet ../../../../examples/ivicore/qface-ivi-climate/demo/main.qml 0
 \dots 0
 
-As our application doesn't know about the existence of our backend plugin, we need to put this
-plugin in a folder where our application searches for plugins. By default Qt either search in the
-\b plugins folder within Qt's installation directory or in the current working directory of the
-application. For QtIvi plugins to be found, they need to be provided within a \b qtivi sub-folder.
-This is achieved automatically by adding the following line to our backend project file:
+Our application doesn't know about our backend plugin, so, we need to put this plugin in the folder
+where our application looks for plugins. By default, Qt looks in the \b plugins folder within its
+installation directory or in the application's current working directory. For QtIvi plugins to be
+found, they need to be placed within a \b qtivi sub-folder.
+
+To make sure this is done automatically, we add the following line to our backend project file:
 
 \snippet ../../../../examples/ivicore/qface-ivi-climate/backend_simulator/backend_simulator.pro 0
 
