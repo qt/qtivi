@@ -34,6 +34,8 @@ interface Echo {
     Combo getCombo();
     void voidSlot();
     void voidSlot2(int param);
+    void timer(int interval);
+
     signal anotherChanged(AnotherStruct another);
     signal foobar(string foo);
     signal somethingHappened();
@@ -103,6 +105,7 @@ interface EchoZoned {
     string id();
     var varMethod();
     Combo getCombo();
+    string timer(int interval);
 
     signal anotherChanged(AnotherStruct another);
     signal foobar(string foo);

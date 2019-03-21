@@ -45,11 +45,12 @@ public:
     virtual void setLastMessage(QString lastMessage) override;
 
 public Q_SLOTS:
-    virtual QString echo(const QString &msg) override;
-    virtual QString id() override;
-    virtual Combo getCombo() override;
-    virtual void voidSlot() override;
-    virtual void voidSlot2(int param) override;
+    virtual QVariant echo(const QString &msg) override;
+    virtual QVariant id() override;
+    virtual QVariant getCombo() override;
+    virtual QVariant voidSlot() override;
+    virtual QVariant voidSlot2(int param) override;
+    virtual QVariant timer(int interval) override;
 
 Q_SIGNALS:
     void echoSlotCalled(const QString &msg);

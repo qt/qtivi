@@ -28,6 +28,8 @@
 
 #include "echozonedservice.h"
 
+#include <QTimer>
+
 #define SET_VALUE(m_VALUE, VALUE, CHANGED_SIGNAL) \
     if (m_zoneHash.value(zone).m_VALUE == VALUE) \
         return; \
@@ -207,13 +209,13 @@ QStringList EchoZonedService::availableZones()
     return keys;
 }
 
-QString EchoZonedService::echo(const QString &msg, const QString &zone)
+QVariant EchoZonedService::echo(const QString &msg, const QString &zone)
 {
     emit echoSlotCalled(msg, zone);
     return msg;
 }
 
-QString EchoZonedService::id(const QString &zone)
+QVariant EchoZonedService::id(const QString &zone)
 {
     emit idSlotCalled(zone);
     return m_testId;
@@ -225,8 +227,18 @@ QVariant EchoZonedService::varMethod(const QString &zone)
     return QVariant("FOOOO");
 }
 
-Combo EchoZonedService::getCombo(const QString &zone)
+QVariant EchoZonedService::getCombo(const QString &zone)
 {
     emit getComboSlotCalled(zone);
-    return m_testCombo;
+    return QVariant::fromValue(m_testCombo);
+}
+
+QVariant EchoZonedService::timer(int interval, const QString &zone)
+{
+    static quint64 counter = 0;
+    EchoZonedPendingResult pendingResult(counter++, false);
+    QTimer::singleShot(interval, this, [this, pendingResult, zone](){
+        emit pendingResultAvailable(pendingResult.id(), true, zone);
+    });
+    return QVariant::fromValue(pendingResult);
 }

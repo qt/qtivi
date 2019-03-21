@@ -48,6 +48,8 @@
 #include <QSettings>
 #include "{{module.module_name|lower}}module.h"
 
+Q_LOGGING_CATEGORY(qLcRO{{interface}}, "{{module|qml_type|lower}}.{{interface|lower}}backend.remoteobjects", QtInfoMsg)
+
 {% for property in interface.properties %}
 {%   if property.type.is_model %}
 {% include "pagingmodel.cpp.tpl" %}
@@ -245,22 +247,40 @@ QStringList {{class}}::availableZones() const
 {%   endif %}
 {%   set function_parameters = function_parameters + 'zone' %}
 {% endif%}
-{% if not operation.type.is_void %}
-    QRemoteObjectPendingReply<{{operation|return_type}}> reply = m_replica->{{operation}}({{function_parameters}});
+    qCDebug(qLcRO{{interface}}) << "{{operation}} called";
+    QRemoteObjectPendingReply<QVariant> reply = m_replica->{{operation}}({{function_parameters}});
     auto watcher = new QRemoteObjectPendingCallWatcher(reply);
     connect(watcher, &QRemoteObjectPendingCallWatcher::finished, this, [this, iviReply](QRemoteObjectPendingCallWatcher *self) mutable {
         if (self->error() == QRemoteObjectPendingCallWatcher::NoError) {
-            iviReply.setSuccess(self->returnValue().value<{{operation|return_type}}>());
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 1)
+            QVariant value = self->returnValue();
+#else
+            QVariant value = self->returnValue().value<QVariant>();
+#endif
+            if (value.canConvert<{{interface}}PendingResult>()) {
+                {{interface}}PendingResult result = value.value<{{interface}}PendingResult>();
+                if (result.failed()) {
+                    qCDebug(qLcRO{{interface}}) << "Pending Result with id:" << result.id() << "failed";
+                    iviReply.setFailed();
+                } else {
+                    qCDebug(qLcRO{{interface}}) << "Result not available yet. Waiting for id:" << result.id();
+                    m_pendingReplies.insert(result.id(), iviReply);
+                }
+            } else {
+{% if operation.type.is_void %}
+                qCDebug(qLcRO{{interface}}) << "Got the value right away: void";
+                iviReply.setSuccess();
+{% else %}
+                qCDebug(qLcRO{{interface}}) << "Got the value right away:" << value.value<{{operation|return_type}}>();
+                iviReply.setSuccess(value.value<{{operation|return_type}}>());
+{% endif %}
+            }
         } else {
             iviReply.setFailed();
             emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("{{class}}, remote call of method {{operation}} failed"));
         }
         self->deleteLater();
     });
-{%   else %}
-    m_replica->{{operation}}({{function_parameters}});
-    iviReply.setSuccess();
-{%   endif %}
     return iviReply;
 }
 
@@ -268,6 +288,7 @@ QStringList {{class}}::availableZones() const
 
 void {{class}}::setupConnections()
 {
+    connect(m_replica.data(), &{{interface}}Replica::pendingResultAvailable, this, &{{class}}::onPendingResultAvailable);
 {% if interface_zoned %}
     connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &{{class}}::syncZones);
 {% else %}
@@ -316,6 +337,22 @@ void {{class}}::onNodeError(QRemoteObjectNode::ErrorCode code)
 {
     qDebug() << "{{class}}, QRemoteObjectNode error, code: " << code;
     emit errorChanged(QIviAbstractFeature::Unknown, "QRemoteObjectNode error, code: " + code);
+}
+
+void {{class}}::onPendingResultAvailable(quint64 id, bool isSuccess, const QVariant &value)
+{
+    qCDebug(qLcRO{{interface}}) << "pending result available" << id;
+    if (!m_pendingReplies.contains(id)) {
+        qCDebug(qLcRO{{interface}}) << "Received a result for an unexpected id:" << id << ". Ignoring!";
+        return;
+    }
+
+    QIviPendingReplyBase iviReply = m_pendingReplies.take(id);
+
+    if (isSuccess)
+        iviReply.setSuccess(value);
+    else
+        iviReply.setFailed();
 }
 
 {% if interface_zoned %}

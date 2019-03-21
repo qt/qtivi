@@ -801,6 +801,71 @@ void EchoQtroTest::testMultipleSlotCalls()
     QCOMPARE(echoZonedSpy[0][1].toString(), frontLeftZone);
 }
 
+void EchoQtroTest::testAsyncSlotResults()
+{
+    Server server;
+    server.start();
+
+    Echo client;
+    QSignalSpy initSpy(&client, SIGNAL(isInitializedChanged(bool)));
+    QVERIFY(initSpy.isValid());
+    QVERIFY(client.startAutoDiscovery() == QIviAbstractFeature::ProductionBackendLoaded);
+
+    //wait until the client has connected and initial values are set
+    initSpy.wait(1000);
+    QCOMPARE(initSpy.count(), 1);
+    QVERIFY(client.isInitialized());
+
+    // test the timer() function which uses a pendingReply on the server side to return the
+    // function when the timer is finished.
+    QIviPendingReply<void> reply = client.timer(1000);
+    QIviPendingReply<void> reply2 = client.timer(500);
+    QSignalSpy echoReplySpy(reply.watcher(), SIGNAL(replySuccess()));
+    QSignalSpy echoReplySpy2(reply2.watcher(), SIGNAL(replySuccess()));
+
+    //Wait for the second reply to return first. Verify the other reply is not yet ready.
+    echoReplySpy2.wait();
+    QCOMPARE(echoReplySpy2.count(), 1);
+    QCOMPARE(echoReplySpy.count(), 0);
+
+    //Wait for the first reply and verify both replies were sent.
+    echoReplySpy.wait();
+    QCOMPARE(echoReplySpy2.count(), 1);
+    QCOMPARE(echoReplySpy.count(), 1);
+
+    EchoZoned zonedClient;
+    QSignalSpy zonedInitSpy(&zonedClient, SIGNAL(isInitializedChanged(bool)));
+    QVERIFY(zonedInitSpy.isValid());
+    QVERIFY(zonedClient.startAutoDiscovery() == QIviAbstractFeature::ProductionBackendLoaded);
+
+    //wait until the client has connected and initial values are set
+    zonedInitSpy.wait(1000);
+    QCOMPARE(zonedInitSpy.count(), 1);
+    QVERIFY(zonedClient.isInitialized());
+
+    EchoZoned *zone = qobject_cast<EchoZoned*>(zonedClient.zoneAt(frontLeftZone));
+    QVERIFY(zone);
+
+    // test the timer() function which uses a pendingReply on the server side to return the
+    // function when the timer is finished.
+    QIviPendingReply<QString> zonedReply = zonedClient.timer(1000);
+    QIviPendingReply<QString> zonedReply2 = zone->timer(500);
+    QSignalSpy zonedEchoReplySpy(zonedReply.watcher(), SIGNAL(replySuccess()));
+    QSignalSpy zonedEchoReplySpy2(zonedReply2.watcher(), SIGNAL(replySuccess()));
+
+    //Wait for the second reply to return first. Verify the other reply is not yet ready.
+    zonedEchoReplySpy2.wait();
+    QCOMPARE(zonedEchoReplySpy2.count(), 1);
+    QCOMPARE(zonedEchoReplySpy.count(), 0);
+    QCOMPARE(zonedReply2.value(), frontLeftZone);
+
+    //Wait for the first reply and verify both replies were sent.
+    zonedEchoReplySpy.wait();
+    QCOMPARE(zonedEchoReplySpy2.count(), 1);
+    QCOMPARE(zonedEchoReplySpy.count(), 1);
+    QCOMPARE(zonedReply.value(), QString());
+}
+
 void EchoQtroTest::testSignals()
 {
     Server server;

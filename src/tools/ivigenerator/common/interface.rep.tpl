@@ -56,6 +56,8 @@
 {{inc}}
 {% endfor %}
 
+POD {{interface}}PendingResult(quint64 id, bool failed)
+
 class {{class}}
 {
 {% for property in interface.properties %}
@@ -82,9 +84,10 @@ class {{class}}
 {% endif %}
 
 {% for operation in interface.operations %}
-    SLOT({{operation|return_type}} {{operation}}({{ivi.join_params(operation, zoned = interface_zoned)}}))
+    SLOT(QVariant {{operation}}({{ivi.join_params(operation, zoned = interface_zoned)}}))
 {% endfor %}
 
+    SIGNAL(pendingResultAvailable(quint64 id, bool isSuccess, const QVariant &value))
 {% for signal in interface.signals %}
     SIGNAL({{signal}}({{ivi.join_params(signal, zoned = interface_zoned)}}))
 {% endfor %}

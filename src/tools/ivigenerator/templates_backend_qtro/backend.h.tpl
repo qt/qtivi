@@ -131,6 +131,7 @@ protected Q_SLOTS:
     void onReplicaStateChanged(QRemoteObjectReplica::State newState,
                         QRemoteObjectReplica::State oldState);
     void onNodeError(QRemoteObjectNode::ErrorCode code);
+    void onPendingResultAvailable(quint64 id, bool isSuccess, const QVariant &value);
 {% if interface_zoned %}
     void syncZones();
     void onZoneSyncDone();
@@ -142,6 +143,7 @@ protected:
     QSharedPointer<{{interface}}Replica> m_replica;
     QRemoteObjectNode* m_node= nullptr;
     QUrl m_url;
+    QHash<quint64, QIviPendingReplyBase> m_pendingReplies;
 {% for property in interface.properties %}
 {%   if property.type.is_model %}
     QIviPagingModelInterface *m_{{property}};

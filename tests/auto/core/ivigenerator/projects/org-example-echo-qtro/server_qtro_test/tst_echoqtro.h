@@ -52,6 +52,7 @@ private slots:
     void testSlots();
     void testZonedSlots();
     void testMultipleSlotCalls();
+    void testAsyncSlotResults();
     void testSignals();
     void testModel();
 };

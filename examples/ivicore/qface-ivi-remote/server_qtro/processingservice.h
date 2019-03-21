@@ -60,7 +60,7 @@ class ProcessingService : public ProcessingServiceSimpleSource
 public:
     ProcessingService();
 
-    int process(const QString & data) override;
+    QVariant process(const QString & data) override;
 };
 //! [0]
 #endif // PROCESSINGSERVICE_H

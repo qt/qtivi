@@ -70,10 +70,11 @@ public slots:
     qreal UPPERCASEPROPERTY(const QString &zone) override;
     void setUPPERCASEPROPERTY(qreal UPPERCASEPROPERTY, const QString &zone) override;
     QStringList availableZones() override;
-    QString echo(const QString &msg, const QString &zone) override;
-    QString id(const QString &zone) override;
+    QVariant echo(const QString &msg, const QString &zone) override;
+    QVariant id(const QString &zone) override;
     QVariant varMethod(const QString &zone) override;
-    Combo getCombo(const QString &zone) override;
+    QVariant getCombo(const QString &zone) override;
+    QVariant timer(int interval, const QString &zone) override;
 
 Q_SIGNALS:
     void echoSlotCalled(const QString &msg, const QString& zone);

@@ -57,7 +57,7 @@ ProcessingService::ProcessingService()
     setLastMessage(QStringLiteral("Service online."));
 }
 
-int ProcessingService::process(const QString & data)
+QVariant ProcessingService::process(const QString & data)
 {
     setLastMessage(QStringLiteral("Processed data \'%1\'").arg(data));
     return data.length();

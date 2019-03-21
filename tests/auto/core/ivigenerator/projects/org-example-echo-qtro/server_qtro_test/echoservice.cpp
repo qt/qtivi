@@ -28,6 +28,7 @@
 ****************************************************************************/
 
 #include "echoservice.h"
+#include <QTimer>
 
 EchoService::EchoService()
     : m_testCombo(Contact(QStringLiteral("Antti"), 34, true, QVariant()), EchoModule::Friday)
@@ -41,30 +42,42 @@ void EchoService::setLastMessage(QString lastMessage)
     EchoSimpleSource::setLastMessage(lastMessage);
 }
 
-QString EchoService::echo(const QString &msg)
+QVariant EchoService::echo(const QString &msg)
 {
     emit echoSlotCalled(msg);
     return msg;
 }
 
-QString EchoService::id()
+QVariant EchoService::id()
 {
     emit idSlotCalled();
     return m_testId;
 }
 
-Combo EchoService::getCombo()
+QVariant EchoService::getCombo()
 {
     emit getComboSlotCalled();
-    return m_testCombo;
+    return QVariant::fromValue(m_testCombo);
 }
 
-void EchoService::voidSlot()
+QVariant EchoService::voidSlot()
 {
     emit voidSlotCalled();
+    return QVariant();
 }
 
-void EchoService::voidSlot2(int param)
+QVariant EchoService::voidSlot2(int param)
 {
     emit voidSlot2Called(param);
+    return QVariant();
+}
+
+QVariant EchoService::timer(int interval)
+{
+    static quint64 counter = 0;
+    EchoPendingResult pendingResult(counter++, false);
+    QTimer::singleShot(interval, this, [this, pendingResult](){
+        emit pendingResultAvailable(pendingResult.id(), true, QVariant());
+    });
+    return QVariant::fromValue(pendingResult);
 }
