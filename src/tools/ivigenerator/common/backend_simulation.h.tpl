@@ -133,7 +133,7 @@ public:
     ~{{class}}();
 
 {%   if interface_zoned %}
-    QStringList availableZones() const override;
+    Q_INVOKABLE QStringList availableZones() const override;
 {%   endif %}
 
     Q_INVOKABLE void initialize() override;
@@ -149,7 +149,7 @@ public:
 {%     else %}
 {%       set type = property|return_type %}
 {%     endif %}
-    {{type}} {{property|getter_name}}(const QString &zone = QString());
+    Q_INVOKABLE {{type}} {{property|getter_name}}(const QString &zone = QString());
 {%   else %}
     {{ivi.prop_getter(property, model_interface = true)}};
 {%   endif %}
