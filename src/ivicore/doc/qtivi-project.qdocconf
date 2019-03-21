@@ -60,7 +60,7 @@ qhp.QtIvi.subprojects.examples.sortPages = true
 
 tagfile                 = qtivi.tags
 
-depends += qtcore qtwidgets qtdoc qtquick qtqml qtautomotivesuite qtsimulator qtremoteobjects
+depends += qtcore qtwidgets qtdoc qtquick qtqml qtautomotivesuite qtremoteobjects
 
 navigation.homepage = "Qt Automotive Suite"
 navigation.landingpage = "Qt IVI"

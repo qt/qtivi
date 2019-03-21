@@ -64,7 +64,7 @@ Filters.classPrefix = ''
 currentQFaceSrcFile = ''
 
 builtin_config = {}
-IVI_DEFAULT_TEMPLATES = ['frontend', 'backend_simulator', 'generation_validator', 'control_panel', 'backend_qtro', 'server_qtro', 'server_qtro_simulator', 'test']
+IVI_DEFAULT_TEMPLATES = ['frontend', 'backend_simulator', 'generation_validator', 'backend_qtro', 'server_qtro', 'server_qtro_simulator', 'test']
 
 def jinjaTrace():
     """

@@ -50,15 +50,6 @@ summary".
     \li The IVI Generator provides tooling to generate source code out of IDL files. The IVI
         Generator comes with a set of templates for specific generation use-cases.
 \row
-    \li QtSimulator Support
-        \keyword feature-qtsimulator
-    \li QtSimulator module
-    \li The QtSimulator Support is needed for the communication between the simulation backends and
-        their control panel (controller). It enhances the built-in templates by also generating
-        the needed code for the simulation backends to communicate over QtSimulator. In addition,
-        it also provides a new template to generate a controller application to communicate with
-        the simulation backend.
-\row
     \li QtRemoteObjects Support
         \keyword feature-qtremoteobjects
     \li QtRemoteObjects module

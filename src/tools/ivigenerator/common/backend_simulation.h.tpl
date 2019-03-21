@@ -63,11 +63,6 @@
 
 QT_BEGIN_NAMESPACE
 
-{% if 'simulator' in features %}
-class QSimulatorConnection;
-class QSimulatorConnectionWorker;
-{% endif %}
-
 class QIviSimulationEngine;
 
 {% if interface_zoned %}
@@ -183,11 +178,6 @@ protected:
 {% endfor %}
 {% if interface_zoned %}
     QQmlPropertyMap *m_zones;
-{% endif %}
-
-{% if 'simulator' in features %}
-    QSimulatorConnection *mConnection;
-    QSimulatorConnectionWorker *mWorker;
 {% endif %}
 };
 

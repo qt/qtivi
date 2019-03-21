@@ -65,21 +65,6 @@ templates_generation_validator.files += \
     templates_generation_validator/validationstatus.h.tpl
 templates_generation_validator.path = $$[QT_HOST_BINS]/ivigenerator/templates_generation_validator
 
-templates_control_panel.files += \
-    templates_control_panel/EnumControl.qml.tpl \
-    templates_control_panel/FlagControl.qml.tpl \
-    templates_control_panel/global.h.tpl \
-    templates_control_panel/interface.cpp.tpl \
-    templates_control_panel/interface.h.tpl \
-    templates_control_panel/interface.qml.tpl \
-    templates_control_panel/main.cpp.tpl \
-    templates_control_panel/main.qml.tpl \
-    templates_control_panel/module.cpp.tpl \
-    templates_control_panel/module.h.tpl \
-    templates_control_panel/qml.qrc.tpl \
-    templates_control_panel/ui.pri.tpl
-templates_control_panel.path = $$[QT_HOST_BINS]/ivigenerator/templates_control_panel
-
 templates_backend_qtro.files += \
     templates_backend_qtro/backend.cpp.tpl \
     templates_backend_qtro/backend.h.tpl \
@@ -123,11 +108,6 @@ generator.files += \
     templates_test.yaml \
 
 generator.path = $$[QT_HOST_BINS]/ivigenerator
-
-qtConfig(simulator) {
-    generator.files += templates_control_panel.yaml
-    INSTALLS += templates_control_panel
-}
 
 qtConfig(remoteobjects) {
     generator.files += templates_backend_qtro.yaml \

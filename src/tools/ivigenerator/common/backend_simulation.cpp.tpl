@@ -48,10 +48,6 @@
 #include <QDebug>
 #include <QtIviCore/QIviSimulationEngine>
 
-{% if 'simulator' in features %}
-#include <QtSimulator>
-{% endif %}
-
 {% for property in interface.properties %}
 {%   if property.type.is_model %}
 {% include "pagingmodel_simulation.cpp.tpl" %}
@@ -111,9 +107,6 @@ QT_BEGIN_NAMESPACE
 {% endfor %}
 {% if interface_zoned %}
     , m_zones(new QQmlPropertyMap(this))
-{% endif %}
-{% if 'simulator' in features %}
-    , mWorker(nullptr)
 {% endif %}
 {
     //In some cases the engine is unused, this doesn't do any harm if it is still used
@@ -186,24 +179,6 @@ void {{class}}::initialize()
     }
 {% endif %}
 
-{% if 'simulator' in features %}
-    mConnection = new QSimulatorConnection(QStringLiteral("{{interface}}"), QVersionNumber(1, 0, 0));
-    mConnection->addPeerInfo(QStringLiteral("versionInfo"), QStringLiteral("1.0.0"));
-    mConnection->addPeerInfo(QStringLiteral("name"), QStringLiteral("{{class}}"));
-    QString hostname = QSimulatorConnection::simulatorHostName(false);
-    if (hostname.isEmpty()) {
-        qWarning() << "SIMULATOR_HOSTNAME environment variable not set! Disabling the QtSimulator connection";
-        return;
-    }
-    qWarning() << "Connecting to QtSimulator Device:" << hostname;
-    mWorker = mConnection->connectToHost(hostname, 0xbeef+3);
-    if (!mWorker) {
-        qWarning() << "Couldn't connect to QtSimulator Device:" << hostname;
-        return;
-    }
-
-    mWorker->addReceiver(this);
-{% endif %}
     emit initializationDone();
 }
 
@@ -302,11 +277,6 @@ void {{class}}::addZone(const QString &zone)
 
 {% if interface_zoned %}
     Q_UNUSED(zone);
-{% endif %}
-
-{% if 'simulator' in features %}
-    if (mWorker)
-        mWorker->call("{{operation}}" {% if function_parameters is not equalto "" %}, {{function_parameters}} {% endif %});
 {% endif %}
 
     qWarning() << "Not implemented!";

@@ -42,9 +42,6 @@
 #############################################################################
 
 QT += remoteobjects
-{% if 'simulator' in features %}
-QT += simulator
-{% endif %}
 
 HEADERS += \
 {% for interface in module.interfaces %}
