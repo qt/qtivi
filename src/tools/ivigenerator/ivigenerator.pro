@@ -97,6 +97,15 @@ templates_server_qtro.files += \
     templates_server_qtro/server.pri.tpl
 templates_server_qtro.path = $$[QT_HOST_BINS]/ivigenerator/templates_server_qtro
 
+templates_server_qtro_simulator.files += \
+    templates_server_qtro_simulator/core.cpp.tpl \
+    templates_server_qtro_simulator/core.h.tpl \
+    templates_server_qtro_simulator/adapter.cpp.tpl \
+    templates_server_qtro_simulator/adapter.h.tpl \
+    templates_server_qtro_simulator/main.cpp.tpl \
+    templates_server_qtro_simulator/server.pri.tpl
+templates_server_qtro_simulator.path = $$[QT_HOST_BINS]/ivigenerator/templates_server_qtro_simulator
+
 templates_test.files += \
     templates_test/tst_test.h.tpl \
     templates_test/tst_test.cpp.tpl \
@@ -123,9 +132,11 @@ qtConfig(simulator) {
 qtConfig(remoteobjects) {
     generator.files += templates_backend_qtro.yaml \
                        templates_server_qtro.yaml \
+                       templates_server_qtro_simulator.yaml \
 
     INSTALLS += templates_backend_qtro \
                 templates_server_qtro \
+                templates_server_qtro_simulator \
 
 }
 
