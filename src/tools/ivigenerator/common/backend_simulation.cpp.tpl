@@ -88,11 +88,6 @@ QT_BEGIN_NAMESPACE
 {% endfor %}
 {% endif %}
 
-/*!
-   \class {{class}}
-   \inmodule {{module}}
-{{ ivi.format_comments(interface.comment) }}
-*/
 {{class}}::{{class}}(QObject *parent)
     : {{class}}(nullptr, parent)
 {
@@ -131,16 +126,6 @@ QT_BEGIN_NAMESPACE
 }
 
 {% if interface_zoned %}
-/*!
-    \fn QStringList {{class}}::availableZones() const
-
-    Returns a list of supported zone names. This is called from the client
-    after having connected.
-
-    The returned names must be valid QML property names, i.e. \c {[a-z_][A-Za-z0-9_]*}.
-
-    \sa {Providing Available Zones}
-*/
 QStringList {{class}}::availableZones() const
 {
     QStringList zones;
@@ -152,13 +137,6 @@ QStringList {{class}}::availableZones() const
 }
 {% endif %}
 
-/*!
-    \fn void {{class}}::initialize()
-
-    Initializes the backend and informs about its current state by
-    emitting signals with the current status (property values).
-
-*/
 void {{class}}::initialize()
 {
     QIVI_SIMULATION_TRY_CALL({{class}}, "initialize", void);
@@ -221,11 +199,6 @@ void {{class}}::addZone(const QString &zone)
 {% endfor %}
 
 {% for property in interface.properties %}
-/*!
-    \fn virtual {{ivi.prop_setter(property, class, interface_zoned)}}
-
-{{ ivi.format_comments(property.comment) }}
-*/
 {{ivi.prop_setter(property, class, interface_zoned, model_interface = true)}}
 {
 {%   set parameters = property.name %}
@@ -258,11 +231,6 @@ void {{class}}::addZone(const QString &zone)
 {% endfor %}
 
 {% for operation in interface.operations %}
-/*!
-    \fn virtual {{ivi.operation(operation, class, interface_zoned)}}
-
-{{ ivi.format_comments(operation.comment) }}
-*/
 {{ivi.operation(operation, class, interface_zoned)}}
 {
 {%   set function_parameters = operation.parameters|join(', ') %}
