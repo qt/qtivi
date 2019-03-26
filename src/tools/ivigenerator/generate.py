@@ -803,7 +803,7 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
     global currentQFaceSrcFile
     currentQFaceSrcFile = src[0]
     ctx = {'dst': dst, 'qtASVersion': builtin_config["VERSION"], 'srcFile':srcFile, 'srcBase':srcBase, 'features': builtin_config["FEATURES"]}
-    gen_config = yaml.load(open(here / '{0}.yaml'.format(os.path.basename(tplconfig))))
+    gen_config = yaml.load(open(here / '{0}.yaml'.format(os.path.basename(tplconfig))), Loader=yaml.SafeLoader)
     for module in system.modules:
         log.debug('generate code for module %s', module)
         module.add_tag('config')
@@ -876,7 +876,7 @@ def app(src, dst, format, reload, module, validation_info, force, annotations):
     builtin_config_path = here / '.config'
     if 'IVIGENERATOR_CONFIG' in os.environ:
         builtin_config_path = os.environ['IVIGENERATOR_CONFIG']
-    builtin_config = yaml.load(open(builtin_config_path))
+    builtin_config = yaml.load(open(builtin_config_path), Loader=yaml.SafeLoader)
     if not 'VERSION' in builtin_config or not 'FEATURES' in builtin_config:
         sys.exit("Invalid builtin config")
 
