@@ -51,7 +51,7 @@ public:
     {{interface}}Test();
 
 private slots:
-    void cleanup();
+    void init();
 
     void testInitBackend();
     void testWithoutBackend();

@@ -253,7 +253,7 @@ private:
     manager = QIviServiceManager::instance();
 }
 
-void {{interface}}Test::cleanup()
+void {{interface}}Test::init()
 {
     manager->unloadAllBackends();
 }
