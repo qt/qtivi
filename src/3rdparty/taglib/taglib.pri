@@ -5,6 +5,9 @@ win32-msvc* {
 *-g++* {
     QMAKE_CFLAGS_WARN_ON += -Wno-unused-parameter -Wno-main
 }
+clang {
+    QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter -Wno-deprecated-declarations -Wno-sign-compare -Wno-delete-non-virtual-dtor
+}
 
 DEFINES += TAGLIB_STATIC
 
