@@ -41,6 +41,8 @@
 ****************************************************************************/
 
 #include "qiviplayableitem.h"
+#include <QDataStream>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 

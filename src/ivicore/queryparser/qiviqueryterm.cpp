@@ -43,6 +43,12 @@
 #include "qiviqueryterm.h"
 #include "qiviqueryterm_p.h"
 
+#include <QDataStream>
+#include <QMetaEnum>
+#include <QtDebug>
+
+QT_BEGIN_NAMESPACE
+
 QIviConjunctionTermPrivate::QIviConjunctionTermPrivate()
     : m_conjunction(QIviConjunctionTerm::And)
 {
@@ -402,3 +408,113 @@ QString QIviOrderTerm::propertyName() const
 {
     return d->m_propertyName;
 }
+
+QDataStream &operator<<(QDataStream &out, QIviConjunctionTerm::Conjunction var)
+{
+    out << int(var);
+    return out;
+}
+
+QDataStream &operator>>(QDataStream &in, QIviConjunctionTerm::Conjunction &var)
+{
+    int val;
+    in >> val;
+    QMetaEnum metaEnum = QMetaEnum::fromType<QIviConjunctionTerm::Conjunction>();
+    if (metaEnum.valueToKey(val) == nullptr)
+        qWarning() << "Received an invalid enum value for type QIviConjunctionTerm::Conjunction, value =" << val;
+    var = QIviConjunctionTerm::Conjunction(val);
+    return in;
+}
+
+QDataStream &operator<<(QDataStream &out, QIviFilterTerm::Operator var)
+{
+    out << int(var);
+    return out;
+}
+
+QDataStream &operator>>(QDataStream &in, QIviFilterTerm::Operator &var)
+{
+    int val;
+    in >> val;
+    QMetaEnum metaEnum = QMetaEnum::fromType<QIviFilterTerm::Operator>();
+    if (metaEnum.valueToKey(val) == nullptr)
+        qWarning() << "Received an invalid enum value for type QIviFilterTerm::Operator, value =" << val;
+    var = QIviFilterTerm::Operator(val);
+    return in;
+}
+
+QDataStream &operator<<(QDataStream &out, QIviAbstractQueryTerm *var)
+{
+    if (var->type() == QIviAbstractQueryTerm::FilterTerm) {
+        auto *term = static_cast<QIviFilterTerm*>(var);
+        out << QStringLiteral("filter");
+        out << term->operatorType();
+        out << term->value();
+        out << term->propertyName();
+        out << term->isNegated();
+    } else if (var->type() == QIviAbstractQueryTerm::ScopeTerm) {
+        auto *term = static_cast<QIviScopeTerm*>(var);
+        out << QStringLiteral("scope");
+        out << term->isNegated();
+        out << term->term();
+    } else {
+        auto *term = static_cast<QIviConjunctionTerm*>(var);
+        out << QStringLiteral("conjunction");
+        out << term->conjunction();
+        const auto subTerms = term->terms();
+        out << subTerms.count();
+        for (const auto subTerm : subTerms)
+            out << subTerm;
+    }
+    return out;
+}
+
+QDataStream &operator>>(QDataStream &in, QIviAbstractQueryTerm **var)
+{
+    QString type;
+    QIviAbstractQueryTerm *aTerm=nullptr;
+    in >> type;
+    if (type == QStringLiteral("filter")) {
+        auto term = new QIviFilterTerm();
+        aTerm = term;
+        in >> term->d_ptr->m_operator;
+        in >> term->d_ptr->m_value;
+        in >> term->d_ptr->m_property;
+        in >> term->d_ptr->m_negated;
+    } else if (type == QStringLiteral("scope")) {
+        auto term = new QIviScopeTerm();
+        aTerm = term;
+        in >> term->d_ptr->m_negated;
+        in >> &term->d_ptr->m_term;
+    } else {
+        Q_ASSERT(type == QStringLiteral("conjunction"));
+        auto term = new QIviConjunctionTerm();
+        aTerm = term;
+        int count = 0;
+        in >> term->d_ptr->m_conjunction;
+        in >> count;
+        for (int i = 0; i < count; ++i) {
+            QIviAbstractQueryTerm *subTerm=nullptr;
+            in >> &subTerm;
+            term->d_ptr->m_terms.append(subTerm);
+        }
+    }
+    *var = aTerm;
+    return in;
+}
+
+QDataStream &operator<<(QDataStream &out, const QIviOrderTerm &var)
+{
+    out << var.propertyName();
+    out << var.isAscending();
+    return out;
+}
+
+QDataStream &operator>>(QDataStream &in, QIviOrderTerm &var)
+{
+    in >> var.d->m_propertyName;
+    in >> var.d->m_ascending;
+    return in;
+}
+
+QT_END_NAMESPACE

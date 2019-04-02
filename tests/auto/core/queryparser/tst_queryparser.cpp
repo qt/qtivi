@@ -155,6 +155,17 @@ void TestQueryParser::validQueries()
 
     CHECK_ERRORSTRING(term->toString(), representationQuery);
 
+    //Test the searialize functions
+    QByteArray buffer;
+    QDataStream in(&buffer, QIODevice::WriteOnly);
+    in << term;
+
+    QDataStream out(buffer);
+    QIviAbstractQueryTerm *newTerm = nullptr;
+    out >> &newTerm;
+
+    QCOMPARE(term->toString(), newTerm->toString());
+    delete newTerm;
     delete term;
 }
 

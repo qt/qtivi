@@ -69,11 +69,13 @@ public:
 class QIviConjunctionTermPrivate;
 class Q_QTIVICORE_EXPORT QIviConjunctionTerm : public QIviAbstractQueryTerm
 {
+    Q_GADGET
 public:
     enum Conjunction {
         And,
         Or
     };
+    Q_ENUM(Conjunction)
 
     explicit QIviConjunctionTerm();
     ~QIviConjunctionTerm() override;
@@ -88,11 +90,13 @@ private:
     QIviConjunctionTermPrivate * d_ptr;
     Q_DECLARE_PRIVATE(QIviConjunctionTerm)
     friend class QIviQueryParser;
+    friend Q_QTIVICORE_EXPORT QDataStream &operator>>(QDataStream &in, QIviAbstractQueryTerm** var);
 };
 
 class QIviScopeTermPrivate;
 class Q_QTIVICORE_EXPORT QIviScopeTerm : public QIviAbstractQueryTerm
 {
+    Q_GADGET
 public:
 
     explicit QIviScopeTerm();
@@ -108,11 +112,13 @@ private:
     QIviScopeTermPrivate * d_ptr;
     Q_DECLARE_PRIVATE(QIviScopeTerm)
     friend class QIviQueryParser;
+    friend Q_QTIVICORE_EXPORT QDataStream &operator>>(QDataStream &in, QIviAbstractQueryTerm** var);
 };
 
 class QIviFilterTermPrivate;
 class Q_QTIVICORE_EXPORT QIviFilterTerm : public QIviAbstractQueryTerm
 {
+    Q_GADGET
 public:
     enum Operator {
         Equals,
@@ -123,6 +129,7 @@ public:
         LowerThan,
         LowerEquals
     };
+    Q_ENUM(Operator)
 
     explicit QIviFilterTerm();
     ~QIviFilterTerm() override;
@@ -139,6 +146,7 @@ private:
     QIviFilterTermPrivate * d_ptr;
     Q_DECLARE_PRIVATE(QIviFilterTerm)
     friend class QIviQueryParser;
+    friend Q_QTIVICORE_EXPORT QDataStream &operator>>(QDataStream &in, QIviAbstractQueryTerm** var);
 };
 
 class QIviOrderTermPrivate;
@@ -156,10 +164,22 @@ public:
 private:
     QSharedDataPointer<QIviOrderTermPrivate> d;
     friend class QIviQueryParser;
+    friend Q_QTIVICORE_EXPORT QDataStream &operator>>(QDataStream &in, QIviOrderTerm &var);
 };
 
 Q_DECLARE_TYPEINFO(QIviOrderTerm, Q_MOVABLE_TYPE);
 
+Q_QTIVICORE_EXPORT QDataStream &operator<<(QDataStream &out, QIviConjunctionTerm::Conjunction var);
+Q_QTIVICORE_EXPORT QDataStream &operator>>(QDataStream &in, QIviConjunctionTerm::Conjunction &var);
+Q_QTIVICORE_EXPORT QDataStream &operator<<(QDataStream &out, QIviFilterTerm::Operator var);
+Q_QTIVICORE_EXPORT QDataStream &operator>>(QDataStream &in, QIviFilterTerm::Operator &var);
+Q_QTIVICORE_EXPORT QDataStream &operator<<(QDataStream &out, QIviAbstractQueryTerm *var);
+Q_QTIVICORE_EXPORT QDataStream &operator>>(QDataStream &in, QIviAbstractQueryTerm **var);
+Q_QTIVICORE_EXPORT QDataStream &operator<<(QDataStream &out, const QIviOrderTerm &var);
+Q_QTIVICORE_EXPORT QDataStream &operator>>(QDataStream &in, QIviOrderTerm &var);
+
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(QIviOrderTerm)
 
 #endif // QUERYTERM_H
