@@ -46,66 +46,26 @@
 #include "mediaplayerbackend.h"
 #include "mediaplugin.h"
 #include "searchandbrowsebackend.h"
+#include "database_helper.h"
 
 #include <QtIviCore/QIviSearchAndBrowseModel>
 #include <QtIviMedia/QIviMediaPlayer>
 
 #include <QCoreApplication>
-#include <QDir>
-#include <QFileInfo>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <QStandardPaths>
 #include <QStringList>
-#include <QTemporaryFile>
 #include <QtDebug>
 
 MediaPlugin::MediaPlugin(QObject *parent)
     : QObject(parent)
     , m_discovery(new MediaDiscoveryBackend(this))
 {
-    const QByteArray database = qgetenv("QTIVIMEDIA_SIMULATOR_DATABASE");
-    if (qEnvironmentVariableIsSet("QTIVIMEDIA_TEMPORARY_DATABASE")) {
-        auto *tempFile = new QTemporaryFile(qApp);
-        tempFile->open();
-        m_dbFile = tempFile->fileName();
-        qCInfo(media) << "QTIVIMEDIA_TEMPORARY_DATABASE environment variable is set.\n"
-                    << "Using the temporary database: " << tempFile->fileName();
-    } else if (!database.isEmpty()) {
-        m_dbFile = QFile::decodeName(database);
-        if (!QFileInfo(m_dbFile).isAbsolute())
-            qCInfo(media) << "Please set an valid absolute path for QTIVIMEDIA_SIMULATOR_DATABASE. Current path:" << m_dbFile;
-    } else {
-        const QDir cacheLocation = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
-        if (!cacheLocation.exists())
-            cacheLocation.mkpath(QStringLiteral("."));
-        m_dbFile = cacheLocation.absoluteFilePath(QStringLiteral("ivimedia.db"));
-        qCInfo(media) << "Used media database:" << m_dbFile;
-    }
+    QString dbFile = mediaDatabaseFile();
 
-    QSqlDatabase db = createDatabaseConnection(QStringLiteral("main"));
-    QSqlQuery query = db.exec(QStringLiteral("CREATE TABLE IF NOT EXISTS \"queue\" (\"id\" INTEGER PRIMARY KEY, \"qindex\" INTEGER, \"track_index\" INTEGER)"));
-    if (query.lastError().isValid())
-        qFatal("Couldn't create Database Tables: %s", qPrintable(query.lastError().text()));
+    createMediaDatabase(dbFile);
 
-    query = db.exec("CREATE TABLE IF NOT EXISTS track "
-                     "(id integer primary key, "
-                     "trackName varchar(200), "
-                     "albumName varchar(200), "
-                     "artistName varchar(200), "
-                     "genre varchar(200), "
-                     "number integer,"
-                     "file varchar(200),"
-                     "coverArtUrl varchar(200),"
-                     "UNIQUE(file))");
-
-    if (query.lastError().isValid())
-        qFatal("Couldn't create Database Tables: %s", qPrintable(query.lastError().text()));
-    db.commit();
-
-    m_player = new MediaPlayerBackend(createDatabaseConnection(QStringLiteral("player")), this);
-    m_browse = new SearchAndBrowseBackend(createDatabaseConnection(QStringLiteral("model")), this);
-    m_indexer = new MediaIndexerBackend(createDatabaseConnection(QStringLiteral("indexer")), this);
+    m_player = new MediaPlayerBackend(createDatabaseConnection(QStringLiteral("player"), dbFile), this);
+    m_browse = new SearchAndBrowseBackend(createDatabaseConnection(QStringLiteral("model"), dbFile), this);
+    m_indexer = new MediaIndexerBackend(createDatabaseConnection(QStringLiteral("indexer"), dbFile), this);
 
     connect(m_discovery, &MediaDiscoveryBackend::mediaDirectoryAdded,
             m_indexer, &MediaIndexerBackend::addMediaFolder);
@@ -135,13 +95,4 @@ QIviFeatureInterface *MediaPlugin::interfaceInstance(const QString &interface) c
         return m_indexer;
 
     return nullptr;
-}
-
-QSqlDatabase MediaPlugin::createDatabaseConnection(const QString &connectionName)
-{
-    QSqlDatabase db = QSqlDatabase::addDatabase(QStringLiteral("QSQLITE"), connectionName);
-    db.setDatabaseName(m_dbFile);
-    if (!db.open())
-        qFatal("Couldn't couldn't open database: %s", qPrintable(db.lastError().text()));
-    return db;
 }
