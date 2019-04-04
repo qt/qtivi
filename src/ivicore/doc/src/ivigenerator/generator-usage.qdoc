@@ -26,509 +26,524 @@
 **
 ****************************************************************************/
 /*!
-\page generator-usage.html
-\title Use the Generator
-\previouspage Jinja Template Syntax
-\nextpage Filter Reference
+    \page generator-usage.html
+    \title Use the Generator
+    \previouspage Jinja Template Syntax
+    \nextpage Filter Reference
 
-This topic describes how to use the QtIVI generator.
+    This topic describes how to use the QtIVI generator.
 
-\section1 Introduction
+    \section1 Introduction
 
-The Generator is a Python script that can be run manually or using the \l {qmake Integration}.
-This script uses QFace as the autogenerator framework which parses the IDL file, generates the
-domain model (similar to an Abstract Syntax Tree (AST)) and then feeds it to the generator.
-Depending on the type of the project to generate, different \c{formats} are specified.
+    The Generator is a Python script that can be run manually or using the \l {qmake Integration}.
+    This script uses QFace as the autogenerator framework which parses the IDL file, generates the
+    domain model (similar to an Abstract Syntax Tree (AST)) and then feeds it to the generator.
+    Depending on the type of the project to generate, different \c{formats} are specified.
 
-\section1 Command Line Parameters
-To run the generation, use the following command:
+    \section1 Command Line Parameters
+    To run the generation, use the following command:
 
-\code
-$$[QT_HOST_BINS]/ivigenerator/generate.py --format=backend_simulator interface.qface out_dir
-\endcode
+    \code
+    $$[QT_HOST_BINS]/ivigenerator/generate.py --format=backend_simulator interface.qface out_dir
+    \endcode
 
-The options and parameters are:
-\table
-    \header
-        \li Option/Parameter
-        \li Description
-    \row
-        \li \c{--reload} / \c{--no-reload} [optional]
-        \li Specifies whether the generator should keep track of the changes in the IDL file
-            and update the output on the fly; the default is \c{--no-reload}
-    \row
-        \target format
-        \li  \c -f, \c --format
-        \li Can be one the following values:
-            \list
-              \li \c frontend
-              \li \c backend_simulator
-              \li \c backend_qtro
-              \li \c server_qtro
-              \li \c <folder>
-            \endlist
-    \row
-        \li -A, --annotations <annotation-file>
-        \li Merges the given annotation file with annotations already in the QFace file and the
-        implicit annotation file. These files are merged according to the order in which they are
-        passed to the generator. Providing a duplicate key in the YAML file overrides the previously
-        set value. This option can be used multiple times. For more information, see
-        \l{merge-annotations}{Merge Annotations}.
-    \row
-        \li source
-        \li Path or paths to the IDL source files. If there are multiple entries, each one is
-            handled. If a directory path is provided, it's scanned for IDL files.
-    \row
-        \li outputdir
-        \li The destination folder for the generated files.
-    \row
-        \li --help
-        \li Display options and exit.
-\endtable
+    The options and parameters are:
+    \table
+        \header
+            \li Option/Parameter
+            \li Description
+        \row
+            \li \c{--reload} / \c{--no-reload} [optional]
+            \li Specifies whether the generator should keep track of the changes in the IDL file
+                and update the output on the fly; the default is \c{--no-reload}
+        \row
+            \target format
+            \li  \c -f, \c --format
+            \li Can be one the following values:
+                \list
+                \li \c frontend
+                \li \c backend_simulator
+                \li \c backend_qtro
+                \li \c server_qtro
+                \li \c <folder>
+                \endlist
+        \row
+            \target annotations-option
+            \li -A, --annotations <annotation-file>
+            \li Merges the given annotation file with annotations already in the QFace file and the
+                implicit annotation file. These files are merged according to the order in which
+                they are passed to the generator. Providing a duplicate key in the YAML file
+                overrides the previously set value. This option can be used multiple times. For
+                more information, see \l{merge-annotations}{Merge Annotations}.
+        \row
+            \li source
+            \li Path or paths to the IDL source files. If there are multiple entries, each one is
+                handled. If a directory path is provided, it's scanned for IDL files.
+        \row
+            \li outputdir
+            \li The destination folder for the generated files.
+        \row
+            \li --help
+            \li Display options and exit.
+    \endtable
 
-Currently, based on the \l{format}{\c {--format}} value, the generator can generate multiple types
-of projects with a given IDL file:
+    Currently, based on the \l{format}{\c {--format}} value, the generator can generate multiple
+    types of projects with a given IDL file:
 
-\table
-  \row
-    \li \l {frontend}
-    \target frontend-template
-    \li Generates an API using base classes from qtivicore and the \l {Dynamic Backend System}
-  \row
-    \li \l {Backend Simulator} {backend_simulator}
-    \target backend-simulator-template
-    \li Generates a simulation backend for the API first generated by the \c frontend option. This
-        backend serves as a mock implementation.
-  \row
-    \li \l {QtRemoteObjects Backend} {backend_qtro}
-    \target backend-qtro-template
-    \li Generates a QtRemoteObjects based backend client for the API first generated by the
-        \c frontend option. This backend connects to a backend server.
-  \row
-    \li \l {QtRemoteObjects Server} {server_qtro}
-    \target server-qtro-template
-    \li Generates a QtRemoteObjects based backend server stub for the API first generated by the
-        \c frontend option.
-  \row
-    \li folder path
-    \li Uses templates inside the folder. A YAML file with the same name as the folder should
-        provide a list of template files in the folder. For more details, see \l{Generation YAML}.
-\endtable
+    \table
+        \header
+            \li Project Type
+            \li Description
+        \row
+            \li \l frontend
+            \target frontend-template
+            \li Generates an API using base classes from qtivicore and the \l{Dynamic Backend System}
+        \row
+            \li \l {Backend Simulator} {backend_simulator}
+            \target backend-simulator-template
+            \li Generates a simulation backend for the API first generated by the \c frontend option.
+                This backend serves as a mock implementation.
+        \row
+            \li \l {QtRemoteObjects Backend} {backend_qtro}
+            \target backend-qtro-template
+            \li Generates a QtRemoteObjects based backend client for the API first generated by the
+                \c frontend option. This backend connects to a backend server.
+        \row
+            \li \l {QtRemoteObjects Server} {server_qtro}
+            \target server-qtro-template
+            \li Generates a QtRemoteObjects based backend server stub for the API first generated
+                by the \c frontend option.
+        \row
+            \li folder path
+            \li Uses templates inside the folder. A YAML file with the same name as the folder
+                should provide a list of template files in the folder. This is useful if you want
+                to write your own templates. For more details, see \l{Generation YAML}.
+    \endtable
 
-\section1 Configure the Generator
+    \section1 Configure the Generator
 
-The generator's Python script parses the input files and creates a domain model. This domain model
-is then passed as a context to the Jinja template engine. Use the Generation YAML file to specify
-which files to generate. Afterwards, you can use an Annotation YAML file to add more information
-to the IDL file, which is generator specific.
+    The generator's Python script parses the input files and creates a domain model. This domain
+    model is then passed as a context to the Jinja template engine. Use the Generation YAML file
+    to specify which files to generate. Afterwards, you can use an Annotation YAML file to add more
+    information to the IDL file, which is generator specific.
 
-\section2 Generation YAML
+    \section2 Generation YAML
 
-After the domain model tree is created, this tree is traversed and each leaf of the domain model
-object tree (module, interface, structure, and so on) is passed to a specific Jinja template
-defined by the configuration file.
+    After the domain model tree is created, this tree is traversed and each leaf of the domain
+    model object tree (module, interface, structure, and so on) is passed to a specific Jinja
+    template defined by the configuration file.
 
-The generation YAML file defines which template is used to generate which file. For example,
-you want to generate a header file for each module in your domain model. However, a module can
-have multiple interfaces, so, you want to use a different header file for each interface as well
-as structure. In this case, the generation YAML file defines a set of rules to specify which
-template file to use and how to name them.
+    The Generation YAML file defines which template to use to generate which file. Suppose you want
+    to generate a header file for each module in your domain model. But, a module can have multiple
+    interfaces, so, you want to use a different header file for each interface and structure. In
+    this case, the Generation YAML file defines a set of rules to specify which template file to
+    use and how to name them.
 
-This YAML file must have the following structure:
+    This YAML file must have the following structure:
 
-\code
-generate_rules:
-    module_rules:
-        -   dest_file:  "{{module.module_name|lower}}plugin.h"
-          template_file:  "plugin.h.tpl"
-    interface_rules:
-        -   dest_file: '{{interface|lower}}backend.h'
-          template_file: 'backend.h.tpl'
-    struct_rules:
-\endcode
+    \code
+    generate_rules:
+        module_rules:
+            -   dest_file:  "{{module.module_name|lower}}plugin.h"
+            template_file:  "plugin.h.tpl"
+        interface_rules:
+            -   dest_file: '{{interface|lower}}backend.h'
+            template_file: 'backend.h.tpl'
+        struct_rules:
+    \endcode
 
-For every entity there is a list of templates needed to be called when traversing this entity
-in the domain model tree. Here, \e{dest_file} is a name of the file need to be created specified in
-the \l {Jinja template syntax}{Jinja template language} format: the value of the object property
-used in the name template will be processed and substituted into the template, thus forming the
-final name of the file to create. \e{dest_file} is a name of the template to be used. For the IVI
-generator, rules for three kinds of entities need to be specified: modules, interfaces and
-structures.
+    For every entity, there's a list of templates that must be called, when traversing this entity
+    in the domain model tree. Here, \e{dest_file} is a name of the file that needs to be created,
+    as specified in the \l {Jinja template syntax}{Jinja template language} format. The value of
+    the object property used in the template's name is processed and substituted into the template,
+    thus forming the final name of the file to create. \e{dest_file} is the name of the template to
+    use. For the IVI generator, you must specify rules for three kinds of entities: modules,
+    interfaces and structures.
 
-\section2 Annotations YAML
+    \section2 Annotations YAML
 
-At the moment not all aspects of the interface description cannot be expressed using the IDL
-itself. For instance there is no language construct to define default value for the property or
-values the property can take on. Still this can be achieved via a mechanism called \l
-{annotations_reference} {Annotations}. Annotations allow great freedom and flexibility of
-expressing any concepts and constructs.
+    Currently, not all aspects of the interface description can be expressed using the IDL itself.
+    For instance, there is no language construct to define a default value for a property or a
+    range of valid values a property can take. Still, this can be achieved via a mechanism called
+    \l{annotations_reference}{Annotations}. Annotations provide freedom and flexibility to express
+    any concepts and constructs.
 
-Below is an example of using annotations in the IDL. Here it's defined that interface is zoned and
-its identifier is specified.
+    The code snippet below shows an example of using annotations in the IDL. Here, we define an
+    interface that is zoned, and specify its ID.
 
-\code
-@config: {zoned: true, id: "org.qt-project.qtivi.ClimateControl/1.2" }
-\endcode
+    \code
+    @config: {zoned: true, id: "org.qt-project.qtivi.ClimateControl/1.2"}
+    \endcode
 
-Not all of the annotations make sense to be put in the main IDL file either. For instance, one may
-need to define some aspects of generation of the auto-testing code. Such annotations can be put in
-the YAML file accompanying the main IDL file and named after it. During the parse phase
-QFace picks this file up automatically and merges annotation specified in this YAML file with those
-defined in the IDL file.
+    It does not make sense to place all of the annotations in the main IDL file. For instance, you
+    may need to define some aspects of the auto-test code generation. Such annotations can be put
+    in the YAML file that accompanies the main IDL file, with the same name. During the parse phase
+    QFace automatically picks this file up and merges the annotation specified in this YAML file
+    with those defined in the IDL file.
 
-As the accompanying YAML file is automatically picked up in all cases, this doesn't work for
-annoations which are only needed for some specific projects e.g. when generating a backend plugin.
-For this use case you can pass multiple additional annotation YAML files to the generator.
+    Since the accompanying YAML file is always picked up automatically, it won't work for
+    annotations that you need for some specific projects, such as when generating a backend plugin.
+    For this use case, you can pass multiple additional annotation YAML files to the generator.
 
-For QtIvi there are following annotations used for the IDL definition:
+    In QtIvi, the following annotations are used to define IDLs:
 
-\table
-    \header
-        \li Tag
-        \li Where
-        \li Object type
-        \li Purpose
-    \row
-        \li @config(interfaceBuilder: "FunctionName")
-        \li Main IDL file
-        \li Module
-        \li Declares a function which will be called in the plugin to generate the instances for every interface.
-        The function takes a pointer to the plugin instance and returns a \c {QVector<QIviFeatureInterface *>}.
-        Interfaces should be generated in the same order as defined by \c {Plugin::interfaces()}.
+    \table
+        \header
+            \li Tag
+            \li Where
+            \li Object type
+            \li Purpose
+        \row
+            \li @config(interfaceBuilder: "FunctionName")
+            \li Main IDL file
+            \li Module
+            \li Declares a function that is called in the plugin to generate the instances for
+                every interface. The function takes a pointer to the plugin instance and returns a
+                \c {QVector<QIviFeatureInterface *>}. Interfaces should be generated in the same
+                order as defined by \c {Plugin::interfaces()}. Use this tag to instantiate classes
+                derived from the generated plugin interfaces' classes.
+        \row
+            \li @config(zoned)
+            \li Main IDL file
+            \li Interface
+            \li Tells the generator whether the interface is zoned or not. Use this tag to define
+                whether the backend feature interface is derived from QIviZonedFeatureInterface or
+                QIviFeatureInterface.
+        \row
+            \li @config(id=org.qt.project.qtivi.ClimateControl.1.0)
+            \li Main IDL file
+            \li Interface
+            \li Defines the interface ID, which is a string used by the QtIvi service manager to
+                glue a frontend interface with its backend implementation. For more information,
+                see \l {Dynamic Backend System}.
+        \row
+            \li @config(getter_name)
+            \li Main IDL file
+            \li Property
+            \li Overrides the default getter method's name. Useful for boolean properties, such as
+                the getter for a property: 'enabled', should be 'isEnabled' instead of the default.
+        \row
+            \li @config(setter_name)
+            \li Main IDL file
+            \li Property
+            \li Overrides the default setter method's name.
+        \row
+            \li @config(qml_name), @config(qml_type)
+            \li Main IDL file
+            \li Module, Interface
+            \li Defines the name this interface or module should use in QML. For interfaces, it is
+                the name which is used to export the interface to QML. For modules, it defines the
+                URI of the complete module. The last part of the URI is also used for the singleton
+                that exports all enums to QML.
+    \endtable
 
-        This can be used to instanciate classes derived from the generated plugin interfaces classes.
-    \row
-        \li @config(zoned)
-        \li Main IDL file
-        \li Interface
-        \li tells the generator whether the interface is zoned or not. This allows to define
-        whether the backend feature interface is derived from QIviZonedFeatureInterface or from
-        QIviFeatureInterface
-    \row
-        \li @config(id=org.qt.project.qtivi.ClimateControl.1.0)
-        \li Main IDL file
-        \li Interface
-        \li defines the interface id. The id is a string used by the QtIvi service manager to glue
-        frontend interface and backend implementation together. See \l {Dynamic Backend System}
-        for more details.
-    \row
-        \li @config(getter_name)
-        \li Main IDL file
-        \li Property
-        \li Overrides the default getter method name. Useful for boolean properties (for example, getter
-        for property 'enabled', should be 'isEnabled' rather than the default).
-    \row
-        \li @config(setter_name)
-        \li Main IDL file
-        \li Property
-        \li Overrides the default setter method name.
-    \row
-        \li @config(qml_name), @config(qml_type)
-        \li Main IDL file
-        \li Module, Interface
-        \li Defines the name this interface/module should be using in QML. For interfaces, it is the
-            name which is used to export the interface to QML. For modules it defines the uri of the
-            complete module. The last part of the uri is also used for the singleton which exports
-            all enums to QML.
-\endtable
+    Annotations that are not logically part of the interface description, but rather the ones used
+    to specify additional information, are put in the accompanying YAML file. Here is a list of
+    annotations used to define the various aspects of generating a backend-simulator:
 
-The annotations that are not logically part of the interface description but rather the ones used
-for specifying additional information are put in the accompanying YAML file. Here is the list of
-annotations used for defining various aspects of the generation of the backend-simulator:
+    \table
+        \header
+            \li Tag
+            \li Where
+            \li Object type
+            \li Purpose
+        \row
+            \li
+            \target config_simulator_simulationFile
+            \code
+            config_simulator:
+                simulationFile: ":/qrc/simulation.qml"
+            \endcode
+            \li Accompanying YAML file
+            \li Module
+            \li Defines which simulation QML file the simulation backend should load. The snippet
+                provided loads the QML file from the resource system, which the developer needs to
+                embed.
+        \row
+            \li
+            \code
+            config_simulator:
+                zones: { FrontLeft, FrontRight, Rear }
+            \endcode
+            \li Accompanying YAML file
+            \li Interface
+            \li Defines a list of zones that the simulation code should support, for the backend
+                simulator.
+        \row
+            \li
+            \target config_simulator_default
+            \code
+            config_simulator:
+            default: AirflowDirection.Floor |
+                     AirflowDirection.Dashboard
+            \endcode
+            \li Accompanying YAML file
+            \li Property
+            \li Defines the initial values for the property returned by the simulator backend.
 
-\table
-    \header
-        \li Tag
-        \li Where
-        \li Object type
-        \li Purpose
-    \row
-        \li
-        \target config_simulator_simulationFile
-        \code
-        config_simulator:
-             simulationFile: ":/qrc/simulation.qml"
-        \endcode
-        \li Accompanying YAML file
-        \li Module
-        \li Defines which simulation QML file should be loaded by the simulation backend. The
-        provided snippet loads the QML file from the resource system, which needs to be embedded
-        by the developer.
-    \row
-        \li
-        \code
-        config_simulator:
-             zones: { FrontLeft, FrontRight, Rear }
-        \endcode
-        \li Accompanying YAML file
-        \li Interface
-        \li For the backend simulator defines a list of zones supported by the simulation code.
-    \row
-        \li
-        \target config_simulator_default
-        \code
-        config_simulator:
-        default: AirflowDirection.Floor | AirflowDirection.Dashboard
-        \endcode
-        \li Accompanying YAML file
-        \li Property
-        \li Defines the initial values for the property returned by the simulator backend.
-
-        For zoned properties a mapping from a zone to a default value can be used. The default key of the map is "=".
-        \code
-        config_simulator:
-        default: { FrontLeft: 21.0, FrontRight: 22.5, =: 0.0 }
-        \endcode
-    \row
-        \li \code
-        config_simulator:
-        minimum: 10
-        \endcode
-        \li Accompanying YAML file
-        \li Property
-        \li Defines the minimum value for integer and real properties, generated code in the simulator backend will check for validity.
-    \row
-        \li \code
-        config_simulator:
-        maximum: 10
-        \endcode
-        \li Accompanying YAML file
-        \li Property
-        \li Defines the maximum value for integer and real properties, generated code in the simulator backend will check for validity.
-    \row
-        \li \code
-        config_simulator:
-        range: [10, 20]
-        \endcode
-        \li Accompanying YAML file
-        \li Property
-        \li Defines the range value for integer and real properties, generated code in the simulator backend will check for validity.
-    \row
-        \li \code
-        config_simulator:
-        domain: {10, 20, 30}
-        \endcode
-        \li Accompanying YAML file
-        \li Property
-        \li Defines the possible values for the property, generated code in the simulator backend will check for validity.
-\endtable
+            For zoned properties, you can map a zone to a default value. The default key of the map
+            is "=".
+            \code
+            config_simulator:
+            default: { FrontLeft: 21.0, FrontRight: 22.5, =: 0.0 }
+            \endcode
+        \row
+            \li \code
+            config_simulator:
+            minimum: 10
+            \endcode
+            \li Accompanying YAML file
+            \li Property
+            \li Defines the minimum value for integer and real properties; the generated code in
+                the simulator backend validates the value.
+        \row
+            \li \code
+            config_simulator:
+            maximum: 10
+            \endcode
+            \li Accompanying YAML file
+            \li Property
+            \li Defines the maximum value for integer and real properties; the generated code in
+                the simulator backend validates the value.
+        \row
+            \li \code
+            config_simulator:
+            range: [10, 20]
+            \endcode
+            \li Accompanying YAML file
+            \li Property
+            \li Defines the range value for integer and real properties; the generated code in the
+                simulator backend validates the value.
+        \row
+            \li \code
+            config_simulator:
+            domain: {10, 20, 30}
+            \endcode
+            \li Accompanying YAML file
+            \li Property
+            \li Defines the possible values for the property; the generated code in the simulator
+                backend validates the value.
+    \endtable
 
 
-\section1 Generated projects structure
+    \section1 Structure for Generated Projects
 
-In the generator output directory first a new subfolder with the name of the module id will be
-created. All the generated files will be put in this folder. The following files will be generated:
+    In the generator output directory, first, a new subfolder is created and named after the module ID.
+    All the generated files are placed in this folder. The tables below describe the files that are
+    generated for the frontend and backend.
 
-\section2 Frontend
+    \section2 Frontend
 
-Generates a QML-friendly C++ API based on the \l {Dynamic Backend System}.
+    Generates a QML-friendly C++ API based on the \l {Dynamic Backend System}.
 
-\table
-    \header
-        \li File name
-        \li Purpose
-    \row
-        \li "{{module.module_name|lower}}global.h"
-        \li Standard file with global EXPORT defines.
-    \row
-        \li "{{module.module_name|lower}}module.h/cpp"
-        \li Files defining a module class used for module global variables and types.
-    \row
-        \li "{{module.module_name|lower}}module_enum.qdocinc"
-        \li Documentation for all values of all enums which can be included by qdoc.
-    \row
-        \li "{{module.module_name|lower}}modulefactory.h/cpp"
-        \li Files defining a module factory class used for factory methods for all structs.
-    \row
-        \li "{{module|lower|replace('.', '-')}}.pri"
-        \li A standard Qt \c{.pri} file that contains all the generated files. Use this \c{.pri}
-        file to include the generated files into a qmake project.
-    \row
-        \li "qml/{{module|qml_type|replace('.', '/')}}/plugins.qmltypes"
-        \li QML code-completion file for use in QtCreator.
-    \row
-        \li "{{interface|lower}}backendinterface.h/cpp"
-        \li Files defining the interface need to be implemented by the backend implementation of
-        the feature.
-    \row
-        \li "{{interface|lower}}.h/cpp"
-        \li Frontend implementation of the feature, ready to be used from QML.
-    \row
-        \li "{{interface|lower}}_p.h"
-        \li Private part of the frontend implementation.
-    \row
-        \li "{{struct|lower}}.h/cpp"
-        \li Frontend implementation for the struct, implemented as Q_GADGET.
-\endtable
+    \table
+        \header
+            \li Filename
+            \li Purpose
+        \row
+            \li "{{module.module_name|lower}}global.h"
+            \li Standard file with global EXPORT defines.
+        \row
+            \li "{{module.module_name|lower}}module.h/cpp"
+            \li Files defining a module class used for module global variables and types.
+        \row
+            \li "{{module.module_name|lower}}module_enum.qdocinc"
+            \li Documentation for all values of all enums which can be included by qdoc.
+        \row
+            \li "{{module.module_name|lower}}modulefactory.h/cpp"
+            \li Files defining a module factory class used for factory methods for all structs.
+        \row
+            \li "{{module|lower|replace('.', '-')}}.pri"
+            \li A standard Qt \c{.pri} file that contains all the generated files. Use this
+                \c{.pri} file to include the generated files into a qmake project.
+        \row
+            \li "qml/{{module|qml_type|replace('.', '/')}}/plugins.qmltypes"
+            \li QML code-completion file for use in QtCreator.
+        \row
+            \li "{{interface|lower}}backendinterface.h/cpp"
+            \li Files defining the interface need to be implemented by the backend implementation
+                of the feature.
+        \row
+            \li "{{interface|lower}}.h/cpp"
+            \li Frontend implementation of the feature, ready to be used from QML.
+        \row
+            \li "{{interface|lower}}_p.h"
+            \li Private part of the frontend implementation.
+        \row
+            \li "{{struct|lower}}.h/cpp"
+            \li Frontend implementation for the struct, implemented as Q_GADGET.
+    \endtable
 
-\section2 Backend simulator
+    \section2 Backend Simulator
 
-Provides a simulator backend using the QIviSimulationEngine to implement the simulation behavior in
-QML files.
+    Provides a simulator backend using the QIviSimulationEngine to implement the simulation
+    behavior in QML files.
 
-\table
-    \header
-        \li File name
-        \li Purpose
-    \row
-        \li "{{module.module_name|lower}}plugin.h/cpp"
-        \li Files defining implementation of QtIvi backend plugin implementing
-        QIviServiceInterface.
-    \row
-        \li "{{module.module_name|lower}}.json"
-        \li File containing identifiers of the exposed feature interfaces needed by the Qt plugin
-        system.
-    \row
-        \li "{{module|lower|replace('.', '-')}}.pri"
-        \li A standard Qt \c{.pri} file that contains all the generated files. Use this \c{.pri}
-        file to include the generated files into a qmake project.
-    \row
-        \li "{{module.module_name|lower}}_simulation.qml"
-        \li QML simulation file that loads the interface specific QML simulation files.
-    \row
-        \li "{{module.module_name|lower}}_simulation_data.json"
-        \li Simulation data exported from the config_simulator annotations.
-    \row
-        \li "{{module.module_name|lower}}.qrc"
-        \li Qt Resource file that contains the QML and JSON files.
-    \row
-        \li "qml/{{module|qml_type|replace('.', '/')}}/plugins.qmltypes"
-        \li QML code-completion file for use in QtCreator.
-    \row
-        \li "qml/{{module|qml_type|replace('.', '/')}}/simulation/plugins.qmltypes"
-        \li QML code-completion file for use in QtCreator for the simulation API.
-    \row
-        \li "{{interface|lower}}backend.h/cpp"
-        \li Files containing the implementation of the simulation backend.
-    \row
-        \li "{{interface|upperfirst}}Simulation.qml"
-        \li Interface-specific QML simulation files.
-\endtable
+    \table
+        \header
+            \li Filename
+            \li Purpose
+        \row
+            \li "{{module.module_name|lower}}plugin.h/cpp"
+            \li Files defining implementation of QtIvi backend plugin implementing
+                QIviServiceInterface.
+        \row
+            \li "{{module.module_name|lower}}.json"
+            \li File containing identifiers of the exposed feature interfaces needed by the Qt
+                plugin system.
+        \row
+            \li "{{module|lower|replace('.', '-')}}.pri"
+            \li A standard Qt \c{.pri} file that contains all the generated files. Use this \c{.pri}
+                file to include the generated files into a qmake project.
+        \row
+            \li "{{module.module_name|lower}}_simulation.qml"
+            \li QML simulation file that loads the interface specific QML simulation files.
+        \row
+            \li "{{module.module_name|lower}}_simulation_data.json"
+            \li Simulation data exported from the config_simulator annotations.
+        \row
+            \li "{{module.module_name|lower}}.qrc"
+            \li Qt Resource file that contains the QML and JSON files.
+        \row
+            \li "qml/{{module|qml_type|replace('.', '/')}}/plugins.qmltypes"
+            \li QML code-completion file for use in QtCreator.
+        \row
+            \li "qml/{{module|qml_type|replace('.', '/')}}/simulation/plugins.qmltypes"
+            \li QML code-completion file for use in QtCreator for the simulation API.
+        \row
+            \li "{{interface|lower}}backend.h/cpp"
+            \li Files containing the implementation of the simulation backend.
+        \row
+            \li "{{interface|upperfirst}}Simulation.qml"
+            \li Interface-specific QML simulation files.
+    \endtable
 
-\section2 QtRemoteObjects Backend
+    \section2 QtRemoteObjects Backend
 
-The backend_qtro template is only available if the QtRemoteObjects module was found. Despite the
-name, the remote object backend is not the location for the implementation of the actual backend
-logic, but just a client for connecting to the remote backend server.
+    The backend_qtro template is only available if qmake finds the QtRemoteObjects module. This
+    remote object backend is a client for connecting to the remote backend server; not the location
+    to implement the actual backend logic.
 
-\table
-    \header
-        \li File name
-        \li Purpose
-    \row
-        \li "{{module.module_name|lower}}plugin.h/cpp"
-        \li Files that define the implementation of the QtIvi backend plugin, which implements
-        QIviServiceInterface.
-    \row
-        \li "{{module.module_name|lower}}.json"
-        \li File containing identifiers of the exposed feature interfaces needed by the Qt plugin
-        system.
-    \row
-        \li "{{module|lower|replace('.', '-')}}.pri"
-        \li A standard Qt \c{.pri} file that contains all the generated files. Use this \c{.pri}
-        file to include the generated files into a qmake project. Also includes the \c{.rep} file
-        to the project and calls the remote object compiler.
-    \row
-        \li "{{interface|lower}}backend.h/cpp"
-        \li Files containing the implementation of the remote object backend.
-        Establishes the connection and initializes the remote object replica.
-    \row
-        \li "{{interface|lower}}.rep"
-        \li The input file for Qt’s
-        \l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the
-        replica class code.
-    \row
-        \li "pagingmodel.rep"
-        \li The input file for Qt’s
-        \l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the
-        replica class code for all models.
-\endtable
+    \table
+        \header
+            \li Filename
+            \li Purpose
+        \row
+            \li "{{module.module_name|lower}}plugin.h/cpp"
+            \li Files that define the implementation of the QtIvi backend plugin, which implements
+            QIviServiceInterface.
+        \row
+            \li "{{module.module_name|lower}}.json"
+            \li File containing identifiers of the exposed feature interfaces needed by the Qt plugin
+            system.
+        \row
+            \li "{{module|lower|replace('.', '-')}}.pri"
+            \li A standard Qt \c{.pri} file that contains all the generated files. Use this \c{.pri}
+            file to include the generated files into a qmake project. Also includes the \c{.rep} file
+            to the project and calls the remote object compiler.
+        \row
+            \li "{{interface|lower}}backend.h/cpp"
+            \li Files containing the implementation of the remote object backend.
+            Establishes the connection and initializes the remote object replica.
+        \row
+            \li "{{interface|lower}}.rep"
+            \li The input file for Qt’s
+            \l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the
+            replica class code.
+        \row
+            \li "pagingmodel.rep"
+            \li The input file for Qt’s
+            \l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the
+            replica class code for all models.
+    \endtable
 
-\section2 QtRemoteObjects Server
+    \section2 QtRemoteObjects Server
 
-The server_qtro template is only available if the QtRemoteObjects module was found. The produced
-code contains merely the source classes to inherit and code for establishing the connection. It is
-up to the developer to implement the actual backend logic.
+    The server_qtro template is only available if qmake finds the QtRemoteObjects module. The
+    code produced only contains the source classes to inherit and the code for establishing the
+    connection. The developer must implement the actual backend logic.
 
-\table
-    \header
-        \li File name
-        \li Purpose
-    \row
-        \li "core.h/cpp"
-        \li Code for establishing the connection and starting the remoting for the source objects.
-    \row
-        \li "{{srcBase|lower}}.pri"
-        \li A standard Qt \c{.pri} file that contains all the generated files. Use this \c{.pri}
-        file to include the generated files into a qmake project. Also includes the \c{.rep} file
-        to the project and calls the remote object compiler.
-    \row
-        \li "{{interface|lower}}.rep"
-        \li The input file for the Qt’s
-        \l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the
-        source class code.
-    \row
-        \li "pagingmodel.rep"
-        \li The input file for Qt’s
-        \l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the
-        replica class code for all models.
-\endtable
+    \table
+        \header
+            \li Filename
+            \li Purpose
+        \row
+            \li "core.h/cpp"
+            \li Code for establishing the connection and starting the remoting for the source
+                objects.
+        \row
+            \li "{{srcBase|lower}}.pri"
+            \li A standard Qt \c{.pri} file that contains all the generated files. Use this \c{.pri}
+                file to include the generated files into a qmake project. Also includes the \c{.rep}
+                file to the project and calls the remote object compiler.
+        \row
+            \li "{{interface|lower}}.rep"
+            \li The input file for the Qt’s
+            \l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the
+            source class code.
+        \row
+            \li "pagingmodel.rep"
+            \li The input file for Qt’s
+                \l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the
+                replica class code for all models.
+    \endtable
 
-\section2 QtRemoteObjects Simulation Server
+    \section2 QtRemoteObjects Simulation Server
 
-The server_qtro_simulator template is only available if the QtRemoteObjects module was found. The
-produced code contains a fully implemented server which uses the same implementation than the
-backend_simulator template using the QIviSimulationEngine to implement the simulation behavior in
-QML.
+    The server_qtro_simulator template is only available if qmake finds the QtRemoteObjects module.
+    The code produced contains a fully-implemented server that uses the same implementation as the
+    backend_simulator template, which uses the QIviSimulationEngine to implement the simulation
+    behavior in QML.
 
-\table
-    \header
-        \li File name
-        \li Purpose
-    \row
-        \li "{{module.module_name|lower}}_simulation.qml"
-        \li QML simulation file which loads the interface specific QML simulation files.
-    \row
-        \li "{{module.module_name|lower}}_simulation_data.json"
-        \li Simulation data exported from the config_simulator annotations.
-    \row
-        \li "{{module.module_name|lower}}.qrc"
-        \li Qt Resource file which contains the QML and JSON files.
-    \row
-        \li "qml/{{module|qml_type|replace('.', '/')}}/plugins.qmltypes"
-        \li QML code-completion file for use in QtCreator.
-    \row
-        \li "qml/{{module|qml_type|replace('.', '/')}}/simulation/plugins.qmltypes"
-        \li QML code-completion file for use in QtCreator for the simulation API.
-    \row
-        \li "core.h/cpp"
-        \li Code for establishing the connection and starting the remoting for the source objects.
-    \row
-        \li "main.cpp"
-        \li The main file.
-    \row
-        \li "{{srcBase|lower}}.pri"
-        \li A standard Qt \c{.pri} file that contains all the generated files. Use this \c{.pri}
-        file to include the generated files into a qmake project. Also includes the \c{.rep| file
-        to the project and calls the remote object compiler.
-    \row
-        \li "{{interface|lower}}.rep"
-        \li The input file for the Qt’s
-        \l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the
-        source class code.
-    \row
-        \li "{{interface|lower}}adapter.h/cpp"
-        \li QtRemoteObjects Adapter classes for the backend implementations.
-    \row
-        \li "pagingmodel.rep"
-        \li The input file for Qt’s
-        \l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the
-        replica class code for all models.
-    \row
-        \li "{{interface|lower}}backend.h/cpp"
-        \li Files that contain the simulation backend implementation.
-    \row
-        \li "{{interface|upperfirst}}Simulation.qml"
-        \li Interface-specific QML simulation files.
-\endtable
+    \table
+        \header
+            \li Filename
+            \li Purpose
+        \row
+            \li "{{module.module_name|lower}}_simulation.qml"
+            \li QML simulation file which loads the interface specific QML simulation files.
+        \row
+            \li "{{module.module_name|lower}}_simulation_data.json"
+            \li Simulation data exported from the config_simulator annotations.
+        \row
+            \li "{{module.module_name|lower}}.qrc"
+            \li Qt Resource file which contains the QML and JSON files.
+        \row
+            \li "qml/{{module|qml_type|replace('.', '/')}}/plugins.qmltypes"
+            \li QML code-completion file for use in QtCreator.
+        \row
+            \li "qml/{{module|qml_type|replace('.', '/')}}/simulation/plugins.qmltypes"
+            \li QML code-completion file for use in QtCreator for the simulation API.
+        \row
+            \li "core.h/cpp"
+            \li Code for establishing the connection and starting the remoting for the source objects.
+        \row
+            \li "main.cpp"
+            \li The main file.
+        \row
+            \li "{{srcBase|lower}}.pri"
+            \li A standard Qt \c{.pri} file that contains all the generated files. Use this \c{.pri}
+                file to include the generated files into a qmake project. Also includes the \c{.rep}
+                file to the project and calls the remote object compiler.
+        \row
+            \li "{{interface|lower}}.rep"
+            \li The input file for the Qt’s
+                \l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the
+                source class code.
+        \row
+            \li "{{interface|lower}}adapter.h/cpp"
+            \li QtRemoteObjects Adapter classes for the backend implementations.
+        \row
+            \li "pagingmodel.rep"
+            \li The input file for Qt’s
+                \l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the
+            replica class code for all models.
+        \row
+            \li "{{interface|lower}}backend.h/cpp"
+            \li Files that contain the simulation backend implementation.
+        \row
+            \li "{{interface|upperfirst}}Simulation.qml"
+            \li Interface-specific QML simulation files.
+    \endtable
+
 */
