@@ -37,7 +37,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% include "generated_comment.cpp.tpl" %}
+{% include "common/generated_comment.cpp.tpl" %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned  %}
 #include <QtTest>
 

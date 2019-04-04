@@ -45,7 +45,7 @@
 // WARNING! All changes made in this file will be lost!
 /////////////////////////////////////////////////////////////////////////////
 {% set class = '{0}'.format(interface) %}
-{% import 'qtivi_macros.j2' as ivi %}
+{% import 'common/qtivi_macros.j2' as ivi %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
 {% if interface.module.tags.config.module %}
 #include <{{interface.module.tags.config.module}}/{{module.module_name|lower}}module.h>

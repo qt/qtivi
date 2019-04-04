@@ -39,8 +39,8 @@
 #}
 {% set class = '{0}Module'.format(module.module_name|upperfirst) %}
 {% set qml_name = (module|qml_type).split('.')[-1]|upperfirst %}
-{% include 'generated_comment.cpp.tpl' %}
-{% import 'qtivi_macros.j2' as ivi %}
+{% include 'common/generated_comment.cpp.tpl' %}
+{% import 'common/qtivi_macros.j2' as ivi %}
 
 #include "{{class|lower}}.h"
 #include "{{class|lower}}factory.h"

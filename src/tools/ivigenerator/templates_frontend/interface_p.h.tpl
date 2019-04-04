@@ -36,7 +36,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% import 'qtivi_macros.j2' as ivi %}
+{% import 'common/qtivi_macros.j2' as ivi %}
 {% set class = '{0}'.format(interface) %}
 {% if interface.tags.config.zoned %}
 {%   set base_class = 'QIviAbstractZonedFeature' %}
@@ -44,7 +44,7 @@
 {%   set base_class = 'QIviAbstractFeature' %}
 {% endif %}
 {% set oncedefine = '{0}_{1}PRIVATE_H_'.format(module.module_name|upper, class|upper) %}
-{% include 'generated_comment.cpp.tpl' %}
+{% include 'common/generated_comment.cpp.tpl' %}
 
 #ifndef {{oncedefine}}
 #define {{oncedefine}}

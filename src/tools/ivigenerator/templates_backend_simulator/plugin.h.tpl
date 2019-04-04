@@ -38,7 +38,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% include "generated_comment.cpp.tpl" %}
+{% include "common/generated_comment.cpp.tpl" %}
 {% set class = '{0}Plugin'.format(module.module_name|upperfirst) %}
 {% set oncedefine = '{0}_{1}_H_'.format(module.module_name|upper, class|upper) %}
 

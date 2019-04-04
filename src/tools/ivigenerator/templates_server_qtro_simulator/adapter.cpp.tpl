@@ -36,8 +36,8 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% import 'qtivi_macros.j2' as ivi %}
-{% include "generated_comment.cpp.tpl" %}
+{% import 'common/qtivi_macros.j2' as ivi %}
+{% include "common/generated_comment.cpp.tpl" %}
 {% set class = '{0}QtRoAdapter'.format(interface) %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
 #include "{{interface|lower}}adapter.h"

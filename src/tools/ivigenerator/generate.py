@@ -761,7 +761,7 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
             print('no such annotation file: {0}'.format(annotations_file))
             exit(1)
         FileSystem.merge_annotations(system, Path(annotations_file))
-    generator = Generator(search_path=[tplconfig, here / "common"])
+    generator = Generator(search_path=[tplconfig, here])
     generator.register_filter('return_type', return_type)
     generator.register_filter('parameter_type_default', parameter_type_default)
     generator.register_filter('parameter_type', parameter_type)

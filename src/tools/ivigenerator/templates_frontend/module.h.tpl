@@ -40,7 +40,7 @@
 {% set exportsymbol = 'Q_{0}_EXPORT'.format(module|upper|replace('.', '_')) %}
 {% set class = '{0}Module'.format(module.module_name|upperfirst) %}
 {% set oncedefine = '{0}_H_'.format(class|upper) %}
-{% include 'generated_comment.cpp.tpl' %}
+{% include 'common/generated_comment.cpp.tpl' %}
 
 #ifndef {{oncedefine}}
 #define {{oncedefine}}

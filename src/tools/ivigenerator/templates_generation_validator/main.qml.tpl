@@ -38,7 +38,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% include "generated_comment.cpp.tpl" %}
+{% include "common/generated_comment.cpp.tpl" %}
 
 import QtQuick 2.7
 import QtQuick.Window 2.2

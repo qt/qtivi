@@ -9,12 +9,12 @@ generate_rules:
         -   dest_file:  "{{srcBase|lower}}.pri"
             template_file:  "plugin.pri.tpl"
         -   dest_file:  "pagingmodel.rep"
-            template_file:  "pagingmodel.rep.tpl"
+            template_file:  "common/pagingmodel.rep.tpl"
     interface_rules:
         -   dest_file: '{{interface|lower}}backend.h'
             template_file: 'backend.h.tpl'
         -   dest_file: '{{interface|lower}}backend.cpp'
             template_file: 'backend.cpp.tpl'
         -   dest_file:  "{{interface|lower}}.rep"
-            template_file:  "interface.rep.tpl"
+            template_file:  "common/interface.rep.tpl"
     struct_rules:

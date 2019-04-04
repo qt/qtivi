@@ -38,7 +38,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% include "generated_comment.cpp.tpl" %}
+{% include "common/generated_comment.cpp.tpl" %}
 #include "generationstatusitem.h"
 #include "validationstatus.h"
 {% for iface in module.interfaces %}

@@ -38,9 +38,9 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% import 'qtivi_macros.j2' as ivi %}
+{% import 'common/qtivi_macros.j2' as ivi %}
 {% set class = '{0}'.format(struct) %}
-{% include 'generated_comment.cpp.tpl' %}
+{% include 'common/generated_comment.cpp.tpl' %}
 
 #include "{{class|lower}}.h"
 

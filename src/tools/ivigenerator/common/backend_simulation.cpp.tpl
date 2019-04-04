@@ -38,8 +38,8 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% import 'qtivi_macros.j2' as ivi %}
-{% include "generated_comment.cpp.tpl" %}
+{% import 'common/qtivi_macros.j2' as ivi %}
+{% include "common/generated_comment.cpp.tpl" %}
 {% set class = '{0}Backend'.format(interface) %}
 {% set zone_class = '{0}Zone'.format(interface) %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
@@ -50,7 +50,7 @@
 
 {% for property in interface.properties %}
 {%   if property.type.is_model %}
-{% include "pagingmodel_simulation.cpp.tpl" %}
+{% include "common/pagingmodel_simulation.cpp.tpl" %}
 {%   endif %}
 {% endfor %}
 

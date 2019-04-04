@@ -7,8 +7,8 @@ generate_rules:
         -   dest_file:  "{{srcBase|lower}}.pri"
             template_file:  "server.pri.tpl"
         -   dest_file:  "pagingmodel.rep"
-            template_file:  "pagingmodel.rep.tpl"
+            template_file:  "common/pagingmodel.rep.tpl"
     interface_rules:
         -   dest_file:  "{{interface|lower}}.rep"
-            template_file:  "interface.rep.tpl"
+            template_file:  "common/interface.rep.tpl"
     struct_rules:

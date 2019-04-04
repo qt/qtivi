@@ -39,7 +39,7 @@
 #}
 {% set class = '{0}ModuleFactory'.format(module.module_name|upperfirst) %}
 {% set qml_name = (module|qml_type).split('.')[-1]|upperfirst %}
-{% include 'generated_comment.cpp.tpl' %}
+{% include 'common/generated_comment.cpp.tpl' %}
 
 #include "{{class|lower}}.h"
 

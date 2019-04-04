@@ -15,9 +15,9 @@ generate_rules:
         - dest_file:  "{{srcBase|lower}}.pri"
           template_file:  "module.pri.tpl"
         - dest_file: "qml/{{module|qml_type|replace('.', '/')}}/plugins.qmltypes"
-          template_file:  "plugins.qmltypes.tpl"
+          template_file:  "common/plugins.qmltypes.tpl"
         - dest_file: "qml/{{module|qml_type|replace('.', '/')}}/qmldir"
-          template_file:  "qmldir.tpl"
+          template_file:  "common/qmldir.tpl"
     interface_rules:
         - dest_file: '{{interface|lower}}backendinterface.h'
           template_file: 'backendinterface.h.tpl'

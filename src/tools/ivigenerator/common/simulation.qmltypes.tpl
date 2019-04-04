@@ -36,7 +36,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% import 'qtivi_macros.j2' as ivi %}
+{% import 'common/qtivi_macros.j2' as ivi %}
 {% set module_qml_name = (module|qml_type).split('.')[-1]|upperfirst %}
 import QtQuick.tooling 1.2
 
