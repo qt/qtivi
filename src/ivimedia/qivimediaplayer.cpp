@@ -47,6 +47,8 @@
 #include "qiviqmlconversion_helper.h"
 #include <QtIviCore/QIviServiceObject>
 #include <QtDebug>
+#include <QDataStream>
+#include <QMetaEnum>
 
 QT_BEGIN_NAMESPACE
 
@@ -579,6 +581,8 @@ void QIviMediaPlayer::connectToServiceObject(QIviServiceObject *serviceObject)
                             d, &QIviMediaPlayerPrivate::onVolumeChanged);
     QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::mutedChanged,
                             d, &QIviMediaPlayerPrivate::onMutedChanged);
+    QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::canReportCountChanged,
+                            d->m_playQueue->d_func(), &QIviPlayQueuePrivate::onCanReportCountChanged);
     QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::dataFetched,
                             d->m_playQueue->d_func(), &QIviPlayQueuePrivate::onDataFetched);
     QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::countChanged,
@@ -587,10 +591,10 @@ void QIviMediaPlayer::connectToServiceObject(QIviServiceObject *serviceObject)
                             d->m_playQueue->d_func(), &QIviPlayQueuePrivate::onDataChanged);
     QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::currentIndexChanged,
                             d->m_playQueue->d_func(), &QIviPlayQueuePrivate::onCurrentIndexChanged);
+    QObjectPrivate::connect(backend, &QIviMediaPlayerBackendInterface::initializationDone,
+                            d->m_playQueue->d_func(), &QIviPlayQueuePrivate::onInitializationDone);
 
     QIviAbstractFeature::connectToServiceObject(serviceObject);
-
-    d->m_playQueue->d_func()->resetModel();
 }
 
 /*!
@@ -600,6 +604,40 @@ void QIviMediaPlayer::clearServiceObject()
 {
     Q_D(QIviMediaPlayer);
     d->clearToDefaults();
+}
+
+QDataStream &operator <<(QDataStream &out, QIviMediaPlayer::PlayMode var)
+{
+    out << int(var);
+    return out;
+}
+
+QDataStream &operator>>(QDataStream &in, QIviMediaPlayer::PlayMode &var)
+{
+    int val;
+    in >> val;
+    QMetaEnum metaEnum = QMetaEnum::fromType<QIviMediaPlayer::PlayMode>();
+    if (metaEnum.valueToKey(val) == nullptr)
+        qWarning() << "Received an invalid enum value for type QIviMediaPlayer::PlayMode, value =" << val;
+    var = QIviMediaPlayer::PlayMode(val);
+    return in;
+}
+
+QDataStream &operator <<(QDataStream &out, QIviMediaPlayer::PlayState var)
+{
+    out << int(var);
+    return out;
+}
+
+QDataStream &operator>>(QDataStream &in, QIviMediaPlayer::PlayState &var)
+{
+    int val;
+    in >> val;
+    QMetaEnum metaEnum = QMetaEnum::fromType<QIviMediaPlayer::PlayState>();
+    if (metaEnum.valueToKey(val) == nullptr)
+        qWarning() << "Received an invalid enum value for type QIviMediaPlayer::PlayState, value =" << val;
+    var = QIviMediaPlayer::PlayState(val);
+    return in;
 }
 
 QT_END_NAMESPACE

@@ -97,23 +97,23 @@ public:
     QIviAudioTrackItem &operator=(const QIviAudioTrackItem &);
     ~QIviAudioTrackItem();
 
-    virtual QString title();
+    virtual QString title() const;
     virtual void setTitle(const QString &title);
-    virtual QString artist();
+    virtual QString artist() const;
     virtual void setArtist(const QString &artist);
-    virtual QString album();
+    virtual QString album() const;
     virtual void setAlbum(const QString &album);
-    virtual QString genre();
+    virtual QString genre() const;
     virtual void setGenre(const QString &genre);
-    virtual int year();
+    virtual int year() const;
     virtual void setYear(int year);
-    virtual int trackNumber();
+    virtual int trackNumber() const;
     virtual void setTrackNumber(int trackNumber);
-    virtual qint64 duration();
+    virtual qint64 duration() const;
     virtual void setDuration(qint64 duration);
-    virtual QUrl coverArtUrl();
+    virtual QUrl coverArtUrl() const;
     virtual void setCoverArtUrl(const QUrl &url);
-    virtual int rating();
+    virtual int rating() const;
     virtual void setRating(int rating);
     virtual QString name() const override;
     virtual QString type() const override;
@@ -125,6 +125,9 @@ private:
     QSharedDataPointer<QIviAudioTrackItemPrivate> d;
 };
 Q_DECLARE_TYPEINFO(QIviAudioTrackItem, Q_MOVABLE_TYPE);
+
+Q_QTIVIMEDIA_EXPORT QDataStream &operator<<(QDataStream &stream, const QIviAudioTrackItem &obj);
+Q_QTIVIMEDIA_EXPORT QDataStream &operator>>(QDataStream &stream, QIviAudioTrackItem &obj);
 
 QT_END_NAMESPACE
 

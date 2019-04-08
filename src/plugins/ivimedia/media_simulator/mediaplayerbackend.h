@@ -80,17 +80,16 @@ public:
     void setVolume(int volume) override;
     void setMuted(bool muted) override;
 
-    bool canReportCount() override;
-    void fetchData(int start, int count) override;
+    void fetchData(const QUuid &identifier, int start, int count) override;
 
-    void insert(int index, const QIviPlayableItem *item) override;
+    void insert(int index, const QVariant &i) override;
     void remove(int index) override;
     void move(int cur_index, int new_index) override;
 
 signals:
     void playTrack(const QUrl& url);
 public Q_SLOTS:
-    void doSqlOperation(MediaPlayerBackend::OperationType type, const QStringList &queries, int start, int count);
+    void doSqlOperation(MediaPlayerBackend::OperationType type, const QStringList &queries, const QUuid &identifier, int start, int count);
 
 private Q_SLOTS:
     void onStateChanged(QMediaPlayer::State state);

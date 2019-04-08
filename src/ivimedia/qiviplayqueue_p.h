@@ -70,8 +70,10 @@ public:
     ~QIviPlayQueuePrivate();
 
     void initialize();
+    void onInitializationDone();
     void onCurrentIndexChanged(int currentIndex);
-    void onDataFetched(const QList<QVariant> &items, int start, bool moreAvailable);
+    void onCanReportCountChanged(bool canReportCount);
+    void onDataFetched(const QUuid &identifier, const QList<QVariant> &items, int start, bool moreAvailable);
     void onCountChanged(int new_length);
     void onDataChanged(const QList<QVariant> &data, int start, int count);
     void onFetchMoreThresholdReached();
@@ -85,12 +87,14 @@ public:
     Q_DECLARE_PUBLIC(QIviPlayQueue)
 
     QIviMediaPlayer *m_player;
+    QUuid m_identifier;
     int m_currentIndex;
     int m_chunkSize;
     QList<QVariant> m_itemList;
     bool m_moreAvailable;
     int m_fetchMoreThreshold;
     int m_fetchedDataCount;
+    bool m_canReportCount;
     QIviPlayQueue::LoadingType m_loadingType;
 };
 

@@ -53,11 +53,13 @@ QIviPlayQueuePrivate::QIviPlayQueuePrivate(QIviMediaPlayer *player, QIviPlayQueu
     : QAbstractItemModelPrivate()
     , q_ptr(model)
     , m_player(player)
+    , m_identifier(QUuid::createUuid())
     , m_currentIndex(-1)
     , m_chunkSize(30)
     , m_moreAvailable(false)
     , m_fetchMoreThreshold(10)
     , m_fetchedDataCount(0)
+    , m_canReportCount(false)
     , m_loadingType(QIviPlayQueue::FetchMore)
 {
     qRegisterMetaType<QIviPlayableItem>();
@@ -81,6 +83,14 @@ void QIviPlayQueuePrivate::initialize()
                             this, &QIviPlayQueuePrivate::onFetchMoreThresholdReached);
 }
 
+void QIviPlayQueuePrivate::onInitializationDone()
+{
+    if (m_player->isInitialized())
+        return;
+
+    resetModel();
+}
+
 void QIviPlayQueuePrivate::onCurrentIndexChanged(int currentIndex)
 {
     if (m_currentIndex == currentIndex)
@@ -90,8 +100,16 @@ void QIviPlayQueuePrivate::onCurrentIndexChanged(int currentIndex)
     emit q->currentIndexChanged(currentIndex);
 }
 
-void QIviPlayQueuePrivate::onDataFetched(const QList<QVariant> &items, int start, bool moreAvailable)
+void QIviPlayQueuePrivate::onCanReportCountChanged(bool canReportCount)
 {
+    m_canReportCount = canReportCount;
+}
+
+void QIviPlayQueuePrivate::onDataFetched(const QUuid &identifier, const QList<QVariant> &items, int start, bool moreAvailable)
+{
+    if (m_identifier != identifier)
+        return;
+
     if (!items.count())
         return;
 
@@ -192,6 +210,7 @@ void QIviPlayQueuePrivate::resetModel()
 
 void QIviPlayQueuePrivate::clearToDefaults()
 {
+    m_identifier = QUuid::createUuid();
     m_currentIndex = -1;
     m_chunkSize = 30;
     m_moreAvailable = false;
@@ -422,7 +441,7 @@ void QIviPlayQueue::setLoadingType(QIviPlayQueue::LoadingType loadingType)
     if (d->m_loadingType == loadingType)
         return;
 
-    if (loadingType == QIviPlayQueue::DataChanged && !d->playerBackend()->canReportCount()) {
+    if (loadingType == QIviPlayQueue::DataChanged && !d->m_canReportCount) {
         qtivi_qmlOrCppWarning(this, "The backend doesn't support the DataChanged loading type. This call will have no effect");
         return;
     }
@@ -524,7 +543,7 @@ void QIviPlayQueue::insert(int index, const QVariant &variant)
 
     Q_IVI_BACKEND(QIviPlayQueue, d->playerBackend(), "Can't insert items without a connected backend");
 
-    backend->insert(index, item);
+    backend->insert(index, variant);
 }
 
 /*!
@@ -588,7 +607,7 @@ void QIviPlayQueue::fetchMore(const QModelIndex &parent)
         return;
 
     d->m_moreAvailable = false;
-    d->playerBackend()->fetchData(d->m_fetchedDataCount, d->m_chunkSize);
+    d->playerBackend()->fetchData(d->m_identifier, d->m_fetchedDataCount, d->m_chunkSize);
 }
 
 /*!

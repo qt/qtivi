@@ -91,6 +91,9 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onStateChanged(QIviMediaIndexerControl::State state))
 };
 
+Q_QTIVIMEDIA_EXPORT QDataStream &operator<<(QDataStream &out, QIviMediaIndexerControl::State var);
+Q_QTIVIMEDIA_EXPORT QDataStream &operator>>(QDataStream &in, QIviMediaIndexerControl::State &var);
+
 QT_END_NAMESPACE
 
 #endif // QIVIMEDIAINDEXERCONTROL_H

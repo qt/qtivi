@@ -342,7 +342,7 @@ QIviAudioTrackItem::~QIviAudioTrackItem()
 {
 }
 
-QString QIviAudioTrackItem::title()
+QString QIviAudioTrackItem::title() const
 {
     return d->m_title;
 }
@@ -352,7 +352,7 @@ void QIviAudioTrackItem::setTitle(const QString &title)
     d->m_title = title;
 }
 
-QString QIviAudioTrackItem::artist()
+QString QIviAudioTrackItem::artist() const
 {
     return d->m_artist;
 }
@@ -362,7 +362,7 @@ void QIviAudioTrackItem::setArtist(const QString &artist)
     d->m_artist = artist;
 }
 
-QString QIviAudioTrackItem::album()
+QString QIviAudioTrackItem::album() const
 {
     return d->m_album;
 }
@@ -372,7 +372,7 @@ void QIviAudioTrackItem::setAlbum(const QString &album)
     d->m_album = album;
 }
 
-QString QIviAudioTrackItem::genre()
+QString QIviAudioTrackItem::genre() const
 {
     return d->m_genre;
 }
@@ -382,7 +382,7 @@ void QIviAudioTrackItem::setGenre(const QString &genre)
     d->m_genre = genre;
 }
 
-int QIviAudioTrackItem::year()
+int QIviAudioTrackItem::year() const
 {
     return d->m_year;
 }
@@ -392,7 +392,7 @@ void QIviAudioTrackItem::setYear(int year)
     d->m_year = year;
 }
 
-int QIviAudioTrackItem::trackNumber()
+int QIviAudioTrackItem::trackNumber() const
 {
     return d->m_trackNumber;
 }
@@ -402,7 +402,7 @@ void QIviAudioTrackItem::setTrackNumber(int trackNumber)
     d->m_trackNumber = trackNumber;
 }
 
-qint64 QIviAudioTrackItem::duration()
+qint64 QIviAudioTrackItem::duration() const
 {
     return d->m_duration;
 }
@@ -412,7 +412,7 @@ void QIviAudioTrackItem::setDuration(qint64 duration)
     d->m_duration = duration;
 }
 
-QUrl QIviAudioTrackItem::coverArtUrl()
+QUrl QIviAudioTrackItem::coverArtUrl() const
 {
     return d->m_coverArtUrl;
 }
@@ -422,7 +422,7 @@ void QIviAudioTrackItem::setCoverArtUrl(const QUrl &url)
     d->m_coverArtUrl = url;
 }
 
-int QIviAudioTrackItem::rating()
+int QIviAudioTrackItem::rating() const
 {
     return d->m_rating;
 }
@@ -466,6 +466,64 @@ bool QIviAudioTrackItem::operator==(const QIviAudioTrackItem &other)
             d->m_duration == other.d->m_duration &&
             d->m_coverArtUrl == other.d->m_coverArtUrl &&
             d->m_rating == other.d->m_rating);
+}
+
+QDataStream &operator<<(QDataStream &stream, const QIviAudioTrackItem &obj)
+{
+    stream << obj.id();
+    stream << obj.title();
+    stream << obj.artist();
+    stream << obj.album();
+    stream << obj.genre();
+    stream << obj.year();
+    stream << obj.trackNumber();
+    stream << obj.duration();
+    stream << obj.coverArtUrl();
+    stream << obj.rating();
+    stream << obj.url();
+    stream << QVariant(obj.data());
+    return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, QIviAudioTrackItem &obj)
+{
+    QString id;
+    QString title;
+    QString artist;
+    QString album;
+    QString genre;
+    int year;
+    int trackNumber;
+    qint64 duration;
+    QUrl coverArtUrl;
+    int rating;
+    QUrl url;
+    QVariant data;
+    stream >> id;
+    stream >> title;
+    stream >> artist;
+    stream >> album;
+    stream >> genre;
+    stream >> year;
+    stream >> trackNumber;
+    stream >> duration;
+    stream >> coverArtUrl;
+    stream >> rating;
+    stream >> url;
+    stream >> data;
+    obj.setId(id);
+    obj.setTitle(title);
+    obj.setArtist(artist);
+    obj.setAlbum(album);
+    obj.setGenre(genre);
+    obj.setYear(year);
+    obj.setTrackNumber(trackNumber);
+    obj.setDuration(duration);
+    obj.setCoverArtUrl(coverArtUrl);
+    obj.setRating(rating);
+    obj.setUrl(url);
+    obj.setData(data.toMap());
+    return stream;
 }
 
 /*!

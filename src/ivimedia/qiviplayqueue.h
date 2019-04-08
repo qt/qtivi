@@ -123,7 +123,8 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QIviPlayQueue)
     Q_PRIVATE_SLOT(d_func(), void onCurrentIndexChanged(int currentIndex))
-    Q_PRIVATE_SLOT(d_func(), void onDataFetched(const QList<QVariant> &items, int start, bool moreAvailable))
+    Q_PRIVATE_SLOT(d_func(), void onCanReportCountChanged(bool canReportCount))
+    Q_PRIVATE_SLOT(d_func(), void onDataFetched(const QUuid &identifier, const QList<QVariant> &items, int start, bool moreAvailable))
     Q_PRIVATE_SLOT(d_func(), void onCountChanged(int new_length))
     Q_PRIVATE_SLOT(d_func(), void onDataChanged(const QList<QVariant> &data, int start, int count))
     Q_PRIVATE_SLOT(d_func(), void onFetchMoreThresholdReached())

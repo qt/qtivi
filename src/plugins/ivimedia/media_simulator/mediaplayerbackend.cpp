@@ -84,6 +84,7 @@ MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *pa
 
 void MediaPlayerBackend::initialize()
 {
+    emit canReportCountChanged(true);
     emit durationChanged(0);
     emit positionChanged(0);
     emit volumeChanged(m_player->volume());
@@ -160,12 +161,7 @@ void MediaPlayerBackend::setPosition(qint64 position)
     m_player->setPosition(position);
 }
 
-bool MediaPlayerBackend::canReportCount()
-{
-    return true;
-}
-
-void MediaPlayerBackend::fetchData(int start, int count)
+void MediaPlayerBackend::fetchData(const QUuid &identifier, int start, int count)
 {
     QString queryString = QStringLiteral("SELECT track.id, artistName, albumName, trackName, genre, number, file, coverArtUrl FROM track JOIN queue ON queue.track_index=track.id ORDER BY queue.qindex LIMIT %4, %5")
             .arg(start)
@@ -177,12 +173,16 @@ void MediaPlayerBackend::fetchData(int start, int count)
                       &MediaPlayerBackend::doSqlOperation,
                       MediaPlayerBackend::Select,
                       queries,
+                      identifier,
                       start,
                       count);
 }
 
-void MediaPlayerBackend::insert(int index, const QIviPlayableItem *item)
+void MediaPlayerBackend::insert(int index, const QVariant &i)
 {
+    const QIviPlayableItem *item = qtivi_gadgetFromVariant<QIviPlayableItem>(this, i);
+    if (!item)
+        return;
     QString queryString;
     if (item->type() == QStringLiteral("audiotrack")) {
         int track_index = item->id().toInt();
@@ -214,7 +214,7 @@ void MediaPlayerBackend::insert(int index, const QIviPlayableItem *item)
     QtConcurrent::run(m_threadPool, this,
                       &MediaPlayerBackend::doSqlOperation,
                       MediaPlayerBackend::Insert,
-                      queries, index, 0);
+                      queries, QUuid(), index, 0);
 }
 
 void MediaPlayerBackend::remove(int index)
@@ -227,7 +227,7 @@ void MediaPlayerBackend::remove(int index)
     QtConcurrent::run(m_threadPool, this,
                       &MediaPlayerBackend::doSqlOperation,
                       MediaPlayerBackend::Remove,
-                      queries, index, 1);
+                      queries, QUuid(), index, 1);
 }
 
 void MediaPlayerBackend::move(int cur_index, int new_index)
@@ -250,10 +250,10 @@ void MediaPlayerBackend::move(int cur_index, int new_index)
     QtConcurrent::run(m_threadPool, this,
                       &MediaPlayerBackend::doSqlOperation,
                       MediaPlayerBackend::Move,
-                      queries, cur_index, new_index);
+                      queries, QUuid(), cur_index, new_index);
 }
 
-void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, const QStringList &queries, int start, int count)
+void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, const QStringList &queries, const QUuid &identifier, int start, int count)
 {
     m_db.transaction();
     QSqlQuery query(m_db);
@@ -293,7 +293,7 @@ void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, 
     }
 
     if (type == MediaPlayerBackend::Select) {
-        emit dataFetched(list, start, list.count() >= count);
+        emit dataFetched(identifier, list, start, list.count() >= count);
     } else if (type == MediaPlayerBackend::SetIndex) {
         if (list.isEmpty()) {
             emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("SIMULATION: Can't set index in an empty queue"));
@@ -384,7 +384,7 @@ void MediaPlayerBackend::setCurrentIndex(int index)
     QtConcurrent::run(m_threadPool, this,
                       &MediaPlayerBackend::doSqlOperation,
                       MediaPlayerBackend::SetIndex,
-                      queries, m_currentIndex, 0);
+                      queries, QUuid(), m_currentIndex, 0);
 }
 
 void MediaPlayerBackend::setVolume(int volume)

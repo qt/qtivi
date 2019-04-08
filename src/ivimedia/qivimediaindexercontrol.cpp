@@ -45,6 +45,8 @@
 
 #include <QIviServiceObject>
 #include <QtDebug>
+#include <QDataStream>
+#include <QMetaEnum>
 
 QT_BEGIN_NAMESPACE
 
@@ -260,6 +262,23 @@ void QIviMediaIndexerControl::clearServiceObject()
 {
     Q_D(QIviMediaIndexerControl);
     d->clearToDefaults();
+}
+
+QDataStream &operator <<(QDataStream &out, QIviMediaIndexerControl::State var)
+{
+    out << int(var);
+    return out;
+}
+
+QDataStream &operator>>(QDataStream &in, QIviMediaIndexerControl::State &var)
+{
+    int val;
+    in >> val;
+    QMetaEnum metaEnum = QMetaEnum::fromType<QIviMediaIndexerControl::State>();
+    if (metaEnum.valueToKey(val) == nullptr)
+        qWarning() << "Received an invalid enum value for type QIviMediaIndexerControl::State, value =" << val;
+    var = QIviMediaIndexerControl::State(val);
+    return in;
 }
 
 QT_END_NAMESPACE

@@ -44,8 +44,10 @@
 #define QIVIMEDIAPLAYERBACKENDINTERFACE_H
 
 #include <QtIviCore/QIviFeatureInterface>
+#include <QtIviCore/qiviqmlconversion_helper.h>
 #include <QtIviMedia/qtivimediaglobal.h>
 #include <QtIviMedia/QIviMediaPlayer>
+#include <QtCore/QUuid>
 
 QT_BEGIN_NAMESPACE
 
@@ -70,25 +72,25 @@ public:
     virtual void setVolume(int volume) = 0;
     virtual void setMuted(bool muted) = 0;
 
-    virtual bool canReportCount() = 0;
-    virtual void fetchData(int start, int count) = 0;
+    virtual void fetchData(const QUuid &identifier, int start, int count) = 0;
 
-    virtual void insert(int index, const QIviPlayableItem *item) = 0;
+    virtual void insert(int index, const QVariant &item) = 0;
     virtual void remove(int index) = 0;
     virtual void move(int currentIndex, int newIndex) = 0;
 
 Q_SIGNALS:
-    void playModeChanged(QIviMediaPlayer::PlayMode playMode);
-    void playStateChanged(QIviMediaPlayer::PlayState playState);
-    void currentTrackChanged(const QVariant &currentTrack); //TODO Do we need this or is the currentIndex + the playlistdata enough ?
-    void positionChanged(qint64 position);
+    void playModeChanged(QIviMediaPlayer::PlayMode playMode = QIviMediaPlayer::Normal);
+    void playStateChanged(QIviMediaPlayer::PlayState playState  = QIviMediaPlayer::Stopped);
+    void currentTrackChanged(const QVariant &currentTrack = QVariant()); //TODO Do we need this or is the currentIndex + the playlistdata enough ?
+    void positionChanged(qint64 position = -1);
     //TODO do we need durationChanged, we can get that from the currentTrack metadata.
-    void durationChanged(qint64 duration);
-    void currentIndexChanged(int currentIndex);
-    void volumeChanged(int volume);
-    void mutedChanged(bool muted);
-    void countChanged(int newLength);
-    void dataFetched(const QList<QVariant> &data, int start, bool moreAvailable);
+    void durationChanged(qint64 duration = -1);
+    void currentIndexChanged(int currentIndex = -1);
+    void volumeChanged(int volume = -1);
+    void mutedChanged(bool muted = false);
+    void canReportCountChanged(bool canReportCount = false);
+    void countChanged(int newLength = -1);
+    void dataFetched(const QUuid &identifier, const QList<QVariant> &data, int start, bool moreAvailable);
     void dataChanged(const QList<QVariant> &data, int start, int count);
 };
 

@@ -161,28 +161,20 @@ QIviMediaPlayerBackendInterface::QIviMediaPlayerBackendInterface(QObject *parent
 */
 
 /*!
-    \fn QIviMediaPlayerBackendInterface::canReportCount()
-
-    Returns \e true if the backend can return the final number of items for a specific request. This makes it possible to support the QIviPlayQueue::DataChanged loading
-    type. The number of items can be returned by emitting the countChanged signal.
-*/
-
-/*!
-    \fn QIviMediaPlayerBackendInterface::fetchData(int start, int count)
+    \fn QIviMediaPlayerBackendInterface::fetchData(const QUuid &identifier, int start, int count)
 
     This function is called whenever new playable items needs to be retrieved by the QIviPlayQueue.
 
-    The parameters \a start and \a count define the range of data which should be fetched. This method is expected to emit the dataFetched() signal once
-    the new data is ready.
+    The parameters \a start and \a count define the range of data to be fetched. This method is expected to emit the dataFetched() signal when
+    the new data is ready. Use \a identifier to identify the calling QIviPlayQueue instance.
 
     \sa dataFetched()
 */
 
 /*!
-    \fn QIviMediaPlayerBackendInterface::insert(int index, const QIviPlayableItem *item)
+    \fn QIviMediaPlayerBackendInterface::insert(int index, const QVariant &item)
 
-    Adds the playable item identitifed by \a item into the play queue at \a index. The provided item is owned by the QIviMediaPlayer and it's expected
-    that the backend stores its internal representation.
+    Adds the playable item identitifed by \a item into the play queue at \a index.
 
     \sa dataChanged()
 */
@@ -252,6 +244,15 @@ QIviMediaPlayerBackendInterface::QIviMediaPlayerBackendInterface(QObject *parent
 */
 
 /*!
+    \fn QIviMediaPlayerBackendInterface::canReportCountChanged(bool canReportCount)
+
+    This signal is emitted if the backend can return the final number of items (\a canReportCount) for a specific request. This makes it possible to support the QIviPlayQueue::DataChanged loading
+    type. The number of items can then be returned by emitting the countChanged signal.
+
+    \sa countChanged()
+*/
+
+/*!
     \fn QIviMediaPlayerBackendInterface::countChanged(int newLength)
 
     This signal is emitted once the backend knows about the new size of the play queue.
@@ -263,10 +264,11 @@ QIviMediaPlayerBackendInterface::QIviMediaPlayerBackendInterface(QObject *parent
 */
 
 /*!
-    \fn QIviMediaPlayerBackendInterface::dataFetched(const QList<QVariant> &data, int start, bool moreAvailable)
+    \fn QIviMediaPlayerBackendInterface::dataFetched(const QUuid &identifier, const QList<QVariant> &data, int start, bool moreAvailable)
 
-    This signal is emitted as a result of a call of fetchData() and returns the requested data in the argument \a data to the QIviPlayQueue.
-    The arguments \a start holds the index where the data starts and \a moreAvailable holds whether there is more data available and a new fetchData() call can be used to retrieve this data.
+    This signal is emitted as a result of a call to fetchData() and returns the requested \a data to the QIviPlayQueue instance identified by \a identifier.
+    The arguments \a start holds the index where the data starts, \a moreAvailable holds whether there is more data available.
+    To retrieve this data, use a new fetchData() call.
 
     \sa fetchData() dataFetched()
 */

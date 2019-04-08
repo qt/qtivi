@@ -133,6 +133,11 @@ private:
     friend class QIviPlayQueuePrivate;
 };
 
+Q_QTIVIMEDIA_EXPORT QDataStream &operator<<(QDataStream &out, QIviMediaPlayer::PlayMode var);
+Q_QTIVIMEDIA_EXPORT QDataStream &operator>>(QDataStream &in, QIviMediaPlayer::PlayMode &var);
+Q_QTIVIMEDIA_EXPORT QDataStream &operator<<(QDataStream &out, QIviMediaPlayer::PlayState var);
+Q_QTIVIMEDIA_EXPORT QDataStream &operator>>(QDataStream &in, QIviMediaPlayer::PlayState &var);
+
 QT_END_NAMESPACE
 
 #endif // QIVIMEDIAPLAYER_H
