@@ -53,7 +53,6 @@
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QQuickStyle>
 
 #include <addressbookmodule.h>
 
@@ -63,8 +62,6 @@ int main(int argc, char *argv[])
 
     AddressBookModule::registerTypes();
     AddressBookModule::registerQmlTypes();
-
-    QQuickStyle::setStyle(QStringLiteral("Material"));
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

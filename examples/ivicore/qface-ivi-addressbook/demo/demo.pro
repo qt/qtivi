@@ -2,7 +2,7 @@ TARGET = qface-ivi-addressbook
 QMAKE_PROJECT_NAME = $$TARGET
 TEMPLATE = app
 
-QT += qml quick quickcontrols2
+QT += qml quick
 CONFIG += c++11
 CONFIG -= app_bundle
 DESTDIR = ../
