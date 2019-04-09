@@ -55,11 +55,6 @@
             "label": "Tuner Simulation Backend",
             "output": [ "privateFeature" ]
         },
-        "mpris_backend": {
-            "label": "MPRIS Backend",
-            "condition": "config.linux",
-            "output": [ "privateFeature" ]
-        },
         "ivimedia" : {
             "label": "Qt IVI Media",
             "condition": "features.ivicore",
@@ -103,8 +98,7 @@ Please make sure the QtMultimedia module is available."
                     "section": "Backends",
                     "entries": [
                         "media_simulation_backend",
-                        "tuner_simulation_backend",
-                        "mpris_backend"
+                        "tuner_simulation_backend"
                     ]
                 }
             ]
