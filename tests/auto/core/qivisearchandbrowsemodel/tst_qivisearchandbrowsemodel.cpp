@@ -441,7 +441,7 @@ void tst_QIviSearchAndBrowseModel::testWithoutBackend()
     QTest::ignoreMessage(QtWarningMsg, "Can't remove items without a connected backend");
     model.remove(0);
 
-    QTest::ignoreMessage(QtWarningMsg, "Can't insert itmes without a connected backend");
+    QTest::ignoreMessage(QtWarningMsg, "Can't insert items without a connected backend");
     model.insert(0, QVariant::fromValue(QIviStandardItem()));
 
     QTest::ignoreMessage(QtWarningMsg, "Can't get the index without a connected backend");

@@ -522,7 +522,7 @@ void QIviPlayQueue::insert(int index, const QVariant &variant)
     if (!item)
         return;
 
-    Q_IVI_BACKEND(QIviPlayQueue, d->playerBackend(), "Can't insert itmes without a connected backend");
+    Q_IVI_BACKEND(QIviPlayQueue, d->playerBackend(), "Can't insert items without a connected backend");
 
     backend->insert(index, item);
 }
@@ -540,7 +540,7 @@ void QIviPlayQueue::insert(int index, const QVariant &variant)
 */
 void QIviPlayQueue::remove(int index)
 {
-    Q_IVI_BACKEND(QIviPlayQueue, d->playerBackend(), "Can't remove itmes without a connected backend");
+    Q_IVI_BACKEND(QIviPlayQueue, d->playerBackend(), "Can't remove items without a connected backend");
 
     backend->remove(index);
 }
@@ -558,7 +558,7 @@ void QIviPlayQueue::remove(int index)
 */
 void QIviPlayQueue::move(int cur_index, int new_index)
 {
-    Q_IVI_BACKEND(QIviPlayQueue, d->playerBackend(), "Can't move itmes without a connected backend");
+    Q_IVI_BACKEND(QIviPlayQueue, d->playerBackend(), "Can't move items without a connected backend");
 
     backend->move(cur_index, new_index);
 }

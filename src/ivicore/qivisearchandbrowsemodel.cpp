@@ -753,7 +753,7 @@ QIviPendingReply<void> QIviSearchAndBrowseModel::insert(int index, const QVarian
 
     QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
     if (!backend) {
-        qtivi_qmlOrCppWarning(this, "Can't insert itmes without a connected backend");
+        qtivi_qmlOrCppWarning(this, "Can't insert items without a connected backend");
         return QIviPendingReply<void>::createFailedReply();
     }
 
