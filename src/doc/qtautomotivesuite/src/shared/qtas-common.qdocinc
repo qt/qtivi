@@ -28,8 +28,8 @@
 //! [qtas contents]
     \list
         \li \l {Install Qt Automotive Suite}
-        \li \l {"Hello World!" System-UI Example}
-        \li \l {Animated Windows System-UI Example}
+        \li \l {"Hello World!" System UI Example}
+        \li \l {Animated Windows System UI Example}
         \li \l {Qt IVI Generator Climate Example}
         \li \l {Climate Control QML Example}
         \li \l {Licenses Used in Qt Automotive Suite}

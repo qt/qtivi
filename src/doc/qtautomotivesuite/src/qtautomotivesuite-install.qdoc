@@ -63,17 +63,28 @@
 
      \li Select \uicontrol Next again to choose an install path.
 
-     \li Select \uicontrol Next to see the packages that are available to install.
+     \li Select \uicontrol Next to see the components that are available to install.
+         \borderedimage qtinstaller-qas.png
 
-     \li Under \uicontrol{Qt Automotive Suite}, you can see the Qt for Automotive Suite software
-         stacks available. Select a stack, then select the components and your hardware. In a
-         minimal setup, you need to select \uicontrol Components, at the very least. A desktop
-         build of a related Qt version is included with this selection. If you like to test on
-         a target device, you need to select one or more target hardware options.
+     \li Under \uicontrol{Qt Automotive Suite}, there are Qt for Automotive Suite software stacks
+         available. Select a stack, then select the components and your hardware. In a minimal
+         setup, you need to select \uicontrol {Desktop gcc 64-bit}, at least. A desktop build
+         of a related Qt version is included with this selection, along with Qt Creator. If you
+         want to test on a target device, select one or more target hardware options.
 
      \li Select \uicontrol Next and follow the instructions to complete the installation.
 
-     \borderedimage qtinstaller-qas.png
+    \endlist
+
+    Once the installation is complete, you can choose to launch Qt Creator, view Qt Automotive
+    Suite documentation, or view Qt for Device Creation documentation.
+
+    \list
+        \li To create embedded Linux systems with complex UIs, start with
+            \l{Qt Application Manager}.
+        \li To integrate middleware into your system, start with \l{Qt IVI}.
+        \li To understand the building blocks necessary to build an In-Vehicle Infotainment (IVI)
+            System, start with \l{Neptune 3 UI}{Reference UI}.
     \endlist
 
     \note On macOS, currently only development on desktop is supported. If you start the Qt

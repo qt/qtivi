@@ -50,7 +50,7 @@
 
     \table 100%
         \header
-            \li Components
+            \li {2,1}Components
         \row
             \li \l{Qt Application Manager}
             \li Provides the basis for a multi-application embedded system. This module takes care
@@ -80,10 +80,11 @@
                 can render safety-critical UI elements even if there are failures in the main UI.
     \endtable
 
+    \br
 
     \table 100%
        \header
-            \li Tools
+            \li {2,1}Tools
        \row
             \li \l{Qt QmlLive}{QmlLive}
             \li Provides a live reloader environment for rapid development of Qt Quick
