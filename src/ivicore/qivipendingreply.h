@@ -47,6 +47,7 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QVariant>
+#include <QDebug>
 
 #include <QtIviCore/qtiviglobal.h>
 
@@ -117,9 +118,17 @@ protected:
 template <typename T> class QIviPendingReply : public QIviPendingReplyBase
 {
 public:
+    QIviPendingReply(const T &successValue)
+        : QIviPendingReply()
+    {
+        setSuccess(successValue);
+    }
+
     QIviPendingReply()
         : QIviPendingReplyBase(qMetaTypeId<T>())
     {}
+
+    using QIviPendingReplyBase::setSuccess;
 
     void setSuccess(const T &value)
     {
@@ -127,6 +136,29 @@ public:
     }
 
     T reply() const { return m_watcher->value().template value<T>(); }
+
+    using QIviPendingReplyBase::then;
+
+    void then(const std::function<void(const T &)> &success, const std::function<void()> &failed = std::function<void()>()) {
+        if (isResultAvailable()) {
+            if (isSuccessful() && success)
+                success(reply());
+            else if (failed)
+                failed();
+        } else {
+            QSharedPointer<QIviPendingReplyWatcher> w = m_watcher;
+            if (success) {
+                QObject::connect(watcher(), &QIviPendingReplyWatcher::replySuccess, watcher(), [success, w]() {
+                    success(w->value().value<T>());
+                });
+            }
+            if (failed) {
+                QObject::connect(watcher(), &QIviPendingReplyWatcher::replyFailed, watcher(), [failed]() {
+                    failed();
+                });
+            }
+        }
+    }
 
     static QIviPendingReply createFailedReply()
     {
@@ -139,6 +171,12 @@ public:
 template <> class QIviPendingReply <QVariant> : public QIviPendingReplyBase
 {
 public:
+    QIviPendingReply(const QVariant &successValue)
+        : QIviPendingReply()
+    {
+        setSuccess(successValue);
+    }
+
     QIviPendingReply()
         : QIviPendingReplyBase(qMetaTypeId<QVariant>())
     {}
@@ -149,6 +187,27 @@ public:
     }
 
     QVariant reply() const { return m_watcher->value(); }
+
+    void then(const std::function<void(const QVariant &)> &success, const std::function<void()> &failed = std::function<void()>()) {
+        if (isResultAvailable()) {
+            if (isSuccessful() && success)
+                success(reply());
+            else if (failed)
+                failed();
+        } else {
+            QSharedPointer<QIviPendingReplyWatcher> w = m_watcher;
+            if (success) {
+                QObject::connect(watcher(), &QIviPendingReplyWatcher::replySuccess, watcher(), [success, w]() {
+                    success(w->value());
+                });
+            }
+            if (failed) {
+                QObject::connect(watcher(), &QIviPendingReplyWatcher::replyFailed, watcher(), [failed]() {
+                    failed();
+                });
+            }
+        }
+    }
 
     static QIviPendingReply createFailedReply()
     {
@@ -165,12 +224,35 @@ public:
         : QIviPendingReplyBase(qMetaTypeId<void>())
     {}
 
+    using QIviPendingReplyBase::setSuccess;
+
     void setSuccess()
     {
         setSuccessNoCheck(QVariant());
     }
 
     void reply() const { return; }
+
+    void then(const std::function<void()> &success, const std::function<void()> &failed = std::function<void()>()) {
+        if (isResultAvailable()) {
+            if (isSuccessful() && success)
+                success();
+            else if (failed)
+                failed();
+        } else {
+            QSharedPointer<QIviPendingReplyWatcher> w = m_watcher;
+            if (success) {
+                QObject::connect(watcher(), &QIviPendingReplyWatcher::replySuccess, watcher(), [success, w]() {
+                    success();
+                });
+            }
+            if (failed) {
+                QObject::connect(watcher(), &QIviPendingReplyWatcher::replyFailed, watcher(), [failed]() {
+                    failed();
+                });
+            }
+        }
+    }
 
     static QIviPendingReply createFailedReply()
     {

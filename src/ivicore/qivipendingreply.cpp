@@ -806,6 +806,19 @@ void QIviPendingReplyBase::setSuccessNoCheck(const QVariant &value)
 */
 
 /*!
+    \fn template <class T> QIviPendingReply<T>::QIviPendingReply(const T &value)
+
+    Creates a new QIviPendingReply that stores type T.
+    The pending reply is set to successful using \a value.
+
+    This is equivalent to:
+    \code
+    QIviPendingReply<T> reply.
+    reply.setSuccess(value);
+    \endcode
+*/
+
+/*!
     \fn template <class T> QIviPendingReply<T>::reply() const
 
     Returns the result of the reply. If no result has been set yet or when the reply is marked as
@@ -822,6 +835,20 @@ void QIviPendingReplyBase::setSuccessNoCheck(const QVariant &value)
     \note a result can only be set once and cannot be changed again later.
 
     \sa setFailed
+*/
+
+/*!
+    \fn template <class T> QIviPendingReply<T>::then(const std::function<void (const T &)> &success, const std::function<void ()> &failed)
+
+    Sets the C++ callbacks to be called once a result is delivered. If the reply succeeds
+    \a success is called; otherwise \a failed is called.
+
+    The \a success callback gets the reply value as an argument.
+
+    In case the result of the pending reply is already available when this function is called, the corresponding callback functions are
+    run immediately.
+
+    \sa QIviPendingReplyBase::then
 */
 
 /*!
