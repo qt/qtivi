@@ -54,6 +54,11 @@ UsbBrowseBackend::UsbBrowseBackend(const QString &path, QObject *parent)
     qRegisterMetaType<SearchAndBrowseItem>();
 }
 
+QStringList UsbBrowseBackend::availableContentTypes() const
+{
+    return QStringList(fileLiteral);
+}
+
 void UsbBrowseBackend::initialize()
 {
     emit availableContentTypesChanged(QStringList(fileLiteral));

@@ -1,10 +1,9 @@
 /****************************************************************************
 **
 ** Copyright (C) 2019 Luxoft Sweden AB
-** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIvi module of the Qt Toolkit.
+** This file is part of the QtIVI module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -40,17 +39,13 @@
 **
 ****************************************************************************/
 
-#ifndef SEARCHBACKEND_H
-#define SEARCHBACKEND_H
+#ifndef SEARCHANDBROWSEMODEL_H
+#define SEARCHANDBROWSEMODEL_H
 
-#include <QtIviCore/QIviSearchAndBrowseModel>
 #include <QtIviCore/QIviSearchAndBrowseModelInterface>
-#include <QtIviMedia/QIviAudioTrackItem>
-
-#include <QSqlDatabase>
-#include <QStack>
-
-QT_FORWARD_DECLARE_CLASS(QThreadPool);
+#include <QtIviMedia/QIviPlayableItem>
+#include <QRemoteObjectNode>
+#include "rep_qivisearchandbrowsemodel_replica.h"
 
 class SearchAndBrowseItem : public QIviPlayableItem
 {
@@ -72,47 +67,34 @@ Q_DECLARE_METATYPE(SearchAndBrowseItem)
 QDataStream &operator<<(QDataStream &stream, const SearchAndBrowseItem &obj);
 QDataStream &operator>>(QDataStream &stream, SearchAndBrowseItem &obj);
 
-class SearchAndBrowseBackend : public QIviSearchAndBrowseModelInterface
+class SearchAndBrowseModel : public QIviSearchAndBrowseModelInterface
 {
     Q_OBJECT
-
-    Q_PROPERTY(QStringList availableContentTypes READ availableContentTypes CONSTANT)
 public:
-    explicit SearchAndBrowseBackend(const QSqlDatabase &database, QObject *parent = nullptr);
-
-    QStringList availableContentTypes() const;
+    SearchAndBrowseModel(QRemoteObjectNode *node, QObject *parent = nullptr);
 
     void initialize() override;
     void registerInstance(const QUuid &identifier) override;
     void unregisterInstance(const QUuid &identifier) override;
+    void fetchData(const QUuid &identifier, int start, int count) override;
+
     void setContentType(const QUuid &identifier, const QString &contentType) override;
     void setupFilter(const QUuid &identifier, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms) override;
-    void fetchData(const QUuid &identifier, int start, int count) override;
     QIviPendingReply<QString> goBack(const QUuid &identifier) override;
     QIviPendingReply<QString> goForward(const QUuid &identifier, int index) override;
-
     QIviPendingReply<void> insert(const QUuid &identifier, int index, const QVariant &item) override;
     QIviPendingReply<void> remove(const QUuid &identifier, int index) override;
     QIviPendingReply<void> move(const QUuid &identifier, int currentIndex, int newIndex) override;
     QIviPendingReply<int> indexOf(const QUuid &identifier, const QVariant &item) override;
 
-private slots:
-    void search(const QUuid &identifier, const QString &queryString, const QString &type, int start, int count);
-    QString createSortOrder(const QString &type, const QList<QIviOrderTerm> &orderTerms);
-    QString createWhereClause(const QString &type, QIviAbstractQueryTerm *term);
+public Q_SLOTS:
+    void onReplicaStateChanged(QRemoteObjectReplica::State newState,
+                        QRemoteObjectReplica::State oldState);
+    void onNodeError(QRemoteObjectNode::ErrorCode code);
+    void onPendingResultAvailable(quint64 id, bool isSuccess, const QVariant &value);
 private:
-    QString mapIdentifiers(const QString &type, const QString &identifer);
-
-    QSqlDatabase m_db;
-    QThreadPool *m_threadPool;
-    QStringList m_contentTypes;
-    struct State {
-        QString contentType;
-        QIviAbstractQueryTerm *queryTerm = nullptr;
-        QList<QIviOrderTerm> orderTerms;
-        QVariantList items;
-    };
-    QMap<QUuid, State> m_state;
+    QSharedPointer<QIviSearchAndBrowseModelReplica> m_replica;
+    QHash<quint64, QIviPendingReplyBase> m_pendingReplies;
 };
 
-#endif // SEARCHBACKEND_H
+#endif // SEARCHANDBROWSEMODEL_H

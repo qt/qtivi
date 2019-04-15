@@ -62,6 +62,9 @@ public:
     void pause() override;
     void resume() override;
 
+    qreal progress() const;
+    QIviMediaIndexerControl::State state() const;
+
 signals:
     void indexingDone();
     void removeFromQueue(int index);
@@ -76,6 +79,7 @@ private slots:
 
 private:
     void scanNext();
+    void setProgress(qreal progress);
     void setState(QIviMediaIndexerControl::State state);
 
     QSqlDatabase m_db;
@@ -84,6 +88,7 @@ private:
         QString folder;
     };
 
+    qreal m_progress;
     QIviMediaIndexerControl::State m_state;
     QQueue<ScanData> m_folderQueue;
     QString m_currentFolder;

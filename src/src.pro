@@ -9,7 +9,10 @@ include($$OUT_PWD/geniviextras/qtgeniviextras-config.pri)
 include($$OUT_PWD/ivicore/qtivicore-config.pri)
 include($$OUT_PWD/ivivehiclefunctions/qtivivehiclefunctions-config.pri)
 include($$OUT_PWD/ivimedia/qtivimedia-config.pri)
-QT_FOR_CONFIG += geniviextras geniviextras-private ivicore ivicore-private ivivehiclefunctions ivivehiclefunctions-private ivimedia
+QT_FOR_CONFIG += geniviextras geniviextras-private \
+                 ivicore ivicore-private \
+                 ivivehiclefunctions ivivehiclefunctions-private \
+                 ivimedia ivimedia-private
 
 !qtConfig(host-tools-only) {
     !qtConfig(geniviextras-only):qtConfig(ivicore) {
@@ -31,12 +34,22 @@ QT_FOR_CONFIG += geniviextras geniviextras-private ivicore ivicore-private ivive
             imports.depends += ivimedia
         }
 
-        qtConfig(remoteobjects):qtConfig(vehiclefunctions_qtro_simulation_server) {
-            src_tools_vehiclefunctions-simulation-server.subdir = tools/vehiclefunctions-simulation-server
-            !qtConfig(system-ivigenerator): src_tools_vehiclefunctions-simulation-server.depends += sub-ivigenerator
-            src_tools_vehiclefunctions-simulation-server.depends += ivicore ivivehiclefunctions
-            src_tools_vehiclefunctions-simulation-server.target = sub-vehiclefunctions-simulation-server
-            SUBDIRS += src_tools_vehiclefunctions-simulation-server
+        qtConfig(remoteobjects): {
+
+            qtConfig(vehiclefunctions_qtro_simulation_server) {
+                src_tools_vehiclefunctions-simulation-server.subdir = tools/vehiclefunctions-simulation-server
+                !qtConfig(system-ivigenerator): src_tools_vehiclefunctions-simulation-server.depends += sub-ivigenerator
+                src_tools_vehiclefunctions-simulation-server.depends += ivicore ivivehiclefunctions
+                src_tools_vehiclefunctions-simulation-server.target = sub-vehiclefunctions-simulation-server
+                SUBDIRS += src_tools_vehiclefunctions-simulation-server
+            }
+
+            qtConfig(media_qtro_simulation_server) {
+                src_tools_media-simulation-server.subdir = tools/media-simulation-server
+                src_tools_media-simulation-server.depends += ivicore ivimedia
+                src_tools_media-simulation-server.target = sub-media-simulation-server
+                SUBDIRS += src_tools_media-simulation-server
+            }
         }
     }
 

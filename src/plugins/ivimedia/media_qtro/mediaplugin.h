@@ -1,7 +1,6 @@
 /****************************************************************************
 **
 ** Copyright (C) 2019 Luxoft Sweden AB
-** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the QtIvi module of the Qt Toolkit.
@@ -40,44 +39,34 @@
 **
 ****************************************************************************/
 
-#ifndef USBBROWSEBACKEND_H
-#define USBBROWSEBACKEND_H
+#ifndef MEDIAPLUGIN_H
+#define MEDIAPLUGIN_H
 
-#include "searchandbrowsebackend.h"
+#include <QtIviCore/QIviServiceInterface>
 
-class UsbBrowseBackend : public QIviSearchAndBrowseModelInterface
+class MediaPlayerBackend;
+class MediaIndexerBackend;
+class SearchAndBrowseModel;
+class MediaDiscoveryBackend;
+
+class MediaPlugin : public QObject, QIviServiceInterface
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID QIviServiceInterface_iid FILE "media_qtro.json")
+    Q_INTERFACES(QIviServiceInterface)
 
-    Q_PROPERTY(QStringList availableContentTypes READ availableContentTypes CONSTANT)
 public:
-    UsbBrowseBackend(const QString &path, QObject *parent = nullptr);
+    explicit MediaPlugin(QObject *parent = nullptr);
 
-    QStringList availableContentTypes() const;
-
-    void initialize() override;
-    void registerInstance(const QUuid &identifier) override;
-    void unregisterInstance(const QUuid &identifier) override;
-    void setContentType(const QUuid &identifier, const QString &contentType) override;
-    void setupFilter(const QUuid &identifier, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms) override;
-    void fetchData(const QUuid &identifier, int start, int count) override;
-//    bool canGoBack(const QUuid &identifier, const QString &type) override;
-    QIviPendingReply<QString> goBack(const QUuid &identifier) override;
-//    bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) override;
-    QIviPendingReply<QString> goForward(const QUuid &identifier, int index) override;
-
-    QIviPendingReply<void> insert(const QUuid &identifier, int index, const QVariant &item) override;
-    QIviPendingReply<void> remove(const QUuid &identifier, int index) override;
-    QIviPendingReply<void> move(const QUuid &identifier, int currentIndex, int newIndex) override;
-    QIviPendingReply<int> indexOf(const QUuid &identifier, const QVariant &item) override;
+    QStringList interfaces() const override;
+    QIviFeatureInterface *interfaceInstance(const QString &interface) const override;
 
 private:
-    QString m_rootFolder;
-    struct State {
-        QString contentType;
-        QVariantList items;
-    };
-    QMap<QUuid, State> m_state;
+
+    MediaPlayerBackend *m_player;
+    MediaIndexerBackend *m_indexer;
+    SearchAndBrowseModel *m_searchModel;
+    MediaDiscoveryBackend *m_discovery;
 };
 
-#endif // USBBROWSEBACKEND_H
+#endif // MEDIAPLUGIN_H

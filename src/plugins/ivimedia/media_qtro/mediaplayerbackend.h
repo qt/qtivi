@@ -1,10 +1,9 @@
 /****************************************************************************
 **
 ** Copyright (C) 2019 Luxoft Sweden AB
-** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIvi module of the Qt Toolkit.
+** This file is part of the QtIVI module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -44,37 +43,15 @@
 #define MEDIAPLAYERBACKEND_H
 
 #include <QtIviMedia/QIviMediaPlayerBackendInterface>
-
-#include <QSqlDatabase>
-#include <QtMultimedia/QMediaPlayer>
-
-QT_FORWARD_DECLARE_CLASS(QMediaPlaylist);
-QT_FORWARD_DECLARE_CLASS(QThreadPool);
+#include <QRemoteObjectNode>
+#include "rep_qivimediaplayer_replica.h"
 
 class MediaPlayerBackend : public QIviMediaPlayerBackendInterface
 {
-    Q_OBJECT
-    Q_PROPERTY(QIviMediaPlayer::PlayMode playMode READ playMode WRITE setPlayMode NOTIFY playModeChanged)
-    Q_PROPERTY(QIviMediaPlayer::PlayState playState READ playState NOTIFY playStateChanged)
-    Q_PROPERTY(qint64 position READ position WRITE setPosition NOTIFY positionChanged)
-    Q_PROPERTY(qint64 duration READ duration NOTIFY durationChanged)
-    Q_PROPERTY(QVariant currentTrack READ currentTrack NOTIFY currentTrackChanged)
-    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
-    Q_PROPERTY(int volume READ volume WRITE setVolume NOTIFY volumeChanged)
-    Q_PROPERTY(bool muted READ isMuted WRITE setMuted NOTIFY mutedChanged)
+public:
+    MediaPlayerBackend(QRemoteObjectNode *node, QObject *parent = nullptr);
 
 public:
-    enum OperationType {
-        Select,
-        Insert,
-        Remove,
-        Move,
-        SetIndex
-    };
-    Q_ENUM(OperationType)
-
-    MediaPlayerBackend(const QSqlDatabase &database, QObject *parent = nullptr);
-
     void initialize() override;
     void play() override;
     void pause() override;
@@ -82,51 +59,23 @@ public:
     void seek(qint64 offset) override;
     void next() override;
     void previous() override;
-
-    QIviMediaPlayer::PlayMode playMode() const;
-    QIviMediaPlayer::PlayState playState() const;
-    qint64 position() const;
-    qint64 duration() const;
-    QVariant currentTrack() const;
-    int currentIndex() const;
-    int volume() const;
-    bool isMuted() const;
-    bool canReportCount() const;
-
-signals:
-    void playTrack(const QUrl& url);
-public Q_SLOTS:
     void setPlayMode(QIviMediaPlayer::PlayMode playMode) override;
     void setPosition(qint64 position) override;
-    void setCurrentIndex(int index) override;
+    void setCurrentIndex(int currentIndex) override;
     void setVolume(int volume) override;
     void setMuted(bool muted) override;
-
     void fetchData(const QUuid &identifier, int start, int count) override;
-
-    void insert(int index, const QVariant &i) override;
+    void insert(int index, const QVariant &item) override;
     void remove(int index) override;
-    void move(int cur_index, int new_index) override;
+    void move(int currentIndex, int newIndex) override;
 
-    void doSqlOperation(MediaPlayerBackend::OperationType type, const QStringList &queries, const QUuid &identifier, int start, int count);
+public Q_SLOTS:
+    void onReplicaStateChanged(QRemoteObjectReplica::State newState,
+                        QRemoteObjectReplica::State oldState);
+    void onNodeError(QRemoteObjectNode::ErrorCode code);
 
-private Q_SLOTS:
-    void onStateChanged(QMediaPlayer::State state);
-    void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
-    void onPositionChanged(qint64 position);
-    void onDurationChanged(qint64 duration);
-    void onPlayTrack(const QUrl& url);
 private:
-
-    int m_count;
-    int m_currentIndex;
-    QVariant m_currentTrack;
-    QIviMediaPlayer::PlayMode m_playMode;
-    QIviMediaPlayer::PlayState m_requestedState;
-    QIviMediaPlayer::PlayState m_state;
-    QThreadPool *m_threadPool;
-    QMediaPlayer *m_player;
-    QSqlDatabase m_db;
+    QSharedPointer<QIviMediaPlayerReplica> m_replica;
 };
 
 #endif // MEDIAPLAYERBACKEND_H

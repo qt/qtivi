@@ -55,6 +55,16 @@
             "label": "Tuner Simulation Backend",
             "output": [ "privateFeature" ]
         },
+        "media_qtro_backend" : {
+            "label": "Mediaplayer Qt Remote Objects Backend",
+            "condition": "features.remoteobjects",
+            "output": [ "privateFeature" ]
+        },
+        "media_qtro_simulation_server" : {
+            "label": "Mediaplayer Qt Remote Objects Simulation Server",
+            "condition": "features.remoteobjects",
+            "output": [ "privateFeature" ]
+        },
         "ivimedia" : {
             "label": "Qt IVI Media",
             "condition": "features.ivicore",
@@ -94,10 +104,12 @@ Please make sure the QtMultimedia module is available."
             "entries": [
                 "taglib",
                 "system-taglib",
+                "media_qtro_simulation_server",
                 {
                     "section": "Backends",
                     "entries": [
                         "media_simulation_backend",
+                        "media_qtro_backend",
                         "tuner_simulation_backend"
                     ]
                 }

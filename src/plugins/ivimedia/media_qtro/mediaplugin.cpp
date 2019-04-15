@@ -40,44 +40,60 @@
 **
 ****************************************************************************/
 
-#ifndef USBBROWSEBACKEND_H
-#define USBBROWSEBACKEND_H
+#include "mediaplugin.h"
+#include "mediaplayerbackend.h"
+#include "mediaindexerbackend.h"
+#include "searchandbrowsemodel.h"
+#include "mediadiscoverybackend.h"
 
-#include "searchandbrowsebackend.h"
+#include <QtIviMedia/QIviMediaPlayer>
 
-class UsbBrowseBackend : public QIviSearchAndBrowseModelInterface
+#include <QCoreApplication>
+#include <QStringList>
+#include <QtDebug>
+#include <QSettings>
+#include <QRemoteObjectNode>
+
+MediaPlugin::MediaPlugin(QObject *parent)
+    : QObject(parent)
 {
-    Q_OBJECT
+    QString configPath(QStringLiteral("./server.conf"));
+    if (qEnvironmentVariableIsSet("SERVER_CONF_PATH"))
+        configPath = QString::fromLocal8Bit(qgetenv("SERVER_CONF_PATH"));
+    else
+        qInfo() << "Environment variable SERVER_CONF_PATH not defined, using " << configPath;
+    QSettings settings(configPath, QSettings::IniFormat);
+    settings.beginGroup(QStringLiteral("remote"));
+    QUrl url = QUrl(settings.value(QStringLiteral("Registry"), QStringLiteral("local:qtivimedia")).toString());
+    QRemoteObjectNode *node = new QRemoteObjectNode(url);
 
-    Q_PROPERTY(QStringList availableContentTypes READ availableContentTypes CONSTANT)
-public:
-    UsbBrowseBackend(const QString &path, QObject *parent = nullptr);
+    m_player = new MediaPlayerBackend(node, this);
+    m_indexer = new MediaIndexerBackend(node, this);
+    m_searchModel = new SearchAndBrowseModel(node, this);
+    m_discovery = new MediaDiscoveryBackend(node, this);
+}
 
-    QStringList availableContentTypes() const;
+QStringList MediaPlugin::interfaces() const
+{
+    QStringList list;
 
-    void initialize() override;
-    void registerInstance(const QUuid &identifier) override;
-    void unregisterInstance(const QUuid &identifier) override;
-    void setContentType(const QUuid &identifier, const QString &contentType) override;
-    void setupFilter(const QUuid &identifier, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms) override;
-    void fetchData(const QUuid &identifier, int start, int count) override;
-//    bool canGoBack(const QUuid &identifier, const QString &type) override;
-    QIviPendingReply<QString> goBack(const QUuid &identifier) override;
-//    bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) override;
-    QIviPendingReply<QString> goForward(const QUuid &identifier, int index) override;
+    list << QStringLiteral(QIviMediaPlayer_iid);
+    list << QStringLiteral(QIviMediaIndexer_iid);
+    list << QStringLiteral(QIviSearchAndBrowseModel_iid);
+    list << QStringLiteral(QIviMediaDeviceDiscovery_iid);
+    return list;
+}
 
-    QIviPendingReply<void> insert(const QUuid &identifier, int index, const QVariant &item) override;
-    QIviPendingReply<void> remove(const QUuid &identifier, int index) override;
-    QIviPendingReply<void> move(const QUuid &identifier, int currentIndex, int newIndex) override;
-    QIviPendingReply<int> indexOf(const QUuid &identifier, const QVariant &item) override;
+QIviFeatureInterface *MediaPlugin::interfaceInstance(const QString &interface) const
+{
+    if (interface == QStringLiteral(QIviMediaPlayer_iid))
+        return m_player;
+    else if (interface == QStringLiteral(QIviMediaIndexer_iid))
+        return m_indexer;
+    else if (interface == QStringLiteral(QIviSearchAndBrowseModel_iid))
+        return m_searchModel;
+    else if (interface == QStringLiteral(QIviMediaDeviceDiscovery_iid))
+        return m_discovery;
 
-private:
-    QString m_rootFolder;
-    struct State {
-        QString contentType;
-        QVariantList items;
-    };
-    QMap<QUuid, State> m_state;
-};
-
-#endif // USBBROWSEBACKEND_H
+    return nullptr;
+}

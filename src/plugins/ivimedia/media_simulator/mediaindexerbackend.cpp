@@ -114,6 +114,16 @@ void MediaIndexerBackend::resume()
     emit errorChanged(QIviAbstractFeature::InvalidOperation, error);
 }
 
+qreal MediaIndexerBackend::progress() const
+{
+    return m_progress;
+}
+
+QIviMediaIndexerControl::State MediaIndexerBackend::state() const
+{
+    return m_state;
+}
+
 void MediaIndexerBackend::addMediaFolder(const QString &path)
 {
     ScanData data;
@@ -243,10 +253,10 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
             sqlError(this, query.lastQuery(), query.lastError().text());
             return false;
         } else {
-            emit progressChanged(qreal(++currentFileIndex)/qreal(totalFileCount));
+            setProgress(qreal(++currentFileIndex)/qreal(totalFileCount));
         }
 #else
-        emit progressChanged(qreal(++currentFileIndex)/qreal(totalFileCount));
+        setProgress(qreal(++currentFileIndex)/qreal(totalFileCount));
 #endif // QTIVI_NO_TAGLIB
     }
 
@@ -264,7 +274,7 @@ void MediaIndexerBackend::onScanFinished()
 #ifdef QTIVI_NO_TAGLIB
     qCCritical(media) << "No data was added, this is just a simulation";
 #endif
-    emit progressChanged(1);
+    setProgress(1);
     emit indexingDone();
 
 
@@ -281,6 +291,12 @@ void MediaIndexerBackend::scanNext()
     ScanData data = m_folderQueue.dequeue();
     m_currentFolder = data.folder;
     m_watcher.setFuture(QtConcurrent::run(this, &MediaIndexerBackend::scanWorker, m_currentFolder, data.remove));
+}
+
+void MediaIndexerBackend::setProgress(qreal progress)
+{
+    m_progress = progress;
+    emit progressChanged(progress);
 }
 
 void MediaIndexerBackend::setState(QIviMediaIndexerControl::State state)

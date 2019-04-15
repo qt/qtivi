@@ -1,0 +1,35 @@
+
+#include <QtIviMedia/QIviMediaPlayer>
+#include <QtCore/QUuid>
+
+POD QIviMediaPlayerPendingResult(quint64 id, bool failed)
+
+class QIviMediaPlayer
+{
+    PROP(QIviMediaPlayer::PlayMode playMode);
+    PROP(QIviMediaPlayer::PlayState playState READONLY);
+    PROP(qint64 position);
+    PROP(qint64 duration READONLY);
+    PROP(QVariant currentTrack READONLY);
+    PROP(int currentIndex);
+    PROP(int volume);
+    PROP(bool muted);
+    PROP(bool canReportCount READONLY);
+
+    SLOT(void play());
+    SLOT(void pause());
+    SLOT(void stop());
+    SLOT(void seek(qint64 offset));
+    SLOT(void next());
+    SLOT(void previous());
+
+    SLOT(void fetchData(const QUuid &identifier, int start, int count));
+
+    SLOT(void insert(int index, const QVariant &item));
+    SLOT(void remove(int index));
+    SLOT(void move(int currentIndex, int newIndex));
+
+    SIGNAL(countChanged(int newLength));
+    SIGNAL(dataFetched(const QUuid &identifier, const QList<QVariant> &data, int start, bool moreAvailable));
+    SIGNAL(dataChanged(const QList<QVariant> &data, int start, int count));
+};

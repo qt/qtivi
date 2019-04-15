@@ -1,0 +1,38 @@
+
+#include <QtIviCore/QIviSearchAndBrowseModel>
+#include <QtIviCore/QIviFilterTerm>
+#include <QtCore/QUuid>
+
+POD QIviSearchAndBrowseModelPendingResult(quint64 id, bool failed)
+
+class QIviSearchAndBrowseModel
+{
+    PROP(QStringList availableContentTypes READONLY)
+
+    SLOT(void setContentType(const QUuid &identifier, const QString &contentType));
+    SLOT(void setupFilter(const QUuid &identifier, const QVariant &term, const QList<QIviOrderTerm> &orderTerms));
+
+    SLOT(QVariant goBack(const QUuid &identifier));
+    SLOT(QVariant goForward(const QUuid &identifier, int index));
+    SLOT(QVariant insert(const QUuid &identifier, int index, const QVariant &item));
+    SLOT(QVariant remove(const QUuid &identifier, int index));
+    SLOT(QVariant move(const QUuid &identifier, int currentIndex, int newIndex));
+    SLOT(QVariant indexOf(const QUuid &identifier, const QVariant &item));
+
+    //PagingModel
+    SLOT(void registerInstance(const QUuid &identifier))
+    SLOT(void unregisterInstance(const QUuid &identifier))
+    SLOT(void fetchData(const QUuid &identifier, int start, int count))
+
+    SIGNAL(canGoForwardChanged(const QUuid &identifier, const QVector<bool> &indexes, int start))
+    SIGNAL(canGoBackChanged(const QUuid &identifier, bool canGoBack))
+    SIGNAL(supportedCapabilitiesChanged(const QUuid &identifier, QtIviCoreModule::ModelCapabilities capabilities))
+    SIGNAL(contentTypeChanged(const QUuid &identifier, const QString &contentType))
+    SIGNAL(queryIdentifiersChanged(const QUuid &identifier, const QSet<QString> &queryIdentifiers))
+    SIGNAL(countChanged(const QUuid &identifier, int newLength))
+    SIGNAL(dataFetched(const QUuid &identifier, const QList<QVariant> &data, int start, bool moreAvailable))
+    SIGNAL(dataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count))
+
+    //generic async support
+    SIGNAL(pendingResultAvailable(quint64 id, bool isSuccess, const QVariant &value))
+};

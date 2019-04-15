@@ -1,0 +1,8 @@
+
+class QIviMediaDiscoveryModel
+{
+    PROP(QStringList devices READONLY);
+
+    SIGNAL(deviceAdded(const QString &device));
+    SIGNAL(deviceRemoved(const QString &device));
+};

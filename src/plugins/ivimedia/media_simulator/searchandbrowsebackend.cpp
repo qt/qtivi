@@ -54,6 +54,32 @@ static const QString artistLiteral = QStringLiteral("artist");
 static const QString albumLiteral = QStringLiteral("album");
 static const QString trackLiteral = QStringLiteral("track");
 
+QDataStream &operator<<(QDataStream &stream, const SearchAndBrowseItem &obj)
+{
+    stream << obj.name();
+    stream << obj.type();
+    stream << obj.url();
+    stream << QVariant(obj.data());
+    return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, SearchAndBrowseItem &obj)
+{
+    QString name;
+    QString type;
+    QUrl url;
+    QVariant data;
+    stream >> name;
+    stream >> type;
+    stream >> url;
+    stream >> data;
+    obj.setName(name);
+    obj.setType(type);
+    obj.setUrl(url);
+    obj.setData(data.toMap());
+    return stream;
+}
+
 SearchAndBrowseBackend::SearchAndBrowseBackend(const QSqlDatabase &database, QObject *parent)
     : QIviSearchAndBrowseModelInterface(parent)
     , m_threadPool(new QThreadPool(this))
@@ -61,6 +87,9 @@ SearchAndBrowseBackend::SearchAndBrowseBackend(const QSqlDatabase &database, QOb
     m_threadPool->setMaxThreadCount(1);
 
     qRegisterMetaType<SearchAndBrowseItem>();
+    qRegisterMetaTypeStreamOperators<SearchAndBrowseItem>();
+    qRegisterMetaType<QIviAudioTrackItem>();
+    qRegisterMetaTypeStreamOperators<QIviAudioTrackItem>();
 
     m_db = database;
     m_db.open();
@@ -68,6 +97,11 @@ SearchAndBrowseBackend::SearchAndBrowseBackend(const QSqlDatabase &database, QOb
     m_contentTypes << artistLiteral;
     m_contentTypes << albumLiteral;
     m_contentTypes << trackLiteral;
+}
+
+QStringList SearchAndBrowseBackend::availableContentTypes() const
+{
+    return m_contentTypes;
 }
 
 void SearchAndBrowseBackend::initialize()

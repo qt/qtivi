@@ -1,10 +1,9 @@
 /****************************************************************************
 **
 ** Copyright (C) 2019 Luxoft Sweden AB
-** Copyright (C) 2018 Pelagicore AG
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIvi module of the Qt Toolkit.
+** This file is part of the QtIVI module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -40,44 +39,57 @@
 **
 ****************************************************************************/
 
-#ifndef USBBROWSEBACKEND_H
-#define USBBROWSEBACKEND_H
+#include "core.h"
+#include <QCoreApplication>
+#include <QSettings>
 
-#include "searchandbrowsebackend.h"
+QT_BEGIN_NAMESPACE
 
-class UsbBrowseBackend : public QIviSearchAndBrowseModelInterface
+Core* Core::s_instance(nullptr);
+
+Core::Core(QObject *parent)
+    : QObject(parent)
+    , m_host(nullptr)
 {
-    Q_OBJECT
+    init();
+}
 
-    Q_PROPERTY(QStringList availableContentTypes READ availableContentTypes CONSTANT)
-public:
-    UsbBrowseBackend(const QString &path, QObject *parent = nullptr);
+Core::~Core()
+{
+}
 
-    QStringList availableContentTypes() const;
+void Core::init()
+{
+    QString configPath(QStringLiteral("./server.conf"));
+    if (qEnvironmentVariableIsSet("SERVER_CONF_PATH"))
+        configPath = QString::fromLocal8Bit(qgetenv("SERVER_CONF_PATH"));
+    else
+        qDebug() << "Environment variable SERVER_CONF_PATH not defined, using " << configPath;
+    QSettings settings(configPath, QSettings::IniFormat);
+    settings.beginGroup(QStringLiteral("qtivivehiclefunctions"));
+    QUrl url = QUrl(settings.value(QStringLiteral("Registry"), QStringLiteral("local:qtivimedia")).toString());
+    m_host = new QRemoteObjectRegistryHost(url);
+    qDebug() << "registry at: " << m_host->registryUrl().toString();
+    connect(m_host, &QRemoteObjectNode::error, this, &Core::reportError);
+}
 
-    void initialize() override;
-    void registerInstance(const QUuid &identifier) override;
-    void unregisterInstance(const QUuid &identifier) override;
-    void setContentType(const QUuid &identifier, const QString &contentType) override;
-    void setupFilter(const QUuid &identifier, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms) override;
-    void fetchData(const QUuid &identifier, int start, int count) override;
-//    bool canGoBack(const QUuid &identifier, const QString &type) override;
-    QIviPendingReply<QString> goBack(const QUuid &identifier) override;
-//    bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) override;
-    QIviPendingReply<QString> goForward(const QUuid &identifier, int index) override;
+Core* Core::instance()
+{
+    if (!s_instance)
+        s_instance = new Core(QCoreApplication::instance());
+    Q_ASSERT(s_instance);
+    return s_instance;
+}
 
-    QIviPendingReply<void> insert(const QUuid &identifier, int index, const QVariant &item) override;
-    QIviPendingReply<void> remove(const QUuid &identifier, int index) override;
-    QIviPendingReply<void> move(const QUuid &identifier, int currentIndex, int newIndex) override;
-    QIviPendingReply<int> indexOf(const QUuid &identifier, const QVariant &item) override;
+QRemoteObjectRegistryHost* Core::host() const
+{
+    Q_ASSERT(m_host);
+    return m_host;
+}
 
-private:
-    QString m_rootFolder;
-    struct State {
-        QString contentType;
-        QVariantList items;
-    };
-    QMap<QUuid, State> m_state;
-};
+void Core::reportError(QRemoteObjectNode::ErrorCode code)
+{
+    qWarning() << "QRemoteObjects Error: " << code;
+}
 
-#endif // USBBROWSEBACKEND_H
+QT_END_NAMESPACE

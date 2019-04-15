@@ -62,6 +62,9 @@ MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *pa
     , m_threadPool(new QThreadPool(this))
     , m_player(new QMediaPlayer(this))
 {
+    qRegisterMetaType<QIviAudioTrackItem>();
+    qRegisterMetaTypeStreamOperators<QIviAudioTrackItem>();
+
     m_threadPool->setMaxThreadCount(1);
     connect(m_player, &QMediaPlayer::durationChanged,
             this, &MediaPlayerBackend::onDurationChanged);
@@ -253,6 +256,51 @@ void MediaPlayerBackend::move(int cur_index, int new_index)
                       queries, QUuid(), cur_index, new_index);
 }
 
+QIviMediaPlayer::PlayMode MediaPlayerBackend::playMode() const
+{
+    return m_playMode;
+}
+
+QIviMediaPlayer::PlayState MediaPlayerBackend::playState() const
+{
+    return m_state;
+}
+
+qint64 MediaPlayerBackend::position() const
+{
+    return m_player->position();
+}
+
+qint64 MediaPlayerBackend::duration() const
+{
+    return m_player->duration();
+}
+
+QVariant MediaPlayerBackend::currentTrack() const
+{
+    return m_currentTrack;
+}
+
+int MediaPlayerBackend::currentIndex() const
+{
+    return m_currentIndex;
+}
+
+int MediaPlayerBackend::volume() const
+{
+    return m_player->volume();
+}
+
+bool MediaPlayerBackend::isMuted() const
+{
+    return m_player->isMuted();
+}
+
+bool MediaPlayerBackend::canReportCount() const
+{
+    return true;
+}
+
 void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, const QStringList &queries, const QUuid &identifier, int start, int count)
 {
     m_db.transaction();
@@ -303,6 +351,7 @@ void MediaPlayerBackend::doSqlOperation(MediaPlayerBackend::OperationType type, 
         auto item = list.at(0).value<QIviAudioTrackItem>();
         emit playTrack(item.url());
         emit currentIndexChanged(start);
+        m_currentTrack = list.at(0);
         emit currentTrackChanged(list.at(0));
     } else if (type == MediaPlayerBackend::Insert && start <= m_currentIndex) {
         // A new Item has been inserted before currentIndex
