@@ -431,11 +431,11 @@ QIviPagingModel::QIviPagingModel(QObject *parent)
            The backend can return the final number of items for a specific request. This makes it possible to support the QIviPagingModel::DataChanged loading
            type.
     \value SupportsFiltering
-           The backend supports filtering of the content. QIviSearchAndBrowseModelInterface::availableContentTypes() and QIviSearchAndBrowseModelInterface::supportedIdentifiers() will be used as input for the
-           \l {Qt IVI Query Language}. \sa QIviSearchAndBrowseModelInterface::registerContentType
+           The backend supports filtering of the content. QIviSearchAndBrowseModelInterface::availableContentTypesChanged() and QIviSearchAndBrowseModelInterface::queryIdentifiersChanged() will be used as input for the
+           \l {Qt IVI Query Language}.
     \value SupportsSorting
-           The backend supports sorting of the content. QIviSearchAndBrowseModelInterface::availableContentTypes() and QIviSearchAndBrowseModelInterface::supportedIdentifiers() will be used as input for the
-           \l {Qt IVI Query Language}. \sa QIviSearchAndBrowseModelInterface::registerContentType
+           The backend supports sorting of the content. QIviSearchAndBrowseModelInterface::availableContentTypesChanged() and QIviSearchAndBrowseModelInterface::queryIdentifiersChanged() will be used as input for the
+           \l {Qt IVI Query Language}.
     \value SupportsAndConjunction
            The backend supports handling multiple filters at the same time and these filters can be combined by using the AND conjunction.
     \value SupportsOrConjunction

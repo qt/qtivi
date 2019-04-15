@@ -44,7 +44,6 @@ HEADERS += \
     qivisearchandbrowsemodel.h \
     qivisearchandbrowsemodel_p.h \
     qivisearchandbrowsemodelinterface.h \
-    qivisearchandbrowsemodelinterface_p.h \
     qivistandarditem.h \
     qivifeatureinterface.h \
     qividefaultpropertyoverrider_p.h \

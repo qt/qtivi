@@ -41,7 +41,6 @@
 ****************************************************************************/
 
 #include "qivisearchandbrowsemodelinterface.h"
-#include "qivisearchandbrowsemodelinterface_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -67,71 +66,52 @@ QT_BEGIN_NAMESPACE
     <example of a fully featured backend>
 */
 
-/*!
-    \fn QIviSearchAndBrowseModelInterface::QIviSearchAndBrowseModelInterface(QObject *parent = nullptr)
-
-    Constructs a backend interface.
-
-    The \a parent is sent to the QObject constructor.
-*/
 QIviSearchAndBrowseModelInterface::QIviSearchAndBrowseModelInterface(QObject *parent)
-    : QIviPagingModelInterface(*new QIviSearchAndBrowseModelInterfacePrivate(), parent)
+    : QIviPagingModelInterface(parent)
 {}
 
 /*!
-    Returns all the available content types for this backend instance.
+    \fn template <class T> QIviSearchAndBrowseModelInterface::identifiersFromItem()
 
-    It's recommended to use the registerContentType() function instead, which takes care of this function for you.
-*/
-QSet<QString> QIviSearchAndBrowseModelInterface::availableContentTypes() const
-{
-    Q_D(const QIviSearchAndBrowseModelInterface);
-    return d->m_types;
-}
+    Returns all properties of type T.
 
-/*!
-    Returns the available identifiers for the given \a contentType.
-
-    Every identifier can be used in the \l {Qt IVI Query Language} for filtering or sorting.
-
-    It's recommended to use the registerContentType() function instead, which takes care of this function for you.
-*/
-QSet<QString> QIviSearchAndBrowseModelInterface::supportedIdentifiers(const QString &contentType) const
-{
-    Q_D(const QIviSearchAndBrowseModelInterface);
-    return d->m_identifiers.values(contentType).toSet();
-}
-
-
-/*!
-    \fn template <class T> QIviSearchAndBrowseModelInterface::registerContentType(const QString &contentType)
-
-    Registers the type T with the name \a contentType.
-    In addition all properties of type T will be registered as identifiers for the \l {Qt IVI Query Language}
+    These can registered as identifiers for the \l {Qt IVI Query Language} using the
+    queryIdentifiersChanged() signal.
 */
 /*!
     \internal
 */
-void QIviSearchAndBrowseModelInterface::registerContentType(const QMetaObject &object, const QString &contentType)
+QSet<QString> QIviSearchAndBrowseModelInterface::identifiersFromItem(const QMetaObject &object)
 {
-    Q_D(QIviSearchAndBrowseModelInterface);
+    QSet<QString> identifiers;
     for (int i=0; i < object.propertyCount(); i++) {
         QLatin1String propName(object.property(i).name());
         if (propName != QLatin1String("objectName"))
-            d->m_identifiers.insert(contentType, propName);
+            identifiers.insert(propName);
     }
 
-    d->m_types.insert(contentType);
+    return identifiers;
 }
 
 /*!
     \fn void QIviSearchAndBrowseModelInterface::setContentType(const QUuid &identifier, const QString &contentType)
 
     Sets the \a contentType of the QIviSearchAndBrowseModel instance identified by \a identifier.
-    The given contenType can contain additional path information. The encoding is defined by by the
-    goForward() method.
+    The given contenType can contain additional path information. The encoding is defined by the
+    goForward() method. In case the \a contentType is not valid the error() signal should be used.
 
-    Calls to this function are followed by calls to setupFilter() and fetchData()
+    \note The QIviSearchAndBrowseModel doesn't check the validity of the contentType, this is the backend's
+    responsibility.
+
+    If the QIviSearchAndBrowseModel supports filtering (see QIviPagingModel::capabilitiesChanged),
+    the backend needs to emit the queryIdentifiersChanged signal once the contentType is set.
+
+    Finally, the contentTypeChanged signal needs to be emitted, when the backend has set the contentType
+    and it's ready for use.
+
+    Calls to this function are followed by calls to setupFilter() and fetchData().
+
+    \sa identifiersFromItem queryIdentifiersChanged contentTypeChanged
 */
 
 /*!
@@ -145,74 +125,117 @@ void QIviSearchAndBrowseModelInterface::registerContentType(const QMetaObject &o
 */
 
 /*!
-    \fn bool QIviSearchAndBrowseModelInterface::canGoBack(const QUuid &identifier, const QString &type)
-
-    Returns true when the QIviSearchAndBrowseModel instance identified by \a identifier can go back and return to the previously shown data set.
-    The \a type parameter holds the currently displayed content type.
-
-    See \l Browsing for more information on how this is used.
-    \sa goBack()
-*/
-
-/*!
-    \fn QString QIviSearchAndBrowseModelInterface::goBack(const QUuid &identifier, const QString &type)
+    \fn QIviPendingReply<QString> QIviSearchAndBrowseModelInterface::goBack(const QUuid &identifier)
 
     Requests to go back to the previous displayed data set of the QIviSearchAndBrowseModel instance identified by \a identifier.
-    The current content type is passed as \a type and the new content type should be returned.
+
+    The new content type is returned in the form of a QIviPendingReply. Once ready the new content type
+    must be set using setSuccess(), or using setFailed() if there's an error.
 
     See \l Browsing for more information on how this is used.
-    \sa canGoBack()
+    \sa canGoBackChanged()
 */
 
 /*!
-    \fn bool QIviSearchAndBrowseModelInterface::canGoForward(const QUuid &identifier, const QString &type, const QString &itemId)
+    \fn QIviPendingReply<QString> QIviSearchAndBrowseModelInterface::goForward(const QUuid &identifier, int index)
 
-    Returns true when the QIviSearchAndBrowseModel instance identified by \a identifier and the current content type \a type has an
-    item identified by \a itemId and this item can be used to show a new set of data.
+    Requests to go to the next data set of the QIviSearchAndBrowseModel instance identified by \a identifier at \a index.
+
+    The new content type is returned in the form of a QIviPendingReply. Once ready the new content type
+    must be set using setSuccess(), or using setFailed() if there's an error.
 
     See \l Browsing for more information on how this is used.
-    \sa goForward
+    \sa canGoForwardChanged()
 */
 
 /*!
-    \fn QString QIviSearchAndBrowseModelInterface::goForward(const QUuid &identifier, const QString &type, const QString &itemId)
+    \fn QIviSearchAndBrowseModelInterface::insert(const QUuid &identifier, int index, const QVariant &item)
 
-    Requests to go to the next data set of the QIviSearchAndBrowseModel instance identified by \a identifier and the current content type \a type.
-    The item which is used for the new set of data is passed as \a itemId and the new content type should be returned.
+    Adds the browsable \a item to the current dataset of the QIviSearchAndBrowseModel instance identified by \a identifier at \a index.
 
-    See \l Browsing for more information on how this is used.
-    \sa canGoForward()
-*/
-
-/*!
-    \fn QIviSearchAndBrowseModelInterface::insert(const QUuid &identifier, const QString &type, int index, const QIviStandardItem *item)
-
-    Adds the browsable \a item into the current dataset of the QIviSearchAndBrowseModel instance identified by \a identifier and the current content type \a type at \a index.
     The provided item could be owned by another model or QML, because of that it's expected that the backend stores its internal representation.
 
     \sa dataChanged()
 */
 
 /*!
-    \fn QIviSearchAndBrowseModelInterface::remove(const QUuid &identifier, const QString &type, int index)
+    \fn QIviSearchAndBrowseModelInterface::remove(const QUuid &identifier, int index)
 
-    Removes the browsable item at position \a index from the current dataset of the QIviSearchAndBrowseModel instance identified by \a identifier and the current content type \a type.
-
-    \sa dataChanged()
-*/
-
-/*!
-    \fn QIviSearchAndBrowseModelInterface::move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex)
-
-    Moves the browsable item at position \a currentIndex of the current dataset of the QIviSearchAndBrowseModel instance identified by \a identifier and the current content type \a type to the new position \a newIndex.
+    Removes the browsable item at position \a index from the current dataset of the QIviSearchAndBrowseModel instance identified by \a identifier.
 
     \sa dataChanged()
 */
 
 /*!
-    \fn QIviSearchAndBrowseModelInterface::indexOf(const QUuid &identifier, const QString &type, const QIviStandardItem *item)
+    \fn QIviSearchAndBrowseModelInterface::move(const QUuid &identifier, int currentIndex, int newIndex)
 
-    Determines the index of \a item in the model identified by \a identifier and \a type.
+    Moves the browsable item at position \a currentIndex of the current dataset of the QIviSearchAndBrowseModel instance identified by \a identifier to the new position \a newIndex.
+
+    \sa dataChanged()
+*/
+
+/*!
+    \fn QIviSearchAndBrowseModelInterface::indexOf(const QUuid &identifier, const QVariant &item)
+
+    Determines the index of \a item in the model identified by \a identifier.
+*/
+
+/*!
+    \fn QIviSearchAndBrowseModelInterface::canGoBackChanged(const QUuid &identifier, bool canGoBack)
+
+    Emitted to inform the QIviSearchAndBrowseModel instance, identified by \a identifier, whether it \a canGoBack to the data set previously
+    shown. If the instance can display the previous data set, \a canGoBack is set to \c true.
+
+    See \l Browsing for more information on how this is used.
+    \sa goBack
+*/
+
+
+/*!
+    \fn QIviSearchAndBrowseModelInterface::canGoForwardChanged(const QUuid &identifier, const QVector<bool> &indexes, int start)
+
+    Emitted to inform the QIviSearchAndBrowseModel instance identified by \a identifier that the following
+    \a indexes can be used to show a new set of data.
+
+    The \a start parameter can be used to inform only about a limited set of indexes. This signal
+    can be emitted during a QIviPagingModelInterface::fetchData() call to inform about the state
+    of the just fetched data.
+
+    See \l Browsing for more information on how this is used.
+    \sa goForward
+*/
+
+/*!
+    \fn QIviSearchAndBrowseModelInterface::contentTypeChanged(const QUuid &identifier, const QString &contentType)
+
+    Emitted as a result of a call to setContentType, to inform the QIviSearchAndBrowseModel instance identified by \a identifier
+    about it's new \a contentType.
+
+    \sa setContentType
+*/
+
+/*!
+    \fn QIviSearchAndBrowseModelInterface:availableContentTypesChanged(const QStringList &availableContentTypes)
+
+    Emitted during the initialization phase, to inform about all available content types(\a availableContentTypes).
+
+    The value is provided to the user as indication of which content types can be used.
+
+    \note The QIviSearchAndBrowseModel doesn't check the validity of the contentType, this is the responsibility
+    of the backend.
+
+    \sa setContentType
+*/
+
+/*!
+    \fn QIviSearchAndBrowseModelInterface:queryIdentifiersChanged(const QUuid &identifier, const QSet<QString> &queryIdentifiers)
+
+    Emitted as a result of a call to setContentType, to inform the QIviSearchAndBrowseModel instance identified by \a identifier
+    about the currently supported \a queryIdentifiers.
+
+    The \a queryIdentifiers are used to setup the \l {Qt IVI Query Language} to be able to show
+    meaningful errors for invalid queries. Not emitting this signal, will cause the \l {Qt IVI Query Language} to not limit the
+    possible identifiers.
 */
 
 QT_END_NAMESPACE

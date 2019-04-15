@@ -81,15 +81,13 @@ public:
     void setContentType(const QUuid &identifier, const QString &contentType) override;
     void setupFilter(const QUuid &identifier, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms) override;
     void fetchData(const QUuid &identifier, int start, int count) override;
-    bool canGoBack(const QUuid &identifier, const QString &type) override;
-    QString goBack(const QUuid &identifier, const QString &type) override;
-    bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) override;
-    QString goForward(const QUuid &identifier, const QString &type, const QString &itemId) override;
+    QIviPendingReply<QString> goBack(const QUuid &identifier) override;
+    QIviPendingReply<QString> goForward(const QUuid &identifier, int index) override;
 
-    QIviPendingReply<void> insert(const QUuid &identifier, const QString &type, int index, const QIviStandardItem *item) override;
-    QIviPendingReply<void> remove(const QUuid &identifier, const QString &type, int index) override;
-    QIviPendingReply<void> move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) override;
-    QIviPendingReply<int> indexOf(const QUuid &identifier, const QString &type, const QIviStandardItem *item) override;
+    QIviPendingReply<void> insert(const QUuid &identifier, int index, const QVariant &item) override;
+    QIviPendingReply<void> remove(const QUuid &identifier, int index) override;
+    QIviPendingReply<void> move(const QUuid &identifier, int currentIndex, int newIndex) override;
+    QIviPendingReply<int> indexOf(const QUuid &identifier, const QVariant &item) override;
 
 private slots:
     void search(const QUuid &identifier, const QString &queryString, const QString &type, int start, int count);
@@ -104,6 +102,7 @@ private:
         QString contentType;
         QIviAbstractQueryTerm *queryTerm = nullptr;
         QList<QIviOrderTerm> orderTerms;
+        QVariantList items;
     };
     QMap<QUuid, State> m_state;
 };

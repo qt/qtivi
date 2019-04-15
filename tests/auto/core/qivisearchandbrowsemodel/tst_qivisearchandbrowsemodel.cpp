@@ -44,12 +44,6 @@ class TestBackend : public QIviSearchAndBrowseModelInterface
 
 public:
 
-    //Registers the type under the passed names. Can be called more often to fill the availableTypes
-    void registerType(const QString &name)
-    {
-        registerContentType<QIviStandardItem>(name);
-    }
-
     //Sets the capabilities this instance should report
     void setCapabilities(QtIviCoreModule::ModelCapabilities capabilities)
     {
@@ -59,7 +53,6 @@ public:
     //Adds very simple Data which can be used for most of the unit tests
     void initializeSimpleData()
     {
-        registerType("simple");
         m_lists.insert("simple", createItemList("simple"));
     }
 
@@ -67,17 +60,14 @@ public:
     void initializeNavigationData()
     {
         static const QStringList types = { "levelOne", "levelTwo", "levelThree" };
-        for (const QString &type : types) {
-            registerType(type);
+        for (const QString &type : types)
             m_lists.insert(type, createItemList(type));
-        }
     }
 
     //Adds a data set which can be filtered and sorted
     void initializeFilterData()
     {
         QString type("filter");
-        registerType(type);
 
         QList<QIviStandardItem> list;
         for (int i=0; i<100; i++) {
@@ -109,6 +99,7 @@ public:
 
     void initialize() override
     {
+        emit availableContentTypesChanged(m_lists.keys());
         emit initializationDone();
     }
 
@@ -126,6 +117,10 @@ public:
     {
         Q_UNUSED(identifier)
         m_contentType = contentType;
+        if (contentType == "levelTwo" || contentType == "levelThree")
+            emit canGoBackChanged(identifier, true);
+        emit queryIdentifiersChanged(identifier, identifiersFromItem<QIviStandardItem>());
+        emit contentTypeChanged(identifier, contentType);
     }
 
     void setupFilter(const QUuid &identifier, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms) override
@@ -228,56 +223,49 @@ public:
             requestedItems.append(QVariant::fromValue(list.at(i)));
 
         emit dataFetched(identifier, requestedItems, start, start + count < list.count());
+
+        //All but the first item can go forward
+        if (m_contentType == "levelOne" || m_contentType == "levelTwo")
+            emit canGoForwardChanged(identifier, QVector<bool>(requestedItems.count() - 1, true), start + 1);
     }
 
-    virtual bool canGoBack(const QUuid &identifier, const QString &type) override
+    virtual QIviPendingReply<QString> goBack(const QUuid &identifier) override
     {
         Q_UNUSED(identifier)
-        return (type == "levelTwo" || type == "levelThree");
+
+        if (m_contentType == "levelThree")
+            return QIviPendingReply<QString>("levelTwo");
+        else if (m_contentType == "levelTwo")
+            return QIviPendingReply<QString>("levelOne");
+
+        return QIviPendingReply<QString>::createFailedReply();
     }
 
-    virtual QString goBack(const QUuid &identifier, const QString &type) override
+    virtual QIviPendingReply<QString> goForward(const QUuid &identifier, int index) override
     {
         Q_UNUSED(identifier)
+        Q_UNUSED(index)
 
-        if (type == "levelThree")
-            return "levelTwo";
-        else if (type == "levelTwo")
-            return "levelOne";
+        if (m_contentType == "levelOne")
+            return QIviPendingReply<QString>("levelTwo");
+        else if (m_contentType == "levelTwo")
+            return QIviPendingReply<QString>("levelThree");
 
-        return "levelOne";
+        return QIviPendingReply<QString>::createFailedReply();
     }
 
-    virtual bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) override
+    virtual QIviPendingReply<void> insert(const QUuid &identifier, int index, const QVariant &var) override
     {
-        Q_UNUSED(identifier)
-        if (itemId.endsWith("0"))
-            return false;
+        const QIviStandardItem *item = qtivi_gadgetFromVariant<QIviStandardItem>(this, var);
+        if (!item)
+            return QIviPendingReply<void>::createFailedReply();
 
-        return (type == "levelOne" || type == "levelTwo");
-    }
-
-    virtual QString goForward(const QUuid &identifier, const QString &type, const QString &itemId) override
-    {
-        Q_UNUSED(identifier)
-        Q_UNUSED(itemId)
-
-        if (type == "levelOne")
-            return "levelTwo";
-        else if (type == "levelTwo")
-            return "levelThree";
-
-        return "levelOne";
-    }
-
-    virtual QIviPendingReply<void> insert(const QUuid &identifier, const QString &type, int index, const QIviStandardItem *item) override
-    {
-        QList<QIviStandardItem> list = m_lists.value(type);
+        QList<QIviStandardItem> list = m_lists.value(m_contentType);
 
         list.insert(index, *item);
         QVariantList variantList = { QVariant::fromValue(*item) };
 
-        m_lists.insert(type, list);
+        m_lists.insert(m_contentType, list);
 
         emit dataChanged(identifier, variantList, index, 0);
 
@@ -286,12 +274,12 @@ public:
         return reply;
     }
 
-    virtual QIviPendingReply<void> remove(const QUuid &identifier, const QString &type, int index) override
+    virtual QIviPendingReply<void> remove(const QUuid &identifier, int index) override
     {
-        QList<QIviStandardItem> list = m_lists.value(type);
+        QList<QIviStandardItem> list = m_lists.value(m_contentType);
 
         list.removeAt(index);
-        m_lists.insert(type, list);
+        m_lists.insert(m_contentType, list);
 
         emit dataChanged(identifier, QVariantList(), index, 1);
 
@@ -300,9 +288,9 @@ public:
         return reply;
     }
 
-    virtual QIviPendingReply<void> move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) override
+    virtual QIviPendingReply<void> move(const QUuid &identifier, int currentIndex, int newIndex) override
     {
-        QList<QIviStandardItem> list = m_lists.value(type);
+        QList<QIviStandardItem> list = m_lists.value(m_contentType);
 
         int min = qMin(currentIndex, newIndex);
         int max = qMax(currentIndex, newIndex);
@@ -312,7 +300,7 @@ public:
         for (int i = min; i <= max; i++)
             variantLIst.append(QVariant::fromValue(list.at(i)));
 
-        m_lists.insert(type, list);
+        m_lists.insert(m_contentType, list);
 
         emit dataChanged(identifier, variantLIst, min, max - min + 1);
 
@@ -321,10 +309,14 @@ public:
         return reply;
     }
 
-    virtual QIviPendingReply<int> indexOf(const QUuid &identifier, const QString &type, const QIviStandardItem *item) override
+    virtual QIviPendingReply<int> indexOf(const QUuid &identifier, const QVariant &var) override
     {
         Q_UNUSED(identifier)
-        QList<QIviStandardItem> list = m_lists.value(type);
+        const QIviStandardItem *item = qtivi_gadgetFromVariant<QIviStandardItem>(this, var);
+        if (!item)
+            return QIviPendingReply<int>::createFailedReply();
+
+        QList<QIviStandardItem> list = m_lists.value(m_contentType);
 
         QIviPendingReply<int> reply;
         reply.setSuccess(list.indexOf(*item));
@@ -948,11 +940,6 @@ void tst_QIviSearchAndBrowseModel::testInputErrors()
     QSignalSpy countChanged(&model, SIGNAL(countChanged()));
     model.fetchMore(model.index(0,0));
     QVERIFY(!countChanged.count());
-
-    // Invalid content Type
-    QTest::ignoreMessage(QtWarningMsg, "Unsupported type: \"levelOne\" \n Supported types are: \nsimple\n");
-    model.setContentType("levelOne");
-    model.setContentType("simple");
 
     // Invalid query
     QTest::ignoreMessage(QtWarningMsg, "Got end of file but expected on of the following types:\n     integer\n     float\nid>\n  ^");

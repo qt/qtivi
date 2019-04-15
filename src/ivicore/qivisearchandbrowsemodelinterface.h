@@ -53,6 +53,7 @@
 #include <QtIviCore/QIviPagingModelInterface>
 #include <QtIviCore/QIviSearchAndBrowseModel>
 #include <QtIviCore/QIviStandardItem>
+#include <QtIviCore/qiviqmlconversion_helper.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,29 +66,31 @@ class Q_QTIVICORE_EXPORT QIviSearchAndBrowseModelInterface : public QIviPagingMo
 public:
     explicit QIviSearchAndBrowseModelInterface(QObject *parent = nullptr);
 
-    virtual QSet<QString> availableContentTypes() const;
-    virtual QSet<QString> supportedIdentifiers(const QString &contentType) const;
-
     virtual void setContentType(const QUuid &identifier, const QString &contentType) = 0;
     virtual void setupFilter(const QUuid &identifier, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms) = 0;
 
-    virtual bool canGoBack(const QUuid &identifier, const QString &type) = 0;
-    virtual QString goBack(const QUuid &identifier, const QString &type) = 0;  // Only used when in-model navigation
-    //TODO pass also an pointer here instead of the id ?
-    virtual bool canGoForward(const QUuid &identifier, const QString &type, const QString &itemId) = 0; //Every Item has a id property which is filled by the backend implementation.
-    virtual QString goForward(const QUuid &identifier, const QString &type, const QString &itemId) = 0; //Returns the new type identifier used for the next level. The identifier will stay the same for the following calls but the type might differ.
+    virtual QIviPendingReply<QString> goBack(const QUuid &identifier) = 0;
+    virtual QIviPendingReply<QString> goForward(const QUuid &identifier, int index) = 0;
 
-    virtual QIviPendingReply<void> insert(const QUuid &identifier, const QString &type, int index, const QIviStandardItem *item) = 0;
-    virtual QIviPendingReply<void> remove(const QUuid &identifier, const QString &type, int index) = 0;
-    virtual QIviPendingReply<void> move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex) = 0;
-    virtual QIviPendingReply<int> indexOf(const QUuid &identifier, const QString &type, const QIviStandardItem *item) = 0;
+    virtual QIviPendingReply<void> insert(const QUuid &identifier, int index, const QVariant &item) = 0;
+    virtual QIviPendingReply<void> remove(const QUuid &identifier, int index) = 0;
+    virtual QIviPendingReply<void> move(const QUuid &identifier, int currentIndex, int newIndex) = 0;
+    virtual QIviPendingReply<int> indexOf(const QUuid &identifier, const QVariant &item) = 0;
+
+Q_SIGNALS:
+    void canGoForwardChanged(const QUuid &identifier, const QVector<bool> &indexes, int start);
+    void canGoBackChanged(const QUuid &identifier, bool canGoBack);
+    //does this really make sense ?
+    void contentTypeChanged(const QUuid &identifier, const QString &contentType);
+    void availableContentTypesChanged(const QStringList &availableContentTypes);
+    void queryIdentifiersChanged(const QUuid &identifier, const QSet<QString> &queryIdentifiers);
 
 protected:
     template <typename T>
-    void registerContentType(const QString &contentType) {
-        registerContentType(T::staticMetaObject, contentType);
+    QSet<QString> identifiersFromItem() {
+        return identifiersFromItem(T::staticMetaObject);
     }
-    void registerContentType(const QMetaObject &object, const QString &contentType);
+    QSet<QString> identifiersFromItem(const QMetaObject &object);
 
 private:
     Q_DECLARE_PRIVATE(QIviSearchAndBrowseModelInterface)

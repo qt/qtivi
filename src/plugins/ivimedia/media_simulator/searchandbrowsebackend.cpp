@@ -61,9 +61,6 @@ SearchAndBrowseBackend::SearchAndBrowseBackend(const QSqlDatabase &database, QOb
     m_threadPool->setMaxThreadCount(1);
 
     qRegisterMetaType<SearchAndBrowseItem>();
-    registerContentType<SearchAndBrowseItem>(artistLiteral);
-    registerContentType<SearchAndBrowseItem>(albumLiteral);
-    registerContentType<QIviAudioTrackItem>(trackLiteral);
 
     m_db = database;
     m_db.open();
@@ -71,6 +68,11 @@ SearchAndBrowseBackend::SearchAndBrowseBackend(const QSqlDatabase &database, QOb
 
 void SearchAndBrowseBackend::initialize()
 {
+    QStringList contentTypes;
+    contentTypes << artistLiteral;
+    contentTypes << albumLiteral;
+    contentTypes << trackLiteral;
+    emit availableContentTypesChanged(contentTypes);
     emit initializationDone();
 }
 
@@ -88,6 +90,19 @@ void SearchAndBrowseBackend::setContentType(const QUuid &identifier, const QStri
 {
     auto &state = m_state[identifier];
     state.contentType = contentType;
+
+    QStringList types = state.contentType.split('/');
+    QString current_type = types.last();
+    bool canGoBack = types.count() >= 2;
+
+    QSet<QString> identifiers;
+    if (current_type == artistLiteral || current_type == albumLiteral)
+        identifiers = identifiersFromItem<SearchAndBrowseItem>();
+    else
+        identifiers = identifiersFromItem<QIviAudioTrackItem>();
+    emit queryIdentifiersChanged(identifier, identifiers);
+    emit canGoBackChanged(identifier, canGoBack);
+    emit contentTypeChanged(identifier, contentType);
 }
 
 void SearchAndBrowseBackend::setupFilter(const QUuid &identifier, QIviAbstractQueryTerm *term, const QList<QIviOrderTerm> &orderTerms)
@@ -244,6 +259,17 @@ void SearchAndBrowseBackend::search(const QUuid &identifier, const QString &quer
     }
 
     emit dataFetched(identifier, list, start, list.count() >= count);
+
+    auto &state = m_state[identifier];
+    for (int i=0; i < list.count(); i++) {
+        if (start + i >= state.items.count())
+            state.items.append(list.at(i));
+        else
+            state.items.replace(start + i, list.at(i));
+    }
+
+    if (type == artistLiteral || type == albumLiteral)
+        emit canGoForwardChanged(identifier, QVector<bool>(list.count(), true), start);
 }
 
 QString SearchAndBrowseBackend::createSortOrder(const QString &type, const QList<QIviOrderTerm> &orderTerms)
@@ -339,81 +365,73 @@ QString SearchAndBrowseBackend::createWhereClause(const QString &type, QIviAbstr
     return QString();
 }
 
-bool SearchAndBrowseBackend::canGoBack(const QUuid &identifier, const QString &type)
+QIviPendingReply<QString> SearchAndBrowseBackend::goBack(const QUuid &identifier)
 {
-    Q_UNUSED(identifier)
-    return type.split('/').count() >= 2;
-}
-
-QString SearchAndBrowseBackend::goBack(const QUuid &identifier, const QString &type)
-{
-    Q_UNUSED(identifier)
-    QStringList types = type.split('/');
+    auto &state = m_state[identifier];
+    QStringList types = state.contentType.split('/');
 
     if (types.count() < 2)
-        return QString();
+        return QIviPendingReply<QString>::createFailedReply();
 
     types.removeLast();
     types.replace(types.count() - 1, types.at(types.count() - 1).split('?').at(0));
 
-    return types.join('/');
+    return QIviPendingReply<QString>(types.join('/'));
 }
 
-bool SearchAndBrowseBackend::canGoForward(const QUuid &identifier, const QString &type, const QString &itemId)
+QIviPendingReply<QString> SearchAndBrowseBackend::goForward(const QUuid &identifier, int index)
 {
-    return !goForward(identifier, type, itemId).isEmpty();
-}
+    auto &state = m_state[identifier];
 
-QString SearchAndBrowseBackend::goForward(const QUuid &identifier, const QString &type, const QString &itemId)
-{
-    Q_UNUSED(identifier)
-    QStringList types = type.split('/');
+    const QIviStandardItem *i = qtivi_gadgetFromVariant<QIviStandardItem>(this, state.items.value(index, QVariant()));
+    if (!i)
+        return QIviPendingReply<QString>::createFailedReply();
+
+    QString itemId = i->id();
+    QStringList types = state.contentType.split('/');
+
     QString current_type = types.last();
-    QString new_type = type + QStringLiteral("?%1").arg(QLatin1String(itemId.toUtf8().toBase64(QByteArray::Base64UrlEncoding)));
+    QString new_type = state.contentType + QStringLiteral("?%1").arg(QLatin1String(itemId.toUtf8().toBase64(QByteArray::Base64UrlEncoding)));
 
     if (current_type == artistLiteral)
         new_type += QLatin1String("/album");
     else if (current_type == albumLiteral)
         new_type += QLatin1String("/track");
     else
-        return QString();
+        return QIviPendingReply<QString>::createFailedReply();
 
-    return new_type;
+    return QIviPendingReply<QString>(new_type);
 }
 
-QIviPendingReply<void> SearchAndBrowseBackend::insert(const QUuid &identifier, const QString &type, int index, const QIviStandardItem *item)
+QIviPendingReply<void> SearchAndBrowseBackend::insert(const QUuid &identifier, int index, const QVariant &item)
 {
     Q_UNUSED(identifier)
-    Q_UNUSED(type)
     Q_UNUSED(index)
     Q_UNUSED(item)
 
     return QIviPendingReply<void>::createFailedReply();
 }
 
-QIviPendingReply<void> SearchAndBrowseBackend::remove(const QUuid &identifier, const QString &type, int index)
+QIviPendingReply<void> SearchAndBrowseBackend::remove(const QUuid &identifier, int index)
 {
     Q_UNUSED(identifier)
-    Q_UNUSED(type)
     Q_UNUSED(index)
 
     return QIviPendingReply<void>::createFailedReply();
 }
 
-QIviPendingReply<void> SearchAndBrowseBackend::move(const QUuid &identifier, const QString &type, int currentIndex, int newIndex)
+QIviPendingReply<void> SearchAndBrowseBackend::move(const QUuid &identifier, int currentIndex, int newIndex)
 {
     Q_UNUSED(identifier)
-    Q_UNUSED(type)
     Q_UNUSED(currentIndex)
     Q_UNUSED(newIndex)
 
     return QIviPendingReply<void>::createFailedReply();
 }
 
-QIviPendingReply<int> SearchAndBrowseBackend::indexOf(const QUuid &identifier, const QString &type, const QIviStandardItem *item)
+QIviPendingReply<int> SearchAndBrowseBackend::indexOf(const QUuid &identifier, const QVariant &item)
 {
     Q_UNUSED(identifier)
-    Q_UNUSED(type)
     Q_UNUSED(item)
 
     return QIviPendingReply<int>::createFailedReply();

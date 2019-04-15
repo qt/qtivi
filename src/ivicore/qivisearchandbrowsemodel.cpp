@@ -68,17 +68,9 @@ QIviSearchAndBrowseModelPrivate::~QIviSearchAndBrowseModelPrivate()
 void QIviSearchAndBrowseModelPrivate::resetModel()
 {
     QIviSearchAndBrowseModelInterface* backend = searchBackend();
-    if (backend)
-        setAvailableContenTypes(backend->availableContentTypes().toList());
-
-    checkType();
 
     if (backend)
-        backend->setContentType(m_identifier, m_contentType);
-
-    parseQuery();
-
-    QIviPagingModelPrivate::resetModel();
+        backend->setContentType(m_identifier, m_contentTypeRequested);
 }
 
 void QIviSearchAndBrowseModelPrivate::parseQuery()
@@ -99,7 +91,7 @@ void QIviSearchAndBrowseModelPrivate::parseQuery()
 
     QIviQueryParser parser;
     parser.setQuery(m_query);
-    parser.setAllowedIdentifiers(searchBackend()->supportedIdentifiers(m_contentType));
+    parser.setAllowedIdentifiers(m_queryIdentifiers);
 
     QIviAbstractQueryTerm* queryTerm = parser.parse();
 
@@ -128,19 +120,6 @@ void QIviSearchAndBrowseModelPrivate::setupFilter(QIviAbstractQueryTerm* queryTe
     m_orderTerms = orderTerms;
 }
 
-void QIviSearchAndBrowseModelPrivate::checkType()
-{
-    if (!searchBackend() || m_contentType.isEmpty())
-        return;
-
-    if (!m_availableContentTypes.contains(m_contentType)) {
-        QString error = QString(QStringLiteral("Unsupported type: \"%1\" \n Supported types are: \n")).arg(m_contentType);
-        for (const QString &type : qAsConst(m_availableContentTypes))
-            error.append(type + QLatin1String("\n"));
-        qtivi_qmlOrCppWarning(q_ptr, error);
-    }
-}
-
 void QIviSearchAndBrowseModelPrivate::clearToDefaults()
 {
     QIviPagingModelPrivate::clearToDefaults();
@@ -148,12 +127,30 @@ void QIviSearchAndBrowseModelPrivate::clearToDefaults()
     delete m_queryTerm;
     m_queryTerm = nullptr;
     m_contentType = QString();
+    m_contentTypeRequested = QString();
     m_canGoBack = false;
     m_availableContentTypes.clear();
+    m_canGoForward.clear();
 }
 
-void QIviSearchAndBrowseModelPrivate::setCanGoBack(bool canGoBack)
+void QIviSearchAndBrowseModelPrivate::onCanGoForwardChanged(const QUuid &identifier, const QVector<bool> &indexes, int start)
 {
+    if (m_identifier != identifier)
+        return;
+
+    //Always keep the list size in sync;
+    m_canGoForward.resize(qMax(m_itemList.count(), indexes.count()));
+
+    //Update the list
+    for (int i = 0; i < indexes.count(); i++)
+        m_canGoForward[start + i] = indexes.at(i);
+}
+
+void QIviSearchAndBrowseModelPrivate::onCanGoBackChanged(const QUuid &identifier, bool canGoBack)
+{
+    if (m_identifier != identifier)
+        return;
+
     Q_Q(QIviSearchAndBrowseModel);
     if (m_canGoBack == canGoBack)
         return;
@@ -162,7 +159,24 @@ void QIviSearchAndBrowseModelPrivate::setCanGoBack(bool canGoBack)
     emit q->canGoBackChanged(m_canGoBack);
 }
 
-void QIviSearchAndBrowseModelPrivate::setAvailableContenTypes(const QStringList &contentTypes)
+void QIviSearchAndBrowseModelPrivate::onContentTypeChanged(const QUuid &identifier, const QString &contentType)
+{
+    if (m_identifier != identifier)
+        return;
+
+    Q_Q(QIviSearchAndBrowseModel);
+    // Don't return if the content type is already correct. We still need to continue to update the
+    // query and start fetching again
+    if (m_contentType != contentType) {
+        m_contentType = contentType;
+        emit q->contentTypeChanged(m_contentType);
+    }
+    parseQuery();
+
+    QIviPagingModelPrivate::resetModel();
+}
+
+void QIviSearchAndBrowseModelPrivate::onAvailableContentTypesChanged(const QStringList &contentTypes)
 {
     Q_Q(QIviSearchAndBrowseModel);
     if (m_availableContentTypes == contentTypes)
@@ -170,6 +184,14 @@ void QIviSearchAndBrowseModelPrivate::setAvailableContenTypes(const QStringList 
 
     m_availableContentTypes = contentTypes;
     emit q->availableContentTypesChanged(contentTypes);
+}
+
+void QIviSearchAndBrowseModelPrivate::onQueryIdentifiersChanged(const QUuid &identifier, const QSet<QString> &queryIdentifiers)
+{
+    if (m_identifier != identifier)
+        return;
+
+    m_queryIdentifiers = queryIdentifiers;
 }
 
 QIviSearchAndBrowseModelInterface *QIviSearchAndBrowseModelPrivate::searchBackend() const
@@ -181,12 +203,11 @@ void QIviSearchAndBrowseModelPrivate::updateContentType(const QString &contentTy
 {
     Q_Q(QIviSearchAndBrowseModel);
     m_query = QString();
+    m_queryIdentifiers.clear();
     emit q->queryChanged(m_query);
-    m_contentType = contentType;
-    emit q->contentTypeChanged(m_contentType);
-
-    if (searchBackend())
-        setCanGoBack(searchBackend()->canGoBack(m_identifier, m_contentType));
+    m_contentTypeRequested = contentType;
+    m_canGoForward.clear();
+    m_canGoBack = false;
 
     resetModel();
 }
@@ -530,7 +551,7 @@ QString QIviSearchAndBrowseModel::contentType() const
 void QIviSearchAndBrowseModel::setContentType(const QString &contentType)
 {
     Q_D(QIviSearchAndBrowseModel);
-    if (d->m_contentType == contentType)
+    if (d->m_contentTypeRequested == contentType)
         return;
 
     d->updateContentType(contentType);
@@ -616,14 +637,19 @@ void QIviSearchAndBrowseModel::goBack()
         return;
     }
 
-    if (!backend->canGoBack(d->m_identifier, d->m_contentType)) {
+    if (!d->m_canGoBack) {
         qtivi_qmlOrCppWarning(this, "Can't go backward anymore");
         return;
     }
 
-    QString newContentType = backend->goBack(d->m_identifier, d->m_contentType);
-    if (!newContentType.isEmpty())
-        d->updateContentType(newContentType);
+    QIviPendingReply<QString> reply = backend->goBack(d->m_identifier);
+    reply.then([this, reply](const QString &value) {
+        Q_D(QIviSearchAndBrowseModel);
+        d->updateContentType(value);
+    },
+    [this]() {
+        qtivi_qmlOrCppWarning(this, "Going backward failed");
+    });
 }
 
 /*!
@@ -642,7 +668,7 @@ bool QIviSearchAndBrowseModel::canGoForward(int i) const
     Q_D(const QIviSearchAndBrowseModel);
     QIviSearchAndBrowseModelInterface *backend = d->searchBackend();
 
-    if (i >= d->m_itemList.count() || i < 0)
+    if (i >= d->m_canGoForward.count() || i < 0)
         return false;
 
     if (!backend) {
@@ -650,11 +676,7 @@ bool QIviSearchAndBrowseModel::canGoForward(int i) const
         return false;
     }
 
-    const QIviStandardItem *item = d->itemAt(i);
-    if (!item)
-        return false;
-
-    return backend->canGoForward(d->m_identifier, d->m_contentType, item->id());
+    return d->m_canGoForward[i];
 }
 
 /*!
@@ -699,27 +721,36 @@ QIviSearchAndBrowseModel *QIviSearchAndBrowseModel::goForward(int i, NavigationT
         return nullptr;
     }
 
-    const QIviStandardItem *item = d->itemAt(i);
-    if (!item)
-        return nullptr;
-
-    if (!backend->canGoForward(d->m_identifier, d->m_contentType, item->id())) {
+    if (!d->m_canGoForward.value(i, false)) {
         qtivi_qmlOrCppWarning(this, "Can't go forward anymore");
         return nullptr;
     }
 
     if (navigationType == OutOfModelNavigation) {
         if (d->m_capabilities.testFlag(QtIviCoreModule::SupportsStatelessNavigation)) {
-            QString newContentType = backend->goForward(d->m_identifier, d->m_contentType, item->id());
-            auto newModel = new QIviSearchAndBrowseModel(serviceObject(), newContentType);
+            QIviPendingReply<QString> reply = backend->goForward(d->m_identifier, i);
+            auto newModel = new QIviSearchAndBrowseModel(serviceObject());
+            reply.then([reply, newModel](const QString &value) {
+                newModel->setContentType(value);
+            },
+            [this]() {
+                qtivi_qmlOrCppWarning(this, "Going forward failed");
+            });
             return newModel;
+
         } else {
             qtivi_qmlOrCppWarning(this, "The backend doesn't support the OutOfModelNavigation");
             return nullptr;
         }
     } else {
-        QString newContentType = backend->goForward(d->m_identifier, d->m_contentType, item->id());
-        d->updateContentType(newContentType);
+        QIviPendingReply<QString> reply = backend->goForward(d->m_identifier, i);
+        reply.then([this, reply](const QString &value) {
+            Q_D(QIviSearchAndBrowseModel);
+            d->updateContentType(value);
+        },
+        [this]() {
+            qtivi_qmlOrCppWarning(this, "Going forward failed");
+        });
     }
 
     return nullptr;
@@ -762,7 +793,7 @@ QIviPendingReply<void> QIviSearchAndBrowseModel::insert(int index, const QVarian
         return QIviPendingReply<void>::createFailedReply();
     }
 
-    return backend->insert(d->m_identifier, d->m_contentType, index, item);
+    return backend->insert(d->m_identifier, index, variant);
 }
 
 /*!
@@ -794,7 +825,7 @@ QIviPendingReply<void> QIviSearchAndBrowseModel::remove(int index)
         return QIviPendingReply<void>::createFailedReply();
     }
 
-    return backend->remove(d->m_identifier, d->m_contentType, index);
+    return backend->remove(d->m_identifier, index);
 }
 
 /*!
@@ -826,7 +857,7 @@ QIviPendingReply<void> QIviSearchAndBrowseModel::move(int cur_index, int new_ind
         return QIviPendingReply<void>::createFailedReply();
     }
 
-    return backend->move(d->m_identifier, d->m_contentType, cur_index, new_index);
+    return backend->move(d->m_identifier, cur_index, new_index);
 }
 
 /*!
@@ -857,7 +888,7 @@ QIviPendingReply<int> QIviSearchAndBrowseModel::indexOf(const QVariant &variant)
         return QIviPendingReply<int>::createFailedReply();
     }
 
-    return backend->indexOf(d->m_identifier, d->m_contentType, item);
+    return backend->indexOf(d->m_identifier, variant);
 }
 
 /*!
@@ -876,11 +907,10 @@ QHash<int, QByteArray> QIviSearchAndBrowseModel::roleNames() const
 /*!
     \internal
 */
-QIviSearchAndBrowseModel::QIviSearchAndBrowseModel(QIviServiceObject *serviceObject, const QString &contentType, QObject *parent)
+QIviSearchAndBrowseModel::QIviSearchAndBrowseModel(QIviServiceObject *serviceObject, QObject *parent)
     : QIviSearchAndBrowseModel(parent)
 {
     setServiceObject(serviceObject);
-    setContentType(contentType);
 }
 
 /*!
@@ -902,11 +932,20 @@ void QIviSearchAndBrowseModel::connectToServiceObject(QIviServiceObject *service
     if (!backend)
         return;
 
+    QObjectPrivate::connect(backend, &QIviSearchAndBrowseModelInterface::availableContentTypesChanged,
+                            d, &QIviSearchAndBrowseModelPrivate::onAvailableContentTypesChanged);
+    QObjectPrivate::connect(backend, &QIviSearchAndBrowseModelInterface::contentTypeChanged,
+                            d, &QIviSearchAndBrowseModelPrivate::onContentTypeChanged);
+    QObjectPrivate::connect(backend, &QIviSearchAndBrowseModelInterface::queryIdentifiersChanged,
+                            d, &QIviSearchAndBrowseModelPrivate::onQueryIdentifiersChanged);
+    QObjectPrivate::connect(backend, &QIviSearchAndBrowseModelInterface::canGoBackChanged,
+                            d, &QIviSearchAndBrowseModelPrivate::onCanGoBackChanged);
+    QObjectPrivate::connect(backend, &QIviSearchAndBrowseModelInterface::canGoForwardChanged,
+                            d, &QIviSearchAndBrowseModelPrivate::onCanGoForwardChanged);
+
     QIviPagingModel::connectToServiceObject(serviceObject);
 
-    d->setCanGoBack(backend->canGoBack(d->m_identifier, d->m_contentType));
-
-    d->resetModel();
+    //once the initialization is done QIviPagingModel will reset the model
 }
 
 /*!

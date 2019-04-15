@@ -107,13 +107,18 @@ Q_SIGNALS:
     void canGoBackChanged(bool canGoBack);
 
 protected:
-    QIviSearchAndBrowseModel(QIviServiceObject *serviceObject, const QString &contentType, QObject *parent = nullptr);
+    QIviSearchAndBrowseModel(QIviServiceObject *serviceObject, QObject *parent = nullptr);
     QIviSearchAndBrowseModel(QIviSearchAndBrowseModelPrivate &dd, QObject *parent);
     void connectToServiceObject(QIviServiceObject *serviceObject) override;
     void clearServiceObject() override;
 
 private:
     Q_DECLARE_PRIVATE(QIviSearchAndBrowseModel)
+    Q_PRIVATE_SLOT(d_func(), void onCanGoForwardChanged(const QUuid &identifier, const QVector<bool> &indexes, int start))
+    Q_PRIVATE_SLOT(d_func(), void onCanGoBackChanged(const QUuid &identifier, bool canGoBack))
+    Q_PRIVATE_SLOT(d_func(), void onQueryIdentifiersChanged(const QUuid &identifier, const QSet<QString> &queryIdentifiers))
+    Q_PRIVATE_SLOT(d_func(), void onContentTypeChanged(const QUuid &identifier, const QString &contentType))
+    Q_PRIVATE_SLOT(d_func(), void onAvailableContentTypesChanged(const QStringList &contentTypes))
 };
 
 QT_END_NAMESPACE

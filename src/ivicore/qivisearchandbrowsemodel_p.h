@@ -76,10 +76,12 @@ public:
     void resetModel() override;
     void parseQuery();
     void setupFilter(QIviAbstractQueryTerm* queryTerm, const QList<QIviOrderTerm> &orderTerms);
-    void checkType();
     void clearToDefaults() override;
-    void setCanGoBack(bool canGoBack);
-    void setAvailableContenTypes(const QStringList &contentTypes);
+    void onCanGoForwardChanged(const QUuid &identifier, const QVector<bool> &indexes, int start);
+    void onCanGoBackChanged(const QUuid &identifier, bool canGoBack);
+    void onContentTypeChanged(const QUuid &identifier, const QString &contentType);
+    void onAvailableContentTypesChanged(const QStringList &contentTypes);
+    void onQueryIdentifiersChanged(const QUuid &identifier, const QSet<QString> &queryIdentifiers);
 
     QIviSearchAndBrowseModelInterface *searchBackend() const;
     void updateContentType(const QString &contentType);
@@ -92,8 +94,11 @@ public:
     QIviAbstractQueryTerm *m_queryTerm;
     QList<QIviOrderTerm> m_orderTerms;
 
+    QString m_contentTypeRequested;
     QString m_contentType;
     QStringList m_availableContentTypes;
+    QSet<QString> m_queryIdentifiers;
+    QVector<bool> m_canGoForward;
     bool m_canGoBack;
 };
 
