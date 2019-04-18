@@ -142,13 +142,31 @@ bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
         qCInfo(media) << "Removing content: " << mediaDir;
         QSqlQuery query(m_db);
 
-        bool ret = query.exec(QStringLiteral("DELETE from track WHERE file LIKE '%1%'").arg(mediaDir));
+        bool ret = query.exec(QStringLiteral("SELECT queue.qindex FROM track JOIN queue ON queue.track_index=track.id WHERE file LIKE '%1%'").arg(mediaDir));
+        if (ret) {
+            while (query.next())
+                emit removeFromQueue(query.value(0).toInt());
+        } else {
+            setState(QIviMediaIndexerControl::Error);
+            sqlError(this, query.lastQuery(), query.lastError().text());
+            return false;
+        }
 
+        ret = query.exec(QStringLiteral("DELETE from queue WHERE track_index IN (SELECT id FROM track WHERE file LIKE '%1%')").arg(mediaDir));
         if (!ret) {
             setState(QIviMediaIndexerControl::Error);
             sqlError(this, query.lastQuery(), query.lastError().text());
             return false;
         }
+
+        ret = query.exec(QStringLiteral("DELETE from track WHERE file LIKE '%1%'").arg(mediaDir));
+        if (!ret) {
+            setState(QIviMediaIndexerControl::Error);
+            sqlError(this, query.lastQuery(), query.lastError().text());
+            return false;
+        }
+
+        m_db.commit();
 
         return true;
     }

@@ -65,6 +65,11 @@ void USBDevice::eject()
     qCWarning(media) << "Ejecting a USB Device is not supported in the simulation";
 }
 
+QString USBDevice::folder() const
+{
+    return m_folder;
+}
+
 QStringList USBDevice::interfaces() const
 {
     QStringList list;

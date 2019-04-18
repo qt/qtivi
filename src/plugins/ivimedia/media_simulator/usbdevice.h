@@ -56,6 +56,8 @@ public:
     QString name() const override;
     void eject() override;
 
+    QString folder() const;
+
     QStringList interfaces() const override;
     QIviFeatureInterface *interfaceInstance(const QString &interface) const override;
 

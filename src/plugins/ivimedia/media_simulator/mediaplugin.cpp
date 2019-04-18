@@ -46,6 +46,7 @@
 #include "mediaplayerbackend.h"
 #include "mediaplugin.h"
 #include "searchandbrowsebackend.h"
+#include "usbdevice.h"
 #include "database_helper.h"
 
 #include <QtIviCore/QIviSearchAndBrowseModel>
@@ -67,10 +68,21 @@ MediaPlugin::MediaPlugin(QObject *parent)
     m_browse = new SearchAndBrowseBackend(createDatabaseConnection(QStringLiteral("model"), dbFile), this);
     m_indexer = new MediaIndexerBackend(createDatabaseConnection(QStringLiteral("indexer"), dbFile), this);
 
-    connect(m_discovery, &MediaDiscoveryBackend::mediaDirectoryAdded,
-            m_indexer, &MediaIndexerBackend::addMediaFolder);
-    connect(m_discovery, &MediaDiscoveryBackend::mediaDirectoryRemoved,
-            m_indexer, &MediaIndexerBackend::removeMediaFolder);
+    auto deviceMap = m_discovery->deviceMap();
+    for (auto it = deviceMap.cbegin(); it != deviceMap.cend(); it++) {
+        USBDevice *device = qobject_cast<USBDevice*>(it.value());
+        if (!device)
+            continue;
+        m_indexer->addMediaFolder(device->folder());
+    }
+
+    QObject::connect(m_indexer, &MediaIndexerBackend::removeFromQueue,
+                     m_player, &MediaPlayerBackend::remove);
+    QObject::connect(m_discovery, &MediaDiscoveryBackend::mediaDirectoryAdded,
+                     m_indexer, &MediaIndexerBackend::addMediaFolder);
+    QObject::connect(m_discovery, &MediaDiscoveryBackend::mediaDirectoryRemoved,
+                     m_indexer, &MediaIndexerBackend::removeMediaFolder);
+
 }
 
 QStringList MediaPlugin::interfaces() const

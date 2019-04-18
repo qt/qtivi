@@ -45,6 +45,7 @@
 #include "usbdevice.h"
 
 #include <QDir>
+#include <QTimer>
 #include <QtDebug>
 
 MediaDiscoveryBackend::MediaDiscoveryBackend(QObject *parent)
@@ -57,6 +58,12 @@ MediaDiscoveryBackend::MediaDiscoveryBackend(QObject *parent)
     else
         m_deviceFolder = customDeviceFolder;
 
+    const QDir deviceFolder(m_deviceFolder);
+    const QStringList folders = deviceFolder.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    for (const QString &folder : folders) {
+        qCDebug(media) << "Adding USB Device for: " << folder;
+        m_deviceMap.insert(folder, new USBDevice(deviceFolder.absoluteFilePath(folder)));
+    }
 }
 
 void MediaDiscoveryBackend::initialize()
@@ -66,14 +73,13 @@ void MediaDiscoveryBackend::initialize()
     connect(&m_watcher, &QFileSystemWatcher::directoryChanged, this, &MediaDiscoveryBackend::onDirectoryChanged);
 #endif
 
-    QDir deviceFolder(m_deviceFolder);
-    const QStringList folders = deviceFolder.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-    for (const QString &folder : folders) {
-        qCDebug(media) << "Adding USB Device for: " << folder;
-        m_deviceMap.insert(folder, new USBDevice(deviceFolder.absoluteFilePath(folder)));
-    }
     emit availableDevices(m_deviceMap.values());
     emit initializationDone();
+}
+
+QMap<QString, QIviServiceObject*> MediaDiscoveryBackend::deviceMap() const
+{
+    return m_deviceMap;
 }
 
 void MediaDiscoveryBackend::onDirectoryChanged(const QString &path)
@@ -104,6 +110,9 @@ void MediaDiscoveryBackend::onDirectoryChanged(const QString &path)
         USBDevice *device = new USBDevice(deviceFolder.absoluteFilePath(folder));
         m_deviceMap.insert(folder, device);
         emit deviceAdded(device);
-        emit mediaDirectoryAdded(deviceFolder.absoluteFilePath(folder));
+        const QString absFolder = deviceFolder.absoluteFilePath(folder);
+        // If we point the simulation to a real mount location, give the mount some time to actually make
+        // the files accessible
+        QTimer::singleShot(2000, this, [this, absFolder](){emit mediaDirectoryAdded(absFolder);});
     }
 }

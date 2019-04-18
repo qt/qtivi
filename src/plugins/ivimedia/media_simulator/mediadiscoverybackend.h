@@ -57,6 +57,8 @@ public:
 
     void initialize() override;
 
+    QMap<QString, QIviServiceObject*> deviceMap() const;
+
 private slots:
     void onDirectoryChanged(const QString &path);
 

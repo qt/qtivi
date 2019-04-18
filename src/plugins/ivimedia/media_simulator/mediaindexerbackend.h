@@ -64,6 +64,7 @@ public:
 
 signals:
     void indexingDone();
+    void removeFromQueue(int index);
 
 public slots:
     void addMediaFolder(const QString &path);

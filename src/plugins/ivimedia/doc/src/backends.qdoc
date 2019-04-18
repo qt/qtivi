@@ -84,7 +84,7 @@ For the SearchAndBrowseModel the following contenTypes are supported:
 \endlist
 
 The backend uses QtMultimedia to offer real media playback on various platforms.
-The indexer will automatically start to index all \c mp3 files in the media folder.
+The indexer will automatically start to index all \c .mp3 files in the media folder.
 
 For the SearchAndBrowseModel the following contenTypes are supported:
 \list
@@ -103,6 +103,16 @@ the following navigation paths:
 
 \note On systems where \c taglib is disabled, indexing of files doesn't work and because of that
 the media database can't be created.
+
+The MediaDiscoveryModel provides a simulation of USB thumb drives and can be configured using the the
+\c QTIVIMEDIA_SIMULATOR_DEVICEFOLDER environment variable, which needs to be set to an absolute path.
+Every sub-folder within that path is recognized as a new USB thumb drive.
+
+Using the SearchAndBrowseModel on the discovered media devices, the \c file contentType can be used to
+navigate through the device's folder structure.
+
+Every new device discovered is automatically indexed and all \c .mp3 files can be retrieved using the
+the SearchAndBrowseModel connected to the media player's service object to browse the library.
 
 \section1 Configuration
 
