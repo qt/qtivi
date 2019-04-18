@@ -186,6 +186,7 @@ ApplicationWindow {
             RowLayout {
                 Label { text: "filter:" }
                 TextField { id: filterEdit }
+                Button { text: "Refresh"; onClicked: searchModel.reload(); }
             }
 
             ListView {
@@ -281,6 +282,11 @@ ApplicationWindow {
 
                 model: MediaDeviceDiscoveryModel {
                     id: discoveryModel
+
+                    onDeviceRemoved: {
+                        if (device === filterModel.serviceObject)
+                            browseView.model = discoveryModel
+                    }
                 }
 
                 SearchAndBrowseModel {
