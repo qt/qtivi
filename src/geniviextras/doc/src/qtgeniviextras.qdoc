@@ -99,7 +99,7 @@
     Every application that wants to log to the dlt-daemon needs to register itself.
     Applications are identified by a four characters long identifier and a longer description for the dlt-viewer.
 
-    Every registered application can register multiple dlt contexts, which consist of a 3 characters long
+    Every registered application can register multiple dlt contexts, which consist of a four characters long
     identifier and a comprehensive description.
 
     Every dlt context has a current log level, which defines which logs are forwarded to the dlt-daemon or are
@@ -167,7 +167,7 @@
     Defines a new QLoggingCategory \a CATEGORY and makes it configurable under the \a CATEGORYNAME identifier.
     The dlt context will be registered as \a DLT_CTX_NAME and using \a DLT_CTX_DESCRIPTION as a description.
 
-    \note \a DLT_CTX_NAME is limited to (a size of) 3 characters.
+    \note \a DLT_CTX_NAME is limited to (a size of) 4 characters.
 */
 
 /*!
@@ -177,7 +177,7 @@
     Registers an existing QLoggingCategory \a CATEGORY configurable under the \a CATEGORYNAME identifier.
     The new category is mapped to the dlt context, \a DLT_CTX_NAME, with the \a DLT_CTX_DESCRIPTION.
 
-    \note \a DLT_CTX_NAME is limited to (a size of) 3 characters.
+    \note \a DLT_CTX_NAME is limited to (a size of) 4 characters.
 */
 
 /*!

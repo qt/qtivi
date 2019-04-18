@@ -77,7 +77,7 @@
      Similar to the Q_LOGGING_CATEGORY macro, the first two arguments define
      the category's name and the identifier used to control the
      category. In addition, every DLT logging category needs to have a
-     three byte long id and a description.
+     four byte long id and a description.
      These last two fields are used to identify the logs in the dlt-viewer.
 
      The final step to enable DLT logging is to register the special
