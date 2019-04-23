@@ -77,6 +77,8 @@ Additional command-line options to tailor the build-system to your needs:
                Enables the \e {IVI Generator} feature, but is using the \e {IVI Generator} files
                already available on the system. (e.g. from the native-qtivi package when
                cross-compiling inside Yocto).
+
+        \note As of Qt 5.13 the \c ivigenerator is enabled by default.
 \endtable
 
 These command-line options can be passed to qmake using the \c QMAKE_EXTRA_ARGS environment variable
@@ -99,6 +101,17 @@ E.g. to disable building QtIvi Media:
 
 Selecting the needed module explicitly has the advantage to show an error at configuration time
 if not all dependencies are met.
+
+\section2 Fix Missing Dependencies
+
+Sometimes, it's possible that selected features can't be built and you see an error message informing
+you about possible missing dependencies.
+Once you have installed these dependencies, the configuration checks need to be run again, to update
+the configuration. To do this, use the following command:
+
+\code
+    QMAKE_EXTRA_ARGS="--recheck-all" qmake <qtivi-src>/qtivi.pro
+\endcode
 
 \section1 Runtime Configuration
 

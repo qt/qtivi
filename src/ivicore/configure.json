@@ -87,8 +87,8 @@
 
     "report": [
         {
-            "type": "warning",
-            "condition": "!features.ivigenerator",
+            "type": "error",
+            "condition": "!features.ivigenerator && input.ivigenerator != 'no'",
             "message": "Cannot build the IVI Generator because its dependencies are not satisfied.
 The IVI Generator provides tooling to generate source code out of IDL files.
 Make sure python3 and its 'virtualenv' packages are installed.
