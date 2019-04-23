@@ -30,6 +30,14 @@ QT_FOR_CONFIG += geniviextras geniviextras-private ivicore ivicore-private ivive
             plugins.depends += ivimedia
             imports.depends += ivimedia
         }
+
+        qtConfig(remoteobjects):qtConfig(vehiclefunctions_qtro_simulation_server) {
+            src_tools_vehiclefunctions-simulation-server.subdir = tools/vehiclefunctions-simulation-server
+            !qtConfig(system-ivigenerator): src_tools_vehiclefunctions-simulation-server.depends += sub-ivigenerator
+            src_tools_vehiclefunctions-simulation-server.depends += ivicore ivivehiclefunctions
+            src_tools_vehiclefunctions-simulation-server.target = sub-vehiclefunctions-simulation-server
+            SUBDIRS += src_tools_vehiclefunctions-simulation-server
+        }
     }
 
     qtConfig(geniviextras): SUBDIRS += geniviextras
@@ -41,14 +49,6 @@ QT_FOR_CONFIG += geniviextras geniviextras-private ivicore ivicore-private ivive
             src_tools_ivigenerator.subdir = tools/ivigenerator
             src_tools_ivigenerator.target = sub-ivigenerator
             SUBDIRS += src_tools_ivigenerator
-        }
-
-        qtConfig(remoteobjects):qtConfig(vehiclefunctions_qtro_simulation_server) {
-            src_tools_vehiclefunctions-simulation-server.subdir = tools/vehiclefunctions-simulation-server
-            !qtConfig(system-ivigenerator): src_tools_vehiclefunctions-simulation-server.depends += sub-ivigenerator
-            src_tools_vehiclefunctions-simulation-server.depends += ivicore ivivehiclefunctions
-            src_tools_vehiclefunctions-simulation-server.target = sub-vehiclefunctions-simulation-server
-            SUBDIRS += src_tools_vehiclefunctions-simulation-server
         }
     }
 }
