@@ -110,8 +110,7 @@
     \section1 Build from Source
 
     To build Qt Automotive from source, clone the following component git repositories from
-    \l{https://codereview.qt-project.org/}:
-
+    \l{https://code.qt.io/}:
 
     \table
         \header

@@ -67,7 +67,6 @@
             \li Provides a reference UI implementation for Qt in In-Vehicle Infotainment (IVI)
                 systems; demonstrates the best practices for developing an automotive UI. The
                 current version is known as Neptune 3 UI.
-
         \row
             \li \l{Qt GENIVI Extras}
             \li Exposes pre-defined interfaces from the GENIVI alliance.
@@ -91,7 +90,7 @@
                 applications, dramatically reducing the time it takes to deploy and test
                 changes in the UI design process.
        \row
-            \li \l{Qt Creator} Deployment
+            \li \l{Qt Creator}{Qt Creator Deployment}
             \li The Qt Creator IDE allows for direct deployment to a device connected via USB or
                 Local Area Network (LAN). The same project can be deployed to desktop or target
                 devices.
@@ -99,6 +98,12 @@
             \li \l{Qt Creator Application Manager Plugin}
             \li A plugin that facilitates the development of 3rd party applications within a Qt
                 Application Manager setup.
+       \row
+            \li \l{Qt Automotive Suite Deployment Server}
+            \li A lightweight HTTP server that provides network feeds of application packages that
+                are available for installation by a Qt Application Manager instance, running on a
+                device connected to a network. The UI counterpart for this server is the Downloads
+                app in the \l{Neptune 3 UI}{Reference UI}.
        \row
             \li \l{Qt Design Studio}
             \li A UI design and development environment for rapid prototyping of animated UIs.
