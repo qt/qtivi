@@ -64,15 +64,15 @@ SearchAndBrowseBackend::SearchAndBrowseBackend(const QSqlDatabase &database, QOb
 
     m_db = database;
     m_db.open();
+
+    m_contentTypes << artistLiteral;
+    m_contentTypes << albumLiteral;
+    m_contentTypes << trackLiteral;
 }
 
 void SearchAndBrowseBackend::initialize()
 {
-    QStringList contentTypes;
-    contentTypes << artistLiteral;
-    contentTypes << albumLiteral;
-    contentTypes << trackLiteral;
-    emit availableContentTypesChanged(contentTypes);
+    emit availableContentTypesChanged(m_contentTypes);
     emit initializationDone();
 }
 
@@ -94,6 +94,11 @@ void SearchAndBrowseBackend::setContentType(const QUuid &identifier, const QStri
     QStringList types = state.contentType.split('/');
     QString current_type = types.last();
     bool canGoBack = types.count() >= 2;
+
+    if (!m_contentTypes.contains(current_type)) {
+        emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("The provided content type is not supported"));
+        return;
+    }
 
     QSet<QString> identifiers;
     if (current_type == artistLiteral || current_type == albumLiteral)

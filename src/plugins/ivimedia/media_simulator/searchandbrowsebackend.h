@@ -98,6 +98,7 @@ private:
 
     QSqlDatabase m_db;
     QThreadPool *m_threadPool;
+    QStringList m_contentTypes;
     struct State {
         QString contentType;
         QIviAbstractQueryTerm *queryTerm = nullptr;

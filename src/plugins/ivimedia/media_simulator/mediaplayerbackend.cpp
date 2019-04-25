@@ -198,7 +198,7 @@ void MediaPlayerBackend::insert(int index, const QVariant &i)
         } else if (item->type() == QStringLiteral("album")) {
             whereClause = QStringLiteral("albumName == \"%1\"").arg(item->name());
         } else {
-            qCWarning(media) << "Can't insert item: Given type is not supported.";
+            qCWarning(media) << "Can't insert item: The provided type is not supported: " << item->type();
             emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("Can't insert item: Given type is not supported."));
             return;
         }
