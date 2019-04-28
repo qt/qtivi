@@ -8,16 +8,17 @@
     "features": {
         "vehiclefunctions_simulation_backend" : {
             "label": "Simulation Backend",
+            "condition": "features.ivivehiclefunctions",
             "output": [ "privateFeature" ]
         },
         "vehiclefunctions_qtro_backend" : {
             "label": "Qt Remote Objects Backend",
-            "condition": "features.remoteobjects",
+            "condition": "features.ivivehiclefunctions && features.remoteobjects",
             "output": [ "privateFeature" ]
         },
         "vehiclefunctions_qtro_simulation_server" : {
             "label": "Qt Remote Objects Simulation Server",
-            "condition": "features.remoteobjects",
+            "condition": "features.ivivehiclefunctions && features.remoteobjects",
             "output": [ "privateFeature" ]
         },
          "ivivehiclefunctions" : {
