@@ -48,7 +48,7 @@
     \endcode
 
     The options and parameters are:
-    \table
+    \table 100%
         \header
             \li Option/Parameter
             \li Description
@@ -90,7 +90,7 @@
     Currently, based on the \l{format}{\c {--format}} value, the generator can generate multiple
     types of projects with a given IDL file:
 
-    \table
+    \table 100%
         \header
             \li Project Type
             \li Description
@@ -187,14 +187,16 @@
 
     In QtIvi, the following annotations are used to define IDLs:
 
-    \table
+    \table 100%
         \header
             \li Tag
             \li Where
             \li Object type
             \li Purpose
         \row
-            \li @config(interfaceBuilder: "FunctionName")
+            \li \code
+                @config: {interfaceBuilder: "FunctionName"}
+                \endcode
             \li Main IDL file
             \li Module
             \li Declares a function that is called in the plugin to generate the instances for
@@ -203,32 +205,45 @@
                 order as defined by \c {Plugin::interfaces()}. Use this tag to instantiate classes
                 derived from the generated plugin interfaces' classes.
         \row
-            \li @config(zoned)
+            \li \code
+                @config: {zoned: true}
+                \endcode
             \li Main IDL file
             \li Interface
             \li Tells the generator whether the interface is zoned or not. Use this tag to define
                 whether the backend feature interface is derived from QIviZonedFeatureInterface or
                 QIviFeatureInterface.
         \row
-            \li @config(id=org.qt.project.qtivi.ClimateControl.1.0)
+            \li \code
+                @config: {id: "org.qt.project.qtivi.ClimateControl/1.0"}
+                \endcode
             \li Main IDL file
             \li Interface
             \li Defines the interface ID, which is a string used by the QtIvi service manager to
                 glue a frontend interface with its backend implementation. For more information,
                 see \l {Dynamic Backend System}.
         \row
-            \li @config(getter_name)
+            \li \code
+                @config: {getter_name: "isHeaterEnabled"}
+                \endcode
             \li Main IDL file
             \li Property
             \li Overrides the default getter method's name. Useful for boolean properties, such as
                 the getter for a property: 'enabled', should be 'isEnabled' instead of the default.
         \row
-            \li @config(setter_name)
+            \li \code
+                @config: {setter_name: "setHeaterEnabled"}
+                \endcode
             \li Main IDL file
             \li Property
             \li Overrides the default setter method's name.
         \row
-            \li @config(qml_name), @config(qml_type)
+            \li \code
+                @config: {qml_name: "ClimateControl"}
+                \endcode or
+                \code
+                @config: {qml_type: "ClimateControl"}
+                \endcode
             \li Main IDL file
             \li Module, Interface
             \li Defines the name this interface or module should use in QML. For interfaces, it is
@@ -241,7 +256,7 @@
     to specify additional information, are put in the accompanying YAML file. Here is a list of
     annotations used to define the various aspects of generating a backend-simulator:
 
-    \table
+    \table 100%
         \header
             \li Tag
             \li Where
@@ -263,7 +278,9 @@
             \li
             \code
             config_simulator:
-                zones: { FrontLeft, FrontRight, Rear }
+                zones: { FrontLeft,
+                         FrontRight,
+                         Rear }
             \endcode
             \li Accompanying YAML file
             \li Interface
@@ -274,8 +291,9 @@
             \target config_simulator_default
             \code
             config_simulator:
-            default: AirflowDirection.Floor |
-                     AirflowDirection.Dashboard
+            default:
+                AirflowDirection.Floor |
+                AirflowDirection.Dashboard
             \endcode
             \li Accompanying YAML file
             \li Property
@@ -285,7 +303,10 @@
             is "=".
             \code
             config_simulator:
-            default: { FrontLeft: 21.0, FrontRight: 22.5, =: 0.0 }
+            default: {
+                FrontLeft: 21.0,
+                FrontRight: 22.5, =: 0.0
+            }
             \endcode
         \row
             \li \code
@@ -336,41 +357,41 @@
 
     Generates a QML-friendly C++ API based on the \l {Dynamic Backend System}.
 
-    \table
+    \table 100%
         \header
             \li Filename
             \li Purpose
         \row
-            \li "{{module.module_name|lower}}global.h"
+            \li {{module.module_name|lower}}global.h
             \li Standard file with global EXPORT defines.
         \row
-            \li "{{module.module_name|lower}}module.h/cpp"
+            \li {{module.module_name|lower}}module.h/cpp
             \li Files defining a module class used for module global variables and types.
         \row
-            \li "{{module.module_name|lower}}module_enum.qdocinc"
+            \li {{module.module_name|lower}}module_enum.qdocinc
             \li Documentation for all values of all enums which can be included by qdoc.
         \row
-            \li "{{module.module_name|lower}}modulefactory.h/cpp"
+            \li {{module.module_name|lower}}modulefactory.h/cpp
             \li Files defining a module factory class used for factory methods for all structs.
         \row
-            \li "{{module|lower|replace('.', '-')}}.pri"
+            \li {{module|lower|replace('.', '-')}}.pri
             \li A standard Qt \c{.pri} file that contains all the generated files. Use this
                 \c{.pri} file to include the generated files into a qmake project.
         \row
-            \li "qml/{{module|qml_type|replace('.', '/')}}/plugins.qmltypes"
+            \li qml/{{module|qml_type|replace('.', '/')}}/plugins.qmltypes
             \li QML code-completion file for use in QtCreator.
         \row
-            \li "{{interface|lower}}backendinterface.h/cpp"
+            \li {{interface|lower}}backendinterface.h/cpp
             \li Files defining the interface need to be implemented by the backend implementation
                 of the feature.
         \row
-            \li "{{interface|lower}}.h/cpp"
+            \li {{interface|lower}}.h/cpp
             \li Frontend implementation of the feature, ready to be used from QML.
         \row
-            \li "{{interface|lower}}_p.h"
+            \li {{interface|lower}}_p.h
             \li Private part of the frontend implementation.
         \row
-            \li "{{struct|lower}}.h/cpp"
+            \li {{struct|lower}}.h/cpp
             \li Frontend implementation for the struct, implemented as Q_GADGET.
     \endtable
 
@@ -379,42 +400,42 @@
     Provides a simulator backend using the QIviSimulationEngine to implement the simulation
     behavior in QML files.
 
-    \table
+    \table 100%
         \header
             \li Filename
             \li Purpose
         \row
-            \li "{{module.module_name|lower}}plugin.h/cpp"
+            \li {{module.module_name|lower}}plugin.h/cpp
             \li Files defining implementation of QtIvi backend plugin implementing
                 QIviServiceInterface.
         \row
-            \li "{{module.module_name|lower}}.json"
+            \li {{module.module_name|lower}}.json
             \li File containing identifiers of the exposed feature interfaces needed by the Qt
                 plugin system.
         \row
-            \li "{{module|lower|replace('.', '-')}}.pri"
+            \li {{module|lower|replace('.', '-')}}.pri
             \li A standard Qt \c{.pri} file that contains all the generated files. Use this \c{.pri}
                 file to include the generated files into a qmake project.
         \row
-            \li "{{module.module_name|lower}}_simulation.qml"
+            \li {{module.module_name|lower}}_simulation.qml
             \li QML simulation file that loads the interface specific QML simulation files.
         \row
-            \li "{{module.module_name|lower}}_simulation_data.json"
+            \li {{module.module_name|lower}}_simulation_data.json
             \li Simulation data exported from the config_simulator annotations.
         \row
-            \li "{{module.module_name|lower}}.qrc"
+            \li {{module.module_name|lower}}.qrc
             \li Qt Resource file that contains the QML and JSON files.
         \row
-            \li "qml/{{module|qml_type|replace('.', '/')}}/plugins.qmltypes"
+            \li qml/{{module|qml_type|replace('.', '/')}}/plugins.qmltypes
             \li QML code-completion file for use in QtCreator.
         \row
-            \li "qml/{{module|qml_type|replace('.', '/')}}/simulation/plugins.qmltypes"
+            \li qml/{{module|qml_type|replace('.', '/')}}/simulation/plugins.qmltypes"
             \li QML code-completion file for use in QtCreator for the simulation API.
         \row
-            \li "{{interface|lower}}backend.h/cpp"
+            \li {{interface|lower}}backend.h/cpp
             \li Files containing the implementation of the simulation backend.
         \row
-            \li "{{interface|upperfirst}}Simulation.qml"
+            \li {{interface|upperfirst}}Simulation.qml
             \li Interface-specific QML simulation files.
     \endtable
 
@@ -424,34 +445,34 @@
     remote object backend is a client for connecting to the remote backend server; not the location
     to implement the actual backend logic.
 
-    \table
+    \table 100%
         \header
             \li Filename
             \li Purpose
         \row
-            \li "{{module.module_name|lower}}plugin.h/cpp"
+            \li {{module.module_name|lower}}plugin.h/cpp
             \li Files that define the implementation of the QtIvi backend plugin, which implements
             QIviServiceInterface.
         \row
-            \li "{{module.module_name|lower}}.json"
+            \li {{module.module_name|lower}}.json
             \li File containing identifiers of the exposed feature interfaces needed by the Qt plugin
             system.
         \row
-            \li "{{module|lower|replace('.', '-')}}.pri"
+            \li {{module|lower|replace('.', '-')}}.pri
             \li A standard Qt \c{.pri} file that contains all the generated files. Use this \c{.pri}
             file to include the generated files into a qmake project. Also includes the \c{.rep} file
             to the project and calls the remote object compiler.
         \row
-            \li "{{interface|lower}}backend.h/cpp"
+            \li {{interface|lower}}backend.h/cpp
             \li Files containing the implementation of the remote object backend.
             Establishes the connection and initializes the remote object replica.
         \row
-            \li "{{interface|lower}}.rep"
+            \li {{interface|lower}}.rep
             \li The input file for Qt’s
             \l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the
             replica class code.
         \row
-            \li "pagingmodel.rep"
+            \li pagingmodel.rep
             \li The input file for Qt’s
             \l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the
             replica class code for all models.
@@ -463,26 +484,26 @@
     code produced only contains the source classes to inherit and the code for establishing the
     connection. The developer must implement the actual backend logic.
 
-    \table
+    \table 100%
         \header
             \li Filename
             \li Purpose
         \row
-            \li "core.h/cpp"
+            \li core.h/cpp
             \li Code for establishing the connection and starting the remoting for the source
                 objects.
         \row
-            \li "{{srcBase|lower}}.pri"
+            \li {{srcBase|lower}}.pri
             \li A standard Qt \c{.pri} file that contains all the generated files. Use this \c{.pri}
                 file to include the generated files into a qmake project. Also includes the \c{.rep}
                 file to the project and calls the remote object compiler.
         \row
-            \li "{{interface|lower}}.rep"
+            \li {{interface|lower}}.rep
             \li The input file for the Qt’s
             \l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the
             source class code.
         \row
-            \li "pagingmodel.rep"
+            \li pagingmodel.rep
             \li The input file for Qt’s
                 \l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the
                 replica class code for all models.
@@ -495,54 +516,54 @@
     backend_simulator template, which uses the QIviSimulationEngine to implement the simulation
     behavior in QML.
 
-    \table
+    \table 100%
         \header
             \li Filename
             \li Purpose
         \row
-            \li "{{module.module_name|lower}}_simulation.qml"
+            \li {{module.module_name|lower}}_simulation.qml
             \li QML simulation file which loads the interface specific QML simulation files.
         \row
-            \li "{{module.module_name|lower}}_simulation_data.json"
+            \li {{module.module_name|lower}}_simulation_data.json
             \li Simulation data exported from the config_simulator annotations.
         \row
-            \li "{{module.module_name|lower}}.qrc"
+            \li {{module.module_name|lower}}.qrc
             \li Qt Resource file which contains the QML and JSON files.
         \row
-            \li "qml/{{module|qml_type|replace('.', '/')}}/plugins.qmltypes"
+            \li qml/{{module|qml_type|replace('.', '/')}}/plugins.qmltypes
             \li QML code-completion file for use in QtCreator.
         \row
-            \li "qml/{{module|qml_type|replace('.', '/')}}/simulation/plugins.qmltypes"
+            \li qml/{{module|qml_type|replace('.', '/')}}/simulation/plugins.qmltypes
             \li QML code-completion file for use in QtCreator for the simulation API.
         \row
-            \li "core.h/cpp"
+            \li core.h/cpp
             \li Code for establishing the connection and starting the remoting for the source objects.
         \row
-            \li "main.cpp"
+            \li main.cpp
             \li The main file.
         \row
-            \li "{{srcBase|lower}}.pri"
+            \li {{srcBase|lower}}.pri
             \li A standard Qt \c{.pri} file that contains all the generated files. Use this \c{.pri}
                 file to include the generated files into a qmake project. Also includes the \c{.rep}
                 file to the project and calls the remote object compiler.
         \row
-            \li "{{interface|lower}}.rep"
+            \li {{interface|lower}}.rep
             \li The input file for the Qt’s
                 \l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the
                 source class code.
         \row
-            \li "{{interface|lower}}adapter.h/cpp"
+            \li {{interface|lower}}adapter.h/cpp
             \li QtRemoteObjects Adapter classes for the backend implementations.
         \row
-            \li "pagingmodel.rep"
+            \li pagingmodel.rep
             \li The input file for Qt’s
                 \l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the
             replica class code for all models.
         \row
-            \li "{{interface|lower}}backend.h/cpp"
+            \li {{interface|lower}}backend.h/cpp
             \li Files that contain the simulation backend implementation.
         \row
-            \li "{{interface|upperfirst}}Simulation.qml"
+            \li {{interface|upperfirst}}Simulation.qml
             \li Interface-specific QML simulation files.
     \endtable
 
