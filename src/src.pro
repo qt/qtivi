@@ -16,12 +16,14 @@ QT_FOR_CONFIG += geniviextras geniviextras-private \
 
 !qtConfig(host-tools-only) {
     !qtConfig(geniviextras-only):qtConfig(ivicore) {
-        SUBDIRS += ivicore
+        SUBDIRS += ivicore \
+                   helper
         imports.depends += ivicore
+        helper.depends += ivicore
 
         qtConfig(ivigenerator): qtConfig(ivivehiclefunctions): {
             SUBDIRS += ivivehiclefunctions
-            ivivehiclefunctions.depends = ivicore
+            ivivehiclefunctions.depends = ivicore helper
             !qtConfig(system-ivigenerator): ivivehiclefunctions.depends += sub-ivigenerator
             plugins.depends += ivivehiclefunctions
             imports.depends += ivivehiclefunctions
@@ -29,7 +31,7 @@ QT_FOR_CONFIG += geniviextras geniviextras-private \
 
         qtConfig(ivimedia) {
             SUBDIRS += ivimedia
-            ivimedia.depends = ivicore
+            ivimedia.depends = ivicore helper
             plugins.depends += ivimedia
             imports.depends += ivimedia
         }
@@ -39,14 +41,14 @@ QT_FOR_CONFIG += geniviextras geniviextras-private \
             qtConfig(vehiclefunctions_qtro_simulation_server) {
                 src_tools_vehiclefunctions-simulation-server.subdir = tools/vehiclefunctions-simulation-server
                 !qtConfig(system-ivigenerator): src_tools_vehiclefunctions-simulation-server.depends += sub-ivigenerator
-                src_tools_vehiclefunctions-simulation-server.depends += ivicore ivivehiclefunctions
+                src_tools_vehiclefunctions-simulation-server.depends += ivicore helper ivivehiclefunctions
                 src_tools_vehiclefunctions-simulation-server.target = sub-vehiclefunctions-simulation-server
                 SUBDIRS += src_tools_vehiclefunctions-simulation-server
             }
 
             qtConfig(media_qtro_simulation_server) {
                 src_tools_media-simulation-server.subdir = tools/media-simulation-server
-                src_tools_media-simulation-server.depends += ivicore ivimedia
+                src_tools_media-simulation-server.depends += ivicore helper ivimedia
                 src_tools_media-simulation-server.target = sub-media-simulation-server
                 SUBDIRS += src_tools_media-simulation-server
             }

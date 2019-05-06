@@ -45,7 +45,7 @@
 QIviMediaPlayerQtRoAdapter::QIviMediaPlayerQtRoAdapter(MediaPlayerBackend *parent)
     : QIviMediaPlayerSource(parent)
     , m_backend(parent)
-    , m_replyCounter(0)
+    , m_helper(this)
 {
     connect(m_backend, &MediaPlayerBackend::playModeChanged, this, &QIviMediaPlayerQtRoAdapter::playModeChanged);
     connect(m_backend, &MediaPlayerBackend::playStateChanged, this, &QIviMediaPlayerQtRoAdapter::playStateChanged);
@@ -84,9 +84,7 @@ qint64 QIviMediaPlayerQtRoAdapter::duration() const
 
 QVariant QIviMediaPlayerQtRoAdapter::currentTrack() const
 {
-    //Workaround QtRO problem
-    QVariant v = m_backend->currentTrack();
-    return QVariant(QMetaType::QVariant, &v);
+    return m_helper.toRemoteObjectVariant(m_backend->currentTrack());
 }
 
 int QIviMediaPlayerQtRoAdapter::currentIndex() const

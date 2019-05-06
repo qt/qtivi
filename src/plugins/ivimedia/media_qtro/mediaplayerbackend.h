@@ -43,6 +43,7 @@
 #define MEDIAPLAYERBACKEND_H
 
 #include <QtIviMedia/QIviMediaPlayerBackendInterface>
+#include <QIviRemoteObjectReplicaHelper>
 #include <QRemoteObjectNode>
 #include "rep_qivimediaplayer_replica.h"
 
@@ -69,13 +70,9 @@ public:
     void remove(int index) override;
     void move(int currentIndex, int newIndex) override;
 
-public Q_SLOTS:
-    void onReplicaStateChanged(QRemoteObjectReplica::State newState,
-                        QRemoteObjectReplica::State oldState);
-    void onNodeError(QRemoteObjectNode::ErrorCode code);
-
 private:
     QSharedPointer<QIviMediaPlayerReplica> m_replica;
+    QIviRemoteObjectReplicaHelper *m_helper;
 };
 
 #endif // MEDIAPLAYERBACKEND_H

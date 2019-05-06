@@ -3,7 +3,7 @@
 ** Copyright (C) 2019 Luxoft Sweden AB
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,28 +39,55 @@
 **
 ****************************************************************************/
 
-#ifndef MEDIAINDEXERBACKEND_H
-#define MEDIAINDEXERBACKEND_H
+#ifndef QIVIREMOTEOBJECTPENDINGRESULT_H
+#define QIVIREMOTEOBJECTPENDINGRESULT_H
 
-#include <QtIviMedia/QIviMediaIndexerControlBackendInterface>
-#include <QIviRemoteObjectReplicaHelper>
-#include <QRemoteObjectNode>
+#include <QtCore/QDataStream>
+#include <QtCore/QObject>
+#include <QtRemoteObjects/qtremoteobjectglobal.h>
 
-#include "rep_qivimediaindexer_replica.h"
+QT_BEGIN_NAMESPACE
 
-class MediaIndexerBackend : public QIviMediaIndexerControlBackendInterface
+namespace qtivi_private {
+    Q_DECLARE_LOGGING_CATEGORY(qLcQtIviRoHelper)
+}
+
+class QIviRemoteObjectPendingResult
 {
-public:
-    MediaIndexerBackend(QRemoteObjectNode *node, QObject *parent = nullptr);
+    Q_GADGET
 
+    Q_PROPERTY(quint64 id READ id WRITE setId)
+    Q_PROPERTY(bool failed READ failed WRITE setFailed)
 public:
-    void initialize() override;
-    void pause() override;
-    void resume() override;
-
+    QIviRemoteObjectPendingResult();
+    explicit QIviRemoteObjectPendingResult(quint64 id, bool failed);
+    quint64 id() const;
+    void setId(quint64 id);
+    bool failed() const;
+    void setFailed(bool failed);
 private:
-    QSharedPointer<QIviMediaIndexerReplica> m_replica;
-    QIviRemoteObjectReplicaHelper *m_helper;
+    quint64 m_id;
+    bool m_failed;
 };
 
-#endif // MEDIAINDEXERBACKEND_H
+//POD, passing by value should be fine
+inline bool operator==(QIviRemoteObjectPendingResult left, QIviRemoteObjectPendingResult right) Q_DECL_NOTHROW {
+    return left.id() == right.id() && left.failed() == right.failed();
+};;
+inline bool operator!=(QIviRemoteObjectPendingResult left, QIviRemoteObjectPendingResult right) Q_DECL_NOTHROW {
+    return !(left == right);
+}
+
+inline QDataStream &operator<<(QDataStream &ds, QIviRemoteObjectPendingResult obj) {
+    QtRemoteObjects::copyStoredProperties(&obj, ds);
+    return ds;
+}
+
+inline QDataStream &operator>>(QDataStream &ds, QIviRemoteObjectPendingResult &obj) {
+    QtRemoteObjects::copyStoredProperties(ds, &obj);
+    return ds;
+}
+
+QT_END_NAMESPACE
+
+#endif //QIVIREMOTEOBJECTPENDINGRESULT_H

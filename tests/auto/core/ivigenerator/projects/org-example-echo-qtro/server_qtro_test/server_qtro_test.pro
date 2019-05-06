@@ -1,7 +1,7 @@
 TARGET = tst_org-example-echo-qtro
 QMAKE_PROJECT_NAME = $$TARGET
 QT -= gui
-QT += testlib ivicore
+QT += testlib ivicore iviremoteobjects_helper_private
 LIBS += -L$$OUT_PWD/.. -l$$qtLibraryTarget(echo_frontend)
 
 DESTDIR = ..

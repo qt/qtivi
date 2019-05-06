@@ -121,6 +121,7 @@ void {{zone_class}}::emitCurrentState()
 
 {{class}}::{{class}}(QObject *parent)
     : {{class}}Interface(parent)
+    , m_helper(new QIviRemoteObjectReplicaHelper(qLcRO{{interface}}(), this))
 {% for property in interface.properties %}
 {%   if property.type.is_model %}
     , m_{{property}}(new {{property|upperfirst}}ModelBackend(this))
@@ -141,7 +142,6 @@ void {{zone_class}}::emitCurrentState()
     settings.beginGroup(QStringLiteral("{{module.module_name|lower}}"));
     m_url = QUrl(settings.value(QStringLiteral("Registry"), QStringLiteral("local:{{module.module_name|lower}}")).toString());
     m_node = new QRemoteObjectNode(m_url);
-    connect(m_node, &QRemoteObjectNode::error, this, &{{class}}::onNodeError);
     m_replica.reset(m_node->acquire<{{interface}}Replica>(QStringLiteral("{{interface.qualified_name}}")));
     setupConnections();
 
@@ -245,7 +245,6 @@ QStringList {{class}}::availableZones() const
     if (static_cast<QRemoteObjectReplica*>(m_replica.get())->state() != QRemoteObjectReplica::Valid)
         return QIviPendingReply<{{operation|return_type}}>::createFailedReply();
 
-    QIviPendingReply<{{operation|return_type}}> iviReply;
 {% set function_parameters = operation.parameters|join(', ') %}
 {% if interface_zoned %}
 {%   if operation.parameters|length %}
@@ -255,37 +254,11 @@ QStringList {{class}}::availableZones() const
 {% endif%}
     qCDebug(qLcRO{{interface}}) << "{{operation}} called";
     QRemoteObjectPendingReply<QVariant> reply = m_replica->{{operation}}({{function_parameters}});
-    auto watcher = new QRemoteObjectPendingCallWatcher(reply);
-    connect(watcher, &QRemoteObjectPendingCallWatcher::finished, this, [this, iviReply](QRemoteObjectPendingCallWatcher *self) mutable {
-        if (self->error() == QRemoteObjectPendingCallWatcher::NoError) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 1)
-            QVariant value = self->returnValue();
-#else
-            QVariant value = self->returnValue().value<QVariant>();
-#endif
-            if (value.canConvert<{{interface}}PendingResult>()) {
-                {{interface}}PendingResult result = value.value<{{interface}}PendingResult>();
-                if (result.failed()) {
-                    qCDebug(qLcRO{{interface}}) << "Pending Result with id:" << result.id() << "failed";
-                    iviReply.setFailed();
-                } else {
-                    qCDebug(qLcRO{{interface}}) << "Result not available yet. Waiting for id:" << result.id();
-                    m_pendingReplies.insert(result.id(), iviReply);
-                }
-            } else {
-{% if operation.type.is_void %}
-                qCDebug(qLcRO{{interface}}) << "Got the value right away: void";
-                iviReply.setSuccess();
-{% else %}
-                qCDebug(qLcRO{{interface}}) << "Got the value right away:" << value.value<{{operation|return_type}}>();
-                iviReply.setSuccess(value.value<{{operation|return_type}}>());
-{% endif %}
-            }
-        } else {
-            iviReply.setFailed();
-            emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("{{class}}, remote call of method {{operation}} failed"));
-        }
-        self->deleteLater();
+    auto iviReply = m_helper->toQIviPendingReply<{{operation|return_type}}>(reply);
+
+    //Pass an empty std::function to only handle errors.
+    iviReply.then(std::function<void({{operation|return_type}})>(), [this]() {
+        emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("{{class}}, remote call of method {{operation}} failed"));
     });
     return iviReply;
 }
@@ -294,13 +267,21 @@ QStringList {{class}}::availableZones() const
 
 void {{class}}::setupConnections()
 {
-    connect(m_replica.data(), &{{interface}}Replica::pendingResultAvailable, this, &{{class}}::onPendingResultAvailable);
+    connect(m_node, &QRemoteObjectNode::error, m_helper, &QIviRemoteObjectReplicaHelper::onNodeError);
+    connect(m_helper, &QIviRemoteObjectReplicaHelper::errorChanged, this, &QIviFeatureInterface::errorChanged);
+
+    connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, m_helper, &QIviRemoteObjectReplicaHelper::onReplicaStateChanged);
+    connect(m_replica.data(), &{{interface}}Replica::pendingResultAvailable, m_helper, &QIviRemoteObjectReplicaHelper::onPendingResultAvailable);
 {% if interface_zoned %}
     connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &{{class}}::syncZones);
+    connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, this, [this](QRemoteObjectReplica::State newState, QRemoteObjectReplica::State oldState){
+        Q_UNUSED(oldState)
+        if (newState == QRemoteObjectReplica::Suspect)
+            m_synced = false;
+    });
 {% else %}
     connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &QIviFeatureInterface::initializationDone);
 {% endif %}
-    connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, this, &{{class}}::onReplicaStateChanged);
 {% for property in interface.properties if not property.type.is_model %}
 {%   if interface_zoned %}
     connect(m_replica.data(), &{{interface}}Replica::{{property}}Changed, this, [this]({{property|parameter_type}}, const QString &zone) {
@@ -318,47 +299,6 @@ void {{class}}::setupConnections()
 {% for signal in interface.signals %}
     connect(m_replica.data(), &{{interface}}Replica::{{signal}}, this, &{{class}}::{{signal}});
 {% endfor %}
-}
-
-void {{class}}::onReplicaStateChanged(QRemoteObjectReplica::State newState,
-                               QRemoteObjectReplica::State)
-{
-    if (newState == QRemoteObjectReplica::Suspect) {
-        qCWarning(qLcRO{{interface}}) << "QRemoteObjectReplica error, connection to the source lost";
-        emit errorChanged(QIviAbstractFeature::Unknown,
-                        "QRemoteObjectReplica error, connection to the source lost");
-{% if interface_zoned %}
-        m_synced = false;
-{% endif %}
-    } else if (newState == QRemoteObjectReplica::SignatureMismatch) {
-        qCWarning(qLcRO{{interface}}) << "QRemoteObjectReplica error, signature mismatch";
-        emit errorChanged(QIviAbstractFeature::Unknown,
-                        "QRemoteObjectReplica error, signature mismatch");
-    } else if (newState==QRemoteObjectReplica::Valid) {
-        emit errorChanged(QIviAbstractFeature::NoError, "");
-    }
-}
-
-void {{class}}::onNodeError(QRemoteObjectNode::ErrorCode code)
-{
-    qCWarning(qLcRO{{interface}}) << "QRemoteObjectNode error, code: " << code;
-    emit errorChanged(QIviAbstractFeature::Unknown, "QRemoteObjectNode error, code: " + code);
-}
-
-void {{class}}::onPendingResultAvailable(quint64 id, bool isSuccess, const QVariant &value)
-{
-    qCDebug(qLcRO{{interface}}) << "pending result available" << id;
-    if (!m_pendingReplies.contains(id)) {
-        qCDebug(qLcRO{{interface}}) << "Received a result for an unexpected id:" << id << ". Ignoring!";
-        return;
-    }
-
-    QIviPendingReplyBase iviReply = m_pendingReplies.take(id);
-
-    if (isSuccess)
-        iviReply.setSuccess(value);
-    else
-        iviReply.setFailed();
 }
 
 {% if interface_zoned %}

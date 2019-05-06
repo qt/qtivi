@@ -44,9 +44,11 @@
 
 #include <QtIviMedia/QIviMediaDeviceDiscoveryModelBackendInterface>
 #include <QtIviCore/QIviServiceObject>
+#include <QIviRemoteObjectReplicaHelper>
 #include <QRemoteObjectNode>
 
 #include "rep_qivimediadiscoverymodel_replica.h"
+
 
 class MediaDiscoveryBackend : public QIviMediaDeviceDiscoveryModelBackendInterface
 {
@@ -58,10 +60,6 @@ public:
     void initialize() override;
 
 public Q_SLOTS:
-    void onReplicaStateChanged(QRemoteObjectReplica::State newState,
-                        QRemoteObjectReplica::State oldState);
-    void onNodeError(QRemoteObjectNode::ErrorCode code);
-
     void onDevicesChanged(const QStringList &devices);
     void onDeviceAdded(const QString &device);
     void onDeviceRemoved(const QString &device);
@@ -70,6 +68,7 @@ private:
     QSharedPointer<QIviMediaDiscoveryModelReplica> m_replica;
     QHash<QString, QIviServiceObject*> m_deviceMap;
     bool m_initialized;
+    QIviRemoteObjectReplicaHelper *m_helper;
 };
 
 #endif // MEDIADISCOVERYBACKEND_H

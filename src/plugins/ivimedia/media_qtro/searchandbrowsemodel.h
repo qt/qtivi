@@ -44,6 +44,7 @@
 
 #include <QtIviCore/QIviSearchAndBrowseModelInterface>
 #include <QtIviMedia/QIviPlayableItem>
+#include <QIviRemoteObjectReplicaHelper>
 #include <QRemoteObjectNode>
 #include "rep_qivisearchandbrowsemodel_replica.h"
 
@@ -87,14 +88,9 @@ public:
     QIviPendingReply<void> move(const QUuid &identifier, int currentIndex, int newIndex) override;
     QIviPendingReply<int> indexOf(const QUuid &identifier, const QVariant &item) override;
 
-public Q_SLOTS:
-    void onReplicaStateChanged(QRemoteObjectReplica::State newState,
-                        QRemoteObjectReplica::State oldState);
-    void onNodeError(QRemoteObjectNode::ErrorCode code);
-    void onPendingResultAvailable(quint64 id, bool isSuccess, const QVariant &value);
 private:
     QSharedPointer<QIviSearchAndBrowseModelReplica> m_replica;
-    QHash<quint64, QIviPendingReplyBase> m_pendingReplies;
+    QIviRemoteObjectReplicaHelper *m_helper;
 };
 
 #endif // SEARCHANDBROWSEMODEL_H

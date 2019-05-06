@@ -47,12 +47,14 @@ Q_LOGGING_CATEGORY(qLcROQIviMediaIndexer, "qtivi.media.qivimediaindexerbackend.r
 
 MediaIndexerBackend::MediaIndexerBackend(QRemoteObjectNode *node, QObject *parent)
     : QIviMediaIndexerControlBackendInterface(parent)
+    , m_helper(new QIviRemoteObjectReplicaHelper(qLcROQIviMediaIndexer(), this))
 {
     m_replica.reset(node->acquire<QIviMediaIndexerReplica>(QStringLiteral("QtIviMedia.QIviMediaIndexer")));
 
-    connect(node, &QRemoteObjectNode::error, this, &MediaIndexerBackend::onNodeError);
+    connect(node, &QRemoteObjectNode::error, m_helper, &QIviRemoteObjectReplicaHelper::onNodeError);
+    connect(m_helper, &QIviRemoteObjectReplicaHelper::errorChanged, this, &QIviFeatureInterface::errorChanged);
+    connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, m_helper, &QIviRemoteObjectReplicaHelper::onReplicaStateChanged);
     connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &QIviFeatureInterface::initializationDone);
-    connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, this, &MediaIndexerBackend::onReplicaStateChanged);
     connect(m_replica.data(), &QIviMediaIndexerReplica::stateChanged, this, &MediaIndexerBackend::stateChanged);
     connect(m_replica.data(), &QIviMediaIndexerReplica::progressChanged, this, &MediaIndexerBackend::progressChanged);
 
@@ -79,27 +81,4 @@ void MediaIndexerBackend::pause()
 void MediaIndexerBackend::resume()
 {
     m_replica->resume();
-}
-
-void MediaIndexerBackend::onReplicaStateChanged(QRemoteObjectReplica::State newState, QRemoteObjectReplica::State oldState)
-{
-    Q_UNUSED(oldState)
-
-    if (newState == QRemoteObjectReplica::Suspect) {
-        qCWarning(qLcROQIviMediaIndexer) << "QRemoteObjectReplica error, connection to the source lost";
-        emit errorChanged(QIviAbstractFeature::Unknown,
-                        "QRemoteObjectReplica error, connection to the source lost");
-    } else if (newState == QRemoteObjectReplica::SignatureMismatch) {
-        qCWarning(qLcROQIviMediaIndexer) << "QRemoteObjectReplica error, signature mismatch";
-        emit errorChanged(QIviAbstractFeature::Unknown,
-                        "QRemoteObjectReplica error, signature mismatch");
-    } else if (newState==QRemoteObjectReplica::Valid) {
-        emit errorChanged(QIviAbstractFeature::NoError, "");
-    }
-}
-
-void MediaIndexerBackend::onNodeError(QRemoteObjectNode::ErrorCode code)
-{
-    qCWarning(qLcROQIviMediaIndexer) << "QRemoteObjectNode error, code: " << code;
-    emit errorChanged(QIviAbstractFeature::Unknown, "QRemoteObjectNode error, code: " + code);
 }

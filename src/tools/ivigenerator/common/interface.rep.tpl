@@ -56,8 +56,6 @@
 {{inc}}
 {% endfor %}
 
-POD {{interface}}PendingResult(quint64 id, bool failed)
-
 class {{class}}
 {
 {% for property in interface.properties %}

@@ -42,6 +42,8 @@
 #ifndef QIVISEARCHANDBROWSEMODELQTROADAPTER_H
 #define QIVISEARCHANDBROWSEMODELQTROADAPTER_H
 
+#include <QIviRemoteObjectSourceHelper>
+
 #include "searchandbrowsebackend.h"
 #include "rep_qivisearchandbrowsemodel_source.h"
 
@@ -75,8 +77,7 @@ public Q_SLOTS:
 
 private:
     QIviSearchAndBrowseModelInterface *m_backend;
-    quint64 m_replyCounter;
-
+    QIviRemoteObjectSourceHelper<QIviSearchAndBrowseModelQtRoAdapter> m_helper;
 };
 
 #endif // QIVISEARCHANDBROWSEMODELQTROADAPTER_H

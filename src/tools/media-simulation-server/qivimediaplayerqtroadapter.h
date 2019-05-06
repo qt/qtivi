@@ -43,6 +43,8 @@
 #ifndef QIVIMEDIAPLAYERQTROADAPTER_H
 #define QIVIMEDIAPLAYERQTROADAPTER_H
 
+#include <QIviRemoteObjectSourceHelper>
+
 #include "mediaplayerbackend.h"
 #include "rep_qivimediaplayer_source.h"
 
@@ -88,7 +90,7 @@ public Q_SLOTS:
 
 private:
     MediaPlayerBackend *m_backend;
-    quint64 m_replyCounter;
+    QIviRemoteObjectSourceHelper<QIviMediaPlayerQtRoAdapter> m_helper;
 };
 
 #endif // QIVIMEDIAPLAYERQTROADAPTER_H

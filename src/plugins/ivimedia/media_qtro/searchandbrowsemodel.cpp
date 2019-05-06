@@ -74,6 +74,7 @@ QDataStream &operator>>(QDataStream &stream, SearchAndBrowseItem &obj)
 
 SearchAndBrowseModel::SearchAndBrowseModel(QRemoteObjectNode *node, QObject *parent)
     : QIviSearchAndBrowseModelInterface(parent)
+    , m_helper(new QIviRemoteObjectReplicaHelper(qLcROQIviSearchAndBrowseModel(), this))
 {
     qRegisterMetaType<SearchAndBrowseItem>();
     qRegisterMetaTypeStreamOperators<SearchAndBrowseItem>();
@@ -82,10 +83,11 @@ SearchAndBrowseModel::SearchAndBrowseModel(QRemoteObjectNode *node, QObject *par
 
     m_replica.reset(node->acquire<QIviSearchAndBrowseModelReplica>(QStringLiteral("QIviSearchAndBrowseModel")));
 
-    connect(node, &QRemoteObjectNode::error, this, &SearchAndBrowseModel::onNodeError);
+    connect(node, &QRemoteObjectNode::error, m_helper, &QIviRemoteObjectReplicaHelper::onNodeError);
+    connect(m_helper, &QIviRemoteObjectReplicaHelper::errorChanged, this, &QIviFeatureInterface::errorChanged);
+    connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, m_helper, &QIviRemoteObjectReplicaHelper::onReplicaStateChanged);
     connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &QIviFeatureInterface::initializationDone);
-    connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, this, &SearchAndBrowseModel::onReplicaStateChanged);
-    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::pendingResultAvailable, this, &SearchAndBrowseModel::onPendingResultAvailable);
+    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::pendingResultAvailable, m_helper, &QIviRemoteObjectReplicaHelper::onPendingResultAvailable);
     connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::canGoBackChanged, this, &SearchAndBrowseModel::canGoBackChanged);
     connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::canGoForwardChanged, this, &SearchAndBrowseModel::canGoForwardChanged);
     connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::supportedCapabilitiesChanged, this, &SearchAndBrowseModel::supportedCapabilitiesChanged);
@@ -141,244 +143,73 @@ void SearchAndBrowseModel::setupFilter(const QUuid &identifier, QIviAbstractQuer
 
 QIviPendingReply<QString> SearchAndBrowseModel::goBack(const QUuid &identifier)
 {
-    QIviPendingReply<QString> iviReply;
     QRemoteObjectPendingReply<QVariant> reply = m_replica->goBack(identifier);
-    auto watcher = new QRemoteObjectPendingCallWatcher(reply);
-    connect(watcher, &QRemoteObjectPendingCallWatcher::finished, this, [this, iviReply](QRemoteObjectPendingCallWatcher *self) mutable {
-        if (self->error() == QRemoteObjectPendingCallWatcher::NoError) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 1)
-            QVariant value = self->returnValue();
-#else
-            QVariant value = self->returnValue().value<QVariant>();
-#endif
-            if (value.canConvert<QIviSearchAndBrowseModelPendingResult>()) {
-                QIviSearchAndBrowseModelPendingResult result = value.value<QIviSearchAndBrowseModelPendingResult>();
-                if (result.failed()) {
-                    qCDebug(qLcROQIviSearchAndBrowseModel) << "Pending Result with id:" << result.id() << "failed";
-                    iviReply.setFailed();
-                } else {
-                    qCDebug(qLcROQIviSearchAndBrowseModel) << "Result not available yet. Waiting for id:" << result.id();
-                    m_pendingReplies.insert(result.id(), iviReply);
-                }
-            } else {
-                qCDebug(qLcROQIviSearchAndBrowseModel) << "Got the value right away:" << value.value<QString>();
-                iviReply.setSuccess(value.toString());
-            }
-        } else {
-            iviReply.setFailed();
-            emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("remote call of method insert failed"));
-        }
-        self->deleteLater();
+    auto iviReply = m_helper->toQIviPendingReply<QString>(reply);
+
+    //Pass an empty std::function to only handle errors.
+    iviReply.then(std::function<void(QString)>(), [this]() {
+        emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("remote call of method goBack failed"));
     });
     return iviReply;
 }
 
 QIviPendingReply<QString> SearchAndBrowseModel::goForward(const QUuid &identifier, int index)
 {
-    QIviPendingReply<QString> iviReply;
     QRemoteObjectPendingReply<QVariant> reply = m_replica->goForward(identifier, index);
-    auto watcher = new QRemoteObjectPendingCallWatcher(reply);
-    connect(watcher, &QRemoteObjectPendingCallWatcher::finished, this, [this, iviReply](QRemoteObjectPendingCallWatcher *self) mutable {
-        if (self->error() == QRemoteObjectPendingCallWatcher::NoError) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 1)
-            QVariant value = self->returnValue();
-#else
-            QVariant value = self->returnValue().value<QVariant>();
-#endif
-            if (value.canConvert<QIviSearchAndBrowseModelPendingResult>()) {
-                QIviSearchAndBrowseModelPendingResult result = value.value<QIviSearchAndBrowseModelPendingResult>();
-                if (result.failed()) {
-                    qCDebug(qLcROQIviSearchAndBrowseModel) << "Pending Result with id:" << result.id() << "failed";
-                    iviReply.setFailed();
-                } else {
-                    qCDebug(qLcROQIviSearchAndBrowseModel) << "Result not available yet. Waiting for id:" << result.id();
-                    m_pendingReplies.insert(result.id(), iviReply);
-                }
-            } else {
-                qCDebug(qLcROQIviSearchAndBrowseModel) << "Got the value right away:" << value.value<QString>();
-                iviReply.setSuccess(value.toString());
-            }
-        } else {
-            iviReply.setFailed();
-            emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("remote call of method insert failed"));
-        }
-        self->deleteLater();
+
+    //Pass an empty std::function to only handle errors.
+    auto iviReply = m_helper->toQIviPendingReply<QString>(reply);
+    iviReply.then(std::function<void(QString)>(), [this]() {
+        emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("remote call of method goForward failed"));
     });
     return iviReply;
 }
 
 QIviPendingReply<void> SearchAndBrowseModel::insert(const QUuid &identifier, int index, const QVariant &item)
 {
-    QIviPendingReply<void> iviReply;
     QRemoteObjectPendingReply<QVariant> reply = m_replica->insert(identifier, index, item);
-    auto watcher = new QRemoteObjectPendingCallWatcher(reply);
-    connect(watcher, &QRemoteObjectPendingCallWatcher::finished, this, [this, iviReply](QRemoteObjectPendingCallWatcher *self) mutable {
-        if (self->error() == QRemoteObjectPendingCallWatcher::NoError) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 1)
-            QVariant value = self->returnValue();
-#else
-            QVariant value = self->returnValue().value<QVariant>();
-#endif
-            if (value.canConvert<QIviSearchAndBrowseModelPendingResult>()) {
-                QIviSearchAndBrowseModelPendingResult result = value.value<QIviSearchAndBrowseModelPendingResult>();
-                if (result.failed()) {
-                    qCDebug(qLcROQIviSearchAndBrowseModel) << "Pending Result with id:" << result.id() << "failed";
-                    iviReply.setFailed();
-                } else {
-                    qCDebug(qLcROQIviSearchAndBrowseModel) << "Result not available yet. Waiting for id:" << result.id();
-                    m_pendingReplies.insert(result.id(), iviReply);
-                }
-            } else {
-                qCDebug(qLcROQIviSearchAndBrowseModel) << "Got the value right away: void";
-                iviReply.setSuccess();
-            }
-        } else {
-            iviReply.setFailed();
-            emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("remote call of method insert failed"));
-        }
-        self->deleteLater();
+
+    //Pass an empty std::function to only handle errors.
+    auto iviReply = m_helper->toQIviPendingReply<void>(reply);
+    iviReply.then(std::function<void()>(), [this]() {
+        emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("remote call of method insert failed"));
     });
     return iviReply;
 }
 
 QIviPendingReply<void> SearchAndBrowseModel::remove(const QUuid &identifier, int index)
 {
-    QIviPendingReply<void> iviReply;
     QRemoteObjectPendingReply<QVariant> reply = m_replica->remove(identifier, index);
-    auto watcher = new QRemoteObjectPendingCallWatcher(reply);
-    connect(watcher, &QRemoteObjectPendingCallWatcher::finished, this, [this, iviReply](QRemoteObjectPendingCallWatcher *self) mutable {
-        if (self->error() == QRemoteObjectPendingCallWatcher::NoError) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 1)
-            QVariant value = self->returnValue();
-#else
-            QVariant value = self->returnValue().value<QVariant>();
-#endif
-            if (value.canConvert<QIviSearchAndBrowseModelPendingResult>()) {
-                QIviSearchAndBrowseModelPendingResult result = value.value<QIviSearchAndBrowseModelPendingResult>();
-                if (result.failed()) {
-                    qCDebug(qLcROQIviSearchAndBrowseModel) << "Pending Result with id:" << result.id() << "failed";
-                    iviReply.setFailed();
-                } else {
-                    qCDebug(qLcROQIviSearchAndBrowseModel) << "Result not available yet. Waiting for id:" << result.id();
-                    m_pendingReplies.insert(result.id(), iviReply);
-                }
-            } else {
-                qCDebug(qLcROQIviSearchAndBrowseModel) << "Got the value right away: void";
-                iviReply.setSuccess();
-            }
-        } else {
-            iviReply.setFailed();
-            emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("remote call of method remove failed"));
-        }
-        self->deleteLater();
+
+    //Pass an empty std::function to only handle errors.
+    auto iviReply = m_helper->toQIviPendingReply<void>(reply);
+    iviReply.then(std::function<void()>(), [this]() {
+        emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("remote call of method remove failed"));
     });
     return iviReply;
 }
 
 QIviPendingReply<void> SearchAndBrowseModel::move(const QUuid &identifier, int currentIndex, int newIndex)
 {
-    QIviPendingReply<void> iviReply;
     QRemoteObjectPendingReply<QVariant> reply = m_replica->move(identifier, currentIndex, newIndex);
-    auto watcher = new QRemoteObjectPendingCallWatcher(reply);
-    connect(watcher, &QRemoteObjectPendingCallWatcher::finished, this, [this, iviReply](QRemoteObjectPendingCallWatcher *self) mutable {
-        if (self->error() == QRemoteObjectPendingCallWatcher::NoError) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 1)
-            QVariant value = self->returnValue();
-#else
-            QVariant value = self->returnValue().value<QVariant>();
-#endif
-            if (value.canConvert<QIviSearchAndBrowseModelPendingResult>()) {
-                QIviSearchAndBrowseModelPendingResult result = value.value<QIviSearchAndBrowseModelPendingResult>();
-                if (result.failed()) {
-                    qCDebug(qLcROQIviSearchAndBrowseModel) << "Pending Result with id:" << result.id() << "failed";
-                    iviReply.setFailed();
-                } else {
-                    qCDebug(qLcROQIviSearchAndBrowseModel) << "Result not available yet. Waiting for id:" << result.id();
-                    m_pendingReplies.insert(result.id(), iviReply);
-                }
-            } else {
-                qCDebug(qLcROQIviSearchAndBrowseModel) << "Got the value right away: void";
-                iviReply.setSuccess();
-            }
-        } else {
-            iviReply.setFailed();
-            emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("remote call of method move failed"));
-        }
-        self->deleteLater();
+
+    //Pass an empty std::function to only handle errors.
+    auto iviReply = m_helper->toQIviPendingReply<void>(reply);
+    iviReply.then(std::function<void()>(), [this]() {
+        emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("remote call of method move failed"));
     });
     return iviReply;
 }
 
 QIviPendingReply<int> SearchAndBrowseModel::indexOf(const QUuid &identifier, const QVariant &item)
 {
-    QIviPendingReply<int> iviReply;
     QRemoteObjectPendingReply<QVariant> reply = m_replica->indexOf(identifier, item);
-    auto watcher = new QRemoteObjectPendingCallWatcher(reply);
-    connect(watcher, &QRemoteObjectPendingCallWatcher::finished, this, [this, iviReply](QRemoteObjectPendingCallWatcher *self) mutable {
-        if (self->error() == QRemoteObjectPendingCallWatcher::NoError) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 1)
-            QVariant value = self->returnValue();
-#else
-            QVariant value = self->returnValue().value<QVariant>();
-#endif
-            if (value.canConvert<QIviSearchAndBrowseModelPendingResult>()) {
-                QIviSearchAndBrowseModelPendingResult result = value.value<QIviSearchAndBrowseModelPendingResult>();
-                if (result.failed()) {
-                    qCDebug(qLcROQIviSearchAndBrowseModel) << "Pending Result with id:" << result.id() << "failed";
-                    iviReply.setFailed();
-                } else {
-                    qCDebug(qLcROQIviSearchAndBrowseModel) << "Result not available yet. Waiting for id:" << result.id();
-                    m_pendingReplies.insert(result.id(), iviReply);
-                }
-            } else {
-                qCDebug(qLcROQIviSearchAndBrowseModel) << "Got the value right away:" << value.value<int>();
-                iviReply.setSuccess(value.value<int>());
-            }
-        } else {
-            iviReply.setFailed();
-            emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("remote call of method remove failed"));
-        }
-        self->deleteLater();
+
+    //Pass an empty std::function to only handle errors.
+    auto iviReply = m_helper->toQIviPendingReply<int>(reply);
+    iviReply.then(std::function<void(int)>(), [this]() {
+        emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("remote call of method indexOf failed"));
     });
     return iviReply;
-}
-
-void SearchAndBrowseModel::onReplicaStateChanged(QRemoteObjectReplica::State newState, QRemoteObjectReplica::State oldState)
-{
-    Q_UNUSED(oldState)
-
-    if (newState == QRemoteObjectReplica::Suspect) {
-        qCWarning(qLcROQIviSearchAndBrowseModel) << "QRemoteObjectReplica error, connection to the source lost";
-        emit errorChanged(QIviAbstractFeature::Unknown,
-                        "QRemoteObjectReplica error, connection to the source lost");
-    } else if (newState == QRemoteObjectReplica::SignatureMismatch) {
-        qCWarning(qLcROQIviSearchAndBrowseModel) << "QRemoteObjectReplica error, signature mismatch";
-        emit errorChanged(QIviAbstractFeature::Unknown,
-                        "QRemoteObjectReplica error, signature mismatch");
-    } else if (newState == QRemoteObjectReplica::Valid) {
-        emit errorChanged(QIviAbstractFeature::NoError, "");
-    }
-}
-
-void SearchAndBrowseModel::onNodeError(QRemoteObjectNode::ErrorCode code)
-{
-    qCWarning(qLcROQIviSearchAndBrowseModel) << "QRemoteObjectNode error, code: " << code;
-    emit errorChanged(QIviAbstractFeature::Unknown, "QRemoteObjectNode error, code: " + code);
-}
-
-void SearchAndBrowseModel::onPendingResultAvailable(quint64 id, bool isSuccess, const QVariant &value)
-{
-    qCDebug(qLcROQIviSearchAndBrowseModel) << "pending result available" << id;
-    if (!m_pendingReplies.contains(id)) {
-        qCDebug(qLcROQIviSearchAndBrowseModel) << "Received a result for an unexpected id:" << id << ". Ignoring!";
-        return;
-    }
-
-    QIviPendingReplyBase iviReply = m_pendingReplies.take(id);
-
-    if (isSuccess)
-        iviReply.setSuccess(value);
-    else
-        iviReply.setFailed();
 }
 

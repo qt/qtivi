@@ -2,8 +2,6 @@
 #include <QtIviMedia/QIviMediaPlayer>
 #include <QtCore/QUuid>
 
-POD QIviMediaPlayerPendingResult(quint64 id, bool failed)
-
 class QIviMediaPlayer
 {
     PROP(QIviMediaPlayer::PlayMode playMode);

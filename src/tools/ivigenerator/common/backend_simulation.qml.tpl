@@ -38,6 +38,7 @@
 # SPDX-License-Identifier: LGPL-3.0
 #}
 
+
 import QtQuick 2.10
 import {{module|qml_type}}.simulation {{module.majorVersion}}.{{module.minorVersion}}
 

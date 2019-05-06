@@ -42,12 +42,12 @@
 #include "qivisearchandbrowsemodelqtroadapter.h"
 #include "qiviqmlconversion_helper.h"
 
-Q_LOGGING_CATEGORY(qLcROQIviSearchAndBrowseModel, "qtivi.qivisearchandbrowsemodel.remoteobjects", QtInfoMsg)
+Q_LOGGING_CATEGORY(qLcROQIviSearchAndBrowseModel, "qt.ivi.qivisearchandbrowsemodel.remoteobjects", QtInfoMsg)
 
 QIviSearchAndBrowseModelQtRoAdapter::QIviSearchAndBrowseModelQtRoAdapter(QIviSearchAndBrowseModelInterface *parent)
     : QIviSearchAndBrowseModelSource(parent)
     , m_backend(parent)
-    , m_replyCounter(0)
+    , m_helper(this, qLcROQIviSearchAndBrowseModel())
 {
     connect(m_backend, &SearchAndBrowseBackend::dataFetched, this, &QIviSearchAndBrowseModelQtRoAdapter::dataFetched);
     connect(m_backend, &SearchAndBrowseBackend::dataChanged, this, &QIviSearchAndBrowseModelQtRoAdapter::dataChanged);
@@ -84,64 +84,31 @@ QVariant QIviSearchAndBrowseModelQtRoAdapter::goBack(const QUuid &identifier)
 {
     QIviPendingReplyBase pendingReply = m_backend->goBack(identifier);
     qCDebug(qLcROQIviSearchAndBrowseModel) << Q_FUNC_INFO;
-    if (pendingReply.isSuccessful()) {
-        qCDebug(qLcROQIviSearchAndBrowseModel) << "Returning result right away";
-        return pendingReply.value();
-    } else { //reply not yet ready or failed
-        const quint64 id = ++m_replyCounter;
-        if (pendingReply.isResultAvailable()) { // the call failed
-            qCDebug(qLcROQIviSearchAndBrowseModel) << "Returning failed reply";
-            return QVariant::fromValue(QIviSearchAndBrowseModelPendingResult(id, true /* failed */));
-        }
-        QIviSearchAndBrowseModelPendingResult result = QIviSearchAndBrowseModelPendingResult(id, false /* failed */);
-        qCDebug(qLcROQIviSearchAndBrowseModel) << "Returning a pending result: id:" << id;
-        connect(pendingReply.watcher(), &QIviPendingReplyWatcher::valueChanged, this, [this, pendingReply, id] (const QVariant &value) {
-            qCDebug(qLcROQIviSearchAndBrowseModel) << "Value for pending result available: id:" << id << "value:" << value;
-            emit pendingResultAvailable(id, pendingReply.isSuccessful(), value);
-        });
-        return QVariant::fromValue(result);
-    }
-
-    return QVariant();
+    return m_helper.fromPendingReply(pendingReply);
 }
 
 QVariant QIviSearchAndBrowseModelQtRoAdapter::goForward(const QUuid &identifier, int index)
 {
     QIviPendingReplyBase pendingReply = m_backend->goForward(identifier, index);
     qCDebug(qLcROQIviSearchAndBrowseModel) << Q_FUNC_INFO;
-    if (pendingReply.isSuccessful()) {
-        qCDebug(qLcROQIviSearchAndBrowseModel) << "Returning result right away";
-        return pendingReply.value();
-    } else { //reply not yet ready or failed
-        const quint64 id = ++m_replyCounter;
-        if (pendingReply.isResultAvailable()) { // the call failed
-            qCDebug(qLcROQIviSearchAndBrowseModel) << "Returning failed reply";
-            return QVariant::fromValue(QIviSearchAndBrowseModelPendingResult(id, true /* failed */));
-        }
-        QIviSearchAndBrowseModelPendingResult result = QIviSearchAndBrowseModelPendingResult(id, false /* failed */);
-        qCDebug(qLcROQIviSearchAndBrowseModel) << "Returning a pending result: id:" << id;
-        connect(pendingReply.watcher(), &QIviPendingReplyWatcher::valueChanged, this, [this, pendingReply, id] (const QVariant &value) {
-            qCDebug(qLcROQIviSearchAndBrowseModel) << "Value for pending result available: id:" << id << "value:" << value;
-            emit pendingResultAvailable(id, pendingReply.isSuccessful(), value);
-        });
-        return QVariant::fromValue(result);
-    }
-
-    return QVariant();
+    return m_helper.fromPendingReply(pendingReply);
 }
 
 void QIviSearchAndBrowseModelQtRoAdapter::registerInstance(const QUuid &identifier)
 {
+    qCDebug(qLcROQIviSearchAndBrowseModel) << Q_FUNC_INFO;
     m_backend->registerInstance(identifier);
 }
 
 void QIviSearchAndBrowseModelQtRoAdapter::unregisterInstance(const QUuid &identifier)
 {
+    qCDebug(qLcROQIviSearchAndBrowseModel) << Q_FUNC_INFO;
     m_backend->unregisterInstance(identifier);
 }
 
 void QIviSearchAndBrowseModelQtRoAdapter::fetchData(const QUuid &identifier, int start, int count)
 {
+    qCDebug(qLcROQIviSearchAndBrowseModel) << Q_FUNC_INFO;
     m_backend->fetchData(identifier, start, count);
 }
 
@@ -149,100 +116,28 @@ QVariant QIviSearchAndBrowseModelQtRoAdapter::insert(const QUuid &identifier, in
 {
     QIviPendingReplyBase pendingReply = m_backend->insert(identifier, index, item);
     qCDebug(qLcROQIviSearchAndBrowseModel) << Q_FUNC_INFO;
-    if (pendingReply.isSuccessful()) {
-        qCDebug(qLcROQIviSearchAndBrowseModel) << "Returning result right away";
-        return pendingReply.value();
-    } else { //reply not yet ready or failed
-        const quint64 id = ++m_replyCounter;
-        if (pendingReply.isResultAvailable()) { // the call failed
-            qCDebug(qLcROQIviSearchAndBrowseModel) << "Returning failed reply";
-            return QVariant::fromValue(QIviSearchAndBrowseModelPendingResult(id, true /* failed */));
-        }
-        QIviSearchAndBrowseModelPendingResult result = QIviSearchAndBrowseModelPendingResult(id, false /* failed */);
-        qCDebug(qLcROQIviSearchAndBrowseModel) << "Returning a pending result: id:" << id;
-        connect(pendingReply.watcher(), &QIviPendingReplyWatcher::valueChanged, this, [this, pendingReply, id] (const QVariant &value) {
-            qCDebug(qLcROQIviSearchAndBrowseModel) << "Value for pending result available: id:" << id << "value:" << value;
-            emit pendingResultAvailable(id, pendingReply.isSuccessful(), value);
-        });
-        return QVariant::fromValue(result);
-    }
-
-    return QVariant();
+    return m_helper.fromPendingReply(pendingReply);
 }
 
 QVariant QIviSearchAndBrowseModelQtRoAdapter::remove(const QUuid &identifier, int index)
 {
     QIviPendingReplyBase pendingReply = m_backend->remove(identifier, index);
     qCDebug(qLcROQIviSearchAndBrowseModel) << Q_FUNC_INFO;
-    if (pendingReply.isSuccessful()) {
-        qCDebug(qLcROQIviSearchAndBrowseModel) << "Returning result right away";
-        return pendingReply.value();
-    } else { //reply not yet ready or failed
-        const quint64 id = ++m_replyCounter;
-        if (pendingReply.isResultAvailable()) { // the call failed
-            qCDebug(qLcROQIviSearchAndBrowseModel) << "Returning failed reply";
-            return QVariant::fromValue(QIviSearchAndBrowseModelPendingResult(id, true /* failed */));
-        }
-        QIviSearchAndBrowseModelPendingResult result = QIviSearchAndBrowseModelPendingResult(id, false /* failed */);
-        qCDebug(qLcROQIviSearchAndBrowseModel) << "Returning a pending result: id:" << id;
-        connect(pendingReply.watcher(), &QIviPendingReplyWatcher::valueChanged, this, [this, pendingReply, id] (const QVariant &value) {
-            qCDebug(qLcROQIviSearchAndBrowseModel) << "Value for pending result available: id:" << id << "value:" << value;
-            emit pendingResultAvailable(id, pendingReply.isSuccessful(), value);
-        });
-        return QVariant::fromValue(result);
-    }
-
-    return QVariant();
+    return m_helper.fromPendingReply(pendingReply);
 }
 
 QVariant QIviSearchAndBrowseModelQtRoAdapter::move(const QUuid &identifier, int currentIndex, int newIndex)
 {
     QIviPendingReplyBase pendingReply = m_backend->move(identifier, currentIndex, newIndex);
     qCDebug(qLcROQIviSearchAndBrowseModel) << Q_FUNC_INFO;
-    if (pendingReply.isSuccessful()) {
-        qCDebug(qLcROQIviSearchAndBrowseModel) << "Returning result right away";
-        return pendingReply.value();
-    } else { //reply not yet ready or failed
-        const quint64 id = ++m_replyCounter;
-        if (pendingReply.isResultAvailable()) { // the call failed
-            qCDebug(qLcROQIviSearchAndBrowseModel) << "Returning failed reply";
-            return QVariant::fromValue(QIviSearchAndBrowseModelPendingResult(id, true /* failed */));
-        }
-        QIviSearchAndBrowseModelPendingResult result = QIviSearchAndBrowseModelPendingResult(id, false /* failed */);
-        qCDebug(qLcROQIviSearchAndBrowseModel) << "Returning a pending result: id:" << id;
-        connect(pendingReply.watcher(), &QIviPendingReplyWatcher::valueChanged, this, [this, pendingReply, id] (const QVariant &value) {
-            qCDebug(qLcROQIviSearchAndBrowseModel) << "Value for pending result available: id:" << id << "value:" << value;
-            emit pendingResultAvailable(id, pendingReply.isSuccessful(), value);
-        });
-        return QVariant::fromValue(result);
-    }
-
-    return QVariant();
+    return m_helper.fromPendingReply(pendingReply);
 }
 
 QVariant QIviSearchAndBrowseModelQtRoAdapter::indexOf(const QUuid &identifier, const QVariant &item)
 {
     QIviPendingReplyBase pendingReply = m_backend->indexOf(identifier, item);
     qCDebug(qLcROQIviSearchAndBrowseModel) << Q_FUNC_INFO;
-    if (pendingReply.isSuccessful()) {
-        qCDebug(qLcROQIviSearchAndBrowseModel) << "Returning result right away";
-        return pendingReply.value();
-    } else { //reply not yet ready or failed
-        const quint64 id = ++m_replyCounter;
-        if (pendingReply.isResultAvailable()) { // the call failed
-            qCDebug(qLcROQIviSearchAndBrowseModel) << "Returning failed reply";
-            return QVariant::fromValue(QIviSearchAndBrowseModelPendingResult(id, true /* failed */));
-        }
-        QIviSearchAndBrowseModelPendingResult result = QIviSearchAndBrowseModelPendingResult(id, false /* failed */);
-        qCDebug(qLcROQIviSearchAndBrowseModel) << "Returning a pending result: id:" << id;
-        connect(pendingReply.watcher(), &QIviPendingReplyWatcher::valueChanged, this, [this, pendingReply, id] (const QVariant &value) {
-            qCDebug(qLcROQIviSearchAndBrowseModel) << "Value for pending result available: id:" << id << "value:" << value;
-            emit pendingResultAvailable(id, pendingReply.isSuccessful(), value);
-        });
-        return QVariant::fromValue(result);
-    }
-
-    return QVariant();
+    return m_helper.fromPendingReply(pendingReply);
 }
 
 

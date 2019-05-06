@@ -8,7 +8,7 @@ load(qt_plugin)
 
 DISTFILES += media_qtro.json
 
-QT += ivicore ivimedia remoteobjects
+QT += ivicore ivimedia remoteobjects iviremoteobjects_helper_private
 
 HEADERS += \
     mediaplugin.h \

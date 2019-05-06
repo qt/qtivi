@@ -50,12 +50,14 @@ Q_LOGGING_CATEGORY(qLcROQIviMediaDiscovery, "qtivi.media.qivimediadiscoverybacke
 MediaDiscoveryBackend::MediaDiscoveryBackend(QRemoteObjectNode *node, QObject *parent)
     : QIviMediaDeviceDiscoveryModelBackendInterface(parent)
     , m_initialized(false)
+    , m_helper(new QIviRemoteObjectReplicaHelper(qLcROQIviMediaDiscovery(), this))
 {
      m_replica.reset(node->acquire<QIviMediaDiscoveryModelReplica>(QStringLiteral("QtIviMedia.QIviMediaDiscoveryModel")));
 
-     connect(node, &QRemoteObjectNode::error, this, &MediaDiscoveryBackend::onNodeError);
+     connect(node, &QRemoteObjectNode::error, m_helper, &QIviRemoteObjectReplicaHelper::onNodeError);
+     connect(m_helper, &QIviRemoteObjectReplicaHelper::errorChanged, this, &QIviFeatureInterface::errorChanged);
+     connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, m_helper, &QIviRemoteObjectReplicaHelper::onReplicaStateChanged);
      connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &QIviFeatureInterface::initializationDone);
-     connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, this, &MediaDiscoveryBackend::onReplicaStateChanged);
      connect(m_replica.data(), &QIviMediaDiscoveryModelReplica::devicesChanged, this, &MediaDiscoveryBackend::onDevicesChanged);
      connect(m_replica.data(), &QIviMediaDiscoveryModelReplica::deviceAdded, this, &MediaDiscoveryBackend::onDeviceAdded);
      connect(m_replica.data(), &QIviMediaDiscoveryModelReplica::deviceRemoved, this, &MediaDiscoveryBackend::onDeviceRemoved);
@@ -99,27 +101,4 @@ void MediaDiscoveryBackend::onDeviceRemoved(const QString &device)
     QIviServiceObject *dev = m_deviceMap.take(device);
     emit deviceRemoved(dev);
     dev->deleteLater();
-}
-
-void MediaDiscoveryBackend::onReplicaStateChanged(QRemoteObjectReplica::State newState, QRemoteObjectReplica::State oldState)
-{
-    Q_UNUSED(oldState)
-
-    if (newState == QRemoteObjectReplica::Suspect) {
-        qCWarning(qLcROQIviMediaDiscovery) << "QRemoteObjectReplica error, connection to the source lost";
-        emit errorChanged(QIviAbstractFeature::Unknown,
-                        "QRemoteObjectReplica error, connection to the source lost");
-    } else if (newState == QRemoteObjectReplica::SignatureMismatch) {
-        qCWarning(qLcROQIviMediaDiscovery) << "QRemoteObjectReplica error, signature mismatch";
-        emit errorChanged(QIviAbstractFeature::Unknown,
-                        "QRemoteObjectReplica error, signature mismatch");
-    } else if (newState==QRemoteObjectReplica::Valid) {
-        emit errorChanged(QIviAbstractFeature::NoError, "");
-    }
-}
-
-void MediaDiscoveryBackend::onNodeError(QRemoteObjectNode::ErrorCode code)
-{
-    qCWarning(qLcROQIviMediaDiscovery) << "QRemoteObjectNode error, code: " << code;
-    emit errorChanged(QIviAbstractFeature::Unknown, "QRemoteObjectNode error, code: " + code);
 }

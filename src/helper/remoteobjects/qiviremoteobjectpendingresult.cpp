@@ -3,7 +3,7 @@
 ** Copyright (C) 2019 Luxoft Sweden AB
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the QtIVI module of the Qt Toolkit.
+** This file is part of the QtIvi module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL-QTAS$
 ** Commercial License Usage
@@ -39,28 +39,44 @@
 **
 ****************************************************************************/
 
-#ifndef MEDIAINDEXERBACKEND_H
-#define MEDIAINDEXERBACKEND_H
+#include "qiviremoteobjectpendingresult.h"
 
-#include <QtIviMedia/QIviMediaIndexerControlBackendInterface>
-#include <QIviRemoteObjectReplicaHelper>
-#include <QRemoteObjectNode>
+QT_BEGIN_NAMESPACE
 
-#include "rep_qivimediaindexer_replica.h"
+namespace qtivi_private {
+    Q_LOGGING_CATEGORY(qLcQtIviRoHelper, "qt.ivi.remoteobjects.helper", QtInfoMsg)
+}
 
-class MediaIndexerBackend : public QIviMediaIndexerControlBackendInterface
+QIviRemoteObjectPendingResult::QIviRemoteObjectPendingResult()
+    : m_id()
+    , m_failed()
+{}
+
+QIviRemoteObjectPendingResult::QIviRemoteObjectPendingResult(quint64 id, bool failed)
+    : m_id(id)
+    , m_failed(failed)
+{}
+
+quint64 QIviRemoteObjectPendingResult::id() const
 {
-public:
-    MediaIndexerBackend(QRemoteObjectNode *node, QObject *parent = nullptr);
+    return m_id;
+}
 
-public:
-    void initialize() override;
-    void pause() override;
-    void resume() override;
+void QIviRemoteObjectPendingResult::setId(quint64 id)
+{
+    if (id != m_id)
+        m_id = id;
+}
 
-private:
-    QSharedPointer<QIviMediaIndexerReplica> m_replica;
-    QIviRemoteObjectReplicaHelper *m_helper;
-};
+bool QIviRemoteObjectPendingResult::failed() const
+{
+    return m_failed;
+}
 
-#endif // MEDIAINDEXERBACKEND_H
+void QIviRemoteObjectPendingResult::setFailed(bool failed)
+{
+    if (failed != m_failed)
+        m_failed = failed;
+}
+
+QT_END_NAMESPACE

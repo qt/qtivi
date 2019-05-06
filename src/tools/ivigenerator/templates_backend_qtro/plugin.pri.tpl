@@ -42,7 +42,7 @@
 ## Do not edit! All changes made to it will be lost.
 #############################################################################
 
-QT += remoteobjects
+QT += remoteobjects iviremoteobjects_helper_private
 
 HEADERS += \
 {% for interface in module.interfaces %}

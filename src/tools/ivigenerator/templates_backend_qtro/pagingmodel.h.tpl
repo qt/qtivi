@@ -56,15 +56,11 @@ public:
 
     void fetchData(const QUuid &identifier, int start, int count) override;
 
-protected Q_SLOTS:
-    void onReplicaStateChanged(QRemoteObjectReplica::State newState,
-                               QRemoteObjectReplica::State oldState);
-    void onNodeError(QRemoteObjectNode::ErrorCode code);
-
 private:
     void setupConnections();
 
     QPointer<PagingModelReplica> m_replica;
+    QIviRemoteObjectReplicaHelper *m_helper;
     QRemoteObjectNode *m_node= nullptr;
     QUrl m_url;
     QVariantList m_list;

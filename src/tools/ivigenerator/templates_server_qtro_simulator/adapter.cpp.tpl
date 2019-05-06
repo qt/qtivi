@@ -53,7 +53,7 @@ Q_LOGGING_CATEGORY(qLcRO{{interface}}, "{{module|qml_type|lower}}.{{interface|lo
 {{class}}::{{class}}({{interface}}Backend *parent)
     : {{interface}}Source(parent)
     , m_backend(parent)
-    , m_replyCounter(0)
+    , m_helper(this, qLcRO{{interface}}())
 {
 {% for property in interface.properties %}
 {%   if not property.type.is_model %}
@@ -77,12 +77,20 @@ QStringList {{class}}::availableZones()
 {%     if interface_zoned %}
 {{property|return_type}} {{class}}::{{property|getter_name}}(const QString &zone)
 {
+{%       if property.type.is_var %}
+    return m_helper.toRemoteObjectVariant(m_backend->{{property|getter_name}}(zone));
+{%       else %}
     return m_backend->{{property|getter_name}}(zone);
+{%       endif %}
 }
 {%     else %}
 {{ivi.prop_getter(property, class, model_interface = true)}}
 {
+{%       if property.type.is_var %}
+    return m_helper.toRemoteObjectVariant(m_backend->{{property|getter_name}}());
+{%       else %}
     return m_backend->{{property|getter_name}}();
+{%       endif %}
 }
 {%     endif %}
 {%   endif %}
@@ -113,25 +121,7 @@ QVariant {{class}}::{{operation}}({{ivi.join_params(operation, zoned = interface
 {%     set function_parameters = function_parameters + 'zone' %}
 {%   endif%}
     QIviPendingReplyBase pendingReply = m_backend->{{operation}}({{function_parameters}});
-    qCDebug(qLcRO{{interface}}) << "{{operation}} called";
-    if (pendingReply.isSuccessful()) {
-        qCDebug(qLcRO{{interface}}) << "Returning result right away";
-        return pendingReply.value();
-    } else { //reply not yet ready or failed
-        const quint64 id = ++m_replyCounter;
-        if (pendingReply.isResultAvailable()) { // the call failed
-            qCDebug(qLcRO{{interface}}) << "Returning failed reply";
-            return QVariant::fromValue({{interface}}PendingResult(id, true /* failed */));
-        }
-        {{interface}}PendingResult result = {{interface}}PendingResult(id, false /* failed */);
-        qCDebug(qLcRO{{interface}}) << "Returning a pending result: id:" << id;
-        connect(pendingReply.watcher(), &QIviPendingReplyWatcher::valueChanged, this, [this, pendingReply, id] (const QVariant &value) {
-            qCDebug(qLcRO{{interface}}) << "Value for pending result available: id:" << id << "value:" << value;
-            emit pendingResultAvailable(id, pendingReply.isSuccessful(), value);
-        });
-        return QVariant::fromValue(result);
-    }
-
-    return QVariant();
+    qCDebug(qLcRO{{interface}}) << Q_FUNC_INFO;
+    return m_helper.fromPendingReply(pendingReply);
 }
 {% endfor %}

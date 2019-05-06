@@ -28,6 +28,7 @@
 ****************************************************************************/
 
 #include "echoservice.h"
+#include <QtIviRemoteObjectsHelper>
 #include <QTimer>
 
 EchoService::EchoService()
@@ -75,7 +76,7 @@ QVariant EchoService::voidSlot2(int param)
 QVariant EchoService::timer(int interval)
 {
     static quint64 counter = 0;
-    EchoPendingResult pendingResult(counter++, false);
+    QIviRemoteObjectPendingResult pendingResult(counter++, false);
     QTimer::singleShot(interval, this, [this, pendingResult](){
         emit pendingResultAvailable(pendingResult.id(), true, QVariant());
     });

@@ -3,8 +3,6 @@
 #include <QtIviCore/QIviFilterTerm>
 #include <QtCore/QUuid>
 
-POD QIviSearchAndBrowseModelPendingResult(quint64 id, bool failed)
-
 class QIviSearchAndBrowseModel
 {
     PROP(QStringList availableContentTypes READONLY)

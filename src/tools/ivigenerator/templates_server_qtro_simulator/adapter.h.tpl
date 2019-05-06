@@ -44,6 +44,8 @@
 #ifndef {{oncedefine}}
 #define {{oncedefine}}
 
+#include <QIviRemoteObjectSourceHelper>
+
 #include "{{interface|lower}}backend.h"
 #include "rep_{{interface|lower}}_source.h"
 #include "rep_pagingmodel_source.h"
@@ -106,7 +108,7 @@ public Q_SLOTS:
 
 private:
     {{interface}}Backend *m_backend;
-    quint64 m_replyCounter;
+    QIviRemoteObjectSourceHelper<{{class}}> m_helper;
 };
 
 QT_END_NAMESPACE

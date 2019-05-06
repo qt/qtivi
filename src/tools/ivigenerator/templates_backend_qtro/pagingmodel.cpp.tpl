@@ -38,8 +38,11 @@
 #}
 {% set class = '{0}ModelBackend'.format(property|upperfirst) %}
 
+Q_LOGGING_CATEGORY(qLcRO{{interface}}{{property|upper_first}}, "{{module|qml_type|lower}}.{{interface|lower}}backend.{{property|lower}}.remoteobjects", QtInfoMsg)
+
 {{class}}::{{class}}(QObject* parent)
     : QIviPagingModelInterface(parent)
+    , m_helper(new QIviRemoteObjectReplicaHelper(qLcRO{{interface}}{{property|upper_first}}(), this))
 {
     qRegisterMetaType<QIviPagingModelInterface*>();
 
@@ -47,12 +50,11 @@
     if (qEnvironmentVariableIsSet("SERVER_CONF_PATH"))
         configPath = QString::fromLocal8Bit(qgetenv("SERVER_CONF_PATH"));
     else
-        qDebug() << "Environment variable SERVER_CONF_PATH not defined, using " << configPath;
+        qCInfo(qLcRO{{interface}}{{property|upper_first}}) << "Environment variable SERVER_CONF_PATH not defined, using " << configPath;
     QSettings settings(configPath, QSettings::IniFormat);
     settings.beginGroup(QStringLiteral("{{module.module_name|lower}}"));
     m_url = QUrl(settings.value(QStringLiteral("Registry"), QStringLiteral("local:{{module.module_name|lower}}")).toString());
     m_node = new QRemoteObjectNode(m_url);
-    connect(m_node, &QRemoteObjectNode::error, this, &{{class}}::onNodeError);
     m_replica = m_node->acquire<PagingModelReplica>(QStringLiteral("{{interface.qualified_name}}.{{property}}"));
     setupConnections();
 }
@@ -87,31 +89,12 @@ void {{class}}::fetchData(const QUuid &identifier, int start, int count)
 void {{class}}::setupConnections()
 {
     connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &QIviFeatureInterface::initializationDone);
-    connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, this, &{{class}}::onReplicaStateChanged);
+    connect(m_node, &QRemoteObjectNode::error, m_helper, &QIviRemoteObjectReplicaHelper::onNodeError);
+    connect(m_helper, &QIviRemoteObjectReplicaHelper::errorChanged, this, &QIviFeatureInterface::errorChanged);
+    connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, m_helper, &QIviRemoteObjectReplicaHelper::onReplicaStateChanged);
+
     connect(m_replica.data(), &PagingModelReplica::supportedCapabilitiesChanged, this, &{{class}}::supportedCapabilitiesChanged);
     connect(m_replica.data(), &PagingModelReplica::countChanged, this, &{{class}}::countChanged);
     connect(m_replica.data(), &PagingModelReplica::dataFetched, this, &{{class}}::dataFetched);
     connect(m_replica.data(), &PagingModelReplica::dataChanged, this, &{{class}}::dataChanged);
-}
-
-void {{class}}::onReplicaStateChanged(QRemoteObjectReplica::State newState,
-                                      QRemoteObjectReplica::State oldState)
-{
-    if (newState == QRemoteObjectReplica::Suspect) {
-        qDebug() << "{{class}}, QRemoteObjectReplica error, connection to the source lost";
-        emit errorChanged(QIviAbstractFeature::Unknown,
-                          "QRemoteObjectReplica error, connection to the source lost");
-    } else if (newState == QRemoteObjectReplica::SignatureMismatch) {
-        qDebug() << "{{class}}, QRemoteObjectReplica error, signature mismatch";
-        emit errorChanged(QIviAbstractFeature::Unknown,
-                          "QRemoteObjectReplica error, signature mismatch");
-    } else if (newState == QRemoteObjectReplica::Valid) {
-        emit errorChanged(QIviAbstractFeature::NoError, "");
-    }
-}
-
-void {{class}}::onNodeError(QRemoteObjectNode::ErrorCode code)
-{
-    qDebug() << "{{class}}, QRemoteObjectNode error, code: " << code;
-    emit errorChanged(QIviAbstractFeature::Unknown, "QRemoteObjectNode error, code: " + code);
 }

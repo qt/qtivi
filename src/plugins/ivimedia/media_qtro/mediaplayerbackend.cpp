@@ -48,6 +48,7 @@ Q_LOGGING_CATEGORY(qLcROQIviMediaPlayer, "qtivi.media.qivimediaplayerbackend.rem
 
 MediaPlayerBackend::MediaPlayerBackend(QRemoteObjectNode *node, QObject *parent)
     : QIviMediaPlayerBackendInterface(parent)
+    , m_helper(new QIviRemoteObjectReplicaHelper(qLcROQIviMediaPlayer(), this))
 {
     qRegisterMetaType<QIviPlayableItem>();
     qRegisterMetaType<QIviAudioTrackItem>();
@@ -55,9 +56,10 @@ MediaPlayerBackend::MediaPlayerBackend(QRemoteObjectNode *node, QObject *parent)
 
     m_replica.reset(node->acquire<QIviMediaPlayerReplica>(QStringLiteral("QtIviMedia.QIviMediaPlayer")));
 
-    connect(node, &QRemoteObjectNode::error, this, &MediaPlayerBackend::onNodeError);
+    connect(node, &QRemoteObjectNode::error, m_helper, &QIviRemoteObjectReplicaHelper::onNodeError);
+    connect(m_helper, &QIviRemoteObjectReplicaHelper::errorChanged, this, &QIviFeatureInterface::errorChanged);
+    connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, m_helper, &QIviRemoteObjectReplicaHelper::onReplicaStateChanged);
     connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &QIviFeatureInterface::initializationDone);
-    connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, this, &MediaPlayerBackend::onReplicaStateChanged);
     connect(m_replica.data(), &QIviMediaPlayerReplica::playModeChanged, this, &MediaPlayerBackend::playModeChanged);
     connect(m_replica.data(), &QIviMediaPlayerReplica::playStateChanged, this, &MediaPlayerBackend::playStateChanged);
     connect(m_replica.data(), &QIviMediaPlayerReplica::positionChanged, this, &MediaPlayerBackend::positionChanged);
@@ -166,27 +168,4 @@ void MediaPlayerBackend::remove(int index)
 void MediaPlayerBackend::move(int currentIndex, int newIndex)
 {
     m_replica->move(currentIndex, newIndex);
-}
-
-void MediaPlayerBackend::onReplicaStateChanged(QRemoteObjectReplica::State newState, QRemoteObjectReplica::State oldState)
-{
-    Q_UNUSED(oldState)
-
-    if (newState == QRemoteObjectReplica::Suspect) {
-        qCWarning(qLcROQIviMediaPlayer) << "QRemoteObjectReplica error, connection to the source lost";
-        emit errorChanged(QIviAbstractFeature::Unknown,
-                        "QRemoteObjectReplica error, connection to the source lost");
-    } else if (newState == QRemoteObjectReplica::SignatureMismatch) {
-        qCWarning(qLcROQIviMediaPlayer) << "QRemoteObjectReplica error, signature mismatch";
-        emit errorChanged(QIviAbstractFeature::Unknown,
-                        "QRemoteObjectReplica error, signature mismatch");
-    } else if (newState==QRemoteObjectReplica::Valid) {
-        emit errorChanged(QIviAbstractFeature::NoError, "");
-    }
-}
-
-void MediaPlayerBackend::onNodeError(QRemoteObjectNode::ErrorCode code)
-{
-    qCWarning(qLcROQIviMediaPlayer) << "QRemoteObjectNode error, code: " << code;
-    emit errorChanged(QIviAbstractFeature::Unknown, "QRemoteObjectNode error, code: " + code);
 }
