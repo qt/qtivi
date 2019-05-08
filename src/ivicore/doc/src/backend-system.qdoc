@@ -70,7 +70,7 @@ backends. Every simulation plugin needs to have either "simulation" or "simulato
 Alternatively, you can also set the "simulation" key in the plugin's metadata. This is especially
 useful for static plugins.
 
-\image backendtypes.jpg "Types of Backend"
+\image backend-types.png "Types of Backend"
 
 \section1 QtIviCore
 
@@ -78,7 +78,7 @@ The QtIviCore module provides all the classes that are needed to glue the parts 
 addition to providing the base classes like QIviAbstractFeature or QIviServiceObject, this module
 also provides the QIviServiceManager, responsible for loading the necessary backend plugins.
 
-\image feature_backend.jpg "Relationship between the Feature and the Backend"
+\image feature-backend.png "Relationship between the Feature and the Backend"
 
 \section1 QIviServiceManager
 
@@ -97,7 +97,7 @@ which the ServiceObject implements. ServiceObjects automatically wrap around plu
 possible to share the ServiceObject between multiple features and to explicitly select which
 backend to use for your feature instance.
 
-\image app-serviceobject-backend.png "App / Backend Plugin Relation"
+\image app-service-object-backend.png "Relationship between the App and the Backend"
 
 Based on the diagram above, the ServiceObject is the handle for a specific plugin. \b {Feature A}
 and \b {Feature B} both use the same ServiceObject, which returns an instance of \b
@@ -112,7 +112,7 @@ side and filled with any QIviFeatureInterface derived class. QIviProxyServiceObj
 scenarios when a backend implementation of a feature should not be done inside a separate plugin,
 but inside the application's code base itself.
 
-\image proxyserviceobjects.png "ProxyServiceObjects"
+\image proxy-service-objects.png "Proxy Service Objects"
 
 ProxyServiceObjects are also used for models that are properties of another feature. For more
 details, see \l{Models}.

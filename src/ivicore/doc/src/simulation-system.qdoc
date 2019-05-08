@@ -54,7 +54,7 @@ use cases:
 Since the simulation system builds on top of the \l{Dynamic Backend System}, the API split
 follows the same schema:
 
-\image feature_backend.jpg "Relationship between the Feature and the Backend"
+\image feature-backend.png "Relationship between the Feature and the Backend"
 
 Each backend plugin needs to implement the backend interface to provide the necessary functionality
 to the frontend. For example, the QIviClimateControlBackendInterface class for the
@@ -63,7 +63,7 @@ QIviClimateControl frontend API.
 In the backend, every call from the frontend is forwarded to QML, where we can script a simulation
 behavior.
 
-\image simulationsystem.png "QtIvi Simulation System"
+\image simulation-system.png "QtIvi Simulation System"
 
 \section1 QML API
 

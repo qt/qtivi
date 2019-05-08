@@ -161,7 +161,7 @@ conclusion.
 As the {QIviPagingModel::QIviPagingModel}{QIviPagingModel} is a also a QtIvi Feature, it has its
 own backend interface which the backend plugin needs to implement.
 
-\image models_as_properties.png
+\image models-as-properties.png
 
 Each model property needs to map to a unique model interface implementation in the backend, as
 each model is filled with different data and the data is requested at a different time.
@@ -171,7 +171,7 @@ To implement this concept, we use the QIviProxyServiceObject to connect the
 {QIviPagingModel::QIviPagingModel}{QIviPagingModel} instance provided with the correct backend
 interface instance.
 
-\image models_as_properties_details.png
+\image models-as-properties-details.png
 
 For the MediaPlayer play queue example, we would implement the following:
 
@@ -187,9 +187,9 @@ For the MediaPlayer play queue example, we would implement the following:
     \list 1
         \li Retrieve the QIviPagingModelInterface pointer from the backend
         \li Create a QIviProxyServiceObject that holds the QIviPagingModelInterface
-        \li Create a {QIviPagingModel::QIviPagingModel}{QIviPagingModel} instance and set the
+        \li Create a \l{QIviPagingModel::QIviPagingModel}{QIviPagingModel} instance and set the
             QIviProxyServiceObject on it
-        \li Return the {QIviPagingModel::QIviPagingModel}{QIviPagingModel} instance to the
+        \li Return the \l{QIviPagingModel::QIviPagingModel}{QIviPagingModel} instance to the
             developer
     \endlist
 \endlist
