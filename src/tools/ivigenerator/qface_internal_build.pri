@@ -93,6 +93,7 @@ equals(QMAKE_HOST.os, Darwin) {
     # In case the file doesn't exist, touch creates it and fixes the install target
     virtualenv-python.extra = @touch $$OUT_PWD/qtivi_qface_virtualenv/.Python
     virtualenv-python.CONFIG = no_check_exist
+    virtualenv-python.depends = install_virtualenv
     INSTALLS += virtualenv-python
 }
 
