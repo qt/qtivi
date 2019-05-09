@@ -14,4 +14,4 @@ QT += core ivicore
 macos: QMAKE_SONAME_PREFIX = @rpath
 
 QFACE_FORMAT = backend_qtro
-QFACE_SOURCES = ../../../org.example.echo.qtro.qface
+QFACE_SOURCES = ../../../org.example.echo.qface

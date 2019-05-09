@@ -30,6 +30,7 @@ interface Echo {
     list<int> intList;
     list<Combo> comboList;
     WeekDay weekDay;
+    TestEnum testEnum;
     real UPPERCASEPROPERTY;
 
     string echo(string msg);
@@ -37,9 +38,11 @@ interface Echo {
     Combo getCombo();
     void voidSlot();
     void voidSlot2(int param);
+    void timer(int interval);
     signal anotherChanged(AnotherStruct another);
     signal foobar(string foo);
     signal somethingHappened();
+    signal newValueAvailable(var newValue);
 }
 
 @config: {id: "org.foo.idz.1.0", zoned: true}
@@ -68,12 +71,15 @@ interface EchoZoned {
     Combo combo;
     list<int> intList;
     list<Combo> comboList;
+    WeekDay weekDay;
+    TestEnum testEnum;
     real UPPERCASEPROPERTY;
 
     string echo(string msg);
     string id();
     var varMethod();
     Combo getCombo();
+    string timer(int interval);
 
     signal anotherChanged(AnotherStruct another);
     signal foobar(string foo);
@@ -106,6 +112,11 @@ flag WeekDay {
     Wednesday = 3,
     Thursday = 4,
     Friday = 5
+}
+
+enum TestEnum {
+    FirstEnumValue = 1,
+    SecondEnumValue = 2
 }
 
 /**

@@ -193,6 +193,26 @@ void EchoZonedService::setComboList(const QVariantList &comboList, const QString
     SET_VALUE(m_comboList, comboList, comboListChanged);
 }
 
+EchoModule::DaysOfTheWeek EchoZonedService::weekDay(const QString &zone)
+{
+   return m_zoneHash.value(zone).m_weekDay;
+}
+
+void EchoZonedService::setWeekDay(EchoModule::DaysOfTheWeek weekDay, const QString &zone)
+{
+    SET_VALUE(m_weekDay, weekDay, weekDayChanged);
+}
+
+EchoModule::TestEnum EchoZonedService::testEnum(const QString &zone)
+{
+    return m_zoneHash.value(zone).m_testEnum;
+}
+
+void EchoZonedService::setTestEnum(EchoModule::TestEnum testEnum, const QString &zone)
+{
+    SET_VALUE(m_testEnum, testEnum, testEnumChanged);
+}
+
 qreal EchoZonedService::UPPERCASEPROPERTY(const QString &zone)
 {
     return m_zoneHash.value(zone).m_UPPERCASEPROPERTY;

@@ -67,6 +67,10 @@ public slots:
     void setIntList(const QVariantList &intList, const QString &zone) override;
     QVariantList comboList(const QString &zone) override;
     void setComboList(const QVariantList &comboList, const QString &zone) override;
+    EchoModule::DaysOfTheWeek weekDay(const QString &zone) override;
+    void setWeekDay(EchoModule::DaysOfTheWeek weekDay, const QString &zone) override;
+    EchoModule::TestEnum testEnum(const QString &zone) override;
+    void setTestEnum(EchoModule::TestEnum testEnum, const QString &zone) override;
     qreal UPPERCASEPROPERTY(const QString &zone) override;
     void setUPPERCASEPROPERTY(qreal UPPERCASEPROPERTY, const QString &zone) override;
     QStringList availableZones() override;
@@ -102,6 +106,8 @@ private:
             , m_combo(Combo())
             , m_intList(QVariantList())
             , m_comboList(QVariantList())
+            , m_weekDay(0)
+            , m_testEnum(EchoModule::FirstEnumValue)
             , m_UPPERCASEPROPERTY(qreal(0.0))
         {}
 
@@ -121,6 +127,8 @@ private:
         Combo m_combo;
         QVariantList m_intList;
         QVariantList m_comboList;
+        EchoModule::DaysOfTheWeek m_weekDay;
+        EchoModule::TestEnum m_testEnum;
         qreal m_UPPERCASEPROPERTY;
         QStringList m_propertiesToSync;
     };

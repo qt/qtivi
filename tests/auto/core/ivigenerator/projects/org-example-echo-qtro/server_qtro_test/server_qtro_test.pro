@@ -20,7 +20,7 @@ SOURCES += main.cpp \
     contactsmodelservice.cpp
 
 QFACE_FORMAT = server_qtro
-QFACE_SOURCES = ../../../org.example.echo.qtro.qface
+QFACE_SOURCES = ../../../org.example.echo.qface
 
 HEADERS += \
     server.h \

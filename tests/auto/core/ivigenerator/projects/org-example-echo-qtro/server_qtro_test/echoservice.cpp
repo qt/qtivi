@@ -35,7 +35,7 @@ EchoService::EchoService()
     : m_testCombo(Contact(QStringLiteral("Antti"), 34, true, QVariant()), EchoModule::Friday)
     , m_testId(QStringLiteral("id123"))
 {
-
+    setTestEnum(EchoModule::FirstEnumValue);
 }
 
 void EchoService::setLastMessage(QString lastMessage)

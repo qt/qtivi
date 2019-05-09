@@ -10,4 +10,4 @@ DEFINES += QT_BUILD_ORG_EXAMPLE_ECHO_LIB
 
 macos: QMAKE_SONAME_PREFIX = @rpath
 
-QFACE_SOURCES = ../../../org.example.echo.qtro.qface
+QFACE_SOURCES = ../../../org.example.echo.qface

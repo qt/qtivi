@@ -61,9 +61,10 @@ void EchoQtroTest::testInit()
     QCOMPARE(client.floatValue1(), qreal(0.0));
     QCOMPARE(client.floatValue2(), qreal(0.0));
     QCOMPARE(client.stringValue(), QString());
-    QCOMPARE(client.contactList(), QVariantList());
+    QCOMPARE(client.comboList(), QVariantList());
     QCOMPARE(client.contact(), Contact());
-    QCOMPARE(client.weekDay(), EchoModule::Monday);
+    QCOMPARE(client.weekDay(), EchoModule::WeekDay());
+    QCOMPARE(client.testEnum(), EchoModule::FirstEnumValue);
 
     Server server;
 
@@ -73,30 +74,32 @@ void EchoQtroTest::testInit()
     QCOMPARE(server.m_echoService.floatValue1(), qreal(0.0));
     QCOMPARE(server.m_echoService.floatValue2(), qreal(0.0));
     QCOMPARE(server.m_echoService.stringValue(), QString());
-    QCOMPARE(server.m_echoService.contactList(), QVariantList());
+    QCOMPARE(server.m_echoService.comboList(), QVariantList());
     QCOMPARE(server.m_echoService.contact(), Contact());
     QCOMPARE(server.m_echoService.weekDay(), EchoModule::WeekDay());
+    QCOMPARE(server.m_echoService.testEnum(), EchoModule::FirstEnumValue);
 
     QLatin1String lastMessageTestValue("this is the last message");
     int intValueTestValue(789);
     qreal floatValue1TestValue(3.14);
     qreal floatValue2TestValue(2.71);
     QLatin1String stringValueTestValue("test string");
-    QVariantList contactListTestValue(
-                    { QVariant::fromValue<Contact>(Contact("Mr A.", 20, false, "foo")),
-                      QVariant::fromValue<Contact>(Contact("Mr B.", 40, true, "bar")) });
+    QVariantList comboListTestValue(
+                    { QVariant::fromValue<Combo>(Combo(Contact("Mr A.", 20, false, "foo"), EchoModule::Monday)),
+                      QVariant::fromValue<Combo>(Combo(Contact("Mr B.", 40, true, "bar"), EchoModule::Wednesday)) });
     Contact contactTestValue(QStringLiteral("Nemo"), 47, true, 1);
     EchoModule::WeekDay weekDayTestValue = EchoModule::Wednesday;
-
+    EchoModule::TestEnum testEnumTestValue = EchoModule::SecondEnumValue;
 
     server.m_echoService.setLastMessage(lastMessageTestValue);
     server.m_echoService.setIntValue(intValueTestValue);
     server.m_echoService.setFloatValue1(floatValue1TestValue);
     server.m_echoService.setFloatValue2(floatValue2TestValue);
     server.m_echoService.setStringValue(stringValueTestValue);
-    server.m_echoService.setContactList(contactListTestValue);
+    server.m_echoService.setComboList(comboListTestValue);
     server.m_echoService.setContact(contactTestValue);
     server.m_echoService.setWeekDay(weekDayTestValue);
+    server.m_echoService.setTestEnum(testEnumTestValue);
 
     QVERIFY(!client.isInitialized());
     QCOMPARE(client.error(), QIviAbstractFeature::NoError);
@@ -121,11 +124,12 @@ void EchoQtroTest::testInit()
     QCOMPARE(client.floatValue1(), floatValue1TestValue);
     QCOMPARE(client.floatValue2(), floatValue2TestValue);
     QCOMPARE(client.stringValue(), stringValueTestValue);
-    QVariantList contactList = client.contactList();
-    QCOMPARE(contactList[0].value<Contact>(), contactListTestValue[0].value<Contact>());
-    QCOMPARE(contactList[1].value<Contact>(), contactListTestValue[1].value<Contact>());
+    QVariantList comboList = client.comboList();
+    QCOMPARE(comboList[0].value<Combo>(), comboListTestValue[0].value<Combo>());
+    QCOMPARE(comboList[1].value<Combo>(), comboListTestValue[1].value<Combo>());
     QCOMPARE(client.contact(), contactTestValue);
     QCOMPARE(client.weekDay(), weekDayTestValue);
+    QCOMPARE(client.testEnum(), testEnumTestValue);
 
 
     lastMessageChangedSpy.clear();
@@ -160,8 +164,9 @@ void EchoQtroTest::testZonedInit()
     QCOMPARE(client.stringValue(), QString());
     QCOMPARE(client.airflowDirection(), EchoModule::AirflowDirections());
     QCOMPARE(client.contact(), Contact());
-    QCOMPARE(client.combo(), Combo());
+    QCOMPARE(client.comboList(), QVariantList());
     QCOMPARE(client.UPPERCASEPROPERTY(), qreal(0.0));
+    QCOMPARE(client.testEnum(), EchoModule::FirstEnumValue);
     QCOMPARE(client.availableZones(), QStringList());
 
     Server server;
@@ -172,19 +177,20 @@ void EchoQtroTest::testZonedInit()
     QCOMPARE(server.m_echoZonedService.stringValue(QString()), QString());
     QCOMPARE(server.m_echoZonedService.airflowDirection(QString()), EchoModule::AirflowDirections());
     QCOMPARE(server.m_echoZonedService.contact(QString()), Contact());
-    QCOMPARE(server.m_echoZonedService.combo(QString()), Combo());
+    QCOMPARE(server.m_echoZonedService.comboList(QString()), QVariantList());
     QCOMPARE(server.m_echoZonedService.UPPERCASEPROPERTY(QString()), qreal(0.0));
+    QCOMPARE(server.m_echoZonedService.testEnum(QString()), EchoModule::FirstEnumValue);
 
     int intValueTestValue(789);
     QVariant varValueTestValue(789);
     qreal floatValueTestValue(3.14);
     QLatin1String stringValueTestValue("test string");
     QVariantList comboListTestValue(
-                    { QVariant::fromValue<Contact>(Contact("Mr A.", 20, false, "foo")),
-                      QVariant::fromValue<Contact>(Contact("Mr B.", 40, true, "bar")) });
+                    { QVariant::fromValue<Combo>(Combo(Contact("Mr A.", 20, false, "foo"), EchoModule::Monday)),
+                      QVariant::fromValue<Combo>(Combo(Contact("Mr B.", 40, true, "bar"), EchoModule::Wednesday)) });
     Contact contactTestValue(QStringLiteral("Nemo"), 47, true, 1);
-    Combo comboTestValue(Contact(QStringLiteral("Nemo"), 47, true, 1), EchoModule::Wednesday);
     EchoModule::AirflowDirections airflowTestValue = EchoModule::Windshield;
+    EchoModule::TestEnum testEnumTestValue = EchoModule::SecondEnumValue;
 
 
     server.m_echoZonedService.setIntValue(intValueTestValue, QString());
@@ -193,8 +199,9 @@ void EchoQtroTest::testZonedInit()
 
     server.m_echoZonedService.setAirflowDirection(airflowTestValue, frontLeftZone);
     server.m_echoZonedService.setContact(contactTestValue, frontLeftZone);
-    server.m_echoZonedService.setCombo(comboTestValue, frontLeftZone);
+    server.m_echoZonedService.setComboList(comboListTestValue, frontLeftZone);
     server.m_echoZonedService.setUPPERCASEPROPERTY(floatValueTestValue, frontLeftZone);
+    server.m_echoZonedService.setTestEnum(testEnumTestValue, frontLeftZone);
 
 
     QVERIFY(!client.isInitialized());
@@ -226,8 +233,11 @@ void EchoQtroTest::testZonedInit()
     QVERIFY(zone);
     QCOMPARE(zone->airflowDirection(), airflowTestValue);
     QCOMPARE(zone->contact(), contactTestValue);
-    QCOMPARE(zone->combo(), comboTestValue);
+    QVariantList comboList = zone->comboList();
+    QCOMPARE(comboList[0].value<Combo>(), comboListTestValue[0].value<Combo>());
+    QCOMPARE(comboList[1].value<Combo>(), comboListTestValue[1].value<Combo>());
     QCOMPARE(zone->UPPERCASEPROPERTY(), floatValueTestValue);
+    QCOMPARE(zone->testEnum(), testEnumTestValue);
 
     stringValueChangedSpy.clear();
     //test that a second instance is also initialized with the correct values
@@ -356,19 +366,19 @@ void EchoQtroTest::testClient2Server()
     QCOMPARE(server.m_echoService.stringValue(), stringValueTestValue);
     QCOMPARE(stringValueSpy[0][0].toString(), stringValueTestValue);
 
-    QSignalSpy contactListSpy(&server.m_echoService, SIGNAL(contactListChanged(QVariantList)));
-    QVERIFY(contactListSpy.isValid());
-    QVariantList contactListTestValue(
-                    { QVariant::fromValue<Contact>(Contact("Mr A.", 20, false, "foo")),
-                      QVariant::fromValue<Contact>(Contact("Mr B.", 40, true, "bar")) });
-    client.setContactList(contactListTestValue);
-    WAIT_AND_COMPARE(contactListSpy, 1);
-    QCOMPARE(server.m_echoService.contactList().count(),contactListTestValue.count());
-    QCOMPARE(server.m_echoService.contactList().at(0).value<Contact>(), contactListTestValue[0].value<Contact>());
-    QCOMPARE(server.m_echoService.contactList().at(1).value<Contact>(), contactListTestValue[1].value<Contact>());
-    QVariantList signalArgs = contactListSpy[0][0].toList();
-    QCOMPARE(signalArgs[0].value<Contact>(), contactListTestValue[0].value<Contact>());
-    QCOMPARE(signalArgs[1].value<Contact>(), contactListTestValue[1].value<Contact>());
+    QSignalSpy comboListSpy(&server.m_echoService, SIGNAL(comboListChanged(QVariantList)));
+    QVERIFY(comboListSpy.isValid());
+    QVariantList comboListTestValue(
+                    { QVariant::fromValue<Combo>(Combo(Contact("Mr A.", 20, false, "foo"), EchoModule::Monday)),
+                      QVariant::fromValue<Combo>(Combo(Contact("Mr B.", 40, true, "bar"), EchoModule::Wednesday)) });
+    client.setComboList(comboListTestValue);
+    WAIT_AND_COMPARE(comboListSpy, 1);
+    QCOMPARE(server.m_echoService.comboList().count(),comboListTestValue.count());
+    QCOMPARE(server.m_echoService.comboList().at(0).value<Combo>(), comboListTestValue[0].value<Combo>());
+    QCOMPARE(server.m_echoService.comboList().at(1).value<Combo>(), comboListTestValue[1].value<Combo>());
+    QVariantList signalArgs = comboListSpy[0][0].toList();
+    QCOMPARE(signalArgs[0].value<Combo>(), comboListTestValue[0].value<Combo>());
+    QCOMPARE(signalArgs[1].value<Combo>(), comboListTestValue[1].value<Combo>());
 
     QSignalSpy contactSpy(&server.m_echoService, SIGNAL(contactChanged(Contact)));
     QVERIFY(contactSpy.isValid());
@@ -378,13 +388,21 @@ void EchoQtroTest::testClient2Server()
     QCOMPARE(server.m_echoService.contact(), contactTestValue);
     QCOMPARE(contactSpy[0][0].value<Contact>(), contactTestValue);
 
-    QSignalSpy weekDaySpy(&server.m_echoService, SIGNAL(weekDayChanged(EchoModule::WeekDay)));
+    QSignalSpy weekDaySpy(&server.m_echoService, SIGNAL(weekDayChanged(EchoModule::DaysOfTheWeek)));
     QVERIFY(weekDaySpy.isValid());
-    EchoModule::WeekDay weekDayTestValue = EchoModule::Thursday;
+    EchoModule::DaysOfTheWeek weekDayTestValue = EchoModule::Thursday;
     client.setWeekDay(weekDayTestValue);
     WAIT_AND_COMPARE(weekDaySpy, 1);
     QCOMPARE(server.m_echoService.weekDay(), weekDayTestValue);
-    QCOMPARE(weekDaySpy[0][0].value<EchoModule::WeekDay>(), weekDayTestValue);
+    QCOMPARE(weekDaySpy[0][0].value<EchoModule::DaysOfTheWeek>(), weekDayTestValue);
+
+    QSignalSpy testEnumSpy(&server.m_echoService, SIGNAL(testEnumChanged(EchoModule::TestEnum)));
+    QVERIFY(testEnumSpy.isValid());
+    EchoModule::TestEnum testEnumTestValue = EchoModule::SecondEnumValue;
+    client.setTestEnum(testEnumTestValue);
+    WAIT_AND_COMPARE(testEnumSpy, 1);
+    QCOMPARE(server.m_echoService.testEnum(), testEnumTestValue);
+    QCOMPARE(testEnumSpy[0][0].value<EchoModule::TestEnum>(), testEnumTestValue);
 }
 
 void EchoQtroTest::testZonedClient2Server()
@@ -435,8 +453,8 @@ void EchoQtroTest::testZonedClient2Server()
     QSignalSpy comboListSpy(&server.m_echoZonedService, SIGNAL(comboListChanged(QVariantList, QString)));
     QVERIFY(comboListSpy.isValid());
     QVariantList comboListTestValue(
-                    { QVariant::fromValue<Combo>(Combo(Contact("Mr A.", 20, false, "foo"), EchoModule::Thursday)),
-                      QVariant::fromValue<Combo>(Combo(Contact("Mr B.", 40, true, "bar"), EchoModule::Tuesday)) });
+                    { QVariant::fromValue<Combo>(Combo(Contact("Mr A.", 20, false, "foo"), EchoModule::Monday)),
+                      QVariant::fromValue<Combo>(Combo(Contact("Mr B.", 40, true, "bar"), EchoModule::Wednesday)) });
     zone->setComboList(comboListTestValue);
     WAIT_AND_COMPARE(comboListSpy, 1);
     QVariantList comboList = server.m_echoZonedService.comboList(frontLeftZone);
@@ -465,6 +483,15 @@ void EchoQtroTest::testZonedClient2Server()
     QCOMPARE(server.m_echoZonedService.airflowDirection(frontLeftZone), airflowTestValue);
     QCOMPARE(airflowSpy[0][0].value<EchoModule::AirflowDirections>(), airflowTestValue);
     QCOMPARE(airflowSpy[0][1].toString(), frontLeftZone);
+
+    QSignalSpy testEnumSpy(&server.m_echoZonedService, SIGNAL(testEnumChanged(EchoModule::TestEnum, QString)));
+    QVERIFY(testEnumSpy.isValid());
+    EchoModule::TestEnum testEnumTestValue = EchoModule::SecondEnumValue;
+    zone->setTestEnum(testEnumTestValue);
+    WAIT_AND_COMPARE(testEnumSpy, 1);
+    QCOMPARE(server.m_echoZonedService.testEnum(frontLeftZone), testEnumTestValue);
+    QCOMPARE(testEnumSpy[0][0].value<EchoModule::TestEnum>(), testEnumTestValue);
+    QCOMPARE(testEnumSpy[0][1].toString(), frontLeftZone);
 }
 
 void EchoQtroTest::testServer2Client()
@@ -515,19 +542,19 @@ void EchoQtroTest::testServer2Client()
     QCOMPARE(client.stringValue(), stringValueTestValue);
     QCOMPARE(stringValueSpy[0][0].toString(), stringValueTestValue);
 
-    QSignalSpy contactListSpy(&client, SIGNAL(contactListChanged(QVariantList)));
-    QVERIFY(contactListSpy.isValid());
-    QVariantList contactListTestValue(
-                    { QVariant::fromValue<Contact>(Contact("Mr A.", 20, false, "foo")),
-                      QVariant::fromValue<Contact>(Contact("Mr B.", 40, true, "bar")) });
-    server.m_echoService.setContactList(contactListTestValue);
-    WAIT_AND_COMPARE(contactListSpy, 1);
-    QCOMPARE(client.contactList().count(),contactListTestValue.count());
-    QCOMPARE(client.contactList().at(0).value<Contact>(), contactListTestValue[0].value<Contact>());
-    QCOMPARE(client.contactList().at(1).value<Contact>(), contactListTestValue[1].value<Contact>());
-    QVariantList signalArgs = contactListSpy[0][0].toList();
-    QCOMPARE(signalArgs[0].value<Contact>(), contactListTestValue[0].value<Contact>());
-    QCOMPARE(signalArgs[1].value<Contact>(), contactListTestValue[1].value<Contact>());
+    QSignalSpy comboListSpy(&client, SIGNAL(comboListChanged(QVariantList)));
+    QVERIFY(comboListSpy.isValid());
+    QVariantList comboListTestValue(
+                    { QVariant::fromValue<Combo>(Combo(Contact("Mr A.", 20, false, "foo"), EchoModule::Monday)),
+                      QVariant::fromValue<Combo>(Combo(Contact("Mr B.", 40, true, "bar"), EchoModule::Wednesday)) });
+    server.m_echoService.setComboList(comboListTestValue);
+    WAIT_AND_COMPARE(comboListSpy, 1);
+    QCOMPARE(client.comboList().count(),comboListTestValue.count());
+    QCOMPARE(client.comboList().at(0).value<Combo>(), comboListTestValue[0].value<Combo>());
+    QCOMPARE(client.comboList().at(1).value<Combo>(), comboListTestValue[1].value<Combo>());
+    QVariantList signalArgs = comboListSpy[0][0].toList();
+    QCOMPARE(signalArgs[0].value<Combo>(), comboListTestValue[0].value<Combo>());
+    QCOMPARE(signalArgs[1].value<Combo>(), comboListTestValue[1].value<Combo>());
 
     QSignalSpy contactSpy(&client, SIGNAL(contactChanged(Contact)));
     QVERIFY(contactSpy.isValid());
@@ -537,13 +564,22 @@ void EchoQtroTest::testServer2Client()
     QCOMPARE(client.contact(), contactTestValue);
     QCOMPARE(contactSpy[0][0].value<Contact>(), contactTestValue);
 
-    QSignalSpy weekDaySpy(&client, SIGNAL(weekDayChanged(EchoModule::WeekDay)));
+    QSignalSpy weekDaySpy(&client, SIGNAL(weekDayChanged(EchoModule::DaysOfTheWeek)));
     QVERIFY(weekDaySpy.isValid());
     EchoModule::WeekDay weekDayTestValue = EchoModule::Friday;
     server.m_echoService.setWeekDay(weekDayTestValue);
     WAIT_AND_COMPARE(weekDaySpy, 1);
+
     QCOMPARE(client.weekDay(), weekDayTestValue);
-    QCOMPARE(weekDaySpy[0][0].value<EchoModule::WeekDay>(), weekDayTestValue);
+    QCOMPARE(weekDaySpy[0][0].value<EchoModule::DaysOfTheWeek>(), weekDayTestValue);
+
+    QSignalSpy testEnumSpy(&client, SIGNAL(testEnumChanged(EchoModule::TestEnum)));
+    QVERIFY(testEnumSpy.isValid());
+    EchoModule::TestEnum testEnumTestValue = EchoModule::SecondEnumValue;
+    server.m_echoService.setTestEnum(testEnumTestValue);
+    WAIT_AND_COMPARE(testEnumSpy, 1);
+    QCOMPARE(client.testEnum(), testEnumTestValue);
+    QCOMPARE(testEnumSpy[0][0].value<EchoModule::TestEnum>(), testEnumTestValue);
 }
 
 void EchoQtroTest::testZonedServer2Client()
@@ -618,6 +654,14 @@ void EchoQtroTest::testZonedServer2Client()
     WAIT_AND_COMPARE(airflowSpy, 1);
     QCOMPARE(zone->airflowDirection(), airflowTestValue);
     QCOMPARE(airflowSpy[0][0].value<EchoModule::AirflowDirections>(), airflowTestValue);
+
+    QSignalSpy testEnumSpy(zone, SIGNAL(testEnumChanged(EchoModule::TestEnum)));
+    QVERIFY(testEnumSpy.isValid());
+    EchoModule::TestEnum testEnumTestValue = EchoModule::SecondEnumValue;
+    server.m_echoZonedService.setTestEnum(testEnumTestValue, frontLeftZone);
+    WAIT_AND_COMPARE(testEnumSpy, 1);
+    QCOMPARE(zone->testEnum(), testEnumTestValue);
+    QCOMPARE(testEnumSpy[0][0].value<EchoModule::TestEnum>(), testEnumTestValue);
 }
 
 void EchoQtroTest::testSlots()
@@ -950,7 +994,7 @@ void EchoQtroTest::testModel()
     //Give QtRO time to actually call our server side
     QTest::qWait(200);
 
-    QIviPagingModel* model = client.testList();
+    QIviPagingModel* model = client.contactList();
     QVERIFY(model->isInitialized());
     QCOMPARE(model->rowCount(), 0);
 

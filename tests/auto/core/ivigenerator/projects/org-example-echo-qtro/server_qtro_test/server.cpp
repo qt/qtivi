@@ -35,7 +35,7 @@ bool Server::start()
 {
     bool val =  true;
     val = val && Core::instance()->host()->enableRemoting(&m_echoService, QStringLiteral("org.example.echo.Echo"));
-    val = val && Core::instance()->host()->enableRemoting(&m_contactsModelService, QStringLiteral("org.example.echo.Echo.testList"));
+    val = val && Core::instance()->host()->enableRemoting(&m_contactsModelService, QStringLiteral("org.example.echo.Echo.contactList"));
     val = val && Core::instance()->host()->enableRemoting(&m_echoZonedService, QStringLiteral("org.example.echo.EchoZoned"));
     //Give QtRO time to announce the service
     QTest::qWait(200);
