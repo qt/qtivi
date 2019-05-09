@@ -152,7 +152,7 @@ void {{class}}Private::clearToDefaults()
     if (Q_UNLIKELY(m_propertyOverride)) {
         const int pi = f->metaObject()->indexOfProperty("{{property}}");
         if (m_propertyOverride->isOverridden(pi)) {
-            QVariant v = qVariantFromValue<{{property|return_type}}>({{property}});
+            QVariant v = QVariant::fromValue<{{property|return_type}}>({{property}});
             m_propertyOverride->setProperty(pi, v);
             return;
         }
@@ -358,7 +358,7 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
         forceUpdate = property("{{property}}DirtyOverride").isValid();
         if (forceUpdate)
             setProperty("{{property}}DirtyOverride", {});
-        QVariant v = qVariantFromValue<{{property|return_type}}>({{property}});
+        QVariant v = QVariant::fromValue<{{property|return_type}}>({{property}});
         d->m_propertyOverride->setProperty(pi, v);
     }
 {% endif %}
