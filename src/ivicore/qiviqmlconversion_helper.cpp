@@ -46,7 +46,6 @@
 #include <private/qv4engine_p.h>
 #include <private/qv4errorobject_p.h>
 #include <private/qv4scopedvalue_p.h>
-#include <private/qv8engine_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,11 +71,7 @@ void qtivi_qmlOrCppWarning(const QObject *obj, const QString &errorString)
     }
 
     //Try to get more information about the current line of execution
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
     QV4::ExecutionEngine *v4 = jsEngine->handle();
-#else
-    QV4::ExecutionEngine *v4 = QV8Engine::getV4(jsEngine->handle());
-#endif
     QV4::Scope scope(v4);
     QV4::Scoped<QV4::ErrorObject> error(scope);
     QV4::StackTrace trace = v4->stackTrace(1);
