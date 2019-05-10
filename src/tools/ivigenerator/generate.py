@@ -804,9 +804,29 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
     currentQFaceSrcFile = src[0]
     ctx = {'dst': dst, 'qtASVersion': builtin_config["VERSION"], 'srcFile':srcFile, 'srcBase':srcBase, 'features': builtin_config["FEATURES"]}
     gen_config = yaml.load(open(here / '{0}.yaml'.format(os.path.basename(tplconfig))), Loader=yaml.SafeLoader)
+
+    #Make sure the config tag is available for all our symbols
+    for module in system.modules:
+        module.add_tag('config')
+        for interface in module.interfaces:
+            interface.add_tag('config')
+            for property in interface.properties:
+                property.add_tag('config')
+            for operation in interface.operations:
+                operation.add_tag('config')
+            for signal in interface.signals:
+                signal.add_tag('config')
+        for struct in module.structs:
+            struct.add_tag('config')
+            for field in struct.fields:
+                field.add_tag('config')
+        for enum in module.enums:
+            enum.add_tag('config')
+            for member in enum.members:
+                member.add_tag('config')
+
     for module in system.modules:
         log.debug('generate code for module %s', module)
-        module.add_tag('config')
         for val, key in moduleConfig.items():
             module.add_attribute('config', val, key)
         ctx.update({'module': module})
@@ -821,7 +841,6 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
             generator.write(rule['dest_file'], rule['template_file'], ctx, preserve, force)
         for interface in module.interfaces:
             log.debug('generate backend code for interface %s', interface)
-            interface.add_tag('config')
             ctx.update({'interface': interface})
             interface_rules = gen_config['generate_rules']['interface_rules']
             if interface_rules is None: interface_rules = []
@@ -831,7 +850,6 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
         if 'struct_rules' in gen_config['generate_rules'] and isinstance(gen_config['generate_rules']['struct_rules'], list):
             for struct in module.structs:
                 log.debug('generate code for struct %s', struct)
-                struct.add_tag('config')
                 ctx.update({'struct': struct})
                 for rule in gen_config['generate_rules']['struct_rules']:
                     preserve = rule['preserve'] if 'preserve' in rule else False
