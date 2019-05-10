@@ -1,0 +1,130 @@
+/**
+ * module
+ */
+module org.example.echo 1.0
+
+/**
+ * \brief the brief
+ * the description
+ * continues \l http://qt.io
+ */
+interface Echo {
+    /**
+     * \brief brief message
+     *
+     * Some more documentation
+     */
+    readonly string lastMessage;
+    int intValue;
+    var varValue;
+    real floatValue1;
+    real floatValue2;
+    string stringValue;
+    model<Contact> contactList;
+    Contact contact;
+    Combo combo;
+    list<int> intList;
+    list<Combo> comboList;
+    WeekDay weekDay;
+    TestEnum testEnum;
+    real UPPERCASEPROPERTY;
+
+    string echo(string msg);
+    string id() const;
+    Combo getCombo();
+    void voidSlot();
+    void voidSlot2(int param);
+    void timer(int interval);
+    signal anotherChanged(AnotherStruct another);
+    signal foobar(string foo);
+    signal somethingHappened();
+    signal newValueAvailable(var newValue);
+}
+
+interface EchoZoned {
+
+    /**
+     * \brief brief message
+     *
+     * Some more documentation
+     */
+    readonly string lastMessage;
+    int intValue;
+    var varValue;
+    string stringValue;
+    string unsupportedValue;
+    bool zonedValue;
+    bool valueWithDefault;
+    bool echoEnabled;
+    AirflowDirection airflowDirection;
+    int rangedValue;
+    int rangedValueWithDefault;
+    Contact contact;
+    Combo combo;
+    list<int> intList;
+    list<Combo> comboList;
+    WeekDay weekDay;
+    TestEnum testEnum;
+    real UPPERCASEPROPERTY;
+
+    string echo(string msg);
+    string id();
+    var varMethod();
+    Combo getCombo();
+    string timer(int interval);
+
+    signal anotherChanged(AnotherStruct another);
+    signal foobar(string foo);
+    signal somethingHappened();
+    signal newValueAvailable(var newValue);
+}
+
+/**
+ * \brief Control where the airflow goes
+ */
+flag AirflowDirection {
+    /**
+     * \brief Airflow to the windshield
+     */
+    Windshield = 1,
+    /**
+     * \brief Airflow to the dashboard
+     */
+    Dashboard = 2,
+    /**
+     * \brief Airflow to the floor
+     */
+    Floor = 4
+}
+
+flag WeekDay {
+    Monday = 1,
+    Tuesday = 2,
+    Wednesday = 3,
+    Thursday = 4,
+    Friday = 5
+}
+
+enum TestEnum {
+    FirstEnumValue = 1,
+    SecondEnumValue = 2
+}
+
+/**
+ * The contact information
+ */
+struct Contact {
+    string name;
+    int age;
+    bool isMarried;
+    var additionalData;
+}
+
+struct Combo {
+    Contact contactInfo;
+    WeekDay day;
+}
+
+struct AnotherStruct {
+    int justANumber;
+}
