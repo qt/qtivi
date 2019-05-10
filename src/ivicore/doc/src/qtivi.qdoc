@@ -55,6 +55,7 @@
     The following are some key topics that provide more details on the Qt IVI module:
 
     \list
+       \li \l{Installation}
        \li \l{Configuration}
        \li \l{Concepts and Architecture}
        \li \l{Get Started with the Qt IVI Generator}
