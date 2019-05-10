@@ -98,7 +98,13 @@ QStringList {{class}}::availableZones()
 
 {% for property in interface.properties %}
 {%   if not property.readonly and not property.const and not property.type.is_model %}
-{{ivi.prop_setter(property, class, interface_zoned, model_interface = true)}}
+{%     if interface_zoned %}
+{{ivi.prop_setter(property, class, zoned = true)}}
+{%     else %}
+{%       set type = property|return_type %}
+{#       //repc doesn't generate proper const ref setters #}
+void {{class}}::{{property|setter_name}}({{type}} {{property}})
+{%     endif %}
 {
 {%     set parameters = property.name %}
 {%     if interface_zoned %}

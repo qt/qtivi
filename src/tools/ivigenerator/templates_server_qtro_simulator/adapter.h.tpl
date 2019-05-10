@@ -98,7 +98,13 @@ public:
 public Q_SLOTS:
 {% for property in interface.properties %}
 {%   if not property.readonly and not property.const and not property.type.is_model %}
-    {{ivi.prop_setter(property, zoned = interface_zoned, default_zone = true)}} override;
+{%     if interface_zoned %}
+    {{ivi.prop_setter(property, zoned = true, default_zone = true)}} override;
+{%     else %}
+{%       set type = property|return_type %}
+{#  //repc doesn't generate proper const ref setters #}
+    void {{property|setter_name}}({{type}} {{property}}) override;
+{%     endif %}
 {%   endif %}
 {% endfor %}
 
