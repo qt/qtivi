@@ -9,13 +9,13 @@ defineTest(qtConfTest_python3) {
     for (python3_exe_name, PYTHON3_NAMES) {
         equals(QMAKE_HOST.os, Windows): python3_exe_name = $${python3_exe_name}.exe
 
-        python3_exe = $$shell_path($$qtConfFindInPath($$python3_exe_name, $$PYTHON3_PATH))
+        python3_exe = $$system_path($$qtConfFindInPath($$python3_exe_name, $$PYTHON3_PATH))
         isEmpty(python3_exe): \
             next();
 
-        qtRunLoggedCommand("$$shell_quote($$python3_exe) -c \"import platform; print(platform.python_version_tuple()[0])\"", py_major_version)|next()
+        qtRunLoggedCommand("$$system_quote($$python3_exe) -c \"import platform; print(platform.python_version_tuple()[0])\"", py_major_version)|next()
         equals(py_major_version, 3) {
-            qtRunLoggedCommand("$$shell_quote($$python3_exe) -c \"import platform; print(platform.python_version())\"", python_version)|next()
+            qtRunLoggedCommand("$$system_quote($$python3_exe) -c \"import platform; print(platform.python_version())\"", python_version)|next()
             break()
         }
     }
@@ -41,7 +41,7 @@ defineTest(qtConfTest_python3_package) {
     package = $$eval($${1}.package)
     version = $$eval($${1}.version)
 
-    qtRunLoggedCommand("$$shell_quote($$python3_exe) -c \"import pkg_resources; print(pkg_resources.get_distribution('$${package}').version)\"", package_version)|return(false)
+    qtRunLoggedCommand("$$system_quote($$python3_exe) -c \"import pkg_resources; print(pkg_resources.get_distribution('$${package}').version)\"", package_version)|return(false)
     !isEmpty(version) {
         qtLog("Also checking for the exact version:")
         qtLog("Expected: $$version")

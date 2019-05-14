@@ -47,8 +47,8 @@ QT_FOR_CONFIG *= ivicore-private
 !isEmpty(QTIVI_BUILD_ROOT):!equals(QTEST_ENVIRONMENT, CI):!qtConfig(system-ivigenerator) {
     VIRTUALENV_PATH = $$INTERNAL_VIRTUALENV_PATH
     IVI_GENERATOR_PATH = $$QTIVI_ROOT/src/tools/ivigenerator
-    equals(QMAKE_HOST.os, Windows): ENV += set IVIGENERATOR_CONFIG="$$shell_path($$QTIVI_BUILD_ROOT/src/tools/ivigenerator/.config)" &&
-    else: ENV += IVIGENERATOR_CONFIG="$$shell_path($$QTIVI_BUILD_ROOT/src/tools/ivigenerator/.config)"
+    equals(QMAKE_HOST.os, Windows): ENV += set IVIGENERATOR_CONFIG="$$system_path($$QTIVI_BUILD_ROOT/src/tools/ivigenerator/.config)" &&
+    else: ENV += IVIGENERATOR_CONFIG="$$system_path($$QTIVI_BUILD_ROOT/src/tools/ivigenerator/.config)"
 }
 
 qtConfig(system-qface) {
@@ -64,10 +64,10 @@ qtConfig(system-qface) {
         PYTHON = $$VIRTUALENV_PATH/Scripts/python.exe
     } else {
         PYTHON = $$VIRTUALENV_PATH/bin/python
-        ENV += LD_LIBRARY_PATH="$$shell_path($$VIRTUALENV_PATH/bin)"
+        ENV += LD_LIBRARY_PATH="$$system_path($$VIRTUALENV_PATH/bin)"
     }
 }
-IVI_GENERATOR = $$shell_quote($$PYTHON) $$IVI_GENERATOR_PATH/generate.py
+IVI_GENERATOR = $$system_quote($$PYTHON) $$IVI_GENERATOR_PATH/generate.py
 
 # TODO make this work with multiple input files, or only support one QFACE_SOURCE
 # Although this could be extra_compiler it is a normal EXTRA_TARGET for a reason.
@@ -79,7 +79,7 @@ IVI_GENERATOR_OPTIONS = --format=$$QFACE_FORMAT --force
 for (ANNOTATION, QFACE_ANNOTATIONS) {
     file = $$absolute_path($$ANNOTATION, $$_PRO_FILE_PWD_)
 
-    IVI_GENERATOR_OPTIONS += -A $$shell_path($$file)
+    IVI_GENERATOR_OPTIONS += -A $$system_path($$file)
     qface_sources.depends += $$file
     OTHER_FILES += $$file
 }
@@ -89,7 +89,7 @@ equals(QMAKE_HOST.os, Windows): SLEEP = ping -n 2 127.0.0.1 >nul
 else: SLEEP = sleep 1
 
 qface_sources.target = $$relative_path($$PRI, $$OUT_PWD)
-qface_sources.commands = $$SLEEP && $$ENV $$shell_path($$IVI_GENERATOR) $$IVI_GENERATOR_OPTIONS $$shell_path($$QFACE_ABS_PWD/$${QFACE_FILE}) $$shell_path($$QFACE_OUTPUT_DIR)
+qface_sources.commands = $$SLEEP && $$ENV $$system_path($$IVI_GENERATOR) $$IVI_GENERATOR_OPTIONS $$system_path($$QFACE_ABS_PWD/$${QFACE_FILE}) $$system_path($$QFACE_OUTPUT_DIR)
 qface_sources.depends = $$IVI_GENERATOR_PATH/generate.py
 qface_sources.depends += $$QFACE_ABS_PWD/$${QFACE_FILE}
 qface_sources.depends += $$files($$IVI_GENERATOR_PATH/common/*)

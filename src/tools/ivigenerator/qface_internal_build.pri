@@ -9,10 +9,10 @@ debug_and_release:build_pass:CONFIG(release, debug|release) {
 
 include($$shadowed($$PWD/../../ivicore/qtivicore-config.pri))
 
-VIRTUALENV_EXE = $$shell_quote($$QMAKE_PYTHON3_LOCATION) -m virtualenv
+VIRTUALENV_EXE = $$system_quote($$QMAKE_PYTHON3_LOCATION) -m virtualenv
 # virtualenv is always using the default interpreter, which is python2 on many systems"
 # by adding -p we enforce that the python3 interpreter is used and make sure python3 is installed in the virtualenv
-VIRTUALENV_EXE += " -p $$shell_quote($$QMAKE_PYTHON3_LOCATION)"
+VIRTUALENV_EXE += " -p $$system_quote($$QMAKE_PYTHON3_LOCATION)"
 
 # Use a Python virtualenv for installing qface, so we don't pollute the user environment
 # On some systems virtualenv --always-copy doesn't work (https://github.com/pypa/virtualenv/issues/565).
@@ -47,8 +47,8 @@ PYTHON3_SHORT_VERSION = $$member(PYTHON3_SHORT_VERSION_SPLITTED, 0).$$member(PYT
 
 # On the CI we use the special wheel folder when available to not download all packages again on each build
 PYTHON3_WHEEL_CACHE=$$(PYTHON3_WHEEL_CACHE)
-!isEmpty(PYTHON3_WHEEL_CACHE): PIP3_INSTALL_COMMAND = pip3 install --no-index --find-links=$$shell_path($$PYTHON3_WHEEL_CACHE) $$shell_path($$QFACE_SOURCE_DIR) --verbose
-else: PIP3_INSTALL_COMMAND = pip3 install --upgrade $$shell_path($$QFACE_SOURCE_DIR)
+!isEmpty(PYTHON3_WHEEL_CACHE): PIP3_INSTALL_COMMAND = pip3 install --no-index --find-links=$$system_path($$PYTHON3_WHEEL_CACHE) $$system_path($$QFACE_SOURCE_DIR) --verbose
+else: PIP3_INSTALL_COMMAND = pip3 install --upgrade $$system_path($$QFACE_SOURCE_DIR)
 
 # Always run this target
 equals(QMAKE_HOST.os, Windows): qtivi_qface_install.target = qtivi_qface_virtualenv/Lib/site-packages/qface
@@ -60,7 +60,7 @@ qtivi_qface_install.depends += $$QFACE_SOURCE_DIR/qface/__about__.py
 qtivi_qface_install.commands = $$VIRTUALENV_ACTIVATION \
         $$PIP3_INSTALL_COMMAND $$escape_expand(\n\t) \
         @echo "Installed qface development version into qtivi_qface_virtualenv" $$escape_expand(\n\t)
-equals(QMAKE_HOST.os, Windows): qtivi_qface_install.commands += @COPY /B $$shell_path($$OUT_PWD/forceRebuild)+,, $$shell_path($$OUT_PWD/forceRebuild) >NUL
+equals(QMAKE_HOST.os, Windows): qtivi_qface_install.commands += @COPY /B $$system_path($$OUT_PWD/forceRebuild)+,, $$system_path($$OUT_PWD/forceRebuild) >NUL
 else: qtivi_qface_install.commands += @touch $$OUT_PWD/forceRebuild
 QMAKE_EXTRA_TARGETS += qtivi_qface_install
 
@@ -68,8 +68,8 @@ QMAKE_EXTRA_TARGETS += qtivi_qface_install
 # Otherwise it still needs some modules from the system
 deploy_virtualenv.target = .stamp-deploy_virtualenv
 equals(QMAKE_HOST.os, Windows) {
-    deploy_virtualenv.commands = $$shell_path($$PWD/deploy-virtualenv.bat) qtivi_qface_virtualenv $$escape_expand(\n\t)
-    deploy_virtualenv.commands += @type nul > $$shell_path($$OUT_PWD/.stamp-deploy_virtualenv)
+    deploy_virtualenv.commands = $$system_path($$PWD/deploy-virtualenv.bat) qtivi_qface_virtualenv $$escape_expand(\n\t)
+    deploy_virtualenv.commands += @type nul > $$system_path($$OUT_PWD/.stamp-deploy_virtualenv)
 } else {
     deploy_virtualenv.commands = $$PWD/deploy-virtualenv.sh qtivi_qface_virtualenv $$escape_expand(\n\t)
     deploy_virtualenv.commands += @touch $$OUT_PWD/.stamp-deploy_virtualenv
