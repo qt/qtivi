@@ -46,6 +46,12 @@ templates_frontend.files +=  \
     templates_frontend/struct.h.tpl
 templates_frontend.path = $$[QT_HOST_BINS]/ivigenerator/templates_frontend
 
+templates_qmlplugin.files +=  \
+    templates_qmlplugin/module.pri.tpl \
+    templates_qmlplugin/plugin.cpp.tpl \
+    templates_qmlplugin/qmldir_plugin.tpl
+templates_qmlplugin.path = $$[QT_HOST_BINS]/ivigenerator/templates_qmlplugin
+
 templates_backend_simulator.files += \
     templates_backend_simulator/plugin.cpp.tpl \
     templates_backend_simulator/plugin.h.tpl \
@@ -103,6 +109,7 @@ generator.files += \
     generate.py \
     $$OUT_PWD/.config \
     templates_frontend.yaml \
+    templates_qmlplugin.yaml \
     templates_backend_simulator.yaml \
     templates_generation_validator.yaml \
     templates_test.yaml \
@@ -123,6 +130,7 @@ qtConfig(remoteobjects) {
 INSTALLS += generator \
     common \
     templates_frontend \
+    templates_qmlplugin \
     templates_backend_simulator \
     templates_generation_validator \
     templates_test \
