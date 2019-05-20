@@ -1,4 +1,4 @@
-TARGET = media-simulation-server
+TARGET = ivimedia-simulation-server
 TEMPLATE = app
 QT = core ivicore remoteobjects ivimedia iviremoteobjects_helper_private
 CONFIG += c++11

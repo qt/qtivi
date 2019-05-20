@@ -1,4 +1,4 @@
-TARGET = vehiclefunctions-simulation-server
+TARGET = ivivehiclefunctions-simulation-server
 TEMPLATE = app
 QT = core ivicore ivivehiclefunctions
 QT -= gui
