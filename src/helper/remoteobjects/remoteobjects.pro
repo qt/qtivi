@@ -14,3 +14,4 @@ HEADERS += \
     qiviremoteobjectpendingresult.h
 
 load(qt_module)
+CONFIG -= hide_symbols
