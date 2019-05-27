@@ -47,8 +47,8 @@ QT_BEGIN_NAMESPACE
 
 namespace qtivi_helper {
     static const QString unsupportedLiteral = QStringLiteral("unsupported");
-    static const QString minLiteral = QStringLiteral("min");
-    static const QString maxLiteral = QStringLiteral("max");
+    static const QString minLiteral = QStringLiteral("minimum");
+    static const QString maxLiteral = QStringLiteral("maximum");
     static const QString domainLiteral = QStringLiteral("domain");
 }
 
