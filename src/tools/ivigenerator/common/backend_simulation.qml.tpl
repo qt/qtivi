@@ -70,7 +70,7 @@ QtObject {
 
 {% if interface_zoned %}
         function {{property|setter_name}}({{property}}, zone) {
-            if (IviSimulator.checkSettings({{property}}, settings["{{property}}"], zone)) {
+            if (IviSimulator.checkSettings(settings["{{property}}"], {{property}}, zone)) {
                 if (zone) {
                     console.log(qLc{{interface|upperfirst}}, "SIMULATION {{ property }} for zone: " + zone + " changed to: " + {{property}});
                     backend.zones[zone].{{property}} = {{property}}
@@ -79,16 +79,16 @@ QtObject {
                     backend.{{property}} = {{property}}
                 }
             } else {
-                setError(qLc{{interface|upperfirst}}, "SIMULATION changing {{property}} is not possible: provided: " + {{property}} + " constraint: " + IviSimulator.constraint_string(settings["{{property}}"]));
+                console.error(qLc{{interface|upperfirst}}, "SIMULATION changing {{property}} is not possible: provided: " + {{property}} + " constraint: " + IviSimulator.constraint(settings["{{property}}"]));
             }
         }
 {% else %}
         function {{property|setter_name}}({{property}}) {
-            if (IviSimulator.checkSettings({{property}}, settings["{{property}}"])) {
+            if (IviSimulator.checkSettings(settings["{{property}}"], {{property}})) {
                 console.log(qLc{{interface|upperfirst}}, "SIMULATION {{ property }} changed to: " + {{property}});
                 backend.{{property}} = {{property}}
             } else {
-                setError(qLc{{interface|upperfirst}}, "SIMULATION changing {{property}} is not possible: provided: " + {{property}} + " constraint: " + IviSimulator.constraint_string(settings["{{property}}"]));
+                console.error(qLc{{interface|upperfirst}}, "SIMULATION changing {{property}} is not possible: provided: " + {{property}} + " constraint: " + IviSimulator.constraint(settings["{{property}}"]));
             }
         }
 {% endif %}
