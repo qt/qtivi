@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include <QCoreApplication>
+#include <QGuiApplication>
 #include <QDir>
 #include <QLockFile>
 
@@ -62,7 +62,12 @@
 
 int main(int argc, char *argv[])
 {
+#ifdef Q_OS_MACOS
+    //QtMultimedia doesn't work with a QCoreApplication on macos
+    QGuiApplication app(argc, argv);
+#else
     QCoreApplication app(argc, argv);
+#endif
 
     // single instance guard
     QLockFile lockFile(QStringLiteral("%1/%2.lock").arg(QDir::tempPath(), app.applicationName()));
