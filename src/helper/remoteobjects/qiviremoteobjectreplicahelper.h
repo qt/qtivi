@@ -59,6 +59,8 @@ class QIviRemoteObjectReplicaHelper : public QObject
 public:
     QIviRemoteObjectReplicaHelper(const QLoggingCategory &category = qtivi_private::qLcQtIviRoHelper(), QObject *parent = nullptr);
 
+    QVariant fromRemoteObjectVariant(const QVariant &variant) const;
+
     template <class T> QIviPendingReply<T> toQIviPendingReply(const QRemoteObjectPendingCall &reply)
     {
         qCDebug(m_category) << "Analyzing QRemoteObjectPendingCall";

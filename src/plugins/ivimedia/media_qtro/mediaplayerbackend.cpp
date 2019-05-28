@@ -64,7 +64,9 @@ MediaPlayerBackend::MediaPlayerBackend(QRemoteObjectNode *node, QObject *parent)
     connect(m_replica.data(), &QIviMediaPlayerReplica::playStateChanged, this, &MediaPlayerBackend::playStateChanged);
     connect(m_replica.data(), &QIviMediaPlayerReplica::positionChanged, this, &MediaPlayerBackend::positionChanged);
     connect(m_replica.data(), &QIviMediaPlayerReplica::durationChanged, this, &MediaPlayerBackend::durationChanged);
-    connect(m_replica.data(), &QIviMediaPlayerReplica::currentTrackChanged, this, &MediaPlayerBackend::currentTrackChanged);
+    connect(m_replica.data(), &QIviMediaPlayerReplica::currentTrackChanged, this, [this] (const QVariant &currentTrack) {
+        emit currentTrackChanged(m_helper->fromRemoteObjectVariant(currentTrack));
+    });
     connect(m_replica.data(), &QIviMediaPlayerReplica::currentIndexChanged, this, &MediaPlayerBackend::currentIndexChanged);
     connect(m_replica.data(), &QIviMediaPlayerReplica::volumeChanged, this, &MediaPlayerBackend::volumeChanged);
     connect(m_replica.data(), &QIviMediaPlayerReplica::mutedChanged, this, &MediaPlayerBackend::mutedChanged);

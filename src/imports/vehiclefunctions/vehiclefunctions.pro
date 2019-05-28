@@ -1,21 +1,26 @@
+QT = ivicore ivivehiclefunctions
+CONFIG += c++11
+
+QT_FOR_CONFIG += ivicore
+!qtConfig(ivigenerator): error("No ivigenerator available")
+
+QFACE_MODULE_NAME = QtIviVehicleFunctions
+QFACE_FORMAT = qmlplugin
+QFACE_SOURCES = ../../ivivehiclefunctions/ivivehiclefunctions.qface
+
+load(ivigenerator)
+
 CXX_MODULE = qml
-TARGET  = qtivivehiclefunctionsplugin
-TARGETPATH = QtIvi/VehicleFunctions
-IMPORT_VERSION = 1.0
+TARGETPATH = $$replace(URI, \\., /)
 
-SOURCES += \
-    plugin.cpp
-
-QT += ivicore ivivehiclefunctions
-
-# Automatically update the qmltypes file to keep it up to date with API changes
-# This only works for non-prefix builds and not when cross-compiling
-!cross_compile:!force_independent:if(!debug_and_release|!build_all|CONFIG(release, debug|release)) {
-    first.target = first
-    first.depends += qmltypes
-    QMAKE_EXTRA_TARGETS += first
-}
 load(qml_plugin)
 
-qml_files = $$_PRO_FILE_PWD_/qmldir
-OTHER_FILES += $$qml_files
+# Set the base to null to disable the check that the files are from the source folder
+# Because the naming has changed in the last couple of Qt versions, multiple variable
+# need to be fixed
+qmldir.base =
+qmlfiles.base =
+qmldir.files -= $$_PRO_FILE_PWD_/qmldir
+qmlfiles.files -= $$_PRO_FILE_PWD_/qmldir
+qmldir2build.files -= $$_PRO_FILE_PWD_/qmldir
+qml2build.files -= $$_PRO_FILE_PWD_/qmldir

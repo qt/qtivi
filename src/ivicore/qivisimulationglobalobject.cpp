@@ -47,8 +47,9 @@ QT_BEGIN_NAMESPACE
 
 namespace qtivi_helper {
     static const QString unsupportedLiteral = QStringLiteral("unsupported");
-    static const QString minLiteral = QStringLiteral("min");
-    static const QString maxLiteral = QStringLiteral("max");
+    static const QString minLiteral = QStringLiteral("minimum");
+    static const QString maxLiteral = QStringLiteral("maximum");
+    static const QString rangeLiteral = QStringLiteral("range");
     static const QString domainLiteral = QStringLiteral("domain");
 }
 
@@ -105,13 +106,16 @@ using namespace qtivi_helper;
         "steeringWheelHeater": {
           "minimum": 0,
           "default": 0
+        },
+        "fanSpeed": {
+          "range": [0, 5]
         }
       }
     }
     \endcode
 
-    For the interface named \e QIviClimateControl, there are settings defined for the properties
-    \e airConditioningEnabled and \e steeringWheelHeater.
+    For the interface named \c QIviClimateControl, there are settings defined for the properties
+    \c airConditioningEnabled, \c steeringWheelHeater and \c fanSpeed.
 
     The settings object can store multiple constraints which are called \e domains. The following
     domains are currently supported:
@@ -121,6 +125,8 @@ using namespace qtivi_helper;
                connected.
         \value minimum Every newly set value needs to be bigger than this value
         \value maximum Every newly set value needs to be smaller than this value
+        \value range Every newly set value needs to be between the two values in this list
+        \note The values in \c range always override the \c minimum and \c maximum domains
         \value domain Every newly set value needs to be part of this list
         \value unsupported Changing the property is not possible and will show an "unsupported"
                error message
@@ -366,8 +372,18 @@ QVariant QIviSimulationGlobalObject::defaultValue(const QVariantMap &data, const
 QString QIviSimulationGlobalObject::constraint(const QVariantMap &data, const QString &zone)
 {
     const QVariant unsupportedDomain = parseDomainValue(data, unsupportedLiteral, zone);
-    const QVariant minDomain = parseDomainValue(data, minLiteral, zone);
-    const QVariant maxDomain = parseDomainValue(data, maxLiteral, zone);
+    QVariant minDomain = parseDomainValue(data, minLiteral, zone);
+    QVariant maxDomain = parseDomainValue(data, maxLiteral, zone);
+    const QVariant rangeDomain = parseDomainValue(data, rangeLiteral, zone);
+    if (rangeDomain.isValid()) {
+        QVariantList range = rangeDomain.toList();
+        if (range.count() == 2) {
+            minDomain = range.at(0);
+            maxDomain = range.at(1);
+        } else {
+            qWarning("Domain 'range' needs to be list of exactly two values");
+        }
+    }
     const QVariant domainDomain = parseDomainValue(data, domainLiteral, zone);
 
     if (unsupportedDomain.isValid())
@@ -398,8 +414,18 @@ QString QIviSimulationGlobalObject::constraint(const QVariantMap &data, const QS
 bool QIviSimulationGlobalObject::checkSettings(const QVariantMap &data, const QVariant &value, const QString &zone)
 {
     const QVariant unsupportedDomain = parseDomainValue(data, unsupportedLiteral, zone);
-    const QVariant minDomain = parseDomainValue(data, minLiteral, zone);
-    const QVariant maxDomain = parseDomainValue(data, maxLiteral, zone);
+    QVariant minDomain = parseDomainValue(data, minLiteral, zone);
+    QVariant maxDomain = parseDomainValue(data, maxLiteral, zone);
+    const QVariant rangeDomain = parseDomainValue(data, rangeLiteral, zone);
+    if (rangeDomain.isValid()) {
+        QVariantList range = rangeDomain.toList();
+        if (range.count() == 2) {
+            minDomain = range.at(0);
+            maxDomain = range.at(1);
+        } else {
+            qWarning("Domain 'range' needs to be list of exactly two values");
+        }
+    }
     const QVariant domainDomain = parseDomainValue(data, domainLiteral, zone);
 
     if (unsupportedDomain.isValid())

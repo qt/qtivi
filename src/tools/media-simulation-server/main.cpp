@@ -39,7 +39,9 @@
 **
 ****************************************************************************/
 
-#include <QCoreApplication>
+#include <QGuiApplication>
+#include <QDir>
+#include <QLockFile>
 
 #include "database_helper.h"
 
@@ -60,7 +62,19 @@
 
 int main(int argc, char *argv[])
 {
+#ifdef Q_OS_MACOS
+    //QtMultimedia doesn't work with a QCoreApplication on macos
+    QGuiApplication app(argc, argv);
+#else
     QCoreApplication app(argc, argv);
+#endif
+
+    // single instance guard
+    QLockFile lockFile(QStringLiteral("%1/%2.lock").arg(QDir::tempPath(), app.applicationName()));
+    if (!lockFile.tryLock(100)) {
+        qCritical("%s already running, aborting...", qPrintable(app.applicationName()));
+        return EXIT_FAILURE;
+    }
 
     QString dbFile = mediaDatabaseFile();
     createMediaDatabase(dbFile);

@@ -39,8 +39,7 @@ depends += \
      qtvirtualkeyboard \
      qtquick \
      neptune3ui \
-     qtautodeploymentserver \
-     qtapplicationmanagerintegration
+     qtautodeploymentserver
 
 buildversion = "Qt Automotive Suite $QT_VERSION"
 
