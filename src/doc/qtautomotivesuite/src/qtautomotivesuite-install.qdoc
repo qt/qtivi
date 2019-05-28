@@ -30,7 +30,7 @@
     \page qtas-install.html
     \title Install Qt Automotive Suite
     \previouspage {Qt Automotive Suite}
-    \nextpage qtas-licenses.html
+    \nextpage qtas-examples.html
 
     The Qt Automotive Suite is provided under the same dual license conditions as Qt itself. The
     commercial package is available from the Qt Installer and provides the most comprehensive
@@ -38,7 +38,7 @@
     To find a license that suits your need, refer to the guide on \l{Download Qt}. The license you
     purchase is associated with a Qt Account, that is required to install the product.
 
-    \section1 Install
+    \section1 Install on Desktop
 
     When you install the Qt Automotive Suite, you can select which components, SD-card images, and
     toolchains to install. To use the Qt Automotive Suite components on your host system, you also
@@ -80,17 +80,18 @@
     Suite documentation, or view Qt for Device Creation documentation.
 
     \list
-        \li To create embedded Linux systems with complex UIs, start with
-            \l{Qt Application Manager}.
-        \li To integrate middleware into your system, start with \l{Qt IVI}.
         \li To understand the building blocks necessary to build an In-Vehicle Infotainment (IVI)
-            System, start with \l{Neptune 3 UI}{Reference UI}.
+            System, see \l{Neptune 3 UI}{Reference UI}.
+        \li To create QML applications that run in single-process or multi-process, see
+            \l{Qt Application Manager}.
+        \li To integrate middleware into your system, see \l{Qt IVI}.
+        \li To explore some of the key features, see \l{Examples in Qt Automotive Suite}.
     \endlist
 
     \note On macOS, currently only development on desktop is supported. If you start the Qt
     Installer on macOS, no target-related packages are shown in the selection.
 
-    \section2 Install on Target Devices
+    \section1 Install on Target Devices
 
     Before you can test Qt Automotive Suite applications on the target device, you must carry out
     some steps for embedded development configuration: such as set up the Boot to Qt software stack
@@ -98,8 +99,8 @@
 
     \list
         \li \l{Intel NUC}
-        \li \l{NVIDIA Jetson TX2}
         \li \l{Toradex Apalis iMX6}
+        \li \l{NVIDIA Jetson TX2}
     \endlist
 
     Once the installation is complete, start Qt Creator and try to run one of the examples against

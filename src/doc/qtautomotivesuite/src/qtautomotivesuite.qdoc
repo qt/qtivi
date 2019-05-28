@@ -85,10 +85,10 @@
        \header
             \li {2,1}Tools
        \row
-            \li \l{Qt QML Live}{QML Live}
+            \li \l{QML Live}
             \li Provides a live reloader environment for rapid development of Qt Quick
-                applications, dramatically reducing the time it takes to deploy and test
-                changes in the UI design process.
+                applications, dramatically reducing the time it takes to deploy and test changes
+                in the UI design process.
        \row
             \li \l{Qt Creator}{Qt Creator Deployment}
             \li The Qt Creator IDE allows for direct deployment to a device connected via USB or

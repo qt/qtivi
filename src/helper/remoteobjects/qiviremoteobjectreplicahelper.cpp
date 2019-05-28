@@ -51,6 +51,11 @@ QIviRemoteObjectReplicaHelper::QIviRemoteObjectReplicaHelper(const QLoggingCateg
     qRegisterMetaTypeStreamOperators<QIviRemoteObjectPendingResult>();
 }
 
+QVariant QIviRemoteObjectReplicaHelper::fromRemoteObjectVariant(const QVariant &variant) const
+{
+    return variant.value<QVariant>();
+}
+
 void QIviRemoteObjectReplicaHelper::onPendingResultAvailable(quint64 id, bool isSuccess, const QVariant &value)
 {
     qCDebug(m_category) << "pending result available for id:" << id;
