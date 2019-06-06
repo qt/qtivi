@@ -57,9 +57,10 @@ public:
     void fetchData(const QUuid &identifier, int start, int count) override;
 
 private:
+    bool connectToNode();
     void setupConnections();
 
-    QPointer<PagingModelReplica> m_replica;
+    QSharedPointer<PagingModelReplica> m_replica;
     QIviRemoteObjectReplicaHelper *m_helper;
     QRemoteObjectNode *m_node= nullptr;
     QUrl m_url;

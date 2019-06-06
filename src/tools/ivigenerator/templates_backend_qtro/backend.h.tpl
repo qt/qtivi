@@ -135,6 +135,7 @@ protected Q_SLOTS:
 {% endif %}
 
 protected:
+    bool connectToNode();
     void setupConnections();
 
     QSharedPointer<{{interface}}Replica> m_replica;
