@@ -124,7 +124,7 @@ void {{zone_class}}::emitCurrentState()
 
 {{class}}::{{class}}(QObject *parent)
     : {{class}}Interface(parent)
-    , m_node(new QRemoteObjectNode)
+    , m_node(nullptr)
     , m_helper(new QIviRemoteObjectReplicaHelper(qLcRO{{interface}}(), this))
 {% for property in interface.properties %}
 {%   if property.type.is_model %}
@@ -283,6 +283,9 @@ bool {{class}}::connectToNode()
     QUrl registryUrl = QUrl(settings.value(QStringLiteral("Registry"), QStringLiteral("local:{{module.module_name|lower}}")).toString());
     if (m_url != registryUrl) {
         m_url = registryUrl;
+        // QtRO doesn't allow to change the URL without destroying the Node
+        delete m_node;
+        m_node = new QRemoteObjectNode();
         if (!m_node->connectToNode(m_url)) {
             qCCritical(qLcRO{{interface}}) << "Connection to" << m_url << "failed!";
             m_replica.reset();
@@ -313,7 +316,8 @@ void {{class}}::setupConnections()
             m_synced = false;
     });
 {% else %}
-    connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &QIviFeatureInterface::initializationDone);
+    //As the Replica is now initialized, this will trigger an update of all properties (not just the changed ones)
+    connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &{{class}}::initialize);
 {% endif %}
 {% for property in interface.properties if not property.type.is_model %}
 {%   if interface_zoned %}

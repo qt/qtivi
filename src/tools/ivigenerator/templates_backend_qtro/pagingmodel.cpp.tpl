@@ -42,7 +42,7 @@ Q_LOGGING_CATEGORY(qLcRO{{interface}}{{property|upper_first}}, "{{module|qml_typ
 
 {{class}}::{{class}}(QObject* parent)
     : QIviPagingModelInterface(parent)
-    , m_node(new QRemoteObjectNode)
+    , m_node(nullptr)
     , m_helper(new QIviRemoteObjectReplicaHelper(qLcRO{{interface}}{{property|upper_first}}(), this))
 {
     qRegisterMetaType<QIviPagingModelInterface*>();
@@ -101,6 +101,9 @@ bool {{class}}::connectToNode()
     QUrl registryUrl = QUrl(settings.value(QStringLiteral("Registry"), QStringLiteral("local:{{module.module_name|lower}}")).toString());
     if (m_url != registryUrl) {
         m_url = registryUrl;
+        // QtRO doesn't allow to change the URL without destroying the Node
+        delete m_node;
+        m_node = new QRemoteObjectNode();
         if (!m_node->connectToNode(m_url)) {
             qCCritical(qLcRO{{interface}}{{property|upper_first}}) << "Connection to" << m_url << "failed!";
             m_replica.reset();
