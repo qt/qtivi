@@ -161,6 +161,10 @@ QIviFeatureInterface *QIviAbstractFeatureListModelPrivate::backend() const
     Called when no service object is available. The implementation is expected to set all
     properties to safe defaults and forget all links to the previous service object.
 
+    \note You must emit the corresponding change signals for these properties, so that the feature
+    is informed about the state change. This makes it possible for the implemented class to connect
+    to a new service object afterwards.
+
     There is no need to disconnect from the service object. If it still exists, it is guaranteed
     that \l disconnectFromServiceObject is called first.
 

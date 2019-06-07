@@ -362,6 +362,7 @@ void {{interface}}Test::testClearServiceObject()
 
 {% for property in interface.properties %}
 {%   if not property.type.is_model %}
+    QSignalSpy {{property}}Spy(&cc, &{{interface}}::{{property}}Changed);
     QCOMPARE(cc.{{property|getter_name}}(), {{property}}TestValue);
 {%   endif %}
 {% endfor %}
@@ -371,6 +372,7 @@ void {{interface}}Test::testClearServiceObject()
 {% for property in interface.properties %}
 {%   if not property.type.is_model %}
     QCOMPARE(cc.{{property|getter_name}}(), {{property|default_type_value}});
+    QCOMPARE({{property}}Spy.count(), 1);
 {%   endif %}
 {% endfor %}
 

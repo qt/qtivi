@@ -455,29 +455,43 @@ void tst_QIviSearchAndBrowseModel::testClearServiceObject()
     QIviSearchAndBrowseModel model;
     model.setServiceObject(service);
 
-    //TODO enable when fixed
-    //model.setLoadingType(QIviSearchAndBrowseModel::DataChanged);
+    model.setLoadingType(QIviSearchAndBrowseModel::DataChanged);
     model.setChunkSize(20);
     model.setContentType("simple");
     model.setFetchMoreThreshold(20);
 
+    QSignalSpy chunkSizeSpy(&model, &QIviSearchAndBrowseModel::chunkSizeChanged);
     QVERIFY(model.chunkSize() != defaultModel.chunkSize());
+    QSignalSpy contentTypeSpy(&model, &QIviSearchAndBrowseModel::contentTypeChanged);
     QVERIFY(model.contentType() != defaultModel.contentType());
+    QSignalSpy thresholdSpy(&model, &QIviSearchAndBrowseModel::fetchMoreThresholdChanged);
     QVERIFY(model.fetchMoreThreshold() != defaultModel.fetchMoreThreshold());
+    QSignalSpy availableContentTypeSpy(&model, &QIviSearchAndBrowseModel::availableContentTypesChanged);
     QVERIFY(model.availableContentTypes() != defaultModel.availableContentTypes());
+    QSignalSpy capabilitiesSpy(&model, &QIviSearchAndBrowseModel::capabilitiesChanged);
     QVERIFY(model.capabilities() != defaultModel.capabilities());
-    //QVERIFY(model.loadingType() != defaultModel.loadingType());
+    QSignalSpy loadingTypeSpy(&model, &QIviSearchAndBrowseModel::loadingTypeChanged);
+    QVERIFY(model.loadingType() != defaultModel.loadingType());
+    QSignalSpy resetSpy(&model, &QAbstractItemModel::modelReset);
     QVERIFY(model.rowCount() != defaultModel.rowCount());
 
     QVERIFY(model.setServiceObject(nullptr));
 
+
     QVERIFY(model.chunkSize() == defaultModel.chunkSize());
+    QCOMPARE(chunkSizeSpy.count(), 1);
     QVERIFY(model.contentType() == defaultModel.contentType());
+    QCOMPARE(contentTypeSpy.count(), 1);
     QVERIFY(model.fetchMoreThreshold() == defaultModel.fetchMoreThreshold());
+    QCOMPARE(thresholdSpy.count(), 1);
     QVERIFY(model.availableContentTypes() == defaultModel.availableContentTypes());
+    QCOMPARE(availableContentTypeSpy.count(), 1);
     QVERIFY(model.capabilities() == defaultModel.capabilities());
+    QCOMPARE(capabilitiesSpy.count(), 1);
     QVERIFY(model.loadingType() == defaultModel.loadingType());
+    QCOMPARE(loadingTypeSpy.count(), 1);
     QVERIFY(model.rowCount() == defaultModel.rowCount());
+    QCOMPARE(resetSpy.count(), 1);
 }
 
 void tst_QIviSearchAndBrowseModel::testBasic_qml()

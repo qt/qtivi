@@ -60,8 +60,8 @@ QIviMediaIndexerControlPrivate::QIviMediaIndexerControlPrivate(const QString &in
 
 void QIviMediaIndexerControlPrivate::clearToDefaults()
 {
-    m_progress = 0;
-    m_state = QIviMediaIndexerControl::Idle;
+    onProgressChanged(0);
+    onStateChanged(QIviMediaIndexerControl::Idle);
 }
 
 void QIviMediaIndexerControlPrivate::onProgressChanged(qreal progress)

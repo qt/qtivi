@@ -63,13 +63,13 @@ QIviAmFmTunerPrivate::QIviAmFmTunerPrivate(const QString &interface, QIviAmFmTun
 
 void QIviAmFmTunerPrivate::clearToDefaults()
 {
-    m_frequency = -1;
-    m_minimumFrequency = -1;
-    m_maximumFrequency = -1;
-    m_stepSize = -1;
-    m_band = QIviAmFmTuner::FMBand;
-    m_station = QIviAmFmTunerStation();
-    m_scanRunning = false;
+    onFrequencyChanged(-1);
+    onMinimumFrequencyChanged(-1);
+    onMaximumFrequencyChanged(-1);
+    onStepSizeChanged(-1);
+    onBandChanged(QIviAmFmTuner::FMBand);
+    onStationChanged(QIviAmFmTunerStation());
+    onScanStatusChanged(false);
 }
 
 void QIviAmFmTunerPrivate::onFrequencyChanged(int frequency)

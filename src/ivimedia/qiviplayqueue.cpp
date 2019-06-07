@@ -210,13 +210,19 @@ void QIviPlayQueuePrivate::resetModel()
 
 void QIviPlayQueuePrivate::clearToDefaults()
 {
+    Q_Q(QIviPlayQueue);
     m_identifier = QUuid::createUuid();
     m_currentIndex = -1;
+    emit q->currentIndexChanged(-1);
     m_chunkSize = 30;
+    emit q->chunkSizeChanged(30);
     m_moreAvailable = false;
     m_fetchMoreThreshold = 10;
-    m_fetchedDataCount = 0;
+    emit q->fetchMoreThresholdChanged(m_fetchMoreThreshold);
     m_loadingType = QIviPlayQueue::FetchMore;
+    emit q->loadingTypeChanged(m_loadingType);
+
+    resetModel();
 }
 
 const QIviPlayableItem *QIviPlayQueuePrivate::itemAt(int i) const

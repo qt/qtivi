@@ -77,13 +77,12 @@ void QIviMediaPlayerPrivate::initialize()
 
 void QIviMediaPlayerPrivate::clearToDefaults()
 {
-    m_playMode = QIviMediaPlayer::Normal;
-    m_currentTrackData = QVariant();
-    m_currentTrack = nullptr;
-    m_position = -1;
-    m_duration = -1;
-    m_volume = 0;
-    m_muted = false;
+    onPlayModeChanged(QIviMediaPlayer::Normal);
+    onCurrentTrackChanged(QVariant());
+    onPositionChanged(-1);
+    onDurationChanged(-1);
+    onVolumeChanged(0);
+    onMutedChanged(false);
     m_playQueue->d_func()->clearToDefaults();
 }
 

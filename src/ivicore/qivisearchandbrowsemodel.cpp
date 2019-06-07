@@ -124,13 +124,22 @@ void QIviSearchAndBrowseModelPrivate::clearToDefaults()
 {
     QIviPagingModelPrivate::clearToDefaults();
 
+    Q_Q(QIviSearchAndBrowseModel);
     delete m_queryTerm;
     m_queryTerm = nullptr;
+    m_query.clear();
+    emit q->queryChanged(m_query);
     m_contentType = QString();
+    emit q->contentTypeChanged(m_contentType);
     m_contentTypeRequested = QString();
     m_canGoBack = false;
+    emit q->canGoBackChanged(m_canGoBack);
     m_availableContentTypes.clear();
+    emit q->availableContentTypesChanged(m_availableContentTypes);
     m_canGoForward.clear();
+
+    //Explicitly call the PagingModel resetModel to also reset the fetched data
+    QIviPagingModelPrivate::resetModel();
 }
 
 void QIviSearchAndBrowseModelPrivate::onCanGoForwardChanged(const QUuid &identifier, const QVector<bool> &indexes, int start)

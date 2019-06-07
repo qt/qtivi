@@ -127,13 +127,11 @@ const {{class}}Private *{{class}}Private::get(const {{class}} *v)
 void {{class}}Private::clearToDefaults()
 {
 {% for property in interface.properties %}
-{%   if property.type.is_model %}
-    if (m_{{property}}) {
-        delete m_{{property}}->serviceObject();
-        delete m_{{property}};
-    }
-{%   endif %}
-    m_{{property}} = {{property|default_type_value}};
+{%   set function_parameters = property|default_type_value %}
+{%   if interface.tags.config.zoned %}
+{%     set function_parameters = function_parameters + ', QString()' %}
+{%   endif%}
+    on{{property|upperfirst}}Changed({{function_parameters}});
 {% endfor %}
 }
 

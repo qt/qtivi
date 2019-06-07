@@ -131,6 +131,8 @@ void QIviAbstractZonedFeature::clearServiceObject()
     d->m_zoneFeatures.clear();
     d->m_zoneFeatureList.clear();
     d->m_zoneFeatureMap.clear();
+    emit availableZonesChanged(QStringList());
+    emit zonesChanged();
 }
 
 /*!

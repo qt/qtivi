@@ -231,24 +231,33 @@ void tst_QIviPagingModel::testClearServiceObject()
     QIviPagingModel model;
     model.setServiceObject(service);
 
-    //TODO enable when fixed
-    //model.setLoadingType(QIviSearchAndBrowseModel::DataChanged);
+    model.setLoadingType(QIviPagingModel::DataChanged);
     model.setChunkSize(20);
     model.setFetchMoreThreshold(20);
 
+    QSignalSpy chunkSizeSpy(&model, &QIviPagingModel::chunkSizeChanged);
     QVERIFY(model.chunkSize() != defaultModel.chunkSize());
+    QSignalSpy thresholdSpy(&model, &QIviPagingModel::fetchMoreThresholdChanged);
     QVERIFY(model.fetchMoreThreshold() != defaultModel.fetchMoreThreshold());
+    QSignalSpy capabilitiesSpy(&model, &QIviPagingModel::capabilitiesChanged);
     QVERIFY(model.capabilities() != defaultModel.capabilities());
-    //QVERIFY(model.loadingType() != defaultModel.loadingType());
+    QSignalSpy loadingTypeSpy(&model, &QIviPagingModel::loadingTypeChanged);
+    QVERIFY(model.loadingType() != defaultModel.loadingType());
+    QSignalSpy resetSpy(&model, &QAbstractItemModel::modelReset);
     QVERIFY(model.rowCount() != defaultModel.rowCount());
 
     QVERIFY(model.setServiceObject(nullptr));
 
     QVERIFY(model.chunkSize() == defaultModel.chunkSize());
+    QCOMPARE(chunkSizeSpy.count(), 1);
     QVERIFY(model.fetchMoreThreshold() == defaultModel.fetchMoreThreshold());
+    QCOMPARE(thresholdSpy.count(), 1);
     QVERIFY(model.capabilities() == defaultModel.capabilities());
+    QCOMPARE(capabilitiesSpy.count(), 1);
     QVERIFY(model.loadingType() == defaultModel.loadingType());
+    QCOMPARE(loadingTypeSpy.count(), 1);
     QVERIFY(model.rowCount() == defaultModel.rowCount());
+    QCOMPARE(resetSpy.count(), 1);
 }
 
 void tst_QIviPagingModel::testRegisterInstance()
