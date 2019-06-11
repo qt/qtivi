@@ -43,6 +43,7 @@
 #include "qiviabstractfeature.h"
 #include "qiviabstractfeature_p.h"
 #include "qtiviglobal_p.h"
+#include "qtivicoremodule.h"
 
 #include "qiviservicemanager.h"
 #include "qiviservicemanager_p.h"

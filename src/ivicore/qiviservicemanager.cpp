@@ -493,6 +493,8 @@ QIviServiceManager::QIviServiceManager()
     : QAbstractListModel(nullptr)
     , d_ptr(new QIviServiceManagerPrivate(this))
 {
+    qRegisterMetaType<QIviServiceObject*>();
+    qRegisterMetaType<QList<QIviServiceObject*>>("QList<QIviServiceObject*>");
     d_ptr->searchPlugins();
 }
 

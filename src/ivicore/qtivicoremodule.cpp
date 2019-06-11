@@ -42,6 +42,12 @@
 
 #include "qtivicoremodule.h"
 #include "qivipendingreply.h"
+#include "qiviabstractfeature.h"
+#include "qiviabstractzonedfeature.h"
+#include "qiviservicemanager.h"
+#include "qiviserviceobject.h"
+#include "qivipagingmodel.h"
+#include "qivisearchandbrowsemodel.h"
 
 #include <QQmlEngine>
 
@@ -51,11 +57,19 @@ QObject* qtivicoremodule_singletontype_provider(QQmlEngine*, QJSEngine*)
     return new QtIviCoreModule();
 }
 
+QObject* serviceManagerSingelton(QQmlEngine *, QJSEngine *)
+{
+    auto manager = QIviServiceManager::instance();
+    QQmlEngine::setObjectOwnership(manager, QQmlEngine::CppOwnership);
+    return manager;
+}
+
 /*!
     \class QtIviCoreModule
     \inmodule QtIviCore
 
-    \brief The QtIviCoreModule class holds enums which are used by multiple classes of QtIviCore.
+    \brief The QtIviCoreModule class holds enums which are used by multiple classes of QtIviCore
+    and provides convenience functions to register types to QML
 */
 
 /*!
@@ -139,14 +153,19 @@ void QtIviCoreModule::registerTypes()
 }
 
 /*!
-    Registers this class as a QML singleton API to make all enums available to QML.
-
-    The arguments \a uri, \a majorVersion and \a minorVersion are forwarded to qmlRegisterSingletonType()
+    Registers the QtIviCore classes to the QML System in the library imported from \a uri having
+    the version number composed from \a majorVersion and \a minorVersion.
 */
 void QtIviCoreModule::registerQmlTypes(const QString &uri, int majorVersion, int minorVersion)
 {
     registerTypes();
-    qmlRegisterSingletonType<QtIviCoreModule>(uri.toLatin1(), majorVersion, minorVersion,
+    QByteArray u = uri.toLatin1();
+    qmlRegisterSingletonType<QtIviCoreModule>(u, majorVersion, minorVersion,
                                         "QtIviCoreModule",
                                         qtivicoremodule_singletontype_provider);
+    qmlRegisterUncreatableType<QIviAbstractFeature>(u, 1, 0, "AbstractFeature", QStringLiteral("AbstractFeature is not accessible directly"));
+    qmlRegisterUncreatableType<QIviAbstractZonedFeature>(u, 1, 0, "AbstractZonedFeature", QStringLiteral("AbstractZonedFeature is not accessible directly"));
+    qmlRegisterType<QIviPagingModel>(u, 1, 0, "PagingModel");
+    qmlRegisterType<QIviSearchAndBrowseModel>(u, 1, 0, "SearchAndBrowseModel");
+    qmlRegisterSingletonType<QIviServiceManager>(u, 1, 0, "ServiceManager", &serviceManagerSingelton);
 }
