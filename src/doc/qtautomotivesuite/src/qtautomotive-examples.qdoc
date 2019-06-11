@@ -44,72 +44,72 @@
             \li Description
         \row
             \li \l{"Hello World!" System UI Example}
-            \li QtApplicationManager
+            \li \l{QtApplicationManager}
             \li Learn how to write your first System UI.
         \row
             \li \l{Animated Windows System UI Example}
-            \li QtApplicationManager
+            \li \l{QtApplicationManager}
             \li Learn how to animate windows to appear and disappear.
         \row
             \li \l{Desktop System UI Example}
-            \li QtApplicationManager
+            \li \l{QtApplicationManager}
             \li A minimal Desktop System UI written purely in QML.
         \row
             \li \l{Display Frame Rate for the System UI and Applications Example}
-            \li QtApplicationManager
+            \li \l{QtApplicationManager}
             \li Learn how to use the FrameTimer to display information about the frame rate.
         \row
             \li \l{Display Information about Application Processes Example}
-            \li QtApplicationManager
+            \li \l{QtApplicationManager}
             \li Learn how to use ProcessStatus to get information about application processes.
         \row
             \li \l{Implement a Custom Application Manager Example}
-            \li QtApplicationManager
+            \li \l{QtApplicationManager}
             \li Provides the basic structure and starting point for a custom application manager
                 executable.
         \row
             \li \l{Intents System UI and Applications Example}
-            \li QtApplicationManager
+            \li \l{QtApplicationManager}
             \li Learn how to create three applications with a System UI that communicates over Intents.
         \row
             \li \l{Multiple Views per Window System UI Example}
-            \li QtApplicationManager
+            \li \l{QtApplicationManager}
             \li Shows a WindowObject that is rendered by multiple WindowItems.
         \row
             \li \l{Qt IVI Generator Addressbook Example}
-            \li QtIvi - Core
+            \li \l{Qt IVI}
             \li Shows how to generate models using the Qt IVI Generator.
         \row
             \li \l{Qt IVI Generator Climate Example}
-            \li QtIvi - Core
+            \li \l{Qt IVI}
             \li Shows to use the Qt IVI Generator.
         \row
             \li \l{Qt IVI Generator Remote Objects Example}
-            \li QtIvi - Core
+            \li \l{Qt IVI}
             \li Shows how to use the Qt IVI Generator to create remote backends.
         \row
             \li \l{QML Media Player Example}
-            \li QtIvi - Media
+            \li \l{Qt IVI}
             \li Shows how to use QtIvi's QML MediaPlayer API.
         \row
             \li \l{QML Tuner Example}
-            \li QtIvi - Media
+            \li \l{Qt IVI}
             \li Shows how to use QtIvi's QML Tuner API.
         \row
             \li \l{Climate Control QML Example}
-            \li QtIvi - Vehicle Functions
+            \li \l{Qt IVI}
             \li Shows how to access the climate control from QML.
         \row
             \li \l{Climate Control Widget Example}
-            \li QtIvi - Vehicle Functions
+            \li \l{Qt IVI}
             \li Shows how to access the climate control from C++.
         \row
             \li \l{ContentPlugin Example}
-            \li QML Live
+            \li \l{QML Live}
             \li Demonstrates how to write a Content Plugin for QML Live.
         \row
             \li \l{Custom Runtime Example}
-            \li QML Live
+            \li \l{QML Live}
             \li Demonstrates how to create a Custom QML Live Runtime.
     \endtable
 */
