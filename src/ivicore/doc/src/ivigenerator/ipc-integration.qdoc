@@ -1,0 +1,75 @@
+/****************************************************************************
+**
+** Copyright (C) 2019 Luxoft Sweden AB
+** Copyright (C) 2018 Pelagicore AG
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the documentation of the QtIvi module of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL-QTAS$
+** Commercial License Usage
+** Licensees holding valid commercial Qt Automotive Suite licenses may use
+** this file in accordance with the commercial license agreement provided
+** with the Software or, alternatively, in accordance with the terms
+** contained in a written agreement between you and The Qt Company.  For
+** licensing terms and conditions see https://www.qt.io/terms-conditions.
+** For further information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+/*!
+\page ipc-integration.html
+\title Qt IVI Inter-Process Communication Integration
+
+An Inter-Process Communication (IPC) enables APIs to be split into multiple processes. Each process
+runs independently, sometimes on a separate host machine, and the communication is done using an
+IPC. The IPC also allows for multiple clients, or frontends to access the same service. These
+frontends can be, for example, the main Infotainment System UI, or different applications that run
+within the UI or mobile devices.
+
+\section1 Benefits of using an IPC
+
+An IPC enables functionality distribution and information sharing, between multiple processes or
+even between multiple host machines. Separate processes improve the overall reliability of a
+complex system and make it possible to separate computation-intensive code from the UI code.
+Additionally, backends that use an IPC can be accessible via multiple frontend points, be it the
+central UI, separate applications, or even mobile devices or third party applications.
+
+Combined with QtIvi's \l{Use the Generator}{automatic code generation} and uniform feature loading,
+developing distributed features requires less development overhead, with more interchangeability
+and transparency for the UI code.
+
+\section1 Qt Remote Objects
+
+The Qt IVI Generator makes it possible to generate Middleware Backends that utilize the
+QtRemoteObjects module. The client-side code is generated as a QtIvi backend plugin and and as a
+a Middleware Service, either a server stub or a full simulation server. The client is generated
+using the \l{backend-qtro-template} {backend_qtro} template; the server using the
+\l{server-qtro-template} {server_qtro} template. Both the plugin and the server contain generated
+C++ code and an intermediate \c{.rep} file that is further processed by Qt’s
+\l [QtRemoteObjects] {Qt Remote Objects Compiler} {replica compiler} to produce the actual source
+and replica classes.
+
+The generated plugin is loaded and used in the same way as other QtIvi plugins and is
+interchangeable with any other backend implementation with the same API. Since all method calls
+over QtIvi feature interfaces are asynchronous, the use of a QtRemoteObjects based backend is
+similar to any other type of backend.
+
+The generated plugin is buildable and usable as-is; you don't have to make any changes. Your task
+is then to implement the intended functionality on the server-side. To help you get started with
+the server, there's a generated class included, which initializes the connection. All connection
+parameters to the plugin and to the server are passed over a config file, either in a default
+location or at a user-specified path.
+
+For a steb-by-step introduction to remote backends, see
+\l {ivicore/qface-ivi-remote}{Generate QtRemoteObjects based backends with the Qt IVI Generator}.
+
+*/
