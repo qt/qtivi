@@ -40,7 +40,7 @@ QFace library, that provides a generic autogeneration framework.
     \li \l {Use the Generator}
     \li \l {Filter Reference}
     \li \l {QMake Integration}
-    \li \l {QtIVI Remote backends}{Remote backends}
+    \li \l {Qt IVI Inter-Process Communication Integration}{IPC Integration}
     \li \l {Get Started with the Qt IVI Generator}
 \endlist
 
