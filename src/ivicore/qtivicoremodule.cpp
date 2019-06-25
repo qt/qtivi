@@ -148,6 +148,8 @@ QtIviCoreModule::QtIviCoreModule(QObject *parent)
 */
 void QtIviCoreModule::registerTypes()
 {
+    qRegisterMetaType<QIviServiceObject*>();
+    qRegisterMetaType<QList<QIviServiceObject*>>("QList<QIviServiceObject*>");
     qRegisterMetaType<QtIviCoreModule::ModelCapabilities>();
     qIviRegisterPendingReplyType<QtIviCoreModule::ModelCapabilities>();
 }

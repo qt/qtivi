@@ -42,6 +42,7 @@
 
 #include "qiviservicemanager.h"
 
+#include "qtivicoremodule.h"
 #include "qiviproxyserviceobject.h"
 #include "qiviservicemanager_p.h"
 
@@ -493,8 +494,7 @@ QIviServiceManager::QIviServiceManager()
     : QAbstractListModel(nullptr)
     , d_ptr(new QIviServiceManagerPrivate(this))
 {
-    qRegisterMetaType<QIviServiceObject*>();
-    qRegisterMetaType<QList<QIviServiceObject*>>("QList<QIviServiceObject*>");
+    QtIviCoreModule::registerTypes();
     d_ptr->searchPlugins();
 }
 
