@@ -65,6 +65,7 @@ ApplicationWindow {
 
     MediaPlayer {
         id: mediaPlayer
+        discoveryMode: MediaPlayer.LoadOnlySimulationBackends
     }
 
     SplitView {

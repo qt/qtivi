@@ -66,6 +66,8 @@
      of a plugin that implements QIviClimateControlBackendInterface.
      \snippet ivivehiclefunctions/climate_qml/main.qml 1
 
+     \note To simplify the deployment process, this example loads a simulation backend.
+
      If discovery fails, a message dialog is shown:
      \snippet ivivehiclefunctions/climate_qml/main.qml 4
 

@@ -65,7 +65,7 @@ ApplicationWindow {
 
     WindowControl {
         id: windowControl
-        discoveryMode: WindowControl.AutoDiscovery
+        discoveryMode: WindowControl.LoadOnlySimulationBackends
     }
 
     ColumnLayout {

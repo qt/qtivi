@@ -73,6 +73,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 //![1]
     m_climateControl = new QIviClimateControl(QString(), this);
+    m_climateControl->setDiscoveryMode(QIviAbstractFeature::LoadOnlySimulationBackends);
     m_climateControl->startAutoDiscovery();
 
     if (!m_climateControl->isValid())
