@@ -37,5 +37,6 @@ All Qt IVI feature APIs depend on the following set of key concepts:
     \li \l {Models}
     \li \l {Qt IVI Query Language}
     \li \l {Qt IVI Simulation System}
+    \li \l {Qt IVI Inter-Process Communication Integration}
 \endlist
 */
