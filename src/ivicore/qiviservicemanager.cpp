@@ -394,100 +394,106 @@ QIviServiceInterface *QIviServiceManagerPrivate::loadServiceBackendInterface(str
     QIviServiceManager is the heart of QtIvi and provides you with an easy way to detect which
     backends and interfaces are available.
 
-    By default QIviServiceManager reads the metaData of all plugins within the "qtivi" folder
-    of your plugin path. The plugin itself will be loaded once it's explicitly requested by
-    the developer by using findServiceByInterface().
+    By default, QIviServiceManager reads the metaData of all plugins within the \e qtivi folder
+    in your plugin path. The plugin itself is loaded when you request for it explicitly, using
+    findServiceByInterface().
 
-    The manager can distinguish between \e Production and \e Simulation backends. For the recognition
-    either the filename or the metaData is used.
+    The manager can distinguish between \e Production and \e Simulation backends, using the
+    filename or the metaData.
 
-    Simulation Backends can set the \e simulation key in their plugin metadata to \e true or use
+    Simulation Backends can set the \c simulation key in their plugin metadata to \c true or use
     one of two supported plugin postfixes (_simulation, _simulator) in the plugin filename.
 
     The registerService() function can be used to add Backend classes without putting them into
     a plugin.
 
-    The service manager is a process wide singleton and can be accessed through the \l instance method.
+    The service manager is a process-wide singleton and can be accessed through the \l instance
+    method.
 
-    For more detailed information on which plugins are recognized, enable the "qt.ivi.servicemanagement"
-    logging category.
+    If you require more detailed information on which plugins are recognized, make sure you enable
+    the \c{qt.ivi.servicemanagement} logging category.
 
-    See \l {Dynamic Backend System} for more information about how backend loading works.
+    For more information on how backends are loaded, see \l {Dynamic Backend System}.
 
-    \note The QIviServiceManager will only accept plugins, which match the build configuration used
-    for building qtivicore. This means qtivicore "release" build, doesn't accept plugins from a "debug" build.
+    \note The QIviServiceManager only accepts plugins that match the build configuration used
+    for building qtivicore. This means a qtivicore "release" build won't accept plugins from a
+    "debug" build.
 */
 
 /*!
     \enum QIviServiceManager::Roles
+
     \value NameRole
-          The name of the backend e.g. MediaPlugin
+           The backend's name, such as MediaPlugin.
     \value ServiceObjectRole
-          The actual QIviServiceObject, which can be used to connect a frontend API to this backend.
-          \note When using this role in the data() function, the backend plugin will be loaded and instantiated.
+           The actual QIviServiceObject, which can be used to connect a frontend API to this
+           backend.
+           \note When using this role in the data() function, the backend plugin is loaded and
+           instantiated.
     \value InterfacesRole
-          A list of interefaces the backend implements.
+           A list of interfaces that the backend implements.
 */
 
 /*!
     \enum QIviServiceManager::SearchFlag
 
     \value IncludeProductionBackends
-          Include production backends in the search result. \sa ProductionBackend
+           Include production backends in the search result. \sa ProductionBackend
     \value IncludeSimulationBackends
-          Include simulation backends in the search result. \sa SimulationBackend
+           Include simulation backends in the search result. \sa SimulationBackend
     \value IncludeAll
-          Include production and simulation backends in the search result
+           Include both production and simulation backends in the search result.
 */
 
 /*!
     \enum QIviServiceManager::BackendType
 
     \value ProductionBackend
-          A backend controlling a real automotive interface (e.g. a climate control connected over the CAN bus)
+           A backend controlling a real automotive interface, such as a climate control connected
+           over the CAN bus.
     \value SimulationBackend
-          A backend used for development as it's only returning simulation values and won't be deployed to the final hardware
+           A backend used for development, that only returns simulation values and won't be
+           deployed to the final hardware.
 */
 
 /*!
     \qmltype ServiceManager
     \instantiates QIviServiceManager
     \inqmlmodule QtIvi
-
-    \brief The ServiceManager is the central instance loading the backends and providing ServiceObjects.
+    \brief The central instance that loads the backends and provides ServiceObjects.
 
     The ServiceManager singleton provides a model which can be used to list all available backends
     and their interfaces.
 
-    This can be useful when you want to query all available backends for a specific interface.
-    E.g. showing a list of all available backends which implement the MediaPlayer interface. This
-    could be used to provide the user the options, to select between multiple options. e.g. local
-    playback, or playback using a bluetooth device.
+    This class can be useful when you want to query all available backends for a specific interface.
+    For example, to show a list of all available backends which implement the MediaPlayer interface.
+    The use can then be presented with an option to select between local playback, or playback using
+    a bluetooth device.
 
     The ServiceManager implements the QAbstractListModel interface and provides the following roles:
 
     \table
     \header
-        \li Role name
+        \li Role Name
         \li Type
         \li Description
     \row
         \li \c name
         \li string
-        \li The name of the backend e.g. MediaPlugin
+        \li The backend's name, such as MediaPlugin.
     \row
         \li \c serviceObject
         \li ServiceObject
         \li The actual QIviServiceObject, which can be used to connect a frontend API to this backend.
-            \note When using this role in the data() function, the backend plugin will be loaded and instantiated.
+            \note When using this role in the data() function, the backend plugin is loaded and
+            instantiated.
     \row
         \li \c interfaces
         \li list<string>
         \li A list of interfaces implemented by the backend.
     \endtable
 
-    \note Please see the \l{QIviServiceManager}{C++ documentation} for more information about what the QIviServiceManager is and
-    how it works.
+    For more information about QIviServiceManager and how it works, see its \l{QIviServiceManager}{C++ documentation}.
 */
 
 QIviServiceManager::QIviServiceManager()
@@ -512,19 +518,21 @@ QIviServiceManager *QIviServiceManager::instance()
 
     Returns a list of backends implementing the specified \a interface.
 
-    The \a searchFlags argument can be used to control which type of backends are included in the search result:
+    The \a searchFlags argument can be used to control which type of backends are included in the
+    search result:
 
     \value IncludeProductionBackends
-          Include production backends in the search result. See also \l {QIviServiceManager::}{ProductionBackend}
+           Include production backends in the search result. See also \l {QIviServiceManager::}{ProductionBackend}
     \value IncludeSimulationBackends
-          Include simulation backends in the search result. See also \l {QIviServiceManager::}{SimulationBackend}
+           Include simulation backends in the search result. See also \l {QIviServiceManager::}{SimulationBackend}
     \value IncludeAll
-          Include production and simulation backends in the search result
+           Include both production and simulation backends in the search result.
 */
 /*!
     Returns a list of backends implementing the specified \a interface.
 
-    The \a searchFlags argument can be used to control which type of backends are included in the search result.
+    The \a searchFlags argument can be used to control which type of backends are included in the
+    search result.
 */
 QList<QIviServiceObject *> QIviServiceManager::findServiceByInterface(const QString &interface, SearchFlags searchFlags)
 {
@@ -533,13 +541,12 @@ QList<QIviServiceObject *> QIviServiceManager::findServiceByInterface(const QStr
 }
 
 /*!
-    Register a backend. The provided \a serviceBackendInterface must implement the
-    QIviServiceInterface else the registration will fail. \a interfaces is a list
-    with interfaces (at least one) supported by the backend. The \a backendType
-    indicates the type of the backend and has influence on whether the backend is
-    found by the auto discovery of the Feature.
+    Registers a backend. The \a serviceBackendInterface specified must implement the
+    QIviServiceInterface, otherwise the registration will fail. \a interfaces is a list of at least
+    one interface, supported by the backend. The \a backendType indicates the type of the backend
+    and influences whether the backend can be found by the Feature's auto discovery option.
 
-    Returns true if the backend was successfully registered else false.
+    Returns \c true if the backend was successfully registered; otherwise \c false.
 
     \sa QIviServiceInterface
 */
@@ -552,7 +559,7 @@ bool QIviServiceManager::registerService(QObject *serviceBackendInterface, const
 /*!
     \internal
 
-    Unloads all currently loaded backends. Commonly only used for unit testing.
+    Unloads all backends currently loaded . Commonly only used for unit testing.
 */
 void QIviServiceManager::unloadAllBackends()
 {
@@ -575,7 +582,8 @@ bool QIviServiceManager::hasInterface(const QString &interface) const
 }
 
 /*!
-    Returns the number of rows for the given \a parent. Typically \a parent is an empty model index.
+    Returns the number of rows for the given \a parent. Typically \a parent is an empty model
+    index.
 
     \sa QAbstractListModel::data()
 */
@@ -586,7 +594,7 @@ int QIviServiceManager::rowCount(const QModelIndex &parent) const
 }
 
 /*!
-    Returns the data for \a index and \a role.
+    Returns the data for the \a index and \a role specified.
 
     \sa QAbstractListModel::data()
 */

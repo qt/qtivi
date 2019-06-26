@@ -49,13 +49,13 @@ QT_BEGIN_NAMESPACE
 /*!
     \class QIviServiceObject
     \inmodule QtIviCore
-    \brief QIviServiceObject is the connection point to a Backend Service.
+    \brief Provides the connection point to a Backend Service.
 
-    QIviServiceObject provides you with a list of interfaces the Backend implements.
+    QIviServiceObject provides you with a list of interfaces that the Backend implements.
 
-    By using interfaceInstance() a QObject implementing this interface will be returned.
-    The returned interface can contain signals that need to be connected to by the Feature
-    implementing this interface.
+    Use interfaceInstance() to obtain a QObject that implements this interface. The
+    interface returned may contain signals that a Feature implementing this interface
+    needs to be connected to.
 
     \sa QIviAbstractFeature
 */
@@ -77,12 +77,12 @@ QIviServiceObject::QIviServiceObject(QObject *parent)
     \brief A unique ID for the service object instance.
 
     Each service object has a unique ID. When subclassing, the id()
-    function can be overloaded to control the generation of the ID.
+    function can be overloaded to modify how this ID is generated.
 */
 
 /*!
-    The id() function can be overloaded to control the generation of
-    the unique ID used by this service object.
+    The id() function can be overloaded to modify how the unique ID is generated,
+    for use by this service object.
 
     By default, QUuid::createUuid() is used.
 */

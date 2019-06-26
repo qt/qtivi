@@ -50,8 +50,8 @@ QT_BEGIN_NAMESPACE
 
     Casts the given \a backend to the interface type T.
 
-    When implementing a QtIvi Feature this function should be used, as it shows a meaningful error
-    message when the cast fails.
+    When implementing a QtIvi Feature, use this function as it shows a meaningful error message
+    when the cast fails.
 
     \sa qobject_cast
 */
@@ -59,11 +59,12 @@ QT_BEGIN_NAMESPACE
 /*!
     \class QIviServiceInterface
     \inmodule QtIviCore
-    \brief Interface class for services.
+    \brief Defines the interface for services.
 
-    The QIviServiceInterface class defines the interface of services registered with QIviServiceManager.
+    The QIviServiceInterface class defines the interface for services registered with QIviServiceManager.
 
-    Commonly, service objects inherit the concrete class QIviServiceObject instead of using QIviServiceInterface directly.
+    Typically, service objects inherit the concrete class, QIviServiceObject, instead of using
+    QIviServiceInterface directly.
 
     \sa QIviServiceObject
 */

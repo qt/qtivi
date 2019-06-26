@@ -117,24 +117,22 @@ using namespace qtivi_helper;
 /*!
     \class QIviSimulationEngine
     \inmodule QtIviCore
-    \brief QIviSimulationEngine provides a way to script a simulation backend from QML.
+    \brief Provides a way to script a simulation backend from QML.
 
     This class is an extended QQmlApplicationEngine which can be used to load QML files. It is made
-    especially for \l {Dynamic Backend System}{simulation backends} to script the behavior of a
-    simulation backend from QML. An overview of the functionality is also provided in
-    \l{Qt IVI Simulation System}.
+    especially for \l {Dynamic Backend System}{simulation backends} to script its behavior from
+    QML. For an overview of its functionality, see \l{Qt IVI Simulation System}.
 
-    In contrast to a normal QQmlEngine the QIviSimulationEngine provides an extra template function
-    called registerSimulationInstance().
-    Using this function it is possible to register an class instance as a QML type. Inside a QML
-    file this QML type can be used to define the behavior for function calls, update properties or
-    emit signals.
+    Compared to a normal QQmlEngine, the QIviSimulationEngine provides an extra template function
+    called registerSimulationInstance(). Use this function to register a class instance as a QML
+    type. Within a QML file, this QML type can be used to define the behavior for function calls,
+    update properties, or emit signals.
 
-    \section1 Registering an instance
+    \section1 Register an Instance
 
-    Any instance of a class derived from QObject can be registered to the QIviSimulationEngine by
-    calling the registerSimulationInstance function. Similar to qmlRegisterTypes, the provided uri,
-    version and name is used for importing the type from within QML.
+    You can register any instance of a class derived from QObject to the QIviSimulationEngine by
+    calling registerSimulationInstance(). Similar to qmlRegisterTypes, the URI, version, and name
+    provided are used to import the type from within QML.
 
     \code
     class MyClass : public QObject
@@ -155,10 +153,10 @@ using namespace qtivi_helper;
     engine.loadSimulation("simulation.qml")
     \endcode
 
-    The registered instance has the same constraints as other C++ classes exposed to QML and needs
-    to use Q_PROPERTY, Q_INVOKABLE or slots to make the functionality available to QML.
+    The registered instance has the same constraints as any other C++ classes exposed to QML and
+    needs to use Q_PROPERTY, Q_INVOKABLE, or slots to make the functionality available to QML.
 
-    \section1 Using the type from QML
+    \section1 Use the Type from QML
 
     Once an instance is registered to the engine, the type can be used like any other QML element
     in a declarative form:
@@ -183,11 +181,12 @@ using namespace qtivi_helper;
     }
     \endqml
 
-    This QML file will initialize the \c currentTemperature of \c myClass with a value of \e 10 and
-    increase it every second.
+    This QML file initializes the \c currentTemperature of \c myClass with a value of \c 10 and
+    increases it every second.
 
-    In the same way values can be updated from the C++ side and the QML side can react to the
-    change. E.g. the following QML prints the \c currentTemperature whenever it changed:
+    In the same way, values can be updated from the C++ side and the QML side can react to the
+    change. For example, the following QML snippet prints the \c currentTemperature whenever it
+    changes:
 
     \qml
     import QtQuick 2.0
@@ -198,7 +197,7 @@ using namespace qtivi_helper;
     }
     \endqml
 
-    The slot will be called once the myClass variable is updated:
+    The slot is called once the \c myClass variable is updated:
 
     \code
     QIviSimulationEngine engine;
@@ -209,12 +208,11 @@ using namespace qtivi_helper;
     myClass.setCurrentTemperature(100);
     \endcode
 
-    \section1 Forwarding calls from the instance to the engine
+    \section1 Forward Calls from the Instance to the Engine
 
-    Providing the behavior for invokable functions in QML can be done as well, but for this the
-    exposed class needs to be extended.
-
-    E.g. by adding the following line to the \c setCurrentTemperature setter:
+    You can also provide the behavior for invokable functions in QML as well, but this use case
+    requires you to extend the exposed class. For example, by adding the following line to the
+    \c setCurrentTemperature setter:
 
     \code
     void MyClass::setCurrentTemperature(int currentTemperature)
@@ -228,12 +226,12 @@ using namespace qtivi_helper;
     }
     \endcode
 
-    Calling the setCurrentTemperature() function will now try to forward the call to the QML
-    instance if a function matching the signature is defined in QML and when successful, use its
-    returned value and skip the execution of the original C++ function.
+    Calling \c setCurrentTemperature() now tries to forward the call to the QML instance, if a
+    function matching the signature is defined in QML. When successful, \c setCurrentTemperature()
+    uses its returned value and avoids running the original C++ function.
 
-    By using the following QML snippet the execution of the C++ setter is skipped and only an error
-    is emitted on the console:
+    By using the following QML snippet, the C++ setter is skipped and only an error is emitted on
+    the console:
 
     \qml
     import QtQuick 2.0
@@ -246,14 +244,14 @@ using namespace qtivi_helper;
     }
     \endqml
 
-    \section1 Reusing existing behavior in the instance
+    \section1 Reuse Existing Behavior in the Instance
 
-    Replacing the C++ functionality with a QML behavior is not always what is desired. Because of
-    this, it is also possible to call the original C++ behavior from QML. For this the original C++
-    function needs to be a Q_INVOKABLE or a slot and the functionality works like function
-    overriding in C++. In the C++ world the functionality of the overridden function can be
+    Replacing the C++ functionality with a QML behavior is not always desired. However, it's also
+    possible to call the original C++ behavior from QML. In this case, the original C++ function
+    needs to be a Q_INVOKABLE or a slot. Additionally, the functionality works in a similar manner
+    to function overriding in C++, where the functionality of the overridden function can be
     accessed by calling \c <BaseClass>::<function>. In the exposed QML type this is possible by
-    calling the function in the \e Base object.
+    calling the function in the \c Base object.
 
     \qml
     import QtQuick 2.0
@@ -267,14 +265,14 @@ using namespace qtivi_helper;
     }
     \endqml
 
-    This QML code overrides the setCurrentTemperature behavior in QML and prints an debug message
-    for the new value. The original C++ behavior is called by using \c
-    Base.setCurrentTemperature(temperature).
+    This QML snippet overrides the setCurrentTemperature() behavior in QML and prints a debug
+    message for the new value. The original C++ behavior is called using
+    \c{Base.setCurrentTemperature(temperature)}.
 
-    \section1 Multiple QML instances
+    \section1 Multiple QML Instances
 
     The registered instance is exposed as a normal QML type. This makes it possible to have
-    multiple declarations in QML and by that have multiple QML instances linked to the same C++
+    multiple declarations in QML, and in turn, have multiple QML instances linked to the same C++
     instance. Updating and reacting to property changes and signal emissions is possible in all
     instances, but should be used with care as this can result in property update loops and other
     issues.
@@ -283,9 +281,9 @@ using namespace qtivi_helper;
     instance as the return value is used from this call. If multiple QML instances define the same
     method, the C++ call is always forwarded to the first registered QML instance.
 
-    \section1 Runtime overriding
+    \section1 Runtime Override
 
-    Every QIviSimulationEngine can take an extra identifier which can be used to override the
+    Each QIviSimulationEngine can take an extra identifier which can be used to override the
     simulation QML file or the simulation data file at runtime. The environment variables need to
     be in the following format:
 
@@ -317,15 +315,15 @@ QIviSimulationEngine::QIviSimulationEngine(const QString &identifier, QObject *p
 /*!
     Loads the simulation data file provided as \a dataFile.
 
-    The given file needs to be in the JSON format and is parsed here for errors before it is passed
-    to the IviSimulator global object where it can be accessed from QML. The file can be overridden
+    The given file must be in JSON format and is parsed here for errors before it's passed to the
+    IviSimulator global object where it can be accessed from QML. This file can be overridden
     at runtime using the following environment variable:
 
     \badcode
     QTIVI_SIMULATION_DATA_OVERRIDE=<identifier>=<file>[;<identifier>=<file>]
     \endcode
 
-    The identifier of the simulation engine can be set in its constructor.
+    The simulation engine's identifier can be set in its constructor.
 
     \sa IviSimulator
 */
@@ -359,13 +357,13 @@ void QIviSimulationEngine::loadSimulationData(const QString &dataFile)
     Loads the QML \a file as the simulation behavior.
 
     In addition to QQmlApplicationEngine::load(), this function provides functionality to change
-    the used simulation file by using an environment variable in the following format.
+    the simulation file used via an environment variable in the following format:
 
     \badcode
     QTIVI_SIMULATION_OVERRIDE=<identifier>=<file>[;<identifier>=<file>]
     \endcode
 
-    The identifier of the simulation engine can be set in its constructor.
+    The simulation engine's identifier can be set in its constructor.
 */
 void QIviSimulationEngine::loadSimulation(const QUrl &file)
 {
@@ -383,12 +381,11 @@ void QIviSimulationEngine::loadSimulation(const QUrl &file)
 /*!
     \fn template <typename T> void QIviSimulationEngine::registerSimulationInstance(T* instance, const char *uri, int versionMajor, int versionMinor, const char *qmlName)
 
-    Registers the provided \a instance in the QML system with the name \a qmlName, in the library
-    imported from \a uri having the version number composed from \a versionMajor and \a
-    versionMinor.
+    Registers the specified \a instance in the QML system with the name \a qmlName, in the library
+    imported from \a uri, with a version number composed from \a versionMajor and \a versionMinor.
 
-    \note The registered instance is only available to this instance of the QIviSimulationEngine.
-    Using it from another QIviSimulationEngine or a QQmlEngine will not work and produce an error.
+    \note The registered instance is only available to this QIviSimulationEngine instance.
+    Using it from another QIviSimulationEngine or a QQmlEngine won't work and produces an error.
 
     \sa qmlRegisterType
 */
@@ -397,31 +394,31 @@ void QIviSimulationEngine::loadSimulation(const QUrl &file)
     \macro QIVI_SIMULATION_TRY_CALL_FUNC(instance_type, function, ret_func, ...)
     \relates QIviSimulationEngine
 
-    Tries to call \a function in the QML instances registered for the instance of type \a
-    instance_type. The variadic arguments are passed as arguments to the function in QML.
+    Tries to call \a function in the QML instances registered for the \a instance_type. The variadic
+    arguments are passed as arguments to the function in QML.
 
-    If the call was successful the code passed in \a ret_func will be executed. This can be useful
-    for situations when the return value needs to be converted first. The original return value is
+    If the call is successful, the code passed via \a ret_func is run. This can be useful for
+    situations when the return value needs to be converted first. The original return value is
     available as \c return_value.
 
     \code
     QIVI_SIMULATION_TRY_CALL_FUNC(MyClass, "contactList", return return_value.toStringList());
     \endcode
 
-    \sa QIVI_SIMULATION_TRY_CALL {Forwarding calls from the instance to the engine}
+    \sa QIVI_SIMULATION_TRY_CALL {Forward Calls from the Instance to the Engine}
 */
 
 /*!
     \macro QIVI_SIMULATION_TRY_CALL(instance_type, function, ret_type, ...)
     \relates QIviSimulationEngine
 
-    Tries to call \a function in the QML instances registered for the instance of type \a
-    instance_type. The variadic arguments are passed as arguments to the function in QML.
+    Tries to call \a function in the QML instances registered for the \a instance_type. The variadic
+    arguments are passed as arguments to the function in QML.
 
-    If the call was successful the return value of type \a ret_type will be returned and all code
-    after this macro will \b not be executed.
+    If the call is successful, a return value of \a ret_type is returned and all code after this
+    macro \b{won't} run.
 
-    \sa QIVI_SIMULATION_TRY_CALL_FUNC {Forwarding calls from the instance to the engine}
+    \sa QIVI_SIMULATION_TRY_CALL_FUNC {Forward Calls from the Instance to the Engine}
 */
 
 QT_END_NAMESPACE

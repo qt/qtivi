@@ -88,12 +88,12 @@ bool QIviAbstractFeaturePrivate::notify(const QByteArray &propertyName, const QV
     \internal Returns the backend object retrieved from calling interfaceInstance() with the
     interfaceName of this private class.
 
-    This is the is a sane default for most classes and provides a convenient way to get the backend
-    interface and also allow manually overwritting it to something else.
+    For most classes, this is the sane default and it provides a convenient way to get the backend
+    interface and also allow for manually overwriting it with something else.
 
-    If the derived class needs to connect to a different interface than defined by interfaceName or
-    to an additional interface, it can still manually ask for the needed interfaceInstance using
-    the QIviServiceObject directly.
+    If the derived class needs to connect to a different interface than the one defined by
+    \c interfaceName or to an additional interface, it can still manually ask for the required
+    \c interfaceInstance using the QIviServiceObject directly.
 */
 QIviFeatureInterface *QIviAbstractFeaturePrivate::backend() const
 {
@@ -133,27 +133,30 @@ void QIviAbstractFeaturePrivate::onInitializationDone()
     \inmodule QtIviCore
     \brief The QIviAbstractFeature is the base class for all QtIvi Features.
 
-    QIviAbstractFeature is the base class for the front facing API towards the developer.
-    The QIviAbstractFeature provides you with a way to automatically connect to a backend implementing
-    the interface needed. This discovery is started by using the startAutoDiscovery() function.
+    QIviAbstractFeature is the base class for the front-facing API towards the developer.
+    The QIviAbstractFeature provides you with a way to automatically connect to a backend
+    implementing the interface needed. To discover a backend, we start it using the
+    startAutoDiscovery() function.
 
-    Once the auto discovery is done, it can be checked whether a backend has been found by using the
-    isValid function.
+    Once the auto discovery is complete, you can check whether a backend was found using the
+    isValid() function.
 
-    The auto discovery gives you an easy way to automatically connect to the right backend implementation.
-    If you don't want to use the auto discovery, it's also possible to use QIviServiceManager to retrieve
-    all Backends and search manually for the right one and connect it to the QIviAbstractFeature by calling
-    setServiceObject().
+    The auto discovery gives you an easy way to automatically connect to the right backend
+    implementation. If you don't want to use the auto discovery, it's also possible to use
+    QIviServiceManager to retrieve all backends. Then, manually search for the right backend
+    and call setServiceObject() to connect it to the QIviAbstractFeature.
 
-    The type of backend to be loaded can be controlled by setting the auto discovery mode. By default,
-    it is set to AutoDiscovery, which indicates that a production backend will be preferred over a simulation backend.
+    The type of backend to load can be controlled by setting the \c discvoeryMode to
+    \c AutoDiscovery. This mode is enabled by default, which indicates that a production backend
+    is always preferred over a simulation backend.
 
-    QIviAbstractFeature is an abstract base class that needs to be subclassed to create an API for your
-    Feature.
+    QIviAbstractFeature is an abstract base class that you need to subclass to create an API
+    for your feature.
 
-    \section1 Subclassing
+    \section1 Write a Subclass
 
-    When subclassing QIviAbstractFeature, you must provide implementations of the following functions:
+    Your QIviAbstractFeature subclass must provide implementations for the following functions:
+
     \list
     \li acceptServiceObject()
     \li connectToServiceObject()
@@ -161,57 +164,61 @@ void QIviAbstractFeaturePrivate::onInitializationDone()
     \li clearServiceObject()
     \endlist
 
-    Once a QIviServiceObject has been set, either by auto discovery or by manually setting it, the acceptServiceObject()
-    function will be called to make sure the QIviServiceObject provides everything needed by the Feature.
+    Once a QIviServiceObject has been set, either via startAutoDiscovery() or setServiceObject(),
+    the acceptServiceObject() function is then called to make sure that the implemented feature
+    can work with the QIviServiceObject and, in turn, the QIviServiceObject provides the required
+    interface.
 
-    If the interface provides signals, you need to do all the connect statements in connectToServiceObject() and
-    disconnect them again in disconnectFromServiceObject().
+    If the interface provides signals, you need to make all the connect statements in
+    connectToServiceObject(); then disconnect them in disconnectFromServiceObject().
 
-    clearServiceObject() will be called once the Feature doesn't have a connection to a ServiceObject anymore and should
-    reset its state to sane defaults.
+    clearServiceObject() is called once the feature doesn't have a connection to a ServiceObject
+    anymore and needs to reset its state to feasible defaults.
 */
 
 /*!
     \enum QIviAbstractFeature::Error
 
     \value NoError
-          No error
+           No error
     \value PermissionDenied
-          Permission for the operation is denied
+           Permission for the operation is denied
     \value InvalidOperation
-          Operation is invalid
+           Operation is invalid
     \value Timeout
-          Operation timeout
+           Operation timeout
     \value InvalidZone
-          Zone is not available for the operation
+           Zone is not available for the operation
     \value Unknown
-          Unknown error
+           Unknown error
 */
 
 /*!
     \enum QIviAbstractFeature::DiscoveryMode
 
     \value NoAutoDiscovery
-          No auto discovery is done and the ServiceObject needs to be set manually
+           No auto discovery is done and the ServiceObject needs to be set manually.
     \value AutoDiscovery
-          Tries to first find a production backend with a matching interface and falls back to a simulation backend if not found
+           The feature first tries to find a production backend with a matching interface. If it's
+           not available, then the feature falls back to a simulation backend.
     \value LoadOnlyProductionBackends
-          Only tries to load a production backend with a matching interface
+           The feature tries to load a production backend with a matching interface only.
     \value LoadOnlySimulationBackends
-          Only tries to load a simulation backend with a matching interface
+           The feature tries to load a simulation backend with a matching interface only.
 */
 
 /*!
     \enum QIviAbstractFeature::DiscoveryResult
 
     \value NoResult
-          Indicates that no auto discovery was started because the feature has already assigned a valid ServiceObject
+           Indicates that no auto discovery was started because the feature already has a valid
+           ServiceObject assigned.
     \value ErrorWhileLoading
-          An error has happened while searching for a backend with a matching interface
+           An error has occurred while searching for a backend with a matching interface.
     \value ProductionBackendLoaded
-          As a result of the auto discovery a production backend was loaded
+           A production backend was loaded, as a result of auto discovery.
     \value SimulationBackendLoaded
-          As a result of the auto discovery a simulation backend was loaded
+           A simulation backend was loaded, as a result of auto discovery.
 */
 
 /*!
@@ -263,11 +270,11 @@ QIviAbstractFeature::QIviAbstractFeature(const QString &interface, QObject *pare
     \qmlproperty ServiceObject AbstractFeature::serviceObject
     \brief Sets the service object for the feature.
 
-    As features only expose the front API facing the developer, a service object implementing the
+    As Features only expose the front API facing the developer, a service object implementing the
     actual function is required. This is usually retrieved through the auto discovery mechanism.
 
-    The setter for this property returns false if the \e {Service Object} is already set to exactly this instance
-    or the \e {Service Object} doesn't get accepted by the feature.
+    The setter for this property returns false if the \c QIviServiceObject is already set to this
+    particular instance or the QIviServiceObject isn't accepted by the feature.
 
     \sa discoveryMode
 */
@@ -275,11 +282,11 @@ QIviAbstractFeature::QIviAbstractFeature(const QString &interface, QObject *pare
     \property QIviAbstractFeature::serviceObject
     \brief Sets the service object for the feature.
 
-    As features only expose the front API facing the developer, a service object implementing the
+    As Features only expose the front API facing the developer, a service object implementing the
     actual function is required. This is usually retrieved through the auto discovery mechanism.
 
-    The setter for this property returns false if the \e {Service Object} is already set to exactly this instance
-    or the \e {Service Object} doesn't get accepted by the feature.
+    The setter for this property returns false if the \c QIviServiceObject is already set to this
+    particular instance or the QIviServiceObject isn't accepted by the feature.
 
     \sa discoveryMode
 */
@@ -337,24 +344,25 @@ bool QIviAbstractFeature::setServiceObject(QIviServiceObject *so)
     \value NoAutoDiscovery
            No auto discovery is done and the ServiceObject needs to be set manually.
     \value AutoDiscovery
-           Tries to find a production backend with a matching interface and falls back to a simulation backend if not found.
+           Tries to find a production backend with a matching interface and falls back to a
+           simulation backend if not found.
     \value LoadOnlyProductionBackends
            Only tries to load a production backend with a matching interface.
     \value LoadOnlySimulationBackends
            Only tries to load a simulation backend with a matching interface.
 
-    If needed the auto discovery will be started once the Feature creation is completed.
+    If necessary, auto discovery is started once the feature creation is completed.
 
-    \note If you change this property after the Feature is instantiated you need to call startAutoDiscovery() to search for
-    a new Service Object
+    \note If you change this property after the feature is instantiated, make sure to call
+    startAutoDiscovery() to search for a new service object.
 */
 
 /*!
     \property QIviAbstractFeature::discoveryMode
     \brief Holds the mode that is used for the autoDiscovery
 
-    \note If you change this property after the Feature is instantiated you need to call startAutoDiscovery() to search for
-    a new Service Object
+    \note If you change this property after the feature is instantiated, make sure to call
+    startAutoDiscovery() to search for a new service object.
 */
 void QIviAbstractFeature::setDiscoveryMode(QIviAbstractFeature::DiscoveryMode discoveryMode)
 {
@@ -387,9 +395,10 @@ void QIviAbstractFeature::componentComplete()
 }
 
 /*!
-    Returns the interface name this Feature is implementing.
+    Returns the interface name this feature is implementing.
 
-    When the Feature discovers a matching backend, this interface name needs to be supported by the Service Object the Feature is connecting to.
+    When the feature discovers a matching backend, this interface's name needs to be supported by
+    the service object that the feature is connecting to.
 
     See \l {Extending Qt IVI} for more information.
 */
@@ -417,13 +426,14 @@ QIviAbstractFeature::DiscoveryMode QIviAbstractFeature::discoveryMode() const
 
     Available values are:
     \value NoResult
-           Indicates that no auto discovery was started because the feature has already assigned a valid ServiceObject.
+           Indicates that no auto discovery was started because the feature has already assigned a
+           valid ServiceObject.
     \value ErrorWhileLoading
            An error has happened while searching for a backend with a matching interface.
     \value ProductionBackendLoaded
-           As a result of the auto discovery a production backend was loaded.
+           A production backend was loaded, as a result of auto discovery.
     \value SimulationBackendLoaded
-           As a result of the auto discovery a simulation backend was loaded.
+           A simulation backend was loaded, as a result of auto discovery.s
 */
 
 /*!
@@ -503,25 +513,27 @@ QString QIviAbstractFeature::errorText() const
 
     Performs an automatic discovery attempt.
 
-    The feature will try to locate a single service object implementing the required interface.
+    The feature tries to locate a single ServiceObject that implements the required interface.
 
-    If no service object is found, the feature will stay invalid. If more than one service object
-    is found, the first instance is used.
+    If no ServiceObject is found, the feature remains invalid. If more than one ServiceObject
+    is found, the \b first instance is used.
 
-    Either the type of the backend which was loaded or an error is returned.
+    This function returns either the type of the backend that was loaded; or an error.
 
-    If the discoveryMode is set to QIviAbstractFeature::NoAutoDiscovery this function will
-    do nothing and return QIviAbstractFeature::NoResult.
+    If the \c discoveryMode is set to QIviAbstractFeature::NoAutoDiscovery, this function does
+    nothing and returns QIviAbstractFeature::NoResult.
 
     Return values are:
     \value NoResult
-           Indicates that no auto discovery was started because the feature has already assigned a valid ServiceObject.
+           Indicates that no auto discovery was started because the feature already has
+           a valid ServiceObject assigned.
     \value ErrorWhileLoading
-           An error has happened while searching for a backend with a matching interface.
+           Indicates an error has occurred while searching for a backend with a matching
+           interface.
     \value ProductionBackendLoaded
-           As a result of the auto discovery a production backend was loaded.
+           A production backend was loaded, as a result of auto discovery.
     \value SimulationBackendLoaded
-           As a result of the auto discovery a simulation backend was loaded.
+           A simulation backend was loaded, as a result of auto discovery.
 
     \sa {Dynamic Backend System} QIviServiceManager
 */
@@ -773,7 +785,7 @@ bool QIviAbstractFeature::isInitialized() const
 /*!
     Updates \a error and \a message from the backend.
 
-    This slot can be used when implementing a new Feature to report generic errors.
+    Use this slot when you implement a new feature to report generic errors.
 */
 void QIviAbstractFeature::onErrorChanged(QIviAbstractFeature::Error error, const QString &message)
 {
