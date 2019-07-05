@@ -4,7 +4,7 @@ PLUGIN_TYPE = qtivi
 PLUGIN_EXTENDS = ivimedia
 PLUGIN_CLASS_NAME = TunerPlugin
 
-QT       += core ivicore ivimedia
+QT = core ivicore ivimedia
 
 load(qt_plugin)
 

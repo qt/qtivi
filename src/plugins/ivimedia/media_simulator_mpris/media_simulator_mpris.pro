@@ -5,7 +5,7 @@ PLUGIN_TYPE = qtivi
 PLUGIN_EXTENDS = ivimedia
 PLUGIN_CLASS_NAME = MPrisMediaPlugin
 
-QT += core ivicore ivimedia dbus
+QT = core ivicore ivimedia dbus
 
 load(qt_plugin)
 

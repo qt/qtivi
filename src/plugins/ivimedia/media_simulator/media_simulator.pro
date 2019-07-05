@@ -5,7 +5,7 @@ PLUGIN_TYPE = qtivi
 PLUGIN_EXTENDS = ivimedia
 PLUGIN_CLASS_NAME = MediaPlugin
 
-QT       += core ivicore ivimedia sql multimedia
+QT = core ivicore ivimedia sql multimedia
 
 load(qt_plugin)
 
