@@ -55,6 +55,8 @@ QT_FORWARD_DECLARE_CLASS(QThreadPool);
 class MediaIndexerBackend : public QIviMediaIndexerControlBackendInterface
 {
     Q_OBJECT
+
+    struct ScanData;
 public:
     explicit MediaIndexerBackend(const QSqlDatabase &database, QObject *parent = nullptr);
 
@@ -74,7 +76,7 @@ public slots:
     void removeMediaFolder(const QString &path);
 
 private slots:
-    bool scanWorker(const QString &mediaDir, bool removeData);
+    bool scanWorker(const MediaIndexerBackend::ScanData &scanData);
     void onScanFinished();
 
 private:
@@ -84,14 +86,18 @@ private:
 
     QSqlDatabase m_db;
     struct ScanData {
-        bool remove;
+        enum Operation {
+            Verify,
+            Add,
+            Remove
+        };
+        Operation operation = Add;
         QString folder;
     };
 
     qreal m_progress;
     QIviMediaIndexerControl::State m_state;
     QQueue<ScanData> m_folderQueue;
-    QString m_currentFolder;
     QFutureWatcher<bool> m_watcher;
     QThreadPool *m_threadPool;
 };
