@@ -762,6 +762,7 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
             exit(1)
         FileSystem.merge_annotations(system, Path(annotations_file))
     generator = Generator(search_path=[tplconfig, here])
+    generator.env.keep_trailing_newline = True
     generator.register_filter('return_type', return_type)
     generator.register_filter('parameter_type_default', parameter_type_default)
     generator.register_filter('parameter_type', parameter_type)
