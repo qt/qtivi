@@ -357,17 +357,17 @@ QString SearchAndBrowseBackend::createWhereClause(const QString &type, QIviAbstr
     }
     case QIviAbstractQueryTerm::ConjunctionTerm: {
         auto *conjunctionTerm = static_cast<QIviConjunctionTerm*>(term);
-        QString conjunction = QStringLiteral("AND");
+        QLatin1String conjunction = QLatin1String("AND");
         if (conjunctionTerm->conjunction() == QIviConjunctionTerm::Or)
-            conjunction = QStringLiteral("OR");
+            conjunction = QLatin1String("OR");
 
         QString string;
-        QListIterator<QIviAbstractQueryTerm*> it(conjunctionTerm->terms());
-        while (it.hasNext()) {
-            string += createWhereClause(type, it.next());
-            if (it.hasNext())
-                string += QStringLiteral(" ") + conjunction + QStringLiteral(" ");
+        const auto terms = conjunctionTerm->terms();
+        for (QIviAbstractQueryTerm *term : terms) {
+            string += createWhereClause(type, term) + QLatin1Char(' ') + conjunction + QLatin1Char(' ');
         }
+        if (!string.isEmpty())
+            string.chop(2 + conjunction.size()); // chop off trailing " AND " or " OR "
         return string;
     }
     case QIviAbstractQueryTerm::FilterTerm: {

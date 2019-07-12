@@ -88,9 +88,7 @@ void MediaDiscoveryBackend::onDirectoryChanged(const QString &path)
     QDir deviceFolder(m_deviceFolder);
 
     //Check for removed Devices
-    QMapIterator<QString, QIviServiceObject*> i(m_deviceMap);
-    while (i.hasNext()) {
-        i.next();
+    for (auto i = m_deviceMap.cbegin(), end = m_deviceMap.cend(); i != end; ++i) {
         const QString &folder = i.key();
         if (!deviceFolder.exists(folder)) {
             qCDebug(media) << "Removing USB Device for: " << folder;

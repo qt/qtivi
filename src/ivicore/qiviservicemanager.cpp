@@ -277,9 +277,7 @@ void QIviServiceManagerPrivate::unloadAllBackends()
     Q_Q(QIviServiceManager);
 
     q->beginResetModel();
-    QMutableListIterator<Backend*> i(m_backends);
-    while (i.hasNext()) {
-        Backend* backend = i.next();
+    for (Backend* backend : qAsConst(m_backends)) {
 
         //If the Interface is from a Plugin, the Plugin owns it and it will be deleted when unloading.
         //Otherwise we own the Interface and delete the Pointer.
@@ -289,8 +287,6 @@ void QIviServiceManagerPrivate::unloadAllBackends()
         }
         delete backend->interfaceObject;
         delete backend->proxyServiceObject;
-
-        i.remove();
         delete backend;
     }
     m_backends.clear();
