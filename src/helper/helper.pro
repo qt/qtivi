@@ -1,2 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS += remoteobjects
+QT_FOR_CONFIG += ivicore ivicore-private
+qtConfig(remoteobjects): SUBDIRS += remoteobjects
