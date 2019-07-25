@@ -15,7 +15,9 @@ sourcedirs                   += . \
                                 .. \
                                 ../../imports/core
 imagedirs                    += images
-exampledirs                  += ../../../examples
+exampledirs                  += ../../../examples \
+                                $$BUILDDIR/../../examples \
+
 examples.fileextensions      += *.qface *.yaml
 
 include(../../ivivehiclefunctions/doc/qtivivehiclefunctions.qdocconf)

@@ -1,0 +1,9 @@
+
+{
+  "InstrumentCluster": {
+    "systemType": {
+      "type": "enum",
+      "value": "InstrumentClusterModule::Imperial"
+    }
+  }
+}
