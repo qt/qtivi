@@ -12,6 +12,7 @@ OTHER_FILES = \
     $$PWD/doc/images/*
 
 CMAKE_MODULE_TESTS = '-'
+CONFIG -= create_cmake
 
 QFACE_MODULE_NAME = QtIviVehicleFunctions
 QFACE_SOURCES += ivivehiclefunctions.qface

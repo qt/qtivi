@@ -18,6 +18,7 @@ DISTFILES += \
     $$PWD/doc/images/*.png
 
 CMAKE_MODULE_TESTS = '-'
+CONFIG -= create_cmake
 
 MODULE_PLUGIN_TYPES = qtivi
 

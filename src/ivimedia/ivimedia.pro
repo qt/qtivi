@@ -8,6 +8,7 @@ OTHER_FILES += \
     $$PWD/doc/src/*.qdoc
 
 CMAKE_MODULE_TESTS = '-'
+CONFIG -= create_cmake
 
 HEADERS += \
     qtivimediaglobal.h \
