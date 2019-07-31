@@ -49,16 +49,17 @@
 
 template <class ObjectType>
 struct QIviSearchAndBrowseModelAddressWrapper: public QIviSearchAndBrowseModelSourceAPI<ObjectType> {
-    QIviSearchAndBrowseModelAddressWrapper(ObjectType *object, const QString &name = QStringLiteral("QIviSearchAndBrowseModel"))
-        : QIviSearchAndBrowseModelSourceAPI<ObjectType>(object, name)
+    QIviSearchAndBrowseModelAddressWrapper(ObjectType *object)
+        : QIviSearchAndBrowseModelSourceAPI<ObjectType>(object, object->remoteObjectsLookupName())
     {}
 };
 
 class QIviSearchAndBrowseModelQtRoAdapter : public QIviSearchAndBrowseModelSource
 {
 public:
-    QIviSearchAndBrowseModelQtRoAdapter(QIviSearchAndBrowseModelInterface *parent);
+    QIviSearchAndBrowseModelQtRoAdapter(QIviSearchAndBrowseModelInterface *parent, const QString& remoteObjectsLookupName = QStringLiteral("QIviSearchAndBrowseModel"));
 
+    QString remoteObjectsLookupName() const;
     QStringList availableContentTypes() const override;
 
 public Q_SLOTS:
@@ -76,6 +77,7 @@ public Q_SLOTS:
     void fetchData(const QUuid &identifier, int start, int count) override;
 
 private:
+    QString m_remoteObjectsLookupName;
     QIviSearchAndBrowseModelInterface *m_backend;
     QIviRemoteObjectSourceHelper<QIviSearchAndBrowseModelQtRoAdapter> m_helper;
 };

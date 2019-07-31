@@ -50,7 +50,7 @@
 class MediaPlayerBackend : public QIviMediaPlayerBackendInterface
 {
 public:
-    MediaPlayerBackend(QRemoteObjectNode *node, QObject *parent = nullptr);
+    explicit MediaPlayerBackend(QObject *parent = nullptr);
 
 public:
     void initialize() override;
@@ -70,8 +70,14 @@ public:
     void remove(int index) override;
     void move(int currentIndex, int newIndex) override;
 
+protected:
+    void setupConnections();
+    bool connectToNode();
+
 private:
     QSharedPointer<QIviMediaPlayerReplica> m_replica;
+    QRemoteObjectNode *m_node;
+    QUrl m_url;
     QIviRemoteObjectReplicaHelper *m_helper;
 };
 

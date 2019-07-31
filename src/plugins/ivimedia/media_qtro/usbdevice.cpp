@@ -46,10 +46,7 @@ USBDevice::USBDevice(const QString &name, QObject *parent)
     : QIviMediaUsbDevice(parent)
     , m_name(name)
 {
-    QUrl url = QUrl(QStringLiteral("local:qtivimedia_") + name);
-    QRemoteObjectNode *node = new QRemoteObjectNode(url, this);
-
-    m_browseModel = new SearchAndBrowseModel(node, this);
+    m_browseModel = new SearchAndBrowseModel(this, QStringLiteral("QIviSearchAndBrowseModel_") + name);
 }
 
 QString USBDevice::name() const

@@ -44,8 +44,9 @@
 
 Q_LOGGING_CATEGORY(qLcROQIviSearchAndBrowseModel, "qt.ivi.qivisearchandbrowsemodel.remoteobjects", QtInfoMsg)
 
-QIviSearchAndBrowseModelQtRoAdapter::QIviSearchAndBrowseModelQtRoAdapter(QIviSearchAndBrowseModelInterface *parent)
+QIviSearchAndBrowseModelQtRoAdapter::QIviSearchAndBrowseModelQtRoAdapter(QIviSearchAndBrowseModelInterface *parent, const QString &remoteObjectsLookupName)
     : QIviSearchAndBrowseModelSource(parent)
+    , m_remoteObjectsLookupName(remoteObjectsLookupName)
     , m_backend(parent)
     , m_helper(this, qLcROQIviSearchAndBrowseModel())
 {
@@ -58,6 +59,11 @@ QIviSearchAndBrowseModelQtRoAdapter::QIviSearchAndBrowseModelQtRoAdapter(QIviSea
     connect(m_backend, &SearchAndBrowseBackend::availableContentTypesChanged, this, &QIviSearchAndBrowseModelQtRoAdapter::availableContentTypesChanged);
     connect(m_backend, &SearchAndBrowseBackend::contentTypeChanged, this, &QIviSearchAndBrowseModelQtRoAdapter::contentTypeChanged);
     connect(m_backend, &SearchAndBrowseBackend::queryIdentifiersChanged, this, &QIviSearchAndBrowseModelQtRoAdapter::queryIdentifiersChanged);
+}
+
+QString QIviSearchAndBrowseModelQtRoAdapter::remoteObjectsLookupName() const
+{
+    return m_remoteObjectsLookupName;
 }
 
 QStringList QIviSearchAndBrowseModelQtRoAdapter::availableContentTypes() const

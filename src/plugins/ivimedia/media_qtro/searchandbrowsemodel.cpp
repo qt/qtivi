@@ -43,6 +43,7 @@
 #include "qiviqmlconversion_helper.h"
 
 #include <QTimer>
+#include <QSettings>
 
 Q_LOGGING_CATEGORY(qLcROQIviSearchAndBrowseModel, "qtivi.media.qivisearchandbrowsebackend.remoteobjects", QtInfoMsg)
 
@@ -72,44 +73,32 @@ QDataStream &operator>>(QDataStream &stream, SearchAndBrowseItem &obj)
     return stream;
 }
 
-SearchAndBrowseModel::SearchAndBrowseModel(QRemoteObjectNode *node, QObject *parent)
+SearchAndBrowseModel::SearchAndBrowseModel(QObject *parent, const QString& remoteObjectsLookupName)
     : QIviSearchAndBrowseModelInterface(parent)
+    , m_remoteObjectsLookupName(remoteObjectsLookupName)
+    , m_node(nullptr)
     , m_helper(new QIviRemoteObjectReplicaHelper(qLcROQIviSearchAndBrowseModel(), this))
 {
     qRegisterMetaType<SearchAndBrowseItem>();
     qRegisterMetaTypeStreamOperators<SearchAndBrowseItem>();
     qRegisterMetaType<QIviAudioTrackItem>();
     qRegisterMetaTypeStreamOperators<QIviAudioTrackItem>();
+}
 
-    m_replica.reset(node->acquire<QIviSearchAndBrowseModelReplica>(QStringLiteral("QIviSearchAndBrowseModel")));
+void SearchAndBrowseModel::initialize()
+{
+    if (!connectToNode())
+        return;
 
-    connect(node, &QRemoteObjectNode::error, m_helper, &QIviRemoteObjectReplicaHelper::onNodeError);
-    connect(m_helper, &QIviRemoteObjectReplicaHelper::errorChanged, this, &QIviFeatureInterface::errorChanged);
-    connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, m_helper, &QIviRemoteObjectReplicaHelper::onReplicaStateChanged);
-    connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &QIviFeatureInterface::initializationDone);
-    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::pendingResultAvailable, m_helper, &QIviRemoteObjectReplicaHelper::onPendingResultAvailable);
-    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::canGoBackChanged, this, &SearchAndBrowseModel::canGoBackChanged);
-    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::canGoForwardChanged, this, &SearchAndBrowseModel::canGoForwardChanged);
-    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::supportedCapabilitiesChanged, this, &SearchAndBrowseModel::supportedCapabilitiesChanged);
-    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::queryIdentifiersChanged, this, &SearchAndBrowseModel::queryIdentifiersChanged);
-    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::availableContentTypesChanged, this, &SearchAndBrowseModel::availableContentTypesChanged);
-    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::contentTypeChanged, this, &SearchAndBrowseModel::contentTypeChanged);
-    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::countChanged, this, &SearchAndBrowseModel::countChanged);
-    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::dataFetched, this, &SearchAndBrowseModel::dataFetched);
-    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::dataChanged, this, &SearchAndBrowseModel::dataChanged);
+    if (m_replica->isInitialized()) {
+        emit availableContentTypesChanged(m_replica->availableContentTypes());
+        emit initializationDone();
+    }
 
     QTimer::singleShot(3000, this, [this](){
         if (!m_replica->isInitialized())
             qCCritical(qLcROQIviSearchAndBrowseModel) << "QIviSearchAndBrowseModel wasn't initialized within the timeout period. Please make sure the server is running.";
     });
-}
-
-void SearchAndBrowseModel::initialize()
-{
-    if (m_replica->isInitialized()) {
-        emit availableContentTypesChanged(m_replica->availableContentTypes());
-        emit initializationDone();
-    }
 }
 
 void SearchAndBrowseModel::registerInstance(const QUuid &identifier)
@@ -213,3 +202,52 @@ QIviPendingReply<int> SearchAndBrowseModel::indexOf(const QUuid &identifier, con
     return iviReply;
 }
 
+bool SearchAndBrowseModel::connectToNode()
+{
+    static QString configPath;
+    if (configPath.isEmpty()) {
+        if (qEnvironmentVariableIsSet("SERVER_CONF_PATH")) {
+            configPath = QString::fromLocal8Bit(qgetenv("SERVER_CONF_PATH"));
+        } else {
+            configPath = QStringLiteral("./server.conf");
+            qCInfo(qLcROQIviSearchAndBrowseModel) << "Environment variable SERVER_CONF_PATH not defined, using " << configPath;
+        }
+    }
+
+    QSettings settings(configPath, QSettings::IniFormat);
+    settings.beginGroup(QStringLiteral("qtivimedia"));
+    QUrl registryUrl = QUrl(settings.value(QStringLiteral("Registry"), QStringLiteral("local:qtivimedia")).toString());
+    if (m_url != registryUrl) {
+        m_url = registryUrl;
+        // QtRO doesn't allow to change the URL without destroying the Node
+        delete m_node;
+        m_node = new QRemoteObjectNode(this);
+        if (!m_node->connectToNode(m_url)) {
+            qCCritical(qLcROQIviSearchAndBrowseModel) << "Connection to" << m_url << "failed!";
+            m_replica.reset();
+            return false;
+        }
+        qCInfo(qLcROQIviSearchAndBrowseModel) << "Connecting to" << m_url;
+        m_replica.reset(m_node->acquire<QIviSearchAndBrowseModelReplica>(m_remoteObjectsLookupName));
+        setupConnections();
+    }
+    return true;
+}
+
+void SearchAndBrowseModel::setupConnections()
+{
+    connect(m_node, &QRemoteObjectNode::error, m_helper, &QIviRemoteObjectReplicaHelper::onNodeError);
+    connect(m_helper, &QIviRemoteObjectReplicaHelper::errorChanged, this, &QIviFeatureInterface::errorChanged);
+    connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, m_helper, &QIviRemoteObjectReplicaHelper::onReplicaStateChanged);
+    connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &QIviFeatureInterface::initializationDone);
+    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::pendingResultAvailable, m_helper, &QIviRemoteObjectReplicaHelper::onPendingResultAvailable);
+    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::canGoBackChanged, this, &SearchAndBrowseModel::canGoBackChanged);
+    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::canGoForwardChanged, this, &SearchAndBrowseModel::canGoForwardChanged);
+    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::supportedCapabilitiesChanged, this, &SearchAndBrowseModel::supportedCapabilitiesChanged);
+    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::queryIdentifiersChanged, this, &SearchAndBrowseModel::queryIdentifiersChanged);
+    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::availableContentTypesChanged, this, &SearchAndBrowseModel::availableContentTypesChanged);
+    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::contentTypeChanged, this, &SearchAndBrowseModel::contentTypeChanged);
+    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::countChanged, this, &SearchAndBrowseModel::countChanged);
+    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::dataFetched, this, &SearchAndBrowseModel::dataFetched);
+    connect(m_replica.data(), &QIviSearchAndBrowseModelReplica::dataChanged, this, &SearchAndBrowseModel::dataChanged);
+}
