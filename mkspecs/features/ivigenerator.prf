@@ -98,6 +98,8 @@ qface_sources.depends += $$files($$IVI_GENERATOR_PATH/common/*)
 QFACE_TEMPLATE_PWD = $$IVI_GENERATOR_PATH/templates_$${QFACE_FORMAT}
 exists($$QFACE_TEMPLATE_PWD) {
     qface_sources.depends += $$files($${QFACE_TEMPLATE_PWD}/*)
+} else: exists($${QFACE_FORMAT}) {
+    qface_sources.depends += $$files($${QFACE_FORMAT}/*)
 } else {
     error("Invalid QFACE_FORMAT: Couldn't find the template folder: $$QFACE_TEMPLATE_PWD")
 }

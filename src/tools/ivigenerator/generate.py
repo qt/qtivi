@@ -804,7 +804,7 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
     global currentQFaceSrcFile
     currentQFaceSrcFile = src[0]
     ctx = {'dst': dst, 'qtASVersion': builtin_config["VERSION"], 'srcFile':srcFile, 'srcBase':srcBase, 'features': builtin_config["FEATURES"]}
-    gen_config = yaml.load(open(here / '{0}.yaml'.format(os.path.basename(tplconfig))), Loader=yaml.SafeLoader)
+    gen_config = yaml.load(open(os.path.dirname(tplconfig) + '/{0}.yaml'.format(os.path.basename(tplconfig))), Loader=yaml.SafeLoader)
 
     #Make sure the config tag is available for all our symbols
     for module in system.modules:
