@@ -144,7 +144,7 @@ void InstrumentClusterBackend::fetchFuel()
     auto reply = m_client->asyncCall("fuel");
     auto watcher = new QDBusPendingCallWatcher(reply, this);
     connect(watcher, &QDBusPendingCallWatcher::finished, this, [this](QDBusPendingCallWatcher *watcher) {
-        QDBusPendingReply<int> reply = *watcher;
+        QDBusPendingReply<qreal> reply = *watcher;
         if (reply.isError()) {
             qCritical() << reply.error();
         } else {

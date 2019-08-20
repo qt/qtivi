@@ -178,7 +178,7 @@
 
     All we need now is the actual integration of the InstrumentCluster QML element and connecting
     the \c speed property to the \c leftDial. This is done by instantiating the element first with
-    the id instrumentCluster.
+    the \c instrumentCluster ID.
 
     \quotefromfile ivicore/qface-tutorial/chapter1-basics/instrument-cluster/Cluster.qml
     \skipto import
@@ -289,7 +289,7 @@
     \codeline
 
     These enums are part of the module class, which is also exported to QML as
-    InstrumentClusterModule. To trigger a warning in the \c rightDial Item, we use 3 bindings to
+    \c InstrumentClusterModule. To trigger a warning in the \c rightDial Item, we use 3 bindings to
     connect to the 3 member variables in the structure:
 
     \printuntil }
@@ -446,7 +446,7 @@
     We start by defining default values for our properties, using annotations in our QFace file.
     An annotation is a special kind of comment which adds extra data to an interface, method,
     property, and so on. For this use case we use the \c config_simulator annotation. For more
-    information, see \{annotations-yaml}{Annotations}.
+    information, see \l{annotations-yaml}{Annotations}.
 
     Currently, in our Instrument Cluster, the temperatur defaults to 0. Let's change this to a
     temperature in spring, 15 degrees Celsius, with the following YAML fragment:
@@ -515,7 +515,7 @@
     Each time a frontend instance connects to a backend, the \c initialize() function is called.
     The same applies to the QML simulation: as the \c initialize() C++ function forwards this to
     the QML instance. This also applies to all other functions, like setter and getters, for
-    properties or methods. For more details, see \l{QIviSimulationEngine.
+    properties or methods. For more details, see \l{QIviSimulationEngine}.
 
     Inside the QML \c initialize() function, we call \c{IviSimulator.initializeDefault()}, to read
     the default values from the \c simulationData object and initialize all properties. This is
@@ -526,12 +526,12 @@
     Similarly, a setter function is defined for each property; they use the
     \c{IviSimulator.checkSettings()} to read specific constraint settings for the property from
     the \c simulationData and check whether these constraints are valid for the new value. If
-    these constraints aren't valid, then \{IviSimulator.constraint()} is used to provide a
+    these constraints aren't valid, then \c{IviSimulator.constraint()} is used to provide a
     meaningful error message to the user.
 
     \section2 Define Our Own QML Simulation
 
-    As mentioned above, does the InstrumentClusterBackend Item provide all the properties of our
+    As mentioned above, the \c InstrumentClusterBackend Item does provide all the properties of our
     QFace file. This can be used to simulate a behavior by changing the properties to the values
     we want. The simplest form for this would be value assignment, but this would be rather static
     not exactly what we'd like to achieve. Instead, we use QML Animation objects to change the
@@ -583,7 +583,7 @@
     just by starting the Instrument Cluster twice and checking whether the animations are in sync.
     Currently, they're not.
 
-    << gif >> ????
+    \image examples_qface_tutorial_unsync.gif
 
     \section2 Add a QtRemoteObjects Integration
 
@@ -637,7 +637,7 @@
     Let's do the final test: starting two Instrument Cluster instances should now show the
     animations in sync:
 
-    << gif >> ???
+    \image examples_qface_tutorial_sync.gif
 
     \section1 Chapter 6
 
@@ -760,6 +760,6 @@
     Now, when we start the Instrument Cluster, our backend should connect to our D-Bus server and
     look like this:
 
-< gif >
+    \image examples_qface_tutorial_dbus.gif
 
 */

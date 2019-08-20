@@ -1,7 +1,9 @@
 TARGET = chapter6-demo-server
+DESTDIR = ..
 
 QT += ivicore dbus
 QT -= gui
+CONFIG -= app_bundle
 
 LIBS += -L$$OUT_PWD/../ -l$$qtLibraryTarget(QtIviInstrumentCluster)
 INCLUDEPATH += $$OUT_PWD/../frontend

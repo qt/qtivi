@@ -68,6 +68,7 @@ For more information on how Qt locates and loads its plugins, see \l {How to Cre
 
 \section1 In-Depth Walkthrough
 
-For an in-depth walkthrough, see the \l {Qt IVI Generator Climate Example}, which contains step by
-step instructions on how to use the Qt IVI module.
+For an in-depth walkthrough, see the \l {Qt IVI Generator Tutorial}, which contains step by
+step instructions on how to use the Qt IVI module to generate a Middlware API based on a QML
+application.
 */

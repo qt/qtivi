@@ -3,6 +3,7 @@ DESTDIR = ..
 
 QT = core ivicore
 QT -= gui
+CONFIG -= app_bundle
 CONFIG += ivigenerator
 
 LIBS += -L$$OUT_PWD/../ -l$$qtLibraryTarget(QtIviInstrumentCluster)
