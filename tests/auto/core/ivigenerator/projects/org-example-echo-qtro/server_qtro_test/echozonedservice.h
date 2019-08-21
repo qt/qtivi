@@ -79,6 +79,8 @@ public slots:
     QVariant varMethod(const QString &zone) override;
     QVariant getCombo(const QString &zone) override;
     QVariant timer(int interval, const QString &zone) override;
+    QVariant flagMethod(EchoModule::AirflowDirections direction, const QString &zone) override;
+    QVariant enumMethod(EchoModule::TestEnum testEnum, const QString &zone) override;
 
 Q_SIGNALS:
     void echoSlotCalled(const QString &msg, const QString& zone);
@@ -87,6 +89,8 @@ Q_SIGNALS:
     void getComboSlotCalled(const QString& zone);
     void voidSlotCalled(const QString& zone);
     void voidSlot2Called(int param, const QString& zone);
+    void flagMethodCalled(EchoModule::AirflowDirections direction, const QString& zone);
+    void enumMethodCalled(EchoModule::TestEnum testEnum, const QString& zone);
 
 private:
     struct ZoneObject {

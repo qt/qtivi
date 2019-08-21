@@ -385,7 +385,7 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 {% endfor %}
 {%   if operation.type.is_enum or operation.type.is_flag%}
     Returns the following values:
-    \include {{interface.module|lower}}module_enum.qdocinc {{param.type}}
+    \include {{interface.module|lower}}module_enum.qdocinc {{operation.type}}
 {%   endif %}
 */
 /*!

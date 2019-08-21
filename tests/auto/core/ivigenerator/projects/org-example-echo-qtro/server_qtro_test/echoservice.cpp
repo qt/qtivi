@@ -82,3 +82,15 @@ QVariant EchoService::timer(int interval)
     });
     return QVariant::fromValue(pendingResult);
 }
+
+QVariant EchoService::flagMethod(EchoModule::AirflowDirections direction)
+{
+    emit flagMethodCalled(direction);
+    return QVariant::fromValue(direction);
+}
+
+QVariant EchoService::enumMethod(EchoModule::TestEnum testEnum)
+{
+    emit enumMethodCalled(testEnum);
+    return QVariant::fromValue(testEnum);
+}

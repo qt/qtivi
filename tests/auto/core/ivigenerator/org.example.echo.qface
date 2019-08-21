@@ -39,6 +39,9 @@ interface Echo {
     void voidSlot();
     void voidSlot2(int param);
     void timer(int interval);
+    AirflowDirection flagMethod(AirflowDirection direction);
+    TestEnum enumMethod(TestEnum testEnum);
+
     signal anotherChanged(AnotherStruct another);
     signal foobar(string foo);
     signal somethingHappened();
@@ -80,6 +83,8 @@ interface EchoZoned {
     var varMethod();
     Combo getCombo();
     string timer(int interval);
+    AirflowDirection flagMethod(AirflowDirection direction);
+    TestEnum enumMethod(TestEnum testEnum);
 
     signal anotherChanged(AnotherStruct another);
     signal foobar(string foo);
