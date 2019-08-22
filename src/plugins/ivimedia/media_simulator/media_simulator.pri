@@ -1,5 +1,5 @@
 QT_FOR_CONFIG += ivimedia-private
-QT       += core ivicore ivimedia sql multimedia
+QT = core ivicore ivimedia sql multimedia
 
 INCLUDEPATH += $$PWD
 

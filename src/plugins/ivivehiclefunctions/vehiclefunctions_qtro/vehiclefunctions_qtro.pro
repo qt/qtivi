@@ -1,6 +1,6 @@
 TARGET = vehiclefunction_qtro
 
-QT += core ivicore ivivehiclefunctions
+QT = core ivicore ivivehiclefunctions
 CONFIG += c++11 ivigenerator
 
 CMAKE_MODULE_TESTS = '-'
