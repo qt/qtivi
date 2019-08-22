@@ -67,10 +67,47 @@ QDltRegistration *globalDltRegistration()
 
 QT_END_NAMESPACE
 
+// helper functions to split or truncate a utf8 correctly (not between a composed character)
+namespace QtGeniviExtrasPrivate {
+
+    static constexpr int MAX_MSG_LEN = DLT_USER_BUF_MAX_SIZE - 10;
+
+    QByteArray utf8_mid(const QByteArray &buffer, int position, int len)
+    {
+        int max = qMin(position + len, buffer.size());
+        int end = max;
+        // move from the maximum length backwards so we don't cut in-between a multi-byte char
+        for (; end > position && end < buffer.size(); --end) {
+            if ((buffer[end] & 0xC0) != 0x80)
+                break;
+        }
+        // if we can't find a good position for a split (e.g. a invalid utf-8 string) take the max
+        // len for the split
+        if (end == position)
+            end = max;
+        return buffer.mid(position, end - position);
+    }
+
+    QVector<QByteArray> utf8_split(const QByteArray &buffer, int len)
+    {
+        QVector<QByteArray> split;
+        int position = 0;
+        do {
+            const QByteArray mid = utf8_mid(buffer, position, len);
+            split.append(mid);
+            position += mid.size();
+        } while (position < buffer.size());
+
+        return split;
+    }
+}
+
+
 QDltRegistrationPrivate::QDltRegistrationPrivate(QDltRegistration *parent)
     : q_ptr(parent)
     , m_dltAppRegistered(false)
     , m_registerOnFirstUse(false)
+    , m_longMessageBehavior(QDltRegistration::LongMessageBehavior::Truncate)
 {
 }
 
@@ -184,6 +221,7 @@ void QDltRegistrationPrivate::dltLogLevelChanged(char context_id[], uint8_t log_
                 emit q->logLevelChanged(category);
             }
         }
+        break;
     }
 }
 
@@ -229,6 +267,31 @@ DltLogLevelType QDltRegistrationPrivate::severity2dltLevel(QtMsgType type)
 
     Using dlt-daemon version 2.12 or higher it also reacts to DLT control messages and adapts the enabled msg
     types of a QLoggingCategory whenever the log level of a dlt context changes.
+*/
+
+/*!
+    \enum QDltRegistration::LongMessageBehavior
+
+    This enum type describes the available options for long messages.
+
+    \value Truncate Truncate the message to the maximum size.
+    \value Split Split the message into several smaller ones.
+    \value Pass Pass the message as is to DLT. This option has the least performance impact, but
+                DLT might ignore the message if it is too long and produce just an empty line instead.
+
+    \since 5.12.4
+*/
+
+/*!
+    \property QDltRegistration::longMessageBehavior
+    \brief Defines the handling of messages that are too long for DLT to handle correctly
+
+    DLT defines that a message has a maximum size of about 1k (The real value depends on the DLT
+    version used).
+
+    The default behavior is to truncate the message to the maximum supported length.
+
+    \since 5.12.4
 */
 
 QDltRegistration::QDltRegistration(QObject *parent)
@@ -346,6 +409,18 @@ void QDltRegistration::registerUnregisteredContexts()
     }
 }
 
+void QDltRegistration::setLongMessageBehavior(QDltRegistration::LongMessageBehavior config)
+{
+    Q_D(QDltRegistration);
+    d->m_longMessageBehavior = config;
+}
+
+QDltRegistration::LongMessageBehavior QDltRegistration::longMessageBehavior() const
+{
+    Q_D(const QDltRegistration);
+    return d->m_longMessageBehavior;
+}
+
 /*!
     Unregisters the application with the dlt-daemon.
     The registered application as well as all registered dlt context will be deleted.
@@ -381,7 +456,30 @@ void QDltRegistration::messageHandler(QtMsgType msgType, const QMessageLogContex
 
     DltLogLevelType logLevel = globalDltRegistration()->d_ptr->severity2dltLevel(msgType);
 
-    DLT_LOG(*dltCtx, logLevel, DLT_STRING(qPrintable(qFormatLogMessage(msgType, msgCtx, msg))));
+    const QByteArray fullMessage = qFormatLogMessage(msgType, msgCtx, msg).toUtf8();
+
+    if (Q_UNLIKELY(fullMessage.size() > QtGeniviExtrasPrivate::MAX_MSG_LEN)) {
+#if GENIVIEXTRAS_DEBUG
+        std::cout << "LOG MESSAGE TOO LONG" << std::endl;
+#endif
+        if (globalDltRegistration()->longMessageBehavior() == LongMessageBehavior::Truncate) {
+#if GENIVIEXTRAS_DEBUG
+            std::cout << "TRUNCATE" << std::endl;
+#endif
+            DLT_LOG(*dltCtx, logLevel, DLT_UTF8(QtGeniviExtrasPrivate::utf8_mid(fullMessage, 0, QtGeniviExtrasPrivate::MAX_MSG_LEN)));
+            return;
+        } else if (globalDltRegistration()->longMessageBehavior() == LongMessageBehavior::Split) {
+#if GENIVIEXTRAS_DEBUG
+            std::cout << "SPLIT" << std::endl;
+#endif
+            const QVector<QByteArray> split = QtGeniviExtrasPrivate::utf8_split(fullMessage, QtGeniviExtrasPrivate::MAX_MSG_LEN);
+            for (const QByteArray &m : split)
+                DLT_LOG(*dltCtx, logLevel, DLT_UTF8(m));
+            return;
+        }
+    }
+
+    DLT_LOG(*dltCtx, logLevel, DLT_UTF8(fullMessage));
 }
 
 /*!

@@ -41,6 +41,7 @@
 ****************************************************************************/
 
 #include <private/qgeniviextrasglobal_p.h>
+#include <qdltregistration.h>
 #include <QString>
 #include <QHash>
 
@@ -60,8 +61,6 @@
 QT_BEGIN_NAMESPACE
 
 void qtGeniviLogLevelChangedHandler(char context_id[], uint8_t log_level, uint8_t trace_status);
-
-class QDltRegistration;
 
 class QDltRegistrationPrivate
 {
@@ -99,6 +98,7 @@ private:
     QString m_defaultCategory;
     QHash<QString, CategoryInfo> m_categoryInfoHash;
     bool m_registerOnFirstUse;
+    QDltRegistration::LongMessageBehavior m_longMessageBehavior;
 };
 
 QT_END_NAMESPACE
