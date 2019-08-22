@@ -62,7 +62,7 @@
         },
         "media_qtro_simulation_server" : {
             "label": "Mediaplayer Qt Remote Objects Simulation Server",
-            "condition": "features.remoteobjects",
+            "condition": "features.remoteobjects && module.multimedia",
             "output": [ "privateFeature" ]
         },
         "ivimedia" : {
