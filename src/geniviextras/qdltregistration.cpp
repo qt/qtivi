@@ -205,6 +205,20 @@ DltLogLevelType QDltRegistrationPrivate::category2dltLevel(const QLoggingCategor
     return logLevel;
 }
 
+DltLogLevelType QDltRegistrationPrivate::severity2dltLevel(QtMsgType type)
+{
+    switch (type) {
+    case QtDebugMsg: return DLT_LOG_DEBUG;
+#if QT_VERSION >= 0x050500
+    case QtInfoMsg: return DLT_LOG_INFO;
+#endif
+    case QtWarningMsg: return DLT_LOG_WARN;
+    case QtCriticalMsg: return DLT_LOG_ERROR;
+    case QtFatalMsg: return DLT_LOG_FATAL;
+    }
+    return DLT_LOG_OFF;
+}
+
 /*!
     \class QDltRegistration
     \inmodule QtGeniviExtras
@@ -359,25 +373,15 @@ void QDltRegistration::unregisterApplication()
     qInstallMessageHandler(QDltRegistration::messageHandler);
     \endcode
 */
-void QDltRegistration::messageHandler(QtMsgType msgTypes, const QMessageLogContext &msgCtx, const QString &msg)
+void QDltRegistration::messageHandler(QtMsgType msgType, const QMessageLogContext &msgCtx, const QString &msg)
 {
     DltContext *dltCtx = globalDltRegistration()->d_ptr->context(msgCtx.category);
     if (!dltCtx)
         return;
 
-    DltLogLevelType logLevel = DLT_LOG_OFF;
+    DltLogLevelType logLevel = globalDltRegistration()->d_ptr->severity2dltLevel(msgType);
 
-    switch (msgTypes) {
-    case QtDebugMsg: logLevel = DLT_LOG_DEBUG; break;
-#if QT_VERSION >= 0x050500
-    case QtInfoMsg: logLevel = DLT_LOG_INFO; break;
-#endif
-    case QtWarningMsg: logLevel = DLT_LOG_WARN; break;
-    case QtCriticalMsg: logLevel = DLT_LOG_ERROR; break;
-    case QtFatalMsg: logLevel = DLT_LOG_FATAL; break;
-    }
-
-    DLT_LOG(*dltCtx, logLevel, DLT_STRING(qPrintable(qFormatLogMessage(msgTypes, msgCtx, msg))));
+    DLT_LOG(*dltCtx, logLevel, DLT_STRING(qPrintable(qFormatLogMessage(msgType, msgCtx, msg))));
 }
 
 /*!
