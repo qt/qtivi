@@ -55,7 +55,13 @@ QT_BEGIN_NAMESPACE
 
 void qtGeniviLogLevelChangedHandler(char context_id[], uint8_t log_level, uint8_t trace_status)
 {
-    globalDltRegistration()->d_ptr->dltLogLevelChanged(context_id, log_level, trace_status);
+    auto d = globalDltRegistration()->d_ptr;
+    d->m_mutex.lock();
+    const QLoggingCategory *category = d->dltLogLevelChanged(context_id, log_level, trace_status);
+    d->m_mutex.unlock();
+
+    if (category)
+        emit globalDltRegistration()->logLevelChanged(category);
 }
 
 Q_GLOBAL_STATIC(QDltRegistration, dltRegistration)
@@ -149,6 +155,14 @@ void QDltRegistrationPrivate::registerApplication()
     m_dltAppRegistered = true;
 }
 
+void QDltRegistrationPrivate::unregisterApplication()
+{
+    if (m_dltAppRegistered)
+        DLT_UNREGISTER_APP();
+
+    m_dltAppRegistered = false;
+}
+
 void QDltRegistrationPrivate::setDefaultCategory(const QString &category)
 {
     Q_ASSERT_X(m_categoryInfoHash.contains(category), "setDefaultContext", "The category needs to be registered as a dlt logging category before it can be set as a default context");
@@ -171,10 +185,11 @@ DltContext *QDltRegistrationPrivate::context(const char *categoryName)
     return info.m_context;
 }
 
-void QDltRegistrationPrivate::dltLogLevelChanged(char context_id[], uint8_t log_level, uint8_t trace_status)
+const QLoggingCategory * QDltRegistrationPrivate::dltLogLevelChanged(char context_id[], uint8_t log_level, uint8_t trace_status)
 {
-    Q_Q(QDltRegistration);
     Q_UNUSED(trace_status)
+
+    const QLoggingCategory *changedCategory = nullptr;
 
     for (auto it = m_categoryInfoHash.begin(); it != m_categoryInfoHash.end(); ++it) {
         if (it.value().m_ctxName != context_id)
@@ -218,11 +233,13 @@ void QDltRegistrationPrivate::dltLogLevelChanged(char context_id[], uint8_t log_
             QLoggingCategory* category = it.value().m_category;
             if (category->isEnabled(type) != enabled) {
                 category->setEnabled(type, enabled);
-                emit q->logLevelChanged(category);
+                changedCategory = category;
             }
         }
         break;
     }
+
+    return changedCategory;
 }
 
 DltLogLevelType QDltRegistrationPrivate::category2dltLevel(const QLoggingCategory *category)
@@ -320,8 +337,10 @@ void QDltRegistration::registerApplication(const char *dltAppID, const char *dlt
 {
     Q_D(QDltRegistration);
     bool registerCategories = false;
+    QMutexLocker l(&d->m_mutex);
+
     if (d->m_dltAppRegistered) {
-        unregisterApplication();
+        d->unregisterApplication();
         registerCategories = true;
     }
 
@@ -352,6 +371,7 @@ void QDltRegistration::registerCategory(const QLoggingCategory *category, const 
     Q_D(QDltRegistration);
     Q_ASSERT(category);
     Q_ASSERT(strlen(category->categoryName()) != 0);
+    QMutexLocker l(&d->m_mutex);
     d->registerCategory(category, new DltContext, dltCtxName, dltCtxDescription);
 }
 
@@ -367,6 +387,7 @@ void QDltRegistration::registerCategory(const QLoggingCategory *category, const 
 void QDltRegistration::setDefaultContext(const char *categoryName)
 {
     Q_D(QDltRegistration);
+    QMutexLocker l(&d->m_mutex);
     d->setDefaultCategory(QString::fromLatin1(categoryName));
 }
 
@@ -382,6 +403,7 @@ void QDltRegistration::setDefaultContext(const char *categoryName)
 void QDltRegistration::setRegisterContextOnFirstUseEnabled(bool enabled)
 {
     Q_D(QDltRegistration);
+    QMutexLocker l(&d->m_mutex);
     d->m_registerOnFirstUse = enabled;
 }
 
@@ -400,6 +422,7 @@ void QDltRegistration::registerUnregisteredContexts()
     std::cout << "REGISTERING UNREGISTERED CONTEXTS" << std::endl;
 #endif
     Q_D(QDltRegistration);
+    QMutexLocker l(&d->m_mutex);
     if (!d->m_dltAppRegistered)
         d->registerApplication();
     for (auto it = d->m_categoryInfoHash.begin(); it != d->m_categoryInfoHash.end(); ++it) {
@@ -412,12 +435,14 @@ void QDltRegistration::registerUnregisteredContexts()
 void QDltRegistration::setLongMessageBehavior(QDltRegistration::LongMessageBehavior config)
 {
     Q_D(QDltRegistration);
+    QMutexLocker l(&d->m_mutex);
     d->m_longMessageBehavior = config;
 }
 
 QDltRegistration::LongMessageBehavior QDltRegistration::longMessageBehavior() const
 {
     Q_D(const QDltRegistration);
+    QMutexLocker l(&d->m_mutex);
     return d->m_longMessageBehavior;
 }
 
@@ -428,10 +453,8 @@ QDltRegistration::LongMessageBehavior QDltRegistration::longMessageBehavior() co
 void QDltRegistration::unregisterApplication()
 {
     Q_D(QDltRegistration);
-    if (d->m_dltAppRegistered)
-        DLT_UNREGISTER_APP();
-
-    d->m_dltAppRegistered = false;
+    QMutexLocker l(&d->m_mutex);
+    d->unregisterApplication();
 }
 
 /*!
@@ -450,11 +473,14 @@ void QDltRegistration::unregisterApplication()
 */
 void QDltRegistration::messageHandler(QtMsgType msgType, const QMessageLogContext &msgCtx, const QString &msg)
 {
+    QMutexLocker l(&globalDltRegistration()->d_ptr->m_mutex);
+
     DltContext *dltCtx = globalDltRegistration()->d_ptr->context(msgCtx.category);
     if (!dltCtx)
         return;
 
     DltLogLevelType logLevel = globalDltRegistration()->d_ptr->severity2dltLevel(msgType);
+    LongMessageBehavior longMessageBehavior = globalDltRegistration()->d_ptr->m_longMessageBehavior;
 
     const QByteArray fullMessage = qFormatLogMessage(msgType, msgCtx, msg).toUtf8();
 
@@ -462,13 +488,13 @@ void QDltRegistration::messageHandler(QtMsgType msgType, const QMessageLogContex
 #if GENIVIEXTRAS_DEBUG
         std::cout << "LOG MESSAGE TOO LONG" << std::endl;
 #endif
-        if (globalDltRegistration()->longMessageBehavior() == LongMessageBehavior::Truncate) {
+        if (longMessageBehavior == LongMessageBehavior::Truncate) {
 #if GENIVIEXTRAS_DEBUG
             std::cout << "TRUNCATE" << std::endl;
 #endif
             DLT_LOG(*dltCtx, logLevel, DLT_UTF8(QtGeniviExtrasPrivate::utf8_mid(fullMessage, 0, QtGeniviExtrasPrivate::MAX_MSG_LEN)));
             return;
-        } else if (globalDltRegistration()->longMessageBehavior() == LongMessageBehavior::Split) {
+        } else if (longMessageBehavior == LongMessageBehavior::Split) {
 #if GENIVIEXTRAS_DEBUG
             std::cout << "SPLIT" << std::endl;
 #endif

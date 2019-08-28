@@ -44,6 +44,7 @@
 #include <qdltregistration.h>
 #include <QString>
 #include <QHash>
+#include <QMutex>
 
 #include <dlt.h>
 
@@ -81,15 +82,17 @@ public:
     void registerCategory(const QLoggingCategory *category, DltContext *dltContext, const char *dltCtxName, const char *dltCtxDescription);
     void registerCategory(CategoryInfo &info);
     void registerApplication();
+    void unregisterApplication();
     void setDefaultCategory(const QString &category);
 
     DltContext *context(const char *categoryName);
-    void dltLogLevelChanged(char context_id[], uint8_t log_level, uint8_t trace_status);
+    const QLoggingCategory *dltLogLevelChanged(char context_id[], uint8_t log_level, uint8_t trace_status);
 
     static DltLogLevelType category2dltLevel(const QLoggingCategory *category);
     static DltLogLevelType severity2dltLevel(QtMsgType type);
 
 private:
+    mutable QMutex m_mutex;
     QDltRegistration *const q_ptr;
     Q_DECLARE_PUBLIC(QDltRegistration)
     QString m_dltAppID;
@@ -99,6 +102,8 @@ private:
     QHash<QString, CategoryInfo> m_categoryInfoHash;
     bool m_registerOnFirstUse;
     QDltRegistration::LongMessageBehavior m_longMessageBehavior;
+
+    friend void qtGeniviLogLevelChangedHandler(char context_id[], uint8_t log_level, uint8_t trace_status);
 };
 
 QT_END_NAMESPACE
