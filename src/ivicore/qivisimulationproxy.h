@@ -127,8 +127,8 @@ namespace qtivi_private {
     template <typename T> class QIviSimulationProxy: public QIviSimulationProxyBase
     {
     public:
-        QIviSimulationProxy(QObject *parent=nullptr)
-            : QIviSimulationProxyBase(&staticMetaObject, m_instance, methodMap(), parent)
+        QIviSimulationProxy(QObject *p=nullptr)
+            : QIviSimulationProxyBase(&staticMetaObject, m_instance, methodMap(), p)
         {
             Q_ASSERT_X(m_instance, "QIviSimulationProxy()", "QIviSimulationProxy::registerInstance needs to be called first");
         }
