@@ -59,15 +59,6 @@ class Q_GENIVIEXTRAS_EXPORT QDltRegistration : public QObject
     Q_DISABLE_COPY(QDltRegistration)
 
 public:
-    enum class LongMessageBehavior {
-        Truncate,
-        Split,
-        Pass
-    };
-    Q_ENUM(LongMessageBehavior)
-
-    Q_PROPERTY(LongMessageBehavior longMessageBehavior READ longMessageBehavior WRITE setLongMessageBehavior)
-
     QDltRegistration(QObject *parent = nullptr);
     ~QDltRegistration() override;
 
@@ -79,9 +70,6 @@ public:
 
     void setRegisterContextOnFirstUseEnabled(bool enabled);
     void registerUnregisteredContexts();
-
-    void setLongMessageBehavior(LongMessageBehavior config);
-    LongMessageBehavior longMessageBehavior() const;
 
     static void messageHandler(QtMsgType msgTypes, const QMessageLogContext &msgCtx, const QString &msg);
 
