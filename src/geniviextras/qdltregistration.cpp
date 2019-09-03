@@ -473,6 +473,9 @@ void QDltRegistration::unregisterApplication()
 */
 void QDltRegistration::messageHandler(QtMsgType msgType, const QMessageLogContext &msgCtx, const QString &msg)
 {
+    if (!globalDltRegistration())
+        return;
+
     QMutexLocker l(&globalDltRegistration()->d_ptr->m_mutex);
 
     DltContext *dltCtx = globalDltRegistration()->d_ptr->context(msgCtx.category);
