@@ -22,6 +22,7 @@ examples.fileextensions      += *.qface *.yaml
 
 include(../../ivivehiclefunctions/doc/qtivivehiclefunctions.qdocconf)
 include(../../ivimedia/doc/qtivimedia.qdocconf)
+include(../../doc/config/exampleurl-qtivi.qdocconf)
 
 # include the backend plugins documentation
 include(../../plugins/ivimedia/doc/qtivimedia_plugins.qdocconf)
