@@ -235,13 +235,15 @@ void {{class}}Private::on{{signal|upperfirst}}({{ivi.join_params(signal)}})
 {% if not module.tags.config.disablePrivateIVI %}
 bool {{class}}Private::notify(const QByteArray &propertyName, const QVariant &value)
 {
+{%   if interface.properties %}
     auto q = getParent();
-{%   for property in interface.properties %}
+{%     for property in interface.properties %}
     if (propertyName == QByteArray("{{property}}")) {
         emit q->{{property}}Changed(value.value<{{property|return_type}}>());
         return true;
     }
-{%   endfor %}
+{%     endfor %}
+{%   endif %}
 {%   if interface.tags.config.zoned %}
     return QIviAbstractZonedFeaturePrivate::notify(propertyName, value);
 {%   else %}
@@ -419,7 +421,9 @@ QIviAbstractZonedFeature *{{class}}::createZoneFeature(const QString &zone)
 /*! \internal */
 void {{class}}::connectToServiceObject(QIviServiceObject *serviceObject)
 {
+{% if interface.properties or interface.signals %}
     auto d = {{class}}Private::get(this);
+{% endif %}
 
     auto *backend = {{interface|lower}}Backend();
     if (!backend)
