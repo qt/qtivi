@@ -7,7 +7,7 @@ import QtQuick.tooling 1.2
 // 'qmlplugindump -nonrelocatable QtIvi 1.0'
 
 Module {
-    dependencies: ["QtQuick 2.12"]
+    dependencies: ["QtQuick 2.0"]
     Component {
         name: "QIviAbstractFeature"
         prototype: "QObject"
