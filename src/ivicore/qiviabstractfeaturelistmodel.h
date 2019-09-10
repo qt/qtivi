@@ -64,7 +64,7 @@ class Q_QTIVICORE_EXPORT QIviAbstractFeatureListModel : public QAbstractListMode
 
 public:
 
-    explicit QIviAbstractFeatureListModel(const QString &interface, QObject *parent = nullptr);
+    explicit QIviAbstractFeatureListModel(const QString &interfaceName, QObject *parent = nullptr);
 
     QIviServiceObject *serviceObject() const;
     QIviAbstractFeature::DiscoveryMode discoveryMode() const;

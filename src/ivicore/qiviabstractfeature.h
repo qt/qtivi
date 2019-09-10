@@ -93,7 +93,7 @@ public:
     };
     Q_ENUM(DiscoveryResult)
 
-    explicit QIviAbstractFeature(const QString &interface, QObject *parent = nullptr);
+    explicit QIviAbstractFeature(const QString &interfaceName, QObject *parent = nullptr);
 
     QIviServiceObject *serviceObject() const;
     QIviAbstractFeature::DiscoveryMode discoveryMode() const;

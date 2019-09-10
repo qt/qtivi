@@ -54,10 +54,10 @@
 
 QT_BEGIN_NAMESPACE
 
-QIviAbstractFeaturePrivate::QIviAbstractFeaturePrivate(const QString &interface, QIviAbstractFeature *parent)
+QIviAbstractFeaturePrivate::QIviAbstractFeaturePrivate(const QString &interfaceName, QIviAbstractFeature *parent)
     : QObjectPrivate()
     , q_ptr(parent)
-    , m_interface(interface)
+    , m_interface(interfaceName)
     , m_serviceObject(nullptr)
     , m_discoveryMode(QIviAbstractFeature::AutoDiscovery)
     , m_discoveryResult(QIviAbstractFeature::NoResult)
@@ -257,10 +257,10 @@ void QIviAbstractFeaturePrivate::onInitializationDone()
 
     The \a parent argument is passed on to the \l QObject constructor.
 
-    The \a interface argument is used to locate suitable service objects.
+    The \a interfaceName argument is used to locate suitable service objects.
 */
-QIviAbstractFeature::QIviAbstractFeature(const QString &interface, QObject *parent)
-    : QObject(*new QIviAbstractFeaturePrivate(interface, this), parent)
+QIviAbstractFeature::QIviAbstractFeature(const QString &interfaceName, QObject *parent)
+    : QObject(*new QIviAbstractFeaturePrivate(interfaceName, this), parent)
 {
     Q_D(QIviAbstractFeature);
     d->initialize();

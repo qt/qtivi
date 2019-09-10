@@ -45,8 +45,8 @@
 
 QT_BEGIN_NAMESPACE
 
-QIviHelperFeature::QIviHelperFeature(const QString &interface, QIviAbstractFeatureListModel *model)
-    : QIviAbstractFeature(interface)
+QIviHelperFeature::QIviHelperFeature(const QString &interfaceName, QIviAbstractFeatureListModel *model)
+    : QIviAbstractFeature(interfaceName)
     , m_model(model)
 {
 }
@@ -98,9 +98,9 @@ const QIviAbstractFeaturePrivate *QIviHelperFeature::iviPrivate() const
     return d;
 }
 
-QIviAbstractFeatureListModelPrivate::QIviAbstractFeatureListModelPrivate(const QString &interface, QIviAbstractFeatureListModel *model)
+QIviAbstractFeatureListModelPrivate::QIviAbstractFeatureListModelPrivate(const QString &interfaceName, QIviAbstractFeatureListModel *model)
     : QAbstractItemModelPrivate()
-    , m_feature(new QIviHelperFeature(interface, model))
+    , m_feature(new QIviHelperFeature(interfaceName, model))
     , m_qmlCreation(false)
 {
 
@@ -189,10 +189,10 @@ QIviFeatureInterface *QIviAbstractFeatureListModelPrivate::backend() const
 
     The \a parent argument is passed on to the \l QAbstractListModel base class.
 
-    The \a interface argument is used to locate suitable service objects.
+    The \a interfaceName argument is used to locate suitable service objects.
 */
-QIviAbstractFeatureListModel::QIviAbstractFeatureListModel(const QString &interface, QObject *parent)
-    : QAbstractListModel(*new QIviAbstractFeatureListModelPrivate(interface, this), parent)
+QIviAbstractFeatureListModel::QIviAbstractFeatureListModel(const QString &interfaceName, QObject *parent)
+    : QAbstractListModel(*new QIviAbstractFeatureListModelPrivate(interfaceName, this), parent)
 {
     Q_D(QIviAbstractFeatureListModel);
     d->initialize();
