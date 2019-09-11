@@ -83,7 +83,7 @@ QIviServiceInterface::~QIviServiceInterface()
 */
 
 /*!
-    \fn QObject* QIviServiceInterface::interfaceInstance(const QString& interface) const
+    \fn QObject* QIviServiceInterface::interfaceInstance(const QString& interfaceName) const
 
     Returns an object implementing the service interface requested through \a interface.
 */
