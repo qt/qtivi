@@ -10,7 +10,7 @@ generate_rules:
             template_file:  "plugin.json"
         -   dest_file:  "{{module.module_name|lower}}_simulation_data.json"
             template_file:  "common/simulation_data.json.tpl"
-        -   dest_file:  "{{module.module_name|lower}}.qrc"
+        -   dest_file:  "{{module.module_name|lower}}_simulation.qrc"
             template_file:  "common/simulation.qrc.tpl"
         -   dest_file:  "{{srcBase|lower}}.pri"
             template_file:  "plugin.pri.tpl"
