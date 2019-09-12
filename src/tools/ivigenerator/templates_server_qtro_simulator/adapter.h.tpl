@@ -90,7 +90,7 @@ public:
 {%     if interface_zoned %}
     Q_INVOKABLE {{property|return_type}} {{property|getter_name}}(const QString &zone = QString()) override;
 {%     else %}
-    {{ivi.prop_getter(property)}} override;
+    {{property|return_type}} {{property}}() const override;
 {%     endif %}
 {%   endif %}
 {% endfor %}
