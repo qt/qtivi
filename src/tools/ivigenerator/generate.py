@@ -248,7 +248,7 @@ def default_value_helper(symbol, res):
         else:
             return 'false'
     if t.is_string:
-        return 'QLatin1String("{0}")'.format(re.escape(res))
+        return 'QLatin1String("{0}")'.format(res.replace("\\", "\\\\"))
     if t.is_var:
         if isinstance(res, str):
             res = 'QLatin1String("{0}")'.format(res)
