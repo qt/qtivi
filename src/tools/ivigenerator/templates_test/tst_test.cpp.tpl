@@ -89,18 +89,18 @@ public:
     void initialize() override
     {
 {% for property in interface.properties %}
-        emit {{property}}Changed(m_{{property}}{% if interface.tags.config.zoned %}, QString(){% endif %});
+        Q_EMIT {{property}}Changed(m_{{property}}{% if interface.tags.config.zoned %}, QString(){% endif %});
 {% endfor%}
 
 {% if interface.tags.config.zoned %}
         QStringList zones = availableZones();
         for (const QString &zone : qAsConst(zones)) {
 {%   for property in interface.properties %}
-            emit {{property}}Changed(m_zone{{property|upperfirst}}[zone], zone);
+            Q_EMIT {{property}}Changed(m_zone{{property|upperfirst}}[zone], zone);
 {%   endfor %}
         }
 {% endif %}
-        emit initializationDone();
+        Q_EMIT initializationDone();
     }
 
 {% if interface.tags.config.zoned %}
@@ -112,14 +112,14 @@ public:
         if (!m_zone{{property|upperfirst}}.contains(z)) {
             if (m_{{property}} != {{property}}) {
                 m_{{property}} = {{property}};
-                emit {{property}}Changed(m_{{property}}, z);
+                Q_EMIT {{property}}Changed(m_{{property}}, z);
             }
             return;
         }
 
         if (m_zone{{property|upperfirst}}[z] != {{property}}){
             m_zone{{property|upperfirst}}[z] = {{property}};
-            emit {{property}}Changed(m_zone{{property|upperfirst}}[z], z);
+            Q_EMIT {{property}}Changed(m_zone{{property|upperfirst}}[z], z);
         }
     }
 {%     endif %}
@@ -132,7 +132,7 @@ public:
     {
         if (m_{{property}} != {{property}}) {
             m_{{property}} = {{property}};
-            emit {{property}}Changed(m_{{property}});
+            Q_EMIT {{property}}Changed(m_{{property}});
         }
     }
 {%     endif %}
@@ -142,7 +142,7 @@ public:
 {% for signal in interface.signals %}
     virtual void trigger{{signal|upperfirst}}({{ivi.join_params(signal, interface_zoned)}})
     {
-        emit {{signal}}({% if signal.parameters|length %}{{signal.parameters|join(', ')}}{% endif %}{%
+        Q_EMIT {{signal}}({% if signal.parameters|length %}{{signal.parameters|join(', ')}}{% endif %}{%
         if interface_zoned %}{%if signal.parameters|length %}, {%endif%} zone{% endif %});
     }
 {% endfor %}
@@ -150,7 +150,7 @@ public:
 {% for operation in interface.operations %}
     virtual {{ivi.operation(operation, zoned = interface_zoned)}} override
     {
-        emit {{operation}}Called({% if operation.parameters|length %}{{operation.parameters|join(', ')}}{% endif %}{%
+        Q_EMIT {{operation}}Called({% if operation.parameters|length %}{{operation.parameters|join(', ')}}{% endif %}{%
         if interface_zoned %}{%if operation.parameters|length %}, {%endif%} zone{% endif %});
 
         return QIviPendingReply<{{operation|return_type}}>::createFailedReply();
@@ -223,7 +223,7 @@ public:
 
     void initialize() override
     {
-        emit initializationDone();
+        Q_EMIT initializationDone();
     }
 };
 

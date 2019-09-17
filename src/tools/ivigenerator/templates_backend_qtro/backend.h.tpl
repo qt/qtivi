@@ -82,7 +82,7 @@ public Q_SLOTS:
 {% endfor %}
     void emitCurrentState();
 
-signals:
+Q_SIGNALS:
     void syncDone();
 
 private:

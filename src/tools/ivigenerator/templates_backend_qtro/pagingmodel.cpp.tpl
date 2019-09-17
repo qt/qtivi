@@ -60,7 +60,7 @@ void {{class}}::initialize()
         return;
 
     if (m_replica->isInitialized())
-        emit initializationDone();
+        Q_EMIT initializationDone();
 }
 
 void {{class}}::registerInstance(const QUuid &identifier)

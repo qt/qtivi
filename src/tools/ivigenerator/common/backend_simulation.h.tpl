@@ -89,7 +89,7 @@ public Q_SLOTS:
     {{ivi.prop_setter(property, model_interface = true)}};
 {% endfor %}
 
-signals:
+Q_SIGNALS:
 {% for property in interface.properties %}
     {{ivi.prop_notify(property, model_interface = true)}};
 {% endfor %}

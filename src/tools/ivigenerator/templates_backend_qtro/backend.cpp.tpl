@@ -103,7 +103,7 @@ void {{zone_class}}::sync()
 void {{zone_class}}::checkSync()
 {
     if (m_propertiesToSync.isEmpty())
-        emit syncDone();
+        Q_EMIT syncDone();
 }
 
 void {{zone_class}}::emitCurrentState()
@@ -117,7 +117,7 @@ void {{zone_class}}::emitCurrentState()
 {{ivi.prop_setter(property, zone_class, model_interface = true)}}
 {
     m_{{property}} = {{property}};
-    emit m_parent->{{property}}Changed({{property}}, m_zone);
+    Q_EMIT m_parent->{{property}}Changed({{property}}, m_zone);
 }
 {% endfor %}
 {% endif %}
@@ -153,7 +153,7 @@ void {{class}}::initialize()
 {
 {% for property in interface.properties %}
 {%   if property.type.is_model %}
-    emit {{property}}Changed(m_{{property}});
+    Q_EMIT {{property}}Changed(m_{{property}});
 {%   endif %}
 {% endfor %}
 
@@ -167,10 +167,10 @@ void {{class}}::initialize()
     if (m_replica->isInitialized()) {
 {%   for property in interface.properties %}
 {%     if not property.is_model %}
-        emit {{property}}Changed(m_replica->{{property}}());
+        Q_EMIT {{property}}Changed(m_replica->{{property}}());
 {%     endif %}
 {%   endfor %}
-        emit initializationDone();
+        Q_EMIT initializationDone();
     }
 {% endif %}
 
@@ -198,7 +198,7 @@ void {{class}}::syncZones()
                     m_zoneMap.insert(zone, zoneObject);
                     connect(zoneObject, &{{zone_class}}::syncDone, this, &{{class}}::onZoneSyncDone);
                 }
-                emit availableZonesChanged(m_zones);
+                Q_EMIT availableZonesChanged(m_zones);
 
                 for (const QString& zone : m_zoneMap.keys())
                     m_zoneMap.value(zone)->sync();
@@ -259,7 +259,7 @@ QStringList {{class}}::availableZones() const
 
     //Pass an empty std::function to only handle errors.
     iviReply.then(std::function<void({{operation|return_type}})>(), [this]() {
-        emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("{{class}}, remote call of method {{operation}} failed"));
+        Q_EMIT errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("{{class}}, remote call of method {{operation}} failed"));
     });
     return iviReply;
 }
@@ -352,7 +352,7 @@ void {{class}}::onZoneSyncDone()
 
     for (const QString& zone : zones)
         m_zoneMap.value(zone)->emitCurrentState();
-    emit initializationDone();
+    Q_EMIT initializationDone();
 }
 {% endif %}
 

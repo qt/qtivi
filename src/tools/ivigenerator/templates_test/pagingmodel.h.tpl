@@ -62,12 +62,12 @@ public:
 
     void initialize() override
     {
-        emit initializationDone();
+        Q_EMIT initializationDone();
     }
 
     void registerInstance(const QUuid &identifier) override
     {
-        emit countChanged(identifier, 100);
+        Q_EMIT countChanged(identifier, 100);
     }
 
     void unregisterInstance(const QUuid &identifier) override
@@ -82,7 +82,7 @@ public:
         for(int i=start; i < max; i++)
             list.append(m_list.at(i));
 
-        emit dataFetched(identifier, list, start, max <  m_list.count());
+        Q_EMIT dataFetched(identifier, list, start, max <  m_list.count());
     }
 
 private:

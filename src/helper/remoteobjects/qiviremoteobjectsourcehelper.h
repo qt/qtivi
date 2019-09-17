@@ -85,7 +85,7 @@ public:
             qCDebug(m_category) << "Returning a pending result: id:" << id;
             QObject::connect(pendingReply.watcher(), &QIviPendingReplyWatcher::valueChanged, [this, pendingReply, id] (const QVariant &value) {
                 qCDebug(m_category) << "Value for pending result available: id:" << id << "value:" << value;
-                emit m_adapter->pendingResultAvailable(id, pendingReply.isSuccessful(), value);
+                Q_EMIT m_adapter->pendingResultAvailable(id, pendingReply.isSuccessful(), value);
             });
             return QVariant::fromValue(result);
         }

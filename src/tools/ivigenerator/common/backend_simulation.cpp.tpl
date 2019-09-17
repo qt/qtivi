@@ -82,8 +82,8 @@ QT_BEGIN_NAMESPACE
     if (m_{{property}} == {{property}})
         return;
     m_{{property}} = {{property}};
-    emit {{property}}Changed({{property}});
-    emit m_parent->{{property}}Changed({{property}}, m_zone);
+    Q_EMIT {{property}}Changed({{property}});
+    Q_EMIT m_parent->{{property}}Changed({{property}}, m_zone);
 }
 {% endfor %}
 {% endif %}
@@ -142,9 +142,9 @@ void {{class}}::initialize()
     QIVI_SIMULATION_TRY_CALL({{class}}, "initialize", void);
 {% for property in interface.properties %}
 {%   if not interface_zoned  %}
-    emit {{property}}Changed(m_{{property}});
+    Q_EMIT {{property}}Changed(m_{{property}});
 {%   elif not property.tags.config_simulator or not property.tags.config_simulator.zoned%}
-    emit {{property}}Changed(m_{{property}}, QString());
+    Q_EMIT {{property}}Changed(m_{{property}}, QString());
 {%   endif %}
 {% endfor %}
 
@@ -152,12 +152,12 @@ void {{class}}::initialize()
     for (const QString &zone : m_zones->keys()) {
         {{interface}}Zone *zo = zoneAt(zone);
 {%   for property in interface.properties %}
-        emit {{property}}Changed(zo->{{property|getter_name}}(), zone);
+        Q_EMIT {{property}}Changed(zo->{{property|getter_name}}(), zone);
 {%   endfor %}
     }
 {% endif %}
 
-    emit initializationDone();
+    Q_EMIT initializationDone();
 }
 
 {% if interface_zoned %}
@@ -212,7 +212,7 @@ void {{class}}::addZone(const QString &zone)
         if (m_{{property}} == {{property}})
             return;
         m_{{property}} = {{property}};
-        emit {{property}}Changed({{property}}, QString());
+        Q_EMIT {{property}}Changed({{property}}, QString());
     } else {
         {{interface}}Zone *zo = zoneAt(zone);
         if (zo)
@@ -224,7 +224,7 @@ void {{class}}::addZone(const QString &zone)
     if (m_{{property}} == {{property}})
         return;
     m_{{property}} = {{property}};
-    emit {{property}}Changed(m_{{property}});
+    Q_EMIT {{property}}Changed(m_{{property}});
 {% endif %}
 }
 
