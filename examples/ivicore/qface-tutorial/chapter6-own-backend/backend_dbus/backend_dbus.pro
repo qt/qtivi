@@ -7,6 +7,7 @@ CONFIG += plugin
 
 LIBS += -L$$OUT_PWD/../ -l$$qtLibraryTarget(QtIviInstrumentCluster)
 INCLUDEPATH += $$OUT_PWD/../frontend $$PWD/../demo_server
+QMAKE_RPATHDIR += $$QMAKE_REL_RPATH_BASE/../
 
 PLUGIN_TYPE = qtivi
 

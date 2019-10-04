@@ -11,6 +11,7 @@ QFACE_SOURCES = ../instrument-cluster.qface
 load(ivigenerator)
 
 DESTDIR = $$OUT_PWD/$$replace(URI, \\., /)
+QMAKE_RPATHDIR += $$QMAKE_REL_RPATH_BASE/../../../../
 
 exists($$OUT_PWD/qmldir) {
     cpqmldir.files = $$OUT_PWD/qmldir \

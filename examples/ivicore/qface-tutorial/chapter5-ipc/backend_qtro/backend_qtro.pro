@@ -7,6 +7,7 @@ CONFIG += ivigenerator plugin
 
 LIBS += -L$$OUT_PWD/../ -l$$qtLibraryTarget(QtIviInstrumentCluster)
 INCLUDEPATH += $$OUT_PWD/../frontend
+QMAKE_RPATHDIR += $$QMAKE_REL_RPATH_BASE/../
 
 QFACE_FORMAT = backend_qtro
 QFACE_SOURCES = ../instrument-cluster.qface
