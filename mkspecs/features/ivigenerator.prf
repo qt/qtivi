@@ -79,9 +79,15 @@ IVI_GENERATOR_OPTIONS = --format=$$QFACE_FORMAT --force
 for (ANNOTATION, QFACE_ANNOTATIONS) {
     file = $$absolute_path($$ANNOTATION, $$_PRO_FILE_PWD_)
 
-    IVI_GENERATOR_OPTIONS += -A $$system_path($$file)
+    IVI_GENERATOR_OPTIONS += -A $$system_quote($$system_path($$file))
     qface_sources.depends += $$file
     OTHER_FILES += $$file
+}
+
+for (IMPORT, QFACE_IMPORT_PATH) {
+    dir = $$absolute_path($$IMPORT, $$_PRO_FILE_PWD_)
+
+    IVI_GENERATOR_OPTIONS += -I $$system_quote($$system_path($$dir))
 }
 
 # Windows doesn't offer any other way to sleep for a time inside non-interactive scripts
@@ -89,7 +95,7 @@ equals(QMAKE_HOST.os, Windows): SLEEP = ping -n 2 127.0.0.1 >nul
 else: SLEEP = sleep 1
 
 qface_sources.target = $$relative_path($$PRI, $$OUT_PWD)
-qface_sources.commands = $$SLEEP && $$ENV $$system_path($$IVI_GENERATOR) $$IVI_GENERATOR_OPTIONS $$system_path($$QFACE_ABS_PWD/$${QFACE_FILE}) $$system_path($$QFACE_OUTPUT_DIR)
+qface_sources.commands = $$SLEEP && $$ENV $$system_path($$IVI_GENERATOR) $$IVI_GENERATOR_OPTIONS $$system_quote($$system_path($$QFACE_ABS_PWD/$${QFACE_FILE})) $$system_quote($$system_path($$QFACE_OUTPUT_DIR))
 qface_sources.depends = $$IVI_GENERATOR_PATH/generate.py
 qface_sources.depends += $$QFACE_ABS_PWD/$${QFACE_FILE}
 qface_sources.depends += $$files($$IVI_GENERATOR_PATH/common/*)

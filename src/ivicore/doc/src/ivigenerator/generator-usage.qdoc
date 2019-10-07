@@ -77,6 +77,13 @@
                 overrides the previously set value. This option can be used multiple times. For
                 more information, see \l{merge-annotations}{Merge Annotations}.
         \row
+            \target import-option
+            \li -I, --import <import-path>
+            \li Adds the given path to the list of import paths. All directories in this list are
+                scanned recursively for QFace files. The QFace files found are then used to resolve
+                the information required when importing a module; this is similar to how C++ include
+                paths work.
+        \row
             \li source
             \li Path or paths to the IDL source files. If there are multiple entries, each one is
                 handled. If a directory path is provided, it's scanned for IDL files.

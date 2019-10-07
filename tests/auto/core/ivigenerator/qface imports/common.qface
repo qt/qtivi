@@ -1,0 +1,20 @@
+module Common 1.0;
+
+struct CommonStruct {
+    string name
+    OtherCommonStruct otherStruct
+}
+
+struct OtherCommonStruct {
+    bool checked
+}
+
+enum CommonEnum {
+    CommonValue1,
+    CommonValue2
+}
+
+flag CommonFlag {
+    FlagValue1 = 1,
+    FlagValue2 = 2
+}

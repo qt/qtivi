@@ -50,6 +50,20 @@
 {% else %}
 #include "{{module.module_name|lower}}global.h"
 {% endif %}
+
+{% for import in module.imports %}
+{# All imports are provided including their imported version e.g. "Common 1.0". Because we need
+   to access the Module type, we first need to split the version and then search for the name.
+   See https://github.com/Pelagicore/qface/issues/87
+#}
+{%   set name = import.split(' ')[0] %}
+{%   for mod in modules %}
+{%     if mod.name == name %}
+#include <{{mod.module_name|lower}}module.h>
+{%     endif %}
+{%   endfor %}
+{% endfor %}
+
 #include <QObject>
 
 QT_BEGIN_NAMESPACE

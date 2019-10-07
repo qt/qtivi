@@ -71,6 +71,10 @@ The following qmake variables are available:
         \li QFACE_ANNOTATIONS
         \li A list of additional annotation files in YAML format. For more information, see the
             \l{annotations-option}{Annotations Option}.
+    \row
+        \li QFACE_IMPORT_PATH
+        \li A list of import paths, which are considered when an IDL file uses an import statement.
+            For more information, see the \l{imports-option}{Import Option}.
 \endtable
 
 For more details on the generator's command line arguments, see \l {Use the Generator}.

@@ -113,6 +113,19 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
 /*! \internal */
 void {{class}}::registerTypes()
 {
+{% for import in module.imports %}
+{# All imports are provided including their imported version e.g. "Common 1.0". Because we need
+   to access the Module type, we first need to split the version and then search for the name.
+   See https://github.com/Pelagicore/qface/issues/87
+#}
+{%   set name = import.split(' ')[0] %}
+{%   for mod in modules %}
+{%     if mod.name == name %}
+    {{mod.module_name|upperfirst}}Module::registerTypes();
+{%     endif %}
+{%   endfor %}
+{% endfor %}
+
 {% for enum in module.enums %}
     qRegisterMetaType<{{class}}::{{enum|flag_type}}>();
     qRegisterMetaTypeStreamOperators<{{class}}::{{enum|flag_type}}>();

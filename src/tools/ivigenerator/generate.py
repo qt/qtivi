@@ -44,6 +44,7 @@ import click
 import logging.config
 import yaml
 import json
+import sys
 from path import Path
 
 from qface.generator import FileSystem, Generator
@@ -175,7 +176,7 @@ def default_type_value(symbol):
         nested = Filters.returnType(symbol.type.nested)
         return 'QVariantList()'.format(nested)
     elif symbol.type.is_struct:
-        return '{0}{1}()'.format(prefix, symbol.type)
+        return '{0}{1}()'.format(prefix, symbol.type.reference.name)
     elif symbol.type.is_model:
         return 'nullptr'
     jinja_error('default_type_value: Unknown parameter {0} of type {1}'.format(symbol, symbol.type))
@@ -214,7 +215,7 @@ def test_type_value(symbol):
         return 'QVariantList({{{0}}})'.format(value)
     elif symbol.type.is_struct:
         values_string = ', '.join(test_type_value(e) for e in symbol.type.reference.fields)
-        return '{0}{1}({2})'.format(prefix, symbol.type, values_string)
+        return '{0}{1}({2})'.format(prefix, symbol.type.reference.name, values_string)
     elif symbol.type.is_model:
         return 'new QIviPagingModel()'
     jinja_error('test_type_value: Unknown parameter {0} of type {1}'.format(symbol, symbol.type))
@@ -279,7 +280,7 @@ def parameter_type_default(symbol):
     """
     prefix = Filters.classPrefix
     if symbol.type.is_enum or symbol.type.is_flag:
-        return '{0}{1}Module::{2} {3}={4}'.format(prefix, upper_first(symbol.module.module_name), flag_type(symbol), symbol, default_type_value(symbol))
+        return '{0}{1}Module::{2} {3}={4}'.format(prefix, upper_first(symbol.type.reference.module.module_name), flag_type(symbol), symbol, default_type_value(symbol))
     if symbol.type.is_void or symbol.type.is_primitive:
         if symbol.type.name == 'string':
             return 'const QString &{0}=QString()'.format(symbol)
@@ -298,7 +299,7 @@ def parameter_type_default(symbol):
         elif nested.is_complex:
             return 'QIviPagingModel *{0}=nullptr'.format(symbol)
     else:
-        return 'const {0}{1} &{2}={0}{1}()'.format(prefix, symbol.type, symbol)
+        return 'const {0}{1} &{2}={0}{1}()'.format(prefix, symbol.type.reference.name, symbol)
     jinja_error('parameter_type_default: Unknown parameter {0} of type {1}'.format(symbol, symbol.type))
 
 def parameter_type(symbol):
@@ -307,7 +308,7 @@ def parameter_type(symbol):
     """
     prefix = Filters.classPrefix
     if symbol.type.is_enum or symbol.type.is_flag:
-        return '{0}{1}Module::{2} {3}'.format(prefix, upper_first(symbol.module.module_name), flag_type(symbol), symbol)
+        return '{0}{1}Module::{2} {3}'.format(prefix, upper_first(symbol.type.reference.module.module_name), flag_type(symbol), symbol)
     if symbol.type.is_void or symbol.type.is_primitive:
         if symbol.type.name == 'string':
             return 'const QString &{0}'.format(symbol)
@@ -326,7 +327,7 @@ def parameter_type(symbol):
         elif nested.is_complex:
             return 'QIviPagingModel *{0}'.format(symbol)
     else:
-        return 'const {0}{1} &{2}'.format(prefix, symbol.type, symbol)
+        return 'const {0}{1} &{2}'.format(prefix, symbol.type.reference.name, symbol)
     jinja_error('parameter_type: Unknown parameter {0} of type {1}'.format(symbol, symbol.type))
 
 
@@ -336,7 +337,7 @@ def return_type(symbol):
     """
     prefix = Filters.classPrefix
     if symbol.type.is_enum or symbol.type.is_flag:
-        return('{0}{1}Module::{2}'.format(prefix, upper_first(symbol.module.module_name), flag_type(symbol)))
+        return('{0}{1}Module::{2}'.format(prefix, upper_first(symbol.type.reference.module.module_name), flag_type(symbol)))
     if symbol.type.is_void or symbol.type.is_primitive:
         if symbol.type.name == 'string':
             return 'QString'
@@ -355,7 +356,7 @@ def return_type(symbol):
         elif nested.is_complex:
             return 'QIviPagingModel *'
     else:
-        return '{0}{1}'.format(prefix, symbol.type)
+        return '{0}{1}'.format(prefix, symbol.type.reference.name)
     jinja_error('return_type: Unknown symbol {0} of type {1}'.format(symbol, symbol.type))
 
 
@@ -679,24 +680,25 @@ def model_type(symbol):
 def struct_includes(symbol):
     includesSet = set()
     tpl = '#include \"{0}.h\"'
+
     if isinstance(symbol, Struct):
         for val in symbol.fields:
             if val.type.is_struct:
-                includesSet.add(tpl.format(val.type).lower())
+                includesSet.add(tpl.format(val.type.reference.name).lower())
     elif isinstance(symbol, Interface):
         for val in symbol.properties:
             if val.type.is_struct:
-                includesSet.add(tpl.format(val.type).lower())
+                includesSet.add(tpl.format(val.type.reference.name).lower())
         for op in symbol.operations:
             for param in op.parameters:
                 if param.type.is_struct:
-                    includesSet.add(tpl.format(param.type).lower())
+                    includesSet.add(tpl.format(param.type.reference.name).lower())
             if op.type.is_struct:
-                includesSet.add(tpl.format(op.type).lower())
+                includesSet.add(tpl.format(op.type.reference.name).lower())
         for op in symbol.signals:
             for param in op.parameters:
                 if param.type.is_struct:
-                    includesSet.add(tpl.format(param.type).lower())
+                    includesSet.add(tpl.format(param.type.reference.name).lower())
 
     return includesSet
 
@@ -726,11 +728,20 @@ def comment_text(comment):
         processed.append(line)
     return processed
 
-def generate(tplconfig, moduleConfig, annotations, src, dst):
+def generate(tplconfig, moduleConfig, annotations, imports, src, dst):
     log.debug('run {0} {1}'.format(src, dst))
     FileSystem.strict = True
     Generator.strict = True
+
+    # First run without imports to know the name of the modules we want to generate
+    module_names = []
     system = FileSystem.parse(src)
+    for module in system.modules:
+        module_names.append(module.name)
+
+    # Second run with imports to resolve all needed type information
+    all_files = imports + src
+    system = FileSystem.parse(all_files)
     for annotations_file in annotations:
         log.debug('{0}'.format(annotations_file))
         if not os.path.isabs(annotations_file):
@@ -801,8 +812,19 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
             for member in enum.members:
                 member.add_tag('config')
 
+    ctx.update({'modules': system.modules})
     for module in system.modules:
+        # Only generate files for the modules detected from the first parse run
+        if not module.name in module_names:
+            continue
+
         log.debug('generate code for module %s', module)
+
+        # Report early if we cannot find the imported modules
+        for imp in module._importMap:
+            if imp not in system._moduleMap:
+                sys.exit("{0}: Couldn't resolve import '{1}'".format(currentQFaceSrcFile, imp))
+
         for val, key in moduleConfig.items():
             module.add_attribute('config', val, key)
         ctx.update({'module': module})
@@ -832,13 +854,13 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
                     generator.write(rule['dest_file'], rule['template_file'], ctx, preserve, force)
 
 
-def run(format, moduleConfig, annotations, src, dst):
+def run(format, moduleConfig, annotations, imports, src, dst):
     if format in IVI_DEFAULT_TEMPLATES:
         tplConfig = 'templates_{0}'.format(format)
-        generate(here / tplConfig, moduleConfig, annotations, src, dst)
+        generate(here / tplConfig, moduleConfig, annotations, imports, src, dst)
     else:
         if os.path.exists(format):
-            generate(format, moduleConfig, annotations, src, dst)
+            generate(format, moduleConfig, annotations, imports, src, dst)
         else:
             print('Format "{0}" is invalid. Should be one of {1} or an existing template folder'.format(format, IVI_DEFAULT_TEMPLATES))
             exit(1)
@@ -854,10 +876,15 @@ def run(format, moduleConfig, annotations, src, dst):
     'implicit annotation file. The annotation files will be merged in the order they are passed '
     'to the generator. Providing a duplicate key in the YAML file will override the previously '
     'set value. This option can be used multiple times.')
+@click.option('--import', '-I', 'imports' , multiple=True, default=False, help=
+    'Adds the given path to the list of import paths. All directories in this list are '
+    'scanned recursively for QFace files. The QFace files found are then used to resolve '
+    'the information required when importing a module; this is similar to how C++ include '
+    'paths work.')
 @click.argument('src', nargs=-1, type=click.Path(exists=True))
 @click.argument('dst', nargs=1, type=click.Path(exists=True))
 
-def app(src, dst, format, reload, module, force, annotations):
+def app(src, dst, format, reload, module, force, annotations, imports):
     """
     The QtIvi Autogenerator (ivigenerator)
 
@@ -881,7 +908,7 @@ def app(src, dst, format, reload, module, force, annotations):
             "module": module,
             "force": force
         }
-        run(format, moduleConfig, annotations, src, dst)
+        run(format, moduleConfig, annotations, imports, src, dst)
 
 
 if __name__ == '__main__':
