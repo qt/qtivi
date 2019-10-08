@@ -1,3 +1,5 @@
 TEMPLATE = subdirs
 
-SUBDIRS = auto
+qtHaveModule(gui): {
+    SUBDIRS = auto
+}

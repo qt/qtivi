@@ -127,13 +127,11 @@ const {{class}}Private *{{class}}Private::get(const {{class}} *v)
 void {{class}}Private::clearToDefaults()
 {
 {% for property in interface.properties %}
-{%   if property.type.is_model %}
-    if (m_{{property}}) {
-        delete m_{{property}}->serviceObject();
-        delete m_{{property}};
-    }
-{%   endif %}
-    m_{{property}} = {{property|default_type_value}};
+{%   set function_parameters = property|default_type_value %}
+{%   if interface.tags.config.zoned %}
+{%     set function_parameters = function_parameters + ', QString()' %}
+{%   endif%}
+    on{{property|upperfirst}}Changed({{function_parameters}});
 {% endfor %}
 }
 
@@ -164,10 +162,10 @@ void {{class}}Private::clearToDefaults()
         auto model = new QIviPagingModel();
         model->setServiceObject(new QIviProxyServiceObject({ {QIviPagingModel_iid, {{property}} } }));;
         {{class}}Private::get(f)->m_{{property}} = model;
-        emit f->{{property}}Changed(model);
+        Q_EMIT f->{{property}}Changed(model);
     } else {
         {{class}}Private::get(f)->m_{{property}} = nullptr;
-        emit f->{{property}}Changed(nullptr);
+        Q_EMIT f->{{property}}Changed(nullptr);
     }
     if (old) {
         delete old->serviceObject();
@@ -176,7 +174,7 @@ void {{class}}Private::clearToDefaults()
 {% else %}
     if ({{class}}Private::get(f)->m_{{property}} != {{property}}) {
         {{class}}Private::get(f)->m_{{property}} = {{property}};
-        emit f->{{property}}Changed({{property}});
+        Q_EMIT f->{{property}}Changed({{property}});
     }
 {% endif %}
 }
@@ -190,11 +188,11 @@ void {{class}}Private::clearToDefaults()
         model->setServiceObject(new QIviProxyServiceObject({ {QIviPagingModel_iid, {{property}} } }));
         m_{{property}} = model;
         auto q = getParent();
-        emit q->{{property}}Changed(model);
+        Q_EMIT q->{{property}}Changed(model);
     } else {
         m_{{property}} = nullptr;
         auto q = getParent();
-        emit q->{{property}}Changed(nullptr);
+        Q_EMIT q->{{property}}Changed(nullptr);
     }
     if (old) {
         delete old->serviceObject();
@@ -204,7 +202,7 @@ void {{class}}Private::clearToDefaults()
     if (m_{{property}} != {{property}}) {
         auto q = getParent();
         m_{{property}} = {{property}};
-        emit q->{{property}}Changed({{property}});
+        Q_EMIT q->{{property}}Changed({{property}});
     }
 {% endif %}
 }
@@ -222,13 +220,13 @@ void {{class}}Private::on{{signal|upperfirst}}({{ivi.join_params(signal, true)}}
         f = q;
     if (f->zone() != zone)
         return;
-    emit f->{{signal}}({{signal.parameters|join(', ')}});
+    Q_EMIT f->{{signal}}({{signal.parameters|join(', ')}});
 }
 {%   else %}
 void {{class}}Private::on{{signal|upperfirst}}({{ivi.join_params(signal)}})
 {
     auto q = getParent();
-    emit q->{{signal}}({{signal.parameters|join(', ')}});
+    Q_EMIT q->{{signal}}({{signal.parameters|join(', ')}});
 }
 {%   endif %}
 
@@ -237,13 +235,15 @@ void {{class}}Private::on{{signal|upperfirst}}({{ivi.join_params(signal)}})
 {% if not module.tags.config.disablePrivateIVI %}
 bool {{class}}Private::notify(const QByteArray &propertyName, const QVariant &value)
 {
+{%   if interface.properties %}
     auto q = getParent();
-{%   for property in interface.properties %}
+{%     for property in interface.properties %}
     if (propertyName == QByteArray("{{property}}")) {
-        emit q->{{property}}Changed(value.value<{{property|return_type}}>());
+        Q_EMIT q->{{property}}Changed(value.value<{{property|return_type}}>());
         return true;
     }
-{%   endfor %}
+{%     endfor %}
+{%   endif %}
 {%   if interface.tags.config.zoned %}
     return QIviAbstractZonedFeaturePrivate::notify(propertyName, value);
 {%   else %}
@@ -352,7 +352,7 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
     if (Q_UNLIKELY(d->m_propertyOverride)) {
         const int pi = metaObject()->indexOfProperty("{{property}}");
         if (d->m_propertyOverride->isOverridden(pi)) {
-            emit {{property}}Changed(d->m_propertyOverride->property(pi).value<{{property|return_type}}>());
+            Q_EMIT {{property}}Changed(d->m_propertyOverride->property(pi).value<{{property|return_type}}>());
             return;
         }
         forceUpdate = property("{{property}}DirtyOverride").isValid();
@@ -367,7 +367,7 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
     if ({{class}}BackendInterface *backend = {{interface|lower}}Backend())
         backend->{{property|setter_name}}({{property}}{% if interface.tags.config.zoned %}, zone(){% endif %});
     else
-        emit {{property}}Changed(d->m_{{property}});
+        Q_EMIT {{property}}Changed(d->m_{{property}});
 }
 {%   endif %}
 
@@ -387,7 +387,7 @@ void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minor
 {% endfor %}
 {%   if operation.type.is_enum or operation.type.is_flag%}
     Returns the following values:
-    \include {{interface.module|lower}}module_enum.qdocinc {{param.type}}
+    \include {{interface.module|lower}}module_enum.qdocinc {{operation.type}}
 {%   endif %}
 */
 /*!
@@ -421,7 +421,9 @@ QIviAbstractZonedFeature *{{class}}::createZoneFeature(const QString &zone)
 /*! \internal */
 void {{class}}::connectToServiceObject(QIviServiceObject *serviceObject)
 {
+{% if interface.properties or interface.signals %}
     auto d = {{class}}Private::get(this);
+{% endif %}
 
     auto *backend = {{interface|lower}}Backend();
     if (!backend)

@@ -72,7 +72,7 @@ class SearchAndBrowseModel : public QIviSearchAndBrowseModelInterface
 {
     Q_OBJECT
 public:
-    SearchAndBrowseModel(QRemoteObjectNode *node, QObject *parent = nullptr);
+    explicit SearchAndBrowseModel(QObject *parent = nullptr, const QString& remoteObjectsLookupName = QStringLiteral("QIviSearchAndBrowseModel"));
 
     void initialize() override;
     void registerInstance(const QUuid &identifier) override;
@@ -88,8 +88,15 @@ public:
     QIviPendingReply<void> move(const QUuid &identifier, int currentIndex, int newIndex) override;
     QIviPendingReply<int> indexOf(const QUuid &identifier, const QVariant &item) override;
 
+protected:
+    void setupConnections();
+    bool connectToNode();
+
 private:
+    QString m_remoteObjectsLookupName;
     QSharedPointer<QIviSearchAndBrowseModelReplica> m_replica;
+    QRemoteObjectNode *m_node;
+    QUrl m_url;
     QIviRemoteObjectReplicaHelper *m_helper;
 };
 

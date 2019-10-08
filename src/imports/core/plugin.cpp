@@ -46,13 +46,6 @@
 
 QT_BEGIN_NAMESPACE
 
-QObject* serviceManagerSingelton(QQmlEngine *, QJSEngine *)
-{
-    auto manager = QIviServiceManager::instance();
-    QQmlEngine::setObjectOwnership(manager, QQmlEngine::CppOwnership);
-    return manager;
-}
-
 class QIviCorePlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
@@ -61,14 +54,7 @@ public:
     void registerTypes(const char *uri) override
     {
         Q_ASSERT(QLatin1String(uri) == QLatin1String("QtIvi"));
-        qRegisterMetaType<QIviServiceObject*>();
-        qRegisterMetaType<QList<QIviServiceObject*>>("QList<QIviServiceObject*>");
 
-        qmlRegisterUncreatableType<QIviAbstractFeature>(uri, 1, 0, "AbstractFeature", QStringLiteral("AbstractFeature is not accessible directly"));
-        qmlRegisterUncreatableType<QIviAbstractZonedFeature>(uri, 1, 0, "AbstractZonedFeature", QStringLiteral("AbstractZonedFeature is not accessible directly"));
-        qmlRegisterType<QIviPagingModel>(uri, 1, 0, "PagingModel");
-        qmlRegisterType<QIviSearchAndBrowseModel>(uri, 1, 0, "SearchAndBrowseModel");
-        qmlRegisterSingletonType<QIviServiceManager>(uri, 1, 0, "ServiceManager", &serviceManagerSingelton);
         QtIviCoreModule::registerQmlTypes(uri, 1, 0);
     }
 };

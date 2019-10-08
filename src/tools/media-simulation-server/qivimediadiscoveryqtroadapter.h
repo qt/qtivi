@@ -68,7 +68,7 @@ private:
     void createDeviceAdapter(QIviMediaDevice *device);
 
     MediaDiscoveryBackend *m_backend;
-    QHash<QString, QRemoteObjectRegistryHost*> m_hostMap;
+    QHash<QString, QObject*> m_hostMap;
 };
 
 #endif // QIVIMEDIAINDEXERQTROADAPTER_H

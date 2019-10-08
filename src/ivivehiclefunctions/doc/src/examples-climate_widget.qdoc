@@ -67,6 +67,8 @@
      to start searching for a suitable backend right away and pick the first one
      that matches.
 
+     \note To simplify the deployment process, this example loads a simulation backend.
+
      \l {QIviClimateControl::}{isValid()} is used for verifying that the
      autoDiscovery found a backend:
      \snippet ivivehiclefunctions/climate_widget/mainwindow.cpp 1

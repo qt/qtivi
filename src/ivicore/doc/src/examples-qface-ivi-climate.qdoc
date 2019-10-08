@@ -133,53 +133,74 @@ that provide a key-value store. The generation template defines the supported an
 Here's an overview of all the annotations used in this example and what they do:
 
 \table
-\row
-    \li \c {@config: {zoned: true}}
-    \li indicates that the interface supports different zones
-\row
-    \li \c {@config: {qml_type: "UiClimateControl"}}
-    \li the component name when used from QML
-\row
-    \li \c {@config: {id: "example.qtivi.ClimateControl/1.0"}}
-    \li indicates the ID used to match backend plugins
-\row
-    \li \c {@config_simulator: { range:[0, 50] }}
-    \li a range of valid values for numerical properties
-\row
-    \li \c {@config_simulator: { minimum: 0; maximum: 50 }}
-    \li the minimum and maximum values for numerical properties
-    \note The \c {range} annotation is a shortcut for specifying both minimum and
-    maximum values.
-\row
-    \li \c {@config_simulator: { domain: ["cold", "mild", "warm" ] }}
-    \li a list of valid values for properties
-\row
-    \li \c {@config: {interfaceBuilder: "echoInterfaceBuilder"}}
-    \li indicates that the plugin should use a custom function to generate the backend instances
+    \header
+        \li Annotation
+        \li Description
+    \row
+        \li \code
+                @config: {zoned: true}
+            \endcode
+        \li Specifies that the interface supports different zones.
+    \row
+        \li \code
+                @config: {qml_type: "UiClimateControl"}
+            \endcode
+        \li Specifies the component name when used from QML.
+    \row
+        \li \code
+                @config: {id: "example.qtivi.ClimateControl/1.0"}
+            \endcode
+        \li Specifies the ID used to match backend plugins.
+    \row
+        \li \code
+                @config_simulator: { range:[0, 50] }
+            \endcode
+        \li Specifies a range of valid values for numerical properties.
+            \note The \c {range} annotation used here is a shortcut to specify both minimum and
+            maximum values.
+    \row
+        \li
+            \code
+                @config_simulator: { minimum: 0; maximum: 50 }
+            \endcode
+        \li Specifies the minimum and maximum values for numerical properties.
+
+    \row
+        \li \code
+                @config_simulator: { domain: ["cold", "mild", "warm" ] }
+            \endcode
+        \li Specifies a list of valid values for properties.
+    \row
+        \li \code
+                @config: {interfaceBuilder: "echoInterfaceBuilder"}
+            \endcode
+        \li Specifies that the plugin should use a custom function to generate the backend
+            instances.
 \endtable
 
 In addition to the IDL file, a YAML file with the same basename is used to add extra
-configurations. These configurations may also be added directly into the IDL file, but keeping
-them separate improves readability.
+configurations. These configurations may also be added directly into the IDL file, but we choose
+to keep them separate for readability.
 
-Highlights:
+Some of these extra configurations are highlighted below:
+
 \table
-\row
-    \li
-    \code
-    Example.IVI.Climate.ClimateControl:
-        config_simulator:
-            zones: { left : FrontLeft, right : FrontRight, rear: Rear }
-    \endcode
-    \li the names of the supported zones
-\row
-    \li
-    \code
-    Example.IVI.Climate.ClimateControl#recirculationMode:
-        config_simulator:
-            default: RecirculationMode.RecirculationOff
-    \endcode
-    \li the default value assigned to the property in the simulator backend plugin
+    \row
+        \li
+            \code
+            Example.IVI.Climate.ClimateControl:
+                config_simulator:
+                    zones: { left : FrontLeft, right : FrontRight, rear: Rear }
+            \endcode
+        \li Defines the names for the supported zones.
+    \row
+        \li
+            \code
+            Example.IVI.Climate.ClimateControl#recirculationMode:
+                config_simulator:
+                    default: RecirculationMode.RecirculationOff
+            \endcode
+        \li Specifies the default value assigned to a property in the simulator backend plugin.
 \endtable
 
 
@@ -188,7 +209,7 @@ Highlights:
 Now we want to use the IVI Generator to generate a shared library that contains a C++
 implementation of our module and its interface.
 
-For this, we use the \c frontend template. This generates a class derived from
+In this case, we use the \c frontend template, that generates a class derived from
 \c {QIviAbstractZonedFeature} including all the specified properties. The generated library uses
 the \l {Dynamic Backend System} from QtIviCore, providing an easy way to change the behavior
 implementations. For more details, see \l {Backend Simulator Plugin}.
@@ -203,7 +224,7 @@ and interprets the \c QFACE_SOURCES variable just like the \c SOURCES variable i
 projects.
 
 However, activating the qmake feature using the \c CONFIG variable has one disadvantage: it
-doesn't report any errors if this feature is not available. However, you can use the following
+doesn't report any errors if this feature is not available. But, you can use the following
 additional code to report errors:
 
 \snippet ../../../../examples/ivicore/qface-ivi-climate/frontend/frontend.pro 0

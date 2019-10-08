@@ -62,6 +62,7 @@ QIviPagingModelPrivate::QIviPagingModelPrivate(const QString &interface, QIviPag
     , m_fetchedDataCount(0)
     , m_loadingType(QIviPagingModel::FetchMore)
 {
+    QtIviCoreModule::registerTypes();
     qRegisterMetaType<QIviPagingModel::LoadingType>();
     qRegisterMetaType<QIviStandardItem>();
     qRegisterMetaType<QIviStandardItem>("QIviSearchAndBrowseModelItem");
@@ -244,14 +245,22 @@ void QIviPagingModelPrivate::fetchData(int startIndex)
 
 void QIviPagingModelPrivate::clearToDefaults()
 {
+    Q_Q(QIviPagingModel);
+
     m_chunkSize = 30;
+    emit q->chunkSizeChanged(m_chunkSize);
     m_moreAvailable = false;
     m_identifier = QUuid::createUuid();
     m_fetchMoreThreshold = 10;
+    emit q->fetchMoreThresholdChanged(m_fetchMoreThreshold);
     m_fetchedDataCount = 0;
     m_loadingType = QIviPagingModel::FetchMore;
+    emit q->loadingTypeChanged(m_loadingType);
     m_capabilities = QtIviCoreModule::NoExtras;
+    emit q->capabilitiesChanged(m_capabilities);
     m_itemList.clear();
+
+    resetModel();
 }
 
 const QIviStandardItem *QIviPagingModelPrivate::itemAt(int i) const

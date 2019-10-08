@@ -122,10 +122,10 @@
             \li For installation details, see \l{https://doc.qt.io/QtApplicationManager/installation.html}{Installation}.
         \row
             \li qtivi
-            \li For configuration details, see \l{https://doc.qt.io/QtIVI/configuration.html}{Configuration}
+            \li For configuration details, see \l{https://doc.qt.io/QtIVI/qtivi-installation.html}{Installation}.
         \row
             \li neptune3-ui
-            \li For details on how to run Neptune 3 UI, see \l{https://doc.qt.io/Neptune3UI/neptune3ui-build-run.html}{Run}.
+            \li For details on how to run Neptune 3 UI, see \l{https://doc.qt.io/Neptune3UI/neptune3ui-install.html}{Neptune 3 UI - Install}.
         \row
             \li qmllive
             \li For installation details, see \l{https://doc.qt.io/QtQmlLive/qmllive-installation.html}{Installation}.

@@ -42,35 +42,32 @@
 #include "mediaindexerbackend.h"
 
 #include <QTimer>
+#include <QSettings>
 
 Q_LOGGING_CATEGORY(qLcROQIviMediaIndexer, "qtivi.media.qivimediaindexerbackend.remoteobjects", QtInfoMsg)
 
-MediaIndexerBackend::MediaIndexerBackend(QRemoteObjectNode *node, QObject *parent)
+MediaIndexerBackend::MediaIndexerBackend(QObject *parent)
     : QIviMediaIndexerControlBackendInterface(parent)
+    , m_node(nullptr)
     , m_helper(new QIviRemoteObjectReplicaHelper(qLcROQIviMediaIndexer(), this))
 {
-    m_replica.reset(node->acquire<QIviMediaIndexerReplica>(QStringLiteral("QtIviMedia.QIviMediaIndexer")));
-
-    connect(node, &QRemoteObjectNode::error, m_helper, &QIviRemoteObjectReplicaHelper::onNodeError);
-    connect(m_helper, &QIviRemoteObjectReplicaHelper::errorChanged, this, &QIviFeatureInterface::errorChanged);
-    connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, m_helper, &QIviRemoteObjectReplicaHelper::onReplicaStateChanged);
-    connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &QIviFeatureInterface::initializationDone);
-    connect(m_replica.data(), &QIviMediaIndexerReplica::stateChanged, this, &MediaIndexerBackend::stateChanged);
-    connect(m_replica.data(), &QIviMediaIndexerReplica::progressChanged, this, &MediaIndexerBackend::progressChanged);
-
-    QTimer::singleShot(3000, this, [this](){
-        if (!m_replica->isInitialized())
-            qCCritical(qLcROQIviMediaIndexer) << "QtIviMedia.QIviMediaIndexer wasn't initialized within the timeout period. Please make sure the server is running.";
-    });
 }
 
 void MediaIndexerBackend::initialize()
 {
+    if (!connectToNode())
+        return;
+
     if (m_replica->isInitialized()) {
         emit progressChanged(m_replica->progress());
         emit stateChanged(m_replica->state());
         emit initializationDone();
     }
+
+    QTimer::singleShot(3000, this, [this](){
+        if (!m_replica->isInitialized())
+            qCCritical(qLcROQIviMediaIndexer) << "QtIviMedia.QIviMediaIndexer wasn't initialized within the timeout period. Please make sure the server is running.";
+    });
 }
 
 void MediaIndexerBackend::pause()
@@ -81,4 +78,46 @@ void MediaIndexerBackend::pause()
 void MediaIndexerBackend::resume()
 {
     m_replica->resume();
+}
+
+bool MediaIndexerBackend::connectToNode()
+{
+    static QString configPath;
+    if (configPath.isEmpty()) {
+        if (qEnvironmentVariableIsSet("SERVER_CONF_PATH")) {
+            configPath = QString::fromLocal8Bit(qgetenv("SERVER_CONF_PATH"));
+        } else {
+            configPath = QStringLiteral("./server.conf");
+            qCInfo(qLcROQIviMediaIndexer) << "Environment variable SERVER_CONF_PATH not defined, using " << configPath;
+        }
+    }
+
+    QSettings settings(configPath, QSettings::IniFormat);
+    settings.beginGroup(QStringLiteral("qtivimedia"));
+    QUrl registryUrl = QUrl(settings.value(QStringLiteral("Registry"), QStringLiteral("local:qtivimedia")).toString());
+    if (m_url != registryUrl) {
+        m_url = registryUrl;
+        // QtRO doesn't allow to change the URL without destroying the Node
+        delete m_node;
+        m_node = new QRemoteObjectNode(this);
+        if (!m_node->connectToNode(m_url)) {
+            qCCritical(qLcROQIviMediaIndexer) << "Connection to" << m_url << "failed!";
+            m_replica.reset();
+            return false;
+        }
+        qCInfo(qLcROQIviMediaIndexer) << "Connecting to" << m_url;
+        m_replica.reset(m_node->acquire<QIviMediaIndexerReplica>(QStringLiteral("QtIviMedia.QIviMediaIndexer")));
+        setupConnections();
+    }
+    return true;
+}
+
+void MediaIndexerBackend::setupConnections()
+{
+    connect(m_node, &QRemoteObjectNode::error, m_helper, &QIviRemoteObjectReplicaHelper::onNodeError);
+    connect(m_helper, &QIviRemoteObjectReplicaHelper::errorChanged, this, &QIviFeatureInterface::errorChanged);
+    connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, m_helper, &QIviRemoteObjectReplicaHelper::onReplicaStateChanged);
+    connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &QIviFeatureInterface::initializationDone);
+    connect(m_replica.data(), &QIviMediaIndexerReplica::stateChanged, this, &MediaIndexerBackend::stateChanged);
+    connect(m_replica.data(), &QIviMediaIndexerReplica::progressChanged, this, &MediaIndexerBackend::progressChanged);
 }

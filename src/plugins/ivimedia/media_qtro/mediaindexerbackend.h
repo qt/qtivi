@@ -51,15 +51,21 @@
 class MediaIndexerBackend : public QIviMediaIndexerControlBackendInterface
 {
 public:
-    MediaIndexerBackend(QRemoteObjectNode *node, QObject *parent = nullptr);
+    explicit MediaIndexerBackend(QObject *parent = nullptr);
 
 public:
     void initialize() override;
     void pause() override;
     void resume() override;
 
+protected:
+    void setupConnections();
+    bool connectToNode();
+
 private:
     QSharedPointer<QIviMediaIndexerReplica> m_replica;
+    QRemoteObjectNode *m_node;
+    QUrl m_url;
     QIviRemoteObjectReplicaHelper *m_helper;
 };
 

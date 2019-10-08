@@ -123,6 +123,9 @@ flag <Identifier> {
 A QFace document always describes one module. Each document can contain one or more interfaces,
 structs, enums, or flags. Each document can import other modules using the import statement.
 
+\note There are some limitations with the Qt Ivi generator that parses the QFace IDL file.
+For more information, see \l{known-limitations}{Known Limitations}.
+
 \section1 Module
 
 A module consists of one or more interfaces, structs, enums, or flags; in any combination. A module
@@ -192,6 +195,9 @@ interface Tuner {
     model<Station> complexModel;
 }
 \endcode
+
+\note There are some limitations with the Qt Ivi generator that parses the QFace IDL file.
+For more information, see \l{known-limitations}{Known Limitations}.
 
 \section1 Annotation
 \target annotations_reference

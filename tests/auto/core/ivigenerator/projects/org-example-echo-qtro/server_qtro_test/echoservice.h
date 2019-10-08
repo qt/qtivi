@@ -51,6 +51,8 @@ public Q_SLOTS:
     virtual QVariant voidSlot() override;
     virtual QVariant voidSlot2(int param) override;
     virtual QVariant timer(int interval) override;
+    virtual QVariant flagMethod(EchoModule::AirflowDirections direction) override;
+    virtual QVariant enumMethod(EchoModule::TestEnum testEnum) override;
 
 Q_SIGNALS:
     void echoSlotCalled(const QString &msg);
@@ -58,6 +60,8 @@ Q_SIGNALS:
     void getComboSlotCalled();
     void voidSlotCalled();
     void voidSlot2Called(int param);
+    void flagMethodCalled(EchoModule::AirflowDirections direction);
+    void enumMethodCalled(EchoModule::TestEnum testEnum);
 };
 
 #endif // ECHOSERVICE_H

@@ -41,6 +41,7 @@
 
 #include "qivimediadiscoveryqtroadapter.h"
 #include "qivisearchandbrowsemodelqtroadapter.h"
+#include "core.h"
 
 #include <QIviMediaDevice>
 #include <QRemoteObjectRegistryHost>
@@ -83,20 +84,22 @@ void QIviMediaDiscoveryModelQtRoAdapter::onDeviceRemoved(QIviServiceObject *devi
         return;
 
     emit deviceRemoved(mediaDevice->name());
-    auto host =  m_hostMap.take(mediaDevice->name());
-    qDebug() << "Removing host:" << host->registryUrl().toString();
-    delete host;
+    auto instance =  m_hostMap.take(mediaDevice->name());
+
+    qDebug() << "Removing USB Instance" << mediaDevice->name();
+    Core::instance()->host()->disableRemoting(instance);
+    delete instance;
 }
 
 void QIviMediaDiscoveryModelQtRoAdapter::createDeviceAdapter(QIviMediaDevice *device)
 {
-    auto m_host = new QRemoteObjectRegistryHost(QUrl("local:qtivimedia_" + device->name()));
-    qDebug() << "Adding host at: " << m_host->registryUrl().toString();
+    qDebug() << "Adding USB Instance" << device->name();
 
     QIviSearchAndBrowseModelInterface *searchAndBrowseBackend = qivi_interface_cast<QIviSearchAndBrowseModelInterface *>(device->interfaceInstance(QStringLiteral(QIviSearchAndBrowseModel_iid)));
 
     searchAndBrowseBackend->initialize();
-    m_host->enableRemoting<QIviSearchAndBrowseModelAddressWrapper>(new QIviSearchAndBrowseModelQtRoAdapter(searchAndBrowseBackend));
+    auto instance = new QIviSearchAndBrowseModelQtRoAdapter(searchAndBrowseBackend, QStringLiteral("QIviSearchAndBrowseModel_") + device->name());
+    Core::instance()->host()->enableRemoting<QIviSearchAndBrowseModelAddressWrapper>(instance);
 
-    m_hostMap.insert(device->name(), m_host);
+    m_hostMap.insert(device->name(), instance);
 }

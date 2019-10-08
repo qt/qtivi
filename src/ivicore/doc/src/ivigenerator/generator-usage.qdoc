@@ -59,9 +59,10 @@
         \row
             \target format
             \li  \c -f, \c --format
-            \li Can be one the following values:
+            \li Can be one of the following values:
                 \list
                 \li \c frontend
+                \li \c qmlplugin
                 \li \c backend_simulator
                 \li \c backend_qtro
                 \li \c server_qtro

@@ -718,6 +718,26 @@ void EchoQtroTest::testSlots()
     voidSlot2Spy.wait(1000);
     QCOMPARE(voidSlot2Spy.count(), 1);
     QCOMPARE(voidSlot2Spy[0][0].toInt(), voidSlot2TestValue);
+
+    QSignalSpy flagMethodSpy(&server.m_echoService, SIGNAL(flagMethodCalled(EchoModule::AirflowDirections)));
+    QVERIFY(flagMethodSpy.isValid());
+    EchoModule::AirflowDirections flagTestValue = EchoModule::Dashboard;
+    QIviPendingReply<EchoModule::AirflowDirections> flagMethodReply = client.flagMethod(flagTestValue);
+    QSignalSpy flagMethodReplySpy(flagMethodReply.watcher(), SIGNAL(replySuccess()));
+    WAIT_AND_COMPARE(flagMethodReplySpy, 1);
+    QCOMPARE(flagMethodReply.reply(), flagTestValue);
+    QCOMPARE(flagMethodSpy.count(), 1);
+    QCOMPARE(flagMethodSpy[0][0].value<EchoModule::AirflowDirections>(), flagTestValue);
+
+    QSignalSpy enumMethodSpy(&server.m_echoService, SIGNAL(enumMethodCalled(EchoModule::TestEnum)));
+    QVERIFY(enumMethodSpy.isValid());
+    EchoModule::TestEnum enumTestValue = EchoModule::SecondEnumValue;
+    QIviPendingReply<EchoModule::TestEnum> enumMethodReply = client.enumMethod(enumTestValue);
+    QSignalSpy enumMethodReplySpy(enumMethodReply.watcher(), SIGNAL(replySuccess()));
+    WAIT_AND_COMPARE(enumMethodReplySpy, 1);
+    QCOMPARE(enumMethodReply.reply(), enumTestValue);
+    QCOMPARE(enumMethodSpy.count(), 1);
+    QCOMPARE(enumMethodSpy[0][0].value<EchoModule::TestEnum>(), enumTestValue);
 }
 
 void EchoQtroTest::testZonedSlots()
@@ -766,6 +786,28 @@ void EchoQtroTest::testZonedSlots()
     WAIT_AND_COMPARE(comboReplySpy, 1);
     QCOMPARE(comboReply.reply(), server.m_echoService.m_testCombo);
     QCOMPARE(getComboSpy.count(), 1);
+
+    QSignalSpy flagMethodSpy(&server.m_echoZonedService, SIGNAL(flagMethodCalled(EchoModule::AirflowDirections, QString)));
+    QVERIFY(flagMethodSpy.isValid());
+    EchoModule::AirflowDirections flagTestValue = EchoModule::Dashboard;
+    QIviPendingReply<EchoModule::AirflowDirections> flagMethodReply = zone->flagMethod(flagTestValue);
+    QSignalSpy flagMethodReplySpy(flagMethodReply.watcher(), SIGNAL(replySuccess()));
+    WAIT_AND_COMPARE(flagMethodReplySpy, 1);
+    QCOMPARE(flagMethodReply.reply(), flagTestValue);
+    QCOMPARE(flagMethodSpy.count(), 1);
+    QCOMPARE(flagMethodSpy[0][0].value<EchoModule::AirflowDirections>(), flagTestValue);
+    QCOMPARE(flagMethodSpy[0][1].toString(), frontLeftZone);
+
+    QSignalSpy enumMethodSpy(&server.m_echoZonedService, SIGNAL(enumMethodCalled(EchoModule::TestEnum, QString)));
+    QVERIFY(enumMethodSpy.isValid());
+    EchoModule::TestEnum enumTestValue = EchoModule::SecondEnumValue;
+    QIviPendingReply<EchoModule::TestEnum> enumMethodReply = zone->enumMethod(enumTestValue);
+    QSignalSpy enumMethodReplySpy(enumMethodReply.watcher(), SIGNAL(replySuccess()));
+    WAIT_AND_COMPARE(enumMethodReplySpy, 1);
+    QCOMPARE(enumMethodReply.reply(), enumTestValue);
+    QCOMPARE(enumMethodSpy.count(), 1);
+    QCOMPARE(enumMethodSpy[0][0].value<EchoModule::TestEnum>(), enumTestValue);
+    QCOMPARE(enumMethodSpy[0][1].toString(), frontLeftZone);
 }
 
 void EchoQtroTest::testMultipleSlotCalls()

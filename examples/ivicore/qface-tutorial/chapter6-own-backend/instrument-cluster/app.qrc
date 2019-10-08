@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Cluster.qml</file>
+        <file>Top.qml</file>
+        <file>RightDial.qml</file>
+        <file>LeftDial.qml</file>
+        <file>Dial.qml</file>
+        <file>Fuel.qml</file>
+        <file>Label.qml</file>
+    </qresource>
+</RCC>

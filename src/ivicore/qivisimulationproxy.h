@@ -127,8 +127,8 @@ namespace qtivi_private {
     template <typename T> class QIviSimulationProxy: public QIviSimulationProxyBase
     {
     public:
-        QIviSimulationProxy(QObject *parent=nullptr)
-            : QIviSimulationProxyBase(&staticMetaObject, m_instance, methodMap(), parent)
+        QIviSimulationProxy(QObject *p=nullptr)
+            : QIviSimulationProxyBase(&staticMetaObject, m_instance, methodMap(), p)
         {
             Q_ASSERT_X(m_instance, "QIviSimulationProxy()", "QIviSimulationProxy::registerInstance needs to be called first");
         }
@@ -164,6 +164,8 @@ namespace qtivi_private {
 
         static void registerInstance(QIviSimulationEngine *engine, T *instance)
         {
+            Q_ASSERT_X(staticMetaObject.d.data, "registerInstance", "QIviSimulationProxy::buildMetaObject needs to be called first");
+
             m_engine = engine;
             m_instance = instance;
         }
@@ -174,6 +176,12 @@ namespace qtivi_private {
             return map;
         }
 
+        static void buildMetaObject()
+        {
+            if (!staticMetaObject.d.data)
+                staticMetaObject = QIviSimulationProxy<T>::buildObject(&T::staticMetaObject, QIviSimulationProxy<T>::methodMap(), &QIviSimulationProxy<T>::qt_static_metacall);
+        }
+
         static QMetaObject staticMetaObject;
         static QList<QIviSimulationProxy<T> *> proxies;
 
@@ -182,7 +190,7 @@ namespace qtivi_private {
         static T *m_instance;
     };
 
-    template <typename T> QMetaObject QIviSimulationProxy<T>::staticMetaObject = QIviSimulationProxy<T>::buildObject(&T::staticMetaObject, QIviSimulationProxy<T>::methodMap(), &QIviSimulationProxy<T>::qt_static_metacall);
+    template <typename T> QMetaObject QIviSimulationProxy<T>::staticMetaObject = QMetaObject();
     template <typename T> T *QIviSimulationProxy<T>::m_instance = nullptr;
     template <typename T> QIviSimulationEngine *QIviSimulationProxy<T>::m_engine = nullptr;
     template <typename T> QList<QIviSimulationProxy<T> *> QIviSimulationProxy<T>::proxies =  QList<QIviSimulationProxy<T> *>();

@@ -29,19 +29,10 @@
 /*!
 \page qtivi-backends.html
 \title QtIvi Backends
+\brief A list of QtIvi backends available.
 
-All supported QtIvi Backends by module
-
-\annotatedlist qtivi_backend_groups
-
-A list of all QtIvi Backends can be found \l {All QtIvi Backends}{here}.
-*/
-
-/*!
-\page qtivi-all-backends.html
-\title All QtIvi Backends
-
-All supported QtIvi Backends
+The following backends are avaialble:
 
 \annotatedlist qtivi_backend
+
 */

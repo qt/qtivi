@@ -79,6 +79,9 @@ bool {{zone_class}}::isSyncing()
 
 void {{zone_class}}::sync()
 {
+    if (m_parent->m_replica.isNull())
+        return;
+
 {% for property in interface.properties %}
     m_propertiesToSync.append(QStringLiteral("{{property}}"));
 {% endfor %}
@@ -100,7 +103,7 @@ void {{zone_class}}::sync()
 void {{zone_class}}::checkSync()
 {
     if (m_propertiesToSync.isEmpty())
-        emit syncDone();
+        Q_EMIT syncDone();
 }
 
 void {{zone_class}}::emitCurrentState()
@@ -114,13 +117,14 @@ void {{zone_class}}::emitCurrentState()
 {{ivi.prop_setter(property, zone_class, model_interface = true)}}
 {
     m_{{property}} = {{property}};
-    emit m_parent->{{property}}Changed({{property}}, m_zone);
+    Q_EMIT m_parent->{{property}}Changed({{property}}, m_zone);
 }
 {% endfor %}
 {% endif %}
 
 {{class}}::{{class}}(QObject *parent)
     : {{class}}Interface(parent)
+    , m_node(nullptr)
     , m_helper(new QIviRemoteObjectReplicaHelper(qLcRO{{interface}}(), this))
 {% for property in interface.properties %}
 {%   if property.type.is_model %}
@@ -133,28 +137,11 @@ void {{zone_class}}::emitCurrentState()
 {
     {{module.module_name|upperfirst}}Module::registerTypes();
 
-    QString configPath(QStringLiteral("./server.conf"));
-    if (qEnvironmentVariableIsSet("SERVER_CONF_PATH"))
-        configPath = QString::fromLocal8Bit(qgetenv("SERVER_CONF_PATH"));
-    else
-        qCInfo(qLcRO{{interface}}) << "Environment variable SERVER_CONF_PATH not defined, using " << configPath;
-    QSettings settings(configPath, QSettings::IniFormat);
-    settings.beginGroup(QStringLiteral("{{module.module_name|lower}}"));
-    m_url = QUrl(settings.value(QStringLiteral("Registry"), QStringLiteral("local:{{module.module_name|lower}}")).toString());
-    m_node = new QRemoteObjectNode(m_url);
-    m_replica.reset(m_node->acquire<{{interface}}Replica>(QStringLiteral("{{interface.qualified_name}}")));
-    setupConnections();
-
 {% if interface_zoned %}
     auto zoneObject = new {{zone_class}}(QString(), this);
     m_zoneMap.insert(QString(), zoneObject);
     connect(zoneObject, &{{zone_class}}::syncDone, this, &{{class}}::onZoneSyncDone);
 {% endif %}
-
-    QTimer::singleShot(3000, this, [this](){
-        if(!m_replica->isInitialized())
-            qCCritical(qLcRO{{interface}}) << "{{interface.qualified_name}} wasn't initialized within the timeout period. Please make sure the server is running.";
-    });
 }
 
 {{class}}::~{{class}}()
@@ -166,9 +153,12 @@ void {{class}}::initialize()
 {
 {% for property in interface.properties %}
 {%   if property.type.is_model %}
-    emit {{property}}Changed(m_{{property}});
+    Q_EMIT {{property}}Changed(m_{{property}});
 {%   endif %}
 {% endfor %}
+
+    if (!connectToNode())
+        return;
 
 {% if interface_zoned %}
     if (m_synced)
@@ -177,17 +167,24 @@ void {{class}}::initialize()
     if (m_replica->isInitialized()) {
 {%   for property in interface.properties %}
 {%     if not property.is_model %}
-        emit {{property}}Changed(m_replica->{{property}}());
+        Q_EMIT {{property}}Changed(m_replica->{{property}}());
 {%     endif %}
 {%   endfor %}
-        emit initializationDone();
+        Q_EMIT initializationDone();
     }
 {% endif %}
+
+    QTimer::singleShot(3000, this, [this](){
+        if(!m_replica->isInitialized())
+            qCCritical(qLcRO{{interface}}) << "{{interface.qualified_name}} wasn't initialized within the timeout period. Please make sure the server is running.";
+    });
 }
 
 {% if interface_zoned %}
 void {{class}}::syncZones()
 {
+    if (m_replica.isNull())
+        return;
     QRemoteObjectPendingReply<QStringList> zoneReply = m_replica->availableZones();
     auto zoneWatcher = new QRemoteObjectPendingCallWatcher(zoneReply);
     connect(zoneWatcher, &QRemoteObjectPendingCallWatcher::finished, this, [this, zoneReply](QRemoteObjectPendingCallWatcher *self) mutable {
@@ -201,7 +198,7 @@ void {{class}}::syncZones()
                     m_zoneMap.insert(zone, zoneObject);
                     connect(zoneObject, &{{zone_class}}::syncDone, this, &{{class}}::onZoneSyncDone);
                 }
-                emit availableZonesChanged(m_zones);
+                Q_EMIT availableZonesChanged(m_zones);
 
                 for (const QString& zone : m_zoneMap.keys())
                     m_zoneMap.value(zone)->sync();
@@ -224,6 +221,8 @@ QStringList {{class}}::availableZones() const
 {%     if not property.is_model %}
 {{ivi.prop_setter(property, class, zoned=interface_zoned)}}
 {
+    if (m_replica.isNull())
+        return;
 {%     if not property.type.is_model %}
 {%     if interface_zoned %}
     m_replica->set{{property|upperfirst}}({{property}}, zone);
@@ -242,7 +241,9 @@ QStringList {{class}}::availableZones() const
 {% for operation in interface.operations %}
 {{ ivi.operation(operation, class, zoned=interface_zoned) }}
 {
-    if (static_cast<QRemoteObjectReplica*>(m_replica.get())->state() != QRemoteObjectReplica::Valid)
+    if (m_replica.isNull())
+        return QIviPendingReply<{{operation|return_type}}>::createFailedReply();
+    else if (static_cast<QRemoteObjectReplica*>(m_replica.get())->state() != QRemoteObjectReplica::Valid)
         return QIviPendingReply<{{operation|return_type}}>::createFailedReply();
 
 {% set function_parameters = operation.parameters|join(', ') %}
@@ -258,12 +259,47 @@ QStringList {{class}}::availableZones() const
 
     //Pass an empty std::function to only handle errors.
     iviReply.then(std::function<void({{operation|return_type}})>(), [this]() {
-        emit errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("{{class}}, remote call of method {{operation}} failed"));
+        Q_EMIT errorChanged(QIviAbstractFeature::InvalidOperation, QStringLiteral("{{class}}, remote call of method {{operation}} failed"));
     });
     return iviReply;
 }
 
 {% endfor %}
+
+bool {{class}}::connectToNode()
+{
+    static QString configPath;
+    if (configPath.isEmpty()) {
+        if (qEnvironmentVariableIsSet("SERVER_CONF_PATH")) {
+            configPath = QString::fromLocal8Bit(qgetenv("SERVER_CONF_PATH"));
+        } else {
+            configPath = QStringLiteral("./server.conf");
+            qCInfo(qLcRO{{interface}}) << "Environment variable SERVER_CONF_PATH not defined, using " << configPath;
+        }
+    }
+
+    QSettings settings(configPath, QSettings::IniFormat);
+    settings.beginGroup(QStringLiteral("{{module.module_name|lower}}"));
+    QUrl registryUrl = QUrl(settings.value(QStringLiteral("Registry"), QStringLiteral("local:{{module.module_name|lower}}")).toString());
+    if (m_url != registryUrl) {
+        m_url = registryUrl;
+        // QtRO doesn't allow to change the URL without destroying the Node
+        delete m_node;
+        m_node = new QRemoteObjectNode();
+        if (!m_node->connectToNode(m_url)) {
+            qCCritical(qLcRO{{interface}}) << "Connection to" << m_url << "failed!";
+            m_replica.reset();
+{% if interface_zoned %}
+            m_synced = false;
+{% endif %}
+            return false;
+        }
+        qCInfo(qLcRO{{interface}}) << "Connecting to" << m_url;
+        m_replica.reset(m_node->acquire<{{interface}}Replica>(QStringLiteral("{{interface.qualified_name}}")));
+        setupConnections();
+    }
+    return true;
+}
 
 void {{class}}::setupConnections()
 {
@@ -280,7 +316,8 @@ void {{class}}::setupConnections()
             m_synced = false;
     });
 {% else %}
-    connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &QIviFeatureInterface::initializationDone);
+    //As the Replica is now initialized, this will trigger an update of all properties (not just the changed ones)
+    connect(m_replica.data(), &QRemoteObjectReplica::initialized, this, &{{class}}::initialize);
 {% endif %}
 {% for property in interface.properties if not property.type.is_model %}
 {%   if interface_zoned %}
@@ -315,7 +352,7 @@ void {{class}}::onZoneSyncDone()
 
     for (const QString& zone : zones)
         m_zoneMap.value(zone)->emitCurrentState();
-    emit initializationDone();
+    Q_EMIT initializationDone();
 }
 {% endif %}
 

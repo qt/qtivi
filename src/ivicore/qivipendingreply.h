@@ -130,9 +130,9 @@ public:
 
     using QIviPendingReplyBase::setSuccess;
 
-    void setSuccess(const T &value)
+    void setSuccess(const T &val)
     {
-        setSuccessNoCheck(QVariant::fromValue(value));
+        setSuccessNoCheck(QVariant::fromValue(val));
     }
 
     T reply() const { return m_watcher->value().template value<T>(); }
@@ -181,9 +181,9 @@ public:
         : QIviPendingReplyBase(qMetaTypeId<QVariant>())
     {}
 
-    void setSuccess(const QVariant &value)
+    void setSuccess(const QVariant &val)
     {
-        setSuccessNoCheck(value);
+        setSuccessNoCheck(val);
     }
 
     QVariant reply() const { return m_watcher->value(); }

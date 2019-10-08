@@ -263,3 +263,15 @@ QVariant EchoZonedService::timer(int interval, const QString &zone)
     });
     return QVariant::fromValue(pendingResult);
 }
+
+QVariant EchoZonedService::flagMethod(EchoModule::AirflowDirections direction, const QString &zone)
+{
+    emit flagMethodCalled(direction, zone);
+    return QVariant::fromValue(direction);
+}
+
+QVariant EchoZonedService::enumMethod(EchoModule::TestEnum testEnum, const QString &zone)
+{
+    emit enumMethodCalled(testEnum, zone);
+    return QVariant::fromValue(testEnum);
+}

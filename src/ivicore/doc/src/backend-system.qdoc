@@ -80,15 +80,15 @@ also provides the QIviServiceManager, responsible for loading the necessary back
 
 \image feature-backend.png "Relationship between the Feature and the Backend"
 
-\section1 QIviServiceManager
+\section2 QIviServiceManager
 
 The QIviServiceManager is the central part of QtIviCore, keeping a record of all the available
-backends and their exported interfaces. For this, the manager scans through all available plugins
-and their accompanying metadata. This gives it the ability to only load plugins, which are actually
-needed by a Feature, to reduce the startup time. All of this information is collected in the manager
+backends and their exported interfaces. The service manager scans through all available plugins and
+their accompanying metadata. This process gives it the ability to only load plugins that a Feature
+requires, to reduce the startup time. All of this information is collected in the service manager
 in the form of a model, which enables developers to choose the plugin they want to use.
 
-\section1 ServiceObjects
+\section2 ServiceObjects
 
 The ServiceObject concept keeps the features flexible, and makes it possible to switch between
 backends at runtime. A QIviServiceObject is a handle, which the feature uses to connect to the
@@ -167,5 +167,28 @@ mobile phones can be done using a DiscoveryModel. This provides you with a Servi
 device found. The concept of a discovery model is not limited to mobile phones, it can be used for
 all backends that are not hard wired to the system, like Internet services or controlling multiple
 rearseat systems.
+
+\section1 Zoned Features
+
+Zones are a standard way to provide a single API for multiple points in the vehicle. For instance,
+climate control commonly has a driver zone and passenger zone; or even a back seat zone. The same
+concept applies to wheels, doors, mirrors, windows, and more.
+
+A common pattern is to combine zones with property attributes to handle small differences in
+capabilities between zones; for example, there's no steering wheel heater in a car's passenger side.
+
+Technically, a zoned feature consists of multiple instances of the same feature, a top-level
+instance which provides the zone-independent API and access to instances for a specific zone.
+The feature needs to derive from QIviAbstractZonedFeature and implement createZoneFeature() to
+provide zone-specific instances.
+
+The top-level interface can provide vehicle wide settings. For example, whether recirculation
+should be used in a climate control API. In contrast, the zoned interface provides per-zone
+functions, such as the desired temperature.
+
+Building a zoned feature requires the backend interface to be derived from QIviZonedFeatureInterface.
+This class provides the backend with an interface to enumerate the zones available. This interface
+also includes the necessary QIviZonedFeatureInterface::initialize method to initialize any
+properties.
 
 */

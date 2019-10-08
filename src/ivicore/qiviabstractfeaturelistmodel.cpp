@@ -45,8 +45,8 @@
 
 QT_BEGIN_NAMESPACE
 
-QIviHelperFeature::QIviHelperFeature(const QString &interface, QIviAbstractFeatureListModel *model)
-    : QIviAbstractFeature(interface)
+QIviHelperFeature::QIviHelperFeature(const QString &interfaceName, QIviAbstractFeatureListModel *model)
+    : QIviAbstractFeature(interfaceName)
     , m_model(model)
 {
 }
@@ -98,9 +98,9 @@ const QIviAbstractFeaturePrivate *QIviHelperFeature::iviPrivate() const
     return d;
 }
 
-QIviAbstractFeatureListModelPrivate::QIviAbstractFeatureListModelPrivate(const QString &interface, QIviAbstractFeatureListModel *model)
+QIviAbstractFeatureListModelPrivate::QIviAbstractFeatureListModelPrivate(const QString &interfaceName, QIviAbstractFeatureListModel *model)
     : QAbstractItemModelPrivate()
-    , m_feature(new QIviHelperFeature(interface, model))
+    , m_feature(new QIviHelperFeature(interfaceName, model))
     , m_qmlCreation(false)
 {
 
@@ -125,14 +125,26 @@ QIviFeatureInterface *QIviAbstractFeatureListModelPrivate::backend() const
     \inmodule QtIviCore
     \brief The QIviAbstractFeatureListModel is the base class for QtIvi Features which should act as a model.
 
-    See QIviAbstractFeature for more details on how a Feature works. This base class is needed to avoid a diamond
-    inheritance from QAbstractListModel and QIviAbstractFeature.
+    This base class is necessary to avoid virtual inheritance from QAbstractListModel and
+    QIviAbstractFeature.
 
-    See the \l{Models} section for more information about all models in QtIvi.
+    For more details on how a Feature works, see QIviAbstractFeature.
+    For more information about models in QtIvi, see \l{Models}.
 
     \section1 Subclassing
 
-    //TODO add docs here.
+    Your QIviAbstractFeatureListModel subclass must provide implementations for all virtual
+    functions from QIviAbstractFeature as well as the virtual functions from QAbstractListModel.
+
+    \list
+        \li For more details on how to integrate with the \l{Dynamic Backend System}, see
+            \l{QIviAbstractFeature::Write a Subclass}{QIviAbstractFeature}.
+        \li For more details on what you need to do to provide the model's required
+            functionality, see \l{QAbstractListModel - Subclassing}.
+        \li For a class that implements all the necessary QIviAbstractFeatureListModel functions
+            to provide pagination functionality, see QIviPagingModel.
+    \endlist
+
 */
 
 /*!
@@ -142,13 +154,14 @@ QIviFeatureInterface *QIviAbstractFeatureListModelPrivate::backend() const
 
     \brief The QIviAbstractFeatureListModel is the base class for QtIvi Features which should act as a model.
 
-    See QIviAbstractFeature for more details on how a Feature works. This base class is needed to avoid a diamond
-    inheritance from QAbstractListModel and QIviAbstractFeature.
+    This base class is necessary to avoid virtual inheritance from QAbstractListModel and
+    QIviAbstractFeature.
 
-    This element is not directly accessible from QML. It provides the
-    base QML properties for the feature, like autoDiscovery and isValid.
+    This element is not directly accessible from QML. It provides the base QML properties for the
+    feature, like autoDiscovery and isValid.
 
-    See the \l{Models} section for more information about all models in QtIvi.
+    For more details on how a Feature works, see QIviAbstractFeature.
+    For more information about models in QtIvi, see \l{Models}.
 
     \sa AbstractFeature
 */
@@ -161,6 +174,10 @@ QIviFeatureInterface *QIviAbstractFeatureListModelPrivate::backend() const
     Called when no service object is available. The implementation is expected to set all
     properties to safe defaults and forget all links to the previous service object.
 
+    \note You must emit the corresponding change signals for these properties, so that the feature
+    is informed about the state change. This makes it possible for the implemented class to connect
+    to a new service object afterwards.
+
     There is no need to disconnect from the service object. If it still exists, it is guaranteed
     that \l disconnectFromServiceObject is called first.
 
@@ -172,10 +189,10 @@ QIviFeatureInterface *QIviAbstractFeatureListModelPrivate::backend() const
 
     The \a parent argument is passed on to the \l QAbstractListModel base class.
 
-    The \a interface argument is used to locate suitable service objects.
+    The \a interfaceName argument is used to locate suitable service objects.
 */
-QIviAbstractFeatureListModel::QIviAbstractFeatureListModel(const QString &interface, QObject *parent)
-    : QAbstractListModel(*new QIviAbstractFeatureListModelPrivate(interface, this), parent)
+QIviAbstractFeatureListModel::QIviAbstractFeatureListModel(const QString &interfaceName, QObject *parent)
+    : QAbstractListModel(*new QIviAbstractFeatureListModelPrivate(interfaceName, this), parent)
 {
     Q_D(QIviAbstractFeatureListModel);
     d->initialize();

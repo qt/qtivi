@@ -6,3 +6,5 @@ qtConfig(ivigenerator) {
                qface-ivi-addressbook
 }
 qtConfig(ivigenerator): qtConfig(remoteobjects): SUBDIRS += qface-ivi-remote
+
+qtConfig(ivigenerator): qtConfig(remoteobjects): SUBDIRS += qface-tutorial

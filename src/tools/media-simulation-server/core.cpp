@@ -66,7 +66,7 @@ void Core::init()
     else
         qDebug() << "Environment variable SERVER_CONF_PATH not defined, using " << configPath;
     QSettings settings(configPath, QSettings::IniFormat);
-    settings.beginGroup(QStringLiteral("qtivivehiclefunctions"));
+    settings.beginGroup(QStringLiteral("qtivimedia"));
     QUrl url = QUrl(settings.value(QStringLiteral("Registry"), QStringLiteral("local:qtivimedia")).toString());
     m_host = new QRemoteObjectRegistryHost(url);
     qDebug() << "registry at: " << m_host->registryUrl().toString();

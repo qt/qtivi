@@ -50,7 +50,7 @@ class {{interface}}Test : public QObject
 public:
     {{interface}}Test();
 
-private slots:
+private Q_SLOTS:
     void init();
 
     void testInitBackend();

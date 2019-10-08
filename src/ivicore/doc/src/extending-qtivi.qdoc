@@ -128,25 +128,4 @@ implementing the same functionality, it is recommended to use these already defi
 it is encouraged to add API additions back to the Qt IVI repository to create more common ground
 for future APIs.
 
-\section2 Zones
-
-Zones is a standard way to provide a single API for multiple points in the vehicle.
-For instance, climate control commonly has a driver and passenger zones, and might also have
-a rear seat zone. The same goes for wheels, doors, mirrors, windows and more.
-
-A common pattern is to combine zones with property attributes to handle small differences in
-capabilities between zones; for example, no steering wheel heater for the passenger side of the
-car.
-
-Technically, a zoned feature consists of two interfaces, one top level interface derived
-from QIviAbstractZonedFeature, and one zone specific API derived from QObject.
-
-The top level interface can provide vehicle wide settings. For example, whether recirculation
-is to be used in a climate control API, while the zoned interface provides per-zone functions
-(for example, the desired temperature).
-
-Building a zoned feature requires the backend interface to be derived from
-QIviZonedFeatureInterface. This provides the backend an interface for enumerating the
-available zones. This interface also includes the necessary
-QIviZonedFeatureInterface::initialize method to initialize any properties.
 */

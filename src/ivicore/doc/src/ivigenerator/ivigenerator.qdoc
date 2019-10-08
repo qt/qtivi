@@ -27,7 +27,7 @@
 ****************************************************************************/
 /*!
 \page ivigenerator.html
-\title Qt IVI Autogenerator
+\title Qt IVI Generator
 \keyword QFace
 
 Qt IVI provides a way for you to describe interfaces using its own Interface Definition Language
@@ -40,8 +40,23 @@ QFace library, that provides a generic autogeneration framework.
     \li \l {Use the Generator}
     \li \l {Filter Reference}
     \li \l {QMake Integration}
-    \li \l {QtIVI Remote backends}{Remote backends}
+    \li \l {Qt IVI Inter-Process Communication Integration}{IPC Integration}
     \li \l {Get Started with the Qt IVI Generator}
+\endlist
+
+\target known-limitations
+\section1 Known Limitations
+
+Currently, Qt IVI generator has the following limitations:
+
+\list
+    \li It's not possible to import other QFace modules using the \c import command.
+    \li There's no support for external C++ types, outside of the IDL, such as reusing a
+        QGeoCoordinate inside a QFace IDL.
+    \li The \c map<> type is not supported.
+    \li Any default values provided directly in the QFace file are currently ignored.
+    \li The \c ivigenerator uses it's own YAML template, that's incorporated with QFace's YAML to
+        define the generation rules.
 \endlist
 
 */

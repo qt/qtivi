@@ -248,7 +248,7 @@ def default_value_helper(symbol, res):
         else:
             return 'false'
     if t.is_string:
-        return 'QLatin1String("{0}")'.format(re.escape(res))
+        return 'QLatin1String("{0}")'.format(res.replace("\\", "\\\\"))
     if t.is_var:
         if isinstance(res, str):
             res = 'QLatin1String("{0}")'.format(res)
@@ -762,6 +762,7 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
             exit(1)
         FileSystem.merge_annotations(system, Path(annotations_file))
     generator = Generator(search_path=[tplconfig, here])
+    generator.env.keep_trailing_newline = True
     generator.register_filter('return_type', return_type)
     generator.register_filter('parameter_type_default', parameter_type_default)
     generator.register_filter('parameter_type', parameter_type)
@@ -803,7 +804,7 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
     global currentQFaceSrcFile
     currentQFaceSrcFile = src[0]
     ctx = {'dst': dst, 'qtASVersion': builtin_config["VERSION"], 'srcFile':srcFile, 'srcBase':srcBase, 'features': builtin_config["FEATURES"]}
-    gen_config = yaml.load(open(here / '{0}.yaml'.format(os.path.basename(tplconfig))), Loader=yaml.SafeLoader)
+    gen_config = yaml.load(open(os.path.dirname(tplconfig) + '/{0}.yaml'.format(os.path.basename(tplconfig))), Loader=yaml.SafeLoader)
 
     #Make sure the config tag is available for all our symbols
     for module in system.modules:

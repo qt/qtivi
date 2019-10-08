@@ -56,21 +56,11 @@
 
 MediaPlugin::MediaPlugin(QObject *parent)
     : QObject(parent)
+    , m_player(new MediaPlayerBackend(this))
+    , m_indexer(new MediaIndexerBackend(this))
+    , m_searchModel(new SearchAndBrowseModel(this))
+    , m_discovery(new MediaDiscoveryBackend(this))
 {
-    QString configPath(QStringLiteral("./server.conf"));
-    if (qEnvironmentVariableIsSet("SERVER_CONF_PATH"))
-        configPath = QString::fromLocal8Bit(qgetenv("SERVER_CONF_PATH"));
-    else
-        qInfo() << "Environment variable SERVER_CONF_PATH not defined, using " << configPath;
-    QSettings settings(configPath, QSettings::IniFormat);
-    settings.beginGroup(QStringLiteral("remote"));
-    QUrl url = QUrl(settings.value(QStringLiteral("Registry"), QStringLiteral("local:qtivimedia")).toString());
-    QRemoteObjectNode *node = new QRemoteObjectNode(url);
-
-    m_player = new MediaPlayerBackend(node, this);
-    m_indexer = new MediaIndexerBackend(node, this);
-    m_searchModel = new SearchAndBrowseModel(node, this);
-    m_discovery = new MediaDiscoveryBackend(node, this);
 }
 
 QStringList MediaPlugin::interfaces() const

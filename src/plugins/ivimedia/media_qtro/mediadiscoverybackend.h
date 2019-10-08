@@ -55,7 +55,7 @@ class MediaDiscoveryBackend : public QIviMediaDeviceDiscoveryModelBackendInterfa
     Q_OBJECT
 
 public:
-    MediaDiscoveryBackend(QRemoteObjectNode *node, QObject *parent = nullptr);
+    explicit MediaDiscoveryBackend(QObject *parent = nullptr);
 
     void initialize() override;
 
@@ -64,8 +64,14 @@ public Q_SLOTS:
     void onDeviceAdded(const QString &device);
     void onDeviceRemoved(const QString &device);
 
+protected:
+    void setupConnections();
+    bool connectToNode();
+
 private:
     QSharedPointer<QIviMediaDiscoveryModelReplica> m_replica;
+    QRemoteObjectNode *m_node;
+    QUrl m_url;
     QHash<QString, QIviServiceObject*> m_deviceMap;
     bool m_initialized;
     QIviRemoteObjectReplicaHelper *m_helper;

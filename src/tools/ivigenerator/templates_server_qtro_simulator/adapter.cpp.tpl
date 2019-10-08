@@ -84,7 +84,7 @@ QStringList {{class}}::availableZones()
 {%       endif %}
 }
 {%     else %}
-{{ivi.prop_getter(property, class, model_interface = true)}}
+{{property|return_type}} {{class}}::{{property}}() const
 {
 {%       if property.type.is_var %}
     return m_helper.toRemoteObjectVariant(m_backend->{{property|getter_name}}());

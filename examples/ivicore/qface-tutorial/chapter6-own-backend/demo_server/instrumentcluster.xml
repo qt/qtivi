@@ -1,0 +1,55 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="Example.IVI.InstrumentCluster">
+    <property name="speed" type="i" access="read"/>
+    <property name="rpm" type="i" access="read"/>
+    <property name="fuel" type="d" access="read"/>
+    <property name="temperature" type="d" access="read"/>
+    <property name="systemType" type="(i)" access="read">
+        <annotation name="org.qtproject.QtDBus.QtTypeName" value="InstrumentClusterModule::SystemType"/>
+    </property>
+    <property name="currentWarning" type="(sss)" access="read">
+        <annotation name="org.qtproject.QtDBus.QtTypeName" value="Warning"/>
+    </property>
+    <method name="speed" >
+        <arg name="speed" type="i" direction="out"/>
+    </method>
+    <method name="rpm" >
+        <arg name="rpm" type="i" direction="out"/>
+    </method>
+    <method name="fuel" >
+        <arg name="fuel" type="d" direction="out"/>
+    </method>
+    <method name="temperature" >
+        <arg name="temperature" type="d" direction="out"/>
+    </method>
+    <method name="systemType" >
+        <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="InstrumentClusterModule::SystemType"/>
+        <arg name="systemType" type="(i)" direction="out"/>
+    </method>
+    <method name="currentWarning" >
+        <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="Warning"/>
+        <arg name="currentWarning" type="(sss)" direction="out"/>
+    </method>
+    <signal name="speedChanged">
+          <arg name="speed" type="i" direction="out"/>
+    </signal>
+    <signal name="rpmChanged">
+          <arg name="rpm" type="i" direction="out"/>
+    </signal>
+    <signal name="fuelChanged">
+          <arg name="fuel" type="d" direction="out"/>
+    </signal>
+    <signal name="temperatureChanged">
+          <arg name="temperature" type="d" direction="out"/>
+    </signal>
+    <signal name="systemTypeChanged">
+          <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="InstrumentClusterModule::SystemType"/>
+          <arg name="systemType" type="(i)" direction="out"/>
+    </signal>
+    <signal name="currentWarningChanged">
+          <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="Warning"/>
+          <arg name="currentWarning" type="(sss)" direction="out"/>
+    </signal>
+  </interface>
+</node>

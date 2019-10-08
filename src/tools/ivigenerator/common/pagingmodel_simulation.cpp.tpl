@@ -55,14 +55,14 @@ void {{class}}::initialize()
 {
     QIVI_SIMULATION_TRY_CALL({{class}}, "initialize", void);
 
-    emit initializationDone();
+    Q_EMIT initializationDone();
 }
 
 void {{class}}::registerInstance(const QUuid &identifier)
 {
     QIVI_SIMULATION_TRY_CALL({{class}}, "registerInstance", void, identifier);
 
-    emit countChanged(identifier, m_list.count());
+    Q_EMIT countChanged(identifier, m_list.count());
 }
 
 void {{class}}::unregisterInstance(const QUuid &identifier)
@@ -79,21 +79,21 @@ void {{class}}::fetchData(const QUuid &identifier, int start, int count)
     for(int i=start; i < max; i++)
         list.append(QVariant::fromValue(m_list.at(i)));
 
-    emit dataFetched(identifier, list, start, max <  m_list.count());
+    Q_EMIT dataFetched(identifier, list, start, max <  m_list.count());
 }
 
 void {{class}}::insert(int index, const {{property.type.nested}} &item)
 {
     m_list.insert(index, item);
 
-    emit dataChanged(QUuid(), { QVariant::fromValue(item) }, index, 0);
+    Q_EMIT dataChanged(QUuid(), { QVariant::fromValue(item) }, index, 0);
 }
 
 void {{class}}::remove(int index)
 {
     m_list.removeAt(index);
 
-    emit dataChanged(QUuid(), QVariantList(), index, 1);
+    Q_EMIT dataChanged(QUuid(), QVariantList(), index, 1);
 }
 
 void {{class}}::move(int currentIndex, int newIndex)
@@ -106,19 +106,19 @@ void {{class}}::move(int currentIndex, int newIndex)
     for (int i = min; i <= max; i++)
         variantList.append(QVariant::fromValue(m_list.at(i)));
 
-    emit dataChanged(QUuid(), variantList, min, max - min + 1);
+    Q_EMIT dataChanged(QUuid(), variantList, min, max - min + 1);
 }
 
 void {{class}}::reset()
 {
-    emit dataChanged(QUuid(), QVariantList(), 0, m_list.count());
+    Q_EMIT dataChanged(QUuid(), QVariantList(), 0, m_list.count());
     m_list.clear();
 }
 
 void {{class}}::update(int index, const {{property.type.nested}} &item)
 {
     m_list[index] = item;
-    emit dataChanged(QUuid(), { QVariant::fromValue(item) }, index, 1);
+    Q_EMIT dataChanged(QUuid(), { QVariant::fromValue(item) }, index, 1);
 }
 
 const {{property.type.nested}} &{{class}}::at(int index) const

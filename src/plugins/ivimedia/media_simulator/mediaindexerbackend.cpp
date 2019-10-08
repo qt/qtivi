@@ -89,6 +89,11 @@ MediaIndexerBackend::MediaIndexerBackend(const QSqlDatabase &database, QObject *
     qCCritical(media) << "The indexer simulation doesn't work without an installed taglib";
 #endif
 
+    ScanData data;
+    data.operation = ScanData::Verify;
+    m_folderQueue.append(data);
+    scanNext();
+
     //We want to have the indexer running also when the Indexing interface is not used.
     for (const QString &folder : qAsConst(mediaFolderList))
         addMediaFolder(folder);
@@ -127,7 +132,7 @@ QIviMediaIndexerControl::State MediaIndexerBackend::state() const
 void MediaIndexerBackend::addMediaFolder(const QString &path)
 {
     ScanData data;
-    data.remove = false;
+    data.operation = ScanData::Add;
     data.folder = path;
     m_folderQueue.append(data);
 
@@ -137,56 +142,89 @@ void MediaIndexerBackend::addMediaFolder(const QString &path)
 void MediaIndexerBackend::removeMediaFolder(const QString &path)
 {
     ScanData data;
-    data.remove = true;
+    data.operation = ScanData::Remove;
     data.folder = path;
     m_folderQueue.append(data);
 
     scanNext();
 }
 
-bool MediaIndexerBackend::scanWorker(const QString &mediaDir, bool removeData)
+bool MediaIndexerBackend::scanWorker(const ScanData &scanData)
 {
     setState(QIviMediaIndexerControl::Active);
 
-    if (removeData) {
-        qCInfo(media) << "Removing content: " << mediaDir;
+    auto removeDataFunc = [this](QSqlQuery &query, const QStringList &ids) {
+        const QString idsToRemove = ids.join(QStringLiteral(", "));
+        if (!query.exec(QStringLiteral("DELETE from queue WHERE track_index IN (%1)").arg(idsToRemove))) {
+            setState(QIviMediaIndexerControl::Error);
+            sqlError(this, query.lastQuery(), query.lastError().text());
+            return false;
+        }
+        if (!query.exec(QStringLiteral("DELETE from track WHERE id IN (%1)").arg(idsToRemove))) {
+            setState(QIviMediaIndexerControl::Error);
+            sqlError(this, query.lastQuery(), query.lastError().text());
+            return false;
+        }
+        return true;
+    };
+
+    if (scanData.operation == ScanData::Verify) {
+        qCInfo(media) << "Checking Database";
         QSqlQuery query(m_db);
 
-        bool ret = query.exec(QStringLiteral("SELECT queue.qindex FROM track JOIN queue ON queue.track_index=track.id WHERE file LIKE '%1%'").arg(mediaDir));
+        QStringList idsToRemove;
+        bool ret = query.exec(QStringLiteral("SELECT track.id, queue.qindex, track.file FROM track LEFT JOIN queue ON queue.track_index=track.id"));
         if (ret) {
-            while (query.next())
-                emit removeFromQueue(query.value(0).toInt());
+            while (query.next()) {
+                if (!QFile::exists(query.value(2).toString())) {
+                    qCInfo(media) << "Removing stale track: " << query.value(2).toString();
+                    idsToRemove.append(query.value(0).toString());
+                    if (!query.value(1).isNull())
+                        emit removeFromQueue(query.value(1).toInt());
+                }
+            }
+
+            if (!removeDataFunc(query, idsToRemove))
+                return false;
+
+            m_db.commit();
+            return true;
+        } else {
+            setState(QIviMediaIndexerControl::Error);
+            sqlError(this, query.lastQuery(), query.lastError().text());
+            return false;
+        }
+    } else if (scanData.operation == ScanData::Remove) {
+        qCInfo(media) << "Removing content: " << scanData.folder;
+        QSqlQuery query(m_db);
+
+        QStringList idsToRemove;
+        bool ret = query.exec(QStringLiteral("SELECT track.id, queue.qindex FROM track LEFT JOIN queue ON queue.track_index=track.id WHERE file LIKE '%1%'").arg(scanData.folder));
+        if (ret) {
+            while (query.next()) {
+                idsToRemove.append(query.value(0).toString());
+                if (!query.value(1).isNull())
+                    emit removeFromQueue(query.value(1).toInt());
+            }
         } else {
             setState(QIviMediaIndexerControl::Error);
             sqlError(this, query.lastQuery(), query.lastError().text());
             return false;
         }
 
-        ret = query.exec(QStringLiteral("DELETE from queue WHERE track_index IN (SELECT id FROM track WHERE file LIKE '%1%')").arg(mediaDir));
-        if (!ret) {
-            setState(QIviMediaIndexerControl::Error);
-            sqlError(this, query.lastQuery(), query.lastError().text());
+        if (!removeDataFunc(query, idsToRemove))
             return false;
-        }
-
-        ret = query.exec(QStringLiteral("DELETE from track WHERE file LIKE '%1%'").arg(mediaDir));
-        if (!ret) {
-            setState(QIviMediaIndexerControl::Error);
-            sqlError(this, query.lastQuery(), query.lastError().text());
-            return false;
-        }
 
         m_db.commit();
-
         return true;
     }
 
-    qCInfo(media) << "Scanning path: " << mediaDir;
+    qCInfo(media) << "Scanning path: " << scanData.folder;
 
     QStringList mediaFiles{QStringLiteral("*.mp3")};
 
     QVector<QString> files;
-    QDirIterator it(mediaDir, mediaFiles, QDir::Files, QDirIterator::Subdirectories);
+    QDirIterator it(scanData.folder, mediaFiles, QDir::Files, QDirIterator::Subdirectories);
     qCInfo(media) << "Calculating total file count";
 
     while (it.hasNext())
@@ -289,8 +327,7 @@ void MediaIndexerBackend::scanNext()
         return;
 
     ScanData data = m_folderQueue.dequeue();
-    m_currentFolder = data.folder;
-    m_watcher.setFuture(QtConcurrent::run(this, &MediaIndexerBackend::scanWorker, m_currentFolder, data.remove));
+    m_watcher.setFuture(QtConcurrent::run(this, &MediaIndexerBackend::scanWorker, data));
 }
 
 void MediaIndexerBackend::setProgress(qreal progress)

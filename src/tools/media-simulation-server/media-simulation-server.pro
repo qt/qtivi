@@ -1,11 +1,13 @@
 TARGET = ivimedia-simulation-server
 TEMPLATE = app
-QT = core ivicore remoteobjects ivimedia iviremoteobjects_helper_private
+
+include($$PWD/../../plugins/ivimedia/media_simulator/media_simulator.pri)
+
+QT += remoteobjects iviremoteobjects_helper_private
 CONFIG += c++11
 
 load(qt_tool)
 
-include($$PWD/../../plugins/ivimedia/media_simulator/media_simulator.pri)
 
 HEADERS += \
     core.h \

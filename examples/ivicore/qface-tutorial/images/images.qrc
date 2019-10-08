@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>top_bar.png</file>
+        <file>right_dial.png</file>
+        <file>middle-circle.png</file>
+        <file>middle-bkg.png</file>
+        <file>mask_overlay.png</file>
+        <file>left_dial.png</file>
+        <file>fuelsymbol_orange.png</file>
+        <file>fuel_level.png</file>
+        <file>fuel.png</file>
+        <file>dial_pattern.png</file>
+        <file>dial_fill_color_left.png</file>
+        <file>dial_cursor_right.png</file>
+        <file>dial_cursor.png</file>
+        <file>P-R-N-D.png</file>
+        <file>+--.png</file>
+        <file>dial_fill_color.png</file>
+    </qresource>
+</RCC>

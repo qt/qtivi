@@ -19,6 +19,8 @@ interface Echo {
     readonly string lastMessage;
     int intValue;
     var varValue;
+    @config: { getter_name: "isEchoEnabled" }
+    bool echoEnabled;
     @config_simulator: {minimum: 10.}
     real floatValue1;
     @config_simulator: {maximum: 10.}
@@ -39,6 +41,9 @@ interface Echo {
     void voidSlot();
     void voidSlot2(int param);
     void timer(int interval);
+    AirflowDirection flagMethod(AirflowDirection direction);
+    TestEnum enumMethod(TestEnum testEnum);
+
     signal anotherChanged(AnotherStruct another);
     signal foobar(string foo);
     signal somethingHappened();
@@ -80,6 +85,8 @@ interface EchoZoned {
     var varMethod();
     Combo getCombo();
     string timer(int interval);
+    AirflowDirection flagMethod(AirflowDirection direction);
+    TestEnum enumMethod(TestEnum testEnum);
 
     signal anotherChanged(AnotherStruct another);
     signal foobar(string foo);

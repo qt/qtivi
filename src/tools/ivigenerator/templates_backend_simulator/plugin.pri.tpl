@@ -58,7 +58,7 @@ SOURCES += \
 {% endfor %}
     $$PWD/{{module.module_name|lower}}plugin.cpp
 
-RESOURCES += $$PWD/{{module.module_name|lower}}.qrc
+RESOURCES += $$PWD/{{module.module_name|lower}}_simulation.qrc
 
 OTHER_FILES += \
     $$PWD/{{module.module_name|lower}}.json \

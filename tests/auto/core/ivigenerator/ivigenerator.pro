@@ -1,6 +1,7 @@
 TEMPLATE = subdirs
 
-SUBDIRS = projects
+SUBDIRS = projects \
+          custom-template \
 
 OTHER_FILES = org.example.echo.qface \
               org.example.echo.yaml \

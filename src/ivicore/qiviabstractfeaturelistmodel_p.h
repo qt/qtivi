@@ -67,7 +67,7 @@ class Q_QTIVICORE_EXPORT QIviHelperFeature : public QIviAbstractFeature
     Q_OBJECT
 
 public:
-    QIviHelperFeature(const QString &interface, QIviAbstractFeatureListModel *model);
+    QIviHelperFeature(const QString &interfaceName, QIviAbstractFeatureListModel *model);
 
     bool acceptServiceObject(QIviServiceObject *so) override;
     bool acceptServiceObjectDefaultImpl(QIviServiceObject *so);
@@ -90,7 +90,7 @@ public:
 class Q_QTIVICORE_EXPORT QIviAbstractFeatureListModelPrivate : public QAbstractItemModelPrivate
 {
 public:
-    QIviAbstractFeatureListModelPrivate(const QString &interface, QIviAbstractFeatureListModel *model);
+    QIviAbstractFeatureListModelPrivate(const QString &interfaceName, QIviAbstractFeatureListModel *model);
     ~QIviAbstractFeatureListModelPrivate() override;
 
     virtual void initialize();

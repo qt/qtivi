@@ -62,6 +62,7 @@ public:
 
     template <typename T> void registerSimulationInstance(T* instance, const char *uri, int versionMajor, int versionMinor, const char *qmlName)
     {
+        qtivi_private::QIviSimulationProxy<T>::buildMetaObject();
         //pass engine here to check that it's only used in this engine
         qtivi_private::QIviSimulationProxy<T>::registerInstance(this, instance);
         qmlRegisterType< qtivi_private::QIviSimulationProxy<T> >(uri, versionMajor, versionMinor, qmlName);

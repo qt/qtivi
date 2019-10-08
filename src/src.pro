@@ -36,7 +36,7 @@ QT_FOR_CONFIG += geniviextras geniviextras-private \
             imports.depends += ivimedia
         }
 
-        qtConfig(remoteobjects): {
+        qtConfig(remoteobjects):!android: {
 
             qtConfig(vehiclefunctions_qtro_simulation_server) {
                 src_tools_vehiclefunctions-simulation-server.subdir = tools/vehiclefunctions-simulation-server

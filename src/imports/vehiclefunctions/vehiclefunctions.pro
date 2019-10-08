@@ -18,9 +18,13 @@ load(qml_plugin)
 # Set the base to null to disable the check that the files are from the source folder
 # Because the naming has changed in the last couple of Qt versions, multiple variable
 # need to be fixed
-qmldir.base =
-qmlfiles.base =
-qmldir.files -= $$_PRO_FILE_PWD_/qmldir
-qmlfiles.files -= $$_PRO_FILE_PWD_/qmldir
+!equals(PWD, $$OUT_PWD) {
+    qmldir.base =
+    qmlfiles.base =
+    qmldir.files -= $$_PRO_FILE_PWD_/qmldir
+    qmlfiles.files -= $$_PRO_FILE_PWD_/qmldir
+}
 qmldir2build.files -= $$_PRO_FILE_PWD_/qmldir
+qmldir2build.files -= $$_PRO_FILE_PWD_/plugins.qmltypes
 qml2build.files -= $$_PRO_FILE_PWD_/qmldir
+qml2build.files -= $$_PRO_FILE_PWD_/plugins.qmltypes

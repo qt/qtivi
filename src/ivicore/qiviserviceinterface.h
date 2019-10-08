@@ -70,10 +70,10 @@ public:
     virtual ~QIviServiceInterface();
 
     virtual QStringList interfaces() const = 0;
-    virtual QIviFeatureInterface *interfaceInstance(const QString &interface) const = 0;
+    virtual QIviFeatureInterface *interfaceInstance(const QString &interfaceName) const = 0;
 
-    template <class T> T interfaceInstance(const QString &interface) const {
-        T inst = qivi_interface_cast<T>(interfaceInstance(interface));
+    template <class T> T interfaceInstance(const QString &interfaceName) const {
+        T inst = qivi_interface_cast<T>(interfaceInstance(interfaceName));
         return inst;
     }
 };
