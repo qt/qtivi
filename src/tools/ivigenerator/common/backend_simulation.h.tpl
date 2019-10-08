@@ -139,7 +139,7 @@ public:
 
 {% for property in interface.properties %}
 {%   if interface_zoned %}
-{%     if property.type.is_model and model_interface %}
+{%     if property.type.is_model %}
 {%       set type = 'QIviPagingModelInterface *' %}
 {%     else %}
 {%       set type = property|return_type %}

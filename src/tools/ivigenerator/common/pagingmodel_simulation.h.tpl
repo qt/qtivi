@@ -38,7 +38,12 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
+{% set interface_zoned = interface.tags.config and interface.tags.config.zoned  %}
+{% if interface_zoned %}
+{% set class = 'Zoned{0}ModelBackend'.format(property|upperfirst) %}
+{% else %}
 {% set class = '{0}ModelBackend'.format(property|upperfirst) %}
+{% endif %}
 
 #include <QIviPagingModelInterface>
 #include "{{property.type.nested|lower}}.h"

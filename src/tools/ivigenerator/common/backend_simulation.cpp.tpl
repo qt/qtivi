@@ -110,11 +110,15 @@ QT_BEGIN_NAMESPACE
 
 {% for property in interface.properties %}
 {%   if not property.tags.config_simulator or not property.tags.config_simulator.zoned %}
-{%       if property.type.is_model %}
+{%     if property.type.is_model %}
+{%       if interface_zoned %}
+    auto {{ property }}Model = (new Zoned{{property|upperfirst}}ModelBackend(this));
+{%       else %}
     auto {{ property }}Model = (new {{property|upperfirst}}ModelBackend(this));
+{%       endif %}
     m_{{ property }} = {{ property }}Model;
     engine->registerSimulationInstance({{ property }}Model, "{{module|qml_type}}.simulation", {{module.majorVersion}}, {{module.minorVersion}}, "{{property|upperfirst}}ModelBackend");
-{%       endif %}
+{%     endif %}
 {%   endif %}
 {% endfor %}
 
@@ -188,7 +192,7 @@ void {{class}}::addZone(const QString &zone)
         return zo->{{property|getter_name}}();
     else
         qWarning() << "No such Zone";
-    return {{type}}();
+    return {{property|default_value}};
 }
 {%   else %}
 {{ivi.prop_getter(property, class, model_interface = true)}}

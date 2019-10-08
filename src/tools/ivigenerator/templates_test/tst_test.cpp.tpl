@@ -40,6 +40,12 @@
 {% import 'common/qtivi_macros.j2' as ivi %}
 {% include "common/generated_comment.cpp.tpl" %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned  %}
+{% set testModels = false %}
+{% for property in interface.properties if not once %}
+{%   if property.type.is_model %}
+{%     set testModels = true %}
+{%   endif %}
+{% endfor %}
 #include "tst_{{interface|lower}}.h"
 
 #include <QtIviCore/QIviServiceManager>
@@ -63,7 +69,11 @@ public:
         : {{interface}}BackendInterface()
 {% for property in interface.properties %}
 {%   if property.type.is_model %}
+{%     if interface_zoned %}
+        , m_{{property}}(new Zoned{{property|upperfirst}}Model(this))
+{%     else %}
         , m_{{property}}(new {{property|upperfirst}}Model(this))
+{%     endif %}
 {%   else %}
         , m_{{property}}({{property|default_type_value}})
 {%   endif %}
@@ -472,29 +482,26 @@ void {{interface}}Test::testSignals()
 {% endfor %}
 }
 
-{% set once = false %}
-{% for property in interface.properties if not once %}
-{%   if property.type.is_model %}
-{%     set once = true %}
+{% if testModels %}
 void {{interface}}Test::testModels()
 {
     {{interface}}TestServiceObject *service = new {{interface}}TestServiceObject();
     manager->registerService(service, service->interfaces());
 
     {{interface}} cc;
-{%      for property in interface.properties %}
-{%        if property.type.is_model %}
+{%    for property in interface.properties %}
+{%      if property.type.is_model %}
     //Test {{property}}Model without ServiceObject
     QCOMPARE(cc.{{property|getter_name}}(), nullptr);
     QSignalSpy {{property}}Spy(&cc, SIGNAL({{property}}Changed({{property|return_type}})));
-{%        endif %}
-{%     endfor %}
+{%      endif %}
+{%   endfor %}
 
     cc.startAutoDiscovery();
     QVERIFY(cc.isValid());
 
-{%      for property in interface.properties %}
-{%        if property.type.is_model %}
+{%    for property in interface.properties %}
+{%      if property.type.is_model %}
     QCOMPARE({{property}}Spy.count(), 1);
     //Test {{property}}Model
     QIviPagingModel *{{property}} = cc.{{property|getter_name}}();
@@ -504,10 +511,9 @@ void {{interface}}Test::testModels()
 
     QVERIFY({{property}}->rowCount());
     QCOMPARE({{property}}->at<{{property.type.nested}}>(0), {{property.type.nested|test_type_value}});
-{%        endif %}
-{%     endfor %}
+{%      endif %}
+{%   endfor %}
 }
-{%   endif %}
-{% endfor %}
+{% endif %}
 
 #include "tst_{{interface|lower}}.moc"

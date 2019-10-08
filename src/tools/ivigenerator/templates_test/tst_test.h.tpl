@@ -39,6 +39,12 @@
 #}
 {% include "common/generated_comment.cpp.tpl" %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned  %}
+{% set testModels = false %}
+{% for property in interface.properties if not once %}
+{%   if property.type.is_model %}
+{%     set testModels = true %}
+{%   endif %}
+{% endfor %}
 #include <QtTest>
 
 QT_FORWARD_DECLARE_CLASS(QIviServiceManager);
@@ -61,13 +67,9 @@ private Q_SLOTS:
     void testChangeFromFrontend();
     void testMethods();
     void testSignals();
-{% set once = false %}
-{% for property in interface.properties if not once %}
-{%   if property.type.is_model %}
-{%     set once = true %}
+{% if testModels %}
     void testModels();
-{%   endif %}
-{% endfor %}
+{% endif %}
 
 private:
     QIviServiceManager *manager;
