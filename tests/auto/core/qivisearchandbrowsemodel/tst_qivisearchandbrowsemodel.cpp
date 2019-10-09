@@ -105,12 +105,12 @@ public:
 
     void registerInstance(const QUuid &identifier) override
     {
-        Q_UNUSED(identifier);
+        Q_UNUSED(identifier)
     }
 
     void unregisterInstance(const QUuid &identifier) override
     {
-        Q_UNUSED(identifier);
+        Q_UNUSED(identifier)
     }
 
     void setContentType(const QUuid &identifier, const QString &contentType) override
@@ -197,7 +197,7 @@ public:
 
             QMetaProperty mp = mo.property(mpi);
 
-            qSort(list.begin(), list.end(), [mp, this](const QIviStandardItem &s1, const QIviStandardItem &s2) {
+            std::sort(list.begin(), list.end(), [mp, this](const QIviStandardItem &s1, const QIviStandardItem &s2) {
                 QVariant var1 = mp.readOnGadget(&s1);
                 QVariant var2 = mp.readOnGadget(&s2);
                 if (var1.canConvert(QMetaType::Int) && var1.canConvert(QMetaType::Int)) {

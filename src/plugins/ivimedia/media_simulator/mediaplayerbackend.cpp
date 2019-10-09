@@ -98,7 +98,7 @@ void MediaPlayerBackend::initialize()
 void MediaPlayerBackend::play()
 {
     qCDebug(media) << Q_FUNC_INFO;
-    qCDebug(media) << m_player->media().canonicalUrl();
+    qCDebug(media) << m_player->media().request().url();
     m_requestedState = QIviMediaPlayer::Playing;
     m_player->play();
 }

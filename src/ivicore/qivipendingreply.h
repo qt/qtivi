@@ -98,6 +98,8 @@ public:
     QIviPendingReplyBase() = default;
     QIviPendingReplyBase(const QIviPendingReplyBase & other);
     ~QIviPendingReplyBase() = default;
+    QIviPendingReplyBase& operator=(const QIviPendingReplyBase&) = default;
+    QIviPendingReplyBase& operator=(QIviPendingReplyBase&&) = default;
 
     QIviPendingReplyWatcher* watcher() const;
     QVariant value() const;
