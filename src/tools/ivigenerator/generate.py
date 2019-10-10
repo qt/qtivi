@@ -48,10 +48,9 @@ from path import Path
 
 from qface.generator import FileSystem, Generator
 from qface.helper.qtcpp import Filters
-from qface.helper.doc import parse_doc
 from qface.watch import monitor
 from qface.idl.domain import Module, Interface, Property, Parameter, Field, Struct
-import qface.filters
+from qface.helper.generic import upper_first
 
 from jinja2 import TemplateAssertionError
 import inspect
@@ -506,27 +505,6 @@ def symbolToJson(data, symbol):
             return newList
     return data
 
-def jsonify(obj):
-    """
-    This is copied from QFace (qface/filters.py), should be replaced with
-    original when it's released
-    """
-    try:
-        # all symbols have a toJson method, try it
-        return json.dumps(obj.toJson(), indent='  ')
-    except AttributeError:
-        pass
-    return json.dumps(obj, indent='  ')
-
-
-def lower_first_filter(s):
-    s = str(s)
-    return s[0].lower() + s[1:]
-
-def upper_first(s):
-    s = str(s)
-    return s[0].upper() + s[1:]
-
 def qml_control_properties(symbol, backend_object):
     """
     Returns properties of the QML control matching to this
@@ -762,6 +740,7 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
             exit(1)
         FileSystem.merge_annotations(system, Path(annotations_file))
     generator = Generator(search_path=[tplconfig, here])
+
     generator.env.keep_trailing_newline = True
     generator.register_filter('return_type', return_type)
     generator.register_filter('parameter_type_default', parameter_type_default)
@@ -773,8 +752,6 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
     generator.register_filter('default_value', default_value)
     generator.register_filter('model_type', model_type)
     generator.register_filter('flag_type', flag_type)
-    generator.register_filter('parse_doc', parse_doc)
-    generator.register_filter('lowerfirst', lower_first_filter)
     generator.register_filter('range_low', range_low)
     generator.register_filter('range_high', range_high)
     generator.register_filter('strip_QT', strip_QT)
@@ -782,7 +759,6 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
     generator.register_filter("enum_value", enum_value)
     generator.register_filter("tag_by_path", tag_by_path)
     generator.register_filter("conf_sim_tag", conf_sim_tag)
-    generator.register_filter('jsonify', jsonify)
     generator.register_filter('has_domains', has_domains)
     generator.register_filter('simulationData', simulationData)
     generator.register_filter('json_domain', json_domain)
@@ -793,7 +769,6 @@ def generate(tplconfig, moduleConfig, annotations, src, dst):
     generator.register_filter('qml_control_signal_parameters', qml_control_signal_parameters)
     generator.register_filter('struct_includes', struct_includes)
     generator.register_filter('comment_text', comment_text)
-    generator.register_filter('hash', qface.filters.hash)
 
     #Register global functions
     generator.env.globals["error"] = jinja_error
