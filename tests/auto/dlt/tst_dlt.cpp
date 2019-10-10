@@ -40,6 +40,25 @@
 
 Q_LOGGING_CATEGORY(TEST1, "qtgeniviextras.test1")
 
+static QString longMsg = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
+"eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et "
+"accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est "
+"Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam "
+"nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero "
+"eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata anctu "
+"sest Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr,sed diam "
+"nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero "
+"eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimta sanctu "
+"sest Lorem ipsum dolor sit amet. Duis autem vel eum iriure dolor in hendrerit in vulputate velit "
+"esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et "
+"iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugit null "
+"afacilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nih euismod "
+"tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veiam, quis nostru "
+"dexerci dolor";
+
+// Copied from dlt-daemon_cfg.h
+// Defines how big the buffer for a msg payload needs to be to copy long msg
+#define DLT_DAEMON_TEXTSIZE 10024
 
 struct QDltMessage {
     QString appId;
@@ -62,28 +81,31 @@ public:
     {
         QVERIFY(dlt_file_close(dltFile, false) >= 0);
         QVERIFY(dlt_file_free(dltFile, false) >= 0);
+        delete dltFile;
     }
 
     QString idToString(char *id)
     {
         QByteArray appData(DLT_ID_SIZE, '\0');
-        dlt_print_id(appData.data(),id);
+        dlt_print_id(appData.data(), id);
         return QString(appData);
     }
 
     QString readPayload(DltMessage *msg)
     {
-        QByteArray payload(msg->datasize, '\0');
-        dlt_message_payload(msg,payload.data(),msg->datasize,DLT_OUTPUT_ASCII,false);
+        QByteArray payload(DLT_DAEMON_TEXTSIZE, '\0');
+        dlt_message_payload(msg, payload.data(), DLT_DAEMON_TEXTSIZE, DLT_OUTPUT_ASCII, false);
         return QString::fromLocal8Bit(payload);
     }
 
     QList<QDltMessage> readNextMessages()
     {
         QList<QDltMessage> messageList;
-        while (dlt_file_read(dltFile, false) == 1)
-        {
-            dlt_file_message(dltFile, 0, false);
+        //Read the complete file
+        while (dlt_file_read(dltFile, false) >= 0){};
+        //Parse the messages
+        for (int i = 0; i < dltFile->counter; i++) {
+            dlt_file_message(dltFile, i, false);
 
             QDltMessage msg;
             msg.appId = idToString(dltFile->msg.extendedheader->apid);
@@ -111,13 +133,18 @@ public:
         m_dltParser = new QDltParser(&m_tempFile);
     }
 
+    ~QDltTest()
+    {
+        delete m_dltParser;
+    }
+
 private Q_SLOTS:
 
     void initTestCase();
-//    void registerApplication();
-//    void registerTwoApplications();
-//    void registerContexts();
+    void init();
+    void testLongMessages_data();
     void testLogging();
+    void testLongMessages();
 
 private:
     QTemporaryFile m_tempFile;
@@ -126,11 +153,20 @@ private:
 
 void QDltTest::initTestCase()
 {
-    //Initialize the dlt system before the QDltRegistration can do it to log to a file.
-    dlt_init_file(m_tempFile.fileName().toLocal8Bit());
-
+    qRegisterMetaType<QDltRegistration::LongMessageBehavior>();
     //Install the DLT message handler
     qInstallMessageHandler(QDltRegistration::messageHandler);
+}
+
+void QDltTest::init()
+{
+    //Reset the log file after each test
+    m_tempFile.resize(0);
+    //Initialize the DLT log file and write the header to it.
+    dlt_init_file(m_tempFile.fileName().toLocal8Bit());
+    //Create a new Parser (to start reading the file from the beginning)
+    delete m_dltParser;
+    m_dltParser = new QDltParser(&m_tempFile);
 }
 
 void QDltTest::testLogging()
@@ -139,8 +175,8 @@ void QDltTest::testLogging()
     registration->registerApplication("APP1", "Description for APP");
     registration->registerCategory(&TEST1(), "TES1", "Test Category One");
 
-    QString msg = QLatin1String("TEST");
-    QString expectedMsg = QString("%1: \"%2\"").arg(TEST1().categoryName(), msg);
+    QString msg = QStringLiteral("TEST");
+    QString expectedMsg = QString(QStringLiteral("%1: \"%2\"")).arg(TEST1().categoryName(), msg);
 
     qWarning(TEST1) << msg;
 
@@ -151,6 +187,76 @@ void QDltTest::testLogging()
     QCOMPARE(dltMessages.at(0).payload, expectedMsg);
 }
 
+void QDltTest::testLongMessages_data()
+{
+    QTest::addColumn<QDltRegistration::LongMessageBehavior>("behavior");
+    QTest::addColumn<QString>("msg");
+    QTest::addColumn<QStringList>("expected_msgs");
+
+    QTest::addRow("Truncate ASCII") << QDltRegistration::LongMessageBehavior::Truncate
+                                    << longMsg + QStringLiteral("ipsum")
+                                    << QStringList(longMsg + QStringLiteral("ipsu"));
+    QTest::addRow("Truncate UTF-8 2 bytes") << QDltRegistration::LongMessageBehavior::Truncate
+                                            << longMsg + QStringLiteral("©®¥¶¼")
+                                            << QStringList(longMsg + QStringLiteral("©®"));
+    QTest::addRow("Truncate UTF-8 3 bytes") << QDltRegistration::LongMessageBehavior::Truncate
+                                            << longMsg + QStringLiteral("你好世界")
+                                            << QStringList(longMsg +  QStringLiteral("你"));
+    QTest::addRow("Split ASCII") << QDltRegistration::LongMessageBehavior::Split
+                                 << longMsg + QStringLiteral("ipsum")
+                                 << QStringList({longMsg + QStringLiteral("ipsu"), QStringLiteral("m\"")});
+    QTest::addRow("Split UTF-8 2 bytes") << QDltRegistration::LongMessageBehavior::Split
+                                         << longMsg + QStringLiteral("©®¥¶¼")
+                                         << QStringList({longMsg + QStringLiteral("©®"), QStringLiteral("¥¶¼\"")});
+    QTest::addRow("Split UTF-8 3 bytes") << QDltRegistration::LongMessageBehavior::Split
+                                         << longMsg +  QStringLiteral("你好世界")
+                                         << QStringList({longMsg +  QStringLiteral("你"),  QStringLiteral("好世界\"")});
+    QTest::addRow("Pass ASCII") << QDltRegistration::LongMessageBehavior::Pass
+                                << longMsg + QStringLiteral("ipsum123456789a")
+                                << QStringList(QString());
+    QTest::addRow("Pass UTF-8 2 bytes") << QDltRegistration::LongMessageBehavior::Pass
+                                        << longMsg + QStringLiteral("©®¥¶¼")
+                                        << QStringList(QString());
+    QTest::addRow("Pass UTF-8 3 bytes") << QDltRegistration::LongMessageBehavior::Pass
+                                        << longMsg +  QStringLiteral("你好世界")
+                                        << QStringList(QString());
+}
+
+void QDltTest::testLongMessages()
+{
+    QFETCH(QDltRegistration::LongMessageBehavior, behavior);
+    QFETCH(QString, msg);
+    QFETCH(QStringList, expected_msgs);
+
+    QDltRegistration *registration = globalDltRegistration();
+    registration->registerApplication("APP1", "Description for APP");
+    registration->registerCategory(&TEST1(), "TES1", "Test Category One");
+    registration->setLongMessageBehavior(behavior);
+
+    qWarning(TEST1) << msg;
+
+    QList<QDltMessage> dltMessages = m_dltParser->readNextMessages();
+    QCOMPARE(dltMessages.count(), expected_msgs.count());
+
+    int i = 0;
+    for (const QString &expected_msg : expected_msgs) {
+        QString expectedMsg;
+        //The logging category will be added before the splitting, it's only part of the first msg
+        if (i == 0 && behavior != QDltRegistration::LongMessageBehavior::Pass) {
+            //The closing quotes are part of the message pattern and will be cut as well.
+            expectedMsg = QString(QStringLiteral("%1: \"%2")).arg(TEST1().categoryName(), expected_msg);
+        } else {
+            expectedMsg = expected_msg;
+        }
+
+        QCOMPARE(dltMessages.at(i).appId, QLatin1String("APP1"));
+        QCOMPARE(dltMessages.at(i).ctxId, QLatin1String("TES1"));
+        // Enable me to compare the full content on the console
+        // std::cout << dltMessages.at(i).payload.toStdString() << "\n" << expectedMsg.toStdString() << std::endl;
+        QCOMPARE(dltMessages.at(i).payload, expectedMsg);
+        i++;
+    }
+}
 
 QTEST_APPLESS_MAIN(QDltTest)
 
