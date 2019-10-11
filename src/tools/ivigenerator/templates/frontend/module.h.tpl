@@ -57,7 +57,7 @@
    See https://github.com/Pelagicore/qface/issues/87
 #}
 {%   set name = import.split(' ')[0] %}
-{%   for mod in modules %}
+{%   for mod in system.modules %}
 {%     if mod.name == name %}
 #include <{{mod.module_name|lower}}module.h>
 {%     endif %}

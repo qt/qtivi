@@ -103,7 +103,8 @@ templates_yaml.path = $$[QT_HOST_BINS]/ivigenerator/templates
 generator_module.files += \
     generator/global_functions.py \
     generator/builtin_config.py \
-    generator/filters.py
+    generator/filters.py \
+    generator/rule_generator.py
 generator_module.path = $$[QT_HOST_BINS]/ivigenerator/generator
 
 generator.files += \

@@ -34,3 +34,8 @@
     \externalpage https://doc.qt.io/qt-5/qabstractlistmodel.html#subclassing
     \title QAbstractListModel - Subclassing
 */
+
+/*!
+    \externalpage https://qface.readthedocs.io/en/latest/extending.html#rule-base-generation
+    \title QFace - Rule Base Generation
+*/

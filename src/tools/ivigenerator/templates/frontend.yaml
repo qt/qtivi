@@ -1,36 +1,23 @@
-generate_rules:
-    module_rules:
-        - dest_file:  "{{module.module_name|lower}}global.h"
-          template_file:  "global.h.tpl"
-        - dest_file:  "{{module.module_name|lower}}module.h"
-          template_file:  "module.h.tpl"
-        - dest_file:  "{{module.module_name|lower}}module.cpp"
-          template_file:  "module.cpp.tpl"
-        - dest_file:  "{{module.module_name|lower}}module_enum.qdocinc"
-          template_file:  "module_qml_enum.qdocinc.tpl"
-        - dest_file:  "{{module.module_name|lower}}modulefactory.h"
-          template_file:  "modulefactory.h.tpl"
-        - dest_file:  "{{module.module_name|lower}}modulefactory.cpp"
-          template_file:  "modulefactory.cpp.tpl"
-        - dest_file:  "{{srcBase|lower}}.pri"
-          template_file:  "module.pri.tpl"
-        - dest_file: "qml/{{module|qml_type|replace('.', '/')}}/plugins.qmltypes"
-          template_file:  "common/plugins.qmltypes.tpl"
-        - dest_file: "qml/{{module|qml_type|replace('.', '/')}}/qmldir"
-          template_file:  "common/qmldir.tpl"
-    interface_rules:
-        - dest_file: '{{interface|lower}}backendinterface.h'
-          template_file: 'backendinterface.h.tpl'
-        - dest_file: '{{interface|lower}}backendinterface.cpp'
-          template_file: 'backendinterface.cpp.tpl'
-        - dest_file: '{{interface|lower}}.h'
-          template_file: 'interface.h.tpl'
-        - dest_file: '{{interface|lower}}_p.h'
-          template_file: 'interface_p.h.tpl'
-        - dest_file: '{{interface|lower}}.cpp'
-          template_file: 'interface.cpp.tpl'
-    struct_rules:
-        - dest_file: '{{struct|lower}}.h'
-          template_file: 'struct.h.tpl'
-        - dest_file: '{{struct|lower}}.cpp'
-          template_file: 'struct.cpp.tpl'
+frontend:
+    module:
+        documents:
+            - '{{module.module_name|lower}}global.h': 'global.h.tpl'
+            - '{{module.module_name|lower}}module.h': 'module.h.tpl'
+            - '{{module.module_name|lower}}module.cpp': 'module.cpp.tpl'
+            - '{{module.module_name|lower}}module_enum.qdocinc': 'module_qml_enum.qdocinc.tpl'
+            - '{{module.module_name|lower}}modulefactory.h': 'modulefactory.h.tpl'
+            - '{{module.module_name|lower}}modulefactory.cpp': 'modulefactory.cpp.tpl'
+            - '{{srcBase|lower}}.pri': 'module.pri.tpl'
+            - 'qml/{{module|qml_type|replace(".", "/")}}/plugins.qmltypes': 'common/plugins.qmltypes.tpl'
+            - 'qml/{{module|qml_type|replace(".", "/")}}/qmldir': 'common/qmldir.tpl'
+    interface:
+        documents:
+            - '{{interface|lower}}backendinterface.h': 'backendinterface.h.tpl'
+            - '{{interface|lower}}backendinterface.cpp': 'backendinterface.cpp.tpl'
+            - '{{interface|lower}}.h': 'interface.h.tpl'
+            - '{{interface|lower}}_p.h': 'interface_p.h.tpl'
+            - '{{interface|lower}}.cpp': 'interface.cpp.tpl'
+    struct:
+        documents:
+            - '{{struct|lower}}.h': 'struct.h.tpl'
+            - '{{struct|lower}}.cpp': 'struct.cpp.tpl'

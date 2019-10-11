@@ -1,18 +1,12 @@
-generate_rules:
-    module_rules:
-        -   dest_file:  "{{module.module_name|lower}}plugin.h"
-            template_file:  "plugin.h.tpl"
-        -   dest_file:  "{{module.module_name|lower}}plugin.cpp"
-            template_file:  "plugin.cpp.tpl"
-        -   dest_file:  "{{module.module_name|lower}}.json"
-            template_file:  "plugin.json"
-        -   dest_file:  "{{srcBase|lower}}.pri"
-            template_file:  "plugin.pri.tpl"
-    interface_rules:
-        -   dest_file: '{{interface|lower}}backend.h'
-            template_file: 'backend.h.tpl'
-        -   dest_file: '{{interface|lower}}backend.cpp'
-            template_file: 'backend.cpp.tpl'
-        -   dest_file:  "{{interface|lower}}.rep"
-            template_file:  "common/interface.rep.tpl"
-    struct_rules:
+backend_qtro:
+    module:
+        documents:
+            - "{{module.module_name|lower}}plugin.h": "plugin.h.tpl"
+            - "{{module.module_name|lower}}plugin.cpp": "plugin.cpp.tpl"
+            - "{{module.module_name|lower}}.json": "plugin.json"
+            - "{{srcBase|lower}}.pri": "plugin.pri.tpl"
+    interface:
+        documents:
+            - '{{interface|lower}}backend.h': 'backend.h.tpl'
+            - '{{interface|lower}}backend.cpp': 'backend.cpp.tpl'
+            - "{{interface|lower}}.rep": "common/interface.rep.tpl"

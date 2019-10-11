@@ -48,7 +48,7 @@ import yaml
 import sys
 from path import Path
 
-from qface.generator import FileSystem, Generator
+from qface.generator import FileSystem, Generator, RuleGenerator
 from qface.watch import monitor
 from qface.idl.domain import Module, Interface, Property, Parameter, Field, Struct
 
@@ -58,12 +58,12 @@ import inspect
 import generator.builtin_config as builtin_config
 from generator.global_functions import register_global_functions
 from generator.filters import register_filters
+from generator.rule_generator import CustomRuleGenerator
 
 here = Path(__file__).dirname()
 
 log = logging.getLogger(__file__)
 
-currentQFaceSrcFile = ''
 builtinTemplatesPath = Path(here / 'templates')
 builtinTemplates = [os.path.splitext(f)[0] for f in os.listdir(builtinTemplatesPath) if fnmatch.fnmatch(f, '*.yaml')]
 
@@ -89,22 +89,22 @@ def generate(tplconfig, moduleConfig, annotations, imports, src, dst):
             print('no such annotation file: {0}'.format(annotations_file))
             exit(1)
         FileSystem.merge_annotations(system, Path(annotations_file))
-    generator = Generator(search_path=[tplconfig, builtinTemplatesPath])
+
+
+    srcFile = os.path.basename(src[0])
+    srcBase = os.path.splitext(srcFile)[0]
+    ctx = {'qtASVersion': builtin_config.config["VERSION"], 'srcFile':srcFile, 'srcBase':srcBase}
+    generator = CustomRuleGenerator(search_path=[tplconfig, builtinTemplatesPath], destination=dst, context = ctx, modules=module_names)
     generator.env.keep_trailing_newline = True
 
     register_global_functions(generator)
     register_filters(generator)
 
-    srcFile = os.path.basename(src[0])
-    srcBase = os.path.splitext(srcFile)[0]
-    global currentQFaceSrcFile
-    currentQFaceSrcFile = src[0]
-    ctx = {'dst': dst, 'qtASVersion': builtin_config.config["VERSION"], 'srcFile':srcFile, 'srcBase':srcBase, 'features': builtin_config.config["FEATURES"]}
-    gen_config = yaml.load(open(os.path.dirname(tplconfig) + '/{0}.yaml'.format(os.path.basename(tplconfig))), Loader=yaml.SafeLoader)
-
     #Make sure the config tag is available for all our symbols
     for module in system.modules:
         module.add_tag('config')
+        for val, key in moduleConfig.items():
+            module.add_attribute('config', val, key)
         for interface in module.interfaces:
             interface.add_tag('config')
             for property in interface.properties:
@@ -122,46 +122,8 @@ def generate(tplconfig, moduleConfig, annotations, imports, src, dst):
             for member in enum.members:
                 member.add_tag('config')
 
-    ctx.update({'modules': system.modules})
-    for module in system.modules:
-        # Only generate files for the modules detected from the first parse run
-        if not module.name in module_names:
-            continue
+    generator.process_rules(os.path.dirname(tplconfig) + '/{0}.yaml'.format(os.path.basename(tplconfig)), system)
 
-        log.debug('generate code for module %s', module)
-
-        # Report early if we cannot find the imported modules
-        for imp in module._importMap:
-            if imp not in system._moduleMap:
-                sys.exit("{0}: Couldn't resolve import '{1}'".format(currentQFaceSrcFile, imp))
-
-        for val, key in moduleConfig.items():
-            module.add_attribute('config', val, key)
-        ctx.update({'module': module})
-        # TODO: refine that, probably just use plain output folder
-        dst = generator.apply('{{dst}}', ctx)
-        generator.destination = dst
-        module_rules = gen_config['generate_rules']['module_rules']
-        force = moduleConfig['force']
-        if module_rules is None: module_rules = []
-        for rule in module_rules:
-            preserve = rule['preserve'] if 'preserve' in rule else False
-            generator.write(rule['dest_file'], rule['template_file'], ctx, preserve, force)
-        for interface in module.interfaces:
-            log.debug('generate backend code for interface %s', interface)
-            ctx.update({'interface': interface})
-            interface_rules = gen_config['generate_rules']['interface_rules']
-            if interface_rules is None: interface_rules = []
-            for rule in interface_rules:
-                preserve = rule['preserve'] if 'preserve' in rule else False
-                generator.write(rule['dest_file'], rule['template_file'], ctx, preserve, force)
-        if 'struct_rules' in gen_config['generate_rules'] and isinstance(gen_config['generate_rules']['struct_rules'], list):
-            for struct in module.structs:
-                log.debug('generate code for struct %s', struct)
-                ctx.update({'struct': struct})
-                for rule in gen_config['generate_rules']['struct_rules']:
-                    preserve = rule['preserve'] if 'preserve' in rule else False
-                    generator.write(rule['dest_file'], rule['template_file'], ctx, preserve, force)
 
 
 def run(format, moduleConfig, annotations, imports, src, dst):

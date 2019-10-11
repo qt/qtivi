@@ -1,33 +1,19 @@
-generate_rules:
-    module_rules:
-        -   dest_file:  "{{module.module_name|lower}}plugin.h"
-            template_file:  "plugin.h.tpl"
-        -   dest_file:  "{{module.module_name|lower}}plugin.cpp"
-            template_file:  "plugin.cpp.tpl"
-        -   dest_file:  "{{module.module_name|lower}}_simulation.qml"
-            template_file:  "common/module_simulation.qml.tpl"
-        -   dest_file:  "{{module.module_name|lower}}.json"
-            template_file:  "plugin.json"
-        -   dest_file:  "{{module.module_name|lower}}_simulation_data.json"
-            template_file:  "common/simulation_data.json.tpl"
-        -   dest_file:  "{{module.module_name|lower}}_simulation.qrc"
-            template_file:  "common/simulation.qrc.tpl"
-        -   dest_file:  "{{srcBase|lower}}.pri"
-            template_file:  "plugin.pri.tpl"
-        -   dest_file: "qml/{{module|qml_type|replace('.', '/')}}/simulation/plugins.qmltypes"
-            template_file:  "common/simulation.qmltypes.tpl"
-        -   dest_file: "qml/{{module|qml_type|replace('.', '/')}}/simulation/qmldir"
-            template_file:  "common/qmldir.tpl"
-        -   dest_file: "qml/{{module|qml_type|replace('.', '/')}}/plugins.qmltypes"
-            template_file:  "common/plugins.qmltypes.tpl"
-        -   dest_file: "qml/{{module|qml_type|replace('.', '/')}}/qmldir"
-            template_file:  "common/qmldir.tpl"
-    interface_rules:
-        -   dest_file: '{{interface|lower}}backend.h'
-            template_file: 'common/backend_simulation.h.tpl'
-        -   dest_file: '{{interface|lower}}backend.cpp'
-            template_file: 'common/backend_simulation.cpp.tpl'
-        -   dest_file: '{{interface|upperfirst}}Simulation.qml'
-            template_file: 'common/backend_simulation.qml.tpl'
-    struct_rules:
-
+backend_simulator:
+    module:
+        documents:
+            - "{{module.module_name|lower}}plugin.h": "plugin.h.tpl"
+            - "{{module.module_name|lower}}plugin.cpp": "plugin.cpp.tpl"
+            - "{{module.module_name|lower}}_simulation.qml": "common/module_simulation.qml.tpl"
+            - "{{module.module_name|lower}}.json": "plugin.json"
+            - "{{module.module_name|lower}}_simulation_data.json": "common/simulation_data.json.tpl"
+            - "{{module.module_name|lower}}_simulation.qrc": "common/simulation.qrc.tpl"
+            - "{{srcBase|lower}}.pri": "plugin.pri.tpl"
+            - "qml/{{module|qml_type|replace('.', '/')}}/simulation/plugins.qmltypes": "common/simulation.qmltypes.tpl"
+            - "qml/{{module|qml_type|replace('.', '/')}}/simulation/qmldir": "common/qmldir.tpl"
+            - "qml/{{module|qml_type|replace('.', '/')}}/plugins.qmltypes": "common/plugins.qmltypes.tpl"
+            - "qml/{{module|qml_type|replace('.', '/')}}/qmldir": "common/qmldir.tpl"
+    interface:
+        documents:
+            - '{{interface|lower}}backend.h': 'common/backend_simulation.h.tpl'
+            - '{{interface|lower}}backend.cpp': 'common/backend_simulation.cpp.tpl'
+            - '{{interface|upperfirst}}Simulation.qml': 'common/backend_simulation.qml.tpl'

@@ -119,7 +119,7 @@ void {{class}}::registerTypes()
    See https://github.com/Pelagicore/qface/issues/87
 #}
 {%   set name = import.split(' ')[0] %}
-{%   for mod in modules %}
+{%   for mod in system.modules %}
 {%     if mod.name == name %}
     {{mod.module_name|upperfirst}}Module::registerTypes();
 {%     endif %}

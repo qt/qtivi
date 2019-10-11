@@ -54,8 +54,6 @@ Currently, Qt IVI generator has the following limitations:
         QGeoCoordinate inside a QFace IDL.
     \li The \c map<> type is not supported.
     \li Any default values provided directly in the QFace file are currently ignored.
-    \li The \c ivigenerator uses it's own YAML template, that's incorporated with QFace's YAML to
-        define the generation rules.
 \endlist
 
 */

@@ -1,12 +1,9 @@
-generate_rules:
-    module_rules:
-        -   dest_file:  "core.cpp"
-            template_file:  "core.cpp.tpl"
-        -   dest_file:  "core.h"
-            template_file:  "core.h.tpl"
-        -   dest_file:  "{{srcBase|lower}}.pri"
-            template_file:  "server.pri.tpl"
-    interface_rules:
-        -   dest_file:  "{{interface|lower}}.rep"
-            template_file:  "common/interface.rep.tpl"
-    struct_rules:
+server_qtro:
+    module:
+        documents:
+            - "core.cpp": "core.cpp.tpl"
+            - "core.h": "core.h.tpl"
+            - "{{srcBase|lower}}.pri": "server.pri.tpl"
+    interface:
+        documents:
+            - "{{interface|lower}}.rep": "common/interface.rep.tpl"

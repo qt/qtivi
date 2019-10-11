@@ -1,12 +1,9 @@
-generate_rules:
-    module_rules:
-        - dest_file:  "{{srcBase|lower}}.pri"
-          template_file:  "module.pri.tpl"
-        - dest_file: 'main.cpp'
-          template_file: 'main.cpp.tpl'
-    interface_rules:
-        - dest_file: 'tst_{{interface|lower}}.cpp'
-          template_file: 'tst_test.cpp.tpl'
-        - dest_file: 'tst_{{interface|lower}}.h'
-          template_file: 'tst_test.h.tpl'
-    struct_rules:
+test:
+    module:
+        documents:
+            - "{{srcBase|lower}}.pri": "module.pri.tpl"
+            - 'main.cpp': 'main.cpp.tpl'
+    interface:
+        documents:
+            - 'tst_{{interface|lower}}.cpp': 'tst_test.cpp.tpl'
+            - 'tst_{{interface|lower}}.h': 'tst_test.h.tpl'
