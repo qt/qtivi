@@ -77,9 +77,6 @@ class {{exportsymbol}} {{class}} : public {{base_class}}
     {{ivi.property(property)}}
 {% endfor %}
     Q_CLASSINFO("IviPropertyDomains", "{{ interface.properties|json_domain|replace("\"", "\\\"") }}")
-{% if interface.module.tags.config.validation_info %}
-    Q_CLASSINFO("IviJson", "{{ module|jsonify|replace("\"", "\\\"")|replace("\n", " \\\n") }}")
-{% endif %}
 
 public:
 {% if interface.tags.config.zoned %}

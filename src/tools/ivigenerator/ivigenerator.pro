@@ -60,17 +60,6 @@ templates_backend_simulator.files += \
     templates_backend_simulator/plugin.pro
 templates_backend_simulator.path = $$[QT_HOST_BINS]/ivigenerator/templates_backend_simulator
 
-templates_generation_validator.files += \
-    templates_generation_validator/generationstatusitem.cpp.tpl \
-    templates_generation_validator/generationstatusitem.h.tpl \
-    templates_generation_validator/main.cpp.tpl \
-    templates_generation_validator/main.qml.tpl \
-    templates_generation_validator/qml.qrc.tpl \
-    templates_generation_validator/ui.pri.tpl \
-    templates_generation_validator/validationstatus.cpp.tpl \
-    templates_generation_validator/validationstatus.h.tpl
-templates_generation_validator.path = $$[QT_HOST_BINS]/ivigenerator/templates_generation_validator
-
 templates_backend_qtro.files += \
     templates_backend_qtro/backend.cpp.tpl \
     templates_backend_qtro/backend.h.tpl \
@@ -111,7 +100,6 @@ generator.files += \
     templates_frontend.yaml \
     templates_qmlplugin.yaml \
     templates_backend_simulator.yaml \
-    templates_generation_validator.yaml \
     templates_test.yaml \
 
 generator.path = $$[QT_HOST_BINS]/ivigenerator
@@ -132,7 +120,6 @@ INSTALLS += generator \
     templates_frontend \
     templates_qmlplugin \
     templates_backend_simulator \
-    templates_generation_validator \
     templates_test \
 
 OTHER_FILES += deploy-virtualenv.bat \

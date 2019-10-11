@@ -63,7 +63,7 @@ Filters.classPrefix = ''
 currentQFaceSrcFile = ''
 
 builtin_config = {}
-IVI_DEFAULT_TEMPLATES = ['frontend', 'qmlplugin', 'backend_simulator', 'generation_validator', 'backend_qtro', 'server_qtro', 'server_qtro_simulator', 'test']
+IVI_DEFAULT_TEMPLATES = ['frontend', 'qmlplugin', 'backend_simulator', 'backend_qtro', 'server_qtro', 'server_qtro_simulator', 'test']
 
 def jinjaTrace():
     """
@@ -848,7 +848,6 @@ def run(format, moduleConfig, annotations, src, dst):
 @click.option('--reload/--no-reload', default=False, help='Specifies whether the generator should keep track of the changes in the IDL file and update output on the fly (--no-reload by default).')
 @click.option('--format', '-f', multiple=False, help='The format the autogenerator should use for the generation. This can either be one of the builtin formats or a path to a template folder. Builtin formats are: \n' + '\n'.join(IVI_DEFAULT_TEMPLATES))
 @click.option('--module', default=False, help='The name of the Qt module the autogenerator is generating. This is automatically used by the qmake integration and passed directly to the qface templates.')
-@click.option('--validation_info', is_flag=True, default=False, help='Annotates every interface with additional JSON code containing all the options used to generate this interface. This can be used to validate the generation of the interface.')
 @click.option('--force', is_flag=True, default=False, help='Always write all output files')
 @click.option('--annotations', '-A', multiple=True, default=False, help=
     'Merges the given annotation file with annotions already in the qface file and the '
@@ -858,7 +857,7 @@ def run(format, moduleConfig, annotations, src, dst):
 @click.argument('src', nargs=-1, type=click.Path(exists=True))
 @click.argument('dst', nargs=1, type=click.Path(exists=True))
 
-def app(src, dst, format, reload, module, validation_info, force, annotations):
+def app(src, dst, format, reload, module, force, annotations):
     """
     The QtIvi Autogenerator (ivigenerator)
 
@@ -880,7 +879,6 @@ def app(src, dst, format, reload, module, validation_info, force, annotations):
     else:
         moduleConfig = {
             "module": module,
-            "validation_info": validation_info,
             "force": force
         }
         run(format, moduleConfig, annotations, src, dst)
