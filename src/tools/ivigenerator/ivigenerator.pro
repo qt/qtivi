@@ -93,14 +93,19 @@ templates_test.files += \
     templates_test/pagingmodel.h.tpl
 templates_test.path = $$[QT_HOST_BINS]/ivigenerator/templates_test
 
+generator_module.files += \
+    generator/global_functions.py \
+    generator/builtin_config.py \
+    generator/filters.py
+generator_module.path = $$[QT_HOST_BINS]/ivigenerator/generator
+
 generator.files += \
     generate.py \
     $$OUT_PWD/.config \
     templates_frontend.yaml \
     templates_qmlplugin.yaml \
     templates_backend_simulator.yaml \
-    templates_test.yaml \
-
+    templates_test.yaml
 generator.path = $$[QT_HOST_BINS]/ivigenerator
 
 qtConfig(remoteobjects) {
@@ -115,6 +120,7 @@ qtConfig(remoteobjects) {
 }
 
 INSTALLS += generator \
+    generator_module \
     common \
     templates_frontend \
     templates_qmlplugin \
