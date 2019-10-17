@@ -41,6 +41,7 @@
 
 import re
 import os
+import fnmatch
 import click
 import logging.config
 import yaml
@@ -63,8 +64,8 @@ here = Path(__file__).dirname()
 log = logging.getLogger(__file__)
 
 currentQFaceSrcFile = ''
-
-IVI_DEFAULT_TEMPLATES = ['frontend', 'qmlplugin', 'backend_simulator', 'backend_qtro', 'server_qtro', 'server_qtro_simulator', 'test']
+builtinTemplatesPath = Path(here / 'templates')
+builtinTemplates = [os.path.splitext(f)[0] for f in os.listdir(builtinTemplatesPath) if fnmatch.fnmatch(f, '*.yaml')]
 
 def generate(tplconfig, moduleConfig, annotations, imports, src, dst):
     log.debug('run {0} {1}'.format(src, dst))
@@ -88,7 +89,7 @@ def generate(tplconfig, moduleConfig, annotations, imports, src, dst):
             print('no such annotation file: {0}'.format(annotations_file))
             exit(1)
         FileSystem.merge_annotations(system, Path(annotations_file))
-    generator = Generator(search_path=[tplconfig, here])
+    generator = Generator(search_path=[tplconfig, builtinTemplatesPath])
     generator.env.keep_trailing_newline = True
 
     register_global_functions(generator)
@@ -164,20 +165,20 @@ def generate(tplconfig, moduleConfig, annotations, imports, src, dst):
 
 
 def run(format, moduleConfig, annotations, imports, src, dst):
-    if format in IVI_DEFAULT_TEMPLATES:
-        tplConfig = 'templates_{0}'.format(format)
-        generate(here / tplConfig, moduleConfig, annotations, imports, src, dst)
-    else:
-        if os.path.exists(format):
-            generate(format, moduleConfig, annotations, imports, src, dst)
-        else:
-            print('Format "{0}" is invalid. Should be one of {1} or an existing template folder'.format(format, IVI_DEFAULT_TEMPLATES))
-            exit(1)
+    templatePath = format
+    if format in builtinTemplates:
+        templatePath = builtinTemplatesPath / format
 
+    if os.path.exists(templatePath):
+        generate(templatePath, moduleConfig, annotations, imports, src, dst)
+    else:
+        print('Invalid Format: {0}. It either needs to be one of the builtin formats or an existing '
+            'template folder. The following builtin formats are available: {1}'.format(format, builtinTemplates))
+        exit(1)
 
 @click.command()
 @click.option('--reload/--no-reload', default=False, help='Specifies whether the generator should keep track of the changes in the IDL file and update output on the fly (--no-reload by default).')
-@click.option('--format', '-f', multiple=False, help='The format the autogenerator should use for the generation. This can either be one of the builtin formats or a path to a template folder. Builtin formats are: \n' + '\n'.join(IVI_DEFAULT_TEMPLATES))
+@click.option('--format', '-f', multiple=False, help='The format the autogenerator should use for the generation. This can either be one of the builtin formats or a path to a template folder. Builtin formats are: \n' + '\n'.join(builtinTemplates))
 @click.option('--module', default=False, help='The name of the Qt module the autogenerator is generating. This is automatically used by the qmake integration and passed directly to the qface templates.')
 @click.option('--force', is_flag=True, default=False, help='Always write all output files')
 @click.option('--annotations', '-A', multiple=True, default=False, help=
