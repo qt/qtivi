@@ -65,7 +65,9 @@ QT_BEGIN_NAMESPACE
     , m_parent(parent)
     , m_zone(zone)
 {% for property in interface.properties %}
-{%   if not property.type.is_model %}
+{%   if property.type.is_model %}
+    , m_{{property}}(new Zoned{{property|upperfirst}}ModelBackend(QStringLiteral("{{interface.qualified_name}}.{{property}}.") + m_zone, this))
+{%   else %}
     , m_{{ property }}({{property|default_value}})
 {%   endif %}
 {% endfor %}
@@ -83,10 +85,13 @@ void {{zone_class}}::sync()
         return;
 
 {% for property in interface.properties %}
+{%   if not property.type.is_model %}
     m_propertiesToSync.append(QStringLiteral("{{property}}"));
+{%   endif %}
 {% endfor %}
 
 {% for property in interface.properties %}
+{%   if not property.type.is_model %}
     QRemoteObjectPendingReply<{{property|return_type}}> {{property}}Reply = m_parent->m_replica->{{property|getter_name}}(m_zone);
     auto {{property}}Watcher = new QRemoteObjectPendingCallWatcher({{property}}Reply);
     connect({{property}}Watcher, &QRemoteObjectPendingCallWatcher::finished, this, [this](QRemoteObjectPendingCallWatcher *self) mutable {
@@ -97,6 +102,7 @@ void {{zone_class}}::sync()
         }
         self->deleteLater();
     });
+{%   endif %}
 {% endfor %}
 }
 
@@ -122,13 +128,18 @@ void {{zone_class}}::emitCurrentState()
 {% endfor %}
 {% endif %}
 
-{{class}}::{{class}}(QObject *parent)
+{{class}}::{{class}}(const QString &remoteObjectsLookupName, QObject *parent)
     : {{class}}Interface(parent)
     , m_node(nullptr)
+    , m_remoteObjectsLookupName(remoteObjectsLookupName)
     , m_helper(new QIviRemoteObjectReplicaHelper(qLcRO{{interface}}(), this))
 {% for property in interface.properties %}
 {%   if property.type.is_model %}
-    , m_{{property}}(new {{property|upperfirst}}ModelBackend(this))
+{%     if interface_zoned %}
+    , m_{{property}}(new Zoned{{property|upperfirst}}ModelBackend(QStringLiteral("{{interface.qualified_name}}.{{property}}"), this))
+{%     else %}
+    , m_{{property}}(new {{property|upperfirst}}ModelBackend(QStringLiteral("{{interface.qualified_name}}.{{property}}"), this))
+{%     endif %}
 {%   endif %}
 {% endfor %}
 {% if interface_zoned %}
@@ -295,7 +306,7 @@ bool {{class}}::connectToNode()
             return false;
         }
         qCInfo(qLcRO{{interface}}) << "Connecting to" << m_url;
-        m_replica.reset(m_node->acquire<{{interface}}Replica>(QStringLiteral("{{interface.qualified_name}}")));
+        m_replica.reset(m_node->acquire<{{interface}}Replica>(m_remoteObjectsLookupName));
         setupConnections();
     }
     return true;

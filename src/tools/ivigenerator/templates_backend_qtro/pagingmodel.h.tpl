@@ -36,18 +36,23 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
+{% set interface_zoned = interface.tags.config and interface.tags.config.zoned  %}
+{% if interface_zoned %}
+{% set class = 'Zoned{0}ModelBackend'.format(property|upperfirst) %}
+{% else %}
 {% set class = '{0}ModelBackend'.format(property|upperfirst) %}
+{% endif %}
 
 #include <QIviPagingModelInterface>
 #include "{{property.type.nested|lower}}.h"
 
-#include "rep_pagingmodel_replica.h"
+#include "rep_qivipagingmodel_replica.h"
 
 class {{class}} : public QIviPagingModelInterface
 {
     Q_OBJECT
 public:
-    explicit {{class}}(QObject *parent = nullptr);
+    explicit {{class}}(const QString &remoteObjectsLookupName = QStringLiteral("{{interface.qualified_name}}.{{property}}"), QObject *parent = nullptr);
     ~{{class}}();
 
     void initialize() override;
@@ -60,9 +65,10 @@ private:
     bool connectToNode();
     void setupConnections();
 
-    QSharedPointer<PagingModelReplica> m_replica;
+    QSharedPointer<QIviPagingModelReplica> m_replica;
     QIviRemoteObjectReplicaHelper *m_helper;
     QRemoteObjectNode *m_node= nullptr;
+    QString m_remoteObjectsLookupName;
     QUrl m_url;
     QVariantList m_list;
 };

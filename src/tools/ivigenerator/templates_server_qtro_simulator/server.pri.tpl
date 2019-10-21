@@ -59,7 +59,6 @@ SOURCES += \
     $$PWD/main.cpp \
 
 REPC_SOURCE += \
-    $$PWD/pagingmodel.rep \
 {% for interface in module.interfaces %}
     $$PWD/{{interface|lower}}.rep \
 {% endfor %}

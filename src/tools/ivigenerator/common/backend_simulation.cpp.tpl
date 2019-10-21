@@ -62,7 +62,13 @@ QT_BEGIN_NAMESPACE
     , m_parent(parent)
     , m_zone(zone)
 {% for property in interface.properties %}
-{%   if not property.type.is_model %}
+{%   if property.type.is_model %}
+{%     if interface_zoned %}
+    , m_{{ property }}(new Zoned{{property|upperfirst}}ModelBackend(this))
+{%     else %}
+    , m_{{ property }}(new {{property|upperfirst}}ModelBackend(this));
+{%     endif %}
+{%   else %}
     , m_{{ property }}({{property|default_value}})
 {%   endif %}
 {% endfor %}

@@ -88,13 +88,10 @@ int main(int argc, char *argv[])
 
     //Start Remoting the backends
 {% for interface in module.interfaces %}
-    Core::instance()->host()->enableRemoting<{{interface}}AddressWrapper>(new {{interface}}QtRoAdapter({{interface|lowerfirst}}Instance));
-{%   for property in interface.properties %}
-{%     if property.type.is_model %}
-    Core::instance()->host()->enableRemoting<{{interface}}{{property}}ModelAddressWrapper>(qobject_cast<{{property|upperfirst}}ModelBackend *>({{interface|lowerfirst}}Instance->{{property|getter_name}}()));
-{%     endif %}
-{%   endfor %}
+    auto {{interface|lowerfirst}}Adapter = new {{interface}}QtRoAdapter({{interface|lowerfirst}}Instance);
+    {{interface|lowerfirst}}Adapter->enableRemoting(Core::instance()->host());
 {% endfor %}
+
 
     return app.exec();
 }

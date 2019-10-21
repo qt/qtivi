@@ -53,9 +53,9 @@ QT_BEGIN_NAMESPACE
 {{class}}::{{class}}(QObject *parent)
     : QObject(parent)
 {
-{%   for interface in module.interfaces %}
-    m_interfaces << new {{interface}}Backend(this);
-{%   endfor %}
+{% for interface in module.interfaces %}
+    m_interfaces << new {{interface}}Backend(QStringLiteral("{{interface.qualified_name}}"), this);
+{% endfor %}
 }
 
 QStringList {{class}}::interfaces() const

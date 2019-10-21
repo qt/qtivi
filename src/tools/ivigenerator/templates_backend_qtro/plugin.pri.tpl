@@ -57,7 +57,6 @@ SOURCES += \
     $$PWD/{{module.module_name|lower}}plugin.cpp
 
 REPC_REPLICA += \
-    $$PWD/pagingmodel.rep \
 {% for interface in module.interfaces %}
     $$PWD/{{interface|lower}}.rep \
 {% endfor %}

@@ -26,3 +26,7 @@
     "qtmultimedia" => ""
 );
 
+%inject_headers = (
+    "$basedir/src/helper/remoteobjects" => [ "rep_qivipagingmodel_source.h", "rep_qivipagingmodel_replica.h" ]
+)
+

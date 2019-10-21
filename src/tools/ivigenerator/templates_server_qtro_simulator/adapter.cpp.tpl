@@ -41,6 +41,9 @@
 {% set class = '{0}QtRoAdapter'.format(interface) %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
 #include "{{interface|lower}}adapter.h"
+
+#include <QIviPagingModelAddressWrapper>
+
 Q_LOGGING_CATEGORY(qLcRO{{interface}}, "{{module|qml_type|lower}}.{{interface|lower}}backend.remoteobjects", QtInfoMsg)
 
 /*
@@ -50,8 +53,15 @@ Q_LOGGING_CATEGORY(qLcRO{{interface}}, "{{module|qml_type|lower}}.{{interface|lo
 * to inform the client that the return value is not yet ready. Once the QIviPendingReply is ready
 * the value is send with the pendingResultAvailable value
 */
+
 {{class}}::{{class}}({{interface}}Backend *parent)
+    : {{class}}(QStringLiteral("{{interface.qualified_name}}"), parent)
+{
+}
+
+{{class}}::{{class}}(const QString &remoteObjectsLookupName, {{interface}}Backend *parent)
     : {{interface}}Source(parent)
+    , m_remoteObjectsLookupName(remoteObjectsLookupName)
     , m_backend(parent)
     , m_helper(this, qLcRO{{interface}}())
 {
@@ -63,6 +73,49 @@ Q_LOGGING_CATEGORY(qLcRO{{interface}}, "{{module|qml_type|lower}}.{{interface|lo
 {% for signal in interface.signals %}
     connect(m_backend, &{{interface}}Backend::{{signal}}, this, &{{class}}::{{signal}});
 {% endfor %}
+}
+
+QString {{class}}::remoteObjectsLookupName() const
+{
+    return m_remoteObjectsLookupName;
+}
+
+void {{class}}::enableRemoting(QRemoteObjectHostBase *node)
+{
+    node->enableRemoting<{{interface}}AddressWrapper>(this);
+{% set vars = { 'models': False } %}
+{% for property in interface.properties %}
+{%   if property.type.is_model %}
+{%     if vars.update({ 'models': True}) %}{% endif %}
+    auto {{property|lowerfirst}}Adapter = new QIviPagingModelQtRoAdapter(QStringLiteral("{{interface.qualified_name}}.{{property}}"), m_backend->{{property|getter_name}}());
+    node->enableRemoting<QIviPagingModelAddressWrapper>({{property|lowerfirst}}Adapter);
+    m_modelAdapters.insert(node, {{property|lowerfirst}}Adapter);
+{%   endif %}
+{% endfor %}
+{% if vars.models and interface_zoned %}
+    // When this is called the backend should already been initialized
+    const QStringList zones = m_backend->availableZones();
+    for (const QString &zone : zones) {
+{%   for property in interface.properties %}
+{%     if property.type.is_model %}
+        auto {{property|lowerfirst}}Adapter = new QIviPagingModelQtRoAdapter(QStringLiteral("{{interface.qualified_name}}.{{property}}.") + zone, m_backend->zoneAt(zone)->{{property|getter_name}}());
+        node->enableRemoting<QIviPagingModelAddressWrapper>({{property|lowerfirst}}Adapter);
+        m_modelAdapters.insert(node, {{property|lowerfirst}}Adapter);
+{%     endif %}
+{%   endfor %}
+    }
+{% endif %}
+}
+
+void {{class}}::disableRemoting(QRemoteObjectHostBase *node)
+{
+    node->disableRemoting(this);
+    const auto adapterList = m_modelAdapters.values(node);
+    for (QIviPagingModelQtRoAdapter *adapter : adapterList) {
+        node->disableRemoting(adapter);
+        delete adapter;
+    }
+    m_modelAdapters.remove(node);
 }
 
 {% if interface_zoned %}

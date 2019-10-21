@@ -6,8 +6,6 @@ generate_rules:
             template_file:  "core.h.tpl"
         -   dest_file:  "{{srcBase|lower}}.pri"
             template_file:  "server.pri.tpl"
-        -   dest_file:  "pagingmodel.rep"
-            template_file:  "common/pagingmodel.rep.tpl"
         -   dest_file:  "main.cpp"
             template_file:  "main.cpp.tpl"
         -   dest_file:  "{{module.module_name|lower}}_simulation.qml"

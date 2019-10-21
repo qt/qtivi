@@ -18,7 +18,6 @@ common.files += \
     common/plugins.qmltypes.tpl \
     common/qmldir.tpl \
     common/interface.rep.tpl \
-    common/pagingmodel.rep.tpl \
     common/simulation_data.json.tpl \
     common/simulation.qrc.tpl \
     common/module_simulation.qml.tpl \

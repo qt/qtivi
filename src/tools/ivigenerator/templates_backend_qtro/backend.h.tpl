@@ -106,7 +106,8 @@ class {{class}} : public {{class}}Interface
     Q_OBJECT
 
 public:
-    explicit {{class}}(QObject *parent = nullptr);
+    explicit {{class}}(const QString &remoteObjectsLookupName = QStringLiteral("{{interface.qualified_name}}"),
+                       QObject *parent = nullptr);
     ~{{class}}();
 
     void initialize() override;
@@ -141,6 +142,7 @@ protected:
     QSharedPointer<{{interface}}Replica> m_replica;
     QRemoteObjectNode* m_node= nullptr;
     QUrl m_url;
+    QString m_remoteObjectsLookupName;
     QHash<quint64, QIviPendingReplyBase> m_pendingReplies;
     QIviRemoteObjectReplicaHelper *m_helper;
 {% for property in interface.properties %}

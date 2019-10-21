@@ -48,7 +48,7 @@
 
 #include "{{interface|lower}}backend.h"
 #include "rep_{{interface|lower}}_source.h"
-#include "rep_pagingmodel_source.h"
+#include "rep_qivipagingmodel_source.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -59,27 +59,23 @@ QT_BEGIN_NAMESPACE
 */
 template <class ObjectType>
 struct {{interface}}AddressWrapper: public {{interface}}SourceAPI<ObjectType> {
-    {{interface}}AddressWrapper(ObjectType *object, const QString &name = QStringLiteral("{{interface.qualified_name}}"))
-        : {{interface}}SourceAPI<ObjectType>(object, name)
-    {}
-};
-{% for property in interface.properties %}
-{%   if property.type.is_model %}
-template <class ObjectType>
-struct {{interface}}{{property}}ModelAddressWrapper: public PagingModelSourceAPI<ObjectType> {
-    {{interface}}{{property}}ModelAddressWrapper(ObjectType *object, const QString &name = QStringLiteral("{{interface.qualified_name}}.{{property}}"))
-        : PagingModelSourceAPI<ObjectType>(object, name)
+    {{interface}}AddressWrapper(ObjectType *object)
+        : {{interface}}SourceAPI<ObjectType>(object, object->remoteObjectsLookupName())
     {}
 };
 
-{%   endif %}
-{% endfor %}
+class QIviPagingModelQtRoAdapter;
 
 class {{class}} : public {{interface}}Source
 {
     Q_OBJECT
 public:
-    {{class}}({{interface}}Backend *parent = nullptr);
+    {{class}}({{interface}}Backend *parent);
+    {{class}}(const QString &remoteObjectsLookupName, {{interface}}Backend *parent);
+
+    QString remoteObjectsLookupName() const;
+    void enableRemoting(QRemoteObjectHostBase *node);
+    void disableRemoting(QRemoteObjectHostBase *node);
 
 {% if interface_zoned %}
     Q_INVOKABLE QStringList availableZones() override;
@@ -113,7 +109,9 @@ public Q_SLOTS:
 {% endfor %}
 
 private:
+    QString m_remoteObjectsLookupName;
     {{interface}}Backend *m_backend;
+    QMultiHash<QRemoteObjectHostBase *, QIviPagingModelQtRoAdapter *> m_modelAdapters;
     QIviRemoteObjectSourceHelper<{{class}}> m_helper;
 };
 

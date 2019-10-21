@@ -36,14 +36,20 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
+{% set interface_zoned = interface.tags.config and interface.tags.config.zoned  %}
+{% if interface_zoned %}
+{% set class = 'Zoned{0}ModelBackend'.format(property|upperfirst) %}
+{% else %}
 {% set class = '{0}ModelBackend'.format(property|upperfirst) %}
+{% endif %}
 
 Q_LOGGING_CATEGORY(qLcRO{{interface}}{{property|upper_first}}, "{{module|qml_type|lower}}.{{interface|lower}}backend.{{property|lower}}.remoteobjects", QtInfoMsg)
 
-{{class}}::{{class}}(QObject* parent)
+{{class}}::{{class}}(const QString &remoteObjectsLookupName, QObject* parent)
     : QIviPagingModelInterface(parent)
     , m_node(nullptr)
     , m_helper(new QIviRemoteObjectReplicaHelper(qLcRO{{interface}}{{property|upper_first}}(), this))
+    , m_remoteObjectsLookupName(remoteObjectsLookupName)
 {
     qRegisterMetaType<QIviPagingModelInterface*>();
 }
@@ -110,7 +116,7 @@ bool {{class}}::connectToNode()
             return false;
         }
         qCInfo(qLcRO{{interface}}{{property|upper_first}}) << "Connecting to" << m_url;
-        m_replica.reset(m_node->acquire<PagingModelReplica>(QStringLiteral("{{interface.qualified_name}}.{{property}}")));
+        m_replica.reset(m_node->acquire<QIviPagingModelReplica>(m_remoteObjectsLookupName));
         setupConnections();
     }
     return true;
@@ -123,8 +129,8 @@ void {{class}}::setupConnections()
     connect(m_helper, &QIviRemoteObjectReplicaHelper::errorChanged, this, &QIviFeatureInterface::errorChanged);
     connect(m_replica.data(), &QRemoteObjectReplica::stateChanged, m_helper, &QIviRemoteObjectReplicaHelper::onReplicaStateChanged);
 
-    connect(m_replica.data(), &PagingModelReplica::supportedCapabilitiesChanged, this, &{{class}}::supportedCapabilitiesChanged);
-    connect(m_replica.data(), &PagingModelReplica::countChanged, this, &{{class}}::countChanged);
-    connect(m_replica.data(), &PagingModelReplica::dataFetched, this, &{{class}}::dataFetched);
-    connect(m_replica.data(), &PagingModelReplica::dataChanged, this, &{{class}}::dataChanged);
+    connect(m_replica.data(), &QIviPagingModelReplica::supportedCapabilitiesChanged, this, &{{class}}::supportedCapabilitiesChanged);
+    connect(m_replica.data(), &QIviPagingModelReplica::countChanged, this, &{{class}}::countChanged);
+    connect(m_replica.data(), &QIviPagingModelReplica::dataFetched, this, &{{class}}::dataFetched);
+    connect(m_replica.data(), &QIviPagingModelReplica::dataChanged, this, &{{class}}::dataChanged);
 }
