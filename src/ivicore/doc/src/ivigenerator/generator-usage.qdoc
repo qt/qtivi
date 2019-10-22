@@ -282,9 +282,9 @@
             \li
             \code
             config_simulator:
-                zones: { FrontLeft,
+                zones: [ FrontLeft,
                          FrontRight,
-                         Rear }
+                         Rear ]
             \endcode
             \li Accompanying YAML file
             \li Interface
