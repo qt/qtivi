@@ -57,7 +57,8 @@ struct QIviSearchAndBrowseModelAddressWrapper: public QIviSearchAndBrowseModelSo
 class QIviSearchAndBrowseModelQtRoAdapter : public QIviSearchAndBrowseModelSource
 {
 public:
-    QIviSearchAndBrowseModelQtRoAdapter(QIviSearchAndBrowseModelInterface *parent, const QString& remoteObjectsLookupName = QStringLiteral("QIviSearchAndBrowseModel"));
+    QIviSearchAndBrowseModelQtRoAdapter(QIviSearchAndBrowseModelInterface *parent);
+    QIviSearchAndBrowseModelQtRoAdapter(const QString& remoteObjectsLookupName, QIviSearchAndBrowseModelInterface *parent);
 
     QString remoteObjectsLookupName() const;
     QStringList availableContentTypes() const override;
