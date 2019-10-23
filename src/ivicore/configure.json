@@ -23,10 +23,10 @@
             "package": "virtualenv"
         },
         "qface": {
-            "label": "qface 1.10",
+            "label": "qface 2.0.0",
             "type": "python3_package",
             "package": "qface",
-            "version": "1.10"
+            "version": "2.0.0"
         },
         "qface-submodule": {
             "label": "qface-submodule",
