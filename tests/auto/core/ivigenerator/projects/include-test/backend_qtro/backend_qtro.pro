@@ -7,7 +7,7 @@ CONFIG += warn_off ivigenerator plugin
 
 INCLUDEPATH += $$OUT_PWD/../frontend $$OUT_PWD/../common
 PLUGIN_TYPE = qtivi
-PLUGIN_CLASS_NAME = IncludeTestPlugin
+PLUGIN_CLASS_NAME = IncludeTestQtROPlugin
 
 QT += core ivicore
 

@@ -49,14 +49,14 @@ class MediaIndexerBackend;
 class SearchAndBrowseModel;
 class MediaDiscoveryBackend;
 
-class MediaPlugin : public QObject, QIviServiceInterface
+class MediaQtROPlugin : public QObject, QIviServiceInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QIviServiceInterface_iid FILE "media_qtro.json")
     Q_INTERFACES(QIviServiceInterface)
 
 public:
-    explicit MediaPlugin(QObject *parent = nullptr);
+    explicit MediaQtROPlugin(QObject *parent = nullptr);
 
     QStringList interfaces() const override;
     QIviFeatureInterface *interfaceInstance(const QString &interface) const override;

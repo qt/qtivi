@@ -54,7 +54,7 @@
 #include <QSettings>
 #include <QRemoteObjectNode>
 
-MediaPlugin::MediaPlugin(QObject *parent)
+MediaQtROPlugin::MediaQtROPlugin(QObject *parent)
     : QObject(parent)
     , m_player(new MediaPlayerBackend(this))
     , m_indexer(new MediaIndexerBackend(this))
@@ -63,7 +63,7 @@ MediaPlugin::MediaPlugin(QObject *parent)
 {
 }
 
-QStringList MediaPlugin::interfaces() const
+QStringList MediaQtROPlugin::interfaces() const
 {
     QStringList list;
 
@@ -74,7 +74,7 @@ QStringList MediaPlugin::interfaces() const
     return list;
 }
 
-QIviFeatureInterface *MediaPlugin::interfaceInstance(const QString &interface) const
+QIviFeatureInterface *MediaQtROPlugin::interfaceInstance(const QString &interface) const
 {
     if (interface == QStringLiteral(QIviMediaPlayer_iid))
         return m_player;

@@ -49,14 +49,14 @@
 #include <QtIviCore/QIviSearchAndBrowseModel>
 #include <QtIviMedia/QIviMediaPlayer>
 
-TunerPlugin::TunerPlugin(QObject *parent)
+TunerSimulatorPlugin::TunerSimulatorPlugin(QObject *parent)
     : QObject(parent)
     , m_amfmtuner(new AmFmTunerBackend(this))
     , m_searchbackend(new SearchAndBrowseBackend(m_amfmtuner, this))
 {
 }
 
-QStringList TunerPlugin::interfaces() const
+QStringList TunerSimulatorPlugin::interfaces() const
 {
     QStringList list;
     list << QStringLiteral(QIviSearchAndBrowseModel_iid);
@@ -64,7 +64,7 @@ QStringList TunerPlugin::interfaces() const
     return list;
 }
 
-QIviFeatureInterface *TunerPlugin::interfaceInstance(const QString &interface) const
+QIviFeatureInterface *TunerSimulatorPlugin::interfaceInstance(const QString &interface) const
 {
     if (interface == QLatin1String(QIviAmFmTuner_iid))
         return m_amfmtuner;

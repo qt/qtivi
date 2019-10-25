@@ -56,7 +56,7 @@
 #include <QStringList>
 #include <QtDebug>
 
-MediaPlugin::MediaPlugin(QObject *parent)
+MediaSimulatorPlugin::MediaSimulatorPlugin(QObject *parent)
     : QObject(parent)
     , m_discovery(new MediaDiscoveryBackend(this))
 {
@@ -85,7 +85,7 @@ MediaPlugin::MediaPlugin(QObject *parent)
 
 }
 
-QStringList MediaPlugin::interfaces() const
+QStringList MediaSimulatorPlugin::interfaces() const
 {
     QStringList list;
     list << QStringLiteral(QIviMediaPlayer_iid);
@@ -95,7 +95,7 @@ QStringList MediaPlugin::interfaces() const
     return list;
 }
 
-QIviFeatureInterface *MediaPlugin::interfaceInstance(const QString &interface) const
+QIviFeatureInterface *MediaSimulatorPlugin::interfaceInstance(const QString &interface) const
 {
     if (interface == QStringLiteral(QIviMediaPlayer_iid))
         return m_player;

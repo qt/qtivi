@@ -1,8 +1,8 @@
 backend_simulator:
     module:
         documents:
-            - "{{module.module_name|lower}}plugin.h": "plugin.h.tpl"
-            - "{{module.module_name|lower}}plugin.cpp": "plugin.cpp.tpl"
+            - "{{module.module_name|lower}}simulatorplugin.h": "plugin.h.tpl"
+            - "{{module.module_name|lower}}simulatorplugin.cpp": "plugin.cpp.tpl"
             - "{{module.module_name|lower}}_simulation.qml": "common/module_simulation.qml.tpl"
             - "{{module.module_name|lower}}.json": "plugin.json"
             - "{{module.module_name|lower}}_simulation_data.json": "common/simulation_data.json.tpl"

@@ -50,13 +50,13 @@ HEADERS += \
 {% for interface in module.interfaces %}
     $$PWD/{{interface|lower}}backend.h \
 {% endfor %}
-    $$PWD/{{module.module_name|lower}}plugin.h
+    $$PWD/{{module.module_name|lower}}simulatorplugin.h
 
 SOURCES += \
 {% for interface in module.interfaces %}
     $$PWD/{{interface|lower}}backend.cpp \
 {% endfor %}
-    $$PWD/{{module.module_name|lower}}plugin.cpp
+    $$PWD/{{module.module_name|lower}}simulatorplugin.cpp
 
 RESOURCES += $$PWD/{{module.module_name|lower}}_simulation.qrc
 
