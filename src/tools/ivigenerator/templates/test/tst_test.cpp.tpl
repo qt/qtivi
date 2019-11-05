@@ -259,6 +259,7 @@ private:
 {{interface}}Test::{{interface}}Test()
     : QObject()
 {
+    QCoreApplication::setLibraryPaths(QStringList());
     {{module.module_name|upperfirst}}Module::registerTypes();
     manager = QIviServiceManager::instance();
 }

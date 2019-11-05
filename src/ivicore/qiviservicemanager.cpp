@@ -97,7 +97,10 @@ namespace qtivi_helper {
 
 using namespace qtivi_helper;
 
-QIviServiceManagerPrivate::QIviServiceManagerPrivate(QIviServiceManager *parent) : QObject(parent), q_ptr(parent)
+QIviServiceManagerPrivate::QIviServiceManagerPrivate(QIviServiceManager *parent)
+    : QObject(parent)
+    , m_staticLoaded(false)
+    , q_ptr(parent)
 {
 }
 
@@ -161,8 +164,13 @@ QList<QIviServiceObject *> QIviServiceManagerPrivate::findServiceByInterface(con
 void QIviServiceManagerPrivate::searchPlugins()
 {
     bool found = false;
+
     const auto pluginDirs = QCoreApplication::libraryPaths();
     for (const QString &pluginDir : pluginDirs) {
+        // Already loaded, skip it...
+        if (m_loadedPaths.contains(pluginDir))
+            continue;
+        m_loadedPaths << pluginDir;
 
         QString path = pluginDir + QDir::separator() + QLatin1String(QIVI_PLUGIN_DIRECTORY);
         QDir dir(path);
@@ -183,11 +191,16 @@ void QIviServiceManagerPrivate::searchPlugins()
             found = true;
         }
     }
-    const auto staticPlugins = QPluginLoader::staticPlugins();
-    for (const QStaticPlugin &plugin : staticPlugins)
-        registerStaticBackend(plugin);
 
-    if (Q_UNLIKELY(!found))
+    // Only load the static plugins once
+    if (!m_staticLoaded) {
+        m_staticLoaded = true;
+        const auto staticPlugins = QPluginLoader::staticPlugins();
+        for (const QStaticPlugin &plugin : staticPlugins)
+            registerStaticBackend(plugin);
+    }
+
+    if (Q_UNLIKELY(!found && m_backends.count() == 0))
         qWarning() << "No plugins found in search path: " << QCoreApplication::libraryPaths().join(QLatin1String(":"));
 }
 
@@ -294,6 +307,8 @@ void QIviServiceManagerPrivate::unloadAllBackends()
     q->endResetModel();
 
     m_interfaceNames.clear();
+    m_loadedPaths.clear();
+    m_staticLoaded = false;
 }
 
 void QIviServiceManagerPrivate::addBackend(Backend *backend)
@@ -535,6 +550,7 @@ QIviServiceManager *QIviServiceManager::instance()
 QList<QIviServiceObject *> QIviServiceManager::findServiceByInterface(const QString &interface, SearchFlags searchFlags)
 {
     Q_D(QIviServiceManager);
+    d->searchPlugins();
     return d->findServiceByInterface(interface, searchFlags);
 }
 
