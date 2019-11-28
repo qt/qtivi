@@ -429,7 +429,7 @@
     search for it and is still using the old hardcoded registration. So, we can now remove the
     linking step in the \c instrument-cluster.pro file and change our main file accordingly:
 
-    \quotefromfile ivicore/qface-tutorial/chapter1-basics/instrument-cluster/main.cpp
+    \quotefromfile ivicore/qface-tutorial/chapter3-simulation-backend/instrument-cluster/main.cpp
     \skipto #include
     \printuntil }
 
