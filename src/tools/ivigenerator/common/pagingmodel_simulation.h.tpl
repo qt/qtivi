@@ -46,9 +46,12 @@
 class {{class}} : public QIviPagingModelInterface
 {
     Q_OBJECT
+    Q_PROPERTY(int count READ count NOTIFY countChanged)
 public:
     explicit {{class}}(QObject *parent = nullptr);
     ~{{class}}();
+
+    int count() const;
 
     Q_INVOKABLE void initialize() override;
     Q_INVOKABLE void registerInstance(const QUuid &identifier) override;
@@ -62,7 +65,7 @@ public Q_SLOTS:
     void move(int currentIndex, int newIndex);
     void reset();
     void update(int index, const {{property.type.nested}} &item);
-    const {{property.type.nested}} &at(int index) const;
+    {{property.type.nested}} at(int index) const;
 
 private:
     QList<{{property.type.nested}}> m_list;

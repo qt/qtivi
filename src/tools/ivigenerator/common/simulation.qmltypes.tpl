@@ -103,6 +103,7 @@ Module {
         exports: ["{{module|qml_type}}.simulation/{{property|upperfirst}}ModelBackend {{module.majorVersion}}.{{module.minorVersion}}"]
 
         Property { name: "Base"; type: "{{property|upperfirst}}ModelBackend"; isPointer: true }
+        Property { name: "count"; type: "int" }
 
         Method { name: "initialize" }
         Method {

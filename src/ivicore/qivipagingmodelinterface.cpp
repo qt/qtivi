@@ -123,10 +123,10 @@ QIviPagingModelInterface::QIviPagingModelInterface(QObjectPrivate &dd, QObject *
 */
 
 /*!
-    \fn void QIviPagingModelInterface::countChanged(const QUuid &identifier, int newLength)
+    \fn void QIviPagingModelInterface::countChanged(const QUuid &identifier, int count)
 
     This signal is emitted when the current number of items in the QIviPagingModel instance identified by \a identifier changed.
-    The new number of items is returned as \a newLength.
+    The new number of items is returned as \a count.
 
     This signal is expected to be emitted after the model instance has requested new data for the first time by calling fetchData() and
     should be emitted before the data is returned by emitting the dataFetched() signal.
