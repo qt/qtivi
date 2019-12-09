@@ -144,7 +144,27 @@ QVariant qtivi_convertFromJSON(const QVariant &value)
                 for (auto i = values.begin(); i != values.end(); ++i)
                     *i = qtivi_convertFromJSON(*i);
 
-                void *gadget = mo->newInstance(Q_ARG(QVariant, QVariant(values)));
+                void *gadget = QMetaType::create(typeId);
+                if (!gadget) {
+                    qWarning("Couldn't create a new instance of %s", QMetaType::typeName(typeId));
+                    return QVariant();
+                }
+
+                /*  Left here for debugging
+                    for (int i = mo->methodOffset(); i < mo->methodCount(); ++i)
+                        qDebug() << mo->method(i).methodSignature();
+                */
+
+                int moIdx = mo->indexOfMethod("fromJSON(QVariant)");
+                if (moIdx == -1) {
+                    qWarning("Couldn't find method: %s::fromJSON(QVariant)\n"
+                             "If your are using code created by the ivigenerator, please regenerate"
+                             "your frontend code. See AUTOSUITE-1374 for why this is needed",
+                             QMetaType::typeName(typeId));
+                    return QVariant();
+                }
+
+                mo->method(moIdx).invokeOnGadget(gadget, Q_ARG(QVariant, QVariant(values)));
                 return QVariant(typeId, gadget);
             }
         }
