@@ -1,0 +1,20 @@
+{
+  "AddressBook": {
+    "contacts": {
+      "default": [
+        {
+          "type": "Contact",
+          "value": [
+            "John",
+            "Doe",
+            "12345"
+          ]
+        },
+        {
+          "type": "Contact",
+          "value": [
+            "Jane",
+            "Doe",
+            "67890"
+          ]
+        }
