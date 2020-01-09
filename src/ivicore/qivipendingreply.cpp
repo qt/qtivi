@@ -59,18 +59,20 @@ QT_BEGIN_NAMESPACE
 #define QTIVI_ADD_STATIC_METATYPE(MetaTypeName, MetaTypeId, AliasingType) \
     QTIVI_ADD_STATIC_METATYPE2(MetaTypeName, MetaTypeId, AliasingType, nullptr)
 
-struct QIviPendingReplyRegistrator {
-    QIviPendingReplyRegistrator() {
-        qRegisterMetaType<QIviPendingReplyBase>("QIviPendingReplyBase");
-        QT_FOR_EACH_STATIC_PRIMITIVE_TYPE(QTIVI_ADD_STATIC_METATYPE)
-        QT_FOR_EACH_STATIC_PRIMITIVE_POINTER(QTIVI_ADD_STATIC_METATYPE)
-        QT_FOR_EACH_STATIC_CORE_POINTER(QTIVI_ADD_STATIC_METATYPE)
-        QT_FOR_EACH_STATIC_CORE_TEMPLATE(QTIVI_ADD_STATIC_METATYPE)
-        QT_FOR_EACH_STATIC_CORE_CLASS(QTIVI_ADD_STATIC_METATYPE)
-        QT_FOR_EACH_STATIC_ALIAS_TYPE(QTIVI_ADD_STATIC_METATYPE2)
-    }
-};
-static QIviPendingReplyRegistrator _registrator;
+static void qiviRegisterPendingReplyBasicTypes() {
+    static bool once = false;
+    if (once)
+        return;
+
+    qRegisterMetaType<QIviPendingReplyBase>("QIviPendingReplyBase");
+    QT_FOR_EACH_STATIC_PRIMITIVE_TYPE(QTIVI_ADD_STATIC_METATYPE)
+    QT_FOR_EACH_STATIC_PRIMITIVE_POINTER(QTIVI_ADD_STATIC_METATYPE)
+    QT_FOR_EACH_STATIC_CORE_POINTER(QTIVI_ADD_STATIC_METATYPE)
+    QT_FOR_EACH_STATIC_CORE_TEMPLATE(QTIVI_ADD_STATIC_METATYPE)
+    QT_FOR_EACH_STATIC_CORE_CLASS(QTIVI_ADD_STATIC_METATYPE)
+    QT_FOR_EACH_STATIC_ALIAS_TYPE(QTIVI_ADD_STATIC_METATYPE2)
+    once = true;
+}
 
 // TODO make it reentrant
 
@@ -561,6 +563,7 @@ void QIviPendingReplyWatcher::then(const QJSValue &success, const QJSValue &fail
 QIviPendingReplyBase::QIviPendingReplyBase(int userType)
     : m_watcher(new QIviPendingReplyWatcher(userType))
 {
+    qiviRegisterPendingReplyBasicTypes();
 }
 
 QIviPendingReplyBase::QIviPendingReplyBase(const QIviPendingReplyBase &other)
