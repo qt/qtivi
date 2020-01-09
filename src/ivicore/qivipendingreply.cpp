@@ -828,9 +828,9 @@ void QIviPendingReplyBase::setSuccessNoCheck(const QVariant &value)
 */
 
 /*!
-    \fn template <class T> QIviPendingReply<T>::setSuccess(const T &value)
+    \fn template <class T> QIviPendingReply<T>::setSuccess(const T &val)
 
-    Sets the result of the reply to \a value and marks the reply as succeeded.
+    Sets the result of the reply to \a val and marks the reply as succeeded.
 
     \note a result can only be set once and cannot be changed again later.
 

@@ -401,12 +401,12 @@ QString QIviSimulationGlobalObject::constraint(const QVariantMap &data, const QS
 }
 
 /*!
-    \qmlmethod IviSimulator::checkSettings(object data, var data, string zone)
+    \qmlmethod IviSimulator::checkSettings(object data, var value, string zone)
 
     Searches for all boundary settings in \a data for the given \a zone and returns whether the
-    provided \a value meets this contraint.
+    provided \a value meets this constraint.
 
-    To show meaningful error messages when the value is not within the boundaries, the contraint()
+    To show meaningful error messages when the value is not within the boundaries, the constraint()
     function can be used.
 
     \sa constraint()

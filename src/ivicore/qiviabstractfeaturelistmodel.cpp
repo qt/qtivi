@@ -138,7 +138,7 @@ QIviFeatureInterface *QIviAbstractFeatureListModelPrivate::backend() const
 
     \list
         \li For more details on how to integrate with the \l{Dynamic Backend System}, see
-            \l{QIviAbstractFeature::Write a Subclass}{QIviAbstractFeature}.
+            \l{Write a Subclass}{QIviAbstractFeature}.
         \li For more details on what you need to do to provide the model's required
             functionality, see \l{QAbstractListModel - Subclassing}.
         \li For a class that implements all the necessary QIviAbstractFeatureListModel functions
