@@ -119,11 +119,15 @@ QVariant qtivi_convertFromJSON(const QVariant &value)
             if (type == QStringLiteral("enum")) {
                 QString enumValue = value.toString();
                 const int lastIndex = enumValue.lastIndexOf(QStringLiteral("::"));
-                const QString className = enumValue.left(lastIndex - 1 );
+                const QString className = enumValue.left(lastIndex) + QStringLiteral("*");
                 enumValue = enumValue.right(enumValue.count() - lastIndex - 2);
                 const QMetaObject *mo = QMetaType::metaObjectForType(QMetaType::type(className.toLatin1()));
-                if (!mo)
+                if (Q_UNLIKELY(!mo)) {
+                    qWarning() << "Couldn't retrieve MetaObject for enum parsing:" << map;
+                    qWarning("Please make sure %s is registered in Qt's meta-type system: qRegisterMetaType<%s>()",
+                             qPrintable(className), qPrintable(className));
                     return QVariant();
+                }
 
                 for (int i = mo->enumeratorOffset(); i < mo->enumeratorCount(); ++i) {
                     QMetaEnum me = mo->enumerator(i);
@@ -137,15 +141,19 @@ QVariant qtivi_convertFromJSON(const QVariant &value)
             } else {
                 int typeId = QMetaType::type(type.toLatin1());
                 const QMetaObject *mo = QMetaType::metaObjectForType(typeId);
-                if (!mo)
+                if (Q_UNLIKELY(!mo)) {
+                    qWarning() << "Couldn't retrieve MetaObject for struct parsing:" << map;
+                    qWarning("Please make sure %s is registered in Qt's meta-type system: qRegisterMetaType<%s>()",
+                             qPrintable(type), qPrintable(type));
                     return QVariant();
+                }
 
                 QVariantList values = value.toList();
                 for (auto i = values.begin(); i != values.end(); ++i)
                     *i = qtivi_convertFromJSON(*i);
 
                 void *gadget = QMetaType::create(typeId);
-                if (!gadget) {
+                if (!Q_UNLIKELY(gadget)) {
                     qWarning("Couldn't create a new instance of %s", QMetaType::typeName(typeId));
                     return QVariant();
                 }
@@ -156,7 +164,7 @@ QVariant qtivi_convertFromJSON(const QVariant &value)
                 */
 
                 int moIdx = mo->indexOfMethod("fromJSON(QVariant)");
-                if (moIdx == -1) {
+                if (Q_UNLIKELY(moIdx == -1)) {
                     qWarning("Couldn't find method: %s::fromJSON(QVariant)\n"
                              "If your are using code created by the ivigenerator, please regenerate"
                              "your frontend code. See AUTOSUITE-1374 for why this is needed",
