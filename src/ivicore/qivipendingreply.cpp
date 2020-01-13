@@ -59,7 +59,16 @@ QT_BEGIN_NAMESPACE
 #define QTIVI_ADD_STATIC_METATYPE(MetaTypeName, MetaTypeId, AliasingType) \
     QTIVI_ADD_STATIC_METATYPE2(MetaTypeName, MetaTypeId, AliasingType, nullptr)
 
-static void qiviRegisterPendingReplyBasicTypes() {
+
+/*!
+    \relates QIviPendingReply
+
+    Registers QIviPendingReplys of all Qt basic types to the meta type system.
+
+    Usually this function called automatically when creating a QCoreApplication or a QIviPendingReply
+    and doesn't need to be called manually.
+*/
+void qiviRegisterPendingReplyBasicTypes() {
     static bool once = false;
     if (once)
         return;
@@ -73,6 +82,8 @@ static void qiviRegisterPendingReplyBasicTypes() {
     QT_FOR_EACH_STATIC_ALIAS_TYPE(QTIVI_ADD_STATIC_METATYPE2)
     once = true;
 }
+
+Q_COREAPP_STARTUP_FUNCTION(qiviRegisterPendingReplyBasicTypes)
 
 // TODO make it reentrant
 
