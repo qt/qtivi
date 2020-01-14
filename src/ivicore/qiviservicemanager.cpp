@@ -172,13 +172,21 @@ void QIviServiceManagerPrivate::searchPlugins()
             continue;
         m_loadedPaths << pluginDir;
 
+#ifdef Q_OS_ANDROID
+        QString path = pluginDir;
+#else
         QString path = pluginDir + QDir::separator() + QLatin1String(QIVI_PLUGIN_DIRECTORY);
+#endif
         QDir dir(path);
         //Check whether the directory exists
         if (!dir.exists())
             continue;
 
-        const QStringList plugins = QDir(path).entryList(QDir::Files);
+        const QStringList plugins = QDir(path).entryList(
+#ifdef Q_OS_ANDROID
+                    QStringList(QLatin1String("libplugins_%1_*.so").arg(QLatin1String(QIVI_PLUGIN_DIRECTORY))),
+#endif
+                    QDir::Files);
         for (const QString &pluginFileName : plugins) {
             if (!QLibrary::isLibrary(pluginFileName))
                 continue;
