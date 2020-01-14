@@ -113,6 +113,11 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
 /*! \internal */
 void {{class}}::registerTypes()
 {
+    static bool once = false;
+    if (once)
+        return;
+    once = true;
+
 {% for import in module.imports %}
 {# All imports are provided including their imported version e.g. "Common 1.0". Because we need
    to access the Module type, we first need to split the version and then search for the name.
@@ -139,6 +144,7 @@ void {{class}}::registerTypes()
 {% for struct in module.structs %}
     qRegisterMetaType<{{struct}}>();
     qRegisterMetaTypeStreamOperators<{{struct}}>();
+    QMetaType::registerEqualsComparator<{{struct}}>();
     qIviRegisterPendingReplyType<{{struct}}>();
 {% endfor %}
 }
