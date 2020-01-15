@@ -149,7 +149,7 @@ QtObject {
                     backend.heaterMode = heaterMode
                 }
             } else {
-                console.error("SIMULATION changing heaterMode is not possible: provided: " + heaterMode + "constraint: " + IviSimulator.constraint_string(settings["heaterMode"]));
+                console.error("SIMULATION changing heaterMode is not possible: provided: " + heaterMode + "constraint: " + IviSimulator.constraint(settings["heaterMode"]));
             }
         }
 
@@ -164,7 +164,7 @@ QtObject {
                     backend.heater = heater
                 }
             } else {
-                console.error("SIMULATION changing heater is not possible: provided: " + heater + "constraint: " + IviSimulator.constraint_string(settings["heater"]));
+                console.error("SIMULATION changing heater is not possible: provided: " + heater + "constraint: " + IviSimulator.constraint(settings["heater"]));
             }
         }
 
@@ -178,7 +178,7 @@ QtObject {
                     backend.state = state
                 }
             } else {
-                console.error("SIMULATION changing state is not possible: provided: " + state + "constraint: " + IviSimulator.constraint_string(settings["state"]));
+                console.error("SIMULATION changing state is not possible: provided: " + state + "constraint: " + IviSimulator.constraint(settings["state"]));
             }
         }
 
@@ -199,7 +199,7 @@ QtObject {
                     backend.blindState = blindState
                 }
             } else {
-                console.error("SIMULATION changing blindState is not possible: provided: " + blindState + "constraint: " + IviSimulator.constraint_string(settings["blindState"]));
+                console.error("SIMULATION changing blindState is not possible: provided: " + blindState + "constraint: " + IviSimulator.constraint(settings["blindState"]));
             }
         }
     }
