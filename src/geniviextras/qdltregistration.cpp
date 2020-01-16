@@ -55,6 +55,9 @@ QT_BEGIN_NAMESPACE
 
 void qtGeniviLogLevelChangedHandler(char context_id[], uint8_t log_level, uint8_t trace_status)
 {
+    if (!globalDltRegistration())
+        return;
+
     auto d = globalDltRegistration()->d_ptr;
     d->m_mutex.lock();
     const QLoggingCategory *category = d->dltLogLevelChanged(context_id, log_level, trace_status);

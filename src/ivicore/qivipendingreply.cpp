@@ -59,18 +59,31 @@ QT_BEGIN_NAMESPACE
 #define QTIVI_ADD_STATIC_METATYPE(MetaTypeName, MetaTypeId, AliasingType) \
     QTIVI_ADD_STATIC_METATYPE2(MetaTypeName, MetaTypeId, AliasingType, nullptr)
 
-struct QIviPendingReplyRegistrator {
-    QIviPendingReplyRegistrator() {
-        qRegisterMetaType<QIviPendingReplyBase>("QIviPendingReplyBase");
-        QT_FOR_EACH_STATIC_PRIMITIVE_TYPE(QTIVI_ADD_STATIC_METATYPE)
-        QT_FOR_EACH_STATIC_PRIMITIVE_POINTER(QTIVI_ADD_STATIC_METATYPE)
-        QT_FOR_EACH_STATIC_CORE_POINTER(QTIVI_ADD_STATIC_METATYPE)
-        QT_FOR_EACH_STATIC_CORE_TEMPLATE(QTIVI_ADD_STATIC_METATYPE)
-        QT_FOR_EACH_STATIC_CORE_CLASS(QTIVI_ADD_STATIC_METATYPE)
-        QT_FOR_EACH_STATIC_ALIAS_TYPE(QTIVI_ADD_STATIC_METATYPE2)
-    }
-};
-static QIviPendingReplyRegistrator _registrator;
+
+/*!
+    \relates QIviPendingReply
+
+    Registers QIviPendingReplys of all Qt basic types to the meta type system.
+
+    Usually this function called automatically when creating a QCoreApplication or a QIviPendingReply
+    and doesn't need to be called manually.
+*/
+void qiviRegisterPendingReplyBasicTypes() {
+    static bool once = false;
+    if (once)
+        return;
+
+    qRegisterMetaType<QIviPendingReplyBase>("QIviPendingReplyBase");
+    QT_FOR_EACH_STATIC_PRIMITIVE_TYPE(QTIVI_ADD_STATIC_METATYPE)
+    QT_FOR_EACH_STATIC_PRIMITIVE_POINTER(QTIVI_ADD_STATIC_METATYPE)
+    QT_FOR_EACH_STATIC_CORE_POINTER(QTIVI_ADD_STATIC_METATYPE)
+    QT_FOR_EACH_STATIC_CORE_TEMPLATE(QTIVI_ADD_STATIC_METATYPE)
+    QT_FOR_EACH_STATIC_CORE_CLASS(QTIVI_ADD_STATIC_METATYPE)
+    QT_FOR_EACH_STATIC_ALIAS_TYPE(QTIVI_ADD_STATIC_METATYPE2)
+    once = true;
+}
+
+Q_COREAPP_STARTUP_FUNCTION(qiviRegisterPendingReplyBasicTypes)
 
 // TODO make it reentrant
 
@@ -561,6 +574,7 @@ void QIviPendingReplyWatcher::then(const QJSValue &success, const QJSValue &fail
 QIviPendingReplyBase::QIviPendingReplyBase(int userType)
     : m_watcher(new QIviPendingReplyWatcher(userType))
 {
+    qiviRegisterPendingReplyBasicTypes();
 }
 
 QIviPendingReplyBase::QIviPendingReplyBase(const QIviPendingReplyBase &other)
@@ -828,9 +842,9 @@ void QIviPendingReplyBase::setSuccessNoCheck(const QVariant &value)
 */
 
 /*!
-    \fn template <class T> QIviPendingReply<T>::setSuccess(const T &value)
+    \fn template <class T> QIviPendingReply<T>::setSuccess(const T &val)
 
-    Sets the result of the reply to \a value and marks the reply as succeeded.
+    Sets the result of the reply to \a val and marks the reply as succeeded.
 
     \note a result can only be set once and cannot be changed again later.
 

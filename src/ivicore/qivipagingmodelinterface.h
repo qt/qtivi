@@ -69,7 +69,7 @@ protected:
 
 Q_SIGNALS:
     void supportedCapabilitiesChanged(const QUuid &identifier, QtIviCoreModule::ModelCapabilities capabilities);
-    void countChanged(const QUuid &identifier, int newLength);
+    void countChanged(const QUuid &identifier = QUuid(), int count = -1);
     void dataFetched(const QUuid &identifier, const QList<QVariant> &data, int start, bool moreAvailable);
     void dataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count);
 };

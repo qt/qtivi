@@ -73,11 +73,10 @@ class {{exportsymbol}} {{class}} : public QIviStandardItem
     Q_CLASSINFO("IviPropertyDomains", "{{ struct.fields|json_domain|replace("\"", "\\\"") }}")
 
 public:
-    Q_INVOKABLE {{class}}();
-    Q_INVOKABLE {{class}}(const {{class}} &rhs);
+    {{class}}();
+    {{class}}(const {{class}} &rhs);
     {{class}} &operator=(const {{class}} &);
-    Q_INVOKABLE {{class}}({{struct.fields|map('parameter_type')|join(', ')}});
-    Q_INVOKABLE {{class}}(const QVariant &variant);
+    {{class}}({{struct.fields|map('parameter_type')|join(', ')}});
     ~{{class}}();
 
     QString type() const override;
@@ -96,6 +95,9 @@ public:
 {%   endif %}
 {%   endif %}
 {% endfor %}
+
+protected:
+    Q_INVOKABLE void fromJSON(const QVariant &variant);
 
 private:
     QSharedDataPointer<{{class}}Private> d;

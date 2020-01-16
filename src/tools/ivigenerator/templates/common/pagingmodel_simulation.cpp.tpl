@@ -56,6 +56,11 @@
 {
 }
 
+int {{class}}::count() const
+{
+    return m_list.count();
+}
+
 void {{class}}::initialize()
 {
     QIVI_SIMULATION_TRY_CALL({{class}}, "initialize", void);
@@ -92,6 +97,7 @@ void {{class}}::insert(int index, const {{property.type.nested}} &item)
     m_list.insert(index, item);
 
     Q_EMIT dataChanged(QUuid(), { QVariant::fromValue(item) }, index, 0);
+    Q_EMIT countChanged(QUuid(), m_list.count());
 }
 
 void {{class}}::remove(int index)
@@ -99,6 +105,7 @@ void {{class}}::remove(int index)
     m_list.removeAt(index);
 
     Q_EMIT dataChanged(QUuid(), QVariantList(), index, 1);
+    Q_EMIT countChanged(QUuid(), m_list.count());
 }
 
 void {{class}}::move(int currentIndex, int newIndex)
@@ -117,6 +124,7 @@ void {{class}}::move(int currentIndex, int newIndex)
 void {{class}}::reset()
 {
     Q_EMIT dataChanged(QUuid(), QVariantList(), 0, m_list.count());
+    Q_EMIT countChanged(QUuid(), 0);
     m_list.clear();
 }
 
@@ -126,7 +134,7 @@ void {{class}}::update(int index, const {{property.type.nested}} &item)
     Q_EMIT dataChanged(QUuid(), { QVariant::fromValue(item) }, index, 1);
 }
 
-const {{property.type.nested}} &{{class}}::at(int index) const
+{{property.type.nested}} {{class}}::at(int index) const
 {
     return m_list.at(index);
 }

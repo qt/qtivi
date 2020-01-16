@@ -132,7 +132,7 @@ def test_type_value(symbol):
         if t.is_bool:
             return 'true'
         if t.is_string:
-            return '"TEST STRING"'
+            return 'QStringLiteral("TEST STRING")'
         if t.is_real:
             return '1234.5678'
         if t.is_var:
@@ -187,10 +187,10 @@ def default_value_helper(symbol, res):
         else:
             return 'false'
     if t.is_string:
-        return 'QLatin1String("{0}")'.format(res.replace("\\", "\\\\"))
+        return 'QStringLiteral("{0}")'.format(res.replace("\\", "\\\\"))
     if t.is_var:
         if isinstance(res, str):
-            res = 'QLatin1String("{0}")'.format(res)
+            res = 'QStringLiteral("{0}")'.format(res)
         return 'QVariant({0})'.format(res)
 
     return '{0}'.format(res)

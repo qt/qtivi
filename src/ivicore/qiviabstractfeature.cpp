@@ -133,25 +133,21 @@ void QIviAbstractFeaturePrivate::onInitializationDone()
     \inmodule QtIviCore
     \brief The QIviAbstractFeature is the base class for all QtIvi Features.
 
-    QIviAbstractFeature is the base class for the front-facing API towards the developer.
-    The QIviAbstractFeature provides you with a way to automatically connect to a backend
-    implementing the interface needed. To discover a backend, we start it using the
-    startAutoDiscovery() function.
+    QIviAbstractFeature is the base class for the front-facing API towards the developer. Subclass
+    QIviAbstractFeature to create an API for your feature.
 
-    Once the auto discovery is complete, you can check whether a backend was found using the
-    isValid() function.
+    QIviAbstractFeature provides you with auto discovery: a way to automatically connect to a
+    backend that implements the required interface. To discover a backend, use the
+    startAutoDiscovery() function. Once auto discovery is complete, use the isValid() function to
+    check whether a suitable backend was found.
 
-    The auto discovery gives you an easy way to automatically connect to the right backend
-    implementation. If you don't want to use the auto discovery, it's also possible to use
-    QIviServiceManager to retrieve all backends. Then, manually search for the right backend
-    and call setServiceObject() to connect it to the QIviAbstractFeature.
-
-    The type of backend to load can be controlled by setting the \c discvoeryMode to
+    The type of backend to load can be controlled by setting the \c discoveryMode to
     \c AutoDiscovery. This mode is enabled by default, which indicates that a production backend
     is always preferred over a simulation backend.
 
-    QIviAbstractFeature is an abstract base class that you need to subclass to create an API
-    for your feature.
+    Alternatively, it's also possible to use QIviServiceManager to retrieve all backends. Then,
+    manually search for the right backend and call setServiceObject() to connect it to the
+    QIviAbstractFeature.
 
     \section1 Write a Subclass
 
@@ -165,7 +161,7 @@ void QIviAbstractFeaturePrivate::onInitializationDone()
     \endlist
 
     Once a QIviServiceObject has been set, either via startAutoDiscovery() or setServiceObject(),
-    the acceptServiceObject() function is then called to make sure that the implemented feature
+    call the acceptServiceObject() function to make sure that the feature you've implemented
     can work with the QIviServiceObject and, in turn, the QIviServiceObject provides the required
     interface.
 

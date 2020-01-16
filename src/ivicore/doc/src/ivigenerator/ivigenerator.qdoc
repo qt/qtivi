@@ -52,6 +52,7 @@ Currently, Qt IVI generator has the following limitations:
 \list
     \li There's no support for external C++ types, outside of the IDL, such as reusing a
         QGeoCoordinate inside a QFace IDL.
+    \li Defined Interfaces can't be used as types in properties or function arguments.
     \li The \c map<> type is not supported.
     \li Any default values provided directly in the QFace file are currently ignored.
 \endlist
