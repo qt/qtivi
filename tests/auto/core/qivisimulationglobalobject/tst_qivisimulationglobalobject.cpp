@@ -344,6 +344,8 @@ void tst_QIviSimulationGlobalObject::testParseDomainValue_data()
                               << QVariant::fromValue(SimpleAPI::EnumValue1);
     QTest::newRow("TestStruct by list") << "{ \"type\": \"TestStruct\", \"value\": [ 100, true ] }"
                                         << QVariant::fromValue(TestStruct(100, true));
+    QTest::newRow("TestStruct by map") << "{ \"type\": \"TestStruct\", \"value\": { \"intProperty\": 100, \"boolProperty\": true } }"
+                                        << QVariant::fromValue(TestStruct(100, true));
 }
 
 void tst_QIviSimulationGlobalObject::testParseDomainValue()

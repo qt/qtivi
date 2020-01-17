@@ -143,10 +143,6 @@ QVariant qtivi_convertFromJSON(const QVariant &value)
                     return QVariant();
                 }
 
-                QVariantList values = value.toList();
-                for (auto i = values.begin(); i != values.end(); ++i)
-                    *i = qtivi_convertFromJSON(*i);
-
                 void *gadget = QMetaType::create(typeId);
                 if (!Q_UNLIKELY(gadget)) {
                     qWarning("Couldn't create a new instance of %s", QMetaType::typeName(typeId));
@@ -167,7 +163,7 @@ QVariant qtivi_convertFromJSON(const QVariant &value)
                     return QVariant();
                 }
 
-                mo->method(moIdx).invokeOnGadget(gadget, Q_ARG(QVariant, QVariant(values)));
+                mo->method(moIdx).invokeOnGadget(gadget, Q_ARG(QVariant, QVariant(value)));
                 return QVariant(typeId, gadget);
             }
         }
