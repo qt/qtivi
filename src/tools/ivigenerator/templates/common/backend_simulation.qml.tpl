@@ -70,26 +70,28 @@ QtObject {
 
 {% if interface_zoned %}
         function {{property|setter_name}}({{property}}, zone) {
-            if (IviSimulator.checkSettings(settings["{{property}}"], {{property}}, zone)) {
-                if (zone) {
-                    console.log(qLc{{interface|upperfirst}}, "SIMULATION {{ property }} for zone: " + zone + " changed to: " + {{property}});
-                    backend.zones[zone].{{property}} = {{property}}
-                } else {
-                    console.log(qLc{{interface|upperfirst}}, "SIMULATION {{ property }} changed to: " + {{property}});
-                    backend.{{property}} = {{property}}
-                }
-            } else {
+            if ("{{property}}" in settings && !IviSimulator.checkSettings(settings["{{property}}"], {{property}}, zone)) {
                 console.error(qLc{{interface|upperfirst}}, "SIMULATION changing {{property}} is not possible: provided: " + {{property}} + " constraint: " + IviSimulator.constraint(settings["{{property}}"]));
+                return;
+            }
+
+            if (zone) {
+                console.log(qLc{{interface|upperfirst}}, "SIMULATION {{ property }} for zone: " + zone + " changed to: " + {{property}});
+                backend.zones[zone].{{property}} = {{property}}
+            } else {
+                console.log(qLc{{interface|upperfirst}}, "SIMULATION {{ property }} changed to: " + {{property}});
+                backend.{{property}} = {{property}}
             }
         }
 {% else %}
         function {{property|setter_name}}({{property}}) {
-            if (IviSimulator.checkSettings(settings["{{property}}"], {{property}})) {
-                console.log(qLc{{interface|upperfirst}}, "SIMULATION {{ property }} changed to: " + {{property}});
-                backend.{{property}} = {{property}}
-            } else {
+            if ("{{property}}" in settings && !IviSimulator.checkSettings(settings["{{property}}"], {{property}})) {
                 console.error(qLc{{interface|upperfirst}}, "SIMULATION changing {{property}} is not possible: provided: " + {{property}} + " constraint: " + IviSimulator.constraint(settings["{{property}}"]));
+                return;
             }
+
+            console.log(qLc{{interface|upperfirst}}, "SIMULATION {{ property }} changed to: " + {{property}});
+            backend.{{property}} = {{property}}
         }
 {% endif %}
 {% endfor %}
