@@ -73,13 +73,23 @@ void qiviRegisterPendingReplyBasicTypes() {
     if (once)
         return;
 
-    qRegisterMetaType<QIviPendingReplyBase>("QIviPendingReplyBase");
-    QT_FOR_EACH_STATIC_PRIMITIVE_TYPE(QTIVI_ADD_STATIC_METATYPE)
-    QT_FOR_EACH_STATIC_PRIMITIVE_POINTER(QTIVI_ADD_STATIC_METATYPE)
-    QT_FOR_EACH_STATIC_CORE_POINTER(QTIVI_ADD_STATIC_METATYPE)
-    QT_FOR_EACH_STATIC_CORE_TEMPLATE(QTIVI_ADD_STATIC_METATYPE)
-    QT_FOR_EACH_STATIC_CORE_CLASS(QTIVI_ADD_STATIC_METATYPE)
-    QT_FOR_EACH_STATIC_ALIAS_TYPE(QTIVI_ADD_STATIC_METATYPE2)
+    // This function is registered as Q_COREAPP_STARTUP_FUNCTION, which makes sure
+    // it is run after the QCoreApplication constructor to ensure we can register
+    // types.
+    // In case the library is loaded at runtime (because of a qml plugin dependency),
+    // the init function would be registered and executed right away before the
+    // rest of the library is initialized (e.g. the QMetaObject of QIviPendingReplyBase).
+    // The singleshot timer makes sure the registration is done in the next event
+    // loop run, when everything is ready.
+    QTimer::singleShot(0, []() {
+        qRegisterMetaType<QIviPendingReplyBase>("QIviPendingReplyBase");
+        QT_FOR_EACH_STATIC_PRIMITIVE_TYPE(QTIVI_ADD_STATIC_METATYPE)
+        QT_FOR_EACH_STATIC_PRIMITIVE_POINTER(QTIVI_ADD_STATIC_METATYPE)
+        QT_FOR_EACH_STATIC_CORE_POINTER(QTIVI_ADD_STATIC_METATYPE)
+        QT_FOR_EACH_STATIC_CORE_TEMPLATE(QTIVI_ADD_STATIC_METATYPE)
+        QT_FOR_EACH_STATIC_CORE_CLASS(QTIVI_ADD_STATIC_METATYPE)
+        QT_FOR_EACH_STATIC_ALIAS_TYPE(QTIVI_ADD_STATIC_METATYPE2)
+    });
     once = true;
 }
 
