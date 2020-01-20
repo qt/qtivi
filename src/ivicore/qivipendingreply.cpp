@@ -81,7 +81,7 @@ void qiviRegisterPendingReplyBasicTypes() {
     // rest of the library is initialized (e.g. the QMetaObject of QIviPendingReplyBase).
     // The singleshot timer makes sure the registration is done in the next event
     // loop run, when everything is ready.
-    QTimer::singleShot(0, []() {
+    QMetaObject::invokeMethod(qApp, []() {
         qRegisterMetaType<QIviPendingReplyBase>("QIviPendingReplyBase");
         QT_FOR_EACH_STATIC_PRIMITIVE_TYPE(QTIVI_ADD_STATIC_METATYPE)
         QT_FOR_EACH_STATIC_PRIMITIVE_POINTER(QTIVI_ADD_STATIC_METATYPE)
