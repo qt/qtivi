@@ -74,7 +74,7 @@ The following qmake variables are available:
     \row
         \li QFACE_IMPORT_PATH
         \li A list of import paths, which are considered when an IDL file uses an import statement.
-            For more information, see the \l{imports-option}{Import Option}.
+            For more information, see the \l{import-option}{Import Option}.
 \endtable
 
 For more details on the generator's command line arguments, see \l {Use the Generator}.
