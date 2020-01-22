@@ -45,6 +45,7 @@ import click
 from jinja2 import TemplateAssertionError
 from jinja2 import contextfunction
 
+
 def jinjaTrace():
     """
     Collects all jinja template files and the line numbers from the current calltrace
@@ -54,17 +55,18 @@ def jinjaTrace():
     while frame:
         template = frame.f_globals.get('__jinja_template__')
         if template is not None:
-            infos.append((inspect.getsourcefile(frame), template.get_corresponding_lineno(frame.f_lineno)))
+            infos.append((inspect.getsourcefile(frame),
+                          template.get_corresponding_lineno(frame.f_lineno)))
         frame = frame.f_back
-
     return infos
+
 
 @contextfunction
 def jinja_error(context, msg):
     """
     Throws an error for the current jinja template and the templates this is included from
-    This can be used inside a filter to indicate problems with the passed arguments or direclty inside
-    an template
+    This can be used inside a filter to indicate problems with the passed arguments or direclty
+    inside an template
     """
     infos = jinjaTrace()
     if len(infos):
@@ -76,11 +78,12 @@ def jinja_error(context, msg):
         raise TemplateAssertionError(message, infos[0][1], "", infos[0][0])
     raise TemplateAssertionError(msg, -1, "", "unknown")
 
+
 def jinja_warning(msg):
     """
     Reports an warning in the current jinja template.
-    This can be used inside a filter to indicate problems with the passed arguments or direclty inside
-    an template
+    This can be used inside a filter to indicate problems with the passed arguments or direclty
+    inside an template
     """
     file, lineno = jinjaTrace()[0]
     if file:
@@ -88,6 +91,7 @@ def jinja_warning(msg):
     else:
         message = '<unknown-file>: warning: {0}'.format(msg)
     click.secho(message, fg='yellow', err=True)
+
 
 def register_global_functions(generator):
     generator.env.globals["error"] = jinja_error

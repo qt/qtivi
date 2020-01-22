@@ -42,11 +42,12 @@
 import json
 
 from qface.idl.domain import Module, Interface, Property, Parameter, Field, Struct
-from qface.helper.generic import upper_first
+from qface.helper.generic import lower_first, upper_first
 from qface.helper.qtcpp import Filters
 
 from .global_functions import jinja_error, jinja_warning
 from . import builtin_config
+
 
 def tag_by_path(symbol, path, default_value=False):
     """
@@ -85,12 +86,13 @@ def enum_value(value, module_name):
     sub_values = [enum_value_to_cppliteral(v, module_name) for v in sub_values]
     return "|".join(sub_values)
 
+
 def default_type_value(symbol):
     """
     Find the default value for the type. Models are initialized as nullptr
     """
     prefix = Filters.classPrefix
-    t = symbol.type  # type: qface.domain.TypeSymbol
+    t = symbol.type
     if t.is_primitive:
         if t.is_int:
             return 'int(0)'
@@ -120,12 +122,13 @@ def default_type_value(symbol):
         return 'nullptr'
     jinja_error('default_type_value: Unknown parameter {0} of type {1}'.format(symbol, symbol.type))
 
+
 def test_type_value(symbol):
     """
     Find a value different than the default value for the type. Models are initialized as nullptr
     """
     prefix = Filters.classPrefix
-    t = symbol.type  # type: qface.domain.TypeSymbol
+    t = symbol.type
     if t.is_primitive:
         if t.is_int:
             return '111'
@@ -149,7 +152,7 @@ def test_type_value(symbol):
         return '{0}{1}Module::{2}'.format(prefix, upper_first(module_name), value)
     elif symbol.type.is_list:
         value = test_type_value(t.nested.type)
-        if not (t.nested.type.is_primitive ):
+        if not (t.nested.type.is_primitive):
             value = 'QVariant::fromValue({0})'.format(value)
         return 'QVariantList({{{0}}})'.format(value)
     elif symbol.type.is_struct:
@@ -159,15 +162,19 @@ def test_type_value(symbol):
         return 'new QIviPagingModel()'
     jinja_error('test_type_value: Unknown parameter {0} of type {1}'.format(symbol, symbol.type))
 
+
 def default_value_helper(symbol, res):
     t = symbol.type
     if t.is_struct:
         if not (isinstance(res, dict) or isinstance(res, list)):
             jinja_error('default_value: value in annotation is supposed to be a dict or list')
         if len(res) != len(t.reference.fields):
-            jinja_error('default_value: argument count in annotation and number of struct fields does not match')
-        values_string = ', '.join(default_value_helper(list(t.reference.fields)[idx], property) for idx, property in enumerate(res))
-        return '{0}({{{1}}})'.format(t.type, values_string)
+            jinja_error('default_value: argument count in annotation and number of struct fields '
+                        'does not match')
+        values = []
+        for idx, property in enumerate(res):
+            values.append(default_value_helper(list(t.reference.fields)[idx], property))
+        return '{0}({{{1}}})'.format(t.type, ', '.join(values))
     if t.is_model or t.is_list:
         if not isinstance(res, list):
             jinja_error('default_value: value in annotation is supposed to be a list')
@@ -195,13 +202,14 @@ def default_value_helper(symbol, res):
 
     return '{0}'.format(res)
 
+
 def default_value(symbol, zone='='):
     """
     Find the default value used by the simulator backend
     """
     res = default_type_value(symbol)
     if symbol.type.is_model:
-        res = '{}';
+        res = '{}'
     if 'config_simulator' in symbol.tags and 'default' in symbol.tags['config_simulator']:
         res = symbol.tags['config_simulator']['default']
         if isinstance(res, dict):
@@ -212,6 +220,7 @@ def default_value(symbol, zone='='):
         return default_value_helper(symbol, res)
 
     return res
+
 
 def parameter_type_default(symbol):
     """
@@ -239,7 +248,9 @@ def parameter_type_default(symbol):
             return 'QIviPagingModel *{0}=nullptr'.format(symbol)
     else:
         return 'const {0}{1} &{2}={0}{1}()'.format(prefix, symbol.type.reference.name, symbol)
-    jinja_error('parameter_type_default: Unknown parameter {0} of type {1}'.format(symbol, symbol.type))
+    jinja_error('parameter_type_default: Unknown parameter {0} of type {1}'.format(symbol,
+                                                                                   symbol.type))
+
 
 def parameter_type(symbol):
     """
@@ -276,7 +287,9 @@ def return_type(symbol):
     """
     prefix = Filters.classPrefix
     if symbol.type.is_enum or symbol.type.is_flag:
-        return('{0}{1}Module::{2}'.format(prefix, upper_first(symbol.type.reference.module.module_name), flag_type(symbol)))
+        return('{0}{1}Module::{2}'.format(prefix,
+                                          upper_first(symbol.type.reference.module.module_name),
+                                          flag_type(symbol)))
     if symbol.type.is_void or symbol.type.is_primitive:
         if symbol.type.name == 'string':
             return 'QString'
@@ -323,14 +336,16 @@ def domain_values(symbol):
                 return symbol.tags['config_simulator']['domain']
     return None
 
+
 def getter_name(symbol):
     """
     Returns the getter name of the property
     """
     if type(symbol) is Property:
         if 'config' in symbol.tags and 'getter_name' in symbol.tags['config']:
-                return symbol.tags['config']['getter_name']
+            return symbol.tags['config']['getter_name']
     return symbol
+
 
 def setter_name(symbol):
     """
@@ -338,8 +353,9 @@ def setter_name(symbol):
     """
     if type(symbol) is Property:
         if 'config' in symbol.tags and 'setter_name' in symbol.tags['config']:
-                return symbol.tags['config']['setter_name']
+            return symbol.tags['config']['setter_name']
     return 'set' + symbol.name[0].upper() + symbol.name[1:]
+
 
 def range_value(symbol, index, key):
     """
@@ -379,6 +395,7 @@ def has_domains(properties):
                     return True
     return False
 
+
 def strip_QT(s):
     """
     If the given string starts with QT, stip it away.
@@ -388,25 +405,26 @@ def strip_QT(s):
         return s[2:]
     return s
 
+
 def json_domain(properties):
     """
     Returns property domains formated in json
     """
     data = {}
     if len(properties):
-        data["iviVersion"] =  builtin_config.config["VERSION"]
+        data["iviVersion"] = builtin_config.config["VERSION"]
     for property in properties:
         if 'config_simulator' in property.tags:
             for p in ['range', 'domain', 'minimum', 'maximum']:
-                if property.tags['config_simulator'] is not None and p in property.tags['config_simulator']:
-                    if not property.name in data:
+                if (property.tags['config_simulator'] is not None
+                        and p in property.tags['config_simulator']):
+                    if property.name not in data:
                         data[property.name] = {}
                     data[property.name][p] = property.tags['config_simulator'][p]
     return json.dumps(data, separators=(',', ':'))
 
-def simulationData(module):
 
-    found = False
+def simulationData(module):
     data = {}
     for interface in module.interfaces:
         iData = {}
@@ -415,12 +433,15 @@ def simulationData(module):
         for property in interface.properties:
             if 'config_simulator' in property.tags:
                 for p in ['range', 'domain', 'minimum', 'maximum', 'default']:
-                    if property.tags['config_simulator'] is not None and p in property.tags['config_simulator']:
-                        if not property.name in iData:
+                    if (property.tags['config_simulator'] is not None
+                            and p in property.tags['config_simulator']):
+                        if property.name not in iData:
                             iData[property.name] = {}
-                        iData[property.name][p] = symbolToJson(property.tags['config_simulator'][p], property.type)
+                        iData[property.name][p] = symbolToJson(property.tags['config_simulator'][p],
+                                                               property.type)
         data[interface.name] = iData
     return json.dumps(data, indent='  ')
+
 
 def symbolToJson(data, symbol):
     if symbol.type.is_struct:
@@ -428,12 +449,13 @@ def symbolToJson(data, symbol):
         if not (isinstance(data, dict) or isinstance(data, list)):
             jinja_error('simulationData: value in annotation is supposed to be a dict or list')
         if len(data) != len(t.reference.fields):
-            jinja_error('simulationData: argument count in annotation and number of struct fields does not match')
+            jinja_error('simulationData: argument count in annotation and number of struct fields '
+                        'does not match')
         newList = list(symbolToJson(property, list(t.reference.fields)[idx]) for idx, property in enumerate(data))
-        return { "type": symbol.type.name, "value": newList }
+        return {"type": symbol.type.name, "value": newList}
     elif symbol.type.is_enum or symbol.type.is_flag:
         module_name = symbol.type.reference.module.module_name
-        return { "type": "enum", "value": enum_value(data, module_name) }
+        return {"type": "enum", "value": enum_value(data, module_name)}
     elif symbol.type.is_list or symbol.type.is_model:
         nested = symbol.type.nested
         if nested.is_complex:
@@ -443,12 +465,13 @@ def symbolToJson(data, symbol):
             return newList
     return data
 
+
 def qml_control_properties(symbol, backend_object):
     """
     Returns properties of the QML control matching to this
     IDL type (e.g. min/max properties)
     """
-    prop_str = lower_first_filter(symbol) + "Control"
+    prop_str = lower_first(symbol) + "Control"
     if isinstance(symbol, Property):
         top = range_high(symbol)
         bottom = range_low(symbol)
@@ -465,7 +488,9 @@ def qml_control_properties(symbol, backend_object):
         values = domain_values(symbol)
         if values is None and (symbol.type.is_enum or symbol.type.is_flag):
             values_string = ' '.join('ListElement {{ key: "{0}"; value: {1}.{0} }}'.format(e, qml_type(symbol.interface)) for e in symbol.type.reference.members)
-            return 'id: {0}; textRole: "key"; {2} model: ListModel {{ {1} }}'.format(prop_str, values_string, binding)
+            return 'id: {0}; textRole: "key"; {2} model: ListModel {{ {1} }}'.format(prop_str,
+                                                                                     values_string,
+                                                                                     binding)
         if values is not None:
             values_string = ','.join('"'+str(e)+'"' for e in values)
             return 'id: {0}; model: [ {1} ]; '.format(prop_str, values_string)
@@ -479,13 +504,15 @@ def qml_control_properties(symbol, backend_object):
     if isinstance(symbol, Parameter):
         return 'id: {1}Param{0}'.format(prop_str, symbol.operation)
     if isinstance(symbol, Field):
-        return 'id: {1}_{0}'.format(prop_str, lower_first_filter(symbol.struct))
+        return 'id: {1}_{0}'.format(prop_str, lower_first(symbol.struct))
+
 
 def qml_control_signal_parameters(symbol):
     """
     Returns the parameters for calling the signal using the values from the ui controls
     """
-    return ', '.join('{0}Param{1}Control.{2}'.format(e.operation, lower_first_filter(e), qml_binding_property(e)) for e in symbol.parameters)
+    return ', '.join('{0}Param{1}Control.{2}'.format(e.operation, lower_first(e),qml_binding_property(e)) for e in symbol.parameters)
+
 
 def qml_meta_control_name(symbol):
     """
@@ -504,6 +531,7 @@ def qml_meta_control_name(symbol):
     values = domain_values(symbol)
     if values is not None:
         return "ComboBox"
+
 
 def qml_type_control_name(symbol):
     """
@@ -540,13 +568,15 @@ def qml_control_name(symbol):
 
 def qml_control(symbol, backend_object):
     """
-    Returns QML code for the control (or group of controls) to represent the editing UI for the symbol.
+    Returns QML code for the control (or group of controls) to represent the editing UI for the
+    symbol.
     """
 
     if symbol.type.is_struct:
         return qml_struct_control(symbol)
 
-    return "{0} {{ {1} }}".format(qml_control_name(symbol), qml_control_properties(symbol, backend_object))
+    return "{0} {{ {1} }}".format(qml_control_name(symbol),
+                                  qml_control_properties(symbol, backend_object))
 
 
 def qml_binding_property(symbol):
@@ -557,12 +587,14 @@ def qml_binding_property(symbol):
     control_name = qml_control_name(symbol)
     if control_name == "CheckBox":
         return "checked"
-    elif control_name == "Slider" or control_name == "SpinBox" or control_name == "FlagControl" or control_name == "EnumControl":
+    elif (control_name == "Slider" or control_name == "SpinBox" or control_name == "FlagControl"
+            or control_name == "EnumControl"):
         return "value"
     elif control_name == "TextField":
         return "text"
     elif control_name == "ComboBox":
         return "currentIndex"
+
 
 def qml_struct_control(symbol):
     if symbol.type.is_struct and symbol.type.reference.fields:
@@ -579,7 +611,8 @@ def qml_info_type(symbol):
     """
     prefix = Filters.classPrefix
     if symbol.type.is_enum or symbol.type.is_flag:
-        return('{0}{1}Module::{2}'.format(prefix, upper_first(symbol.module.module_name), flag_type(symbol)))
+        return('{0}{1}Module::{2}'.format(prefix, upper_first(symbol.module.module_name),
+               flag_type(symbol)))
     elif symbol.type.is_void or symbol.type.is_primitive:
         if symbol.type.is_real:
             return 'double'
@@ -593,12 +626,13 @@ def qml_info_type(symbol):
     else:
         jinja_error('qml_info_type: Unknown symbol {0} of type {1}'.format(symbol, symbol.type))
 
+
 def qml_type(symbol):
     """
     :param interface:
-    :return: Returns the name of the interface for using in QML. This name is defined in the IDL under
-    the "config" tag as "qml_type". This annotation is optional, if not provided, the interface name is
-    used.
+    :return: Returns the name of the interface for using in QML. This name is defined in the IDL
+    under the "config" tag as "qml_type". This annotation is optional, if not provided, the
+    interface name is used.
     """
     result = symbol.name
     if 'qml_type' in symbol.tags['config']:
@@ -606,6 +640,7 @@ def qml_type(symbol):
     elif 'qml_name' in symbol.tags['config']:
         result = symbol.tags['config']['qml_name']
     return result
+
 
 def model_type(symbol):
     if symbol.type.is_model:
@@ -617,8 +652,6 @@ def model_type(symbol):
 def struct_includes(symbol):
     includesSet = set()
     tpl = '#include \"{0}.h\"'
-
-    module = symbol.module
 
     if isinstance(symbol, Struct):
         for val in symbol.fields:
@@ -641,11 +674,12 @@ def struct_includes(symbol):
 
     return includesSet
 
+
 def comment_text(comment):
     """
     Returns the text of the passed comment without the leading/trailing comment tokens e.g. /**, *
     """
-    comment_start = [ '/**', '/*!', '/*']
+    comment_start = ['/**', '/*!', '/*']
     processed = []
     isComment = False
 
@@ -656,11 +690,12 @@ def comment_text(comment):
     for token in comment_start:
         if (comment.startswith(token)):
             isComment = True
-            break;
+            break
     if isComment:
         comment = comment[3:-2]
     else:
-        jinja_error("comment_text: The provided comment needs to be start with one of these strings: {}".format(comment_start))
+        jinja_error("comment_text: The provided comment needs to be start with one of these "
+                    "strings: {}".format(comment_start))
 
     for line in comment.splitlines():
         line = line.lstrip(" *")

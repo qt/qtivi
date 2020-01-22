@@ -41,8 +41,10 @@
 
 import yaml
 import os
+import sys
 
 config = {}
+
 
 def parse(here):
     global config
@@ -50,5 +52,5 @@ def parse(here):
     if 'IVIGENERATOR_CONFIG' in os.environ:
         builtin_config_path = os.environ['IVIGENERATOR_CONFIG']
     config = yaml.load(open(builtin_config_path), Loader=yaml.SafeLoader)
-    if not 'VERSION' in config or not 'FEATURES' in config:
+    if 'VERSION' not in config or 'FEATURES' not in config:
         sys.exit("Invalid builtin config")

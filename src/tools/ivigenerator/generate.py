@@ -39,21 +39,14 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 
-import re
 import os
 import fnmatch
 import click
 import logging.config
-import yaml
-import sys
 from path import Path
 
-from qface.generator import FileSystem, Generator, RuleGenerator
+from qface.generator import FileSystem, Generator
 from qface.watch import monitor
-from qface.idl.domain import Module, Interface, Property, Parameter, Field, Struct
-
-from jinja2 import TemplateAssertionError
-import inspect
 
 import generator.builtin_config as builtin_config
 from generator.global_functions import register_global_functions
@@ -66,6 +59,7 @@ log = logging.getLogger(__file__)
 
 builtinTemplatesPath = Path(here / 'templates')
 builtinTemplates = [os.path.splitext(f)[0] for f in os.listdir(builtinTemplatesPath) if fnmatch.fnmatch(f, '*.yaml')]
+
 
 def generate(tplconfig, moduleConfig, annotations, imports, src, dst):
     log.debug('run {0} {1}'.format(src, dst))
@@ -90,17 +84,17 @@ def generate(tplconfig, moduleConfig, annotations, imports, src, dst):
             exit(1)
         FileSystem.merge_annotations(system, Path(annotations_file))
 
-
     srcFile = os.path.basename(src[0])
     srcBase = os.path.splitext(srcFile)[0]
-    ctx = {'qtASVersion': builtin_config.config["VERSION"], 'srcFile':srcFile, 'srcBase':srcBase}
-    generator = CustomRuleGenerator(search_path=[tplconfig, builtinTemplatesPath], destination=dst, context = ctx, modules=module_names)
+    ctx = {'qtASVersion': builtin_config.config["VERSION"], 'srcFile': srcFile, 'srcBase': srcBase}
+    generator = CustomRuleGenerator(search_path=[tplconfig, builtinTemplatesPath], destination=dst,
+                                    context=ctx, modules=module_names)
     generator.env.keep_trailing_newline = True
 
     register_global_functions(generator)
     register_filters(generator)
 
-    #Make sure the config tag is available for all our symbols
+    # Make sure the config tag is available for all our symbols
     for module in system.modules:
         module.add_tag('config')
         for val, key in moduleConfig.items():
@@ -125,7 +119,6 @@ def generate(tplconfig, moduleConfig, annotations, imports, src, dst):
     generator.process_rules(os.path.dirname(tplconfig) + '/{0}.yaml'.format(os.path.basename(tplconfig)), system)
 
 
-
 def run(format, moduleConfig, annotations, imports, src, dst):
     templatePath = format
     if format in builtinTemplates:
@@ -134,14 +127,22 @@ def run(format, moduleConfig, annotations, imports, src, dst):
     if os.path.exists(templatePath):
         generate(templatePath, moduleConfig, annotations, imports, src, dst)
     else:
-        print('Invalid Format: {0}. It either needs to be one of the builtin formats or an existing '
-            'template folder. The following builtin formats are available: {1}'.format(format, builtinTemplates))
+        print('Invalid Format: {0}. It either needs to be one of the builtin formats or an '
+              'existing template folder. The following builtin formats are available: {1}'
+              .format(format, builtinTemplates))
         exit(1)
 
+
 @click.command()
-@click.option('--reload/--no-reload', default=False, help='Specifies whether the generator should keep track of the changes in the IDL file and update output on the fly (--no-reload by default).')
-@click.option('--format', '-f', multiple=False, help='The format the autogenerator should use for the generation. This can either be one of the builtin formats or a path to a template folder. Builtin formats are: \n' + '\n'.join(builtinTemplates))
-@click.option('--module', default=False, help='The name of the Qt module the autogenerator is generating. This is automatically used by the qmake integration and passed directly to the qface templates.')
+@click.option('--reload/--no-reload', default=False, help=
+    'Specifies whether the generator should keep track of the changes in the IDL file and update '
+    'output on the fly (--no-reload by default).')
+@click.option('--format', '-f', multiple=False, help='The format the autogenerator should use for '
+    'the generation. This can either be one of the builtin formats or a path to a template folder. '
+    'Builtin formats are: \n' + '\n'.join(builtinTemplates))
+@click.option('--module', default=False, help='The name of the Qt module the autogenerator is '
+    'generating. This is automatically used by the qmake integration and passed directly to the '
+    'qface templates.')
 @click.option('--force', is_flag=True, default=False, help='Always write all output files')
 @click.option('--annotations', '-A', multiple=True, default=False, help=
     'Merges the given annotation file with annotions already in the qface file and the '

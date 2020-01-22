@@ -47,9 +47,12 @@ from qface.idl.domain import Module, Interface, Property, Parameter, Field, Stru
 
 log = logging.getLogger(__file__)
 
+
 class CustomRuleGenerator(RuleGenerator):
     """Extended RuleGenerator to only generate the wanted modules instead of all"""
-    def __init__(self, search_path: str, destination:Path, modules:[], context:dict={}, features:set=set(), force=False):
+
+    def __init__(self, search_path: str, destination: Path, modules: [], context: dict = {},
+                 features: set = set(), force=False):
         super().__init__(search_path, destination, context, features, force)
         self.module_names = modules
 
@@ -61,7 +64,7 @@ class CustomRuleGenerator(RuleGenerator):
             super().process_rules(path, system)
 
     def _process_rules(self, rules: dict, system):
-        self._source = None # reset the template source
+        self._source = None  # reset the template source
         if not self._shall_proceed(rules):
             return
         self.context.update(rules.get('context', {}))
@@ -69,8 +72,8 @@ class CustomRuleGenerator(RuleGenerator):
         self.source = rules.get('source', None)
         self._process_rule(rules.get('system', None), {'system': system})
         for module in system.modules:
-            #Only generate files for the modules detected from the first parse run
-            if not module.name in self.module_names:
+            # Only generate files for the modules detected from the first parse run
+            if module.name not in self.module_names:
                 continue
 
             log.debug('generate code for module %s', module)
@@ -88,7 +91,6 @@ class CustomRuleGenerator(RuleGenerator):
             for enum in module.enums:
                 self._process_rule(rules.get('enum', None), {'enum': enum})
 
-
     def _process_legacy(self, gen_config, system):
 
         click.secho('Using the legacy Generation YAML Parser. Please consider porting to the new '
@@ -96,7 +98,7 @@ class CustomRuleGenerator(RuleGenerator):
 
         for module in system.modules:
             # Only generate files for the modules detected from the first parse run
-            if not module.name in self.module_names:
+            if module.name not in self.module_names:
                 continue
 
             log.debug('generate code for module %s', module)
@@ -110,8 +112,10 @@ class CustomRuleGenerator(RuleGenerator):
             dst = self.apply('{{dst}}', self.context)
             self.destination = dst
             module_rules = gen_config['generate_rules']['module_rules']
-            force = True #moduleConfig['force']
-            if module_rules is None: module_rules = []
+            force = True  # moduleConfig['force']
+            if module_rules is None:
+                module_rules = []
+
             for rule in module_rules:
                 preserve = rule['preserve'] if 'preserve' in rule else False
                 self.write(rule['dest_file'], rule['template_file'], self.context, preserve, force)
@@ -119,15 +123,17 @@ class CustomRuleGenerator(RuleGenerator):
                 log.debug('generate backend code for interface %s', interface)
                 self.context.update({'interface': interface})
                 interface_rules = gen_config['generate_rules']['interface_rules']
-                if interface_rules is None: interface_rules = []
+                if interface_rules is None:
+                    interface_rules = []
                 for rule in interface_rules:
                     preserve = rule['preserve'] if 'preserve' in rule else False
-                    self.write(rule['dest_file'], rule['template_file'], self.context, preserve, force)
-            if 'struct_rules' in gen_config['generate_rules'] and isinstance(gen_config['generate_rules']['struct_rules'], list):
+                    self.write(rule['dest_file'], rule['template_file'], self.context, preserve,
+                               force)
+            if ('struct_rules' in gen_config['generate_rules']
+                    and isinstance(gen_config['generate_rules']['struct_rules'], list)):
                 for struct in module.structs:
                     log.debug('generate code for struct %s', struct)
                     self.context.update({'struct': struct})
                     for rule in gen_config['generate_rules']['struct_rules']:
                         preserve = rule['preserve'] if 'preserve' in rule else False
                         self.write(rule['dest_file'], rule['template_file'], ctx, preserve, force)
-
