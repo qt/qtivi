@@ -328,14 +328,22 @@ void QIviServiceManagerPrivate::addBackend(Backend *backend)
     const QString newBackendFile = backend->metaData.value(fileNameLiteral).toString();
     const QString newBackendFileBase = qtivi_helper::backendBaseName(newBackendFile);
     const QStringList ifaceList = backend->metaData.value(interfacesLiteral).toStringList();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    const QSet<QString> newInterfaces = QSet<QString>(ifaceList.begin(), ifaceList.end());
+#else
     const QSet<QString> newInterfaces = ifaceList.toSet();
+#endif
 
     bool addBackend = true;
     if (!newBackendFile.isEmpty()) {
         for (int i = 0; i < m_backends.count(); i++) {
             Backend *b = m_backends[i];
             const QStringList curIfaceList = backend->metaData.value(interfacesLiteral).toStringList();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+            const QSet<QString> interfaces = QSet<QString>(curIfaceList.begin(), curIfaceList.end());
+#else
             const QSet<QString> interfaces = curIfaceList.toSet();
+#endif
             if (interfaces == newInterfaces && b->name == backend->name) {
                 const QString fileName = b->metaData.value(fileNameLiteral).toString();
                 if (fileName == newBackendFile) {
