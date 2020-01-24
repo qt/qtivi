@@ -40,6 +40,7 @@
 # SPDX-License-Identifier: LGPL-3.0
 
 import os
+import sys
 import fnmatch
 import click
 import logging.config
@@ -59,6 +60,35 @@ log = logging.getLogger(__file__)
 
 builtinTemplatesPath = Path(here / 'templates')
 builtinTemplates = [os.path.splitext(f)[0] for f in os.listdir(builtinTemplatesPath) if fnmatch.fnmatch(f, '*.yaml')]
+
+
+def validateType(srcFile, type, errorString):
+    if type.is_interface:
+        sys.exit("{0}: {1} of type 'interface' are not supported".format(srcFile, errorString))
+    if type.is_map:
+        sys.exit("{0}: {1} of type 'map' are not supported".format(srcFile, errorString))
+
+
+def validateSystem(srcFile, system):
+    """
+    Searches for types we don't support and reports an error
+    """
+    for module in system.modules:
+        for interface in module.interfaces:
+            for property in interface.properties:
+                validateType(srcFile, property.type, "Properties")
+            for operation in interface.operations:
+                for param in operation.parameters:
+                    validateType(srcFile, param.type, "Arguments")
+                validateType(srcFile, operation.type, "Return values")
+
+            for signal in interface.signals:
+                for param in signal.parameters:
+                    validateType(srcFile, param.type, "Arguments")
+
+        for struct in module.structs:
+            for field in struct.fields:
+                validateType(srcFile, field.type, "Fields")
 
 
 def generate(tplconfig, moduleConfig, annotations, imports, src, dst):
@@ -93,6 +123,8 @@ def generate(tplconfig, moduleConfig, annotations, imports, src, dst):
 
     register_global_functions(generator)
     register_filters(generator)
+
+    validateSystem(srcFile, system)
 
     # Make sure the config tag is available for all our symbols
     for module in system.modules:
