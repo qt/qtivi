@@ -48,14 +48,14 @@
 class AmFmTunerBackend;
 class SearchAndBrowseBackend;
 
-class TunerPlugin : public QObject, QIviServiceInterface
+class TunerSimulatorPlugin : public QObject, QIviServiceInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QIviServiceInterface_iid FILE "tuner_simulator.json")
     Q_INTERFACES(QIviServiceInterface)
 
 public:
-    explicit TunerPlugin(QObject *parent = nullptr);
+    explicit TunerSimulatorPlugin(QObject *parent = nullptr);
 
     QStringList interfaces() const override;
     QIviFeatureInterface *interfaceInstance(const QString &interface) const override;

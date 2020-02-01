@@ -44,7 +44,12 @@
 
 Q_LOGGING_CATEGORY(qLcROQIviSearchAndBrowseModel, "qt.ivi.qivisearchandbrowsemodel.remoteobjects", QtInfoMsg)
 
-QIviSearchAndBrowseModelQtRoAdapter::QIviSearchAndBrowseModelQtRoAdapter(QIviSearchAndBrowseModelInterface *parent, const QString &remoteObjectsLookupName)
+QIviSearchAndBrowseModelQtRoAdapter::QIviSearchAndBrowseModelQtRoAdapter(QIviSearchAndBrowseModelInterface *parent)
+    : QIviSearchAndBrowseModelQtRoAdapter(QStringLiteral("QIviSearchAndBrowseModel"), parent)
+{
+}
+
+QIviSearchAndBrowseModelQtRoAdapter::QIviSearchAndBrowseModelQtRoAdapter(const QString &remoteObjectsLookupName, QIviSearchAndBrowseModelInterface *parent)
     : QIviSearchAndBrowseModelSource(parent)
     , m_remoteObjectsLookupName(remoteObjectsLookupName)
     , m_backend(parent)
@@ -145,5 +150,3 @@ QVariant QIviSearchAndBrowseModelQtRoAdapter::indexOf(const QUuid &identifier, c
     qCDebug(qLcROQIviSearchAndBrowseModel) << Q_FUNC_INFO;
     return m_helper.fromPendingReply(pendingReply);
 }
-
-

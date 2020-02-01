@@ -1,10 +1,10 @@
 #include "echobackend.h"
 #include "echozonedbackend.h"
-#include "echoplugin.h"
+#include "echosimulatorplugin.h"
 
 QT_BEGIN_NAMESPACE
 
-extern QVector<QIviFeatureInterface *> echoInterfaceBuilder(EchoPlugin *plugin)
+extern QVector<QIviFeatureInterface *> echoInterfaceBuilder(EchoSimulatorPlugin *plugin)
 {
     QVector<QIviFeatureInterface *> res;
     res << new EchoBackend(plugin);

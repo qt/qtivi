@@ -1,0 +1,12 @@
+backend_qtro:
+    module:
+        documents:
+            - "{{module.module_name|lower}}qtroplugin.h": "plugin.h.tpl"
+            - "{{module.module_name|lower}}qtroplugin.cpp": "plugin.cpp.tpl"
+            - "{{module.module_name|lower}}.json": "plugin.json"
+            - "{{srcBase|lower}}.pri": "plugin.pri.tpl"
+    interface:
+        documents:
+            - '{{interface|lower}}backend.h': 'backend.h.tpl'
+            - '{{interface|lower}}backend.cpp': 'backend.cpp.tpl'
+            - "{{interface|lower}}.rep": "common/interface.rep.tpl"

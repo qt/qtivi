@@ -69,7 +69,7 @@ QObject* serviceManagerSingelton(QQmlEngine *, QJSEngine *)
     \inmodule QtIviCore
 
     \brief The QtIviCoreModule class holds enums which are used by multiple classes of QtIviCore
-    and provides convenience functions to register types to QML
+    and provides convenience functions to register types to QML.
 */
 
 /*!

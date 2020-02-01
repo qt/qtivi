@@ -55,6 +55,8 @@ QT_BEGIN_NAMESPACE
 
 class QIviPendingReplyWatcherPrivate;
 
+Q_QTIVICORE_EXPORT void qiviRegisterPendingReplyBasicTypes();
+
 class Q_QTIVICORE_EXPORT QIviPendingReplyWatcher : public QObject
 {
     Q_OBJECT

@@ -50,8 +50,8 @@
 
 template <class ObjectType>
 struct QIviMediaPlayerAddressWrapper: public QIviMediaPlayerSourceAPI<ObjectType> {
-    QIviMediaPlayerAddressWrapper(ObjectType *object, const QString &name = QStringLiteral("QtIviMedia.QIviMediaPlayer"))
-        : QIviMediaPlayerSourceAPI<ObjectType>(object, name)
+    QIviMediaPlayerAddressWrapper(ObjectType *object)
+        : QIviMediaPlayerSourceAPI<ObjectType>(object, object->remoteObjectsLookupName())
     {}
 };
 
@@ -59,6 +59,9 @@ class QIviMediaPlayerQtRoAdapter : public QIviMediaPlayerSource
 {
 public:
     QIviMediaPlayerQtRoAdapter(MediaPlayerBackend *parent);
+    QIviMediaPlayerQtRoAdapter(const QString& remoteObjectsLookupName, MediaPlayerBackend *parent);
+
+    QString remoteObjectsLookupName() const;
 
 public:
     QIviMediaPlayer::PlayMode playMode() const override;
@@ -89,6 +92,7 @@ public Q_SLOTS:
     void move(int currentIndex, int newIndex) override;
 
 private:
+    QString m_remoteObjectsLookupName;
     MediaPlayerBackend *m_backend;
     QIviRemoteObjectSourceHelper<QIviMediaPlayerQtRoAdapter> m_helper;
 };

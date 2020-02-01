@@ -18,7 +18,7 @@ CONFIG += ivigenerator plugin
 QFACE_FORMAT = backend_qtro
 QFACE_SOURCES = ../example-ivi-remote.qface
 PLUGIN_TYPE = qtivi
-PLUGIN_CLASS_NAME = RemoteClientPlugin
+PLUGIN_CLASS_NAME = RemoteClientQtROPlugin
 #! [2]
 CONFIG += install_ok  # Do not cargo-cult this!
 target.path = $$[QT_INSTALL_EXAMPLES]/ivicore/qface-ivi-remote/qtivi/

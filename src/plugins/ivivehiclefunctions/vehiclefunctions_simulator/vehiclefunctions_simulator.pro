@@ -11,7 +11,7 @@ QFACE_SOURCES += ../../../ivivehiclefunctions/ivivehiclefunctions.qface
 
 PLUGIN_TYPE = qtivi
 PLUGIN_EXTENDS = ivivehiclefunctions
-PLUGIN_CLASS_NAME = QtIviVehicleFunctionsPlugin
+PLUGIN_CLASS_NAME = QtIviVehicleFunctionsSimulatorPlugin
 
 load(qt_plugin)
 

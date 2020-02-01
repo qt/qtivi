@@ -77,6 +77,13 @@
                 overrides the previously set value. This option can be used multiple times. For
                 more information, see \l{merge-annotations}{Merge Annotations}.
         \row
+            \target import-option
+            \li -I, --import <import-path>
+            \li Adds the given path to the list of import paths. All directories in this list are
+                scanned recursively for QFace files. The QFace files found are then used to resolve
+                the information required when importing a module; this is similar to how C++ include
+                paths work.
+        \row
             \li source
             \li Path or paths to the IDL source files. If there are multiple entries, each one is
                 handled. If a directory path is provided, it's scanned for IDL files.
@@ -146,23 +153,25 @@
     This YAML file must have the following structure:
 
     \code
-    generate_rules:
-        module_rules:
-            -   dest_file:  "{{module.module_name|lower}}plugin.h"
-            template_file:  "plugin.h.tpl"
-        interface_rules:
-            -   dest_file: '{{interface|lower}}backend.h'
-            template_file: 'backend.h.tpl'
-        struct_rules:
+    frontend:
+        module:
+            documents:
+                - "{{module.module_name|lower}}plugin.h": "plugin.h.tpl"
+        interface:
+            documents:
+                - '{{interface|lower}}backend.h': 'backend.h.tpl'
     \endcode
 
     For every entity, there's a list of templates that must be called, when traversing this entity
-    in the domain model tree. Here, \e{dest_file} is a name of the file that needs to be created,
-    as specified in the \l {Jinja template syntax}{Jinja template language} format. The value of
-    the object property used in the template's name is processed and substituted into the template,
-    thus forming the final name of the file to create. \e{dest_file} is the name of the template to
-    use. For the IVI generator, you must specify rules for three kinds of entities: modules,
-    interfaces and structures.
+    in the domain model tree. Here, the YAML file defines a list of documents, which need to be
+    generated for all modules and a list for all interfaces. Every list entry consists of two
+    parts; the first part is the name of the file that needs to be created, as specified in the \l
+    {Jinja template syntax}{Jinja template language} format. The value of the object property used
+    in the template's name is processed and substituted into the template, thus forming the final
+    name of the file to create. The second part is the name of the template to use. For the IVI
+    generator, you must specify rules for three kinds of entities: modules, interfaces and
+    structures. See the \l{QFace - Rule Base Generation}{QFace Rule Base Generation Documentation}
+    for more information.
 
     \section2 Annotations YAML
 

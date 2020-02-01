@@ -30,7 +30,7 @@
 #include "contactsmodelservice.h"
 
 ContactsModelService::ContactsModelService(QObject* parent)
-    : PagingModelSimpleSource(parent)
+    : QIviPagingModelSimpleSource(parent)
 {
 }
 

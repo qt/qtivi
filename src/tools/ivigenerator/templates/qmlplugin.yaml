@@ -1,0 +1,9 @@
+qmlplugin:
+    module:
+        documents:
+            - "plugin.cpp": "plugin.cpp.tpl"
+            - "{{srcBase|lower}}.pri": "module.pri.tpl"
+            - "plugins.qmltypes": "common/plugins.qmltypes.tpl"
+            - "qmldir": "qmldir_plugin.tpl"
+            - "qml/{{module|qml_type|replace('.', '/')}}/plugins.qmltypes": "common/plugins.qmltypes.tpl"
+            - "qml/{{module|qml_type|replace('.', '/')}}/qmldir": "qmldir_plugin.tpl"

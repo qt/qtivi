@@ -54,14 +54,14 @@ class MediaDiscoveryBackend;
 class MediaIndexerBackend;
 class AmFmTunerBackend;
 
-class MediaPlugin : public QObject, QIviServiceInterface
+class MediaSimulatorPlugin : public QObject, QIviServiceInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QIviServiceInterface_iid FILE "media_simulator.json")
     Q_INTERFACES(QIviServiceInterface)
 
 public:
-    explicit MediaPlugin(QObject *parent = nullptr);
+    explicit MediaSimulatorPlugin(QObject *parent = nullptr);
 
     QStringList interfaces() const override;
     QIviFeatureInterface *interfaceInstance(const QString &interface) const override;

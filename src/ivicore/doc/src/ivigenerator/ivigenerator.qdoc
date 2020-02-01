@@ -50,13 +50,11 @@ QFace library, that provides a generic autogeneration framework.
 Currently, Qt IVI generator has the following limitations:
 
 \list
-    \li It's not possible to import other QFace modules using the \c import command.
     \li There's no support for external C++ types, outside of the IDL, such as reusing a
         QGeoCoordinate inside a QFace IDL.
+    \li Defined Interfaces can't be used as types in properties or function arguments.
     \li The \c map<> type is not supported.
     \li Any default values provided directly in the QFace file are currently ignored.
-    \li The \c ivigenerator uses it's own YAML template, that's incorporated with QFace's YAML to
-        define the generation rules.
 \endlist
 
 */

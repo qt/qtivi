@@ -151,7 +151,7 @@ void QIviPagingModelPrivate::onDataFetched(const QUuid &identifier, const QList<
 
 void QIviPagingModelPrivate::onCountChanged(const QUuid &identifier, int new_length)
 {
-    if (!identifier.isNull() && (identifier != m_identifier || m_loadingType != QIviPagingModel::DataChanged || m_itemList.count() == new_length))
+    if (m_loadingType != QIviPagingModel::DataChanged || (!identifier.isNull() && identifier != m_identifier) || m_itemList.count() == new_length)
         return;
 
     Q_Q(QIviPagingModel);

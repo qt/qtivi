@@ -47,7 +47,13 @@
 #include <QRemoteObjectRegistryHost>
 
 QIviMediaDiscoveryModelQtRoAdapter::QIviMediaDiscoveryModelQtRoAdapter(MediaDiscoveryBackend *parent)
-    : QIviMediaDiscoveryModelSource (parent)
+    : QIviMediaDiscoveryModelQtRoAdapter(QStringLiteral("QtIviMedia.QIviMediaDiscoveryModel"), parent)
+{
+}
+
+QIviMediaDiscoveryModelQtRoAdapter::QIviMediaDiscoveryModelQtRoAdapter(const QString &remoteObjectsLookupName, MediaDiscoveryBackend *parent)
+    : QIviMediaDiscoveryModelSource(parent)
+    , m_remoteObjectsLookupName(remoteObjectsLookupName)
     , m_backend(parent)
 {
     QMap<QString, QIviServiceObject*> deviceMap = m_backend->deviceMap();
@@ -60,6 +66,12 @@ QIviMediaDiscoveryModelQtRoAdapter::QIviMediaDiscoveryModelQtRoAdapter(MediaDisc
 
     connect(m_backend, &MediaDiscoveryBackend::deviceAdded, this, &QIviMediaDiscoveryModelQtRoAdapter::onDeviceAdded);
     connect(m_backend, &MediaDiscoveryBackend::deviceRemoved, this, &QIviMediaDiscoveryModelQtRoAdapter::onDeviceRemoved);
+}
+
+
+QString QIviMediaDiscoveryModelQtRoAdapter::remoteObjectsLookupName() const
+{
+    return m_remoteObjectsLookupName;
 }
 
 QStringList QIviMediaDiscoveryModelQtRoAdapter::devices() const
@@ -98,7 +110,7 @@ void QIviMediaDiscoveryModelQtRoAdapter::createDeviceAdapter(QIviMediaDevice *de
     QIviSearchAndBrowseModelInterface *searchAndBrowseBackend = qivi_interface_cast<QIviSearchAndBrowseModelInterface *>(device->interfaceInstance(QStringLiteral(QIviSearchAndBrowseModel_iid)));
 
     searchAndBrowseBackend->initialize();
-    auto instance = new QIviSearchAndBrowseModelQtRoAdapter(searchAndBrowseBackend, QStringLiteral("QIviSearchAndBrowseModel_") + device->name());
+    auto instance = new QIviSearchAndBrowseModelQtRoAdapter(QStringLiteral("QIviSearchAndBrowseModel_") + device->name(), searchAndBrowseBackend);
     Core::instance()->host()->enableRemoting<QIviSearchAndBrowseModelAddressWrapper>(instance);
 
     m_hostMap.insert(device->name(), instance);

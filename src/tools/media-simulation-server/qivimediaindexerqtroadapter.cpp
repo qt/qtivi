@@ -42,11 +42,22 @@
 #include "qivimediaindexerqtroadapter.h"
 
 QIviMediaIndexerQtRoAdapter::QIviMediaIndexerQtRoAdapter(MediaIndexerBackend *parent)
-    : QIviMediaIndexerSource (parent)
+    : QIviMediaIndexerQtRoAdapter(QStringLiteral("QtIviMedia.QIviMediaIndexer"), parent)
+{
+}
+
+QIviMediaIndexerQtRoAdapter::QIviMediaIndexerQtRoAdapter(const QString& remoteObjectsLookupName, MediaIndexerBackend *parent)
+    : QIviMediaIndexerSource(parent)
+    , m_remoteObjectsLookupName(remoteObjectsLookupName)
     , m_backend(parent)
 {
     connect(m_backend, &MediaIndexerBackend::progressChanged, this, &QIviMediaIndexerQtRoAdapter::progressChanged);
     connect(m_backend, &MediaIndexerBackend::stateChanged, this, &QIviMediaIndexerQtRoAdapter::stateChanged);
+}
+
+QString QIviMediaIndexerQtRoAdapter::remoteObjectsLookupName() const
+{
+    return m_remoteObjectsLookupName;
 }
 
 QIviMediaIndexerControl::State QIviMediaIndexerQtRoAdapter::state() const

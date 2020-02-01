@@ -49,8 +49,8 @@
 
 template <class ObjectType>
 struct QIviMediaDiscoveryModelAddressWrapper: public QIviMediaDiscoveryModelSourceAPI<ObjectType> {
-    QIviMediaDiscoveryModelAddressWrapper(ObjectType *object, const QString &name = QStringLiteral("QtIviMedia.QIviMediaDiscoveryModel"))
-        : QIviMediaDiscoveryModelSourceAPI<ObjectType>(object, name)
+    QIviMediaDiscoveryModelAddressWrapper(ObjectType *object)
+        : QIviMediaDiscoveryModelSourceAPI<ObjectType>(object, object->remoteObjectsLookupName())
     {}
 };
 
@@ -58,6 +58,9 @@ class QIviMediaDiscoveryModelQtRoAdapter : public QIviMediaDiscoveryModelSource
 {
 public:
     QIviMediaDiscoveryModelQtRoAdapter(MediaDiscoveryBackend *parent);
+    QIviMediaDiscoveryModelQtRoAdapter(const QString& remoteObjectsLookupName, MediaDiscoveryBackend *parent);
+
+    QString remoteObjectsLookupName() const;
 
 public Q_SLOTS:
     QStringList devices() const override;
@@ -67,6 +70,7 @@ public Q_SLOTS:
 private:
     void createDeviceAdapter(QIviMediaDevice *device);
 
+    QString m_remoteObjectsLookupName;
     MediaDiscoveryBackend *m_backend;
     QHash<QString, QObject*> m_hostMap;
 };

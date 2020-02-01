@@ -108,6 +108,8 @@ public:
 
     QList<Backend*> m_backends;
     QSet<QString> m_interfaceNames;
+    QStringList m_loadedPaths;
+    bool m_staticLoaded;
 
     QIviServiceManager * const q_ptr;
     Q_DECLARE_PUBLIC(QIviServiceManager)

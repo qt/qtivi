@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += qml quick widgets ivicore
+QT += qml quick ivicore
 
 CONFIG += c++11
 

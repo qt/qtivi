@@ -2,7 +2,7 @@ TARGET = media_qtro
 
 PLUGIN_TYPE = qtivi
 PLUGIN_EXTENDS = ivimedia
-PLUGIN_CLASS_NAME = MediaPlugin
+PLUGIN_CLASS_NAME = MediaQtROPlugin
 
 load(qt_plugin)
 

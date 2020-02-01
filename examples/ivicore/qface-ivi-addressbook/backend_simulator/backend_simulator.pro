@@ -14,7 +14,7 @@ CONFIG += ivigenerator plugin
 QFACE_FORMAT = backend_simulator
 QFACE_SOURCES = ../example-ivi-addressbook.qface
 PLUGIN_TYPE = qtivi
-PLUGIN_CLASS_NAME = AddressBookPlugin
+PLUGIN_CLASS_NAME = AddressBookSimulatorPlugin
 
 CONFIG += install_ok  # Do not cargo-cult this!
 target.path = $$[QT_INSTALL_EXAMPLES]/ivicore/qface-ivi-addressbook/qtivi/
