@@ -28,6 +28,7 @@
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 SET SCRIPT=%~dp0
+SETLOCAL ENABLEDELAYEDEXPANSION
 
 IF %1%=="" (
     call:usage
@@ -51,12 +52,24 @@ FOR %%F in (%VIRTUALENV_LIB%\python*) DO (
     )
 )
 
-IF NOT EXIST %LIB_FOLDER%\orig-prefix.txt (
-    echo "orig-prefix.txt doesn't exist";
-    exit 1
+IF EXIST %LIB_FOLDER%\orig-prefix.txt (
+    SET /p ORIG_PREFIX=<%LIB_FOLDER%\orig-prefix.txt
+) else (
+    IF EXIST "%VIRTUALENV%\pyvenv.cfg" (
+        FOR /f "tokens=1,2 delims==" %%a in (%VIRTUALENV%\pyvenv.cfg) DO (
+            SET NAME=%%a
+            SET NAME=!NAME:~0,-1!
+            IF !NAME!==base-prefix (
+                SET ORIG_PREFIX=%%b
+                SET ORIG_PREFIX=!ORIG_PREFIX:~1!
+            )
+        )
+    ) ELSE (
+        echo "Neither %LIB_FOLDER%\orig-prefix.txt nor %VIRTUALENV%\pyvenv.cfg exists"
+        exit 1
+    )
 )
 
-SET /p ORIG_PREFIX=<%LIB_FOLDER%\orig-prefix.txt
 SET ORIG_LIB=%ORIG_PREFIX%\lib\%PYTHON_VERSION%
 IF NOT EXIST "%ORIG_LIB%" (
     echo "%ORIG_LIB% doesn't exist"

@@ -62,9 +62,12 @@ qtConfig(system-qface) {
 } else {
     equals(QMAKE_HOST.os, Windows) {
         PYTHON = $$VIRTUALENV_PATH/Scripts/python.exe
+        # No space between the path and && otherwise python3 adds the space to the path
+        ENV += set PYTHONHOME=$$system_path($$VIRTUALENV_PATH)&&
     } else {
         PYTHON = $$VIRTUALENV_PATH/bin/python
         ENV += LD_LIBRARY_PATH="$$shell_path($$VIRTUALENV_PATH/bin)"
+        ENV += PYTHONHOME=$$system_path($$VIRTUALENV_PATH)
     }
 }
 IVI_GENERATOR = $$shell_quote($$PYTHON) $$IVI_GENERATOR_PATH/generate.py

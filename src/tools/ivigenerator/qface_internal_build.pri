@@ -14,6 +14,8 @@ VIRTUALENV_EXE = $$shell_quote($$QMAKE_PYTHON3_LOCATION) -m virtualenv
 # by adding -p we enforce that the python3 interpreter is used and make sure python3 is installed in the virtualenv
 VIRTUALENV_EXE += " -p $$shell_quote($$QMAKE_PYTHON3_LOCATION)"
 
+RELOCATE_VIRTUALENV = $$system_path($$QTIVI_ROOT/src/3rdparty/virtualenv/relocate_virtualenv.py)
+
 # Use a Python virtualenv for installing qface, so we don't pollute the user environment
 # On some systems virtualenv --always-copy doesn't work (https://github.com/pypa/virtualenv/issues/565).
 # To workaround the problem, we need to manually create the folder and create the virtualenv from
@@ -23,7 +25,7 @@ else:  qtivi_qface_virtualenv.target = qtivi_qface_virtualenv/bin/python
 qtivi_qface_virtualenv.commands = \
     $(MKDIR) qtivi_qface_virtualenv $$escape_expand(\n\t) \
     cd qtivi_qface_virtualenv && $$VIRTUALENV_EXE --always-copy . $$escape_expand(\n\t) \
-    cd qtivi_qface_virtualenv && $$VIRTUALENV_EXE --relocatable . $$escape_expand(\n\t) \
+    cd qtivi_qface_virtualenv && $$system_quote($$QMAKE_PYTHON3_LOCATION) $$RELOCATE_VIRTUALENV . $$escape_expand(\n\t) \
     @echo "Set up virtualenv for qface, name: qtivi_qface_virtualenv"
 QMAKE_EXTRA_TARGETS += qtivi_qface_virtualenv
 
