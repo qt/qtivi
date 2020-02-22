@@ -150,12 +150,14 @@ void QIviPlayQueuePrivate::onCountChanged(int new_length)
 void QIviPlayQueuePrivate::onDataChanged(const QList<QVariant> &data, int start, int count)
 {
     if (start < 0 || start > m_itemList.count()) {
-        qWarning("provided start argument is out of range");
+        if (m_loadingType == QIviPlayQueue::DataChanged)
+            qWarning("The provided start argument is out of range. Please make sure to emit the countChanged() before emitting dataChanged()");
         return;
     }
 
     if (count < 0 || count > m_itemList.count() - start) {
-        qWarning("provided count argument is out of range");
+        if (m_loadingType == QIviPlayQueue::DataChanged)
+            qWarning("The provided start argument is out of range. Please make sure to emit the countChanged() before emitting dataChanged()");
         return;
     }
 

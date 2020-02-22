@@ -49,9 +49,15 @@ for file in "$VIRTUALENV_LIB"/python* ; do
     fi
 done
 [ ! -d "$LIB_FOLDER" ] && usage
-if [[ ! -e "$LIB_FOLDER/orig-prefix.txt" ]] ; then
-    echo "orig-prefix.txt doesn't exist";
-    exit 1
+if [[ -e "$LIB_FOLDER/orig-prefix.txt" ]] ; then
+    ORIG_PREFIX=$(<"$LIB_FOLDER"/orig-prefix.txt)
+else
+    if [[  -e "$VIRTUALENV/pyvenv.cfg" ]] ; then
+        ORIG_PREFIX=$(awk -F " = " '/base-prefix/ {print $2}' $VIRTUALENV/pyvenv.cfg)
+    else
+        echo "Neither $LIB_FOLDER/orig-prefix.txt or $VIRTUALENV/pyvenv.cfg exists";
+        exit 1
+    fi
 fi
 
 if [ "$(uname)" == "Darwin" ]; then
@@ -72,7 +78,6 @@ fi
 
 # Find all the locations used for the system python files
 # They are located in prefix, but we don't know the sub-folder (it is lib on most systems, but lib64 on some others)
-ORIG_PREFIX=$(<"$LIB_FOLDER"/orig-prefix.txt)
 ORIG_LIBS=`$VIRTUALENV/bin/python3 -c "import sys; print ('\n'.join(path for path in sys.path))" | grep $ORIG_PREFIX`
 
 if [[ ! -e "$SCRIPT/deploy-virtualenv-files.txt" ]] ; then
@@ -86,7 +91,7 @@ for ORIG_LIB in ${ORIG_LIBS} ; do
         for file in ${FILES} ; do
             expand_wildcard=($ORIG_LIB/$file)
             [ ! -e "$expand_wildcard" ] && continue;
-            cp -RLf "$ORIG_LIB"/$file "$LIB_FOLDER/"
+            cp -RLfn "$ORIG_LIB"/$file "$LIB_FOLDER/"
         done
 done
 

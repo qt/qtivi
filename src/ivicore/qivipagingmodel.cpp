@@ -169,12 +169,14 @@ void QIviPagingModelPrivate::onDataChanged(const QUuid &identifier, const QList<
         return;
 
     if (start < 0 || start > m_itemList.count()) {
-        qWarning("provided start argument is out of range");
+        if (m_loadingType == QIviPagingModel::DataChanged)
+            qWarning("The provided start argument is out of range. Please make sure to emit the countChanged() before emitting dataChanged()");
         return;
     }
 
     if (count < 0 || count > m_itemList.count() - start) {
-        qWarning("provided count argument is out of range");
+        if (m_loadingType == QIviPagingModel::DataChanged)
+            qWarning("The provided start argument is out of range. Please make sure to emit the countChanged() before emitting dataChanged()");
         return;
     }
 
