@@ -68,7 +68,7 @@ void MediaPlayerBackend::initialize()
         emit playStateChanged(m_replica->playState());
         emit positionChanged(m_replica->position());
         emit durationChanged(m_replica->duration());
-        emit currentTrackChanged(m_replica->currentTrack());
+        emit currentTrackChanged(m_helper->fromRemoteObjectVariant(m_replica->currentTrack()));
         emit currentIndexChanged(m_replica->currentIndex());
         emit volumeChanged(m_replica->volume());
         emit mutedChanged(m_replica->muted());
