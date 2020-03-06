@@ -75,6 +75,7 @@ public:
     void unregisterApplication();
 
     void registerCategory(const QLoggingCategory *category, const char *dltCtxName, const char *dltCtxDescription);
+    void unregisterCategories();
     void setDefaultContext(const char *categoryName);
 
     void setRegisterContextOnFirstUseEnabled(bool enabled);
