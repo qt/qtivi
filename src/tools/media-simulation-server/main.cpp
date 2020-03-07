@@ -63,7 +63,9 @@
 int main(int argc, char *argv[])
 {
 #ifdef Q_OS_MACOS
-    //QtMultimedia doesn't work with a QCoreApplication on macos
+    // QtMultimedia doesn't work with a QCoreApplication on macos
+    // Use the env variable to prevent Qt from creating an app icon in the dock
+    qputenv("QT_MAC_DISABLE_FOREGROUND_APPLICATION_TRANSFORM", "1");
     QGuiApplication app(argc, argv);
 #else
     QCoreApplication app(argc, argv);
