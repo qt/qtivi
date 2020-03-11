@@ -53,7 +53,7 @@ MediaDiscoveryBackend::MediaDiscoveryBackend(QObject *parent)
     m_deviceFolder = QDir::homePath() + "/usb-simulation";
     const QByteArray customDeviceFolder = qgetenv("QTIVIMEDIA_SIMULATOR_DEVICEFOLDER");
     if (customDeviceFolder.isEmpty())
-        qCCritical(media) << "QTIVIMEDIA_SIMULATOR_DEVICEFOLDER environment variable is not set, falling back to:" << m_deviceFolder;
+        qCDebug(media) << "QTIVIMEDIA_SIMULATOR_DEVICEFOLDER environment variable is not set, falling back to:" << m_deviceFolder;
     else
         m_deviceFolder = customDeviceFolder;
 
