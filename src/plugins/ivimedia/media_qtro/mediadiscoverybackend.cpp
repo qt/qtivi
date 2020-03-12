@@ -66,7 +66,7 @@ void MediaDiscoveryBackend::initialize()
         emit initializationDone();
     }
 
-    QTimer::singleShot(3000, this, [this](){
+    QTimer::singleShot(6000, this, [this](){
         if (!m_replica->isInitialized())
             qCCritical(qLcROQIviMediaDiscovery) << "QtIviMedia.QIviMediaDiscoveryModel wasn't initialized within the timeout period. Please make sure the server is running.";
     });

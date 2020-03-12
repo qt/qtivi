@@ -174,7 +174,7 @@ void {{class}}::initialize()
     }
 {% endif %}
 
-    QTimer::singleShot(3000, this, [this](){
+    QTimer::singleShot(6000, this, [this](){
         if(!m_replica->isInitialized())
             qCCritical(qLcRO{{interface}}) << "{{interface.qualified_name}} wasn't initialized within the timeout period. Please make sure the server is running.";
     });
