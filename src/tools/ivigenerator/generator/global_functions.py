@@ -45,6 +45,7 @@ import click
 from jinja2 import TemplateAssertionError
 from jinja2 import contextfunction
 
+currentSrcFile = ""
 
 def jinjaTrace():
     """
@@ -60,9 +61,7 @@ def jinjaTrace():
         frame = frame.f_back
     return infos
 
-
-@contextfunction
-def jinja_error(context, msg):
+def jinja_error(msg):
     """
     Throws an error for the current jinja template and the templates this is included from
     This can be used inside a filter to indicate problems with the passed arguments or direclty
@@ -74,7 +73,7 @@ def jinja_error(context, msg):
         if len(infos) > 1:
             for info in infos[1:]:
                 message = message + "\n{0}:{1}: instantiated from here".format(info[0], info[1])
-        message = message + "\n{0}: instantiated from here".format(context["srcFile"])
+        message = message + "\n{0}: instantiated from here".format(currentSrcFile)
         raise TemplateAssertionError(message, infos[0][1], "", infos[0][0])
     raise TemplateAssertionError(msg, -1, "", "unknown")
 
