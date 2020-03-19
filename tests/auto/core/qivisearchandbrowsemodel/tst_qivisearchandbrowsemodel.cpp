@@ -38,6 +38,39 @@
 #include <QQmlComponent>
 #include <QScopedPointer>
 
+
+bool operator<=(const QVariant &left, const QVariant &right)
+{
+    if (left.canConvert(QVariant::Double) && right.canConvert(QVariant::Double))
+        return left.toDouble() <= right.toDouble();
+    else if (left.canConvert(QVariant::String) && right.canConvert(QVariant::String))
+        return left.toString() <= right.toString();
+
+    qCritical() << "Can't compare these types:" << left << right;
+    return false;
+}
+
+bool operator>=(const QVariant &left, const QVariant &right)
+{
+    if (left.canConvert(QVariant::Double) && right.canConvert(QVariant::Double))
+        return left.toDouble() >= right.toDouble();
+    else if (left.canConvert(QVariant::String) && right.canConvert(QVariant::String))
+        return left.toString() >= right.toString();
+
+    qCritical() << "Can't compare these types:" << left << right;
+    return false;
+}
+
+bool operator<(const QVariant &left, const QVariant &right)
+{
+    return !(left >= right);
+}
+
+bool operator>(const QVariant &left, const QVariant &right)
+{
+    return !(left <= right);
+}
+
 class TestBackend : public QIviSearchAndBrowseModelInterface
 {
     Q_OBJECT
