@@ -429,17 +429,33 @@ bool QIviSimulationGlobalObject::checkSettings(const QVariantMap &data, const QV
         }
     }
     const QVariant domainDomain = parseDomainValue(data, domainLiteral, zone);
+    bool valueToDouble = value.canConvert(QVariant::Double);
+    bool minDomainToDouble = minDomain.canConvert(QVariant::Double);
+    bool maxDomainToDouble = maxDomain.canConvert(QVariant::Double);
 
-    if (unsupportedDomain.isValid())
+    if (unsupportedDomain.isValid()) {
         return !unsupportedDomain.toBool();
-    if (minDomain.isValid() && maxDomain.isValid())
-        return !(value < minDomain || value > maxDomain);
-    if (minDomain.isValid())
-        return value >= minDomain;
-    if (maxDomain.isValid())
-        return value <= maxDomain;
-    if (domainDomain.isValid())
+    } else if (minDomain.isValid() && maxDomain.isValid()) {
+        if (!valueToDouble || !minDomainToDouble || !maxDomainToDouble) {
+            qWarning() << "Can't compare values: " << value << minDomain << maxDomain;
+            return false;
+        }
+        return !(value.toDouble() < minDomain.toDouble() || value.toDouble() > maxDomain.toDouble());
+    } else if (minDomain.isValid()) {
+        if (!valueToDouble || !minDomainToDouble) {
+            qWarning() << "Can't compare values: " << value << minDomain;
+            return false;
+        }
+        return value.toDouble() >= minDomain.toDouble();
+    } else if (maxDomain.isValid()) {
+        if (!valueToDouble || !maxDomainToDouble) {
+            qWarning() << "Can't compare values: " << value << maxDomain;
+            return false;
+        }
+        return value.toDouble() <= maxDomain.toDouble();
+    } if (domainDomain.isValid()) {
         return domainDomain.toList().contains(value);
+    }
 
     return true;
 }
