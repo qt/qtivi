@@ -81,6 +81,7 @@ public:
 
     void registerCategory(const QLoggingCategory *category, DltContext *dltContext, const char *dltCtxName, const char *dltCtxDescription);
     void registerCategory(CategoryInfo &info);
+    void unregisterCategories();
     void registerApplication();
     void unregisterApplication();
     void setDefaultCategory(const QString &category);
