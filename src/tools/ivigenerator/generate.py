@@ -50,7 +50,7 @@ from qface.generator import FileSystem, Generator
 from qface.watch import monitor
 
 import generator.builtin_config as builtin_config
-from generator.global_functions import register_global_functions
+import generator.global_functions as global_functions
 from generator.filters import register_filters
 from generator.rule_generator import CustomRuleGenerator
 
@@ -60,7 +60,6 @@ log = logging.getLogger(__file__)
 
 builtinTemplatesPath = Path(here / 'templates')
 builtinTemplates = [os.path.splitext(f)[0] for f in os.listdir(builtinTemplatesPath) if fnmatch.fnmatch(f, '*.yaml')]
-
 
 def validateType(srcFile, type, errorString):
     if type.is_interface:
@@ -116,12 +115,13 @@ def generate(tplconfig, moduleConfig, annotations, imports, src, dst):
 
     srcFile = os.path.basename(src[0])
     srcBase = os.path.splitext(srcFile)[0]
+    global_functions.currentSrcFile = srcFile
     ctx = {'qtASVersion': builtin_config.config["VERSION"], 'srcFile': srcFile, 'srcBase': srcBase}
     generator = CustomRuleGenerator(search_path=[tplconfig, builtinTemplatesPath], destination=dst,
                                     context=ctx, modules=module_names)
     generator.env.keep_trailing_newline = True
 
-    register_global_functions(generator)
+    global_functions.register_global_functions(generator)
     register_filters(generator)
 
     validateSystem(srcFile, system)

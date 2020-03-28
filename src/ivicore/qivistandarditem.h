@@ -75,8 +75,8 @@ public:
     virtual QVariantMap data() const;
     virtual void setData(const QVariantMap &data);
 
-    bool operator==(const QIviStandardItem &other);
-    inline bool operator!=(const QIviStandardItem &other) { return !(*this == other); }
+    bool operator==(const QIviStandardItem &other) const;
+    inline bool operator!=(const QIviStandardItem &other) const { return !(*this == other); }
 
 private:
     QSharedDataPointer<QIviStandardItemPrivate> d;

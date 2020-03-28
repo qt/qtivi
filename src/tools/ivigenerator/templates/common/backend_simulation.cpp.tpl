@@ -69,7 +69,7 @@ QT_BEGIN_NAMESPACE
     , m_{{ property }}(new {{property|upperfirst}}ModelBackend(this));
 {%     endif %}
 {%   else %}
-    , m_{{ property }}({{property|default_value}})
+    , m_{{ property }}({{property|default_type_value}})
 {%   endif %}
 {% endfor %}
 {
@@ -103,7 +103,7 @@ QT_BEGIN_NAMESPACE
     : {{class}}Interface(parent)
 {% for property in interface.properties %}
 {%       if not property.type.is_model %}
-    , m_{{ property }}({{property|default_value}})
+    , m_{{ property }}({{property|default_type_value}})
 {%       endif %}
 {% endfor %}
 {% if interface_zoned %}
@@ -198,7 +198,7 @@ void {{class}}::addZone(const QString &zone)
         return zo->{{property|getter_name}}();
     else
         qWarning() << "No such Zone";
-    return {{property|default_value}};
+    return {{property|default_type_value}};
 }
 {%   else %}
 {{ivi.prop_getter(property, class, model_interface = true)}}
@@ -257,7 +257,7 @@ void {{class}}::addZone(const QString &zone)
     Q_UNUSED(zone);
 {% endif %}
 
-    qWarning() << "Not implemented!";
+    qWarning() << "{{operation}}: Not implemented!";
 
     //Fake that the reply always succeeded
     QIviPendingReply<{{operation|return_type}}> successReply;
