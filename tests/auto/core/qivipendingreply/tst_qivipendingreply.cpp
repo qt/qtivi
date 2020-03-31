@@ -284,8 +284,8 @@ template <typename T> void tst_QIviPendingReply::qml_helper(TestObject *testObje
     QCOMPARE(obj->property("replySuccess").toBool(), false);
     QCOMPARE(obj->property("replyResultAvailable").toBool(), false);
 
-    //Wait until the reply is ready
-    QTest::qWait(100);
+    QSignalSpy spy(obj.data(), SIGNAL(callBackCalledChanged()));
+    spy.wait(1000);
 
     QVERIFY(obj->property("callBackCalled").toBool());
     QCOMPARE(obj->property("success").toBool(), !failed);
