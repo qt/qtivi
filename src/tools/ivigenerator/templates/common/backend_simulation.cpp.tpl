@@ -149,6 +149,12 @@ QStringList {{class}}::availableZones() const
 
 void {{class}}::initialize()
 {
+{% if interface.tags.config.zoned %}
+    // To initialize the default values all zone objects need to be created. For zoned backends
+    // the availableZones() method is responsible for that, just make sure this is called before
+    // initialize to have them created before.
+    availableZones();
+{% endif %}
     QIVI_SIMULATION_TRY_CALL({{class}}, "initialize", void);
 {% for property in interface.properties %}
 {%   if not interface_zoned  %}
@@ -173,7 +179,8 @@ void {{class}}::initialize()
 {% if interface_zoned %}
 void {{class}}::addZone(const QString &zone)
 {
-    m_zones->insert(zone, QVariant::fromValue(new {{zone_class}}(zone, this)));
+    if (!m_zones->contains(zone))
+        m_zones->insert(zone, QVariant::fromValue(new {{zone_class}}(zone, this)));
 }
 
 {{zone_class}}* {{class}}::zoneAt(const QString &zone)
