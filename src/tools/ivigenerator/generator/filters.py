@@ -437,8 +437,19 @@ def simulationData(module):
                             and p in property.tags['config_simulator']):
                         if property.name not in iData:
                             iData[property.name] = {}
-                        iData[property.name][p] = symbolToJson(property.tags['config_simulator'][p],
-                                                               property.type)
+                        if p not in iData[property.name]:
+                            iData[property.name][p] = {}
+                        zones = iData.get('zones', None)
+                        res = property.tags['config_simulator'][p]
+                        if isinstance(res, dict) and zones:
+                            for zone in zones:
+                                if zone in res:
+                                    iData[property.name][p][zone] = symbolToJson(res[zone], property.type)
+                            # Also check the entry for the general zone (=)
+                            if "=" in res:
+                                iData[property.name][p]["="] = symbolToJson(res["="], property.type)
+                        else:
+                            iData[property.name][p] = symbolToJson(res, property.type)
         data[interface.name] = iData
     return json.dumps(data, indent='  ')
 
