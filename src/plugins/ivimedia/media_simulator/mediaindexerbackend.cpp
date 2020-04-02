@@ -327,7 +327,7 @@ void MediaIndexerBackend::scanNext()
         return;
 
     ScanData data = m_folderQueue.dequeue();
-    m_watcher.setFuture(QtConcurrent::run(this, &MediaIndexerBackend::scanWorker, data));
+    m_watcher.setFuture(QtConcurrent::run(&MediaIndexerBackend::scanWorker, this, data));
 }
 
 void MediaIndexerBackend::setProgress(qreal progress)

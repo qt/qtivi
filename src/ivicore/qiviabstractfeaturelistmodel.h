@@ -44,6 +44,7 @@
 #define QIVIABSTRACTFEATURELISTMODEL_H
 
 #include <QAbstractListModel>
+#include <QtIviCore/QIviServiceObject>
 #include <QtIviCore/QIviAbstractFeature>
 
 QT_BEGIN_NAMESPACE

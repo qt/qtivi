@@ -176,9 +176,9 @@ void MediaPlayerBackend::fetchData(const QUuid &identifier, int start, int count
 
     QStringList queries;
     queries.append(queryString);
-    QtConcurrent::run(m_threadPool, this,
+    QtConcurrent::run(m_threadPool,
                       &MediaPlayerBackend::doSqlOperation,
-                      MediaPlayerBackend::Select,
+                      this, MediaPlayerBackend::Select,
                       queries,
                       identifier,
                       start,
@@ -218,9 +218,9 @@ void MediaPlayerBackend::insert(int index, const QVariant &i)
     }
     QStringList queries = queryString.split(';');
 
-    QtConcurrent::run(m_threadPool, this,
+    QtConcurrent::run(m_threadPool,
                       &MediaPlayerBackend::doSqlOperation,
-                      MediaPlayerBackend::Insert,
+                      this, MediaPlayerBackend::Insert,
                       queries, QUuid(), index, 0);
 }
 
@@ -231,9 +231,9 @@ void MediaPlayerBackend::remove(int index)
             .arg(index);
     QStringList queries = queryString.split(';');
 
-    QtConcurrent::run(m_threadPool, this,
+    QtConcurrent::run(m_threadPool,
                       &MediaPlayerBackend::doSqlOperation,
-                      MediaPlayerBackend::Remove,
+                      this, MediaPlayerBackend::Remove,
                       queries, QUuid(), index, 1);
 }
 
@@ -254,9 +254,9 @@ void MediaPlayerBackend::move(int cur_index, int new_index)
             .arg(delta > 0 ? QStringLiteral("-") : QStringLiteral("+"));
     QStringList queries = queryString.split(';');
 
-    QtConcurrent::run(m_threadPool, this,
+    QtConcurrent::run(m_threadPool,
                       &MediaPlayerBackend::doSqlOperation,
-                      MediaPlayerBackend::Move,
+                      this, MediaPlayerBackend::Move,
                       queries, QUuid(), cur_index, new_index);
 }
 
@@ -434,9 +434,9 @@ void MediaPlayerBackend::setCurrentIndex(int index)
     QStringList queries;
     queries.append(queryString);
 
-    QtConcurrent::run(m_threadPool, this,
+    QtConcurrent::run(m_threadPool,
                       &MediaPlayerBackend::doSqlOperation,
-                      MediaPlayerBackend::SetIndex,
+                      this, MediaPlayerBackend::SetIndex,
                       queries, QUuid(), m_currentIndex, 0);
 }
 

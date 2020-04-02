@@ -230,8 +230,8 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, int start, int c
             QString::number(count));
 
     QtConcurrent::run(m_threadPool,
-                      this,
                       &SearchAndBrowseBackend::search,
+                      this,
                       identifier,
                       queryString,
                       current_type,
