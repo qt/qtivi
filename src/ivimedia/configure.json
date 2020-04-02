@@ -53,11 +53,12 @@
         },
         "tuner_simulation_backend": {
             "label": "Tuner Simulation Backend",
+            "condition": "module.multimedia",
             "output": [ "privateFeature" ]
         },
         "media_qtro_backend" : {
             "label": "Mediaplayer Qt Remote Objects Backend",
-            "condition": "features.remoteobjects",
+            "condition": "features.remoteobjects && module.multimedia",
             "output": [ "privateFeature" ]
         },
         "media_qtro_simulation_server" : {
