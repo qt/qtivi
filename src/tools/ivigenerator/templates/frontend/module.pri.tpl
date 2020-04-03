@@ -42,6 +42,9 @@
 ## Do not edit! All changes made to it will be lost.
 #############################################################################
 
+# Export all symbols when building this library
+DEFINES *= QT_BUILD_{{module|upper|replace('.', '_')|strip_QT}}_LIB
+
 HEADERS += \
 {% for interface in module.interfaces %}
     $$PWD/{{interface|lower}}.h \
