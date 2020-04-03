@@ -268,7 +268,7 @@ void {{class}}::addZone(const QString &zone)
 
     //Fake that the reply always succeeded
     QIviPendingReply<{{operation|return_type}}> successReply;
-    successReply.setSuccess({{operation|default_value}});
+    successReply.setSuccess({{operation|default_type_value}});
     return successReply;
 }
 
