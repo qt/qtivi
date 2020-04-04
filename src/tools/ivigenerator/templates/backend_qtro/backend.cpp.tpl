@@ -68,7 +68,7 @@ QT_BEGIN_NAMESPACE
 {%   if property.type.is_model %}
     , m_{{property}}(new Zoned{{property|upperfirst}}ModelBackend(QStringLiteral("{{interface.qualified_name}}.{{property}}.") + m_zone, this))
 {%   else %}
-    , m_{{ property }}({{property|default_value}})
+    , m_{{ property }}({{property|default_type_value}})
 {%   endif %}
 {% endfor %}
 {

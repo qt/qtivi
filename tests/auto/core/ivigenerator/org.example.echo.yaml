@@ -1,15 +1,47 @@
+org.example.echo.EchoZoned#stringValue:
+    config_simulator:
+        default: "two"
+
+org.example.echo.Echo#intValue:
+    config_simulator:
+      default_value: 61
+      range_high: 150
+      range_low:  0
+
+org.example.echo.Echo#contact:
+    config_simulator:
+        zoned: true
+        default: [ "foo", 23, true, 1234 ]
+
+org.example.echo.Echo#combo:
+    config_simulator:
+        zoned: true
+        default: [ [ "foo", 23, true, 1234 ], WeekDay.Monday ]
+
+org.example.echo.Echo#intList:
+    config_simulator:
+        default: [1, 2, 3, 4]
+
+org.example.echo.Echo#comboList:
+    config_simulator:
+        default: [[ [ "foo", 23, true, 1234 ], WeekDay.Monday ], [ [ "bar", 21, false, "foo" ], WeekDay.Tuesday ]]
+
+org.example.echo.Echo#contactList:
+    config_simulator:
+        default: [[ "foo", 23, true, WeekDay.Monday ], [ "bar", 12, false, false ]]
+
 org.example.echo.EchoZoned:
     config_simulator:
         zones: [ FrontLeft, FrontRight, Rear ]
 
 org.example.echo.EchoZoned#stringValue:
     config_simulator:
-        default: "two"
+        default: { FrontLeft: "two", Rear: "one", =: "general" }
 
 org.example.echo.EchoZoned#intValue:
     config_simulator:
         default: 11
-        range: [10, 33]
+        range: { FrontLeft: [10, 33], Rear: [0, 11] }
 
 org.example.echo.EchoZoned#zonedValue:
     config_simulator:
@@ -35,16 +67,10 @@ org.example.echo.EchoZoned#rangedValueWithDefault:
       range_high: 150
       range_low:  0
 
-org.example.echo.Echo#intValue:
-    config_simulator:
-      default_value: 61
-      range_high: 150
-      range_low:  0
-
 org.example.echo.EchoZoned#contact:
     config_simulator:
         zoned: true
-        default: [ "foo", 23, true, 1234 ]
+        default: { FrontLeft: [ "foo", 23, true, 1234 ], Rear: [ "bar", 1, false, 3456 ] }
 
 org.example.echo.EchoZoned#combo:
     config_simulator:
@@ -59,6 +85,3 @@ org.example.echo.EchoZoned#comboList:
     config_simulator:
         default: [[ [ "foo", 23, true, 1234 ], WeekDay.Monday ], [ [ "bar", 21, false, "foo" ], WeekDay.Tuesday ]]
 
-org.example.echo.Echo#contactList:
-    config_simulator:
-        default: [[ "foo", 23, true, WeekDay.Monday ], [ "bar", 12, false, false ]]

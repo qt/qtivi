@@ -167,17 +167,17 @@ def default_value_helper(symbol, res):
     t = symbol.type
     if t.is_struct:
         if not (isinstance(res, dict) or isinstance(res, list)):
-            jinja_error('default_value: value in annotation is supposed to be a dict or list')
+            jinja_error('default_value: value in annotation for symbol {0} is supposed to be a dict or list'.format(symbol.qualified_name))
         if len(res) != len(t.reference.fields):
-            jinja_error('default_value: argument count in annotation and number of struct fields '
-                        'does not match')
+            jinja_error('default_value: argument count in annotation for symbol {0} and number of struct fields '
+                        'does not match: Expected {1} instead of {2}'.format(symbol.qualified_name, len(t.reference.fields), len(res)))
         values = []
         for idx, property in enumerate(res):
             values.append(default_value_helper(list(t.reference.fields)[idx], property))
         return '{0}({{{1}}})'.format(t.type, ', '.join(values))
     if t.is_model or t.is_list:
         if not isinstance(res, list):
-            jinja_error('default_value: value in annotation is supposed to be a list')
+            jinja_error('default_value: value in annotation for symbol {0} is supposed to be a list'.format(symbol.qualified_name))
         row_string = ''
         if t.nested.is_struct and t.is_list:
             row_string = ', '.join(('QVariant::fromValue({0})'.format(default_value_helper(t.nested, row))) for row in res)
@@ -437,8 +437,19 @@ def simulationData(module):
                             and p in property.tags['config_simulator']):
                         if property.name not in iData:
                             iData[property.name] = {}
-                        iData[property.name][p] = symbolToJson(property.tags['config_simulator'][p],
-                                                               property.type)
+                        if p not in iData[property.name]:
+                            iData[property.name][p] = {}
+                        zones = iData.get('zones', None)
+                        res = property.tags['config_simulator'][p]
+                        if isinstance(res, dict) and zones:
+                            for zone in zones:
+                                if zone in res:
+                                    iData[property.name][p][zone] = symbolToJson(res[zone], property.type)
+                            # Also check the entry for the general zone (=)
+                            if "=" in res:
+                                iData[property.name][p]["="] = symbolToJson(res["="], property.type)
+                        else:
+                            iData[property.name][p] = symbolToJson(res, property.type)
         data[interface.name] = iData
     return json.dumps(data, indent='  ')
 
@@ -447,10 +458,11 @@ def symbolToJson(data, symbol):
     if symbol.type.is_struct:
         t = symbol.type
         if not (isinstance(data, dict) or isinstance(data, list)):
-            jinja_error('simulationData: value in annotation is supposed to be a dict or list')
+            jinja_error('simulationData: value in annotation for symbol {0} is supposed to be a dict or list'.format(symbol.qualified_name))
         if len(data) != len(t.reference.fields):
-            jinja_error('simulationData: argument count in annotation and number of struct fields '
-                        'does not match')
+            print(len(data), len(t.reference.fields))
+            jinja_error('simulationData: argument count in annotation for symbol {0} and number of struct fields '
+                        'does not match: Expected {1} instead of {2}'.format(symbol.qualified_name, len(t.reference.fields), len(data)))
         newList = list(symbolToJson(property, list(t.reference.fields)[idx]) for idx, property in enumerate(data))
         return {"type": symbol.type.name, "value": newList}
     elif symbol.type.is_enum or symbol.type.is_flag:
