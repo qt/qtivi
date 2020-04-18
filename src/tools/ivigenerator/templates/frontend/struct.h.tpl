@@ -70,7 +70,6 @@ class {{exportsymbol}} {{class}} : public QIviStandardItem
 {% for field in struct.fields %}
     {{ivi.property(field, notify=false)}}
 {% endfor %}
-    Q_CLASSINFO("IviPropertyDomains", "{{ struct.fields|json_domain|replace("\"", "\\\"") }}")
 
 public:
     {{class}}();

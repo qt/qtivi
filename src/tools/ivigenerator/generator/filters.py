@@ -40,6 +40,7 @@
 # SPDX-License-Identifier: LGPL-3.0
 
 import json
+import inspect
 
 from qface.idl.domain import Module, Interface, Property, Parameter, Field, Struct
 from qface.helper.generic import lower_first, upper_first
@@ -49,12 +50,21 @@ from .global_functions import jinja_error, jinja_warning
 from . import builtin_config
 
 
+def deprecated_filter(name=None):
+    if not name:
+        name = inspect.stack()[1][3]
+    jinja_warning("The '{0}' filter is deprecated and will be removed in future Qt "
+                  "versions".format(name))
+
+
 def tag_by_path(symbol, path, default_value=False):
     """
     Find the tag given by its full path in the object hierarchy,
     like "property.config_sim.zones.right". If some part of the
     path is missing, return None
     """
+    deprecated_filter()
+
     path_parts = path.split(".")
     cur_level_obj = symbol.tags
     for path_part in path_parts:
@@ -73,6 +83,8 @@ def conf_sim_tag(symbol, path, default_value=False):
     Find tag, given by its path, located under "config_simulator" sub-object.
     Returns None, of any of the path parts is missing
     """
+    deprecated_filter()
+
     return tag_by_path(symbol, "config_simulator." + path, default_value)
 
 
@@ -207,6 +219,8 @@ def default_value(symbol, zone='='):
     """
     Find the default value used by the simulator backend
     """
+    deprecated_filter()
+
     res = default_type_value(symbol)
     if symbol.type.is_model:
         res = '{}'
@@ -330,6 +344,8 @@ def domain_values(symbol):
     """
     Returns domain values for property (if defined by @domain)
     """
+    deprecated_filter()
+
     if type(symbol) is Property:
         if 'config_simulator' in symbol.tags:
             if 'domain' in symbol.tags['config_simulator']:
@@ -361,6 +377,8 @@ def range_value(symbol, index, key):
     """
     Returns value for property (if defined by @range index or key)
     """
+    deprecated_filter()
+
     if type(symbol) is Property and symbol.type.is_int or symbol.type.is_real:
         if 'config_simulator' in symbol.tags:
             if 'range' in symbol.tags['config_simulator']:
@@ -374,6 +392,8 @@ def range_high(symbol):
     """
     Returns maximum value for property (if defined by @range or @maximum)
     """
+    deprecated_filter()
+
     return range_value(symbol, 1, 'maximum')
 
 
@@ -381,6 +401,8 @@ def range_low(symbol):
     """
     Returns minimum value for property (if defined by @range or @minimum)
     """
+    deprecated_filter()
+
     return range_value(symbol, 0, 'minimum')
 
 
@@ -388,6 +410,8 @@ def has_domains(properties):
     """
     Returns true if any property has range or domain tags
     """
+    deprecated_filter()
+
     for property in properties:
         if 'config_simulator' in property.tags:
             for p in ['range', 'domain', 'minimum', 'maximum']:
@@ -410,6 +434,8 @@ def json_domain(properties):
     """
     Returns property domains formated in json
     """
+    deprecated_filter()
+
     data = {}
     if len(properties):
         data["iviVersion"] = builtin_config.config["VERSION"]
@@ -483,6 +509,8 @@ def qml_control_properties(symbol, backend_object):
     Returns properties of the QML control matching to this
     IDL type (e.g. min/max properties)
     """
+    deprecated_filter()
+
     prop_str = lower_first(symbol) + "Control"
     if isinstance(symbol, Property):
         top = range_high(symbol)
@@ -523,6 +551,8 @@ def qml_control_signal_parameters(symbol):
     """
     Returns the parameters for calling the signal using the values from the ui controls
     """
+    deprecated_filter()
+
     return ', '.join('{0}Param{1}Control.{2}'.format(e.operation, lower_first(e),qml_binding_property(e)) for e in symbol.parameters)
 
 
@@ -532,6 +562,8 @@ def qml_meta_control_name(symbol):
     data of  the symbol -- if symbol has some meta data (e.g. value limits or domain)
     then control name is taken based on these constraints. Otherwise returns None.
     """
+    deprecated_filter()
+
     top = range_high(symbol)
     bottom = range_low(symbol)
     if top is not None and bottom is not None:
@@ -549,6 +581,8 @@ def qml_type_control_name(symbol):
     """
     Returns name of the QML control inferred based on the type of the symbol.
     """
+    deprecated_filter()
+
     t = symbol.type
     if t.is_string or t.is_int or t.is_real:
         return "TextField"
@@ -570,6 +604,8 @@ def qml_control_name(symbol):
     influence the control type) and if nothing is  defined there, it falls back to the
     symbol actual type.
     """
+    deprecated_filter()
+
     # First try to calculate control name based on the tags
     control_name = qml_meta_control_name(symbol)
     # If nothing is defined, calculate it based on its type
@@ -583,6 +619,7 @@ def qml_control(symbol, backend_object):
     Returns QML code for the control (or group of controls) to represent the editing UI for the
     symbol.
     """
+    deprecated_filter()
 
     if symbol.type.is_struct:
         return qml_struct_control(symbol)
@@ -596,6 +633,8 @@ def qml_binding_property(symbol):
     :param symbol: property which is being bound by the control
     :return: name of the property of the QML control to be bound with
     """
+    deprecated_filter()
+
     control_name = qml_control_name(symbol)
     if control_name == "CheckBox":
         return "checked"
@@ -609,6 +648,8 @@ def qml_binding_property(symbol):
 
 
 def qml_struct_control(symbol):
+    deprecated_filter()
+
     if symbol.type.is_struct and symbol.type.reference.fields:
         result = "Rectangle { ColumnLayout { "
         for field in symbol.type.reference.fields:
@@ -655,6 +696,8 @@ def qml_type(symbol):
 
 
 def model_type(symbol):
+    deprecated_filter()
+
     if symbol.type.is_model:
         nested = symbol.type.nested
         return '{0}Model'.format(nested)
