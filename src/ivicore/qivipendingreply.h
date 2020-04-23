@@ -48,6 +48,7 @@
 #include <QSharedPointer>
 #include <QVariant>
 #include <QDebug>
+#include <QMetaEnum>
 
 #include <QtIviCore/qtiviglobal.h>
 
@@ -266,7 +267,28 @@ public:
     }
 };
 
-template <typename T> void qIviRegisterPendingReplyType(const char *name = nullptr)
+//Workaround for QTBUG-83664
+//If T is a enum
+template <typename T> Q_INLINE_TEMPLATE typename QtPrivate::QEnableIf<QtPrivate::IsQEnumHelper<T>::Value, void>::Type qIviRegisterPendingReplyType(const char *name = nullptr)
+{
+    qRegisterMetaType<T>();
+    QString n;
+    if (name) {
+        n = QLatin1String(name);
+    } else {
+        QMetaEnum me = QMetaEnum::fromType<T>();
+        if (me.isValid() && me.isFlag())
+            n = QLatin1String(me.scope()) + QStringLiteral("::") + QLatin1String(me.name());
+        else
+            n = QLatin1String(QMetaType::typeName(qMetaTypeId<T>()));
+    }
+
+    const QString t_name = QStringLiteral("QIviPendingReply<") + n + QStringLiteral(">");
+    qRegisterMetaType<QIviPendingReplyBase>(qPrintable(t_name));
+}
+
+//If T is NOT a enum
+template <typename T> Q_INLINE_TEMPLATE typename QtPrivate::QEnableIf<!QtPrivate::IsQEnumHelper<T>::Value, void>::Type qIviRegisterPendingReplyType(const char *name = nullptr)
 {
     qRegisterMetaType<T>();
     const char* n = name ? name : QMetaType::typeName(qMetaTypeId<T>());
