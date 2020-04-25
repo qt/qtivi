@@ -1,0 +1,14 @@
+#include <QtIviCore/QtIviCoreModule>
+#include <QUuid>
+
+class QIviPagingModel
+{
+    SLOT(void registerInstance(const QUuid &identifier))
+    SLOT(void unregisterInstance(const QUuid &identifier))
+    SLOT(void fetchData(const QUuid &identifier, int start, int count))
+
+    SIGNAL(supportedCapabilitiesChanged(const QUuid &identifier, QtIviCoreModule::ModelCapabilities capabilities))
+    SIGNAL(countChanged(const QUuid &identifier, int newLength))
+    SIGNAL(dataFetched(const QUuid &identifier, const QList<QVariant> &data, int start, bool moreAvailable))
+    SIGNAL(dataChanged(const QUuid &identifier, const QList<QVariant> &data, int start, int count))
+};

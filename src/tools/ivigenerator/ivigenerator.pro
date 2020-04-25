@@ -12,102 +12,110 @@ QT_FOR_CONFIG += ivicore
 CONFIG -= debug_and_release
 
 common.files += \
-    common/generated_comment.cpp.tpl \
-    common/qtivi_macros.j2 \
-    common/simulation.qmltypes.tpl \
-    common/plugins.qmltypes.tpl \
-    common/qmldir.tpl \
-    common/interface.rep.tpl \
-    common/pagingmodel.rep.tpl \
-    common/simulation_data.json.tpl \
-    common/simulation.qrc.tpl \
-    common/module_simulation.qml.tpl \
-    common/backend_simulation.cpp.tpl \
-    common/backend_simulation.h.tpl \
-    common/backend_simulation.qml.tpl \
-    common/pagingmodel_simulation.h.tpl \
-    common/pagingmodel_simulation.cpp.tpl
-common.path = $$[QT_HOST_BINS]/ivigenerator/common
+    templates/common/generated_comment.cpp.tpl \
+    templates/common/qtivi_macros.j2 \
+    templates/common/simulation.qmltypes.tpl \
+    templates/common/plugins.qmltypes.tpl \
+    templates/common/qmldir.tpl \
+    templates/common/interface.rep.tpl \
+    templates/common/simulation_data.json.tpl \
+    templates/common/simulation.qrc.tpl \
+    templates/common/module_simulation.qml.tpl \
+    templates/common/backend_simulation.cpp.tpl \
+    templates/common/backend_simulation.h.tpl \
+    templates/common/backend_simulation.qml.tpl \
+    templates/common/pagingmodel_simulation.h.tpl \
+    templates/common/pagingmodel_simulation.cpp.tpl
+common.path = $$[QT_HOST_BINS]/ivigenerator/templates/common
 
 templates_frontend.files +=  \
-    templates_frontend/backendinterface.cpp.tpl \
-    templates_frontend/backendinterface.h.tpl \
-    templates_frontend/global.h.tpl \
-    templates_frontend/interface.cpp.tpl \
-    templates_frontend/interface.h.tpl \
-    templates_frontend/interface_p.h.tpl \
-    templates_frontend/module.cpp.tpl \
-    templates_frontend/module.h.tpl \
-    templates_frontend/module_qml_enum.qdocinc.tpl \
-    templates_frontend/module.pri.tpl \
-    templates_frontend/modulefactory.cpp.tpl \
-    templates_frontend/modulefactory.h.tpl \
-    templates_frontend/struct.cpp.tpl \
-    templates_frontend/struct.h.tpl
-templates_frontend.path = $$[QT_HOST_BINS]/ivigenerator/templates_frontend
+    templates/frontend/backendinterface.cpp.tpl \
+    templates/frontend/backendinterface.h.tpl \
+    templates/frontend/global.h.tpl \
+    templates/frontend/interface.cpp.tpl \
+    templates/frontend/interface.h.tpl \
+    templates/frontend/interface_p.h.tpl \
+    templates/frontend/module.cpp.tpl \
+    templates/frontend/module.h.tpl \
+    templates/frontend/module_qml_enum.qdocinc.tpl \
+    templates/frontend/module.pri.tpl \
+    templates/frontend/modulefactory.cpp.tpl \
+    templates/frontend/modulefactory.h.tpl \
+    templates/frontend/struct.cpp.tpl \
+    templates/frontend/struct.h.tpl
+templates_frontend.path = $$[QT_HOST_BINS]/ivigenerator/templates/frontend
 
 templates_qmlplugin.files +=  \
-    templates_qmlplugin/module.pri.tpl \
-    templates_qmlplugin/plugin.cpp.tpl \
-    templates_qmlplugin/qmldir_plugin.tpl
-templates_qmlplugin.path = $$[QT_HOST_BINS]/ivigenerator/templates_qmlplugin
+    templates/qmlplugin/module.pri.tpl \
+    templates/qmlplugin/plugin.cpp.tpl \
+    templates/qmlplugin/qmldir_plugin.tpl
+templates_qmlplugin.path = $$[QT_HOST_BINS]/ivigenerator/templates/qmlplugin
 
 templates_backend_simulator.files += \
-    templates_backend_simulator/plugin.cpp.tpl \
-    templates_backend_simulator/plugin.h.tpl \
-    templates_backend_simulator/plugin.json \
-    templates_backend_simulator/plugin.pri.tpl \
-    templates_backend_simulator/plugin.pro
-templates_backend_simulator.path = $$[QT_HOST_BINS]/ivigenerator/templates_backend_simulator
+    templates/backend_simulator/plugin.cpp.tpl \
+    templates/backend_simulator/plugin.h.tpl \
+    templates/backend_simulator/plugin.json \
+    templates/backend_simulator/plugin.pri.tpl \
+    templates/backend_simulator/plugin.pro
+templates_backend_simulator.path = $$[QT_HOST_BINS]/ivigenerator/templates/backend_simulator
 
 templates_backend_qtro.files += \
-    templates_backend_qtro/backend.cpp.tpl \
-    templates_backend_qtro/backend.h.tpl \
-    templates_backend_qtro/pagingmodel.h.tpl \
-    templates_backend_qtro/pagingmodel.cpp.tpl \
-    templates_backend_qtro/plugin.cpp.tpl \
-    templates_backend_qtro/plugin.h.tpl \
-    templates_backend_qtro/plugin.json \
-    templates_backend_qtro/plugin.pri.tpl
-templates_backend_qtro.path = $$[QT_HOST_BINS]/ivigenerator/templates_backend_qtro
+    templates/backend_qtro/backend.cpp.tpl \
+    templates/backend_qtro/backend.h.tpl \
+    templates/backend_qtro/pagingmodel.h.tpl \
+    templates/backend_qtro/pagingmodel.cpp.tpl \
+    templates/backend_qtro/plugin.cpp.tpl \
+    templates/backend_qtro/plugin.h.tpl \
+    templates/backend_qtro/plugin.json \
+    templates/backend_qtro/plugin.pri.tpl
+templates_backend_qtro.path = $$[QT_HOST_BINS]/ivigenerator/templates/backend_qtro
 
 templates_server_qtro.files += \
-    templates_server_qtro/core.cpp.tpl \
-    templates_server_qtro/core.h.tpl \
-    templates_server_qtro/server.pri.tpl
-templates_server_qtro.path = $$[QT_HOST_BINS]/ivigenerator/templates_server_qtro
+    templates/server_qtro/core.cpp.tpl \
+    templates/server_qtro/core.h.tpl \
+    templates/server_qtro/server.pri.tpl
+templates_server_qtro.path = $$[QT_HOST_BINS]/ivigenerator/templates/server_qtro
 
 templates_server_qtro_simulator.files += \
-    templates_server_qtro_simulator/core.cpp.tpl \
-    templates_server_qtro_simulator/core.h.tpl \
-    templates_server_qtro_simulator/adapter.cpp.tpl \
-    templates_server_qtro_simulator/adapter.h.tpl \
-    templates_server_qtro_simulator/main.cpp.tpl \
-    templates_server_qtro_simulator/server.pri.tpl
-templates_server_qtro_simulator.path = $$[QT_HOST_BINS]/ivigenerator/templates_server_qtro_simulator
+    templates/server_qtro_simulator/core.cpp.tpl \
+    templates/server_qtro_simulator/core.h.tpl \
+    templates/server_qtro_simulator/adapter.cpp.tpl \
+    templates/server_qtro_simulator/adapter.h.tpl \
+    templates/server_qtro_simulator/main.cpp.tpl \
+    templates/server_qtro_simulator/server.pri.tpl
+templates_server_qtro_simulator.path = $$[QT_HOST_BINS]/ivigenerator/templates/server_qtro_simulator
 
 templates_test.files += \
-    templates_test/tst_test.h.tpl \
-    templates_test/tst_test.cpp.tpl \
-    templates_test/module.pri.tpl \
-    templates_test/main.cpp.tpl \
-    templates_test/pagingmodel.h.tpl
-templates_test.path = $$[QT_HOST_BINS]/ivigenerator/templates_test
+    templates/test/tst_test.h.tpl \
+    templates/test/tst_test.cpp.tpl \
+    templates/test/module.pri.tpl \
+    templates/test/main.cpp.tpl \
+    templates/test/pagingmodel.h.tpl
+templates_test.path = $$[QT_HOST_BINS]/ivigenerator/templates/test
+
+templates_yaml.files += \
+    templates/frontend.yaml \
+    templates/qmlplugin.yaml \
+    templates/backend_simulator.yaml \
+    templates/test.yaml
+templates_yaml.path = $$[QT_HOST_BINS]/ivigenerator/templates
+
+generator_module.files += \
+    generator/global_functions.py \
+    generator/builtin_config.py \
+    generator/filters.py \
+    generator/rule_generator.py
+generator_module.path = $$[QT_HOST_BINS]/ivigenerator/generator
 
 generator.files += \
     generate.py \
-    $$OUT_PWD/.config \
-    templates_frontend.yaml \
-    templates_qmlplugin.yaml \
-    templates_backend_simulator.yaml \
-    templates_test.yaml \
-
+    $$OUT_PWD/.config
 generator.path = $$[QT_HOST_BINS]/ivigenerator
 
 qtConfig(remoteobjects) {
-    generator.files += templates_backend_qtro.yaml \
-                       templates_server_qtro.yaml \
-                       templates_server_qtro_simulator.yaml \
+    templates_yaml.files += templates/backend_qtro.yaml \
+                       templates/server_qtro.yaml \
+                       templates/server_qtro_simulator.yaml \
 
     INSTALLS += templates_backend_qtro \
                 templates_server_qtro \
@@ -116,6 +124,8 @@ qtConfig(remoteobjects) {
 }
 
 INSTALLS += generator \
+    generator_module \
+    templates_yaml \
     common \
     templates_frontend \
     templates_qmlplugin \

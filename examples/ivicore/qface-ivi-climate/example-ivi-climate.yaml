@@ -1,6 +1,6 @@
 Example.IVI.Climate.ClimateControl:
     config_simulator:
-        zones: { left : FrontLeft, right : FrontRight, rear: Rear }
+        zones: [ FrontLeft, FrontRight, Rear ]
 
 Example.IVI.Climate.ClimateControl#airConditioning:
     config_simulator:

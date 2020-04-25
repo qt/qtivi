@@ -74,6 +74,8 @@ Returns the default value for the passed symbol. Models are initialized as \c nu
 \target default_value(symbol, zone="=")
 \section2 default_value(symbol, zone="=")
 
+\note This filter is deprecated and will be removed in future Qt versions.
+
 Returns the default value for the passed symbol set by the \c @default annotation. If not set uses
 \c default_type_value instead.
 
@@ -81,6 +83,8 @@ The zone parameter is used to identify different default values per zone.
 
 \target model_type(symbol)
 \section2 model_type(symbol)
+
+\note This filter is deprecated and will be removed in future Qt versions.
 
 Returns the C++ class name for this model.
 
@@ -115,10 +119,14 @@ Only lowers the first character of the given string.
 \target range_low(property)
 \section2 range_low(property)
 
+\note This filter is deprecated and will be removed in future Qt versions.
+
 Returns the minimum value for the passed property using the \c @range or \c @minimum annotations.
 
 \target range_high(property)
 \section2 range_high(property)
+
+\note This filter is deprecated and will be removed in future Qt versions.
 
 Returns the maximum value for the passed property using the \c @range or \c @maximum annotations.
 
@@ -129,6 +137,8 @@ Removes the 'QT' at the beginning, if the string starts with it.
 
 \target domain_values(symbol)
 \section2 domain_values(symbol)
+
+\note This filter is deprecated and will be removed in future Qt versions.
 
 Returns the domain values for the passed property using the \c @domain annotation.
 
@@ -143,11 +153,15 @@ Also supports passing '|' connected values.
 \target tag_by_path(symbol, path, default_value=False)
 \section2 tag_by_path(symbol, path, default_value=False)
 
+\note This filter is deprecated and will be removed in future Qt versions.
+
 Find the tag given by its full path in the object hierarchy, like
 \c property.config_sim.zones.right. If some parts of the path are missing, return \c None.
 
 \target conf_sim_tag(symbol, path, default_value=False)
 \section2 conf_sim_tag(symbol, path, default_value=False)
+
+\note This filter is deprecated and will be removed in future Qt versions.
 
 Find the tag, given by its path, located under the "config_simulator" sub-object. Returns \c None,
 if parts of the path are missing.
@@ -160,10 +174,14 @@ Returns a JSON representation of the given obj.
 \target has_domains(properties)
 \section2 has_domains(properties)
 
+\note This filter is deprecated and will be removed in future Qt versions.
+
 Returns \c true if any of the given properties has \c @range or \c @domain annotations.
 
 \target json_domain(properties)
 \section2 json_domain(properties)
+
+\note This filter is deprecated and will be removed in future Qt versions.
 
 Returns the property domains for the given properties formated in JSON.
 
@@ -177,11 +195,15 @@ module_name is used.
 \target qml_control(symbol, backend_obj)
 \section2 qml_control(symbol, backend_obj)
 
+\note This filter is deprecated and will be removed in future Qt versions.
+
 Returns the QML code for the control (or group of controls) to represent the editing UI for the
 passed symbol.
 
 \target qml_binding_property(symbol)
 \section2 qml_binding_property(symbol)
+
+\note This filter is deprecated and will be removed in future Qt versions.
 
 Returns the name of the property of the QML control to be bound with.
 
@@ -189,6 +211,8 @@ E.g. "value" for a Slider and "checked" for a CheckBox.
 
 \target qml_control_signal_parameters(symbol)
 \section2 qml_control_signal_parameters(symbol)
+
+\note This filter is deprecated and will be removed in future Qt versions
 
 Returns the parameters for calling the signal using the values from the UI controls.
 

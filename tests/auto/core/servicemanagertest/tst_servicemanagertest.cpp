@@ -87,6 +87,9 @@ class ServiceManagerTest : public QObject
 public:
     ServiceManagerTest();
 
+    void ignoreStaticPluginWarnings();
+    void ignoreDynamicPluginWarnings();
+
 private Q_SLOTS:
     void initTestCase();
     void cleanup();
@@ -110,35 +113,63 @@ ServiceManagerTest::ServiceManagerTest()
 {
 }
 
+void ServiceManagerTest::ignoreStaticPluginWarnings()
+{
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in static plugin '.*'. MetaData must contain a list of interfaces"));
+}
+
+void ServiceManagerTest::ignoreDynamicPluginWarnings()
+{
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in '.*'. MetaData must contain a list of interfaces"));
+#ifdef DEBUG_AND_RELEASE
+# ifndef Q_OS_WIN
+    // Because the plugin is build in both configurations, the error is also emitted twice
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in '.*'. MetaData must contain a list of interfaces"));
+# endif
+
+    QTest::ignoreMessage(QtInfoMsg, QRegularExpression("Found the same plugin in two configurations. Using the '.*' configuration: .*"));
+#endif
+}
+
 void ServiceManagerTest::initTestCase()
 {
-    QStringList origList = QCoreApplication::libraryPaths();
+    // Make sure the dynamic plugins can't be found in the beginning
     QCoreApplication::setLibraryPaths(QStringList());
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in static plugin '.*'. MetaData must contain a list of interfaces"));
-    QTest::ignoreMessage(QtWarningMsg, "No plugins found in search path:  \"\"");
+    ignoreStaticPluginWarnings();
     manager = QIviServiceManager::instance();
 
     QList<QIviServiceObject *> services = manager->findServiceByInterface("simple_plugin");
     QCOMPARE(services.count(), 0);
 
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in static plugin '.*'. MetaData must contain a list of interfaces"));
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in '.*'. MetaData must contain a list of interfaces"));
-#ifdef DEBUG_AND_RELEASE
-    QTest::ignoreMessage(QtInfoMsg, QRegularExpression("Found the same plugin in two configurations. Using the '.*' configuration: .*"));
-#endif
-    //Reset original setting
-    QCoreApplication::setLibraryPaths(origList);
-    QIviServiceManagerPrivate::get(manager)->searchPlugins();
+    // Unload all plugins and don't search for the static plugins to trigger the 'no plugins found' warning
+    manager->unloadAllBackends();
+    QIviServiceManagerPrivate::get(manager)->m_staticLoaded = true;
 
-    //Save the id of the service object. This needed in the pluginLoaderTest
+    QTest::ignoreMessage(QtWarningMsg, "No plugins found in search path:  \"\"");
+    services = manager->findServiceByInterface("simple_plugin_static");
+    QCOMPARE(services.count(), 0);
+
+    // Change the library path to the current directory to be able to test loading dynamic plugins
+    QCoreApplication::setLibraryPaths({QDir::currentPath()});
+    ignoreDynamicPluginWarnings();
+
+    // This needs to trigger a search for new plugins in the library path, as it is supposed to
+    // reevaluate QCoreApplication::libraryPaths();
     services = manager->findServiceByInterface("simple_plugin");
     QCOMPARE(services.count(), 1);
+    // Save the id of the service object. This needed in the pluginLoaderTest
     m_simplePluginID = services.at(0)->id();
 }
 
 void ServiceManagerTest::cleanup()
 {
     manager->unloadAllBackends();
+
+    // Make sure to search for all plugins here explicitly to catch all expected warning messages
+    // Otherwise a findServiceByInterface call will implictly trigger it.
+    ignoreStaticPluginWarnings();
+    ignoreDynamicPluginWarnings();
+    QIviServiceManagerPrivate::get(manager)->searchPlugins();
 }
 
 void ServiceManagerTest::testRetakeSingleton()
@@ -251,10 +282,14 @@ void ServiceManagerTest::testRegisterNonServiceBackendInterfaceObject()
 */
 void ServiceManagerTest::testManagerListModel()
 {
+    // Because of the plugin loading test and the static plugins, we always have some backends already
+    // in the list
+    const int backendCount = manager->rowCount();
+
     QSignalSpy managerModelSpy(manager, SIGNAL(rowsInserted(QModelIndex,int,int)));
 
     // Sanity check
-    QCOMPARE(manager->rowCount(), 0);
+    QCOMPARE(manager->rowCount(), backendCount);
     QCOMPARE(managerModelSpy.count(), 0);
     QCOMPARE(manager->data(QModelIndex(), QIviServiceManager::NameRole), QVariant());
     QCOMPARE(manager->data(QModelIndex(), QIviServiceManager::ServiceObjectRole), QVariant());
@@ -264,11 +299,11 @@ void ServiceManagerTest::testManagerListModel()
     MockServiceBackend *backend0 = new MockServiceBackend(manager);
     bool regResult = manager->registerService(backend0, QStringList() << "Interface0");
     QCOMPARE(regResult, true);
-    QCOMPARE(manager->rowCount(), 1);
+    QCOMPARE(manager->rowCount(), backendCount + 1);
     //QCOMPARE(manager->data(manager->index(0), Qt::DisplayRole).value<QIviServiceInterface*>(), backend0);
-    QCOMPARE(manager->data(manager->index(0), QIviServiceManager::NameRole).toString(), QStringLiteral("MockServiceBackend"));
-    QCOMPARE(manager->data(manager->index(0), QIviServiceManager::ServiceObjectRole).value<QIviProxyServiceObject*>()->d_ptr->m_serviceInterface, backend0);
-    QCOMPARE(manager->data(manager->index(0), QIviServiceManager::InterfacesRole).toStringList(), QStringList() << "Interface0");
+    QCOMPARE(manager->data(manager->index(backendCount), QIviServiceManager::NameRole).toString(), QStringLiteral("MockServiceBackend"));
+    QCOMPARE(manager->data(manager->index(backendCount), QIviServiceManager::ServiceObjectRole).value<QIviProxyServiceObject*>()->d_ptr->m_serviceInterface, backend0);
+    QCOMPARE(manager->data(manager->index(backendCount), QIviServiceManager::InterfacesRole).toStringList(), QStringList() << "Interface0");
     QCOMPARE(managerModelSpy.count(), 1);
     // Extendend sanity check
     QCOMPARE(manager->data(manager->index(0,0), Qt::UserRole + 200), QVariant());
@@ -277,32 +312,25 @@ void ServiceManagerTest::testManagerListModel()
     MockServiceBackend *backend1 = new MockServiceBackend(manager);
     regResult = manager->registerService(backend1, QStringList() << "Interface1" << "Interface2");
     QCOMPARE(regResult, true);
-    QCOMPARE(manager->rowCount(), 2);
-    QCOMPARE(manager->data(manager->index(0), QIviServiceManager::NameRole).toString(), QStringLiteral("MockServiceBackend"));
-    QCOMPARE(manager->data(manager->index(0), QIviServiceManager::ServiceObjectRole).value<QIviProxyServiceObject*>()->d_ptr->m_serviceInterface, backend0);
-    QCOMPARE(manager->data(manager->index(0), QIviServiceManager::InterfacesRole).toStringList(), QStringList() << "Interface0");
-    QCOMPARE(manager->data(manager->index(1), QIviServiceManager::NameRole).toString(), QStringLiteral("MockServiceBackend"));
-    QCOMPARE(manager->data(manager->index(1), QIviServiceManager::ServiceObjectRole).value<QIviProxyServiceObject*>()->d_ptr->m_serviceInterface, backend1);
-    QCOMPARE(manager->data(manager->index(1), QIviServiceManager::InterfacesRole).toStringList(), QStringList() << "Interface1" << "Interface2");
+    QCOMPARE(manager->rowCount(), backendCount + 2);
+    QCOMPARE(manager->data(manager->index(backendCount), QIviServiceManager::NameRole).toString(), QStringLiteral("MockServiceBackend"));
+    QCOMPARE(manager->data(manager->index(backendCount), QIviServiceManager::ServiceObjectRole).value<QIviProxyServiceObject*>()->d_ptr->m_serviceInterface, backend0);
+    QCOMPARE(manager->data(manager->index(backendCount), QIviServiceManager::InterfacesRole).toStringList(), QStringList() << "Interface0");
+    QCOMPARE(manager->data(manager->index(backendCount + 1), QIviServiceManager::NameRole).toString(), QStringLiteral("MockServiceBackend"));
+    QCOMPARE(manager->data(manager->index(backendCount + 1), QIviServiceManager::ServiceObjectRole).value<QIviProxyServiceObject*>()->d_ptr->m_serviceInterface, backend1);
+    QCOMPARE(manager->data(manager->index(backendCount + 1), QIviServiceManager::InterfacesRole).toStringList(), QStringList() << "Interface1" << "Interface2");
     QCOMPARE(managerModelSpy.count(), 2);
 
     // Register backend-2 with 'Interface1' and 'Interface2'. Should not result in any model changes
     MockServiceBackend *backend2 = new MockServiceBackend(manager);
     regResult = manager->registerService(backend2, QStringList() << "Interface1" << "Interface2");
     QCOMPARE(regResult, true);
-    QCOMPARE(manager->rowCount(), 3);
+    QCOMPARE(manager->rowCount(), backendCount + 3);
     QCOMPARE(managerModelSpy.count(), 3);
 }
 
 void ServiceManagerTest::pluginLoaderTest()
 {
-    //Test the error message for plugins with invalid metadata
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in '(.*)wrongmetadata_plugin(.*)'. MetaData must contain a list of interfaces"));
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in static plugin 'WrongMetadataStaticPlugin'. MetaData must contain a list of interfaces"));
-#ifdef DEBUG_AND_RELEASE
-    QTest::ignoreMessage(QtInfoMsg, QRegularExpression("Found the same plugin in two configurations. Using the '.*' configuration: .*"));
-#endif
-    QIviServiceManagerPrivate::get(manager)->searchPlugins();
     QVERIFY(manager->hasInterface("simple_plugin"));
     QList<QIviServiceObject *> services = manager->findServiceByInterface("simple_plugin", QIviServiceManager::IncludeProductionBackends);
     QCOMPARE(services.count(), 1);
@@ -320,10 +348,7 @@ void ServiceManagerTest::pluginLoaderTest()
 
     //Test that the plugin is unloaded (or at least removed from the registry)
     manager->unloadAllBackends();
-    services = manager->findServiceByInterface("simple_plugin");
-    QCOMPARE(services.count(), 0);
-    services = manager->findServiceByInterface("simple_plugin_static");
-    QCOMPARE(services.count(), 0);
+    QCOMPARE(manager->rowCount(), 0);
 }
 
 Q_IMPORT_PLUGIN(SimpleStaticPlugin)

@@ -1,0 +1,17 @@
+{
+    "Id": "relocate-virtualenv",
+    "Name": "relocate-virtualenv",
+    "QDocModule": "qtivi",
+    "QtUsage": "Used to make the python3 virtualen relocatable, needed for the ivigenerator",
+    "Path": "relocate-virtualenv.py",
+
+    "Description": "A tool for creating isolated virtual python environments.",
+    "Homepage": "https://virtualenv.pypa.io/en/stable/",
+    "Version": "16.7.9",
+
+    "License": "MIT License",
+    "LicenseId": "MIT",
+    "LicenseFile": "VIRTUALENV_LICENSE",
+    "Copyright": "(c) 2016 by the virtualenv Team, see AUTHORS for more details."
+}
+

@@ -1,0 +1,23 @@
+frontend:
+    module:
+        documents:
+            - '{{module.module_name|lower}}global.h': 'global.h.tpl'
+            - '{{module.module_name|lower}}module.h': 'module.h.tpl'
+            - '{{module.module_name|lower}}module.cpp': 'module.cpp.tpl'
+            - '{{module.module_name|lower}}module_enum.qdocinc': 'module_qml_enum.qdocinc.tpl'
+            - '{{module.module_name|lower}}modulefactory.h': 'modulefactory.h.tpl'
+            - '{{module.module_name|lower}}modulefactory.cpp': 'modulefactory.cpp.tpl'
+            - '{{srcBase|lower}}.pri': 'module.pri.tpl'
+            - 'qml/{{module|qml_type|replace(".", "/")}}/plugins.qmltypes': 'common/plugins.qmltypes.tpl'
+            - 'qml/{{module|qml_type|replace(".", "/")}}/qmldir': 'common/qmldir.tpl'
+    interface:
+        documents:
+            - '{{interface|lower}}backendinterface.h': 'backendinterface.h.tpl'
+            - '{{interface|lower}}backendinterface.cpp': 'backendinterface.cpp.tpl'
+            - '{{interface|lower}}.h': 'interface.h.tpl'
+            - '{{interface|lower}}_p.h': 'interface_p.h.tpl'
+            - '{{interface|lower}}.cpp': 'interface.cpp.tpl'
+    struct:
+        documents:
+            - '{{struct|lower}}.h': 'struct.h.tpl'
+            - '{{struct|lower}}.cpp': 'struct.cpp.tpl'

@@ -43,7 +43,13 @@
 #include "qiviqmlconversion_helper.h"
 
 QIviMediaPlayerQtRoAdapter::QIviMediaPlayerQtRoAdapter(MediaPlayerBackend *parent)
+    : QIviMediaPlayerQtRoAdapter(QStringLiteral("QtIviMedia.QIviMediaPlayer"), parent)
+{
+}
+
+QIviMediaPlayerQtRoAdapter::QIviMediaPlayerQtRoAdapter(const QString& remoteObjectsLookupName, MediaPlayerBackend *parent)
     : QIviMediaPlayerSource(parent)
+    , m_remoteObjectsLookupName(remoteObjectsLookupName)
     , m_backend(parent)
     , m_helper(this)
 {
@@ -60,6 +66,12 @@ QIviMediaPlayerQtRoAdapter::QIviMediaPlayerQtRoAdapter(MediaPlayerBackend *paren
     connect(m_backend, &MediaPlayerBackend::dataFetched, this, &QIviMediaPlayerQtRoAdapter::dataFetched);
     connect(m_backend, &MediaPlayerBackend::dataChanged, this, &QIviMediaPlayerQtRoAdapter::dataChanged);
     connect(m_backend, &MediaPlayerBackend::countChanged, this, &QIviMediaPlayerQtRoAdapter::countChanged);
+}
+
+
+QString QIviMediaPlayerQtRoAdapter::remoteObjectsLookupName() const
+{
+    return m_remoteObjectsLookupName;
 }
 
 QIviMediaPlayer::PlayMode QIviMediaPlayerQtRoAdapter::playMode() const

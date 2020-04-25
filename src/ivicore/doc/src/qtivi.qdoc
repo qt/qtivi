@@ -32,7 +32,7 @@
 
     The Qt In-Vehicle Infotainment (IVI) module provides both, the tools and the core APIs, for you
     to implement Middleware APIs, Middleware Backends, and Middlware Services. The
-    \l{Qt IVI Autogenerator} provides a flexible way to define new APIs via an Interface Definition
+    \l{Qt IVI Generator} provides a flexible way to define new APIs via an Interface Definition
     Language (IDL) and generate classes for use, from C++ and QML.
 
     Qt IVI is built around a pattern that separates the API exposed to the application developer,
@@ -64,6 +64,7 @@
        \li \l{Configuration}
        \li \l{Concepts and Architecture}
        \li \l{Get Started with the Qt IVI Generator}
+       \li \l{Qt IVI Generator Tutorial}
        \li \l{Extending Qt IVI}
     \endlist
 

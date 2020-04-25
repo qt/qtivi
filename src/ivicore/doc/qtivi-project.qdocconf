@@ -63,10 +63,12 @@ qhp.QtIvi.subprojects.examples.sortPages = true
 
 tagfile                 = qtivi.tags
 
-depends += qtcore qtwidgets qtdoc qtquick qtqml qtautomotivesuite qtremoteobjects
+depends += qtcore qtdbus qtwidgets qtdoc qtquick qtqml qtautomotivesuite qtremoteobjects
 
 navigation.homepage = "Qt Automotive Suite"
 navigation.landingpage = "Qt IVI"
 navigation.cppclassespage = "Qt IVI C++ Classes"
 navigation.qmltypespage = "Qt IVI QML Types"
 buildversion = "Qt IVI $QT_VERSION"
+
+macro.fileLink = "\\l {https://code.qt.io/cgit/qt/qtivi.git/tree/\1?h=$QT_VER}{\2}"

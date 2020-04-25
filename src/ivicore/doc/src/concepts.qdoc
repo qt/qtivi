@@ -33,7 +33,7 @@ All Qt IVI feature APIs depend on the following set of key concepts:
 
 \list
     \li \l {Dynamic Backend System}
-    \li \l {Qt IVI Autogenerator}
+    \li \l {Qt IVI Generator}
     \li \l {Models}
     \li \l {Qt IVI Query Language}
     \li \l {Qt IVI Simulation System}

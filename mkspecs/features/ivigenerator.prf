@@ -62,9 +62,12 @@ qtConfig(system-qface) {
 } else {
     equals(QMAKE_HOST.os, Windows) {
         PYTHON = $$VIRTUALENV_PATH/Scripts/python.exe
+        # No space between the path and && otherwise python3 adds the space to the path
+        ENV += set PYTHONHOME=$$system_path($$VIRTUALENV_PATH)&&
     } else {
         PYTHON = $$VIRTUALENV_PATH/bin/python
         ENV += LD_LIBRARY_PATH="$$system_path($$VIRTUALENV_PATH/bin)"
+        ENV += PYTHONHOME=$$system_path($$VIRTUALENV_PATH)
     }
 }
 IVI_GENERATOR = $$system_quote($$PYTHON) $$IVI_GENERATOR_PATH/generate.py
@@ -79,23 +82,38 @@ IVI_GENERATOR_OPTIONS = --format=$$QFACE_FORMAT --force
 for (ANNOTATION, QFACE_ANNOTATIONS) {
     file = $$absolute_path($$ANNOTATION, $$_PRO_FILE_PWD_)
 
-    IVI_GENERATOR_OPTIONS += -A $$system_path($$file)
+    IVI_GENERATOR_OPTIONS += -A $$system_quote($$system_path($$file))
     qface_sources.depends += $$file
     OTHER_FILES += $$file
 }
 
-# Windows doesn't offer any other way to sleep for a time inside non-interactive scripts
-equals(QMAKE_HOST.os, Windows): SLEEP = ping -n 2 127.0.0.1 >nul
-else: SLEEP = sleep 1
+for (IMPORT, QFACE_IMPORT_PATH) {
+    dir = $$absolute_path($$IMPORT, $$_PRO_FILE_PWD_)
 
-qface_sources.target = $$relative_path($$PRI, $$OUT_PWD)
-qface_sources.commands = $$SLEEP && $$ENV $$system_path($$IVI_GENERATOR) $$IVI_GENERATOR_OPTIONS $$system_path($$QFACE_ABS_PWD/$${QFACE_FILE}) $$system_path($$QFACE_OUTPUT_DIR)
+    IVI_GENERATOR_OPTIONS += -I $$system_quote($$system_path($$dir))
+}
+
+# Windows doesn't offer any other way to sleep for a time inside non-interactive scripts
+equals(QMAKE_HOST.os, Windows): {
+    SLEEP = ping -n 2 127.0.0.1 >nul
+    TOUCH = type nul >
+} else {
+    SLEEP = sleep 1
+    TOUCH = touch
+}
+
+qface_sources.target = $$relative_path(.stamp-ivigenerator, $$OUT_PWD)
+qface_sources.commands += $(DEL_FILE) $$system_quote($$system_path($$OUT_PWD/.stamp-ivigenerator)) &&
+qface_sources.commands += $$SLEEP && $$ENV $$system_path($$IVI_GENERATOR) $$IVI_GENERATOR_OPTIONS $$system_quote($$system_path($$QFACE_ABS_PWD/$${QFACE_FILE})) $$system_quote($$system_path($$QFACE_OUTPUT_DIR)) &&
+qface_sources.commands += $$TOUCH $$system_quote($$system_path($$OUT_PWD/.stamp-ivigenerator))
 qface_sources.depends = $$IVI_GENERATOR_PATH/generate.py
 qface_sources.depends += $$QFACE_ABS_PWD/$${QFACE_FILE}
-qface_sources.depends += $$files($$IVI_GENERATOR_PATH/common/*)
+qface_sources.depends += $$files($$IVI_GENERATOR_PATH/templates/common/*)
+
+QMAKE_CLEAN += $$relative_path(.stamp-ivigenerator, $$OUT_PWD)
 
 # Add all templates of the generator format as dependency
-QFACE_TEMPLATE_PWD = $$IVI_GENERATOR_PATH/templates_$${QFACE_FORMAT}
+QFACE_TEMPLATE_PWD = $$IVI_GENERATOR_PATH/templates/$${QFACE_FORMAT}
 exists($$QFACE_TEMPLATE_PWD) {
     qface_sources.depends += $$files($${QFACE_TEMPLATE_PWD}/*)
 } else: exists($${QFACE_FORMAT}) {
@@ -114,14 +132,14 @@ exists($$QFACE_YAML) {
     QFACE_HEADERS_OUTPUT_TARGET = $${QFACE_HEADERS_OUTPUT_DIR}/$$lower($${QFACE_MODULE_NAME})module.h
     qface_headers.target = $$relative_path($$QFACE_HEADERS_OUTPUT_TARGET, $$OUT_PWD)
     qface_headers.commands = $${QMAKE_COPY_FILE} $${QFACE_OUTPUT_DIR}/*.h $${QFACE_HEADERS_OUTPUT_DIR}
-    qface_headers.depends = $$relative_path($$PRI, $$OUT_PWD) $$IVI_GENERATOR_PATH/generate.py
+    qface_headers.depends = $$relative_path(.stamp-ivigenerator, $$OUT_PWD) $$IVI_GENERATOR_PATH/generate.py
 }
 
 # Reevaluate the Makefile after the generation has finished
 Makefile.target = Makefile
 # The relative_path is needed here as qmake will use a relative_path for the output files
 # when using a QMAKE_EXTRA_COMPILER
-Makefile.depends = $$relative_path($$PRI, $$OUT_PWD)
+Makefile.depends = $$relative_path(.stamp-ivigenerator, $$OUT_PWD)
 
 # Make the qmake_all target work for usage inside QtCreator
 # Because of the Makefile target the generator is called before the actual Makefile
@@ -170,7 +188,7 @@ QMAKE_EXTRA_TARGETS += Makefile qface_sources
 # Afterwards the sub makefiles are read (Makefile.debug/release), which have been
 # regenerated before starting NMAKE on them.
 win32-msvc* {
-    qmake.depends = $$relative_path($$PRI, $$OUT_PWD)
+    qmake.depends = $$relative_path(.stamp-ivigenerator, $$OUT_PWD)
 
     debug.depends = qmake
     debug-make_first.depends = qmake

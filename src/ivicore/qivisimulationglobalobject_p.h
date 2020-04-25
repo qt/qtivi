@@ -69,7 +69,7 @@
 
 QT_BEGIN_NAMESPACE
 
-class QIviSimulationGlobalObject : public QObject
+class Q_QTIVICORE_EXPORT QIviSimulationGlobalObject : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QVariant simulationData READ simulationData CONSTANT)

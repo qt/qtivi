@@ -118,8 +118,8 @@ of each individual item. The second definition is similar, but using the \c flag
 
 \section2 Comments and Annotations
 
-Compared to the minimal IDL we saw in the previous section,the full
-\l {ivicore/qface-ivi-climate/example-ivi-climate.qface} {IDL file} contains a lot of comments
+Compared to the minimal IDL we saw in the previous section, the full
+\fileLink {examples/ivicore/qface-ivi-climate/example-ivi-climate.qface}{IDL file} contains a lot of comments
 and annotations.
 
 Comments starting with \c /** define documentation statements and can be converted into

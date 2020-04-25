@@ -1,0 +1,9 @@
+test:
+    module:
+        documents:
+            - "{{srcBase|lower}}.pri": "module.pri.tpl"
+            - 'main.cpp': 'main.cpp.tpl'
+    interface:
+        documents:
+            - 'tst_{{interface|lower}}.cpp': 'tst_test.cpp.tpl'
+            - 'tst_{{interface|lower}}.h': 'tst_test.h.tpl'

@@ -69,8 +69,8 @@ public:
     virtual void setUrl(const QUrl &url);
     virtual QString type() const override;
 
-    bool operator==(const QIviPlayableItem &other);
-    inline bool operator!=(const QIviPlayableItem &other) { return !(*this == other); }
+    bool operator==(const QIviPlayableItem &other) const;
+    inline bool operator!=(const QIviPlayableItem &other) const { return !(*this == other); }
 
 private:
     QSharedDataPointer<QIviPlayableItemPrivate> d;
@@ -118,8 +118,8 @@ public:
     virtual QString name() const override;
     virtual QString type() const override;
 
-    bool operator==(const QIviAudioTrackItem &other);
-    inline bool operator!=(const QIviAudioTrackItem &other) { return !(*this == other); }
+    bool operator==(const QIviAudioTrackItem &other) const;
+    inline bool operator!=(const QIviAudioTrackItem &other) const { return !(*this == other); }
 
 private:
     QSharedDataPointer<QIviAudioTrackItemPrivate> d;

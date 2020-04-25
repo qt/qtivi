@@ -174,7 +174,7 @@ void QIviStandardItem::setData(const QVariantMap &data)
 
     \sa operator!=()
 */
-bool QIviStandardItem::operator==(const QIviStandardItem &other)
+bool QIviStandardItem::operator==(const QIviStandardItem &other) const
 {
     return (d->m_id == other.d->m_id);
 }

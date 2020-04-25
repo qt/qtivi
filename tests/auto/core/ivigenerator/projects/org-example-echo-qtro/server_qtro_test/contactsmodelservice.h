@@ -31,9 +31,9 @@
 #define CONTACTSMODELSERVICE_H
 
 #include "contact.h"
-#include "rep_pagingmodel_source.h"
+#include "rep_qivipagingmodel_source.h"
 
-class ContactsModelService : public PagingModelSimpleSource
+class ContactsModelService : public QIviPagingModelSimpleSource
 {
 public:
     ContactsModelService(QObject* parent = nullptr);

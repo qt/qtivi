@@ -141,8 +141,10 @@ class tst_QIviPendingReply : public QObject
 
 private Q_SLOTS:
     void initTestCase();
-    void testSuccess();
+    // This needs to be the first test, as it tests calling a function which returns QIviPendingReply
+    // from QML and for this the basic types have to be registered before automatically.
     void testSuccess_qml();
+    void testSuccess();
     void testSuccessFromQml();
     void testConversion_qml();
     void testFailed();
@@ -200,22 +202,6 @@ template <typename T> void tst_QIviPendingReply::test_helper(const QIviPendingRe
 
     if (!failed)
         QCOMPARE(reply.value(), valueChangedSpy.at(0).at(0));
-}
-
-void tst_QIviPendingReply::testSuccess()
-{
-    TestObject testObject;
-
-    test_helper<void>(testObject.test_void(), false);
-    test<int>(testObject.test_int(500), false, 500);
-    test<quint16>(testObject.test_quint16(1234), false, 1234);
-    test<float>(testObject.test_float(-1234.56), false, -1234.56);
-    test<QString>(testObject.test_QString("HELLO"), false, "HELLO");
-    test<QVariant>(testObject.test_QVariant(QVariant("VARIANT")), false, QVariant("VARIANT"));
-    test<TestObject::TestEnum>(testObject.test_TestEnum(TestObject::Value_2), false, TestObject::Value_2);
-    test<TestObject::TestFlags>(testObject.test_TestFlags(TestObject::TestFlags(TestObject::TestFlag_2 | TestObject::TestFlag_1)), false,
-                                TestObject::TestFlags(TestObject::TestFlag_2 | TestObject::TestFlag_1));
-    test<TestGadget>(testObject.test_TestGadget(TestGadget("FOO", 5)), false, TestGadget("FOO", 5));
 }
 
 template <typename T> void tst_QIviPendingReply::testQml(TestObject *testObject, const QByteArray qmlFunction, bool failed, T expectedResult)
@@ -298,8 +284,8 @@ template <typename T> void tst_QIviPendingReply::qml_helper(TestObject *testObje
     QCOMPARE(obj->property("replySuccess").toBool(), false);
     QCOMPARE(obj->property("replyResultAvailable").toBool(), false);
 
-    //Wait until the reply is ready
-    QTest::qWait(100);
+    QSignalSpy spy(obj.data(), SIGNAL(callBackCalledChanged()));
+    spy.wait(1000);
 
     QVERIFY(obj->property("callBackCalled").toBool());
     QCOMPARE(obj->property("success").toBool(), !failed);
@@ -331,6 +317,22 @@ void tst_QIviPendingReply::testSuccess_qml()
     testQml<TestObject::TestFlags>(&testObject, "test_TestFlags(TestObject.TestFlag_2 | TestObject.TestFlag_1)", false,
                                            TestObject::TestFlags(TestObject::TestFlag_2 | TestObject::TestFlag_1));
     testQml<TestGadget>(&testObject, "test_TestGadget(testObject.createGadget('FOO', 5))", false, TestGadget("FOO", 5));
+}
+
+void tst_QIviPendingReply::testSuccess()
+{
+    TestObject testObject;
+
+    test_helper<void>(testObject.test_void(), false);
+    test<int>(testObject.test_int(500), false, 500);
+    test<quint16>(testObject.test_quint16(1234), false, 1234);
+    test<float>(testObject.test_float(-1234.56), false, -1234.56);
+    test<QString>(testObject.test_QString("HELLO"), false, "HELLO");
+    test<QVariant>(testObject.test_QVariant(QVariant("VARIANT")), false, QVariant("VARIANT"));
+    test<TestObject::TestEnum>(testObject.test_TestEnum(TestObject::Value_2), false, TestObject::Value_2);
+    test<TestObject::TestFlags>(testObject.test_TestFlags(TestObject::TestFlags(TestObject::TestFlag_2 | TestObject::TestFlag_1)), false,
+                                TestObject::TestFlags(TestObject::TestFlag_2 | TestObject::TestFlag_1));
+    test<TestGadget>(testObject.test_TestGadget(TestGadget("FOO", 5)), false, TestGadget("FOO", 5));
 }
 
 void tst_QIviPendingReply::testSuccessFromQml()

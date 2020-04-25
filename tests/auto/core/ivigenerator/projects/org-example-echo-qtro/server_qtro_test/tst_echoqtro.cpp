@@ -28,7 +28,6 @@
 ****************************************************************************/
 
 #include "tst_echoqtro.h"
-#include "echoplugin.h"
 #include "server.h"
 #include "echo.h"
 #include "echozoned.h"

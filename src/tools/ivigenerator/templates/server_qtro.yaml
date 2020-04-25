@@ -1,0 +1,9 @@
+server_qtro:
+    module:
+        documents:
+            - "core.cpp": "core.cpp.tpl"
+            - "core.h": "core.h.tpl"
+            - "{{srcBase|lower}}.pri": "server.pri.tpl"
+    interface:
+        documents:
+            - "{{interface|lower}}.rep": "common/interface.rep.tpl"

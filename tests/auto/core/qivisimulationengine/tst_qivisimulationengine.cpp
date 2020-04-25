@@ -1,4 +1,4 @@
-/****************************************************************************
+﻿/****************************************************************************
 **
 ** Copyright (C) 2019 Luxoft Sweden AB
 ** Copyright (C) 2018 Pelagicore AG
@@ -34,6 +34,9 @@
 #include <QQmlContext>
 #include <QQmlComponent>
 #include <QScopedPointer>
+#include <QJsonDocument>
+
+#include <private/qivisimulationglobalobject_p.h>
 
 class BaseClass : public QObject
 {
@@ -237,9 +240,17 @@ class tst_QIviSimulationEngine : public QObject
 {
     Q_OBJECT
 
+    QVariant parseJson(const QString &json, QString &error) const;
+
 private Q_SLOTS:
     void testUsageInCorrectEngine();
 
+    //QIviSimulationEngine
+    void testOverrideEnvVariables();
+    void testLoadSimulationData_data();
+    void testLoadSimulationData();
+
+    //QML integration
     void testPropertyRead_data();
     void testPropertyRead();
     void testPropertyReadDerived_data();
@@ -263,6 +274,16 @@ private Q_SLOTS:
     void testRecursionPrevention();
     void testMultipleInstances();
 };
+
+QVariant tst_QIviSimulationEngine::parseJson(const QString &json, QString& error) const
+{
+    QJsonParseError pe;
+    QVariantMap data = QJsonDocument::fromJson(json.toUtf8(), &pe).toVariant().toMap();
+    if (pe.error != QJsonParseError::NoError)
+        error = pe.errorString();
+
+    return data;
+}
 
 void tst_QIviSimulationEngine::testUsageInCorrectEngine()
 {
@@ -288,6 +309,51 @@ void tst_QIviSimulationEngine::testUsageInCorrectEngine()
     QVERIFY2(obj, qPrintable(component.errorString()));
 
     QCOMPARE(testObject.propertyInBase(), -1);
+}
+
+void tst_QIviSimulationEngine::testOverrideEnvVariables()
+{
+    qputenv("QTIVI_SIMULATION_OVERRIDE", "testEngine=test.qml;testEngine=invalidQml=;overrideTest=:/simple.qml");
+    qputenv("QTIVI_SIMULATION_DATA_OVERRIDE", "testEngine=test.json;testEngine=invalid=;overrideTest=:/simple.json");
+    QIviSimulationEngine engine(QStringLiteral("overrideTest"));
+
+    QTest::ignoreMessage(QtWarningMsg, "Ignoring malformed override: File does not exist: 'test.json'");
+    QTest::ignoreMessage(QtWarningMsg, "Ignoring malformed override: 'testEngine=invalid='");
+    QTest::ignoreMessage(QtWarningMsg, "Ignoring malformed override: File does not exist: 'test.qml'");
+    QTest::ignoreMessage(QtWarningMsg, "Ignoring malformed override: 'testEngine=invalidQml='");
+
+    QTest::ignoreMessage(QtWarningMsg, "Detected matching simulation data override: overrideTest=:/simple.json");
+    engine.loadSimulationData(QStringLiteral("invalid.json"));
+
+    auto globalObject = engine.rootContext()->contextProperty(QStringLiteral("IviSimulator")).value<QIviSimulationGlobalObject*>();
+    QVariant simulationData = globalObject->simulationData();
+    QVERIFY(simulationData.isValid());
+
+    QTest::ignoreMessage(QtWarningMsg, "Detected matching simulation override: overrideTest=qrc:/simple.qml");
+    engine.loadSimulation(QStringLiteral("invalid.qml"));
+}
+
+void tst_QIviSimulationEngine::testLoadSimulationData_data()
+{
+    QTest::addColumn<QString>("simulationData");
+    QTest::addColumn<QStringList>("expectedErrors");
+    QTest::newRow("no such file") << "no-file.json" << QStringList("Cannot open the simulation data file no-file.json:*");
+    QTest::newRow("invalid json") << ":/invalid-data.json" << QStringList({ "Error parsing the simulation data in :/invalid-data.json: unterminated array", "Error context:\n.*" });
+    QTest::newRow("valid json") << ":/simple.json" << QStringList();
+}
+
+void tst_QIviSimulationEngine::testLoadSimulationData()
+{
+    QFETCH(QString, simulationData);
+    QFETCH(QStringList, expectedErrors);
+
+    QIviSimulationEngine engine(QStringLiteral("loadingTest"));
+    for (const QString &error : expectedErrors)
+        QTest::ignoreMessage(QtCriticalMsg, QRegularExpression(error));
+    engine.loadSimulationData(simulationData);
+
+    auto globalObject = engine.rootContext()->contextProperty(QStringLiteral("IviSimulator")).value<QIviSimulationGlobalObject*>();
+    QCOMPARE(globalObject->simulationData().isValid(), expectedErrors.isEmpty());
 }
 
 void tst_QIviSimulationEngine::testPropertyRead_data()
@@ -595,7 +661,7 @@ void tst_QIviSimulationEngine::testAnimations()
     QCOMPARE(obj->property("propertyInBase"), 130);
 
     //we expect at least 2 animation steps (intermediate step and final step)
-    QVERIFY2(spy.count() > 2, qPrintable(QStringLiteral("Emitted signals: ") + QString::number(spy.count())));
+    QVERIFY2(spy.count() >= 2, qPrintable(QStringLiteral("Emitted signals: ") + QString::number(spy.count())));
 }
 
 void tst_QIviSimulationEngine::testFunctionCalls_data()

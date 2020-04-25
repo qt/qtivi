@@ -34,6 +34,9 @@ interface Echo {
     WeekDay weekDay;
     TestEnum testEnum;
     real UPPERCASEPROPERTY;
+    /* AUTOSUITE-1340 */
+    @config_simulator: { default: ["Hello Qt"] }
+    OnlyAStringInAStruct stringInAStructProperty;
 
     string echo(string msg);
     string id() const;
@@ -143,4 +146,9 @@ struct Combo {
 
 struct AnotherStruct {
     int justANumber;
+}
+
+/* AUTOSUITE-1340 */
+struct OnlyAStringInAStruct {
+    string myString;
 }

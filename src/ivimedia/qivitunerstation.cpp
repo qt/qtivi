@@ -298,7 +298,7 @@ QString QIviTunerStation::type() const
 
     \sa operator!=()
 */
-bool QIviTunerStation::operator==(const QIviTunerStation &other)
+bool QIviTunerStation::operator==(const QIviTunerStation &other) const
 {
     return (QIviStandardItem::operator==(other) &&
             d->m_stationName == other.d->m_stationName &&
@@ -400,7 +400,7 @@ QString QIviAmFmTunerStation::type() const
 
     \sa operator!=()
 */
-bool QIviAmFmTunerStation::operator==(const QIviAmFmTunerStation &other)
+bool QIviAmFmTunerStation::operator==(const QIviAmFmTunerStation &other) const
 {
     return (QIviTunerStation::operator==(other) &&
             d->m_band == other.d->m_band);

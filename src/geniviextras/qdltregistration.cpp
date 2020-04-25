@@ -55,6 +55,9 @@ QT_BEGIN_NAMESPACE
 
 void qtGeniviLogLevelChangedHandler(char context_id[], uint8_t log_level, uint8_t trace_status)
 {
+    if (!globalDltRegistration())
+        return;
+
     auto d = globalDltRegistration()->d_ptr;
     d->m_mutex.lock();
     const QLoggingCategory *category = d->dltLogLevelChanged(context_id, log_level, trace_status);
@@ -146,6 +149,16 @@ void QDltRegistrationPrivate::registerCategory(CategoryInfo &info)
     DLT_REGISTER_LOG_LEVEL_CHANGED_CALLBACK(*info.m_context, &qtGeniviLogLevelChangedHandler);
 #endif
     info.m_registered = true;
+}
+
+void QDltRegistrationPrivate::unregisterCategories()
+{
+    for (auto it = m_categoryInfoHash.begin(); it != m_categoryInfoHash.end(); ++it) {
+        if (it.value().m_registered) {
+            DLT_UNREGISTER_CONTEXT(*it.value().m_context);
+            it.value().m_registered = false;
+        }
+    }
 }
 
 void QDltRegistrationPrivate::registerApplication()
@@ -428,7 +441,7 @@ void QDltRegistration::registerUnregisteredContexts()
     for (auto it = d->m_categoryInfoHash.begin(); it != d->m_categoryInfoHash.end(); ++it) {
         if (!it.value().m_registered) {
             d->registerCategory(it.value());
-      }
+        }
     }
 }
 
@@ -453,6 +466,20 @@ void QDltRegistration::unregisterApplication()
     Q_D(QDltRegistration);
     QMutexLocker l(&d->m_mutex);
     d->unregisterApplication();
+}
+
+/*!
+    Unregisters all categories and their associated context Ids from the dlt-daemon.
+
+    One application of this function could be to update the log level: after this function has been
+    called, all cetegories will be registered again (with new log level), when they are used next
+    time.
+*/
+void QDltRegistration::unregisterCategories()
+{
+    Q_D(QDltRegistration);
+    QMutexLocker l(&d->m_mutex);
+    d->unregisterCategories();
 }
 
 /*!

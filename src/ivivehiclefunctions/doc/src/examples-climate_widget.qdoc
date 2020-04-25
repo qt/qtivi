@@ -63,7 +63,7 @@
 
      The first thing to do is to create a QIviClimateControl instance in our
      MainWindow constructor. As we only have one Climate backend and don't want
-     to choose which one to use, we call \l {QIviAbstractFeature::}{startAutoDiscovery()}
+     to choose which one to use, we call \l {QIviAbstractFeature::}{startAutoDiscovery}
      to start searching for a suitable backend right away and pick the first one
      that matches.
 

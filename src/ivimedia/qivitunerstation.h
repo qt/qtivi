@@ -84,8 +84,8 @@ public:
     virtual QString name() const override;
     virtual QString type() const override;
 
-    bool operator==(const QIviTunerStation &other);
-    inline bool operator!=(const QIviTunerStation &other) { return !(*this == other); }
+    bool operator==(const QIviTunerStation &other) const;
+    inline bool operator!=(const QIviTunerStation &other) const { return !(*this == other); }
 
 private:
     QSharedDataPointer<QIviTunerStationPrivate> d;
@@ -108,8 +108,8 @@ public:
     virtual void setBand(QIviAmFmTuner::Band band);
     virtual QString type() const override;
 
-    bool operator==(const QIviAmFmTunerStation &other);
-    inline bool operator!=(const QIviAmFmTunerStation &other) { return !(*this == other); }
+    bool operator==(const QIviAmFmTunerStation &other) const;
+    inline bool operator!=(const QIviAmFmTunerStation &other) const { return !(*this == other); }
 
 private:
     QSharedDataPointer<QIviAmFmTunerStationPrivate> d;

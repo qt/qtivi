@@ -47,8 +47,8 @@
 
 template <class ObjectType>
 struct QIviMediaIndexerAddressWrapper: public QIviMediaIndexerSourceAPI<ObjectType> {
-    QIviMediaIndexerAddressWrapper(ObjectType *object, const QString &name = QStringLiteral("QtIviMedia.QIviMediaIndexer"))
-        : QIviMediaIndexerSourceAPI<ObjectType>(object, name)
+    QIviMediaIndexerAddressWrapper(ObjectType *object)
+        : QIviMediaIndexerSourceAPI<ObjectType>(object, object->remoteObjectsLookupName())
     {}
 };
 
@@ -56,7 +56,9 @@ class QIviMediaIndexerQtRoAdapter : public QIviMediaIndexerSource
 {
 public:
     QIviMediaIndexerQtRoAdapter(MediaIndexerBackend *parent);
+    QIviMediaIndexerQtRoAdapter(const QString& remoteObjectsLookupName, MediaIndexerBackend *parent);
 
+    QString remoteObjectsLookupName() const;
     QIviMediaIndexerControl::State state() const override;
     qreal progress() const override;
 
@@ -65,6 +67,7 @@ public Q_SLOTS:
     QVariant resume() override;
 
 private:
+    QString m_remoteObjectsLookupName;
     MediaIndexerBackend *m_backend;
 };
 

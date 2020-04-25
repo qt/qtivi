@@ -140,45 +140,47 @@ QtObject {
 
 
         function setHeaterMode(heaterMode, zone) {
-            if (IviSimulator.checkSettings(settings["heaterMode"], heaterMode, zone)) {
-                if (zone) {
-                    console.log("SIMULATION heaterMode for zone: " + zone + " changed to: " + heaterMode);
-                    backend.zones[zone].heaterMode = heaterMode
-                } else {
-                    console.log("SIMULATION heaterMode changed to: " + heaterMode);
-                    backend.heaterMode = heaterMode
-                }
+            if ("heaterMode" in settings && !IviSimulator.checkSettings(settings["heaterMode"], heaterMode, zone)) {
+                console.error("SIMULATION changing heaterMode is not possible: provided: " + heaterMode + "constraint: " + IviSimulator.constraint(settings["heaterMode"]));
+                return;
+            }
+
+            if (zone) {
+                console.log("SIMULATION heaterMode for zone: " + zone + " changed to: " + heaterMode);
+                backend.zones[zone].heaterMode = heaterMode
             } else {
-                console.error("SIMULATION changing heaterMode is not possible: provided: " + heaterMode + "constraint: " + IviSimulator.constraint_string(settings["heaterMode"]));
+                console.log("SIMULATION heaterMode changed to: " + heaterMode);
+                backend.heaterMode = heaterMode
             }
         }
 
         function setHeater(heater, zone) {
-            if (IviSimulator.checkSettings(settings["heater"], heater, zone)) {
-                console.log("SIMULATION heater changed to: " + heater);
-                if (zone) {
-                    console.log("SIMULATION heater for zone: " + zone + " changed to: " + heater);
-                    backend.zones[zone].heater = heater
-                } else {
-                    console.log("SIMULATION heater changed to: " + heater);
-                    backend.heater = heater
-                }
+            if ("heater" in settings && !IviSimulator.checkSettings(settings["heater"], heater, zone)) {
+                console.error("SIMULATION changing heater is not possible: provided: " + heater + "constraint: " + IviSimulator.constraint(settings["heater"]));
+                return;
+            }
+
+            if (zone) {
+                console.log("SIMULATION heater for zone: " + zone + " changed to: " + heater);
+                backend.zones[zone].heater = heater
             } else {
-                console.error("SIMULATION changing heater is not possible: provided: " + heater + "constraint: " + IviSimulator.constraint_string(settings["heater"]));
+                console.log("SIMULATION heater changed to: " + heater);
+                backend.heater = heater
             }
         }
 
         function setState(state, zone) {
-            if (IviSimulator.checkSettings(settings["state"], state, zone)) {
-                if (zone) {
-                    console.log("SIMULATION state for zone: " + zone + " changed to: " + state);
-                    backend.zones[zone].state = state
-                } else {
-                    console.log("SIMULATION state changed to: " + state);
-                    backend.state = state
-                }
+            if ("state" in settings && !IviSimulator.checkSettings(settings["state"], state, zone)) {
+                console.error("SIMULATION changing state is not possible: provided: " + state + "constraint: " + IviSimulator.constraint(settings["state"]));
+                return;
+            }
+
+            if (zone) {
+                console.log("SIMULATION state for zone: " + zone + " changed to: " + state);
+                backend.zones[zone].state = state
             } else {
-                console.error("SIMULATION changing state is not possible: provided: " + state + "constraint: " + IviSimulator.constraint_string(settings["state"]));
+                console.log("SIMULATION state changed to: " + state);
+                backend.state = state
             }
         }
 
@@ -190,16 +192,17 @@ QtObject {
         }
 
         function setBlindState(blindState, zone) {
-            if (IviSimulator.checkSettings(settings["blindState"], blindState, zone)) {
-                if (zone) {
-                    console.log("SIMULATION blindState for zone: " + zone + " changed to: " + blindState);
-                    backend.zones[zone].blindState = blindState
-                } else {
-                    console.log("SIMULATION blindState changed to: " + blindState);
-                    backend.blindState = blindState
-                }
+            if ("blindState" in settings && !IviSimulator.checkSettings(settings["blindState"], blindState, zone)) {
+                console.error("SIMULATION changing blindState is not possible: provided: " + blindState + "constraint: " + IviSimulator.constraint(settings["blindState"]));
+                return;
+            }
+
+            if (zone) {
+                console.log("SIMULATION blindState for zone: " + zone + " changed to: " + blindState);
+                backend.zones[zone].blindState = blindState
             } else {
-                console.error("SIMULATION changing blindState is not possible: provided: " + blindState + "constraint: " + IviSimulator.constraint_string(settings["blindState"]));
+                console.log("SIMULATION blindState changed to: " + blindState);
+                backend.blindState = blindState
             }
         }
     }

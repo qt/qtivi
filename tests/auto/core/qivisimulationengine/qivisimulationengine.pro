@@ -8,3 +8,6 @@ TEMPLATE = app
 
 SOURCES += \
     tst_qivisimulationengine.cpp
+
+RESOURCES += \
+    resource.qrc

@@ -173,7 +173,7 @@ QString QIviPlayableItem::type() const
 
     \sa operator!=()
 */
-bool QIviPlayableItem::operator==(const QIviPlayableItem &other)
+bool QIviPlayableItem::operator==(const QIviPlayableItem &other) const
 {
     return (QIviStandardItem::operator==(other) &&
             d->m_url == other.d->m_url);
@@ -454,7 +454,7 @@ QString QIviAudioTrackItem::type() const
 
     \sa operator!=()
 */
-bool QIviAudioTrackItem::operator==(const QIviAudioTrackItem &other)
+bool QIviAudioTrackItem::operator==(const QIviAudioTrackItem &other) const
 {
     return (QIviPlayableItem::operator==(other) &&
             d->m_title == other.d->m_title &&

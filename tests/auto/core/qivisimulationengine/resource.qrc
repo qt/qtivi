@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>invalid-data.json</file>
+        <file>simple.json</file>
+        <file>simple.qml</file>
+    </qresource>
+</RCC>

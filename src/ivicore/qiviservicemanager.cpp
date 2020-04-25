@@ -97,7 +97,10 @@ namespace qtivi_helper {
 
 using namespace qtivi_helper;
 
-QIviServiceManagerPrivate::QIviServiceManagerPrivate(QIviServiceManager *parent) : QObject(parent), q_ptr(parent)
+QIviServiceManagerPrivate::QIviServiceManagerPrivate(QIviServiceManager *parent)
+    : QObject(parent)
+    , m_staticLoaded(false)
+    , q_ptr(parent)
 {
 }
 
@@ -161,16 +164,29 @@ QList<QIviServiceObject *> QIviServiceManagerPrivate::findServiceByInterface(con
 void QIviServiceManagerPrivate::searchPlugins()
 {
     bool found = false;
+
     const auto pluginDirs = QCoreApplication::libraryPaths();
     for (const QString &pluginDir : pluginDirs) {
+        // Already loaded, skip it...
+        if (m_loadedPaths.contains(pluginDir))
+            continue;
+        m_loadedPaths << pluginDir;
 
+#ifdef Q_OS_ANDROID
+        QString path = pluginDir;
+#else
         QString path = pluginDir + QDir::separator() + QLatin1String(QIVI_PLUGIN_DIRECTORY);
+#endif
         QDir dir(path);
         //Check whether the directory exists
         if (!dir.exists())
             continue;
 
-        const QStringList plugins = QDir(path).entryList(QDir::Files);
+        const QStringList plugins = QDir(path).entryList(
+#ifdef Q_OS_ANDROID
+                    QStringList(QLatin1String("libplugins_%1_*.so").arg(QLatin1String(QIVI_PLUGIN_DIRECTORY))),
+#endif
+                    QDir::Files);
         for (const QString &pluginFileName : plugins) {
             if (!QLibrary::isLibrary(pluginFileName))
                 continue;
@@ -183,11 +199,16 @@ void QIviServiceManagerPrivate::searchPlugins()
             found = true;
         }
     }
-    const auto staticPlugins = QPluginLoader::staticPlugins();
-    for (const QStaticPlugin &plugin : staticPlugins)
-        registerStaticBackend(plugin);
 
-    if (Q_UNLIKELY(!found))
+    // Only load the static plugins once
+    if (!m_staticLoaded) {
+        m_staticLoaded = true;
+        const auto staticPlugins = QPluginLoader::staticPlugins();
+        for (const QStaticPlugin &plugin : staticPlugins)
+            registerStaticBackend(plugin);
+    }
+
+    if (Q_UNLIKELY(!found && m_backends.count() == 0))
         qWarning() << "No plugins found in search path: " << QCoreApplication::libraryPaths().join(QLatin1String(":"));
 }
 
@@ -294,6 +315,8 @@ void QIviServiceManagerPrivate::unloadAllBackends()
     q->endResetModel();
 
     m_interfaceNames.clear();
+    m_loadedPaths.clear();
+    m_staticLoaded = false;
 }
 
 void QIviServiceManagerPrivate::addBackend(Backend *backend)
@@ -305,14 +328,22 @@ void QIviServiceManagerPrivate::addBackend(Backend *backend)
     const QString newBackendFile = backend->metaData.value(fileNameLiteral).toString();
     const QString newBackendFileBase = qtivi_helper::backendBaseName(newBackendFile);
     const QStringList ifaceList = backend->metaData.value(interfacesLiteral).toStringList();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
     const QSet<QString> newInterfaces = QSet<QString>(ifaceList.begin(), ifaceList.end());
+#else
+    const QSet<QString> newInterfaces = ifaceList.toSet();
+#endif
 
     bool addBackend = true;
     if (!newBackendFile.isEmpty()) {
         for (int i = 0; i < m_backends.count(); i++) {
             Backend *b = m_backends[i];
             const QStringList curIfaceList = backend->metaData.value(interfacesLiteral).toStringList();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
             const QSet<QString> interfaces = QSet<QString>(curIfaceList.begin(), curIfaceList.end());
+#else
+            const QSet<QString> interfaces = curIfaceList.toSet();
+#endif
             if (interfaces == newInterfaces && b->name == backend->name) {
                 const QString fileName = b->metaData.value(fileNameLiteral).toString();
                 if (fileName == newBackendFile) {
@@ -535,6 +566,7 @@ QIviServiceManager *QIviServiceManager::instance()
 QList<QIviServiceObject *> QIviServiceManager::findServiceByInterface(const QString &interface, SearchFlags searchFlags)
 {
     Q_D(QIviServiceManager);
+    d->searchPlugins();
     return d->findServiceByInterface(interface, searchFlags);
 }
 

@@ -23,10 +23,10 @@
             "package": "virtualenv"
         },
         "qface": {
-            "label": "qface 2.0.0",
+            "label": "qface 2.0.3",
             "type": "python3_package",
             "package": "qface",
-            "version": "2.0.0"
+            "version": "2.0.3"
         },
         "qface-submodule": {
             "label": "qface-submodule",
@@ -88,7 +88,7 @@
     "report": [
         {
             "type": "error",
-            "condition": "!features.ivigenerator && input.ivigenerator != 'no'",
+            "condition": "features.ivicore && !features.ivigenerator && input.ivigenerator != 'no'",
             "message": "Cannot build the IVI Generator because its dependencies are not satisfied.
 The IVI Generator provides tooling to generate source code out of IDL files.
 Make sure python3 and its 'virtualenv' packages are installed.
