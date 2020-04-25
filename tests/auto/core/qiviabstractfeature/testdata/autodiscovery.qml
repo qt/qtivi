@@ -28,6 +28,7 @@
 ****************************************************************************/
 
 import QtQuick 2.0
+import QtIvi 1.0
 import testfeature 1.0
 
 Item {
@@ -43,7 +44,9 @@ Item {
     }
 
     function discover() {
-        noAutoItem.discoveryMode = TestFeature.LoadOnlyProductionBackends
+        // We have to use AbstractFeature here instead of TestFeature because of
+        // QTBUG-83703
+        noAutoItem.discoveryMode = AbstractFeature.LoadOnlyProductionBackends
         noAutoItem.startAutoDiscovery()
     }
 }
