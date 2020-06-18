@@ -44,7 +44,9 @@
 #define QIVISERVICEMANAGER_H
 
 #include <QtCore/QAbstractListModel>
+
 #include <QtIviCore/qtiviglobal.h>
+#include <QtIviCore/QIviServiceObject>
 
 QT_BEGIN_NAMESPACE
 

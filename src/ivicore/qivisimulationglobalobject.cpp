@@ -300,7 +300,7 @@ QVariantMap QIviSimulationGlobalObject::findData(const QVariantMap &data, const 
         if (data.contains(key))
             return data.value(key).toMap();
 
-        int index = key.indexOf('.');
+        int index = key.indexOf(QLatin1Char('.'));
         if (index == -1)
             break;
         key = key.right(key.count() - index - 1);
