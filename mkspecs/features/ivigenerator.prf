@@ -64,10 +64,12 @@ qtConfig(system-qface) {
         PYTHON = $$VIRTUALENV_PATH/Scripts/python.exe
         # No space between the path and && otherwise python3 adds the space to the path
         ENV += set PYTHONHOME=$$system_path($$VIRTUALENV_PATH)&&
+        ENV += set VIRTUAL_ENV=%PYTHONHOME%&&
     } else {
         PYTHON = $$VIRTUALENV_PATH/bin/python
         ENV += LD_LIBRARY_PATH="$$system_path($$VIRTUALENV_PATH/bin)"
         ENV += PYTHONHOME=$$system_path($$VIRTUALENV_PATH)
+        ENV += VIRTUAL_ENV=$PYTHONHOME
     }
 }
 IVI_GENERATOR = $$system_quote($$PYTHON) $$IVI_GENERATOR_PATH/generate.py
