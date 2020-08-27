@@ -3,6 +3,7 @@ io.py
 site.py
 os.py
 stat.py
+tarfile.py
 ntpath.py
 genericpath.py
 re.py

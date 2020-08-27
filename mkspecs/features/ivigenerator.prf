@@ -69,7 +69,7 @@ qtConfig(system-qface) {
         PYTHON = $$VIRTUALENV_PATH/bin/python
         ENV += LD_LIBRARY_PATH="$$system_path($$VIRTUALENV_PATH/bin)"
         ENV += PYTHONHOME=$$system_path($$VIRTUALENV_PATH)
-        ENV += VIRTUAL_ENV=$PYTHONHOME
+        ENV += VIRTUAL_ENV=$$system_path($$VIRTUALENV_PATH)
     }
 }
 IVI_GENERATOR = $$system_quote($$PYTHON) $$IVI_GENERATOR_PATH/generate.py
