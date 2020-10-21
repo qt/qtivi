@@ -263,6 +263,39 @@
                 the name which is used to export the interface to QML. For modules, it defines the
                 URI of the complete module. The last part of the URI is also used for the singleton
                 that exports all enums to QML.
+        \row
+            \li \code
+                @designer: {categoryName: "QtIvi - Vehicle Functions"}
+                \endcode
+            \li Main IDL file
+            \li Module, Interface
+            \li Defines the category name this interface should be listed under in the Qt Design Studio
+                Library. When defined for a module it sets the category name for all interfaces inside
+                that module, but it can be overridden per interface by defining it there as well.
+        \row
+            \li \code
+                @designer: {name: "Climate Control"}
+                \endcode
+            \li Main IDL file
+            \li Interface
+            \li Defines the name this interface should be listed under in the Qt Design Studio
+                Library.
+        \row
+            \li \code
+                @designer: {typeIcon: "images/climate.png"}
+                \endcode
+            \li Main IDL file
+            \li Interface
+            \li The typeIcon is a 16x16 icon used in the Navigator Pane within Qt Design Studio.
+                \note The icon needs to copied to the correct folder by a custom qmake rule.
+        \row
+            \li \code
+                @designer: {libraryIcon: "images/climate.png"}
+                \endcode
+            \li Main IDL file
+            \li Interface
+            \li The libraryIcon is shown in the Library within Qt Design Studio.
+                \note The icon needs to copied to the correct folder by a custom qmake rule.
     \endtable
 
     Annotations that are not logically part of the interface description, but rather the ones used

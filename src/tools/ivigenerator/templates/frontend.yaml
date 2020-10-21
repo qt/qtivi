@@ -9,6 +9,7 @@ frontend:
             - '{{module.module_name|lower}}modulefactory.cpp': 'modulefactory.cpp.tpl'
             - '{{srcBase|lower}}.pri': 'module.pri.tpl'
             - 'qml/{{module|qml_type|replace(".", "/")}}/plugins.qmltypes': 'common/plugins.qmltypes.tpl'
+            - "qml/{{module|qml_type|replace('.', '/')}}/designer/{{module.module_name|lower}}.metainfo": "common/designer.metainfo.tpl"
             - 'qml/{{module|qml_type|replace(".", "/")}}/qmldir': 'common/qmldir.tpl'
     interface:
         documents:

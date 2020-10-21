@@ -1,5 +1,6 @@
 @config: { qml_name: "QtIvi.VehicleFunctions" }
 @config_simulator: { simulationFile: "qrc:/simulation/simulation.qml" }
+@designer: { categoryName: "QtIvi - Vehicle Functions" }
 module QtIviVehicleFunctions 1.0;
 
 /**
@@ -15,6 +16,7 @@ module QtIviVehicleFunctions 1.0;
  * with \l {QIviAbstractFeature::}{discoveryMode} set to \l {QIviAbstractFeature::}{AutoDiscovery}.
  */
 @config: { zoned: true, id: "org.qt-project.qtivi.ClimateControl/1.0", qml_type: "ClimateControl" }
+@designer: { name: "Climate Control" }
 interface QIviClimateControl {
     /**
      * Holds whether the air conditioning is enabled.
@@ -169,6 +171,7 @@ enum ClimateMode {
  * with \l {QIviAbstractFeature::}{discoveryMode} set to \l {QIviAbstractZonedFeature::}{zoneAt}.
  */
 @config: { zoned: true, id: "org.qt-project.qtivi.WindowControl/1.0", qml_type: "WindowControl" }
+@designer: { name: "Window Control" }
 interface QIviWindowControl {
 
     /**

@@ -16,6 +16,7 @@ common.files += \
     templates/common/qtivi_macros.j2 \
     templates/common/simulation.qmltypes.tpl \
     templates/common/plugins.qmltypes.tpl \
+    templates/common/designer.metainfo.tpl \
     templates/common/qmldir.tpl \
     templates/common/interface.rep.tpl \
     templates/common/simulation_data.json.tpl \

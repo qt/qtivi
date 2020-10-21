@@ -1,5 +1,5 @@
 {#
-# Copyright (C) 2019 Luxoft Sweden AB
+# Copyright (C) 2020 The Qt Company Ltd.
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -36,18 +36,46 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-#############################################################################
-## This is an auto-generated file.
-## Do not edit! All changes made to it will be lost.
-#############################################################################
+{% import 'common/qtivi_macros.j2' as ivi %}
+{% set module_qml_name = (module|qml_type).split('.')[-1]|upperfirst %}
+{% set default_category_name = module_qml_name %}
+{% if module.tags.designer and module.tags.designer.categoryName %}
+{%   set default_category_name = module.tags.designer.categoryName %}
+{% endif %}
 
-TARGET = {{module.module_name|lower}}plugin
-URI = {{module|qml_type}}
-IMPORT_VERSION = {{module.majorVersion}}.{{module.minorVersion}}
+MetaInfo {
+{% for interface in module.interfaces %}
+{%   set category_name = default_category_name %}
+{%   if interface.tags.designer and interface.tags.designer.categoryName %}
+{%     set category_name = interface.tags.designer.categoryName %}
+{%   endif %}
+{%   set name = interface|qml_type %}
+{%   if interface.tags.designer and interface.tags.designer.name %}
+{%     set name = interface.tags.designer.name %}
+{%   endif %}
 
-SOURCES += \
-    $$PWD/plugin.cpp \
+   Type {
+        name: "{{module|qml_type}}.{{interface|qml_type}}"
+{%   if interface.tags.designer and interface.tags.designer.typeIcon %}
+        icon: "{{interface.tags.designer.typeIcon}}"
+{%   endif %}
 
-AUX_QML_FILES += $$PWD/qmldir \
-    $$PWD/plugins.qmltypes \
-    $$PWD/designer/{{module.module_name|lower}}.metainfo
+        Hints {
+            visibleInNavigator: true
+            canBeDroppedInNavigator: true
+            canBeDroppedInFormEditor: false
+        }
+
+        ItemLibraryEntry {
+            name: "{{name}}"
+            category: "{{category_name}}"
+{%   if interface.tags.designer and interface.tags.designer.libraryIcon %}
+             libraryIcon: "{{interface.tags.designer.libraryIcon}}"
+{%   endif %}
+            version: "{{module.majorVersion}}.{{module.minorVersion}}"
+            requiredImport: "{{module|qml_type}}"
+        }
+    }
+
+{% endfor %}
+}
