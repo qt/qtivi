@@ -48,6 +48,7 @@ from path import Path
 
 from qface.generator import FileSystem, Generator
 from qface.watch import monitor
+from qface.utils import load_filters
 
 import generator.builtin_config as builtin_config
 import generator.global_functions as global_functions
@@ -123,6 +124,17 @@ def generate(tplconfig, moduleConfig, annotations, imports, src, dst):
 
     global_functions.register_global_functions(generator)
     register_filters(generator)
+
+    # Add the current path to the module search path
+    # This makes it possible to import our filters.py and friends
+    # from the plugin filters
+    sys.path.append(os.path.join(os.path.dirname(__file__)))
+
+    # Add a module specific extra filter if found
+    extra_filter_path = os.path.dirname(tplconfig) + '/{0}/filters.py'.format(os.path.basename(tplconfig))
+    if os.path.exists(extra_filter_path):
+        extra_filters = load_filters(Path(extra_filter_path))
+        generator.filters = extra_filters
 
     validateSystem(srcFile, system)
 
