@@ -1,6 +1,5 @@
-{#
-# Copyright (C) 2019 Luxoft Sweden AB
-# Copyright (C) 2018 Pelagicore AG
+#!/usr/bin/env python3
+# Copyright (C) 2020 The Qt Company Ltd.
 # Contact: https://www.qt.io/licensing/
 #
 # This file is part of the QtIvi module of the Qt Toolkit.
@@ -36,21 +35,19 @@
 # $QT_END_LICENSE$
 #
 # SPDX-License-Identifier: LGPL-3.0
-#}
-{% include "common/generated_comment.cpp.tpl" %}
 
-#include "tst_custom.h"
+import json
+import inspect
 
-CustomTest::CustomTest()
-    : QObject()
-{
-}
+from qface.idl.domain import Module, Interface, Property, Parameter, Field, Struct
+from qface.helper.generic import lower_first, upper_first
+from qface.helper.qtcpp import Filters
 
-void CustomTest::initTestCase()
-{
-    QVERIFY(true);
-{% set foo = module|custom_filter %}
-    qInfo("Test successfully generated from 'custom template'");
-}
+from generator.global_functions import jinja_error, jinja_warning
+from generator.filters import deprecated_filter
 
-QTEST_MAIN(CustomTest)
+def custom_filter(s):
+    jinja_warning("Test calling a function from the ivigenerator within our own filters")
+    return
+
+filters['custom_filter'] = custom_filter
