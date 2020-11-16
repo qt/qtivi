@@ -71,7 +71,7 @@ Q_GLOBAL_STATIC(QDltRegistration, dltRegistration)
 
 QDltRegistration *globalDltRegistration()
 {
-    return dltRegistration();
+    return dltRegistration.isDestroyed() ? nullptr : dltRegistration();
 }
 
 QT_END_NAMESPACE
