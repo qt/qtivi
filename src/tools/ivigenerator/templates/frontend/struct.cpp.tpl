@@ -147,18 +147,18 @@ void {{class}}::fromJSON(const QVariant &variant)
     QVariant value = qtivi_convertFromJSON(variant);
     // First try to convert the values to a Map or a List
     // This is needed as it could also store a QStringList or a Hash
-    if (value.canConvert(QVariant::Map))
-        value.convert(QVariant::Map);
-    if (value.canConvert(QVariant::List))
-        value.convert(QVariant::List);
+    if (value.canConvert(QMetaType::fromType<QVariantMap>()))
+        value.convert(QMetaType::fromType<QVariantMap>());
+    if (value.canConvert(QMetaType::fromType<QVariantList>()))
+        value.convert(QMetaType::fromType<QVariantList>());
 
-    if (value.type() == QVariant::Map) {
+    if (value.metaType() == QMetaType::fromType<QVariantList>()) {
         QVariantMap map = value.toMap();
 {% for field in struct.fields %}
         if (map.contains(QStringLiteral("{{field}}")))
             d->m_{{field}} = map.value(QStringLiteral("{{field}}")).value<{{field|return_type}}>();
 {% endfor %}
-    } else if (value.type() == QVariant::List) {
+    } else if (value.metaType() == QMetaType::fromType<QVariantList>()) {
         QVariantList values = value.toList();
 {% for field in struct.fields %}
         d->m_{{field}} = values.value({{loop.index0}}).value<{{field|return_type}}>();

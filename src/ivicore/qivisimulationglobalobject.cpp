@@ -429,9 +429,9 @@ bool QIviSimulationGlobalObject::checkSettings(const QVariantMap &data, const QV
         }
     }
     const QVariant domainDomain = parseDomainValue(data, domainLiteral, zone);
-    bool valueToDouble = value.canConvert(QVariant::Double);
-    bool minDomainToDouble = minDomain.canConvert(QVariant::Double);
-    bool maxDomainToDouble = maxDomain.canConvert(QVariant::Double);
+    bool valueToDouble = value.canConvert(QMetaType::fromType<double>());
+    bool minDomainToDouble = minDomain.canConvert(QMetaType::fromType<double>());
+    bool maxDomainToDouble = maxDomain.canConvert(QMetaType::fromType<double>());
 
     if (unsupportedDomain.isValid()) {
         return !unsupportedDomain.toBool();
@@ -473,7 +473,7 @@ QVariant QIviSimulationGlobalObject::parseDomainValue(const QVariantMap &data, c
         return QVariant();
 
     const QVariant domainData = data.value(domain);
-    if (domainData.type() == QVariant::Map) {
+    if (domainData.metaType().id() == QMetaType::QVariantMap) {
         const QVariantMap domainMap = domainData.toMap();
         QString z = zone;
         if (zone.isEmpty())

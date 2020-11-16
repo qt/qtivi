@@ -485,17 +485,18 @@ void QIviPendingReplyWatcher::setSuccess(const QVariant &value)
 
     QVariant var = value;
 
-    //Try to convert the value, if successfully, use the converted value
-    QVariant temp(var);
-    if (temp.convert(d->m_type))
-        var = temp;
-
     //We need a special conversion for enums from QML as they are saved as int
     QMetaType metaType(d->m_type);
     bool isEnumOrFlag = false;
 
+    //Try to convert the value, if successfully, use the converted value
+    QVariant temp(var);
+    if (temp.convert(metaType))
+        var = temp;
+
+
     const QMetaObject *mo = metaType.metaObject();
-    const QString enumName = QString::fromLocal8Bit(QMetaType::typeName(d->m_type)).split(QStringLiteral("::")).last();
+    const QString enumName = QString::fromLocal8Bit(metaType.name()).split(QStringLiteral("::")).last();
     if (mo) {
         QMetaEnum mEnum = mo->enumerator(mo->indexOfEnumerator(enumName.toLocal8Bit().constData()));
         if (mEnum.isValid()) {
@@ -508,8 +509,8 @@ void QIviPendingReplyWatcher::setSuccess(const QVariant &value)
     }
 
     //Check that the type names match only if it's not a enum, as it will be converted automatically in this case.
-    if (!isEnumOrFlag && var.typeName() != QVariant::typeToName(d->m_type)) {
-        qtivi_qmlOrCppWarning(this, QString(QStringLiteral("Expected: %1 but got %2")).arg(QLatin1String(QVariant::typeToName(d->m_type)), QLatin1String(QVariant::typeToName(value.userType()))));
+    if (!isEnumOrFlag && var.metaType() != metaType) {
+        qtivi_qmlOrCppWarning(this, QString(QStringLiteral("Expected: %1 but got %2")).arg(QLatin1String(metaType.name()), QLatin1String(var.metaType().name())));
         return;
     }
 

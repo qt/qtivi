@@ -54,7 +54,6 @@ MediaPlayerBackend::MediaPlayerBackend(QObject *parent)
 {
     qRegisterMetaType<QIviPlayableItem>();
     qRegisterMetaType<QIviAudioTrackItem>();
-    qRegisterMetaTypeStreamOperators<QIviAudioTrackItem>();
 }
 
 void MediaPlayerBackend::initialize()

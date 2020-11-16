@@ -48,7 +48,6 @@ QIviRemoteObjectReplicaHelper::QIviRemoteObjectReplicaHelper(const QLoggingCateg
     , m_category(category)
 {
     qRegisterMetaType<QIviRemoteObjectPendingResult>();
-    qRegisterMetaTypeStreamOperators<QIviRemoteObjectPendingResult>();
 }
 
 QVariant QIviRemoteObjectReplicaHelper::fromRemoteObjectVariant(const QVariant &variant) const

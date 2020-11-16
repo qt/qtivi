@@ -68,10 +68,6 @@ public:
         : m_intProperty(intProperty)
         , m_boolProperty(boolProperty)
     {
-        static bool once = false;
-        if (!once)
-            QMetaType::registerEqualsComparator<TestStruct>();
-        once = true;
     }
 
     int intProperty() const { return m_intProperty; }
@@ -87,18 +83,18 @@ protected:
         QVariant value = qtivi_convertFromJSON(variant);
         // First try to convert the values to a Map or a List
         // This is needed as it could also store a QStringList or a Hash
-        if (value.canConvert(QVariant::Map))
-            value.convert(QVariant::Map);
-        if (value.canConvert(QVariant::List))
-            value.convert(QVariant::List);
+        if (value.canConvert(QMetaType::fromType<QVariantMap>()))
+            value.convert(QMetaType::fromType<QVariantMap>());
+        if (value.canConvert(QMetaType::fromType<QVariantList>()))
+            value.convert(QMetaType::fromType<QVariantList>());
 
-        if (value.type() == QVariant::Map) {
+        if (value.metaType() == QMetaType::fromType<QVariantMap>()) {
             QVariantMap map = value.toMap();
             if (map.contains(QStringLiteral("intProperty")))
                 m_intProperty = map.value(QStringLiteral("intProperty")).value<int>();
             if (map.contains(QStringLiteral("boolProperty")))
                 m_boolProperty = map.value(QStringLiteral("boolProperty")).value<bool>();
-        } else if (value.type() == QVariant::List) {
+        } else if (value.metaType() == QMetaType::fromType<QVariantList>()) {
             QVariantList values = value.toList();
             m_intProperty = values.value(0).value<int>();
             m_boolProperty = values.value(1).value<bool>();

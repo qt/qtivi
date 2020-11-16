@@ -63,7 +63,7 @@ template <typename T>  QVariant qtivi_convertValue(const T &val)
     int userType = qMetaTypeId<T>();
     QMetaType metaType(userType);
     const QMetaObject *mo = metaType.metaObject();
-    QString enumName = QString::fromLocal8Bit(QMetaType::typeName(userType)).split(QStringLiteral("::")).last();
+    QString enumName = QString::fromLocal8Bit(metaType.name()).split(QStringLiteral("::")).last();
     if (mo) {
         QMetaEnum mEnum = mo->enumerator(mo->indexOfEnumerator(enumName.toLocal8Bit().constData()));
         if (mEnum.isValid())

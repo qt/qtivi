@@ -218,7 +218,7 @@ QVariant callTestFunction(QObject* object, const QByteArray &function, QVariantL
     QVariant retValue;
     QGenericReturnArgument retArgument;
     if (returnValue.isValid()) {
-        retValue = QVariant(returnValue.type());
+        retValue = QVariant(returnValue.metaType());
         retArgument = QGenericReturnArgument(retValue.typeName(), retValue.data());
     }
 

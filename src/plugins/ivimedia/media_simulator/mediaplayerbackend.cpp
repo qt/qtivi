@@ -63,7 +63,6 @@ MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *pa
     , m_player(new QMediaPlayer(this))
 {
     qRegisterMetaType<QIviAudioTrackItem>();
-    qRegisterMetaTypeStreamOperators<QIviAudioTrackItem>();
 
     m_threadPool->setMaxThreadCount(1);
     connect(m_player, &QMediaPlayer::durationChanged,

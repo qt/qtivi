@@ -127,7 +127,7 @@ QString QIviDefaultPropertyOverrider::PropertyOverride::name() const
 QString QIviDefaultPropertyOverrider::PropertyOverride::typeName() const
 {
     const int userType(m_metaProperty.userType());
-    return QString::fromLatin1(QMetaType::typeName(userType));
+    return QString::fromLatin1(QMetaType(userType).name());
 }
 
 QString QIviDefaultPropertyOverrider::PropertyOverride::displayText() const
@@ -184,11 +184,11 @@ bool QIviDefaultPropertyOverrider::PropertyOverride::notifyOverridenValue(const 
     if (!notifySignal.isValid() || notifySignal.parameterCount() != 1)
         return false;
 
-    switch (value.type()) {
-    case QVariant::Int: return notifySignal.invoke(carrier, Q_ARG(int, value.value<int>()));
-    case QVariant::String: return notifySignal.invoke(carrier, Q_ARG(QString, value.value<QString>()));
-    case QVariant::Double: return notifySignal.invoke(carrier, Q_ARG(double, value.value<double>()));
-    case QVariant::Bool: return notifySignal.invoke(carrier, Q_ARG(double, value.value<bool>()));
+    switch (value.metaType().id()) {
+    case QMetaType::Int: return notifySignal.invoke(carrier, Q_ARG(int, value.value<int>()));
+    case QMetaType::QString: return notifySignal.invoke(carrier, Q_ARG(QString, value.value<QString>()));
+    case QMetaType::Double: return notifySignal.invoke(carrier, Q_ARG(double, value.value<double>()));
+    case QMetaType::Bool: return notifySignal.invoke(carrier, Q_ARG(double, value.value<bool>()));
     default:
         return false;
     }

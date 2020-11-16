@@ -84,7 +84,7 @@ namespace qtivi_helper {
 
         void parseEnv(const QByteArray &rulesSrc, QHash<QString, QString> &hash) {
             const QString content = QString::fromLocal8Bit(rulesSrc);
-            const auto lines = content.splitRef(QLatin1Char(';'));
+            const auto lines = content.split(QLatin1Char(';'));
             for (auto line : lines) {
                 // Remove whitespace at start and end of line:
                 line = line.trimmed();
@@ -99,8 +99,8 @@ namespace qtivi_helper {
                         if (fixedStr.startsWith(qrcUrlLiteral))
                             fixedStr = fixedStr.mid(3);
 
-                        if (QFile::exists(fixedStr.toString()))
-                            hash.insert(key.toString(), valueStr.toString());
+                        if (QFile::exists(fixedStr))
+                            hash.insert(key, valueStr);
                         else
                             qCWarning(qLcIviSimulationEngine, "Ignoring malformed override: File does not exist: '%s'", fixedStr.toUtf8().constData());
                     } else {

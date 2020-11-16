@@ -269,7 +269,7 @@ public:
 
 //Workaround for QTBUG-83664
 //If T is a enum
-template <typename T> Q_INLINE_TEMPLATE typename QtPrivate::QEnableIf<QtPrivate::IsQEnumHelper<T>::Value, void>::Type qIviRegisterPendingReplyType(const char *name = nullptr)
+template <typename T> Q_INLINE_TEMPLATE typename std::enable_if<QtPrivate::IsQEnumHelper<T>::Value, void>::type qIviRegisterPendingReplyType(const char *name = nullptr)
 {
     qRegisterMetaType<T>();
     QString n;
@@ -280,7 +280,7 @@ template <typename T> Q_INLINE_TEMPLATE typename QtPrivate::QEnableIf<QtPrivate:
         if (me.isValid() && me.isFlag())
             n = QLatin1String(me.scope()) + QStringLiteral("::") + QLatin1String(me.name());
         else
-            n = QLatin1String(QMetaType::typeName(qMetaTypeId<T>()));
+            n = QLatin1String(QMetaType(qMetaTypeId<T>()).name());
     }
 
     const QString t_name = QStringLiteral("QIviPendingReply<") + n + QStringLiteral(">");
@@ -288,10 +288,10 @@ template <typename T> Q_INLINE_TEMPLATE typename QtPrivate::QEnableIf<QtPrivate:
 }
 
 //If T is NOT a enum
-template <typename T> Q_INLINE_TEMPLATE typename QtPrivate::QEnableIf<!QtPrivate::IsQEnumHelper<T>::Value, void>::Type qIviRegisterPendingReplyType(const char *name = nullptr)
+template <typename T> Q_INLINE_TEMPLATE typename std::enable_if<!QtPrivate::IsQEnumHelper<T>::Value, void>::type qIviRegisterPendingReplyType(const char *name = nullptr)
 {
     qRegisterMetaType<T>();
-    const char* n = name ? name : QMetaType::typeName(qMetaTypeId<T>());
+    const char* n = name ? name : QMetaType(qMetaTypeId<T>()).name();
     const QString t_name = QStringLiteral("QIviPendingReply<") + QLatin1String(n) + QStringLiteral(">");
     qRegisterMetaType<QIviPendingReplyBase>(qPrintable(t_name));
 }

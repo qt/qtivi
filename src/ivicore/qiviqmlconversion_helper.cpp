@@ -100,12 +100,12 @@ QVariant qtivi_convertFromJSON(const QVariant &value)
     QVariant val = value;
     // First try to convert the values to a Map or a List
     // This is needed as it could also store a QStringList or a Hash
-    if (val.canConvert(QVariant::Map))
-        val.convert(QVariant::Map);
-    if (val.canConvert(QVariant::List))
-        val.convert(QVariant::List);
+    if (val.canConvert(QMetaType::fromType<QVariantMap>()))
+        val.convert(QMetaType::fromType<QVariantMap>());
+    if (val.canConvert(QMetaType::fromType<QVariantList>()))
+        val.convert(QMetaType::fromType<QVariantList>());
 
-    if (val.type() == QVariant::Map) {
+    if (val.metaType() == QMetaType::fromType<QVariantMap>()) {
         const QVariantMap map = val.toMap();
         if (map.contains(typeLiteral) && map.contains(valueLiteral)) {
             const QString type = map.value(typeLiteral).toString();
@@ -116,7 +116,8 @@ QVariant qtivi_convertFromJSON(const QVariant &value)
                 const int lastIndex = enumValue.lastIndexOf(QStringLiteral("::"));
                 const QString className = enumValue.left(lastIndex) + QStringLiteral("*");
                 enumValue = enumValue.right(enumValue.count() - lastIndex - 2);
-                const QMetaObject *mo = QMetaType::metaObjectForType(QMetaType::type(className.toLatin1()));
+                QMetaType metaType = QMetaType::fromName(className.toLatin1());
+                const QMetaObject *mo = metaType.metaObject();
                 if (Q_UNLIKELY(!mo)) {
                     qWarning() << "Couldn't retrieve MetaObject for enum parsing:" << map;
                     qWarning("Please make sure %s is registered in Qt's meta-type system: qRegisterMetaType<%s>()",
@@ -128,14 +129,15 @@ QVariant qtivi_convertFromJSON(const QVariant &value)
                     QMetaEnum me = mo->enumerator(i);
                     bool ok = false;
                     int value = me.keysToValue(enumValue.toLatin1(), &ok);
-                    if (ok)
-                        return value;
+                    if (ok) {
+                        return QVariant(QMetaType::fromName((QLatin1String(me.scope()) + QStringLiteral("::") + QLatin1String(me.enumName())).toLatin1()), &value);
+                    }
                 }
                 qWarning() << "Couldn't parse the enum definition" << map;
                 return QVariant();
             } else {
-                int typeId = QMetaType::type(type.toLatin1());
-                const QMetaObject *mo = QMetaType::metaObjectForType(typeId);
+                QMetaType metaType = QMetaType::fromName(type.toLatin1());
+                const QMetaObject *mo = metaType.metaObject();
                 if (Q_UNLIKELY(!mo)) {
                     qWarning() << "Couldn't retrieve MetaObject for struct parsing:" << map;
                     qWarning("Please make sure %s is registered in Qt's meta-type system: qRegisterMetaType<%s>()",
@@ -143,9 +145,9 @@ QVariant qtivi_convertFromJSON(const QVariant &value)
                     return QVariant();
                 }
 
-                void *gadget = QMetaType::create(typeId);
+                void *gadget = metaType.create();
                 if (!Q_UNLIKELY(gadget)) {
-                    qWarning("Couldn't create a new instance of %s", QMetaType::typeName(typeId));
+                    qWarning("Couldn't create a new instance of %s", metaType.name());
                     return QVariant();
                 }
 
@@ -159,12 +161,12 @@ QVariant qtivi_convertFromJSON(const QVariant &value)
                     qWarning("Couldn't find method: %s::fromJSON(QVariant)\n"
                              "If your are using code created by the ivigenerator, please regenerate"
                              "your frontend code. See AUTOSUITE-1374 for why this is needed",
-                             QMetaType::typeName(typeId));
+                             metaType.name());
                     return QVariant();
                 }
 
                 mo->method(moIdx).invokeOnGadget(gadget, Q_ARG(QVariant, QVariant(value)));
-                return QVariant(typeId, gadget);
+                return QVariant(metaType, gadget);
             }
         }
 
@@ -172,7 +174,7 @@ QVariant qtivi_convertFromJSON(const QVariant &value)
         for (auto i = map.constBegin(); i != map.constEnd(); ++i)
             convertedValues.insert(i.key(), qtivi_convertFromJSON(i.value()));
         return convertedValues;
-    } else if (val.type() == QVariant::List) {
+    } else if (val.metaType() == QMetaType::fromType<QVariantList>()) {
         QVariantList values = val.toList();
         for (auto i = values.begin(); i != values.end(); ++i)
             *i = qtivi_convertFromJSON(*i);

@@ -490,7 +490,7 @@ QDataStream &operator>>(QDataStream &in, QIviAbstractQueryTerm **var)
         Q_ASSERT(type == QStringLiteral("conjunction"));
         auto term = new QIviConjunctionTerm();
         aTerm = term;
-        int count = 0;
+        qsizetype count = 0;
         in >> term->d_ptr->m_conjunction;
         in >> count;
         for (int i = 0; i < count; ++i) {

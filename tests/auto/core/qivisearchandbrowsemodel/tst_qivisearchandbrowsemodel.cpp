@@ -38,12 +38,13 @@
 #include <QQmlComponent>
 #include <QScopedPointer>
 
+QT_BEGIN_NAMESPACE
 
 bool operator<=(const QVariant &left, const QVariant &right)
 {
-    if (left.canConvert(QVariant::Double) && right.canConvert(QVariant::Double))
+    if (left.canConvert(QMetaType::fromType<double>()) && right.canConvert(QMetaType::fromType<double>()))
         return left.toDouble() <= right.toDouble();
-    else if (left.canConvert(QVariant::String) && right.canConvert(QVariant::String))
+    else if (left.canConvert(QMetaType::fromType<QString>()) && right.canConvert(QMetaType::fromType<QString>()))
         return left.toString() <= right.toString();
 
     qCritical() << "Can't compare these types:" << left << right;
@@ -52,9 +53,9 @@ bool operator<=(const QVariant &left, const QVariant &right)
 
 bool operator>=(const QVariant &left, const QVariant &right)
 {
-    if (left.canConvert(QVariant::Double) && right.canConvert(QVariant::Double))
+    if (left.canConvert(QMetaType::fromType<double>()) && right.canConvert(QMetaType::fromType<double>()))
         return left.toDouble() >= right.toDouble();
-    else if (left.canConvert(QVariant::String) && right.canConvert(QVariant::String))
+    else if (left.canConvert(QMetaType::fromType<QString>()) && right.canConvert(QMetaType::fromType<QString>()))
         return left.toString() >= right.toString();
 
     qCritical() << "Can't compare these types:" << left << right;
@@ -70,6 +71,8 @@ bool operator>(const QVariant &left, const QVariant &right)
 {
     return !(left <= right);
 }
+
+QT_END_NAMESPACE
 
 class TestBackend : public QIviSearchAndBrowseModelInterface
 {
@@ -199,8 +202,8 @@ public:
             QList<QIviStandardItem> resultList;
             for (const QIviStandardItem &item : qAsConst(list)) {
                 QVariant value = mp.readOnGadget(&item);
-                if (value.canConvert(filterTerm->value().userType()))
-                    value.convert(filterTerm->value().userType());
+                if (value.canConvert(filterTerm->value().metaType()))
+                    value.convert(filterTerm->value().metaType());
 
                 bool filterCondition = (filterTerm->operatorType() == QIviFilterTerm::Equals && value == filterTerm->value()) ||
                                        (filterTerm->operatorType() == QIviFilterTerm::GreaterThan && value > filterTerm->value()) ||
@@ -233,9 +236,9 @@ public:
             std::sort(list.begin(), list.end(), [mp, this](const QIviStandardItem &s1, const QIviStandardItem &s2) {
                 QVariant var1 = mp.readOnGadget(&s1);
                 QVariant var2 = mp.readOnGadget(&s2);
-                if (var1.canConvert(QMetaType::Int) && var1.canConvert(QMetaType::Int)) {
-                    var1.convert(QMetaType::Int);
-                    var2.convert(QMetaType::Int);
+                if (var1.canConvert(QMetaType::fromType<int>()) && var1.canConvert(QMetaType::fromType<int>())) {
+                    var1.convert(QMetaType::fromType<int>());
+                    var2.convert(QMetaType::fromType<int>());
                 }
 
                 bool lower = var1 > var2;

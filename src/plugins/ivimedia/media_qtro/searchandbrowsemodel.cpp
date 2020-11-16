@@ -80,9 +80,7 @@ SearchAndBrowseModel::SearchAndBrowseModel(QObject *parent, const QString& remot
     , m_helper(new QIviRemoteObjectReplicaHelper(qLcROQIviSearchAndBrowseModel(), this))
 {
     qRegisterMetaType<SearchAndBrowseItem>();
-    qRegisterMetaTypeStreamOperators<SearchAndBrowseItem>();
     qRegisterMetaType<QIviAudioTrackItem>();
-    qRegisterMetaTypeStreamOperators<QIviAudioTrackItem>();
 }
 
 void SearchAndBrowseModel::initialize()

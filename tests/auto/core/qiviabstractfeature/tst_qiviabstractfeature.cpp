@@ -576,13 +576,11 @@ public:
 };
 
 QT_BEGIN_NAMESPACE
-QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS
 QT_END_NAMESPACE
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
     app.setAttribute(Qt::AA_Use96Dpi, true);
-    QTEST_ADD_GPU_BLACKLIST_SUPPORT
     tst_QIviAbstractFeature f;
     tst_QIviAbstractFeatureListModel lM;
     QTEST_SET_MAIN_SOURCE_PATH

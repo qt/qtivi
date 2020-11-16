@@ -87,9 +87,7 @@ SearchAndBrowseBackend::SearchAndBrowseBackend(const QSqlDatabase &database, QOb
     m_threadPool->setMaxThreadCount(1);
 
     qRegisterMetaType<SearchAndBrowseItem>();
-    qRegisterMetaTypeStreamOperators<SearchAndBrowseItem>();
     qRegisterMetaType<QIviAudioTrackItem>();
-    qRegisterMetaTypeStreamOperators<QIviAudioTrackItem>();
 
     m_db = database;
     m_db.open();

@@ -133,7 +133,6 @@ void {{class}}::registerTypes()
 
 {% for enum in module.enums %}
     qRegisterMetaType<{{class}}::{{enum|flag_type}}>();
-    qRegisterMetaTypeStreamOperators<{{class}}::{{enum|flag_type}}>();
     qIviRegisterPendingReplyType<{{class}}::{{enum|flag_type}}>();
 {%   if enum.is_flag %}
     //Workaround for https://bugreports.qt.io/browse/QTBUG-75676
@@ -143,8 +142,6 @@ void {{class}}::registerTypes()
 {% endfor %}
 {% for struct in module.structs %}
     qRegisterMetaType<{{struct}}>();
-    qRegisterMetaTypeStreamOperators<{{struct}}>();
-    QMetaType::registerEqualsComparator<{{struct}}>();
     qIviRegisterPendingReplyType<{{struct}}>();
 {% endfor %}
 }

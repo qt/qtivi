@@ -58,7 +58,6 @@ public:
         , m_category(category)
     {
         qRegisterMetaType<QIviRemoteObjectPendingResult>();
-        qRegisterMetaTypeStreamOperators<QIviRemoteObjectPendingResult>();
     }
 
     QVariant toRemoteObjectVariant(const QVariant &variant) const
