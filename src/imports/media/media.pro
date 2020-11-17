@@ -1,7 +1,7 @@
 CXX_MODULE = qml
 TARGET  = qtivimediaplugin
 TARGETPATH = QtIvi/Media
-IMPORT_VERSION = 1.0
+QML_IMPORT_VERSION = 1.0
 
 SOURCES += \
     plugin.cpp

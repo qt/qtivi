@@ -55,7 +55,7 @@
 //
 
 #include "private/qtivimediaglobal_p.h"
-#include "private/qiviabstractfeature_p.h"
+#include <QtIviCore/private/qiviabstractfeature_p.h>
 
 #include "qivimediaplayer.h"
 #include "qivimediaplayerbackendinterface.h"

@@ -1,7 +1,7 @@
 CXX_MODULE = qml
 TARGET  = qtivicoreplugin
 TARGETPATH = QtIvi
-IMPORT_VERSION = 1.0
+QML_IMPORT_VERSION = 1.0
 
 SOURCES += \
     plugin.cpp

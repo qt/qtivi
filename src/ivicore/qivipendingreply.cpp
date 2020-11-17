@@ -50,6 +50,7 @@
 #include <QDebug>
 #include <QJSEngine>
 #include <QtQml>
+#include <QCoreApplication>
 
 QT_BEGIN_NAMESPACE
 

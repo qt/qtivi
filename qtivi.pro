@@ -20,6 +20,7 @@ QML_IMPORT_PATH = $$shadowed($$PWD)/qml
 load(qt_parts)
 
 SUBDIRS += mkspecs
+SUBDIRS += tests
 mkspecs.depends = sub_src
 
 GCOV_EXCLUDE = /usr/* \

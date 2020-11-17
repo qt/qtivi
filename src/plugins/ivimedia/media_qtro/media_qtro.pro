@@ -31,3 +31,4 @@ REPC_REPLICA += \
     $$PWD/../../../tools/media-simulation-server/qivimediaplayer.rep \
     $$PWD/../../../tools/media-simulation-server/qivisearchandbrowsemodel.rep \
     $$PWD/../../../tools/media-simulation-server/qivimediadiscoverymodel.rep \
+

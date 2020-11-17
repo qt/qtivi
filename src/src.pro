@@ -1,7 +1,4 @@
 TEMPLATE = subdirs
-SUBDIRS = plugins \
-          imports \
-          doc
 
 # Include the config.pri from the build folder as the qtgenivieextras-config.pri is copied
 # while syncqt is running for the module and this is not done yet.
@@ -68,4 +65,7 @@ QT_FOR_CONFIG += geniviextras geniviextras-private \
     }
 }
 
+SUBDIRS = plugins \
+          imports \
+          doc
 

@@ -422,3 +422,5 @@ void QIviSimulationEngine::loadSimulation(const QUrl &file)
 */
 
 QT_END_NAMESPACE
+
+#include "qivisimulationengine.moc"
