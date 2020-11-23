@@ -586,10 +586,10 @@ int main(int argc, char *argv[])
     tst_QIviAbstractFeature f;
     tst_QIviAbstractFeatureListModel lM;
     QTEST_SET_MAIN_SOURCE_PATH
-    bool feature = QTest::qExec(&f, argc, argv);
-    bool featureModel = QTest::qExec(&lM, argc, argv);
+    int featureErrors = QTest::qExec(&f, argc, argv);
+    int featureModelErrors = QTest::qExec(&lM, argc, argv);
 
-    return feature && featureModel;
+    return featureErrors + featureModelErrors;
 }
 
 #include "tst_qiviabstractfeature.moc"
