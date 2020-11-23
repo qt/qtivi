@@ -65,7 +65,7 @@ ApplicationWindow {
 
     WindowControl {
         id: windowControl
-        discoveryMode: WindowControl.LoadOnlySimulationBackends
+        discoveryMode: AbstractFeature.LoadOnlySimulationBackends
     }
 
     ColumnLayout {

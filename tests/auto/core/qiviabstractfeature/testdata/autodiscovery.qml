@@ -40,7 +40,7 @@ Item {
     TestFeature {
         id: noAutoItem
         objectName: "autoDiscoveryDisabled"
-        discoveryMode: TestFeature.NoAutoDiscovery
+        discoveryMode: AbstractFeature.NoAutoDiscovery
     }
 
     function discover() {

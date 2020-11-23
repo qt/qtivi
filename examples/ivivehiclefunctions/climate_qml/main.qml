@@ -68,7 +68,7 @@ ApplicationWindow {
     //![1]
     ClimateControl {
         id: climateControl
-        discoveryMode: ClimateControl.LoadOnlySimulationBackends
+        discoveryMode: AbstractFeature.LoadOnlySimulationBackends
     }
     //![1]
 
