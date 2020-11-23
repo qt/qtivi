@@ -93,8 +93,9 @@ public:
 
     QString readPayload(DltMessage *msg)
     {
-        QByteArray payload(DLT_DAEMON_TEXTSIZE, '\0');
-        dlt_message_payload(msg, payload.data(), DLT_DAEMON_TEXTSIZE, DLT_OUTPUT_ASCII, false);
+        char payload[DLT_DAEMON_TEXTSIZE];
+        dlt_message_payload(msg, payload, DLT_DAEMON_TEXTSIZE, DLT_OUTPUT_ASCII, false);
+        payload[sizeof(payload) - 1] = 0;
         return QString::fromLocal8Bit(payload);
     }
 
