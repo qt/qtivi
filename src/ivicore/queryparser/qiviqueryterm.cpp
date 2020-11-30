@@ -61,7 +61,7 @@ QIviScopeTermPrivate::QIviScopeTermPrivate()
 }
 
 QIviFilterTermPrivate::QIviFilterTermPrivate()
-    : m_property(QIviFilterTerm::Equals)
+    : m_operator(QIviFilterTerm::Equals)
     , m_negated(false)
 {
 }
