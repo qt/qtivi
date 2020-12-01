@@ -117,7 +117,8 @@ fi
 chmod -R ug+rw $VIRTUALENV
 
 if [ "$(readlink -- "$VIRTUALENV/lib64")" != "lib" ] ; then
-    rm -f "$VIRTUALENV/lib64"
+    cp -a "$VIRTUALENV/lib64"/* "$VIRTUALENV/lib/"
+    rm -rf "$VIRTUALENV/lib64"
     cd "$VIRTUALENV"
     ln -s lib lib64
     cd -
