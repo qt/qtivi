@@ -55,8 +55,6 @@ class Q_QTIVIMEDIA_EXPORT QIviMediaDeviceDiscoveryModelBackendInterface : public
 public:
     explicit QIviMediaDeviceDiscoveryModelBackendInterface(QObject *parent = nullptr);
 
-    virtual void initialize() = 0;
-
 Q_SIGNALS:
 
     //The ownership will be transferred to discoveryModel. This will reset the model with the new content, using add/remove is recommended
