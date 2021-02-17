@@ -4,6 +4,7 @@ server_qtro_simulator:
             - "core.cpp": "core.cpp.tpl"
             - "core.h": "core.h.tpl"
             - "{{srcBase|lower}}.pri": "server.pri.tpl"
+            - '{{srcBase|lower}}.cmake': 'CMakeLists.txt.tpl'
             - "main.cpp": "main.cpp.tpl"
             - "{{module.module_name|lower}}_simulation.qml": "common/module_simulation.qml.tpl"
             - "{{module.module_name|lower}}_simulation_data.json": "common/simulation_data.json.tpl"

@@ -19,6 +19,12 @@ find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS Gui)
 find_package(Qt6 COMPONENTS IviCore)
 
+qt_add_plugin(example_ivi_addressbook)
+
+# IVI Generator:
+qt6_ivigenerator(example_ivi_addressbook
+    QFACE_SOURCES ../example-ivi-addressbook.qface
+    QFACE_FORMAT backend_simulator
 )
 set_target_properties(example_ivi_addressbook PROPERTIES
     WIN32_EXECUTABLE TRUE
@@ -30,6 +36,7 @@ target_include_directories(example_ivi_addressbook PUBLIC
 
 target_link_libraries(example_ivi_addressbook PUBLIC
     # Remove: L${CMAKE_CURRENT_BINARY_DIR}/../
+    QtIviAdressBookExample
     Qt::Core
     Qt::Gui
     Qt::IviCore

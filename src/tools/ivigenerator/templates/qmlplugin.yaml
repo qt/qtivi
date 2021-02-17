@@ -3,6 +3,7 @@ qmlplugin:
         documents:
             - "plugin.cpp": "plugin.cpp.tpl"
             - "{{srcBase|lower}}.pri": "module.pri.tpl"
+            - '{{srcBase|lower}}.cmake': 'CMakeLists.txt.tpl'
             - "plugins.qmltypes": "common/plugins.qmltypes.tpl"
             - "designer/{{module.module_name|lower}}.metainfo": "common/designer.metainfo.tpl"
             - "qmldir": "qmldir_plugin.tpl"

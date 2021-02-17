@@ -2,6 +2,7 @@ test:
     module:
         documents:
             - "{{srcBase|lower}}.pri": "module.pri.tpl"
+            - '{{srcBase|lower}}.cmake': 'CMakeLists.txt.tpl'
             - 'main.cpp': 'main.cpp.tpl'
     interface:
         documents:

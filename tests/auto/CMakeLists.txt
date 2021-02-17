@@ -3,7 +3,7 @@
 if(TARGET Qt::IviCore)
     add_subdirectory(core)
 endif()
-if(TARGET ivivehiclefunctions)
+if(TARGET Qt::IviVehicleFunctions)
     add_subdirectory(vehiclefunctions)
 endif()
 if(TARGET Qt::GeniviExtras)

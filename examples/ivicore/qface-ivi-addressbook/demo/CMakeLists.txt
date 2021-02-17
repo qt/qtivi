@@ -37,6 +37,7 @@ target_compile_definitions(qface-ivi-addressbook PUBLIC
 
 target_link_libraries(qface-ivi-addressbook PUBLIC
     # Remove: L${CMAKE_CURRENT_BINARY_DIR}/../
+    QtIviAdressBookExample
     Qt::Core
     Qt::Gui
     Qt::Qml

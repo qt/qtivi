@@ -1,0 +1,3 @@
+
+# install layout information, following what qmake -query provides
+get_filename_component(QTIVI_INSTALL_PREFIX ${CMAKE_CURRENT_LIST_DIR}/../../../ ABSOLUTE)

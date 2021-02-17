@@ -37,6 +37,7 @@ target_compile_definitions(qface-ivi-climate PUBLIC
 
 target_link_libraries(qface-ivi-climate PUBLIC
     # Remove: L${CMAKE_CURRENT_BINARY_DIR}/../
+    QtIviClimateExample
     Qt::Core
     Qt::Gui
     Qt::Qml

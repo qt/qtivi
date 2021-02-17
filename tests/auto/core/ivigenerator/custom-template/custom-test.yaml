@@ -2,6 +2,8 @@ generate_rules:
     module_rules:
         - dest_file:  "{{srcBase|lower}}.pri"
           template_file:  "module.pri.tpl"
+        - dest_file:  '{{srcBase|lower}}.cmake'
+          template_file:  'CMakeLists.txt.tpl'
         - dest_file: 'tst_custom.cpp'
           template_file: 'tst_custom.cpp.tpl'
         - dest_file: 'tst_custom.h'

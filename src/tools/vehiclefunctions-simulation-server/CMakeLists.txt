@@ -34,10 +34,14 @@ qt_add_resource(${target_name} "qml"
 )
 
 
+# IVI Generator:
+qt_ivigenerator(ivivehiclefunctions-simulation-server
+    QFACE_SOURCES ../../ivivehiclefunctions/ivivehiclefunctions.qface
+    QFACE_FORMAT server_qtro_simulator
+    QFACE_MODULE_NAME QtIviVehicleFunctions
+)
+
 #### Keys ignored in scope 1:.:.:vehiclefunctions-simulation-server.pro:<TRUE>:
-# QFACE_FORMAT = "server_qtro_simulator"
-# QFACE_MODULE_NAME = "QtIviVehicleFunctions"
-# QFACE_SOURCES = "../../ivivehiclefunctions/ivivehiclefunctions.qface"
 # QML_IMPORT_PATH = "$$OUT_PWD/qml"
 # QT_FOR_CONFIG = "ivicore"
 # TEMPLATE = "app"

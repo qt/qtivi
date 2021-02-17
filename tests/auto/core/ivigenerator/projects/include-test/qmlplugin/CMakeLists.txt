@@ -1,23 +1,18 @@
 # Generated from qmlplugin.pro.
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-#####################################################################
-## qmlplugin Generic Library:
-#####################################################################
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
-qt_add_cmake_library(qmlplugin
-    MODULE
-    INCLUDE_DIRECTORIES
-        ${CMAKE_CURRENT_BINARY_DIR}/../common
-        ${CMAKE_CURRENT_BINARY_DIR}/../frontend
-    PUBLIC_LIBRARIES
-        # Remove: L${CMAKE_CURRENT_BINARY_DIR}/..
-        Qt::IviCore
+# IVI Generator:
+qt6_ivigenerator(qmlplugin
+    QFACE_SOURCES ../../../include-test.qface
+    QFACE_FORMAT qmlplugin
+    QFACE_IMPORT_PATH ../../../qface\ imports
 )
 
-#### Keys ignored in scope 1:.:.:qmlplugin.pro:<TRUE>:
-# QFACE_FORMAT = "qmlplugin"
-# QFACE_IMPORT_PATH = "../../../qface imports"
-# QFACE_SOURCES = "../../../include-test.qface"
-# TEMPLATE = "lib"
-
-qt_autogen_tools_initial_setup(qmlplugin)
+target_link_libraries(qmlplugin PRIVATE
+    include_test_frontend
+    Qt::IviCore
+)

@@ -21,13 +21,12 @@ find_package(Qt6 COMPONENTS IviCore)
 find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
 
-)
-set_target_properties(QtIviAdressBookExample PROPERTIES
-    WIN32_EXECUTABLE TRUE
-    MACOSX_BUNDLE TRUE
-)
-target_compile_definitions(QtIviAdressBookExample PUBLIC
-    QT_BUILD_EXAMPLE_IVI_ADDRESSBOOK_LIB
+add_library(QtIviAdressBookExample)
+
+# IVI Generator:
+qt6_ivigenerator(QtIviAdressBookExample
+    QFACE_SOURCES ../example-ivi-addressbook.qface
+    QFACE_FORMAT frontend
 )
 
 target_link_libraries(QtIviAdressBookExample PUBLIC

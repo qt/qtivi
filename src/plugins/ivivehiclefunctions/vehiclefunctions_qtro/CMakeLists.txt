@@ -10,12 +10,16 @@ qt_internal_add_plugin(QtIviVehicleFunctionsQtROPlugin
     PUBLIC_LIBRARIES
         Qt::Core
         Qt::IviCore
-        ivivehiclefunctions
+        Qt::IviVehicleFunctions
+)
+
+# IVI Generator:
+qt_ivigenerator(QtIviVehicleFunctionsQtROPlugin
+    QFACE_SOURCES ../../../ivivehiclefunctions/ivivehiclefunctions.qface
+    QFACE_FORMAT backend_qtro
+    QFACE_MODULE_NAME QtIviVehicleFunctions
 )
 
 #### Keys ignored in scope 1:.:.:vehiclefunctions_qtro.pro:<TRUE>:
 # CMAKE_MODULE_TESTS = "'-'"
 # PLUGIN_EXTENDS = "ivivehiclefunctions"
-# QFACE_FORMAT = "backend_qtro"
-# QFACE_MODULE_NAME = "QtIviVehicleFunctions"
-# QFACE_SOURCES = "../../../ivivehiclefunctions/ivivehiclefunctions.qface"

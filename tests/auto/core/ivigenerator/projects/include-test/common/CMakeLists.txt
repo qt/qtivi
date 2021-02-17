@@ -1,28 +1,27 @@
 # Generated from common.pro.
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-#####################################################################
-## include_test_common Generic Library:
-#####################################################################
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
-qt_add_cmake_library(include_test_common
-    OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../"
-    DEFINES
-        QT_BUILD_COMMON_LIB
-    PUBLIC_LIBRARIES
-        Qt::Core
-        Qt::Gui
-        Qt::IviCore
-        Qt::IviCorePrivate
-        Qt::Qml
-        Qt::Quick
+add_library(include_test_common)
+
+# IVI Generator:
+qt6_ivigenerator(include_test_common
+    QFACE_SOURCES ../../../qface\ imports/common.qface
+    QFACE_FORMAT frontend
+)
+target_include_directories(include_test_common PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-#### Keys ignored in scope 1:.:.:common.pro:<TRUE>:
-# QFACE_SOURCES = "../../../qface imports/common.qface"
-# TEMPLATE = "lib"
+target_link_libraries(include_test_common PUBLIC
+    Qt::Core
+    Qt::Gui
+    Qt::IviCore
+    Qt::IviCorePrivate
+    Qt::Qml
+    Qt::Quick
+)
 
-## Scopes:
-#####################################################################
-
-#### Keys ignored in scope 2:.:.:common.pro:MACOS:
-# QMAKE_SONAME_PREFIX = "@rpath"

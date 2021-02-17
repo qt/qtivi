@@ -1,25 +1,45 @@
 # Generated from backend_qtro.pro.
 
-#####################################################################
-## echo_noannotation_qtro Generic Library:
-#####################################################################
+cmake_minimum_required(VERSION 3.14)
+project(echo_noannotation_qtro LANGUAGES CXX)
 
-qt_add_cmake_library(echo_noannotation_qtro
-    MODULE
-    OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../qtivi"
-    INCLUDE_DIRECTORIES
-        ${CMAKE_CURRENT_BINARY_DIR}/../frontend
-    PUBLIC_LIBRARIES
-        # Remove: L${CMAKE_CURRENT_BINARY_DIR}/..
-        Qt::Core
-        Qt::Gui
-        Qt::IviCore
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
+if(NOT DEFINED INSTALL_EXAMPLESDIR)
+  set(INSTALL_EXAMPLESDIR "examples")
+endif()
+
+set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}")
+
+qt_add_plugin(echo_noannotation_qtro)
+
+# IVI Generator:
+qt6_ivigenerator(echo_noannotation_qtro
+    QFACE_SOURCES ../../../org.example.echo.noannotation.qface
+    QFACE_FORMAT backend_qtro
 )
-qt_disable_warnings(echo_noannotation_qtro)
+set_target_properties(echo_noannotation_qtro PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
+)
+target_include_directories(echo_noannotation_qtro PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}/../frontend
+)
 
-#### Keys ignored in scope 1:.:.:backend_qtro.pro:<TRUE>:
-# QFACE_FORMAT = "backend_qtro"
-# QFACE_SOURCES = "../../../org.example.echo.noannotation.qface"
-# TEMPLATE = "lib"
+target_link_libraries(echo_noannotation_qtro PUBLIC
+    # Remove: L${CMAKE_CURRENT_BINARY_DIR}/..
+    echo_noannotation_frontend
+    Qt::Core
+    Qt::Gui
+    Qt::IviCore
+)
 
-qt_autogen_tools_initial_setup(echo_noannotation_qtro)
+install(TARGETS echo_noannotation_qtro
+    RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
+    BUNDLE DESTINATION "${INSTALL_EXAMPLEDIR}"
+    LIBRARY DESTINATION "${INSTALL_EXAMPLEDIR}"
+)

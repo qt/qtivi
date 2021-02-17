@@ -1,7 +1,7 @@
 # Generated from imports.pro.
 
 cmake_minimum_required(VERSION 3.14)
-project(imports LANGUAGES CXX)
+project(instrument_cluster_imports LANGUAGES CXX) # special case
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -19,23 +19,28 @@ find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS Gui)
 find_package(Qt6 COMPONENTS IviCore)
 
+
+# IVI Generator:
+qt6_ivigenerator(instrument_cluster_imports # special case
+    QFACE_SOURCES ../instrument-cluster.qface
+    QFACE_FORMAT qmlplugin
 )
-set_target_properties(imports PROPERTIES
+set_target_properties(instrument_cluster_imports PROPERTIES # special case
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE TRUE
 )
-target_include_directories(imports PUBLIC
+target_include_directories(instrument_cluster_imports PUBLIC # special case
     ${CMAKE_CURRENT_BINARY_DIR}/../frontend
 )
 
-target_link_libraries(imports PUBLIC
+target_link_libraries(instrument_cluster_imports PUBLIC # special case
     # Remove: L${CMAKE_CURRENT_BINARY_DIR}/../
     Qt::Core
     Qt::Gui
     Qt::IviCore
 )
 
-install(TARGETS imports
+install(TARGETS instrument_cluster_imports # special case
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
     BUNDLE DESTINATION "${INSTALL_EXAMPLEDIR}"
     LIBRARY DESTINATION "${INSTALL_EXAMPLEDIR}"

@@ -10,7 +10,7 @@ qt_internal_add_plugin(QtIviVehicleFunctionsSimulatorPlugin
     PUBLIC_LIBRARIES
         Qt::Core
         Qt::IviCore
-        ivivehiclefunctions
+        Qt::IviVehicleFunctions
 )
 
 # Resources:
@@ -27,10 +27,14 @@ qt_internal_add_resource(QtIviVehicleFunctionsSimulatorPlugin "qml"
 )
 
 
+# IVI Generator:
+qt_ivigenerator(QtIviVehicleFunctionsSimulatorPlugin
+    QFACE_SOURCES ../../../ivivehiclefunctions/ivivehiclefunctions.qface
+    QFACE_FORMAT backend_simulator
+    QFACE_MODULE_NAME QtIviVehicleFunctions
+)
+
 #### Keys ignored in scope 1:.:.:vehiclefunctions_simulator.pro:<TRUE>:
 # CMAKE_MODULE_TESTS = "'-'"
 # PLUGIN_EXTENDS = "ivivehiclefunctions"
-# QFACE_FORMAT = "backend_simulator"
-# QFACE_MODULE_NAME = "QtIviVehicleFunctions"
-# QFACE_SOURCES = "../../../ivivehiclefunctions/ivivehiclefunctions.qface"
 # QML_IMPORT_PATH = "$$OUT_PWD/qml"

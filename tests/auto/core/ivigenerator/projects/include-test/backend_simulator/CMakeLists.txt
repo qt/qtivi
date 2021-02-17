@@ -1,27 +1,22 @@
 # Generated from backend_simulator.pro.
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-#####################################################################
-## include_test_simulator Generic Library:
-#####################################################################
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
-qt_add_cmake_library(include_test_simulator
-    MODULE
-    OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../qtivi"
-    INCLUDE_DIRECTORIES
-        ${CMAKE_CURRENT_BINARY_DIR}/../common
-        ${CMAKE_CURRENT_BINARY_DIR}/../frontend
-    PUBLIC_LIBRARIES
-        # Remove: L${CMAKE_CURRENT_BINARY_DIR}/..
-        Qt::Core
-        Qt::Gui
-        Qt::IviCore
+qt_add_plugin(include_test_simulator)
+
+# IVI Generator:
+qt6_ivigenerator(include_test_simulator
+    QFACE_SOURCES ../../../include-test.qface
+    QFACE_FORMAT backend_simulator
+    QFACE_IMPORT_PATH ../../../qface\ imports
 )
-qt_disable_warnings(include_test_simulator)
 
-#### Keys ignored in scope 1:.:.:backend_simulator.pro:<TRUE>:
-# QFACE_FORMAT = "backend_simulator"
-# QFACE_IMPORT_PATH = "../../../qface imports"
-# QFACE_SOURCES = "../../../include-test.qface"
-# TEMPLATE = "lib"
-
-qt_autogen_tools_initial_setup(include_test_simulator)
+target_link_libraries(include_test_simulator PUBLIC
+    include_test_frontend
+    Qt::Core
+    Qt::Gui
+    Qt::IviCore
+)

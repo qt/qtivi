@@ -21,6 +21,12 @@ find_package(Qt6 COMPONENTS IviCore)
 find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
 
+qt_add_executable(QtIviRemoteExample)
+
+# IVI Generator:
+qt6_ivigenerator(QtIviRemoteExample
+    QFACE_SOURCES ../example-ivi-remote.qface
+    QFACE_FORMAT frontend
 )
 set_target_properties(QtIviRemoteExample PROPERTIES
     WIN32_EXECUTABLE TRUE

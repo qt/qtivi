@@ -4,14 +4,20 @@
 ## tst_basic Test:
 #####################################################################
 
-qt_add_test(tst_basic
-    PUBLIC_LIBRARIES
-        Qt::Gui
-        Qt::IviCore
-        ivivehiclefunctions
-)
+# FIXME: The templates needs to be adapted to enable this
+#qt_add_test(tst_basic
+#    PUBLIC_LIBRARIES
+#        Qt::Gui
+#        Qt::IviCore
+#        Qt::IviVehicleFunctions
+#    SOURCES ""
+#)
+
+# IVI Generator:
+#qt_ivigenerator(tst_basic
+#    QFACE_SOURCES ../../../../src/ivivehiclefunctions/ivivehiclefunctions.qface
+#    QFACE_FORMAT test
+#)
 
 #### Keys ignored in scope 1:.:.:basic.pro:<TRUE>:
-# QFACE_FORMAT = "test"
-# QFACE_SOURCES = "../../../../src/ivivehiclefunctions/ivivehiclefunctions.qface"
 # QMAKE_PROJECT_NAME = "$$TARGET"

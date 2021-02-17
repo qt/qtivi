@@ -1,28 +1,45 @@
 # Generated from frontend.pro.
 
-#####################################################################
-## echo_frontend Generic Library:
-#####################################################################
+cmake_minimum_required(VERSION 3.14)
+project(echo_qtro_frontend LANGUAGES CXX)
 
-qt_add_cmake_library(echo_frontend
-    OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../"
-    DEFINES
-        QT_BUILD_ORG_EXAMPLE_ECHO_LIB
-    PUBLIC_LIBRARIES
-        Qt::Core
-        Qt::Gui
-        Qt::IviCore
-        Qt::IviCorePrivate
-        Qt::Qml
-        Qt::Quick
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
+if(NOT DEFINED INSTALL_EXAMPLESDIR)
+  set(INSTALL_EXAMPLESDIR "examples")
+endif()
+
+set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}")
+
+find_package(Qt6 COMPONENTS Core)
+find_package(Qt6 COMPONENTS Gui)
+find_package(Qt6 COMPONENTS IviCore)
+find_package(Qt6 COMPONENTS Qml)
+find_package(Qt6 COMPONENTS Quick)
+
+qt_add_executable(echo_qtro_frontend)
+
+# IVI Generator:
+qt6_ivigenerator(echo_qtro_frontend
+    QFACE_SOURCES ../../../org.example.echo.qface
+    QFACE_FORMAT frontend
 )
 
-#### Keys ignored in scope 1:.:.:frontend.pro:<TRUE>:
-# QFACE_SOURCES = "../../../org.example.echo.qface"
-# TEMPLATE = "lib"
+target_link_libraries(echo_frontend PUBLIC
+    Qt::Core
+    Qt::Gui
+    Qt::IviCore
+    Qt::IviCorePrivate
+    Qt::Qml
+    Qt::Quick
+)
 
-## Scopes:
-#####################################################################
-
-#### Keys ignored in scope 2:.:.:frontend.pro:MACOS:
-# QMAKE_SONAME_PREFIX = "@rpath"
+install(TARGETS echo_frontend
+    RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
+    BUNDLE DESTINATION "${INSTALL_EXAMPLEDIR}"
+    LIBRARY DESTINATION "${INSTALL_EXAMPLEDIR}"
+)

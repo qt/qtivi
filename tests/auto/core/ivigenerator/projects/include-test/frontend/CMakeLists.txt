@@ -1,32 +1,28 @@
 # Generated from frontend.pro.
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-#####################################################################
-## include_test_frontend Generic Library:
-#####################################################################
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
-qt_add_cmake_library(include_test_frontend
-    OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../"
-    DEFINES
-        QT_BUILD_INCLUDE_TEST_LIB
-    INCLUDE_DIRECTORIES
-        ${CMAKE_CURRENT_BINARY_DIR}/../common
-    PUBLIC_LIBRARIES
-        # Remove: L${CMAKE_CURRENT_BINARY_DIR}/..
-        Qt::Core
-        Qt::Gui
-        Qt::IviCore
-        Qt::IviCorePrivate
-        Qt::Qml
-        Qt::Quick
+add_library(include_test_frontend)
+
+# IVI Generator:
+qt6_ivigenerator(include_test_frontend
+    QFACE_SOURCES ../../../include-test.qface
+    QFACE_FORMAT frontend
+    QFACE_IMPORT_PATH ../../../qface\ imports
+)
+target_include_directories(include_test_frontend PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-#### Keys ignored in scope 1:.:.:frontend.pro:<TRUE>:
-# QFACE_IMPORT_PATH = "../../../qface imports"
-# QFACE_SOURCES = "../../../include-test.qface"
-# TEMPLATE = "lib"
-
-## Scopes:
-#####################################################################
-
-#### Keys ignored in scope 2:.:.:frontend.pro:MACOS:
-# QMAKE_SONAME_PREFIX = "@rpath"
+target_link_libraries(include_test_frontend PUBLIC
+    include_test_common
+    Qt::Core
+    Qt::Gui
+    Qt::IviCore
+    Qt::IviCorePrivate
+    Qt::Qml
+    Qt::Quick
+)

@@ -1,21 +1,26 @@
 # Generated from test.pro.
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-#####################################################################
-## tst_org-example-echo Test:
-#####################################################################
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
-qt_add_test(tst_org-example-echo
-    OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../"
-    INCLUDE_DIRECTORIES
-        ${CMAKE_CURRENT_BINARY_DIR}/../frontend
-    PUBLIC_LIBRARIES
-        # Remove: L${CMAKE_CURRENT_BINARY_DIR}/..
-        Qt::Gui
-        Qt::IviCore
+qt_add_executable(tst_org-example-echo)
+
+# IVI Generator:
+qt6_ivigenerator(tst_org-example-echo
+    QFACE_SOURCES ../../../org.example.echo.qface
+    QFACE_FORMAT test
+)
+set_target_properties(tst_org-example-echo PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
 )
 
-#### Keys ignored in scope 1:.:.:test.pro:<TRUE>:
-# QFACE_FORMAT = "test"
-# QFACE_SOURCES = "../../../org.example.echo.qface"
-# QMAKE_PROJECT_NAME = "$$TARGET"
-# QMAKE_RPATHDIR = "$$OUT_PWD/.."
+target_link_libraries(tst_org-example-echo PUBLIC
+    echo_frontend
+    Qt::Core
+    Qt::Gui
+    Qt::IviCore
+    Qt::Test
+)

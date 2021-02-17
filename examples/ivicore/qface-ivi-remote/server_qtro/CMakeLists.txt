@@ -21,6 +21,12 @@ qt_add_executable(qface-ivi-remote-server
     main.cpp
     processingservice.cpp processingservice.h
 )
+
+# IVI Generator:
+qt6_ivigenerator(qface-ivi-remote-server
+    QFACE_SOURCES ../example-ivi-remote.qface
+    QFACE_FORMAT server_qtro
+)
 set_target_properties(qface-ivi-remote-server PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE FALSE

@@ -1,6 +1,7 @@
 # Generated from src.pro.
 
 qt_feature_evaluate_features("${CMAKE_CURRENT_SOURCE_DIR}/ivicore/configure.cmake") # special case
+qt_feature_evaluate_features("${CMAKE_CURRENT_SOURCE_DIR}/ivivehiclefunctions/configure.cmake") # special case
 qt_feature_evaluate_features("${CMAKE_CURRENT_SOURCE_DIR}/ivimedia/configure.cmake") # special case
 qt_feature_evaluate_features("${CMAKE_CURRENT_SOURCE_DIR}/geniviextras/configure.cmake") # special case
 

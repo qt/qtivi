@@ -39,6 +39,9 @@ qt_add_module(IviCore
     PRIVATE_MODULE_INTERFACE
         Qt::CorePrivate
         Qt::QmlPrivate
+    EXTRA_CMAKE_FILES
+        Qt6IviCoreConfigExtras.cmake.in
+        Qt6IviCoreMacros.cmake
 )
 
 #### Keys ignored in scope 1:.:.:ivicore.pro:<TRUE>:

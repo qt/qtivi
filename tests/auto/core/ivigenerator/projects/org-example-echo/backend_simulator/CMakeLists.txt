@@ -1,27 +1,24 @@
 # Generated from backend_simulator.pro.
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-#####################################################################
-## echo_simulator Generic Library:
-#####################################################################
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
-qt_add_cmake_library(echo_simulator
-    MODULE
-    OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../qtivi"
-    SOURCES
-        backend_simulator.cpp
-    INCLUDE_DIRECTORIES
-        ${CMAKE_CURRENT_BINARY_DIR}/../frontend
-    PUBLIC_LIBRARIES
-        # Remove: L${CMAKE_CURRENT_BINARY_DIR}/..
-        Qt::Core
-        Qt::Gui
-        Qt::IviCore
+qt_add_plugin(echo_simulator)
+target_sources(echo_simulator PRIVATE
+    backend_simulator.cpp
 )
-qt_disable_warnings(echo_simulator)
 
-#### Keys ignored in scope 1:.:.:backend_simulator.pro:<TRUE>:
-# QFACE_FORMAT = "backend_simulator"
-# QFACE_SOURCES = "../../../org.example.echo.qface"
-# TEMPLATE = "lib"
+# IVI Generator:
+qt6_ivigenerator(echo_simulator
+    QFACE_SOURCES ../../../org.example.echo.qface
+    QFACE_FORMAT backend_simulator
+)
 
-qt_autogen_tools_initial_setup(echo_simulator)
+target_link_libraries(echo_simulator PUBLIC
+    echo_frontend
+    Qt::Core
+    Qt::Gui
+    Qt::IviCore
+)

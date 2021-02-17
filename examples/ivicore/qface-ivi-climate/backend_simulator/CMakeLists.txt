@@ -19,6 +19,12 @@ find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS Gui)
 find_package(Qt6 COMPONENTS IviCore)
 
+qt_add_plugin(example_ivi_climate)
+
+# IVI Generator:
+qt6_ivigenerator(example_ivi_climate
+    QFACE_SOURCES ../example-ivi-climate.qface
+    QFACE_FORMAT backend_simulator
 )
 set_target_properties(example_ivi_climate PROPERTIES
     WIN32_EXECUTABLE TRUE
@@ -30,6 +36,7 @@ target_include_directories(example_ivi_climate PUBLIC
 
 target_link_libraries(example_ivi_climate PUBLIC
     # Remove: L${CMAKE_CURRENT_BINARY_DIR}/../
+    QtIviClimateExample
     Qt::Core
     Qt::Gui
     Qt::IviCore

@@ -21,13 +21,12 @@ find_package(Qt6 COMPONENTS IviCore)
 find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
 
-)
-set_target_properties(QtIviClimateExample PROPERTIES
-    WIN32_EXECUTABLE TRUE
-    MACOSX_BUNDLE TRUE
-)
-target_compile_definitions(QtIviClimateExample PUBLIC
-    QT_BUILD_EXAMPLE_IVI_CLIMATE_LIB
+add_library(QtIviClimateExample)
+
+# IVI Generator:
+qt6_ivigenerator(QtIviClimateExample
+    QFACE_SOURCES ../example-ivi-climate.qface
+    QFACE_FORMAT frontend
 )
 
 target_link_libraries(QtIviClimateExample PUBLIC

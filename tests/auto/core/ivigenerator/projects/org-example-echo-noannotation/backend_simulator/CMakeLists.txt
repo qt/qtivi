@@ -1,25 +1,21 @@
 # Generated from backend_simulator.pro.
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-#####################################################################
-## echo_noannotation_simulator Generic Library:
-#####################################################################
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
-qt_add_cmake_library(echo_noannotation_simulator
-    MODULE
-    OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../qtivi"
-    INCLUDE_DIRECTORIES
-        ${CMAKE_CURRENT_BINARY_DIR}/../frontend
-    PUBLIC_LIBRARIES
-        # Remove: L${CMAKE_CURRENT_BINARY_DIR}/..
-        Qt::Core
-        Qt::Gui
-        Qt::IviCore
+qt_add_plugin(echo_noanno_simulator)
+
+# IVI Generator:
+qt6_ivigenerator(echo_noanno_simulator
+    QFACE_SOURCES ../../../org.example.echo.noannotation.qface
+    QFACE_FORMAT backend_simulator
 )
-qt_disable_warnings(echo_noannotation_simulator)
 
-#### Keys ignored in scope 1:.:.:backend_simulator.pro:<TRUE>:
-# QFACE_FORMAT = "backend_simulator"
-# QFACE_SOURCES = "../../../org.example.echo.noannotation.qface"
-# TEMPLATE = "lib"
-
-qt_autogen_tools_initial_setup(echo_noannotation_simulator)
+target_link_libraries(echo_noanno_simulator PUBLIC
+    echo_noanno_frontend
+    Qt::Core
+    Qt::Gui
+    Qt::IviCore
+)

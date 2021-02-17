@@ -3,6 +3,6 @@
 if(TARGET Qt::IviMedia)
     add_subdirectory(ivimedia)
 endif()
-if(TARGET ivivehiclefunctions)
+if(TARGET Qt::IviVehicleFunctions)
     add_subdirectory(ivivehiclefunctions)
 endif()

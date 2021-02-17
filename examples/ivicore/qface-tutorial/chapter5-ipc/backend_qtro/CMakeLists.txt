@@ -19,6 +19,12 @@ find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS Gui)
 find_package(Qt6 COMPONENTS IviCore)
 
+qt_add_plugin(instrumentcluster_qtro)
+
+# IVI Generator:
+qt6_ivigenerator(instrumentcluster_qtro
+    QFACE_SOURCES ../instrument-cluster.qface
+    QFACE_FORMAT backend_qtro
 )
 set_target_properties(instrumentcluster_qtro PROPERTIES
     WIN32_EXECUTABLE TRUE

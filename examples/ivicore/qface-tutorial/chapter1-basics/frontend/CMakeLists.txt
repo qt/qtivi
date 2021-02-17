@@ -21,6 +21,12 @@ find_package(Qt6 COMPONENTS IviCore)
 find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
 
+qt_add_executable(QtIviInstrumentCluster)
+
+# IVI Generator:
+qt6_ivigenerator(QtIviInstrumentCluster
+    QFACE_SOURCES ../instrument-cluster.qface
+    QFACE_FORMAT frontend
 )
 set_target_properties(QtIviInstrumentCluster PROPERTIES
     WIN32_EXECUTABLE TRUE
