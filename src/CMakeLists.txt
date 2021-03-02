@@ -4,6 +4,7 @@ qt_feature_evaluate_features("${CMAKE_CURRENT_SOURCE_DIR}/ivicore/configure.cmak
 qt_feature_evaluate_features("${CMAKE_CURRENT_SOURCE_DIR}/ivimedia/configure.cmake") # special case
 qt_feature_evaluate_features("${CMAKE_CURRENT_SOURCE_DIR}/geniviextras/configure.cmake") # special case
 
+add_subdirectory(3rdparty) # special case
 add_subdirectory(doc)
 if(QT_FEATURE_ivicore AND NOT QT_FEATURE_geniviextras_only AND NOT QT_FEATURE_host_tools_only)
     add_subdirectory(ivicore)

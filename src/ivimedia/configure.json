@@ -76,7 +76,7 @@
     "report": [
         {
             "type": "error",
-            "condition": "!tests.taglib_submodule && !input.taglib == 'no' && !features.system-taglib",
+            "condition": "!tests.taglib_submodule && features.taglib && !features.system-taglib",
             "message": "The taglib submodule was not initialized
 Please initialize the submodule
 E.g. by running the following command:
