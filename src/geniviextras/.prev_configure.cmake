@@ -18,12 +18,12 @@ qt_find_package(DLT PROVIDED_TARGETS DLT::DLT MODULE_NAME geniviextras QMAKE_LIB
 qt_feature("dlt" PRIVATE
     LABEL "DLT"
     AUTODETECT UNIX
-    CONDITION DLT_FOUND # special case
+    CONDITION DLT_FOUND
 )
 qt_feature("dlt_2_12" PRIVATE
     LABEL "DLT > 2.12"
     AUTODETECT UNIX
-    CONDITION DLT_VERSION VERSION_GREATER_EQUAL 2.12 # special case
+    CONDITION libs.dlt_2_12 OR FIXME
 )
 qt_feature("geniviextras-only" PRIVATE
     LABEL "Only build Qt GENIVI Extras"

@@ -10,8 +10,8 @@ qt_add_module(GeniviExtras
         qdltregistration.cpp qdltregistration.h qdltregistration_p.h
         qgeniviextrasglobal.h qgeniviextrasglobal_p.h
     PUBLIC_LIBRARIES
+        DLT::DLT
         Qt::Core
-        dlt
 )
 
 #### Keys ignored in scope 1:.:.:geniviextras.pro:<TRUE>:

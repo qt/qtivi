@@ -10,9 +10,9 @@ qt_add_test(tst_dlt
     DEFINES
         SRCDIR=\\\"${CMAKE_CURRENT_SOURCE_DIR}/\\\"
     PUBLIC_LIBRARIES
+        DLT::DLT
+        Qt::GeniviExtras
         Qt::Gui
-        dlt
-        geniviextras
 )
 
 #### Keys ignored in scope 1:.:.:dlt.pro:<TRUE>:

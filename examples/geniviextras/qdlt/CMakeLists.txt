@@ -16,6 +16,7 @@ endif()
 set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/geniviextras/qdlt")
 
 find_package(Qt6 COMPONENTS Core)
+find_package(Qt6 COMPONENTS GeniviExtras)
 
 qt_add_executable(qdlt
     loggingcategories.cpp loggingcategories.h
@@ -27,7 +28,7 @@ set_target_properties(qdlt PROPERTIES
 )
 target_link_libraries(qdlt PUBLIC
     Qt::Core
-    geniviextras
+    Qt::GeniviExtras
 )
 
 install(TARGETS qdlt
