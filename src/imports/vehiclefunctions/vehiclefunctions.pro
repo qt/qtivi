@@ -8,6 +8,8 @@ QFACE_MODULE_NAME = QtIviVehicleFunctions
 QFACE_FORMAT = qmlplugin
 QFACE_SOURCES = ../../ivivehiclefunctions/ivivehiclefunctions.qface
 
+QML_IMPORT_VERSION = 1.0
+
 load(ivigenerator)
 
 CXX_MODULE = qml

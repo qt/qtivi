@@ -1,5 +1,4 @@
 <RCC>
-    <qresource prefix="/simulation"/>
     <qresource prefix="/">
         <file>simulation.qml</file>
     </qresource>
