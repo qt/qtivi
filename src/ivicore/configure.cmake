@@ -71,7 +71,7 @@ qt_configure_add_summary_entry(
     CONDITION NOT QT_FEATURE_ivicore
 )
 qt_configure_add_report_entry(
-    TYPE ERROR
+    TYPE WARNING
     MESSAGE "Cannot build the IVI Generator because its dependencies are not satisfied. The IVI Generator provides tooling to generate source code out of IDL files. Make sure python3 and its 'virtualenv' packages are installed. E.g. by running apt-get install python3 python3-virtualenv  And make sure the qface submodule is initialized or the correct qface version is installed on your system. E.g. by running the following command: git submodule init && git submodule update"
     CONDITION QT_FEATURE_ivicore AND NOT QT_FEATURE_ivigenerator AND ( NOT INPUT_ivigenerator STREQUAL 'no' )
 )
