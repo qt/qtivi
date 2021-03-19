@@ -12,6 +12,8 @@ qt_add_test(tst_servicemanagertest
         SRCDIR=\\\"${CMAKE_CURRENT_SOURCE_DIR}/\\\"
     PUBLIC_LIBRARIES
         # Remove: Lqtivi
+        simple_plugin_static # special case
+        wrongmetadata_plugin_static # special case
         Qt::IviCore
         Qt::IviCorePrivate
 )

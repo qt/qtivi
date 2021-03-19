@@ -127,7 +127,8 @@ void ServiceManagerTest::ignoreDynamicPluginWarnings()
     QTest::ignoreMessage(QtWarningMsg, QRegularExpression("PluginManager - Malformed metaData in '.*'. MetaData must contain a list of interfaces"));
 # endif
 
-    QTest::ignoreMessage(QtInfoMsg, QRegularExpression("Found the same plugin in two configurations. Using the '.*' configuration: .*"));
+    // FIXME Disabled for cmake porting
+    // QTest::ignoreMessage(QtInfoMsg, QRegularExpression("Found the same plugin in two configurations. Using the '.*' configuration: .*"));
 #endif
 }
 

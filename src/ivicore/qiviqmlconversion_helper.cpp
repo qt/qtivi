@@ -102,7 +102,7 @@ QVariant qtivi_convertFromJSON(const QVariant &value)
     // This is needed as it could also store a QStringList or a Hash
     if (val.canConvert(QMetaType::fromType<QVariantMap>()))
         val.convert(QMetaType::fromType<QVariantMap>());
-    if (val.canConvert(QMetaType::fromType<QVariantList>()))
+    if (val.metaType() != QMetaType::fromType<QString>() && val.canConvert(QMetaType::fromType<QVariantList>()))
         val.convert(QMetaType::fromType<QVariantList>());
 
     if (val.metaType() == QMetaType::fromType<QVariantMap>()) {
