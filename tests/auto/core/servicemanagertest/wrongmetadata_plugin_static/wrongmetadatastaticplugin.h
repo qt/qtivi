@@ -44,11 +44,11 @@ public:
     explicit WrongMetadataStaticPlugin();
     ~WrongMetadataStaticPlugin() {}
 
-    QStringList interfaces() const {
+    QStringList interfaces() const override {
         return QStringList() << "wrongmetadata_static";
     }
 
-    QIviFeatureInterface *interfaceInstance(const QString &interface) const {
+    QIviFeatureInterface *interfaceInstance(const QString &interface) const override {
         Q_UNUSED(interface)
         return 0;
     }

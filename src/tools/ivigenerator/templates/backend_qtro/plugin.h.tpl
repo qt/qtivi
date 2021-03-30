@@ -60,8 +60,8 @@ public:
 
     explicit {{class}}(QObject *parent = nullptr);
 
-    QStringList interfaces() const;
-    QIviFeatureInterface* interfaceInstance(const QString& interface) const;
+    QStringList interfaces() const override;
+    QIviFeatureInterface* interfaceInstance(const QString& interface) const override;
 
 private:
     QVector<QIviFeatureInterface *> m_interfaces;

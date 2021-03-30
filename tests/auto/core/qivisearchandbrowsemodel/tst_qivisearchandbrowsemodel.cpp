@@ -379,8 +379,8 @@ public:
         m_interfaces << QIviSearchAndBrowseModel_iid;
     }
 
-    QStringList interfaces() const { return m_interfaces; }
-    QIviFeatureInterface *interfaceInstance(const QString &interface) const
+    QStringList interfaces() const override { return m_interfaces; }
+    QIviFeatureInterface *interfaceInstance(const QString &interface) const override
     {
         if (interface == QIviSearchAndBrowseModel_iid)
             return testBackend();

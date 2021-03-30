@@ -156,8 +156,8 @@ public:
         m_interfaces << QIviPagingModel_iid;
     }
 
-    QStringList interfaces() const { return m_interfaces; }
-    QIviFeatureInterface *interfaceInstance(const QString &interface) const
+    QStringList interfaces() const override { return m_interfaces; }
+    QIviFeatureInterface *interfaceInstance(const QString &interface) const override
     {
         if (interface == QIviPagingModel_iid)
             return testBackend();

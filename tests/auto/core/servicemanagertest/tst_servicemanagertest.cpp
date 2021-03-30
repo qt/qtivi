@@ -48,11 +48,11 @@ public:
     {
     }
 
-    QStringList interfaces() const {
+    QStringList interfaces() const override {
         return m_serviceObjects.keys();
     }
 
-    QIviFeatureInterface *interfaceInstance(const QString &interface) const {
+    QIviFeatureInterface *interfaceInstance(const QString &interface) const override {
         return m_serviceObjects.value(interface);
     }
 

@@ -72,7 +72,7 @@ public:
         return QIviAbstractFeature::errorText();
     }
 
-    virtual bool acceptServiceObject(QIviServiceObject *serviceObject)
+    virtual bool acceptServiceObject(QIviServiceObject *serviceObject) override
     {
         if (m_testBaseFunctions)
             return QIviAbstractFeature::acceptServiceObject(serviceObject);
@@ -83,7 +83,7 @@ public:
         return false;
     }
 
-    virtual void connectToServiceObject(QIviServiceObject *serviceObject)
+    virtual void connectToServiceObject(QIviServiceObject *serviceObject) override
     {
         if (!serviceObject)
             return;
@@ -93,7 +93,7 @@ public:
         QIviAbstractFeature::connectToServiceObject(serviceObject);
     }
 
-    virtual void clearServiceObject()
+    virtual void clearServiceObject() override
     {
     }
 
@@ -116,7 +116,7 @@ public:
         return QIviAbstractFeatureListModel::errorText();
     }
 
-    virtual bool acceptServiceObject(QIviServiceObject *serviceObject)
+    virtual bool acceptServiceObject(QIviServiceObject *serviceObject) override
     {
         if (m_testBaseFunctions)
             return QIviAbstractFeatureListModel::acceptServiceObject(serviceObject);
@@ -127,7 +127,7 @@ public:
         return false;
     }
 
-    virtual void connectToServiceObject(QIviServiceObject *serviceObject)
+    virtual void connectToServiceObject(QIviServiceObject *serviceObject) override
     {
         if (!serviceObject)
             return;
@@ -137,17 +137,17 @@ public:
         QIviAbstractFeatureListModel::connectToServiceObject(serviceObject);
     }
 
-    virtual void clearServiceObject()
+    virtual void clearServiceObject() override
     {
     }
 
-    virtual int rowCount(const QModelIndex &parent) const
+    virtual int rowCount(const QModelIndex &parent) const override
     {
         Q_UNUSED(parent)
         return 0;
     }
 
-    virtual QVariant data(const QModelIndex &index, int role) const
+    virtual QVariant data(const QModelIndex &index, int role) const override
     {
         Q_UNUSED(index)
         Q_UNUSED(role)
@@ -189,12 +189,12 @@ public:
         , m_testBackend(new TestFeatureBackend(this))
     {}
 
-    QStringList interfaces() const
+    QStringList interfaces() const override
     {
         return QStringList(QString("testFeature"));
     }
 
-    QIviFeatureInterface* interfaceInstance(const QString& interface) const
+    QIviFeatureInterface* interfaceInstance(const QString& interface) const override
     {
         if (interface == "testFeature")
             return m_testBackend;
