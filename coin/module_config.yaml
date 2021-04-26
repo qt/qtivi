@@ -6,7 +6,15 @@ accept_configuration:
 
 instructions:
   Build:
-    - !include "{{qt/qtbase}}/coin_module_build_template_v2.yaml"
+  - type: AppendToEnvironmentVariable
+    variableName: NON_QTBASE_CONFIGURE_ARGS
+    variableValue: " -DPython3_ROOT_DIR={{.Env.PYTHON3_PATH}}"
+  - type: AppendToEnvironmentVariable
+    variableName: NON_QTBASE_TARGET_CONFIGURE_ARGS
+    variableValue: " -DPython3_ROOT_DIR={{.Env.PYTHON3_PATH}}"
+  - type: Group
+    instructions:
+      - !include "{{qt/qtbase}}/coin_module_build_template_v2.yaml"
 
   Test:
     - !include "{{qt/qtbase}}/coin_module_test_template_v3.yaml"
