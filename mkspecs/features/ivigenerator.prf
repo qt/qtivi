@@ -39,12 +39,11 @@ else: ENV = LC_ALL="en_US.UTF-8"
 VIRTUALENV_PATH = $$[QT_HOST_BINS]/ivigenerator/qtivi_qface_virtualenv
 INTERNAL_VIRTUALENV_PATH = $$QTIVI_BUILD_ROOT/src/tools/ivigenerator/qtivi_qface_virtualenv
 IVI_GENERATOR_PATH = $$[QT_HOST_BINS]/ivigenerator
-QTEST_ENVIRONMENT = $$upper($$(QTEST_ENVIRONMENT))
 
 # Try to use the internal virtualenv when building qtivi
 # Because of the two stage build of COIN, it might not exist, but the installed version should still be there
 QT_FOR_CONFIG *= ivicore-private
-!isEmpty(QTIVI_BUILD_ROOT):!equals(QTEST_ENVIRONMENT, CI):!qtConfig(system-ivigenerator) {
+!isEmpty(QTIVI_BUILD_ROOT):!qtConfig(system-ivigenerator):exists($$INTERNAL_VIRTUALENV_PATH) {
     VIRTUALENV_PATH = $$INTERNAL_VIRTUALENV_PATH
     IVI_GENERATOR_PATH = $$QTIVI_ROOT/src/tools/ivigenerator
     equals(QMAKE_HOST.os, Windows): ENV += set IVIGENERATOR_CONFIG="$$system_path($$QTIVI_BUILD_ROOT/src/tools/ivigenerator/.config)" &&
