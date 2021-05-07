@@ -1,13 +1,18 @@
 version: 2
 accept_configuration:
-  condition: or
+  condition: and
   conditions:
     - condition: property
-      property: target.os
-      not_equals_value: MacOS
-    - condition: property
-      property: host.arch
-      not_equals_value: ARM64
+      property: target.osVersion
+      not_equals_value: QEMU
+    - condition: or
+      conditions:
+        - condition: property
+          property: target.os
+          not_equals_value: MacOS
+        - condition: property
+          property: host.arch
+          not_equals_value: ARM64
 
 instructions:
   Build:
