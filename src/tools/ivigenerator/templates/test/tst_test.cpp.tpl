@@ -203,8 +203,8 @@ public:
     }
 
     QString name() const { return m_name; }
-    QStringList interfaces() const { return m_interfaces; }
-    QIviFeatureInterface *interfaceInstance(const QString& interface) const
+    QStringList interfaces() const override { return m_interfaces; }
+    QIviFeatureInterface *interfaceInstance(const QString& interface) const override
     {
         if (interface == {{module.module_name|upperfirst}}_{{interface}}_iid)
             return testBackend();
@@ -247,8 +247,8 @@ public:
     }
 
     QString name() const { return m_name; }
-    QStringList interfaces() const { return m_interfaces; }
-    QIviFeatureInterface *interfaceInstance(const QString& ) const { return m_dummyBackend; }
+    QStringList interfaces() const override { return m_interfaces; }
+    QIviFeatureInterface *interfaceInstance(const QString& ) const override { return m_dummyBackend; }
 
 private:
     QString m_name;
