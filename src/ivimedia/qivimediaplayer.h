@@ -117,8 +117,8 @@ Q_SIGNALS:
 protected:
     QIviMediaPlayer(QIviMediaPlayerPrivate &dd, QObject *parent = nullptr);
 
-    virtual void connectToServiceObject(QIviServiceObject *serviceObject) override;
-    virtual void clearServiceObject() override;
+    void connectToServiceObject(QIviServiceObject *serviceObject) override;
+    void clearServiceObject() override;
 
 private:
     Q_DECLARE_PRIVATE(QIviMediaPlayer)

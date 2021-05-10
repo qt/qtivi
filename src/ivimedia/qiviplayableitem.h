@@ -67,7 +67,7 @@ public:
 
     virtual QUrl url() const;
     virtual void setUrl(const QUrl &url);
-    virtual QString type() const override;
+    QString type() const override;
 
     bool operator==(const QIviPlayableItem &other) const;
     inline bool operator!=(const QIviPlayableItem &other) const { return !(*this == other); }
@@ -115,8 +115,8 @@ public:
     virtual void setCoverArtUrl(const QUrl &url);
     virtual int rating() const;
     virtual void setRating(int rating);
-    virtual QString name() const override;
-    virtual QString type() const override;
+    QString name() const override;
+    QString type() const override;
 
     bool operator==(const QIviAudioTrackItem &other) const;
     inline bool operator!=(const QIviAudioTrackItem &other) const { return !(*this == other); }

@@ -64,7 +64,7 @@ public:
     InstrumentClusterBackend(QObject *parent = nullptr);
 
 public:
-    virtual void initialize() override;
+    void initialize() override;
 
     void setupConnection();
     void fetchSpeed();

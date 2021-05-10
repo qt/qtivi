@@ -97,7 +97,7 @@ public slots:
     void setCurrentWarning(const Warning &currentWarning);
 
 protected:
-    virtual void timerEvent(QTimerEvent *event) override;
+    void timerEvent(QTimerEvent *event) override;
 
 private:
     int m_speed;

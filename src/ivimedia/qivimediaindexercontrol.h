@@ -82,8 +82,8 @@ Q_SIGNALS:
 protected:
     QIviMediaIndexerControl(QIviMediaIndexerControlPrivate &dd, QObject *parent = nullptr);
 
-    virtual void connectToServiceObject(QIviServiceObject *serviceObject) override;
-    virtual void clearServiceObject() override;
+    void connectToServiceObject(QIviServiceObject *serviceObject) override;
+    void clearServiceObject() override;
 
 private:
     Q_DECLARE_PRIVATE(QIviMediaIndexerControl)

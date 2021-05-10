@@ -45,14 +45,14 @@ public:
     virtual void setLastMessage(QString lastMessage) override;
 
 public Q_SLOTS:
-    virtual QVariant echo(const QString &msg) override;
-    virtual QVariant id() override;
-    virtual QVariant getCombo() override;
-    virtual QVariant voidSlot() override;
-    virtual QVariant voidSlot2(int param) override;
-    virtual QVariant timer(int interval) override;
-    virtual QVariant flagMethod(EchoModule::AirflowDirections direction) override;
-    virtual QVariant enumMethod(EchoModule::TestEnum testEnum) override;
+    QVariant echo(const QString &msg) override;
+    QVariant id() override;
+    QVariant getCombo() override;
+    QVariant voidSlot() override;
+    QVariant voidSlot2(int param) override;
+    QVariant timer(int interval) override;
+    QVariant flagMethod(EchoModule::AirflowDirections direction) override;
+    QVariant enumMethod(EchoModule::TestEnum testEnum) override;
 
 Q_SIGNALS:
     void echoSlotCalled(const QString &msg);

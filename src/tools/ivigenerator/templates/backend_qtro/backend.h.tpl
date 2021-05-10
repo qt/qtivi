@@ -116,17 +116,17 @@ public Q_SLOTS:
 {% for property in interface.properties %}
 {%   if not property.readonly and not property.const %}
 {%     if not property.is_model %}
-    virtual {{ivi.prop_setter(property, zoned=interface_zoned)}} override;
+    {{ivi.prop_setter(property, zoned=interface_zoned)}} override;
 {%     endif %}
 {%   endif %}
 {% endfor %}
 
 {% if interface_zoned %}
-    virtual QStringList availableZones() const override;
+    QStringList availableZones() const override;
 {% endif %}
 
 {% for operation in interface.operations %}
-    virtual {{ivi.operation(operation, zoned=interface_zoned)}} override;
+    {{ivi.operation(operation, zoned=interface_zoned)}} override;
 {% endfor %}
 
 protected Q_SLOTS:

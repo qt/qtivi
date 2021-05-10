@@ -158,7 +158,7 @@ public:
 {% endfor %}
 
 {% for operation in interface.operations %}
-    virtual {{ivi.operation(operation, zoned = interface_zoned)}} override
+    {{ivi.operation(operation, zoned = interface_zoned)}} override
     {
         Q_EMIT {{operation}}Called({% if operation.parameters|length %}{{operation.parameters|join(', ')}}{% endif %}{%
         if interface_zoned %}{%if operation.parameters|length %}, {%endif%} zone{% endif %});

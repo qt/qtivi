@@ -68,11 +68,11 @@ public:
     explicit QIviMediaDeviceDiscoveryModel(QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    virtual QVariant data(const QModelIndex &index, int role) const override;
+    QVariant data(const QModelIndex &index, int role) const override;
     Q_INVOKABLE QIviMediaDevice *get(int i) const;
     QIviMediaDevice *at(int i) const;
 
-    virtual QHash<int, QByteArray> roleNames() const override;
+    QHash<int, QByteArray> roleNames() const override;
 
 Q_SIGNALS:
     void countChanged();
@@ -82,8 +82,8 @@ Q_SIGNALS:
 protected:
     QIviMediaDeviceDiscoveryModel(QIviMediaDeviceDiscoveryModelPrivate &dd, QObject *parent = nullptr);
 
-    virtual void connectToServiceObject(QIviServiceObject *serviceObject) override;
-    virtual void clearServiceObject() override;
+    void connectToServiceObject(QIviServiceObject *serviceObject) override;
+    void clearServiceObject() override;
 
 private:
     Q_DECLARE_PRIVATE(QIviMediaDeviceDiscoveryModel)

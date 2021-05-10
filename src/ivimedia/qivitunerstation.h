@@ -81,8 +81,8 @@ public:
     void setRadioText(const QString &radioText);
     int receptionQuality() const;
     void setReceptionQuality(int receptionQuality);
-    virtual QString name() const override;
-    virtual QString type() const override;
+    QString name() const override;
+    QString type() const override;
 
     bool operator==(const QIviTunerStation &other) const;
     inline bool operator!=(const QIviTunerStation &other) const { return !(*this == other); }
@@ -106,7 +106,7 @@ public:
 
     virtual QIviAmFmTuner::Band band() const;
     virtual void setBand(QIviAmFmTuner::Band band);
-    virtual QString type() const override;
+    QString type() const override;
 
     bool operator==(const QIviAmFmTunerStation &other) const;
     inline bool operator!=(const QIviAmFmTunerStation &other) const { return !(*this == other); }
