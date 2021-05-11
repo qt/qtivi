@@ -36,7 +36,7 @@ target_include_directories(instrumentcluster_dbus PUBLIC
 )
 
 target_link_libraries(instrumentcluster_dbus PUBLIC
-    # Remove: L${CMAKE_CURRENT_BINARY_DIR}/../
+    QtIviInstrumentCluster_Chapter6
     Qt::Core
     Qt::DBus
     Qt::Gui

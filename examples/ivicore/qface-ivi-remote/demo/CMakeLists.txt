@@ -36,7 +36,7 @@ target_compile_definitions(qface-ivi-remote PUBLIC
 )
 
 target_link_libraries(qface-ivi-remote PUBLIC
-    # Remove: L${CMAKE_CURRENT_BINARY_DIR}/../
+    QtIviRemoteExample
     Qt::Core
     Qt::Gui
     Qt::Qml

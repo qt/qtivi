@@ -1,10 +1,18 @@
-target_sources(${CURRENT_TARGET}
-               PRIVATE
+set(${CURRENT_TARGET}_SOURCES
 {% for interface in module.interfaces %}
     {{interface|lower}}backend.cpp
 {% endfor %}
     {{module.module_name|lower}}simulatorplugin.cpp
     {{module.module_name|lower}}_simulation.qrc
+)
+
+qt_add_resources(${CURRENT_TARGET}_SOURCES
+    ${CMAKE_CURRENT_BINARY_DIR}/{{module.module_name|lower}}_simulation.qrc
+)
+
+target_sources(${CURRENT_TARGET}
+    PRIVATE
+    ${${CURRENT_TARGET}_SOURCES}
 )
 
 ### MISSING

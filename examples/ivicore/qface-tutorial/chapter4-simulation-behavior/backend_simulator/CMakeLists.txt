@@ -19,23 +19,23 @@ find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS Gui)
 find_package(Qt6 COMPONENTS IviCore)
 
-qt_add_plugin(instrumentcluster_simulation)
+qt_add_plugin(instrumentcluster_chapter4_simulation)
 
 # IVI Generator:
-qt6_ivigenerator(instrumentcluster_simulation
+qt6_ivigenerator(instrumentcluster_chapter4_simulation
     QFACE_SOURCES ../instrument-cluster.qface
     QFACE_FORMAT backend_simulator
 )
-set_target_properties(instrumentcluster_simulation PROPERTIES
+set_target_properties(instrumentcluster_chapter4_simulation PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE TRUE
 )
-target_include_directories(instrumentcluster_simulation PUBLIC
+target_include_directories(instrumentcluster_chapter4_simulation PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}/../frontend
 )
 
-target_link_libraries(instrumentcluster_simulation PUBLIC
-    # Remove: L${CMAKE_CURRENT_BINARY_DIR}/../
+target_link_libraries(instrumentcluster_chapter4_simulation PUBLIC
+    QtIviInstrumentCluster_Chapter4
     Qt::Core
     Qt::Gui
     Qt::IviCore
@@ -47,14 +47,14 @@ set(simulation_resource_files
     "simulation.qml"
 )
 
-qt6_add_resources(instrumentcluster_simulation "simulation"
+qt6_add_resources(instrumentcluster_chapter4_simulation "simulation"
     PREFIX
         "/"
     FILES
         ${simulation_resource_files}
 )
 
-install(TARGETS instrumentcluster_simulation
+install(TARGETS instrumentcluster_chapter4_simulation
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
     BUNDLE DESTINATION "${INSTALL_EXAMPLEDIR}"
     LIBRARY DESTINATION "${INSTALL_EXAMPLEDIR}"

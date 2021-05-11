@@ -4,6 +4,12 @@
 ## IviRemoteObjectsHelper Module:
 #####################################################################
 
+# FIXME Find a way to enable this again
+# The generated remoteobjects headers are part of this internal module
+# This is a problem as the headersclean target checks the headers before
+# building the module and at that time the rep headers are not created yet
+set(QT_FEATURE_headersclean FALSE)
+
 qt_add_module(IviRemoteObjectsHelper
     CONFIG_MODULE_NAME iviremoteobjects_helper
     STATIC
@@ -22,7 +28,7 @@ qt6_add_repc_source(IviRemoteObjectsHelper
     qivipagingmodel.rep
 )
 qt6_add_repc_replica(IviRemoteObjectsHelper
-        qivipagingmodel.rep
+    qivipagingmodel.rep
 )
 
 #### Keys ignored in scope 1:.:.:remoteobjects.pro:<TRUE>:

@@ -32,7 +32,7 @@ target_include_directories(chapter2-enums-structs PUBLIC
 )
 
 target_link_libraries(chapter2-enums-structs PUBLIC
-    # Remove: L${CMAKE_CURRENT_BINARY_DIR}/../
+    QtIviInstrumentCluster_Chapter2
     Qt::Core
     Qt::Gui
     Qt::Qml

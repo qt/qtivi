@@ -73,7 +73,7 @@ private:
 //POD, passing by value should be fine
 inline bool operator==(QIviRemoteObjectPendingResult left, QIviRemoteObjectPendingResult right) Q_DECL_NOTHROW {
     return left.id() == right.id() && left.failed() == right.failed();
-};;
+}
 inline bool operator!=(QIviRemoteObjectPendingResult left, QIviRemoteObjectPendingResult right) Q_DECL_NOTHROW {
     return !(left == right);
 }

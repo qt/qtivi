@@ -21,7 +21,7 @@ find_package(Qt6 COMPONENTS IviCore)
 find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
 
-qt_add_executable(QtIviRemoteExample)
+add_library(QtIviRemoteExample)
 
 # IVI Generator:
 qt6_ivigenerator(QtIviRemoteExample

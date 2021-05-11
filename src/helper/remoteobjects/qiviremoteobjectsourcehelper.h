@@ -66,7 +66,7 @@ public:
         // work for methods/signals which take a QVariant.
         // The workaround is put the QVariant in a QVariant as a container.
         // QTBUG-75056
-        return QVariant(QMetaType::QVariant, &variant);
+        return QVariant(QMetaType(QMetaType::QVariant), &variant);
     }
 
     QVariant fromPendingReply(const QIviPendingReplyBase &pendingReply)

@@ -21,22 +21,22 @@ find_package(Qt6 COMPONENTS IviCore)
 find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
 
-qt_add_executable(QtIviInstrumentCluster)
+add_library(QtIviInstrumentCluster_Chapter6)
 
 # IVI Generator:
-qt6_ivigenerator(QtIviInstrumentCluster
+qt6_ivigenerator(QtIviInstrumentCluster_Chapter6
     QFACE_SOURCES ../instrument-cluster.qface
     QFACE_FORMAT frontend
 )
-set_target_properties(QtIviInstrumentCluster PROPERTIES
+set_target_properties(QtIviInstrumentCluster_Chapter6 PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE TRUE
 )
-target_compile_definitions(QtIviInstrumentCluster PUBLIC
+target_compile_definitions(QtIviInstrumentCluster_Chapter6 PUBLIC
     QT_BUILD_EXAMPLE_IVI_INSTRUMENTCLUSTER_LIB
 )
 
-target_link_libraries(QtIviInstrumentCluster PUBLIC
+target_link_libraries(QtIviInstrumentCluster_Chapter6 PUBLIC
     Qt::Core
     Qt::Gui
     Qt::IviCore
@@ -45,7 +45,7 @@ target_link_libraries(QtIviInstrumentCluster PUBLIC
     Qt::Quick
 )
 
-install(TARGETS QtIviInstrumentCluster
+install(TARGETS QtIviInstrumentCluster_Chapter6
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
     BUNDLE DESTINATION "${INSTALL_EXAMPLEDIR}"
     LIBRARY DESTINATION "${INSTALL_EXAMPLEDIR}"

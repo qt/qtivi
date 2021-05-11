@@ -5,11 +5,14 @@
 #####################################################################
 
 qt_get_tool_target_name(target_name ivivehiclefunctions-simulation-server)
-qt_add_tool(${target_name}
-    PUBLIC_LIBRARIES
-        # Remove: gui
+qt_internal_add_tool(${target_name}
+     TOOLS_TARGET IviVehicleFunctions
+     LIBRARIES
         Qt::IviCore
-        ivivehiclefunctions
+        Qt::IviVehicleFunctions
+     PUBLIC_LIBRARIES
+        Qt::IviCore
+        Qt::IviVehicleFunctions
 )
 
 # Resources:
@@ -35,7 +38,7 @@ qt_add_resource(${target_name} "qml"
 
 
 # IVI Generator:
-qt_ivigenerator(ivivehiclefunctions-simulation-server
+qt_ivigenerator(${target_name}
     QFACE_SOURCES ../../ivivehiclefunctions/ivivehiclefunctions.qface
     QFACE_FORMAT server_qtro_simulator
     QFACE_MODULE_NAME QtIviVehicleFunctions

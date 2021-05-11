@@ -35,7 +35,7 @@ target_include_directories(instrumentcluster_qtro PUBLIC
 )
 
 target_link_libraries(instrumentcluster_qtro PUBLIC
-    # Remove: L${CMAKE_CURRENT_BINARY_DIR}/../
+    QtIviInstrumentCluster_Chapter5
     Qt::Core
     Qt::Gui
     Qt::IviCore

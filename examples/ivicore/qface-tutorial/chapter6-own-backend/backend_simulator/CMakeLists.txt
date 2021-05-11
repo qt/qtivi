@@ -35,7 +35,7 @@ target_include_directories(instrumentcluster_simulation PUBLIC
 )
 
 target_link_libraries(instrumentcluster_simulation PUBLIC
-    # Remove: L${CMAKE_CURRENT_BINARY_DIR}/../
+    QtIviInstrumentCluster_Chapter6
     Qt::Core
     Qt::Gui
     Qt::IviCore

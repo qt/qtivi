@@ -47,8 +47,8 @@ Q_LOGGING_CATEGORY(qLcRO{{interface}}{{property|upper_first}}, "{{module|qml_typ
 
 {{class}}::{{class}}(const QString &remoteObjectsLookupName, QObject* parent)
     : QIviPagingModelInterface(parent)
-    , m_node(nullptr)
     , m_helper(new QIviRemoteObjectReplicaHelper(qLcRO{{interface}}{{property|upper_first}}(), this))
+    , m_node(nullptr)
     , m_remoteObjectsLookupName(remoteObjectsLookupName)
 {
     qRegisterMetaType<QIviPagingModelInterface*>();

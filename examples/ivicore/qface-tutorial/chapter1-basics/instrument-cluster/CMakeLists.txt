@@ -32,7 +32,7 @@ target_include_directories(chapter1-basics PUBLIC
 )
 
 target_link_libraries(chapter1-basics PUBLIC
-    # Remove: L${CMAKE_CURRENT_BINARY_DIR}/../
+    QtIviInstrumentCluster_Chapter1
     Qt::Core
     Qt::Gui
     Qt::Qml

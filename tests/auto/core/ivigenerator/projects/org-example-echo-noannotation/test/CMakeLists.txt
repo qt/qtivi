@@ -12,10 +12,6 @@ qt6_ivigenerator(tst_org-example-echo-noanno
     QFACE_SOURCES ../../../org.example.echo.noannotation.qface
     QFACE_FORMAT test
 )
-set_target_properties(tst_org-example-echo-noanno PROPERTIES
-    WIN32_EXECUTABLE TRUE
-    MACOSX_BUNDLE TRUE
-)
 
 target_link_libraries(tst_org-example-echo-noanno PUBLIC
     echo_noanno_frontend

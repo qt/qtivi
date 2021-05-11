@@ -43,7 +43,7 @@
 #define QIVIPAGINGMODELQTROADAPTER_H
 
 #include <QtIviCore/QIviPagingModelInterface>
-#include <rep_qivipagingmodel_source.h>
+#include "rep_qivipagingmodel_source.h"
 
 QT_BEGIN_NAMESPACE
 

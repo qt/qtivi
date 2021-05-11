@@ -34,8 +34,7 @@ target_include_directories(chapter5-ipc-server PUBLIC
 )
 
 target_link_libraries(chapter5-ipc-server PUBLIC
-    # Remove: L${CMAKE_CURRENT_BINARY_DIR}/../
-    # Remove: gui
+    QtIviInstrumentCluster_Chapter5
     Qt::Core
     Qt::IviCore
 )
