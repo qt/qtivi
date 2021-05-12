@@ -6,6 +6,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 qt_add_plugin(echo_simulator)
+set_target_properties(echo_simulator PROPERTIES LIBRARY_OUTPUT_DIRECTORY ../qtivi)
 target_sources(echo_simulator PRIVATE
     backend_simulator.cpp
 )

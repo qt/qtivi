@@ -6,6 +6,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 add_library(echo_frontend)
+set_target_properties(echo_frontend PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../)
 
 # IVI Generator:
 qt6_ivigenerator(echo_frontend

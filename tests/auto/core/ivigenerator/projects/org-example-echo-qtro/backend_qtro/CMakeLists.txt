@@ -6,6 +6,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 qt_add_plugin(echo_backend_qtro)
+set_target_properties(echo_backend_qtro PROPERTIES LIBRARY_OUTPUT_DIRECTORY ../qtivi)
 
 # IVI Generator:
 qt6_ivigenerator(echo_backend_qtro
@@ -14,7 +15,6 @@ qt6_ivigenerator(echo_backend_qtro
 )
 
 target_link_libraries(echo_backend_qtro PUBLIC
-    # Remove: L${CMAKE_CURRENT_BINARY_DIR}/..
     echo_qtro_frontend
     Qt::Core
     Qt::Gui

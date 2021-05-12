@@ -6,6 +6,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 qt_add_plugin(echo_noprivate_simulator)
+set_target_properties(echo_noprivate_simulator PROPERTIES LIBRARY_OUTPUT_DIRECTORY ../qtivi)
 
 # IVI Generator:
 qt6_ivigenerator(echo_noprivate_simulator

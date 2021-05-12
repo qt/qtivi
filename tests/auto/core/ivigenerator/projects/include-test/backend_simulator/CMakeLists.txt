@@ -6,6 +6,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 qt_add_plugin(include_test_simulator)
+set_target_properties(include_test_simulator PROPERTIES LIBRARY_OUTPUT_DIRECTORY ../qtivi)
 
 # IVI Generator:
 qt6_ivigenerator(include_test_simulator
