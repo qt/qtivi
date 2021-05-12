@@ -1,6 +1,6 @@
-function(qt6_ivigenerator target)
+function(qt6_ivigenerator generator_target)
     qt6_ivigenerator_generate(${ARGN})
-    qt6_ivigenerator_include(${target} ${ARGN})
+    qt6_ivigenerator_include(${generator_target} ${ARGN})
 endfunction()
 
 if(NOT QT_NO_CREATE_VERSIONLESS_FUNCTIONS)
@@ -66,11 +66,15 @@ function(qt6_ivigenerator_generate)
         message(FATAL_ERROR "Invalid QFACE_FORMAT: Couldn't find the template folder: ${FORMAT_PATH}")
     endif()
 
+    set(IDE_FILES)
+
     # Register all source files to cause a cmake rerun
     set(GEN_DEPENDENCIES)
     list(APPEND GEN_DEPENDENCIES ${QFACE_SOURCES})
+    list(APPEND IDE_FILES ${QFACE_SOURCES})
     if (EXISTS ${QFACE_SOURCE_ANNOTATION})
         list(APPEND GEN_DEPENDENCIES ${QFACE_SOURCE_ANNOTATION})
+        list(APPEND IDE_FILES ${QFACE_SOURCE_ANNOTATION})
     endif()
     # Also register all files which are part of the current template
     file(GLOB FORMAT_FILES ${FORMAT_PATH}/*)
@@ -86,6 +90,7 @@ function(qt6_ivigenerator_generate)
         list(APPEND GENERATOR_ARGUMENTS -A ${ANNOTATION_PATH})
         # Dependency for regeneration
         list(APPEND GEN_DEPENDENCIES ${ANNOTATION_PATH})
+        list(APPEND IDE_FILES ${ANNOTATION_PATH})
     endforeach()
 
     foreach(IMPORT ${ARG_QFACE_IMPORT_PATH})
@@ -95,6 +100,17 @@ function(qt6_ivigenerator_generate)
         file(GLOB QFACE_FILES ${IMPORT_PATH}/*.qface)
         list(APPEND GEN_DEPENDENCIES ${QFACE_FILES})
     endforeach()
+
+    # Show qface and annotations in IDE
+    # If the generate function is called directly ${generator_target} is not defined and we will
+    # fallback to the IDL base name
+    set(IDE_PREFIX ${generator_target})
+    if (NOT IDE_PREFIX)
+        set(IDE_PREFIX ${QFACE_BASE_NAME})
+    endif()
+    add_custom_target(${IDE_PREFIX}_qface_files SOURCES
+        ${IDE_FILES}
+    )
 
     set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${GEN_DEPENDENCIES})
 
