@@ -38,9 +38,9 @@
 #}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned  %}
 {% if interface_zoned %}
-{% set class = 'Zoned{0}ModelBackend'.format(property|upperfirst) %}
+{% set class = 'Zoned{0}RoModelBackend'.format(property|upperfirst) %}
 {% else %}
-{% set class = '{0}ModelBackend'.format(property|upperfirst) %}
+{% set class = '{0}RoModelBackend'.format(property|upperfirst) %}
 {% endif %}
 
 #include <QIviPagingModelInterface>

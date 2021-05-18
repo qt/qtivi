@@ -39,8 +39,8 @@
 #}
 {% import 'common/qtivi_macros.j2' as ivi %}
 {% include "common/generated_comment.cpp.tpl" %}
-{% set class = '{0}Backend'.format(interface) %}
-{% set zone_class = '{0}Zone'.format(interface) %}
+{% set class = '{0}RoBackend'.format(interface) %}
+{% set zone_class = '{0}RoZone'.format(interface) %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
 #include "{{class|lower}}.h"
 
@@ -66,7 +66,7 @@ QT_BEGIN_NAMESPACE
     , m_zone(zone)
 {% for property in interface.properties %}
 {%   if property.type.is_model %}
-    , m_{{property}}(new Zoned{{property|upperfirst}}ModelBackend(QStringLiteral("{{interface.qualified_name}}.{{property}}.") + m_zone, this))
+    , m_{{property}}(new Zoned{{property|upperfirst}}RoModelBackend(QStringLiteral("{{interface.qualified_name}}.{{property}}.") + m_zone, this))
 {%   else %}
     , m_{{ property }}({{property|default_type_value}})
 {%   endif %}
@@ -129,16 +129,16 @@ void {{zone_class}}::emitCurrentState()
 {% endif %}
 
 {{class}}::{{class}}(const QString &remoteObjectsLookupName, QObject *parent)
-    : {{class}}Interface(parent)
+    : {{interface}}BackendInterface(parent)
     , m_node(nullptr)
     , m_remoteObjectsLookupName(remoteObjectsLookupName)
     , m_helper(new QIviRemoteObjectReplicaHelper(qLcRO{{interface}}(), this))
 {% for property in interface.properties %}
 {%   if property.type.is_model %}
 {%     if interface_zoned %}
-    , m_{{property}}(new Zoned{{property|upperfirst}}ModelBackend(QStringLiteral("{{interface.qualified_name}}.{{property}}"), this))
+    , m_{{property}}(new Zoned{{property|upperfirst}}RoModelBackend(QStringLiteral("{{interface.qualified_name}}.{{property}}"), this))
 {%     else %}
-    , m_{{property}}(new {{property|upperfirst}}ModelBackend(QStringLiteral("{{interface.qualified_name}}.{{property}}"), this))
+    , m_{{property}}(new {{property|upperfirst}}RoModelBackend(QStringLiteral("{{interface.qualified_name}}.{{property}}"), this))
 {%     endif %}
 {%   endif %}
 {% endfor %}

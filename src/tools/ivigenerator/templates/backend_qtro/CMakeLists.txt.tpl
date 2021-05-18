@@ -5,9 +5,9 @@ endif()
 target_sources(${CURRENT_TARGET}
                PRIVATE
 {% for interface in module.interfaces %}
-    {{interface|lower}}backend.cpp
+    {{interface|lower}}robackend.cpp
 {% endfor %}
-    {{module.module_name|lower}}qtroplugin.cpp
+    {{module.module_name|lower}}roplugin.cpp
 )
 
 qt6_add_repc_replica(${CURRENT_TARGET}

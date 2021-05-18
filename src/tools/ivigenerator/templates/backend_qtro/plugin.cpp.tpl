@@ -38,12 +38,12 @@
 # SPDX-License-Identifier: LGPL-3.0
 #}
 {% include "common/generated_comment.cpp.tpl" %}
-{% set class = '{0}QtROPlugin'.format(module.module_name) %}
+{% set class = '{0}RoPlugin'.format(module.module_name) %}
 
 #include "{{class|lower}}.h"
 
 {% for interface in module.interfaces %}
-#include "{{interface|lower}}backend.h"
+#include "{{interface|lower}}robackend.h"
 {% endfor %}
 
 #include <QStringList>
@@ -54,7 +54,7 @@ QT_BEGIN_NAMESPACE
     : QObject(parent)
 {
 {% for interface in module.interfaces %}
-    m_interfaces << new {{interface}}Backend(QStringLiteral("{{interface.qualified_name}}"), this);
+    m_interfaces << new {{interface}}RoBackend(QStringLiteral("{{interface.qualified_name}}"), this);
 {% endfor %}
 }
 

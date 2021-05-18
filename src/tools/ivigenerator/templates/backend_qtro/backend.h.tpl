@@ -39,8 +39,8 @@
 #}
 {% import 'common/qtivi_macros.j2' as ivi %}
 {% include "common/generated_comment.cpp.tpl" %}
-{% set class = '{0}Backend'.format(interface) %}
-{% set zone_class = '{0}Zone'.format(interface) %}
+{% set class = '{0}RoBackend'.format(interface) %}
+{% set zone_class = '{0}RoZone'.format(interface) %}
 {% set interface_zoned = interface.tags.config and interface.tags.config.zoned %}
 {% set oncedefine = '{0}_{1}_H_'.format(module.module_name|upper, class|upper) %}
 #ifndef {{oncedefine}}
@@ -49,9 +49,9 @@
 #include <QRemoteObjectNode>
 #include <QIviRemoteObjectReplicaHelper>
 {% if module.tags.config.module %}
-#include <{{module.tags.config.module}}/{{class}}Interface>
+#include <{{module.tags.config.module}}/{{interface}}BackendInterface>
 {% else %}
-#include "{{class|lower}}interface.h"
+#include "{{interface|lower}}backendinterface.h"
 {% endif %}
 #include "rep_{{interface|lower}}_replica.h"
 
@@ -101,7 +101,7 @@ private:
 };
 {% endif %}
 
-class {{class}} : public {{class}}Interface
+class {{class}} : public {{interface}}BackendInterface
 {
     Q_OBJECT
 

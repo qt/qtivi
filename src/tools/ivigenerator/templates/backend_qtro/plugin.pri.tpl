@@ -46,15 +46,15 @@ QT += remoteobjects iviremoteobjects_helper_private
 
 HEADERS += \
 {% for interface in module.interfaces %}
-    $$PWD/{{interface|lower}}backend.h \
+    $$PWD/{{interface|lower}}robackend.h \
 {% endfor %}
-    $$PWD/{{module.module_name|lower}}qtroplugin.h
+    $$PWD/{{module.module_name|lower}}roplugin.h
 
 SOURCES += \
 {% for interface in module.interfaces %}
-    $$PWD/{{interface|lower}}backend.cpp \
+    $$PWD/{{interface|lower}}robackend.cpp \
 {% endfor %}
-    $$PWD/{{module.module_name|lower}}qtroplugin.cpp
+    $$PWD/{{module.module_name|lower}}roplugin.cpp
 
 REPC_REPLICA += \
 {% for interface in module.interfaces %}
