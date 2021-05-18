@@ -7,6 +7,7 @@
 qt_internal_add_plugin(MediaQtROPlugin
     OUTPUT_NAME media_qtro
     TYPE qtivi
+    DEFAULT_IF FALSE
     SOURCES
         mediadiscoverybackend.cpp mediadiscoverybackend.h
         mediaindexerbackend.cpp mediaindexerbackend.h

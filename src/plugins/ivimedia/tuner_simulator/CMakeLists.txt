@@ -7,6 +7,7 @@
 qt_internal_add_plugin(TunerPlugin
     OUTPUT_NAME tuner_simulator
     TYPE qtivi
+    DEFAULT_IF FALSE
     SOURCES
         amfmtunerbackend.cpp amfmtunerbackend.h
         searchandbrowsebackend.cpp searchandbrowsebackend.h

@@ -9,6 +9,7 @@ qt_find_package(WrapTagLib PROVIDED_TARGETS WrapTagLib::WrapTagLib) # special ca
 qt_internal_add_plugin(MediaPlugin
     OUTPUT_NAME media_simulator
     TYPE qtivi
+    DEFAULT_IF FALSE
     SOURCES
         database_helper.h
         logging.cpp logging.h

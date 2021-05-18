@@ -7,6 +7,7 @@
 qt_internal_add_plugin(QtIviVehicleFunctionsQtROPlugin
     OUTPUT_NAME vehiclefunction_qtro
     TYPE qtivi
+    DEFAULT_IF FALSE
     PUBLIC_LIBRARIES
         Qt::Core
         Qt::IviCore

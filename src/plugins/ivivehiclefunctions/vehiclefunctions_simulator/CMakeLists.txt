@@ -7,6 +7,7 @@
 qt_internal_add_plugin(QtIviVehicleFunctionsSimulatorPlugin
     OUTPUT_NAME vehiclefunction_simulator
     TYPE qtivi
+    DEFAULT_IF FALSE
     PUBLIC_LIBRARIES
         Qt::Core
         Qt::IviCore
