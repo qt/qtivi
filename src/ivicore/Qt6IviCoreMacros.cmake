@@ -23,7 +23,8 @@ endmacro()
 function(qt6_ivigenerator_generate)
     internal_resolve_ivigenerator_path()
 
-    if (NOT EXISTS ${VIRTUALENV}/bin/activate AND NOT EXISTS ${VIRTUALENV}/Scripts/activate.bat)
+    if (QT_FEATURE_python3_virtualenv AND NOT QT_FEATURE_system_qface
+        AND NOT EXISTS ${VIRTUALENV}/bin/activate AND NOT EXISTS ${VIRTUALENV}/Scripts/activate.bat)
         return()
     endif()
 
@@ -128,19 +129,24 @@ function(qt6_ivigenerator_generate)
         # TODO How to best unset those again afterwards ?
         # Use cmake -E slee + cmake -E env COMMAND instead ?
         #equals(QMAKE_HOST.os, Windows): ENV = chcp 65001 &&
-        if ("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Windows")
-            set(PYTHON_EXECUTABLE ${VIRTUALENV}/Scripts/python.exe)
-            file(TO_NATIVE_PATH "${VIRTUALENV}" VIRTUALENV)
+        if (QT_FEATURE_python3_virtualenv AND NOT QT_FEATURE_system_qface)
+            if ("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Windows")
+                set(PYTHON_EXECUTABLE ${VIRTUALENV}/Scripts/python.exe)
+                file(TO_NATIVE_PATH "${VIRTUALENV}" VIRTUALENV)
+            else()
+                set(PYTHON_EXECUTABLE ${VIRTUALENV}/bin/python)
+                set(ENV{LC_ALL} en_US.UTF-8)
+                set(ENV{LD_LIBRARY_PATH} ${VIRTUALENV}/bin)
+            endif()
+            set(ENV{PYTHONHOME} ${VIRTUALENV})
+            set(ENV{VIRTUAL_ENV} ${VIRTUALENV})
         else()
-            set(PYTHON_EXECUTABLE ${VIRTUALENV}/bin/python)
-            set(ENV{LC_ALL} en_US.UTF-8)
-            set(ENV{LD_LIBRARY_PATH} ${VIRTUALENV}/bin)
+            qt_find_package(Python3 PROVIDED_TARGETS Python3::Interpreter MODULE_NAME ivicore)
+            set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
         endif()
         if (DEFINED IVIGENERATOR_CONFIG)
             set(ENV{IVIGENERATOR_CONFIG} ${IVIGENERATOR_CONFIG})
         endif()
-        set(ENV{PYTHONHOME} ${VIRTUALENV})
-        set(ENV{VIRTUAL_ENV} ${VIRTUALENV})
 
         message(STATUS "Running ivigenerator for ${QFACE_SOURCES}")
         execute_process(
@@ -181,7 +187,8 @@ endif()
 function(qt6_ivigenerator_include target)
     internal_resolve_ivigenerator_path()
 
-    if (NOT EXISTS ${VIRTUALENV}/bin/activate AND NOT EXISTS ${VIRTUALENV}/Scripts/activate.bat)
+    if (QT_FEATURE_python3_virtualenv AND NOT QT_FEATURE_system_qface
+        AND NOT EXISTS ${VIRTUALENV}/bin/activate AND NOT EXISTS ${VIRTUALENV}/Scripts/activate.bat)
         # Create a dummy target instead
         if (NOT TARGET ${target} AND NOT TEST ${target})
             if (DEFINED QtIvi_BINARY_DIR)
