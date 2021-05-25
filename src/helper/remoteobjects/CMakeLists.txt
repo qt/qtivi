@@ -10,7 +10,7 @@
 # building the module and at that time the rep headers are not created yet
 set(QT_FEATURE_headersclean FALSE)
 
-qt_add_module(IviRemoteObjectsHelper
+qt_internal_add_module(IviRemoteObjectsHelper
     CONFIG_MODULE_NAME iviremoteobjects_helper
     STATIC
     INTERNAL_MODULE

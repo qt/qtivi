@@ -5,7 +5,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-qt_add_test(tst_org-example-echo-qtro
+qt_internal_add_test(tst_org-example-echo-qtro
     SOURCES
         contactsmodelservice.cpp contactsmodelservice.h
         echoservice.cpp echoservice.h

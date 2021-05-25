@@ -27,7 +27,7 @@ set(qml_resource_files
     "simulation.qml"
 )
 
-qt_add_resource(${target_name} "qml"
+qt_internal_add_resource(${target_name} "qml"
     PREFIX
         "/simulation"
     BASE

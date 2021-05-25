@@ -4,7 +4,7 @@
 ## wrongmetadata_plugin Generic Library:
 #####################################################################
 
-qt_add_cmake_library(wrongmetadata_plugin
+qt_internal_add_cmake_library(wrongmetadata_plugin
     MODULE
     OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../qtivi/"
     SOURCES

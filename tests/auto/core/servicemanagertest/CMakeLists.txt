@@ -4,7 +4,7 @@
 ## tst_servicemanagertest Test:
 #####################################################################
 
-qt_add_test(tst_servicemanagertest
+qt_internal_add_test(tst_servicemanagertest
     OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
     SOURCES
         tst_servicemanagertest.cpp
@@ -24,7 +24,7 @@ qt_add_test(tst_servicemanagertest
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_servicemanagertest CONDITION QT_FEATURE_debug_and_release
+qt_internal_extend_target(tst_servicemanagertest CONDITION QT_FEATURE_debug_and_release
     DEFINES
         DEBUG_AND_RELEASE
 )

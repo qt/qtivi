@@ -4,7 +4,7 @@
 ## qtivimediaplugin Plugin:
 #####################################################################
 
-qt_add_qml_module(qtivimediaplugin
+qt_internal_add_qml_module(qtivimediaplugin
     URI "QtIvi.Media"
     VERSION "1.0"
     CLASSNAME QIviMediaPlugin

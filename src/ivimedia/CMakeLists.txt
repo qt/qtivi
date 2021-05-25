@@ -4,7 +4,7 @@
 ## IviMedia Module:
 #####################################################################
 
-qt_add_module(IviMedia
+qt_internal_add_module(IviMedia
     SOURCES
         qiviamfmtuner.cpp qiviamfmtuner.h qiviamfmtuner_p.h
         qiviamfmtunerbackendinterface.cpp qiviamfmtunerbackendinterface.h

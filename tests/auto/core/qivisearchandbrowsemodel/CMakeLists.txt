@@ -4,7 +4,7 @@
 ## tst_qivisearchandbrowsemodel Test:
 #####################################################################
 
-qt_add_test(tst_qivisearchandbrowsemodel
+qt_internal_add_test(tst_qivisearchandbrowsemodel
     SOURCES
         tst_qivisearchandbrowsemodel.cpp
     DEFINES

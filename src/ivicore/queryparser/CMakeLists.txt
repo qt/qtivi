@@ -29,7 +29,7 @@ qt_add_executable(queryparser
 # qlalr.input = "QLALR"
 # qlalr.output = "$$PWD/${QMAKE_FILE_BASE}_p.h"
 
-qt_extend_target(queryparser CONDITION NOT enable-qlalr
+qt_internal_extend_target(queryparser CONDITION NOT enable-qlalr
     SOURCES
         qiviqueryparser_p.h
         qiviqueryparser_flex_p.h

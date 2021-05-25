@@ -10,7 +10,7 @@ file(GLOB_RECURSE test_data_glob
     testdata/*)
 list(APPEND test_data ${test_data_glob})
 
-qt_add_test(tst_qiviabstractfeature
+qt_internal_add_test(tst_qiviabstractfeature
     SOURCES
         qivifeaturetester.h
         tst_qiviabstractfeature.cpp

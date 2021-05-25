@@ -4,7 +4,7 @@
 ## tst_qivipagingmodel Test:
 #####################################################################
 
-qt_add_test(tst_qivipagingmodel
+qt_internal_add_test(tst_qivipagingmodel
     SOURCES
         tst_qivipagingmodel.cpp
     DEFINES

@@ -10,6 +10,9 @@ project(QtIvi
     LANGUAGES CXX C
 )
 
+# Make sure we only use latest private CMake API, aka no compatibility wrappers.
+set(QT_NO_INTERNAL_COMPATIBILITY_FUNCTIONS TRUE)
+
 find_package(Qt6 ${PROJECT_VERSION} CONFIG REQUIRED COMPONENTS BuildInternals Core) # special case
 find_package(Qt6 ${PROJECT_VERSION} CONFIG OPTIONAL_COMPONENTS Gui Qml Quick RemoteObjects Multimedia Sql) # special case
 

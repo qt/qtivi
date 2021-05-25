@@ -4,7 +4,7 @@
 ## tst_dlt Test:
 #####################################################################
 
-qt_add_test(tst_dlt
+qt_internal_add_test(tst_dlt
     SOURCES
         tst_dlt.cpp
     DEFINES

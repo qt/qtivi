@@ -4,7 +4,7 @@
 ## tst_qivisimulationengine Test:
 #####################################################################
 
-qt_add_test(tst_qivisimulationengine
+qt_internal_add_test(tst_qivisimulationengine
     SOURCES
         tst_qivisimulationengine.cpp
     PUBLIC_LIBRARIES
@@ -21,7 +21,7 @@ set(resource_resource_files
     "simple.qml"
 )
 
-qt_add_resource(tst_qivisimulationengine "resource"
+qt_internal_add_resource(tst_qivisimulationengine "resource"
     PREFIX
         "/"
     FILES

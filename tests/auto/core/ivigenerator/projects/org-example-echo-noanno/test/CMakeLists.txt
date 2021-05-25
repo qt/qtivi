@@ -6,7 +6,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 file(TOUCH ${CMAKE_CURRENT_BINARY_DIR}/cmake_dummy.cpp)
-qt_add_test(tst_org-example-echo-noanno
+qt_internal_add_test(tst_org-example-echo-noanno
     SOURCES
         ${CMAKE_CURRENT_BINARY_DIR}/cmake_dummy.cpp
     PUBLIC_LIBRARIES

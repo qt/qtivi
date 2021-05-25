@@ -13,7 +13,7 @@ qt_ivigenerator_generate(
 )
 make_directory(${QT_BUILD_DIR}/src/ivivehiclefunctions)
 
-qt_add_module(IviVehicleFunctions
+qt_internal_add_module(IviVehicleFunctions
     LIBRARIES
         Qt::CorePrivate
         Qt::IviCorePrivate

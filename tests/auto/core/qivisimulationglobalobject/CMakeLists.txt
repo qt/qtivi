@@ -4,7 +4,7 @@
 ## tst_qivisimulationglobalobject Test:
 #####################################################################
 
-qt_add_test(tst_qivisimulationglobalobject
+qt_internal_add_test(tst_qivisimulationglobalobject
     SOURCES
         tst_qivisimulationglobalobject.cpp
     PUBLIC_LIBRARIES

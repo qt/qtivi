@@ -4,7 +4,7 @@
 ## GeniviExtras Module:
 #####################################################################
 
-qt_add_module(GeniviExtras
+qt_internal_add_module(GeniviExtras
     SOURCES
         qdlt.h
         qdltregistration.cpp qdltregistration.h qdltregistration_p.h

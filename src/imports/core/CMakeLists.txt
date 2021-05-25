@@ -4,7 +4,7 @@
 ## qtivicoreplugin Plugin:
 #####################################################################
 
-qt_add_qml_module(qtivicoreplugin
+qt_internal_add_qml_module(qtivicoreplugin
     URI "QtIvi"
     VERSION "1.0"
     CLASSNAME QtIviCorePlugin

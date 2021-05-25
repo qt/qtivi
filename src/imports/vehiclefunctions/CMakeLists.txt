@@ -4,6 +4,8 @@
 ## vehiclefunctions Plugin:
 #####################################################################
 
+set(CMAKE_AUTOMOC ON)
+
 # IVI Generator:
 qt_ivigenerator(qtivivehiclefunctionsplugin
     QFACE_SOURCES ../../ivivehiclefunctions/ivivehiclefunctions.qface

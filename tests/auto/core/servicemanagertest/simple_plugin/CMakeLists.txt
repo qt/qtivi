@@ -4,7 +4,7 @@
 ## simple_plugin Generic Library:
 #####################################################################
 
-qt_add_cmake_library(simple_plugin
+qt_internal_add_cmake_library(simple_plugin
     MODULE
     OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../qtivi/"
     SOURCES

@@ -4,7 +4,7 @@
 ## IviCore Module:
 #####################################################################
 
-qt_add_module(IviCore
+qt_internal_add_module(IviCore
     PLUGIN_TYPES qtivi
     SOURCES
         qiviabstractfeature.cpp qiviabstractfeature.h qiviabstractfeature_p.h
@@ -65,7 +65,7 @@ qt_add_module(IviCore
 # qlalr.input = "QLALR"
 # qlalr.output = "$$PWD/${QMAKE_FILE_BASE}_p.h"
 
-qt_extend_target(IviCore CONDITION NOT enable-qlalr
+qt_internal_extend_target(IviCore CONDITION NOT enable-qlalr
     SOURCES
         queryparser/qiviqueryparser_p.h
         queryparser/qiviqueryparser_flex_p.h
