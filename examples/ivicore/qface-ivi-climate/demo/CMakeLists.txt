@@ -1,8 +1,4 @@
 # Generated from demo.pro.
-
-cmake_minimum_required(VERSION 3.14)
-project(qface-ivi-climate LANGUAGES CXX)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
@@ -23,12 +19,10 @@ find_package(Qt6 COMPONENTS Quick)
 qt_add_executable(qface-ivi-climate
     main.cpp
 )
+set_target_properties(qface-ivi-climate PROPERTIES RUNTIME_OUTPUT_DIRECTORY ..)
 set_target_properties(qface-ivi-climate PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE FALSE
-)
-target_include_directories(qface-ivi-climate PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}/../frontend
 )
 
 target_compile_definitions(qface-ivi-climate PUBLIC
@@ -36,7 +30,6 @@ target_compile_definitions(qface-ivi-climate PUBLIC
 )
 
 target_link_libraries(qface-ivi-climate PUBLIC
-    # Remove: L${CMAKE_CURRENT_BINARY_DIR}/../
     QtIviClimateExample
     Qt::Core
     Qt::Gui

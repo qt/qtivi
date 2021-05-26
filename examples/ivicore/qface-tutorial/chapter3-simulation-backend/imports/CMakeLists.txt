@@ -1,8 +1,4 @@
 # Generated from imports.pro.
-
-cmake_minimum_required(VERSION 3.14)
-project(instrument_cluster_imports LANGUAGES CXX) # special case
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
@@ -24,13 +20,6 @@ find_package(Qt6 COMPONENTS IviCore)
 qt6_ivigenerator(instrument_cluster_chapter3_imports # special case
     QFACE_SOURCES ../instrument-cluster.qface
     QFACE_FORMAT qmlplugin
-)
-set_target_properties(instrument_cluster_chapter3_imports PROPERTIES # special case
-    WIN32_EXECUTABLE TRUE
-    MACOSX_BUNDLE TRUE
-)
-target_include_directories(instrument_cluster_chapter3_imports PUBLIC # special case
-    ${CMAKE_CURRENT_BINARY_DIR}/../frontend
 )
 
 target_link_libraries(instrument_cluster_chapter3_imports PUBLIC # special case

@@ -1,8 +1,4 @@
 # Generated from instrument-cluster.pro.
-
-cmake_minimum_required(VERSION 3.14)
-project(chapter5-ipc LANGUAGES CXX)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
@@ -23,16 +19,13 @@ find_package(Qt6 COMPONENTS Quick)
 qt_add_executable(chapter5-ipc
     main.cpp
 )
+set_target_properties(chapter5-ipc PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../)
 set_target_properties(chapter5-ipc PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE FALSE
 )
-target_include_directories(chapter5-ipc PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}/../frontend
-)
 
 target_link_libraries(chapter5-ipc PUBLIC
-    # Remove: L${CMAKE_CURRENT_BINARY_DIR}/../
     Qt::Core
     Qt::Gui
     Qt::Qml

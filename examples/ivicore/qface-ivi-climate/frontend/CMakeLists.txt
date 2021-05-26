@@ -1,8 +1,4 @@
 # Generated from frontend.pro.
-
-cmake_minimum_required(VERSION 3.14)
-project(QtIviClimateExample LANGUAGES CXX)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
@@ -27,6 +23,12 @@ add_library(QtIviClimateExample)
 qt6_ivigenerator(QtIviClimateExample
     QFACE_SOURCES ../example-ivi-climate.qface
     QFACE_FORMAT frontend
+)
+
+set_target_properties(QtIviClimateExample PROPERTIES RUNTIME_OUTPUT_DIRECTORY ..)
+
+target_include_directories(QtIviClimateExample PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 target_link_libraries(QtIviClimateExample PUBLIC

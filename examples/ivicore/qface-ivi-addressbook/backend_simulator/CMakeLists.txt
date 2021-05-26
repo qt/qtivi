@@ -1,8 +1,4 @@
 # Generated from backend_simulator.pro.
-
-cmake_minimum_required(VERSION 3.14)
-project(example_ivi_addressbook LANGUAGES CXX)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
@@ -19,23 +15,16 @@ find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS Gui)
 find_package(Qt6 COMPONENTS IviCore)
 
-qt_add_plugin(example_ivi_addressbook)
+qt_add_plugin(addressbook_backend_simulator)
+set_target_properties(addressbook_backend_simulator PROPERTIES LIBRARY_OUTPUT_DIRECTORY ../qtivi)
 
 # IVI Generator:
-qt6_ivigenerator(example_ivi_addressbook
+qt6_ivigenerator(addressbook_backend_simulator
     QFACE_SOURCES ../example-ivi-addressbook.qface
     QFACE_FORMAT backend_simulator
 )
-set_target_properties(example_ivi_addressbook PROPERTIES
-    WIN32_EXECUTABLE TRUE
-    MACOSX_BUNDLE TRUE
-)
-target_include_directories(example_ivi_addressbook PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}/../frontend
-)
 
-target_link_libraries(example_ivi_addressbook PUBLIC
-    # Remove: L${CMAKE_CURRENT_BINARY_DIR}/../
+target_link_libraries(addressbook_backend_simulator PUBLIC
     QtIviAdressBookExample
     Qt::Core
     Qt::Gui
@@ -48,14 +37,14 @@ set(plugin_resource_resource_files
     "simulation.qml"
 )
 
-qt6_add_resources(example_ivi_addressbook "plugin_resource"
+qt6_add_resources(addressbook_backend_simulator "plugin_resource"
     PREFIX
         "/plugin_resource"
     FILES
         ${plugin_resource_resource_files}
 )
 
-install(TARGETS example_ivi_addressbook
+install(TARGETS addressbook_backend_simulator
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
     BUNDLE DESTINATION "${INSTALL_EXAMPLEDIR}"
     LIBRARY DESTINATION "${INSTALL_EXAMPLEDIR}"

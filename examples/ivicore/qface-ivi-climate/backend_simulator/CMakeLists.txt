@@ -1,8 +1,4 @@
 # Generated from backend_simulator.pro.
-
-cmake_minimum_required(VERSION 3.14)
-project(example_ivi_climate LANGUAGES CXX)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
@@ -19,30 +15,23 @@ find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS Gui)
 find_package(Qt6 COMPONENTS IviCore)
 
-qt_add_plugin(example_ivi_climate)
+qt_add_plugin(climate_backend_simulator)
+set_target_properties(climate_backend_simulator PROPERTIES LIBRARY_OUTPUT_DIRECTORY ../qtivi)
 
 # IVI Generator:
-qt6_ivigenerator(example_ivi_climate
+qt6_ivigenerator(climate_backend_simulator
     QFACE_SOURCES ../example-ivi-climate.qface
     QFACE_FORMAT backend_simulator
 )
-set_target_properties(example_ivi_climate PROPERTIES
-    WIN32_EXECUTABLE TRUE
-    MACOSX_BUNDLE TRUE
-)
-target_include_directories(example_ivi_climate PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}/../frontend
-)
 
-target_link_libraries(example_ivi_climate PUBLIC
-    # Remove: L${CMAKE_CURRENT_BINARY_DIR}/../
+target_link_libraries(climate_backend_simulator PUBLIC
     QtIviClimateExample
     Qt::Core
     Qt::Gui
     Qt::IviCore
 )
 
-install(TARGETS example_ivi_climate
+install(TARGETS climate_backend_simulator
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
     BUNDLE DESTINATION "${INSTALL_EXAMPLEDIR}"
     LIBRARY DESTINATION "${INSTALL_EXAMPLEDIR}"

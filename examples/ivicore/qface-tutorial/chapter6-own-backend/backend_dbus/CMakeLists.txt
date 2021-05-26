@@ -1,8 +1,4 @@
 # Generated from backend_dbus.pro.
-
-cmake_minimum_required(VERSION 3.14)
-project(instrumentcluster_dbus LANGUAGES CXX)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
@@ -21,17 +17,23 @@ find_package(Qt6 COMPONENTS IviCore)
 find_package(Qt6 COMPONENTS DBus)
 
 qt_add_plugin(instrumentcluster_dbus)
+set_target_properties(instrumentcluster_dbus PROPERTIES LIBRARY_OUTPUT_DIRECTORY ../qtivi)
+
+set_source_files_properties(../demo_server/instrumentcluster.xml PROPERTIES INCLUDE dbus_conversion.h)
+set(cluster_SRCS)
+qt6_add_dbus_interface(cluster_SRCS
+    ../demo_server/instrumentcluster.xml
+    instrumentcluster_interface
+)
+
 target_sources(instrumentcluster_dbus PRIVATE
     ../demo_server/dbus_conversion.h
     instrumentclusterbackend.cpp instrumentclusterbackend.h
     instrumentclusterplugin.cpp instrumentclusterplugin.h
+    ${cluster_SRCS}
 )
-set_target_properties(instrumentcluster_dbus PROPERTIES
-    WIN32_EXECUTABLE TRUE
-    MACOSX_BUNDLE TRUE
-)
-target_include_directories(instrumentcluster_dbus PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}/../frontend
+
+target_include_directories(instrumentcluster_dbus PRIVATE
     ../demo_server
 )
 

@@ -3,7 +3,6 @@ set(${CURRENT_TARGET}_SOURCES
     {{interface|lower}}backend.cpp
 {% endfor %}
     {{module.module_name|lower}}simulatorplugin.cpp
-    {{module.module_name|lower}}_simulation.qrc
 )
 
 qt_add_resources(${CURRENT_TARGET}_SOURCES

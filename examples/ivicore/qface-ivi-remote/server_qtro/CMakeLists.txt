@@ -27,12 +27,12 @@ qt6_ivigenerator(qface-ivi-remote-server
     QFACE_SOURCES ../example-ivi-remote.qface
     QFACE_FORMAT server_qtro
 )
+
+set_target_properties(qface-ivi-remote-server PROPERTIES RUNTIME_OUTPUT_DIRECTORY ..)
+
 set_target_properties(qface-ivi-remote-server PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE FALSE
-)
-target_include_directories(qface-ivi-remote-server PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}/../frontend
 )
 
 target_compile_definitions(qface-ivi-remote-server PUBLIC

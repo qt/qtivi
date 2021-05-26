@@ -2,6 +2,7 @@
 # Keep it until the templates have been adapted and everything can be done without autogenerating
 
 if (NOT TARGET ${CURRENT_TARGET})
+    string(REPLACE "." "/" TARGET_PATH "{{module|qml_type}}")
     qt_add_qml_module(${CURRENT_TARGET}
         URI "{{module|qml_type}}"
         VERSION "{{module.majorVersion}}.{{module.minorVersion}}"
@@ -9,7 +10,7 @@ if (NOT TARGET ${CURRENT_TARGET})
         # TODO remove this again
         # This is needed to make the test build work as it would create duplicate qmldir entries
         # in the global qml folder
-        OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_PATH}
         PUBLIC_LIBRARIES
             Qt::IviCore
         SOURCES

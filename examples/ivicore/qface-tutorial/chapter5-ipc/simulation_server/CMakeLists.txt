@@ -1,8 +1,4 @@
 # Generated from simulation_server.pro.
-
-cmake_minimum_required(VERSION 3.14)
-project(chapter5-ipc-server LANGUAGES CXX)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
@@ -19,6 +15,7 @@ find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS IviCore)
 
 qt_add_executable(chapter5-ipc-server)
+set_target_properties(chapter5-ipc-server PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../)
 
 # IVI Generator:
 qt6_ivigenerator(chapter5-ipc-server
@@ -28,9 +25,6 @@ qt6_ivigenerator(chapter5-ipc-server
 set_target_properties(chapter5-ipc-server PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE FALSE
-)
-target_include_directories(chapter5-ipc-server PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}/../frontend
 )
 
 target_link_libraries(chapter5-ipc-server PUBLIC

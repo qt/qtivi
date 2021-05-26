@@ -22,18 +22,16 @@ find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
 
 add_library(QtIviInstrumentCluster_Chapter6)
+set_target_properties(QtIviInstrumentCluster_Chapter6 PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../)
 
 # IVI Generator:
 qt6_ivigenerator(QtIviInstrumentCluster_Chapter6
     QFACE_SOURCES ../instrument-cluster.qface
     QFACE_FORMAT frontend
 )
-set_target_properties(QtIviInstrumentCluster_Chapter6 PROPERTIES
-    WIN32_EXECUTABLE TRUE
-    MACOSX_BUNDLE TRUE
-)
-target_compile_definitions(QtIviInstrumentCluster_Chapter6 PUBLIC
-    QT_BUILD_EXAMPLE_IVI_INSTRUMENTCLUSTER_LIB
+
+target_include_directories(QtIviInstrumentCluster_Chapter6 PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 target_link_libraries(QtIviInstrumentCluster_Chapter6 PUBLIC

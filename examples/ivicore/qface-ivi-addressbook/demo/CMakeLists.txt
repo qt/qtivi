@@ -1,8 +1,4 @@
 # Generated from demo.pro.
-
-cmake_minimum_required(VERSION 3.14)
-project(qface-ivi-addressbook LANGUAGES CXX)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
@@ -23,12 +19,10 @@ find_package(Qt6 COMPONENTS Quick)
 qt_add_executable(qface-ivi-addressbook
     main.cpp
 )
+set_target_properties(qface-ivi-addressbook PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../)
 set_target_properties(qface-ivi-addressbook PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE FALSE
-)
-target_include_directories(qface-ivi-addressbook PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}/../frontend
 )
 
 target_compile_definitions(qface-ivi-addressbook PUBLIC
@@ -36,7 +30,6 @@ target_compile_definitions(qface-ivi-addressbook PUBLIC
 )
 
 target_link_libraries(qface-ivi-addressbook PUBLIC
-    # Remove: L${CMAKE_CURRENT_BINARY_DIR}/../
     QtIviAdressBookExample
     Qt::Core
     Qt::Gui

@@ -1,8 +1,4 @@
 # Generated from backend_simulator.pro.
-
-cmake_minimum_required(VERSION 3.14)
-project(instrumentcluster_simulation LANGUAGES CXX)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
@@ -20,18 +16,12 @@ find_package(Qt6 COMPONENTS Gui)
 find_package(Qt6 COMPONENTS IviCore)
 
 qt_add_plugin(instrumentcluster_chapter4_simulation)
+set_target_properties(instrumentcluster_chapter4_simulation PROPERTIES LIBRARY_OUTPUT_DIRECTORY ../qtivi)
 
 # IVI Generator:
 qt6_ivigenerator(instrumentcluster_chapter4_simulation
     QFACE_SOURCES ../instrument-cluster.qface
     QFACE_FORMAT backend_simulator
-)
-set_target_properties(instrumentcluster_chapter4_simulation PROPERTIES
-    WIN32_EXECUTABLE TRUE
-    MACOSX_BUNDLE TRUE
-)
-target_include_directories(instrumentcluster_chapter4_simulation PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}/../frontend
 )
 
 target_link_libraries(instrumentcluster_chapter4_simulation PUBLIC

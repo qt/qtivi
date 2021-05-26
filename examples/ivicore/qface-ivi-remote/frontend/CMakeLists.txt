@@ -28,12 +28,11 @@ qt6_ivigenerator(QtIviRemoteExample
     QFACE_SOURCES ../example-ivi-remote.qface
     QFACE_FORMAT frontend
 )
-set_target_properties(QtIviRemoteExample PROPERTIES
-    WIN32_EXECUTABLE TRUE
-    MACOSX_BUNDLE TRUE
-)
-target_compile_definitions(QtIviRemoteExample PUBLIC
-    QT_BUILD_EXAMPLE_IVI_REMOTE_LIB
+
+set_target_properties(QtIviRemoteExample PROPERTIES RUNTIME_OUTPUT_DIRECTORY ..)
+
+target_include_directories(QtIviRemoteExample PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 target_link_libraries(QtIviRemoteExample PUBLIC

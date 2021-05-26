@@ -23,12 +23,10 @@ find_package(Qt6 COMPONENTS Quick)
 qt_add_executable(qface-ivi-remote
     main.cpp
 )
+set_target_properties(qface-ivi-remote PROPERTIES RUNTIME_OUTPUT_DIRECTORY ..)
 set_target_properties(qface-ivi-remote PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE FALSE
-)
-target_include_directories(qface-ivi-remote PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}/../frontend
 )
 
 target_compile_definitions(qface-ivi-remote PUBLIC

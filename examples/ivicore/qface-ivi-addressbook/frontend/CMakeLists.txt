@@ -1,8 +1,4 @@
 # Generated from frontend.pro.
-
-cmake_minimum_required(VERSION 3.14)
-project(QtIviAdressBookExample LANGUAGES CXX)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
@@ -27,6 +23,12 @@ add_library(QtIviAdressBookExample)
 qt6_ivigenerator(QtIviAdressBookExample
     QFACE_SOURCES ../example-ivi-addressbook.qface
     QFACE_FORMAT frontend
+)
+
+set_target_properties(QtIviAdressBookExample PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../)
+
+target_include_directories(QtIviAdressBookExample PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 target_link_libraries(QtIviAdressBookExample PUBLIC
