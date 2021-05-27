@@ -38,11 +38,15 @@ qt_internal_add_resource(${target_name} "qml"
 
 
 # IVI Generator:
-qt_ivigenerator(${target_name}
-    QFACE_SOURCES ../../ivivehiclefunctions/ivivehiclefunctions.qface
-    QFACE_FORMAT server_qtro_simulator
-    QFACE_MODULE_NAME QtIviVehicleFunctions
-)
+# When cross-compiling the tool might not be compiled and the target
+# doesn't exist in this case
+if (TARGET ${target_name})
+    qt_ivigenerator(${target_name}
+        QFACE_SOURCES ../../ivivehiclefunctions/ivivehiclefunctions.qface
+        QFACE_FORMAT server_qtro_simulator
+        QFACE_MODULE_NAME QtIviVehicleFunctions
+    )
+endif()
 
 #### Keys ignored in scope 1:.:.:vehiclefunctions-simulation-server.pro:<TRUE>:
 # QML_IMPORT_PATH = "$$OUT_PWD/qml"
