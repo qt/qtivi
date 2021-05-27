@@ -41,7 +41,7 @@
 
 EchoZonedService::EchoZonedService(QObject *parent)
     : EchoZonedSimpleSource(parent)
-    , m_testCombo(Contact(QStringLiteral("Antti"), 34, true, QVariant()), EchoModule::Friday)
+    , m_testCombo(Contact(QStringLiteral("Antti"), 34, true, QVariant()), Echomodule::Friday)
     , m_testId(QStringLiteral("id123"))
 {
     m_zoneHash.insert(QString(), ZoneObject());
@@ -123,12 +123,12 @@ void EchoZonedService::setEchoEnabled(bool echoEnabled, const QString &zone)
     SET_VALUE(m_echoEnabled, echoEnabled, echoEnabledChanged);
 }
 
-EchoModule::AirflowDirections EchoZonedService::airflowDirection(const QString &zone)
+Echomodule::AirflowDirections EchoZonedService::airflowDirection(const QString &zone)
 {
     return m_zoneHash.value(zone).m_airflowDirection;
 }
 
-void EchoZonedService::setAirflowDirection(EchoModule::AirflowDirections airflowDirection, const QString &zone)
+void EchoZonedService::setAirflowDirection(Echomodule::AirflowDirections airflowDirection, const QString &zone)
 {
     SET_VALUE(m_airflowDirection, airflowDirection, airflowDirectionChanged);
 }
@@ -193,22 +193,22 @@ void EchoZonedService::setComboList(const QVariantList &comboList, const QString
     SET_VALUE(m_comboList, comboList, comboListChanged);
 }
 
-EchoModule::DaysOfTheWeek EchoZonedService::weekDay(const QString &zone)
+Echomodule::DaysOfTheWeek EchoZonedService::weekDay(const QString &zone)
 {
    return m_zoneHash.value(zone).m_weekDay;
 }
 
-void EchoZonedService::setWeekDay(EchoModule::DaysOfTheWeek weekDay, const QString &zone)
+void EchoZonedService::setWeekDay(Echomodule::DaysOfTheWeek weekDay, const QString &zone)
 {
     SET_VALUE(m_weekDay, weekDay, weekDayChanged);
 }
 
-EchoModule::TestEnum EchoZonedService::testEnum(const QString &zone)
+Echomodule::TestEnum EchoZonedService::testEnum(const QString &zone)
 {
     return m_zoneHash.value(zone).m_testEnum;
 }
 
-void EchoZonedService::setTestEnum(EchoModule::TestEnum testEnum, const QString &zone)
+void EchoZonedService::setTestEnum(Echomodule::TestEnum testEnum, const QString &zone)
 {
     SET_VALUE(m_testEnum, testEnum, testEnumChanged);
 }
@@ -264,13 +264,13 @@ QVariant EchoZonedService::timer(int interval, const QString &zone)
     return QVariant::fromValue(pendingResult);
 }
 
-QVariant EchoZonedService::flagMethod(EchoModule::AirflowDirections direction, const QString &zone)
+QVariant EchoZonedService::flagMethod(Echomodule::AirflowDirections direction, const QString &zone)
 {
     emit flagMethodCalled(direction, zone);
     return QVariant::fromValue(direction);
 }
 
-QVariant EchoZonedService::enumMethod(EchoModule::TestEnum testEnum, const QString &zone)
+QVariant EchoZonedService::enumMethod(Echomodule::TestEnum testEnum, const QString &zone)
 {
     emit enumMethodCalled(testEnum, zone);
     return QVariant::fromValue(testEnum);

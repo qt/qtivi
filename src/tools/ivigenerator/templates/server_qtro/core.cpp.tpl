@@ -42,7 +42,7 @@
 
 
 #include "{{class|lower}}.h"
-#include "{{module.module_name|lower}}module.h"
+#include "{{module.module_name|lower}}.h"
 #include <QCoreApplication>
 #include <QSettings>
 
@@ -63,7 +63,7 @@ QT_BEGIN_NAMESPACE
 
 void {{class}}::init()
 {
-    {{module.module_name|upperfirst}}Module::registerTypes();
+    {{module.module_name|upperfirst}}::registerTypes();
     QString configPath(QStringLiteral("./server.conf"));
     if (qEnvironmentVariableIsSet("SERVER_CONF_PATH"))
         configPath = QString::fromLocal8Bit(qgetenv("SERVER_CONF_PATH"));

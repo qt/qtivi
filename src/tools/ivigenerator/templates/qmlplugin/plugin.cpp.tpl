@@ -48,9 +48,9 @@
 #include <qqml.h>
 
 {% if module.tags.config.module %}
-#include <{{module.tags.config.module}}/{{module.module_name|lower}}modulefactory.h>
+#include <{{module.tags.config.module}}/{{module.module_name|lower}}factory.h>
 {% else %}
-#include "{{module.module_name|lower}}modulefactory.h"
+#include "{{module.module_name|lower}}factory.h"
 {% endif %}
 
 QT_BEGIN_NAMESPACE
@@ -65,7 +65,7 @@ public:
         Q_ASSERT(QLatin1String(uri) == QLatin1String("{{module|qml_type}}"));
         Q_UNUSED(uri);
 
-        {{module_name}}ModuleFactory::registerQmlTypes();
+        {{module_name}}Factory::registerQmlTypes();
     }
 };
 

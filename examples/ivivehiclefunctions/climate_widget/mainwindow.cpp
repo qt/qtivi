@@ -97,7 +97,7 @@ MainWindow::MainWindow(QWidget *parent) :
             m_climateControl, &QIviClimateControl::setAirConditioningEnabled);
 
     //Air Recirculation
-    ui->cb_airRecirculation->setChecked(m_climateControl->recirculationMode() == QtIviVehicleFunctionsModule::RecirculationOn);
+    ui->cb_airRecirculation->setChecked(m_climateControl->recirculationMode() == QtIviVehicleFunctions::RecirculationOn);
     connect(m_climateControl, &QIviClimateControl::recirculationModeChanged,
             this, &MainWindow::onAirRecirculationModeChanged);
     connect(ui->cb_airRecirculation, &QCheckBox::clicked,
@@ -120,22 +120,22 @@ MainWindow::~MainWindow()
 void MainWindow::setAirRecirculationEnabled(bool enabled)
 {
     if (enabled)
-        m_climateControl->setRecirculationMode(QtIviVehicleFunctionsModule::RecirculationOn);
+        m_climateControl->setRecirculationMode(QtIviVehicleFunctions::RecirculationOn);
     else
-        m_climateControl->setRecirculationMode(QtIviVehicleFunctionsModule::RecirculationOff);
+        m_climateControl->setRecirculationMode(QtIviVehicleFunctions::RecirculationOff);
 }
 
-void MainWindow::onAirRecirculationModeChanged(QtIviVehicleFunctionsModule::RecirculationMode mode)
+void MainWindow::onAirRecirculationModeChanged(QtIviVehicleFunctions::RecirculationMode mode)
 {
-    ui->cb_airRecirculation->setChecked(mode == QtIviVehicleFunctionsModule::RecirculationOn);
+    ui->cb_airRecirculation->setChecked(mode == QtIviVehicleFunctions::RecirculationOn);
 }
 
 //![3]
-void MainWindow::setupFlowDirectionRadioButtons(QtIviVehicleFunctionsModule::AirflowDirections direction)
+void MainWindow::setupFlowDirectionRadioButtons(QtIviVehicleFunctions::AirflowDirections direction)
 {
-    ui->cb_windshield->setChecked(direction.testFlag(QtIviVehicleFunctionsModule::Windshield));
-    ui->cb_dashboard->setChecked(direction.testFlag(QtIviVehicleFunctionsModule::Dashboard));
-    ui->cb_floor->setChecked(direction.testFlag(QtIviVehicleFunctionsModule::Floor));
+    ui->cb_windshield->setChecked(direction.testFlag(QtIviVehicleFunctions::Windshield));
+    ui->cb_dashboard->setChecked(direction.testFlag(QtIviVehicleFunctions::Dashboard));
+    ui->cb_floor->setChecked(direction.testFlag(QtIviVehicleFunctions::Floor));
 }
 
 void MainWindow::onFlowDirectionButtonToggled(QAbstractButton *button, bool checked)
@@ -143,14 +143,14 @@ void MainWindow::onFlowDirectionButtonToggled(QAbstractButton *button, bool chec
     Q_UNUSED(button)
     Q_UNUSED(checked)
 
-    QtIviVehicleFunctionsModule::AirflowDirections direction;
+    QtIviVehicleFunctions::AirflowDirections direction;
 
     if (ui->cb_windshield->isChecked())
-        direction |= QtIviVehicleFunctionsModule::Windshield;
+        direction |= QtIviVehicleFunctions::Windshield;
     if (ui->cb_dashboard->isChecked())
-        direction |= QtIviVehicleFunctionsModule::Dashboard;
+        direction |= QtIviVehicleFunctions::Dashboard;
     if (ui->cb_floor->isChecked())
-        direction |= QtIviVehicleFunctionsModule::Floor;
+        direction |= QtIviVehicleFunctions::Floor;
 
     m_climateControl->setAirflowDirections(direction);
 }

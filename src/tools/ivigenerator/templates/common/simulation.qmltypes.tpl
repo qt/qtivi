@@ -220,7 +220,7 @@ Module {
 {% endfor %}
 
     Component {
-        name: "{{module.module_name|upperfirst}}Module"
+        name: "{{module.module_name|upperfirst}}"
         prototype: "QObject"
         exports: ["{{module|qml_type}}.simulation/{{module_qml_name}} {{module.majorVersion}}.{{module.minorVersion}}"]
         isCreatable: false

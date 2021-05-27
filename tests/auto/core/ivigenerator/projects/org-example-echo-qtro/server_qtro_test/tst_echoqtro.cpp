@@ -43,7 +43,7 @@ static QString frontLeftZone = QStringLiteral("FrontLeft");
 EchoQtroTest::EchoQtroTest()
     :QObject()
 {
-    EchoModule::registerTypes();
+    Echomodule::registerTypes();
 }
 
 void EchoQtroTest::cleanup()
@@ -62,8 +62,8 @@ void EchoQtroTest::testInit()
     QCOMPARE(client.stringValue(), QString());
     QCOMPARE(client.comboList(), QVariantList());
     QCOMPARE(client.contact(), Contact());
-    QCOMPARE(client.weekDay(), EchoModule::WeekDay());
-    QCOMPARE(client.testEnum(), EchoModule::FirstEnumValue);
+    QCOMPARE(client.weekDay(), Echomodule::WeekDay());
+    QCOMPARE(client.testEnum(), Echomodule::FirstEnumValue);
 
     Server server;
 
@@ -75,8 +75,8 @@ void EchoQtroTest::testInit()
     QCOMPARE(server.m_echoService.stringValue(), QString());
     QCOMPARE(server.m_echoService.comboList(), QVariantList());
     QCOMPARE(server.m_echoService.contact(), Contact());
-    QCOMPARE(server.m_echoService.weekDay(), EchoModule::WeekDay());
-    QCOMPARE(server.m_echoService.testEnum(), EchoModule::FirstEnumValue);
+    QCOMPARE(server.m_echoService.weekDay(), Echomodule::WeekDay());
+    QCOMPARE(server.m_echoService.testEnum(), Echomodule::FirstEnumValue);
 
     QLatin1String lastMessageTestValue("this is the last message");
     int intValueTestValue(789);
@@ -84,11 +84,11 @@ void EchoQtroTest::testInit()
     qreal floatValue2TestValue(2.71);
     QLatin1String stringValueTestValue("test string");
     QVariantList comboListTestValue(
-                    { QVariant::fromValue<Combo>(Combo(Contact("Mr A.", 20, false, "foo"), EchoModule::Monday)),
-                      QVariant::fromValue<Combo>(Combo(Contact("Mr B.", 40, true, "bar"), EchoModule::Wednesday)) });
+                    { QVariant::fromValue<Combo>(Combo(Contact("Mr A.", 20, false, "foo"), Echomodule::Monday)),
+                      QVariant::fromValue<Combo>(Combo(Contact("Mr B.", 40, true, "bar"), Echomodule::Wednesday)) });
     Contact contactTestValue(QStringLiteral("Nemo"), 47, true, 1);
-    EchoModule::WeekDay weekDayTestValue = EchoModule::Wednesday;
-    EchoModule::TestEnum testEnumTestValue = EchoModule::SecondEnumValue;
+    Echomodule::WeekDay weekDayTestValue = Echomodule::Wednesday;
+    Echomodule::TestEnum testEnumTestValue = Echomodule::SecondEnumValue;
 
     server.m_echoService.setLastMessage(lastMessageTestValue);
     server.m_echoService.setIntValue(intValueTestValue);
@@ -161,11 +161,11 @@ void EchoQtroTest::testZonedInit()
     QCOMPARE(client.intValue(), 0);
     QCOMPARE(client.varValue(), QVariant());
     QCOMPARE(client.stringValue(), QString());
-    QCOMPARE(client.airflowDirection(), EchoModule::AirflowDirections());
+    QCOMPARE(client.airflowDirection(), Echomodule::AirflowDirections());
     QCOMPARE(client.contact(), Contact());
     QCOMPARE(client.comboList(), QVariantList());
     QCOMPARE(client.UPPERCASEPROPERTY(), qreal(0.0));
-    QCOMPARE(client.testEnum(), EchoModule::FirstEnumValue);
+    QCOMPARE(client.testEnum(), Echomodule::FirstEnumValue);
     QCOMPARE(client.availableZones(), QStringList());
 
     Server server;
@@ -174,22 +174,22 @@ void EchoQtroTest::testZonedInit()
     QCOMPARE(server.m_echoZonedService.intValue(QString()), 0);
     QCOMPARE(server.m_echoZonedService.varValue(QString()), QVariant());
     QCOMPARE(server.m_echoZonedService.stringValue(QString()), QString());
-    QCOMPARE(server.m_echoZonedService.airflowDirection(QString()), EchoModule::AirflowDirections());
+    QCOMPARE(server.m_echoZonedService.airflowDirection(QString()), Echomodule::AirflowDirections());
     QCOMPARE(server.m_echoZonedService.contact(QString()), Contact());
     QCOMPARE(server.m_echoZonedService.comboList(QString()), QVariantList());
     QCOMPARE(server.m_echoZonedService.UPPERCASEPROPERTY(QString()), qreal(0.0));
-    QCOMPARE(server.m_echoZonedService.testEnum(QString()), EchoModule::FirstEnumValue);
+    QCOMPARE(server.m_echoZonedService.testEnum(QString()), Echomodule::FirstEnumValue);
 
     int intValueTestValue(789);
     QVariant varValueTestValue(789);
     qreal floatValueTestValue(3.14);
     QLatin1String stringValueTestValue("test string");
     QVariantList comboListTestValue(
-                    { QVariant::fromValue<Combo>(Combo(Contact("Mr A.", 20, false, "foo"), EchoModule::Monday)),
-                      QVariant::fromValue<Combo>(Combo(Contact("Mr B.", 40, true, "bar"), EchoModule::Wednesday)) });
+                    { QVariant::fromValue<Combo>(Combo(Contact("Mr A.", 20, false, "foo"), Echomodule::Monday)),
+                      QVariant::fromValue<Combo>(Combo(Contact("Mr B.", 40, true, "bar"), Echomodule::Wednesday)) });
     Contact contactTestValue(QStringLiteral("Nemo"), 47, true, 1);
-    EchoModule::AirflowDirections airflowTestValue = EchoModule::Windshield;
-    EchoModule::TestEnum testEnumTestValue = EchoModule::SecondEnumValue;
+    Echomodule::AirflowDirections airflowTestValue = Echomodule::Windshield;
+    Echomodule::TestEnum testEnumTestValue = Echomodule::SecondEnumValue;
 
 
     server.m_echoZonedService.setIntValue(intValueTestValue, QString());
@@ -368,8 +368,8 @@ void EchoQtroTest::testClient2Server()
     QSignalSpy comboListSpy(&server.m_echoService, SIGNAL(comboListChanged(QVariantList)));
     QVERIFY(comboListSpy.isValid());
     QVariantList comboListTestValue(
-                    { QVariant::fromValue<Combo>(Combo(Contact("Mr A.", 20, false, "foo"), EchoModule::Monday)),
-                      QVariant::fromValue<Combo>(Combo(Contact("Mr B.", 40, true, "bar"), EchoModule::Wednesday)) });
+                    { QVariant::fromValue<Combo>(Combo(Contact("Mr A.", 20, false, "foo"), Echomodule::Monday)),
+                      QVariant::fromValue<Combo>(Combo(Contact("Mr B.", 40, true, "bar"), Echomodule::Wednesday)) });
     client.setComboList(comboListTestValue);
     WAIT_AND_COMPARE(comboListSpy, 1);
     QCOMPARE(server.m_echoService.comboList().count(),comboListTestValue.count());
@@ -387,21 +387,21 @@ void EchoQtroTest::testClient2Server()
     QCOMPARE(server.m_echoService.contact(), contactTestValue);
     QCOMPARE(contactSpy[0][0].value<Contact>(), contactTestValue);
 
-    QSignalSpy weekDaySpy(&server.m_echoService, SIGNAL(weekDayChanged(EchoModule::DaysOfTheWeek)));
+    QSignalSpy weekDaySpy(&server.m_echoService, SIGNAL(weekDayChanged(Echomodule::DaysOfTheWeek)));
     QVERIFY(weekDaySpy.isValid());
-    EchoModule::DaysOfTheWeek weekDayTestValue = EchoModule::Thursday;
+    Echomodule::DaysOfTheWeek weekDayTestValue = Echomodule::Thursday;
     client.setWeekDay(weekDayTestValue);
     WAIT_AND_COMPARE(weekDaySpy, 1);
     QCOMPARE(server.m_echoService.weekDay(), weekDayTestValue);
-    QCOMPARE(weekDaySpy[0][0].value<EchoModule::DaysOfTheWeek>(), weekDayTestValue);
+    QCOMPARE(weekDaySpy[0][0].value<Echomodule::DaysOfTheWeek>(), weekDayTestValue);
 
-    QSignalSpy testEnumSpy(&server.m_echoService, SIGNAL(testEnumChanged(EchoModule::TestEnum)));
+    QSignalSpy testEnumSpy(&server.m_echoService, SIGNAL(testEnumChanged(Echomodule::TestEnum)));
     QVERIFY(testEnumSpy.isValid());
-    EchoModule::TestEnum testEnumTestValue = EchoModule::SecondEnumValue;
+    Echomodule::TestEnum testEnumTestValue = Echomodule::SecondEnumValue;
     client.setTestEnum(testEnumTestValue);
     WAIT_AND_COMPARE(testEnumSpy, 1);
     QCOMPARE(server.m_echoService.testEnum(), testEnumTestValue);
-    QCOMPARE(testEnumSpy[0][0].value<EchoModule::TestEnum>(), testEnumTestValue);
+    QCOMPARE(testEnumSpy[0][0].value<Echomodule::TestEnum>(), testEnumTestValue);
 }
 
 void EchoQtroTest::testZonedClient2Server()
@@ -452,8 +452,8 @@ void EchoQtroTest::testZonedClient2Server()
     QSignalSpy comboListSpy(&server.m_echoZonedService, SIGNAL(comboListChanged(QVariantList, QString)));
     QVERIFY(comboListSpy.isValid());
     QVariantList comboListTestValue(
-                    { QVariant::fromValue<Combo>(Combo(Contact("Mr A.", 20, false, "foo"), EchoModule::Monday)),
-                      QVariant::fromValue<Combo>(Combo(Contact("Mr B.", 40, true, "bar"), EchoModule::Wednesday)) });
+                    { QVariant::fromValue<Combo>(Combo(Contact("Mr A.", 20, false, "foo"), Echomodule::Monday)),
+                      QVariant::fromValue<Combo>(Combo(Contact("Mr B.", 40, true, "bar"), Echomodule::Wednesday)) });
     zone->setComboList(comboListTestValue);
     WAIT_AND_COMPARE(comboListSpy, 1);
     QVariantList comboList = server.m_echoZonedService.comboList(frontLeftZone);
@@ -474,22 +474,22 @@ void EchoQtroTest::testZonedClient2Server()
     QCOMPARE(contactSpy[0][0].value<Contact>(), contactTestValue);
     QCOMPARE(contactSpy[0][1].toString(), frontLeftZone);
 
-    QSignalSpy airflowSpy(&server.m_echoZonedService, SIGNAL(airflowDirectionChanged(EchoModule::AirflowDirections, QString)));
+    QSignalSpy airflowSpy(&server.m_echoZonedService, SIGNAL(airflowDirectionChanged(Echomodule::AirflowDirections, QString)));
     QVERIFY(airflowSpy.isValid());
-    EchoModule::AirflowDirections airflowTestValue = EchoModule::Windshield;
+    Echomodule::AirflowDirections airflowTestValue = Echomodule::Windshield;
     zone->setAirflowDirection(airflowTestValue);
     WAIT_AND_COMPARE(airflowSpy, 1);
     QCOMPARE(server.m_echoZonedService.airflowDirection(frontLeftZone), airflowTestValue);
-    QCOMPARE(airflowSpy[0][0].value<EchoModule::AirflowDirections>(), airflowTestValue);
+    QCOMPARE(airflowSpy[0][0].value<Echomodule::AirflowDirections>(), airflowTestValue);
     QCOMPARE(airflowSpy[0][1].toString(), frontLeftZone);
 
-    QSignalSpy testEnumSpy(&server.m_echoZonedService, SIGNAL(testEnumChanged(EchoModule::TestEnum, QString)));
+    QSignalSpy testEnumSpy(&server.m_echoZonedService, SIGNAL(testEnumChanged(Echomodule::TestEnum, QString)));
     QVERIFY(testEnumSpy.isValid());
-    EchoModule::TestEnum testEnumTestValue = EchoModule::SecondEnumValue;
+    Echomodule::TestEnum testEnumTestValue = Echomodule::SecondEnumValue;
     zone->setTestEnum(testEnumTestValue);
     WAIT_AND_COMPARE(testEnumSpy, 1);
     QCOMPARE(server.m_echoZonedService.testEnum(frontLeftZone), testEnumTestValue);
-    QCOMPARE(testEnumSpy[0][0].value<EchoModule::TestEnum>(), testEnumTestValue);
+    QCOMPARE(testEnumSpy[0][0].value<Echomodule::TestEnum>(), testEnumTestValue);
     QCOMPARE(testEnumSpy[0][1].toString(), frontLeftZone);
 }
 
@@ -544,8 +544,8 @@ void EchoQtroTest::testServer2Client()
     QSignalSpy comboListSpy(&client, SIGNAL(comboListChanged(QVariantList)));
     QVERIFY(comboListSpy.isValid());
     QVariantList comboListTestValue(
-                    { QVariant::fromValue<Combo>(Combo(Contact("Mr A.", 20, false, "foo"), EchoModule::Monday)),
-                      QVariant::fromValue<Combo>(Combo(Contact("Mr B.", 40, true, "bar"), EchoModule::Wednesday)) });
+                    { QVariant::fromValue<Combo>(Combo(Contact("Mr A.", 20, false, "foo"), Echomodule::Monday)),
+                      QVariant::fromValue<Combo>(Combo(Contact("Mr B.", 40, true, "bar"), Echomodule::Wednesday)) });
     server.m_echoService.setComboList(comboListTestValue);
     WAIT_AND_COMPARE(comboListSpy, 1);
     QCOMPARE(client.comboList().count(),comboListTestValue.count());
@@ -563,22 +563,22 @@ void EchoQtroTest::testServer2Client()
     QCOMPARE(client.contact(), contactTestValue);
     QCOMPARE(contactSpy[0][0].value<Contact>(), contactTestValue);
 
-    QSignalSpy weekDaySpy(&client, SIGNAL(weekDayChanged(EchoModule::DaysOfTheWeek)));
+    QSignalSpy weekDaySpy(&client, SIGNAL(weekDayChanged(Echomodule::DaysOfTheWeek)));
     QVERIFY(weekDaySpy.isValid());
-    EchoModule::WeekDay weekDayTestValue = EchoModule::Friday;
+    Echomodule::WeekDay weekDayTestValue = Echomodule::Friday;
     server.m_echoService.setWeekDay(weekDayTestValue);
     WAIT_AND_COMPARE(weekDaySpy, 1);
 
     QCOMPARE(client.weekDay(), weekDayTestValue);
-    QCOMPARE(weekDaySpy[0][0].value<EchoModule::DaysOfTheWeek>(), weekDayTestValue);
+    QCOMPARE(weekDaySpy[0][0].value<Echomodule::DaysOfTheWeek>(), weekDayTestValue);
 
-    QSignalSpy testEnumSpy(&client, SIGNAL(testEnumChanged(EchoModule::TestEnum)));
+    QSignalSpy testEnumSpy(&client, SIGNAL(testEnumChanged(Echomodule::TestEnum)));
     QVERIFY(testEnumSpy.isValid());
-    EchoModule::TestEnum testEnumTestValue = EchoModule::SecondEnumValue;
+    Echomodule::TestEnum testEnumTestValue = Echomodule::SecondEnumValue;
     server.m_echoService.setTestEnum(testEnumTestValue);
     WAIT_AND_COMPARE(testEnumSpy, 1);
     QCOMPARE(client.testEnum(), testEnumTestValue);
-    QCOMPARE(testEnumSpy[0][0].value<EchoModule::TestEnum>(), testEnumTestValue);
+    QCOMPARE(testEnumSpy[0][0].value<Echomodule::TestEnum>(), testEnumTestValue);
 }
 
 void EchoQtroTest::testZonedServer2Client()
@@ -626,8 +626,8 @@ void EchoQtroTest::testZonedServer2Client()
     QSignalSpy comboListSpy(zone, SIGNAL(comboListChanged(QVariantList)));
     QVERIFY(comboListSpy.isValid());
     QVariantList comboListTestValue(
-                    { QVariant::fromValue<Combo>(Combo(Contact("Mr A.", 20, false, "foo"), EchoModule::Thursday)),
-                      QVariant::fromValue<Combo>(Combo(Contact("Mr B.", 40, true, "bar"), EchoModule::Tuesday)) });
+                    { QVariant::fromValue<Combo>(Combo(Contact("Mr A.", 20, false, "foo"), Echomodule::Thursday)),
+                      QVariant::fromValue<Combo>(Combo(Contact("Mr B.", 40, true, "bar"), Echomodule::Tuesday)) });
     server.m_echoZonedService.setComboList(comboListTestValue, frontLeftZone);
     WAIT_AND_COMPARE(comboListSpy, 1);
     QVariantList comboList = zone->comboList();
@@ -646,21 +646,21 @@ void EchoQtroTest::testZonedServer2Client()
     QCOMPARE(zone->contact(), contactTestValue);
     QCOMPARE(contactSpy[0][0].value<Contact>(), contactTestValue);
 
-    QSignalSpy airflowSpy(zone, SIGNAL(airflowDirectionChanged(EchoModule::AirflowDirections)));
+    QSignalSpy airflowSpy(zone, SIGNAL(airflowDirectionChanged(Echomodule::AirflowDirections)));
     QVERIFY(airflowSpy.isValid());
-    EchoModule::AirflowDirections airflowTestValue = EchoModule::Windshield;
+    Echomodule::AirflowDirections airflowTestValue = Echomodule::Windshield;
     server.m_echoZonedService.setAirflowDirection(airflowTestValue, frontLeftZone);
     WAIT_AND_COMPARE(airflowSpy, 1);
     QCOMPARE(zone->airflowDirection(), airflowTestValue);
-    QCOMPARE(airflowSpy[0][0].value<EchoModule::AirflowDirections>(), airflowTestValue);
+    QCOMPARE(airflowSpy[0][0].value<Echomodule::AirflowDirections>(), airflowTestValue);
 
-    QSignalSpy testEnumSpy(zone, SIGNAL(testEnumChanged(EchoModule::TestEnum)));
+    QSignalSpy testEnumSpy(zone, SIGNAL(testEnumChanged(Echomodule::TestEnum)));
     QVERIFY(testEnumSpy.isValid());
-    EchoModule::TestEnum testEnumTestValue = EchoModule::SecondEnumValue;
+    Echomodule::TestEnum testEnumTestValue = Echomodule::SecondEnumValue;
     server.m_echoZonedService.setTestEnum(testEnumTestValue, frontLeftZone);
     WAIT_AND_COMPARE(testEnumSpy, 1);
     QCOMPARE(zone->testEnum(), testEnumTestValue);
-    QCOMPARE(testEnumSpy[0][0].value<EchoModule::TestEnum>(), testEnumTestValue);
+    QCOMPARE(testEnumSpy[0][0].value<Echomodule::TestEnum>(), testEnumTestValue);
 }
 
 void EchoQtroTest::testSlots()
@@ -718,25 +718,25 @@ void EchoQtroTest::testSlots()
     QCOMPARE(voidSlot2Spy.count(), 1);
     QCOMPARE(voidSlot2Spy[0][0].toInt(), voidSlot2TestValue);
 
-    QSignalSpy flagMethodSpy(&server.m_echoService, SIGNAL(flagMethodCalled(EchoModule::AirflowDirections)));
+    QSignalSpy flagMethodSpy(&server.m_echoService, SIGNAL(flagMethodCalled(Echomodule::AirflowDirections)));
     QVERIFY(flagMethodSpy.isValid());
-    EchoModule::AirflowDirections flagTestValue = EchoModule::Dashboard;
-    QIviPendingReply<EchoModule::AirflowDirections> flagMethodReply = client.flagMethod(flagTestValue);
+    Echomodule::AirflowDirections flagTestValue = Echomodule::Dashboard;
+    QIviPendingReply<Echomodule::AirflowDirections> flagMethodReply = client.flagMethod(flagTestValue);
     QSignalSpy flagMethodReplySpy(flagMethodReply.watcher(), SIGNAL(replySuccess()));
     WAIT_AND_COMPARE(flagMethodReplySpy, 1);
     QCOMPARE(flagMethodReply.reply(), flagTestValue);
     QCOMPARE(flagMethodSpy.count(), 1);
-    QCOMPARE(flagMethodSpy[0][0].value<EchoModule::AirflowDirections>(), flagTestValue);
+    QCOMPARE(flagMethodSpy[0][0].value<Echomodule::AirflowDirections>(), flagTestValue);
 
-    QSignalSpy enumMethodSpy(&server.m_echoService, SIGNAL(enumMethodCalled(EchoModule::TestEnum)));
+    QSignalSpy enumMethodSpy(&server.m_echoService, SIGNAL(enumMethodCalled(Echomodule::TestEnum)));
     QVERIFY(enumMethodSpy.isValid());
-    EchoModule::TestEnum enumTestValue = EchoModule::SecondEnumValue;
-    QIviPendingReply<EchoModule::TestEnum> enumMethodReply = client.enumMethod(enumTestValue);
+    Echomodule::TestEnum enumTestValue = Echomodule::SecondEnumValue;
+    QIviPendingReply<Echomodule::TestEnum> enumMethodReply = client.enumMethod(enumTestValue);
     QSignalSpy enumMethodReplySpy(enumMethodReply.watcher(), SIGNAL(replySuccess()));
     WAIT_AND_COMPARE(enumMethodReplySpy, 1);
     QCOMPARE(enumMethodReply.reply(), enumTestValue);
     QCOMPARE(enumMethodSpy.count(), 1);
-    QCOMPARE(enumMethodSpy[0][0].value<EchoModule::TestEnum>(), enumTestValue);
+    QCOMPARE(enumMethodSpy[0][0].value<Echomodule::TestEnum>(), enumTestValue);
 }
 
 void EchoQtroTest::testZonedSlots()
@@ -786,26 +786,26 @@ void EchoQtroTest::testZonedSlots()
     QCOMPARE(comboReply.reply(), server.m_echoService.m_testCombo);
     QCOMPARE(getComboSpy.count(), 1);
 
-    QSignalSpy flagMethodSpy(&server.m_echoZonedService, SIGNAL(flagMethodCalled(EchoModule::AirflowDirections, QString)));
+    QSignalSpy flagMethodSpy(&server.m_echoZonedService, SIGNAL(flagMethodCalled(Echomodule::AirflowDirections, QString)));
     QVERIFY(flagMethodSpy.isValid());
-    EchoModule::AirflowDirections flagTestValue = EchoModule::Dashboard;
-    QIviPendingReply<EchoModule::AirflowDirections> flagMethodReply = zone->flagMethod(flagTestValue);
+    Echomodule::AirflowDirections flagTestValue = Echomodule::Dashboard;
+    QIviPendingReply<Echomodule::AirflowDirections> flagMethodReply = zone->flagMethod(flagTestValue);
     QSignalSpy flagMethodReplySpy(flagMethodReply.watcher(), SIGNAL(replySuccess()));
     WAIT_AND_COMPARE(flagMethodReplySpy, 1);
     QCOMPARE(flagMethodReply.reply(), flagTestValue);
     QCOMPARE(flagMethodSpy.count(), 1);
-    QCOMPARE(flagMethodSpy[0][0].value<EchoModule::AirflowDirections>(), flagTestValue);
+    QCOMPARE(flagMethodSpy[0][0].value<Echomodule::AirflowDirections>(), flagTestValue);
     QCOMPARE(flagMethodSpy[0][1].toString(), frontLeftZone);
 
-    QSignalSpy enumMethodSpy(&server.m_echoZonedService, SIGNAL(enumMethodCalled(EchoModule::TestEnum, QString)));
+    QSignalSpy enumMethodSpy(&server.m_echoZonedService, SIGNAL(enumMethodCalled(Echomodule::TestEnum, QString)));
     QVERIFY(enumMethodSpy.isValid());
-    EchoModule::TestEnum enumTestValue = EchoModule::SecondEnumValue;
-    QIviPendingReply<EchoModule::TestEnum> enumMethodReply = zone->enumMethod(enumTestValue);
+    Echomodule::TestEnum enumTestValue = Echomodule::SecondEnumValue;
+    QIviPendingReply<Echomodule::TestEnum> enumMethodReply = zone->enumMethod(enumTestValue);
     QSignalSpy enumMethodReplySpy(enumMethodReply.watcher(), SIGNAL(replySuccess()));
     WAIT_AND_COMPARE(enumMethodReplySpy, 1);
     QCOMPARE(enumMethodReply.reply(), enumTestValue);
     QCOMPARE(enumMethodSpy.count(), 1);
-    QCOMPARE(enumMethodSpy[0][0].value<EchoModule::TestEnum>(), enumTestValue);
+    QCOMPARE(enumMethodSpy[0][0].value<Echomodule::TestEnum>(), enumTestValue);
     QCOMPARE(enumMethodSpy[0][1].toString(), frontLeftZone);
 }
 

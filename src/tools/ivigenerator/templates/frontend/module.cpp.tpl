@@ -37,7 +37,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% set class = '{0}Module'.format(module.module_name|upperfirst) %}
+{% set class = '{0}'.format(module.module_name|upperfirst) %}
 {% set qml_name = (module|qml_type).split('.')[-1]|upperfirst %}
 {% include 'common/generated_comment.cpp.tpl' %}
 {% import 'common/qtivi_macros.j2' as ivi %}
@@ -126,7 +126,7 @@ void {{class}}::registerTypes()
 {%   set name = import.split(' ')[0] %}
 {%   for mod in system.modules %}
 {%     if mod.name == name %}
-    {{mod.module_name|upperfirst}}Module::registerTypes();
+    {{mod.module_name|upperfirst}}::registerTypes();
 {%     endif %}
 {%   endfor %}
 {% endfor %}

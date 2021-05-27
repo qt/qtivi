@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
     QCoreApplication app(argc, argv);
 
     ProcessingService service;
-    Core::instance()->host()->enableRemoting(&service,QStringLiteral("Example.IVI.Remote.ProcessingService"));
+    Core::instance()->host()->enableRemoting(&service,QStringLiteral("Example.IVI.RemoteModule.ProcessingService"));
 
     return app.exec();
 }

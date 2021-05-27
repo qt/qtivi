@@ -2,7 +2,7 @@
  * Test module
  */
 //! [0]
-module Example.IVI.Remote 1.0;
+module Example.IVI.RemoteModule 1.0;
 //! [0]
 /**
  * The ProcessingService provides a QML interface to a service doing

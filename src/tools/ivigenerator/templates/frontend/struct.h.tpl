@@ -48,9 +48,9 @@
 #define {{oncedefine}}
 
 {% if module.tags.config.module %}
-#include <{{module.tags.config.module}}/{{module.module_name|lower}}module.h>
+#include <{{module.tags.config.module}}/{{module.module_name|lower}}.h>
 {% else %}
-#include "{{module.module_name|lower}}module.h"
+#include "{{module.module_name|lower}}.h"
 {% endif %}
 {% for inc in struct|struct_includes %}
 {{inc}}

@@ -128,7 +128,7 @@ QT_BEGIN_NAMESPACE
 {%   endif %}
 {% endfor %}
 
-    {{module.module_name|upperfirst}}Module::registerTypes();
+    {{module.module_name|upperfirst}}::registerTypes();
 }
 
 {{class}}::~{{class}}()

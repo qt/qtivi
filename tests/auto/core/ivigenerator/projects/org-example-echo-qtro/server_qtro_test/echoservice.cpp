@@ -32,10 +32,10 @@
 #include <QTimer>
 
 EchoService::EchoService()
-    : m_testCombo(Contact(QStringLiteral("Antti"), 34, true, QVariant()), EchoModule::Friday)
+    : m_testCombo(Contact(QStringLiteral("Antti"), 34, true, QVariant()), Echomodule::Friday)
     , m_testId(QStringLiteral("id123"))
 {
-    setTestEnum(EchoModule::FirstEnumValue);
+    setTestEnum(Echomodule::FirstEnumValue);
 }
 
 void EchoService::setLastMessage(QString lastMessage)
@@ -83,13 +83,13 @@ QVariant EchoService::timer(int interval)
     return QVariant::fromValue(pendingResult);
 }
 
-QVariant EchoService::flagMethod(EchoModule::AirflowDirections direction)
+QVariant EchoService::flagMethod(Echomodule::AirflowDirections direction)
 {
     emit flagMethodCalled(direction);
     return QVariant::fromValue(direction);
 }
 
-QVariant EchoService::enumMethod(EchoModule::TestEnum testEnum)
+QVariant EchoService::enumMethod(Echomodule::TestEnum testEnum)
 {
     emit enumMethodCalled(testEnum);
     return QVariant::fromValue(testEnum);

@@ -1,7 +1,7 @@
-Example.IVI.AddressBook:
+Example.IVI.AddressBookModule:
     config_simulator:
         simulationFile: "qrc:/plugin_resource/simulation.qml"
 
-Example.IVI.AddressBook.AddressBook#contacts:
+Example.IVI.AddressBookModule.AddressBook#contacts:
     config_simulator:
         default: [[ "John", "Doe", "12345" ], [ "Jane", "Doe", "67890" ]]

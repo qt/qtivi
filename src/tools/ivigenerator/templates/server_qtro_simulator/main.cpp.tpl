@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 {% for interface in module.interfaces %}
     auto {{interface|lowerfirst}}Instance = new {{interface}}Backend(simulationEngine);
     //Register the types for the SimulationEngine
-    {{module.module_name|upperfirst}}Module::registerQmlTypes(QStringLiteral("{{module|qml_type}}.simulation"), {{module.majorVersion}}, {{module.minorVersion}});
+    {{module.module_name|upperfirst}}::registerQmlTypes(QStringLiteral("{{module|qml_type}}.simulation"), {{module.majorVersion}}, {{module.minorVersion}});
     simulationEngine->registerSimulationInstance({{interface|lowerfirst}}Instance, "{{module|qml_type}}.simulation", {{module.majorVersion}}, {{module.minorVersion}}, "{{interface}}Backend");
 {% endfor %}
 {% if module.tags.config_simulator and module.tags.config_simulator.simulationFile %}

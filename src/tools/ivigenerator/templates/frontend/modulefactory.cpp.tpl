@@ -37,7 +37,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0
 #}
-{% set class = '{0}ModuleFactory'.format(module.module_name|upperfirst) %}
+{% set class = '{0}Factory'.format(module.module_name|upperfirst) %}
 {% set qml_name = (module|qml_type).split('.')[-1]|upperfirst %}
 {% include 'common/generated_comment.cpp.tpl' %}
 
@@ -67,7 +67,7 @@ QT_BEGIN_NAMESPACE
 {% endfor %}
 */
 {{class}}::{{class}}(QObject *parent)
-    : {{module.module_name|upperfirst}}Module(parent)
+    : {{module.module_name|upperfirst}}(parent)
 {
 }
 

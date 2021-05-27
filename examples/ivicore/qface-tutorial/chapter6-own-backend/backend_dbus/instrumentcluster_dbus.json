@@ -1,5 +1,5 @@
 {
     "interfaces" : [
-      "Example.IVI.InstrumentCluster.InstrumentCluster"
+      "Example.IVI.InstrumentClusterModule.InstrumentCluster"
     ]
 }

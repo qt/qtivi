@@ -54,8 +54,8 @@ HEADERS += \
 {% for struct in module.structs %}
     $$PWD/{{struct|lower}}.h \
 {% endfor %}
-    $$PWD/{{module.module_name|lower}}module.h \
-    $$PWD/{{module.module_name|lower}}modulefactory.h \
+    $$PWD/{{module.module_name|lower}}.h \
+    $$PWD/{{module.module_name|lower}}factory.h \
     $$PWD/{{module.module_name|lower}}global.h
 
 SOURCES += \
@@ -66,5 +66,5 @@ SOURCES += \
 {% for struct in module.structs %}
     $$PWD/{{struct|lower}}.cpp \
 {% endfor %}
-    $$PWD/{{module.module_name|lower}}module.cpp \
-    $$PWD/{{module.module_name|lower}}modulefactory.cpp
+    $$PWD/{{module.module_name|lower}}.cpp \
+    $$PWD/{{module.module_name|lower}}factory.cpp

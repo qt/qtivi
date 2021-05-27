@@ -52,9 +52,9 @@
 #define {{oncedefine}}
 
 {% if interface.module.tags.config.module %}
-#include <{{interface.module.tags.config.module}}/{{module.module_name|lower}}module.h>
+#include <{{interface.module.tags.config.module}}/{{module.module_name|lower}}.h>
 {% else %}
-#include "{{module.module_name|lower}}module.h"
+#include "{{module.module_name|lower}}.h"
 {% endif %}
 
 {% for inc in interface|struct_includes %}

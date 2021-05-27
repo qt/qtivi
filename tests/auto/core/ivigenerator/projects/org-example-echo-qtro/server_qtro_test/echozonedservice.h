@@ -53,8 +53,8 @@ public slots:
     void setValueWithDefault(bool valueWithDefault, const QString &zone) override;
     bool isEchoEnabled(const QString &zone) override;
     void setEchoEnabled(bool echoEnabled, const QString &zone) override;
-    EchoModule::AirflowDirections airflowDirection(const QString &zone) override;
-    void setAirflowDirection(EchoModule::AirflowDirections airflowDirection, const QString &zone) override;
+    Echomodule::AirflowDirections airflowDirection(const QString &zone) override;
+    void setAirflowDirection(Echomodule::AirflowDirections airflowDirection, const QString &zone) override;
     int rangedValue(const QString &zone) override;
     void setRangedValue(int rangedValue, const QString &zone) override;
     int rangedValueWithDefault(const QString &zone) override;
@@ -67,10 +67,10 @@ public slots:
     void setIntList(const QVariantList &intList, const QString &zone) override;
     QVariantList comboList(const QString &zone) override;
     void setComboList(const QVariantList &comboList, const QString &zone) override;
-    EchoModule::DaysOfTheWeek weekDay(const QString &zone) override;
-    void setWeekDay(EchoModule::DaysOfTheWeek weekDay, const QString &zone) override;
-    EchoModule::TestEnum testEnum(const QString &zone) override;
-    void setTestEnum(EchoModule::TestEnum testEnum, const QString &zone) override;
+    Echomodule::DaysOfTheWeek weekDay(const QString &zone) override;
+    void setWeekDay(Echomodule::DaysOfTheWeek weekDay, const QString &zone) override;
+    Echomodule::TestEnum testEnum(const QString &zone) override;
+    void setTestEnum(Echomodule::TestEnum testEnum, const QString &zone) override;
     qreal UPPERCASEPROPERTY(const QString &zone) override;
     void setUPPERCASEPROPERTY(qreal UPPERCASEPROPERTY, const QString &zone) override;
     QStringList availableZones() override;
@@ -79,8 +79,8 @@ public slots:
     QVariant varMethod(const QString &zone) override;
     QVariant getCombo(const QString &zone) override;
     QVariant timer(int interval, const QString &zone) override;
-    QVariant flagMethod(EchoModule::AirflowDirections direction, const QString &zone) override;
-    QVariant enumMethod(EchoModule::TestEnum testEnum, const QString &zone) override;
+    QVariant flagMethod(Echomodule::AirflowDirections direction, const QString &zone) override;
+    QVariant enumMethod(Echomodule::TestEnum testEnum, const QString &zone) override;
 
 Q_SIGNALS:
     void echoSlotCalled(const QString &msg, const QString& zone);
@@ -89,8 +89,8 @@ Q_SIGNALS:
     void getComboSlotCalled(const QString& zone);
     void voidSlotCalled(const QString& zone);
     void voidSlot2Called(int param, const QString& zone);
-    void flagMethodCalled(EchoModule::AirflowDirections direction, const QString& zone);
-    void enumMethodCalled(EchoModule::TestEnum testEnum, const QString& zone);
+    void flagMethodCalled(Echomodule::AirflowDirections direction, const QString& zone);
+    void enumMethodCalled(Echomodule::TestEnum testEnum, const QString& zone);
 
 private:
     struct ZoneObject {
@@ -103,7 +103,7 @@ private:
             , m_zonedValue(bool(false))
             , m_valueWithDefault(bool(false))
             , m_echoEnabled(bool(false))
-            , m_airflowDirection(EchoModule::AirflowDirections())
+            , m_airflowDirection(Echomodule::AirflowDirections())
             , m_rangedValue(int(0))
             , m_rangedValueWithDefault(int(0))
             , m_contact(Contact())
@@ -111,7 +111,7 @@ private:
             , m_intList(QVariantList())
             , m_comboList(QVariantList())
             , m_weekDay(0)
-            , m_testEnum(EchoModule::FirstEnumValue)
+            , m_testEnum(Echomodule::FirstEnumValue)
             , m_UPPERCASEPROPERTY(qreal(0.0))
         {}
 
@@ -124,15 +124,15 @@ private:
         bool m_zonedValue;
         bool m_valueWithDefault;
         bool m_echoEnabled;
-        EchoModule::AirflowDirections m_airflowDirection;
+        Echomodule::AirflowDirections m_airflowDirection;
         int m_rangedValue;
         int m_rangedValueWithDefault;
         Contact m_contact;
         Combo m_combo;
         QVariantList m_intList;
         QVariantList m_comboList;
-        EchoModule::DaysOfTheWeek m_weekDay;
-        EchoModule::TestEnum m_testEnum;
+        Echomodule::DaysOfTheWeek m_weekDay;
+        Echomodule::TestEnum m_testEnum;
         qreal m_UPPERCASEPROPERTY;
         QStringList m_propertiesToSync;
     };

@@ -1,4 +1,4 @@
-module Example.IVI.InstrumentCluster 1.0
+module Example.IVI.InstrumentClusterModule 1.0
 
 interface InstrumentCluster {
     readonly int speed;

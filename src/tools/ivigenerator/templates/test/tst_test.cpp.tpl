@@ -260,7 +260,7 @@ private:
     : QObject()
 {
     QCoreApplication::setLibraryPaths(QStringList());
-    {{module.module_name|upperfirst}}Module::registerTypes();
+    {{module.module_name|upperfirst}}::registerTypes();
     manager = QIviServiceManager::instance();
 }
 

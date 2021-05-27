@@ -38,7 +38,7 @@
 # SPDX-License-Identifier: LGPL-3.0
 #}
 {% set exportsymbol = 'Q_{0}_EXPORT'.format(module|upper|replace('.', '_')) %}
-{% set class = '{0}Module'.format(module.module_name|upperfirst) %}
+{% set class = '{0}'.format(module.module_name|upperfirst) %}
 {% set oncedefine = '{0}_H_'.format(class|upper) %}
 {% include 'common/generated_comment.cpp.tpl' %}
 
@@ -59,7 +59,7 @@
 {%   set name = import.split(' ')[0] %}
 {%   for mod in system.modules %}
 {%     if mod.name == name %}
-#include <{{mod.module_name|lower}}module.h>
+#include <{{mod.module_name|lower}}.h>
 {%     endif %}
 {%   endfor %}
 {% endfor %}

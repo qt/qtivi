@@ -1,87 +1,87 @@
-org.example.echo.EchoZoned#stringValue:
+org.example.echomodule.EchoZoned#stringValue:
     config_simulator:
         default: "two"
 
-org.example.echo.Echo#intValue:
+org.example.echomodule.Echo#intValue:
     config_simulator:
       default_value: 61
       range_high: 150
       range_low:  0
 
-org.example.echo.Echo#contact:
+org.example.echomodule.Echo#contact:
     config_simulator:
         zoned: true
         default: [ "foo", 23, true, 1234 ]
 
-org.example.echo.Echo#combo:
+org.example.echomodule.Echo#combo:
     config_simulator:
         zoned: true
         default: [ [ "foo", 23, true, 1234 ], WeekDay.Monday ]
 
-org.example.echo.Echo#intList:
+org.example.echomodule.Echo#intList:
     config_simulator:
         default: [1, 2, 3, 4]
 
-org.example.echo.Echo#comboList:
+org.example.echomodule.Echo#comboList:
     config_simulator:
         default: [[ [ "foo", 23, true, 1234 ], WeekDay.Monday ], [ [ "bar", 21, false, "foo" ], WeekDay.Tuesday ]]
 
-org.example.echo.Echo#contactList:
+org.example.echomodule.Echo#contactList:
     config_simulator:
         default: [[ "foo", 23, true, WeekDay.Monday ], [ "bar", 12, false, false ]]
 
-org.example.echo.EchoZoned:
+org.example.echomodule.EchoZoned:
     config_simulator:
         zones: [ FrontLeft, FrontRight, Rear ]
 
-org.example.echo.EchoZoned#stringValue:
+org.example.echomodule.EchoZoned#stringValue:
     config_simulator:
         default: { FrontLeft: "two", Rear: "one", =: "general" }
 
-org.example.echo.EchoZoned#intValue:
+org.example.echomodule.EchoZoned#intValue:
     config_simulator:
         default: 11
         range: { FrontLeft: [10, 33], Rear: [0, 11] }
 
-org.example.echo.EchoZoned#zonedValue:
+org.example.echomodule.EchoZoned#zonedValue:
     config_simulator:
         default: true
         zoned: true
 
-org.example.echo.EchoZoned#valueWithDefault:
+org.example.echomodule.EchoZoned#valueWithDefault:
     config_simulator:
         default: true
 
-org.example.echo.EchoZoned#unsupportedValue:
+org.example.echomodule.EchoZoned#unsupportedValue:
     config_simulator:
         unsupported: true
 
-org.example.echo.EchoZoned#rangedValue:
+org.example.echomodule.EchoZoned#rangedValue:
     config_simulator:
       range_high: 50
       range_low:  0
 
-org.example.echo.EchoZoned#rangedValueWithDefault:
+org.example.echomodule.EchoZoned#rangedValueWithDefault:
     config_simulator:
       default_value: 42
       range_high: 150
       range_low:  0
 
-org.example.echo.EchoZoned#contact:
+org.example.echomodule.EchoZoned#contact:
     config_simulator:
         zoned: true
         default: { FrontLeft: [ "foo", 23, true, 1234 ], Rear: [ "bar", 1, false, 3456 ] }
 
-org.example.echo.EchoZoned#combo:
+org.example.echomodule.EchoZoned#combo:
     config_simulator:
         zoned: true
         default: [ [ "foo", 23, true, 1234 ], WeekDay.Monday ]
 
-org.example.echo.EchoZoned#intList:
+org.example.echomodule.EchoZoned#intList:
     config_simulator:
         default: [1, 2, 3, 4]
 
-org.example.echo.EchoZoned#comboList:
+org.example.echomodule.EchoZoned#comboList:
     config_simulator:
         default: [[ [ "foo", 23, true, 1234 ], WeekDay.Monday ], [ [ "bar", 21, false, "foo" ], WeekDay.Tuesday ]]
 

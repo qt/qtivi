@@ -53,7 +53,7 @@
 
 //! [0]
 import QtQuick 2.0
-import Example.IVI.AddressBook.simulation 1.0
+import Example.IVI.AddressBookModule.simulation 1.0
 
 Item {
     AddressBookBackend {

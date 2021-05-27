@@ -55,7 +55,7 @@ import QtQuick 2.11
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
-import Example.IVI.AddressBook 1.0
+import Example.IVI.AddressBookModule 1.0
 
 Window {
     id: root
@@ -91,7 +91,7 @@ Window {
             Button {
                 Layout.fillWidth: true
                 text: "New Contact"
-                onClicked: addressBook.insertContact(0, AddressBook.contact("Foo", "Bar", "12234"))
+                onClicked: addressBook.insertContact(0, AddressBookModule.contact("Foo", "Bar", "12234"))
             }
         }
     }

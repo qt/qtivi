@@ -1,4 +1,4 @@
-module Example.IVI.AddressBook 1.0;
+module Example.IVI.AddressBookModule 1.0;
 
 @config: { qml_type: "UiAddressBook" }
 //! [0]

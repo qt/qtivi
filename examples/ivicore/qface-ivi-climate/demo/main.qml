@@ -54,7 +54,7 @@
 import QtQuick 2.7
 import QtQuick.Window 2.2
 //! [0]
-import Example.IVI.Climate 1.0
+import Example.IVI.ClimateModule 1.0
 
 Window {
 

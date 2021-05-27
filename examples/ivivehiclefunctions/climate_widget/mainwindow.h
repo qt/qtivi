@@ -76,8 +76,8 @@ public:
 
 private slots:
     void setAirRecirculationEnabled(bool enabled);
-    void onAirRecirculationModeChanged(QtIviVehicleFunctionsModule::RecirculationMode mode);
-    void setupFlowDirectionRadioButtons(QtIviVehicleFunctionsModule::AirflowDirections direction);
+    void onAirRecirculationModeChanged(QtIviVehicleFunctions::RecirculationMode mode);
+    void setupFlowDirectionRadioButtons(QtIviVehicleFunctions::AirflowDirections direction);
     void onFlowDirectionButtonToggled(QAbstractButton *button, bool checked);
 private:
 

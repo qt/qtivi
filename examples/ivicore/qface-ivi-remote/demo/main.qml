@@ -55,7 +55,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Window 2.2
 //! [0]
-import Example.IVI.Remote 1.0
+import Example.IVI.RemoteModule 1.0
 
 Window {
     visible: true

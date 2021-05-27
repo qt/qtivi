@@ -47,7 +47,7 @@
 #include <QDebug>
 #include <QSettings>
 #include <QTimer>
-#include "{{module.module_name|lower}}module.h"
+#include "{{module.module_name|lower}}.h"
 
 Q_LOGGING_CATEGORY(qLcRO{{interface}}, "{{module|qml_type|lower}}.{{interface|lower}}backend.remoteobjects", QtInfoMsg)
 
@@ -146,7 +146,7 @@ void {{zone_class}}::emitCurrentState()
     , m_synced(false)
 {% endif %}
 {
-    {{module.module_name|upperfirst}}Module::registerTypes();
+    {{module.module_name|upperfirst}}::registerTypes();
 
 {% if interface_zoned %}
     auto zoneObject = new {{zone_class}}(QString(), this);

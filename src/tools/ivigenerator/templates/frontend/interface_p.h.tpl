@@ -60,7 +60,7 @@
 // We mean it.
 //
 
-#include "{{module.module_name|lower}}module.h"
+#include "{{module.module_name|lower}}.h"
 
 {% if module.tags.config.disablePrivateIVI %}
 #include <QObject>

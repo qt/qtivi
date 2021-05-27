@@ -9,6 +9,6 @@ target_sources(${CURRENT_TARGET}
 {% for struct in module.structs %}
     {{struct|lower}}.cpp
 {% endfor %}
-    {{module.module_name|lower}}module.cpp
-    {{module.module_name|lower}}modulefactory.cpp
+    {{module.module_name|lower}}.cpp
+    {{module.module_name|lower}}factory.cpp
 )

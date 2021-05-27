@@ -1,4 +1,4 @@
-org.example.echo:
+org.example.echomodule:
     config:
         disablePrivateIVI: true
         interfaceBuilder: false

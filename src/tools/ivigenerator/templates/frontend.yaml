@@ -2,11 +2,11 @@ frontend:
     module:
         documents:
             - '{{module.module_name|lower}}global.h': 'global.h.tpl'
-            - '{{module.module_name|lower}}module.h': 'module.h.tpl'
-            - '{{module.module_name|lower}}module.cpp': 'module.cpp.tpl'
+            - '{{module.module_name|lower}}.h': 'module.h.tpl'
+            - '{{module.module_name|lower}}.cpp': 'module.cpp.tpl'
             - '{{module.module_name|lower}}module_enum.qdocinc': 'module_qml_enum.qdocinc.tpl'
-            - '{{module.module_name|lower}}modulefactory.h': 'modulefactory.h.tpl'
-            - '{{module.module_name|lower}}modulefactory.cpp': 'modulefactory.cpp.tpl'
+            - '{{module.module_name|lower}}factory.h': 'modulefactory.h.tpl'
+            - '{{module.module_name|lower}}factory.cpp': 'modulefactory.cpp.tpl'
             - '{{srcBase|lower}}.pri': 'module.pri.tpl'
             - '{{srcBase|lower}}.cmake': 'CMakeLists.txt.tpl'
             - 'qml/{{module|qml_type|replace(".", "/")}}/plugins.qmltypes': 'common/plugins.qmltypes.tpl'

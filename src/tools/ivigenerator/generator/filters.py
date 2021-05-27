@@ -90,7 +90,7 @@ def conf_sim_tag(symbol, path, default_value=False):
 
 def enum_value_to_cppliteral(value, module_name):
     value = value.strip().rsplit('.', 1)[-1]
-    return '{0}{1}Module::{2}'.format(Filters.classPrefix, upper_first(module_name), value)
+    return '{0}{1}::{2}'.format(Filters.classPrefix, upper_first(module_name), value)
 
 
 def enum_value(value, module_name):
@@ -121,10 +121,10 @@ def default_type_value(symbol):
     elif t.is_enum:
         module_name = t.reference.module.module_name
         value = next(iter(t.reference.members))
-        return '{0}{1}Module::{2}'.format(prefix, upper_first(module_name), value)
+        return '{0}{1}::{2}'.format(prefix, upper_first(module_name), value)
     elif t.is_flag:
         module_name = t.reference.module.module_name
-        return '{0}{1}Module::{2}()'.format(prefix, upper_first(module_name), flag_type(symbol))
+        return '{0}{1}::{2}()'.format(prefix, upper_first(module_name), flag_type(symbol))
     elif symbol.type.is_list:
         nested = Filters.returnType(symbol.type.nested)
         return 'QVariantList()'.format(nested)
@@ -157,11 +157,11 @@ def test_type_value(symbol):
     elif t.is_enum:
         module_name = t.reference.module.module_name
         value = list(iter(t.reference.members))[-1]
-        return '{0}{1}Module::{2}'.format(prefix, upper_first(module_name), value)
+        return '{0}{1}::{2}'.format(prefix, upper_first(module_name), value)
     elif t.is_flag:
         module_name = t.reference.module.module_name
         value = next(iter(t.reference.members))
-        return '{0}{1}Module::{2}'.format(prefix, upper_first(module_name), value)
+        return '{0}{1}::{2}'.format(prefix, upper_first(module_name), value)
     elif symbol.type.is_list:
         value = test_type_value(t.nested.type)
         if not (t.nested.type.is_primitive):
@@ -242,7 +242,7 @@ def parameter_type_default(symbol):
     """
     prefix = Filters.classPrefix
     if symbol.type.is_enum or symbol.type.is_flag:
-        return '{0}{1}Module::{2} {3}={4}'.format(prefix, upper_first(symbol.type.reference.module.module_name), flag_type(symbol), symbol, default_type_value(symbol))
+        return '{0}{1}::{2} {3}={4}'.format(prefix, upper_first(symbol.type.reference.module.module_name), flag_type(symbol), symbol, default_type_value(symbol))
     if symbol.type.is_void or symbol.type.is_primitive:
         if symbol.type.name == 'string':
             return 'const QString &{0}=QString()'.format(symbol)
@@ -272,7 +272,7 @@ def parameter_type(symbol):
     """
     prefix = Filters.classPrefix
     if symbol.type.is_enum or symbol.type.is_flag:
-        return '{0}{1}Module::{2} {3}'.format(prefix, upper_first(symbol.type.reference.module.module_name), flag_type(symbol), symbol)
+        return '{0}{1}::{2} {3}'.format(prefix, upper_first(symbol.type.reference.module.module_name), flag_type(symbol), symbol)
     if symbol.type.is_void or symbol.type.is_primitive:
         if symbol.type.name == 'string':
             return 'const QString &{0}'.format(symbol)
@@ -301,7 +301,7 @@ def return_type(symbol):
     """
     prefix = Filters.classPrefix
     if symbol.type.is_enum or symbol.type.is_flag:
-        return('{0}{1}Module::{2}'.format(prefix,
+        return('{0}{1}::{2}'.format(prefix,
                                           upper_first(symbol.type.reference.module.module_name),
                                           flag_type(symbol)))
     if symbol.type.is_void or symbol.type.is_primitive:
@@ -664,7 +664,7 @@ def qml_info_type(symbol):
     """
     prefix = Filters.classPrefix
     if symbol.type.is_enum or symbol.type.is_flag:
-        return('{0}{1}Module::{2}'.format(prefix, upper_first(symbol.module.module_name),
+        return('{0}{1}::{2}'.format(prefix, upper_first(symbol.module.module_name),
                flag_type(symbol)))
     elif symbol.type.is_void or symbol.type.is_primitive:
         if symbol.type.is_real:

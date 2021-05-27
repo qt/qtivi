@@ -52,13 +52,13 @@
 ****************************************************************************/
 
 import QtQuick 2.10
-import Example.IVI.InstrumentCluster.simulation 1.0
+import Example.IVI.InstrumentClusterModule.simulation 1.0
 
 QtObject {
     property var settings : IviSimulator.findData(IviSimulator.simulationData, "InstrumentCluster")
     property bool defaultInitialized: false
     property LoggingCategory qLcInstrumentCluster: LoggingCategory {
-        name: "example.ivi.instrumentcluster.simulation.instrumentclusterbackend"
+        name: "example.ivi.instrumentclustermodule.simulation.instrumentclusterbackend"
     }
     property var backend : InstrumentClusterBackend {
 
@@ -107,7 +107,7 @@ QtObject {
 
                     ScriptAction {
                         script: {
-                            backend.currentWarning = InstrumentCluster.warning("red","LOW FUEL", "images/fuelsymbol_orange.png")
+                            backend.currentWarning = InstrumentClusterModule.warning("red","LOW FUEL", "images/fuelsymbol_orange.png")
                         }
                     }
 
@@ -120,7 +120,7 @@ QtObject {
 
                     ScriptAction {
                         script: {
-                            backend.currentWarning = InstrumentCluster.warning()
+                            backend.currentWarning = InstrumentClusterModule.warning()
                         }
                     }
                 }

@@ -2,7 +2,7 @@
  * module
  */
 @config: { interfaceBuilder: "echoInterfaceBuilder" }
-module org.example.echo 1.0
+module org.example.echomodule 1.0
 
 /**
  * \brief the brief

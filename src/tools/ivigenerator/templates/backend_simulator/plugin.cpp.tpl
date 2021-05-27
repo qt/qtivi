@@ -73,7 +73,7 @@ extern {{class}}::InterfaceBuilder {{module.tags.config.interfaceBuilder}};
 {%   for interface in module.interfaces %}
     auto {{interface}}Instance = new {{interface}}Backend(m_simulationEngine, this);
     //Register the types for the SimulationEngine
-    {{module.module_name|upperfirst}}Module::registerQmlTypes(QStringLiteral("{{module|qml_type}}.simulation"), {{module.majorVersion}}, {{module.minorVersion}});
+    {{module.module_name|upperfirst}}::registerQmlTypes(QStringLiteral("{{module|qml_type}}.simulation"), {{module.majorVersion}}, {{module.minorVersion}});
     m_simulationEngine->registerSimulationInstance({{interface}}Instance, "{{module|qml_type}}.simulation", {{module.majorVersion}}, {{module.minorVersion}}, "{{interface}}Backend");
     m_interfaces << {{interface}}Instance;
 {%   endfor %}

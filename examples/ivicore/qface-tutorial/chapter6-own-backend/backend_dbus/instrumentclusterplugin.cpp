@@ -61,12 +61,12 @@ InstrumentClusterPlugin::InstrumentClusterPlugin(QObject *parent)
 
 QStringList InstrumentClusterPlugin::interfaces() const
 {
-    return QStringList(InstrumentCluster_InstrumentCluster_iid);
+    return QStringList(InstrumentClusterModule_InstrumentCluster_iid);
 }
 
 QIviFeatureInterface *InstrumentClusterPlugin::interfaceInstance(const QString &interface) const
 {
-    if (interface == InstrumentCluster_InstrumentCluster_iid)
+    if (interface == InstrumentClusterModule_InstrumentCluster_iid)
         return m_backend;
 
     return nullptr;

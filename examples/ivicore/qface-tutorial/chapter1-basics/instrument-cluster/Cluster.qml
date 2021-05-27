@@ -53,7 +53,7 @@
 
 import QtQuick 2.1
 import QtQuick.Window 2.2
-import Example.IVI.InstrumentCluster 1.0
+import Example.IVI.InstrumentClusterModule 1.0
 
 Window {
     id: root
