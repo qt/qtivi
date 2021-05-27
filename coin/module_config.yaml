@@ -5,9 +5,6 @@ accept_configuration:
     - condition: property
       property: target.osVersion
       not_equals_value: QEMU
-    - condition: property
-      property: target.os
-      not_equals_value: IOS
     - condition: or
       conditions:
         - condition: property
