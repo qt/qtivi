@@ -17,6 +17,7 @@ set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/ivivehiclefunctions/climate_widge
 
 find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS Gui)
+find_package(Qt6 COMPONENTS Widgets)
 find_package(Qt6 COMPONENTS IviCore)
 find_package(Qt6 COMPONENTS IviVehicleFunctions)
 
@@ -31,15 +32,10 @@ set_target_properties(climate_widget PROPERTIES
 target_link_libraries(climate_widget PUBLIC
     Qt::Core
     Qt::Gui
+    Qt::Widgets
     Qt::IviCore
     Qt::IviVehicleFunctions
 )
-
-if((QT_MAJOR_VERSION GREATER 4))
-    target_link_libraries(climate_widget PUBLIC
-        Qt::Widgets
-    )
-endif()
 
 install(TARGETS climate_widget
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
