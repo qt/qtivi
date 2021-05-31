@@ -19,7 +19,7 @@ qt_internal_add_plugin(MediaQtROPlugin
         Qt::IviCore
         Qt::IviMedia
         Qt::RemoteObjects
-        iviremoteobjects_helper_private
+        Qt::IviRemoteObjectsHelper
 )
 qt6_add_repc_replicas(MediaQtROPlugin
     ../../../tools/media-simulation-server/qivimediaindexer.rep

@@ -43,6 +43,7 @@
 
 #include <QTimer>
 #include <QSettings>
+#include <QIODevice>
 
 Q_LOGGING_CATEGORY(qLcROQIviSearchAndBrowseModel, "qtivi.media.qivisearchandbrowsebackend.remoteobjects", QtInfoMsg)
 

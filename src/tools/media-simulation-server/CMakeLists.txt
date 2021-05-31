@@ -5,7 +5,7 @@
 #####################################################################
 
 qt_get_tool_target_name(target_name ivimedia-simulation-server)
-qt_add_tool(${target_name}
+qt_internal_add_tool(${target_name}
     SOURCES
         ../../plugins/ivimedia/media_simulator/database_helper.h
         ../../plugins/ivimedia/media_simulator/logging.cpp ../../plugins/ivimedia/media_simulator/logging.h
@@ -30,7 +30,7 @@ qt_add_tool(${target_name}
         Qt::RemoteObjects
         Qt::Sql
         WrapTagLib::WrapTagLib
-        iviremoteobjects_helper_private
+        Qt::IviRemoteObjectsHelper
 )
 qt6_add_repc_sources(ivimedia-simulation-server
     qivimediaindexer.rep

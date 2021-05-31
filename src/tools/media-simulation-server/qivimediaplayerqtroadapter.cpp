@@ -58,7 +58,7 @@ QIviMediaPlayerQtRoAdapter::QIviMediaPlayerQtRoAdapter(const QString& remoteObje
     connect(m_backend, &MediaPlayerBackend::durationChanged, this, &QIviMediaPlayerQtRoAdapter::durationChanged);
     connect(m_backend, &MediaPlayerBackend::currentIndexChanged, this, &QIviMediaPlayerQtRoAdapter::currentIndexChanged);
     connect(m_backend, &MediaPlayerBackend::currentTrackChanged, this, [this](const QVariant &currentTrack) {
-        emit currentTrackChanged(QVariant(QMetaType::QVariant, &currentTrack));
+        emit currentTrackChanged(QVariant(QMetaType(QMetaType::QVariant), &currentTrack));
     });
     connect(m_backend, &MediaPlayerBackend::volumeChanged, this, &QIviMediaPlayerQtRoAdapter::volumeChanged);
     connect(m_backend, &MediaPlayerBackend::mutedChanged, this, &QIviMediaPlayerQtRoAdapter::mutedChanged);

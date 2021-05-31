@@ -207,7 +207,8 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, int start, int c
                  whereClause.isEmpty() ? QString() : QStringLiteral("WHERE ") + whereClause,
                  groupBy.isEmpty() ? QString() : QStringLiteral("GROUP BY ") + groupBy);
 
-    QtConcurrent::run(m_threadPool, [this, countQuery, identifier]() {
+    // QtConcurrent::run doesn't allow ignoring the return value
+    auto future = QtConcurrent::run(m_threadPool, [this, countQuery, identifier]() {
         QSqlQuery query(m_db);
         if (query.exec(countQuery)) {
             while (query.next()) {
@@ -226,7 +227,8 @@ void SearchAndBrowseBackend::fetchData(const QUuid &identifier, int start, int c
             QString::number(start),
             QString::number(count));
 
-    QtConcurrent::run(m_threadPool,
+    // QtConcurrent::run doesn't allow ignoring the return value
+    future = QtConcurrent::run(m_threadPool,
                       &SearchAndBrowseBackend::search,
                       this,
                       identifier,
@@ -372,7 +374,7 @@ QString SearchAndBrowseBackend::createWhereClause(const QString &type, QIviAbstr
         QString operatorString;
         bool negated = filter->isNegated();
         QString value;
-        if (filter->value().type() == QVariant::String)
+        if (filter->value().typeId() == QMetaType::QString)
             value = QStringLiteral("'%1'").arg(filter->value().toString().replace('*', '%'));
         else
             value = filter->value().toString();

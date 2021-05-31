@@ -110,7 +110,7 @@ public Q_SLOTS:
     void doSqlOperation(MediaPlayerBackend::OperationType type, const QStringList &queries, const QUuid &identifier, int start, int count);
 
 private Q_SLOTS:
-    void onStateChanged(QMediaPlayer::State state);
+    void onStateChanged(QMediaPlayer::PlaybackState state);
     void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
     void onPositionChanged(qint64 position);
     void onDurationChanged(qint64 duration);

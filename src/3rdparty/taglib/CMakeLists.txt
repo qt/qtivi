@@ -2,6 +2,36 @@
 ## BundledTagLib Generic Library:
 #####################################################################
 
+set(INCLUDE_DIRECTORIES
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/ape>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/asf>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/flac>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/it>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/mod>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/mp4>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/mpc>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/mpeg>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/mpeg/id3v1>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/mpeg/id3v2>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/mpeg/id3v2/frames>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/ogg>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/ogg/flac>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/ogg/opus>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/ogg/speex>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/ogg/vorbis>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/riff>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/riff/aiff>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/riff/wav>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/s3m>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/toolkit>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/trueaudio>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/wavpack>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/xm>
+)
+
 qt_internal_add_3rdparty_library(BundledTagLib
     QMAKE_LIB_NAME taglib
     SKIP_AUTOMOC
@@ -113,34 +143,8 @@ qt_internal_add_3rdparty_library(BundledTagLib
         PNG_ARM_NEON_OPT=0
         PNG_POWERPC_VSX_OPT=0
         MAKE_TAGLIB_LIB
-    INCLUDE_DIRECTORIES
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        taglib
-        taglib/taglib
-        taglib/taglib/ape
-        taglib/taglib/asf
-        taglib/taglib/flac
-        taglib/taglib/it
-        taglib/taglib/mod
-        taglib/taglib/mp4
-        taglib/taglib/mpc
-        taglib/taglib/mpeg
-        taglib/taglib/mpeg/id3v1
-        taglib/taglib/mpeg/id3v2
-        taglib/taglib/mpeg/id3v2/frames
-        taglib/taglib/ogg
-        taglib/taglib/ogg/flac
-        taglib/taglib/ogg/opus
-        taglib/taglib/ogg/speex
-        taglib/taglib/ogg/vorbis
-        taglib/taglib/riff
-        taglib/taglib/riff/aiff
-        taglib/taglib/riff/wav
-        taglib/taglib/s3m
-        taglib/taglib/toolkit
-        taglib/taglib/trueaudio
-        taglib/taglib/wavpack
-        taglib/taglib/xm
+    PUBLIC_INCLUDE_DIRECTORIES
+        ${INCLUDE_DIRECTORIES}
 )
 qt_disable_warnings(BundledTagLib)
 qt_set_symbol_visibility_hidden(BundledTagLib)
@@ -149,3 +153,5 @@ qt_internal_extend_target(BundledTagLib CONDITION UNIX
     SOURCES
         taglib/taglib/toolkit/unicode.cpp
 )
+
+target_include_directories(BundledTagLib SYSTEM PUBLIC ${INCLUDE_DIRECTORIES})

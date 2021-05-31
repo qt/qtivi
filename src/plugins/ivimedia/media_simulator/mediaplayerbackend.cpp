@@ -68,7 +68,7 @@ MediaPlayerBackend::MediaPlayerBackend(const QSqlDatabase &database, QObject *pa
             this, &MediaPlayerBackend::onDurationChanged);
     connect(m_player, &QMediaPlayer::positionChanged,
             this, &MediaPlayerBackend::onPositionChanged);
-    connect(m_player, &QMediaPlayer::stateChanged,
+    connect(m_player, &QMediaPlayer::playbackStateChanged,
             this, &MediaPlayerBackend::onStateChanged);
     connect(m_player, &QMediaPlayer::mediaStatusChanged,
             this, &MediaPlayerBackend::onMediaStatusChanged);
@@ -96,11 +96,7 @@ void MediaPlayerBackend::initialize()
 void MediaPlayerBackend::play()
 {
     qCDebug(media) << Q_FUNC_INFO;
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
-    qCDebug(media) << m_player->media().request().url();
-#else
-    qCDebug(media) << m_player->media().canonicalUrl();
-#endif
+    qCDebug(media) << m_player->source();
     m_requestedState = QIviMediaPlayer::Playing;
     m_player->play();
 }
@@ -130,7 +126,7 @@ void MediaPlayerBackend::next()
     qCDebug(media) << Q_FUNC_INFO;
     int nextIndex = m_currentIndex + 1;
     if (m_playMode == QIviMediaPlayer::Shuffle)
-        nextIndex = qrand() % m_count;
+        nextIndex = QRandomGenerator::global()->bounded(m_count);
     else if (m_playMode == QIviMediaPlayer::RepeatTrack)
         nextIndex = m_currentIndex;
     else if (m_playMode == QIviMediaPlayer::RepeatAll && nextIndex >= m_count)
@@ -144,7 +140,7 @@ void MediaPlayerBackend::previous()
     qCDebug(media) << Q_FUNC_INFO;
     int nextIndex = m_currentIndex - 1;
     if (m_playMode == QIviMediaPlayer::Shuffle)
-        nextIndex = qrand() % m_count;
+        nextIndex = QRandomGenerator::global()->bounded(m_count);
     else if (m_playMode == QIviMediaPlayer::RepeatTrack)
         nextIndex = m_currentIndex;
     else if (m_playMode == QIviMediaPlayer::RepeatAll && nextIndex < 0)
@@ -174,13 +170,15 @@ void MediaPlayerBackend::fetchData(const QUuid &identifier, int start, int count
 
     QStringList queries;
     queries.append(queryString);
-    QtConcurrent::run(m_threadPool,
+    auto future = QtConcurrent::run(m_threadPool,
                       &MediaPlayerBackend::doSqlOperation,
                       this, MediaPlayerBackend::Select,
                       queries,
                       identifier,
                       start,
                       count);
+    // QtConcurrent::run doesn't allow ignoring the return value
+    Q_UNUSED(future);
 }
 
 void MediaPlayerBackend::insert(int index, const QVariant &i)
@@ -216,10 +214,12 @@ void MediaPlayerBackend::insert(int index, const QVariant &i)
     }
     QStringList queries = queryString.split(';');
 
-    QtConcurrent::run(m_threadPool,
+    auto future = QtConcurrent::run(m_threadPool,
                       &MediaPlayerBackend::doSqlOperation,
                       this, MediaPlayerBackend::Insert,
                       queries, QUuid(), index, 0);
+    // QtConcurrent::run doesn't allow ignoring the return value
+    Q_UNUSED(future);
 }
 
 void MediaPlayerBackend::remove(int index)
@@ -229,10 +229,12 @@ void MediaPlayerBackend::remove(int index)
             .arg(index);
     QStringList queries = queryString.split(';');
 
-    QtConcurrent::run(m_threadPool,
+    auto future = QtConcurrent::run(m_threadPool,
                       &MediaPlayerBackend::doSqlOperation,
                       this, MediaPlayerBackend::Remove,
                       queries, QUuid(), index, 1);
+    // QtConcurrent::run doesn't allow ignoring the return value
+    Q_UNUSED(future);
 }
 
 void MediaPlayerBackend::move(int cur_index, int new_index)
@@ -252,10 +254,12 @@ void MediaPlayerBackend::move(int cur_index, int new_index)
             .arg(delta > 0 ? QStringLiteral("-") : QStringLiteral("+"));
     QStringList queries = queryString.split(';');
 
-    QtConcurrent::run(m_threadPool,
+    auto future = QtConcurrent::run(m_threadPool,
                       &MediaPlayerBackend::doSqlOperation,
                       this, MediaPlayerBackend::Move,
                       queries, QUuid(), cur_index, new_index);
+    // QtConcurrent::run doesn't allow ignoring the return value
+    Q_UNUSED(future);
 }
 
 QIviMediaPlayer::PlayMode MediaPlayerBackend::playMode() const
@@ -414,7 +418,7 @@ void MediaPlayerBackend::setCurrentIndex(int index)
     //If we the list is empty the current Index needs to updated to an invalid track
     if (m_count == 0 && index == -1) {
         m_currentIndex = index;
-        m_player->setMedia(QUrl());
+        m_player->setSource(QUrl());
         emit currentTrackChanged(QVariant());
         emit currentIndexChanged(m_currentIndex);
         emit durationChanged(0);
@@ -432,10 +436,12 @@ void MediaPlayerBackend::setCurrentIndex(int index)
     QStringList queries;
     queries.append(queryString);
 
-    QtConcurrent::run(m_threadPool,
+    auto future = QtConcurrent::run(m_threadPool,
                       &MediaPlayerBackend::doSqlOperation,
                       this, MediaPlayerBackend::SetIndex,
                       queries, QUuid(), m_currentIndex, 0);
+    // QtConcurrent::run doesn't allow ignoring the return value
+    Q_UNUSED(future);
 }
 
 void MediaPlayerBackend::setVolume(int volume)
@@ -456,7 +462,7 @@ void MediaPlayerBackend::setMuted(bool muted)
     }
 }
 
-void MediaPlayerBackend::onStateChanged(QMediaPlayer::State state)
+void MediaPlayerBackend::onStateChanged(QMediaPlayer::PlaybackState state)
 {
     qCDebug(media) << Q_FUNC_INFO << state;
     if (state == QMediaPlayer::PlayingState)
@@ -490,8 +496,8 @@ void MediaPlayerBackend::onDurationChanged(qint64 duration)
 
 void MediaPlayerBackend::onPlayTrack(const QUrl &url)
 {
-    bool playing = m_player->state() == QMediaPlayer::PlayingState || m_player->mediaStatus() == QMediaPlayer::EndOfMedia;
-    m_player->setMedia(url);
+    bool playing = m_player->playbackState() == QMediaPlayer::PlayingState || m_player->mediaStatus() == QMediaPlayer::EndOfMedia;
+    m_player->setSource(url);
     if (playing)
         m_player->play();
 }
