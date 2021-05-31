@@ -52,26 +52,28 @@
 ****************************************************************************/
 
 import QtQuick 2.4
-import QtQuick.Controls 1.3
+import QtQuick.Controls 2.15
 import QtQuick.Window 2.2
 import QtQuick.Layouts 1.1
-import QtQuick.Dialogs 1.2
 
 import QtIvi.VehicleFunctions 1.0
 
 ApplicationWindow {
     title: "Window Control"
     visible: true
+    width: mainLayout.width
+    height: mainLayout.height
 
     WindowControl {
         id: windowControl
-        discoveryMode: AbstractFeature.LoadOnlySimulationBackends
+        discoveryMode: WindowControl.LoadOnlySimulationBackends
     }
 
     ColumnLayout {
+        id: mainLayout
         WindowItem {
             title: "Roof"
-            anchors.horizontalCenter: parent.horizontalCenter
+            Layout.alignment: Qt.AlignHCenter
             zone: windowControl.zoneAt.Roof
         }
 
@@ -99,16 +101,20 @@ ApplicationWindow {
 
         WindowItem {
             title: "Rear"
-            anchors.horizontalCenter: parent.horizontalCenter
+            Layout.alignment: Qt.AlignHCenter
             zone: windowControl.zoneAt.Rear
         }
     }
 
-    MessageDialog {
+    Dialog {
         id: messageDialog
+        anchors.centerIn: parent
         title: "Auto Discovery Failed !"
-        text: "No WindowControl Backend available"
-        icon: StandardIcon.Critical
+        standardButtons: Dialog.Ok
+
+        Label {
+            text: "No WindowControl Backend available"
+        }
     }
 
     Component.onCompleted: {

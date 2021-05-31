@@ -52,7 +52,7 @@
 ****************************************************************************/
 
 import QtQuick 2.6
-import QtQuick.Controls 1.5
+import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.1
 import QtIvi 1.0
 import QtIvi.Media 1.0
@@ -67,7 +67,7 @@ ApplicationWindow {
     AmFmTuner {
         id: tuner
 
-        band: bandGroup.current.text === "AM" ? AmFmTuner.AMBand : AmFmTuner.FMBand
+        band: bandGroup.checkedButton.text === "AM" ? AmFmTuner.AMBand : AmFmTuner.FMBand
 
         onScanStarted: {
             console.log("A Station SCAN has been started")
@@ -98,8 +98,8 @@ ApplicationWindow {
 
             RowLayout {
                 Label { text: "Band:" }
-                RadioButton { text: "AM"; exclusiveGroup: bandGroup; checked: tuner.band === AmFmTuner.AMBand }
-                RadioButton { text: "FM"; exclusiveGroup: bandGroup; checked: tuner.band === AmFmTuner.FMBand }
+                RadioButton { text: "AM"; ButtonGroup.group: bandGroup; checked: tuner.band === AmFmTuner.AMBand }
+                RadioButton { text: "FM"; ButtonGroup.group: bandGroup; checked: tuner.band === AmFmTuner.FMBand }
             }
 
             GroupBox {
@@ -122,7 +122,7 @@ ApplicationWindow {
                 }
             }
 
-            ExclusiveGroup {
+            ButtonGroup {
                 id: bandGroup
             }
 
@@ -157,6 +157,10 @@ ApplicationWindow {
                     text: "->"
                     onClicked: tuner.seekUp()
                 }
+            }
+
+            Item {
+                Layout.fillHeight: true
             }
 
         }
@@ -224,7 +228,9 @@ ApplicationWindow {
 
                         Connections {
                             target: presetsModel
-                            onCountChanged: addButton.checkExists()
+                            function onCountChanged() {
+                                addButton.checkExists()
+                            }
                         }
                     }
                     //![6]

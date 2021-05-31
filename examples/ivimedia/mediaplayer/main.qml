@@ -52,7 +52,7 @@
 ****************************************************************************/
 
 import QtQuick 2.6
-import QtQuick.Controls 1.5
+import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.1
 import QtIvi 1.0
 import QtIvi.Media 1.0

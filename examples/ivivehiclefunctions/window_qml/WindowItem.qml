@@ -52,10 +52,9 @@
 ****************************************************************************/
 
 import QtQuick 2.4
-import QtQuick.Controls 1.3
+import QtQuick.Controls 2.15
 import QtQuick.Window 2.2
 import QtQuick.Layouts 1.1
-import QtQuick.Dialogs 1.2
 
 import QtIvi.VehicleFunctions 1.0
 
@@ -109,13 +108,13 @@ GroupBox {
                         }
                     }
 
-                    ExclusiveGroup {
+                    ButtonGroup {
                         id: blindGroup
                     }
 
                     RadioButton {
                         text: "Open"
-                        exclusiveGroup: blindGroup
+                        ButtonGroup.group: blindGroup
                         checked: zone.blindMode === WindowControl.BlindOpen
                         onCheckedChanged: {
                             if (checked)
@@ -125,7 +124,7 @@ GroupBox {
 
                     RadioButton {
                         text: "Closed"
-                        exclusiveGroup: blindGroup
+                        ButtonGroup.group: blindGroup
                         checked: zone.blindMode === WindowControl.BlindClosed
                         onCheckedChanged: {
                             if (checked)
@@ -135,7 +134,7 @@ GroupBox {
 
                     RadioButton {
                         text: "Automatic"
-                        exclusiveGroup: blindGroup
+                        ButtonGroup.group: blindGroup
                         checked: zone.blindMode === WindowControl.AutoBlind
                         onCheckedChanged: {
                             if (checked)
@@ -161,13 +160,13 @@ GroupBox {
                         }
                     }
 
-                    ExclusiveGroup {
+                    ButtonGroup {
                         id: heaterGroup
                     }
 
                     RadioButton {
                         text: "On"
-                        exclusiveGroup: heaterGroup
+                        ButtonGroup.group: heaterGroup
                         checked: zone.heaterMode === WindowControl.HeaterOn
                         onCheckedChanged: {
                             if (checked)
@@ -177,7 +176,7 @@ GroupBox {
 
                     RadioButton {
                         text: "Off"
-                        exclusiveGroup: heaterGroup
+                        ButtonGroup.group: heaterGroup
                         checked: zone.heaterMode === WindowControl.HeaterOff
                         onCheckedChanged: {
                             if (checked)
@@ -187,7 +186,7 @@ GroupBox {
 
                     RadioButton {
                         text: "Automatic"
-                        exclusiveGroup: heaterGroup
+                        ButtonGroup.group: heaterGroup
                         checked: zone.heaterMode === WindowControl.AutoHeater
                         onCheckedChanged: {
                             if (checked)
