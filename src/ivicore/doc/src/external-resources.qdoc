@@ -26,11 +26,6 @@
 ****************************************************************************/
 
 /*!
-    \externalpage https://doc.qt.io/QtAutomotiveSuite/index.html
-    \title Qt Automotive Suite
-*/
-
-/*!
     \externalpage https://doc.qt.io/qt-5/qabstractlistmodel.html#subclassing
     \title QAbstractListModel - Subclassing
 */

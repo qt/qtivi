@@ -66,6 +66,5 @@ QT_FOR_CONFIG += geniviextras geniviextras-private \
 }
 
 SUBDIRS = plugins \
-          imports \
-          doc
+          imports
 

@@ -10,7 +10,6 @@ if(QT_FEATURE_ivicore AND QT_FEATURE_ivigenerator AND NOT QT_FEATURE_geniviextra
     add_subdirectory(tools/ivigenerator)
 endif()
 
-add_subdirectory(doc)
 if(QT_FEATURE_ivicore AND NOT QT_FEATURE_geniviextras_only AND NOT QT_FEATURE_host_tools_only)
     add_subdirectory(ivicore)
     add_subdirectory(helper)

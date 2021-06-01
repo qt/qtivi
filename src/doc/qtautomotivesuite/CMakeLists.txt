@@ -1,2 +1,0 @@
-# Generated from qtautomotivesuite.pro.
-

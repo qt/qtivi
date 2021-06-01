@@ -22,7 +22,7 @@ examples.fileextensions      += *.qface *.yaml
 
 include(../../ivivehiclefunctions/doc/qtivivehiclefunctions.qdocconf)
 include(../../ivimedia/doc/qtivimedia.qdocconf)
-include(../../doc/config/exampleurl-qtivi.qdocconf)
+include(exampleurl-qtivi.qdocconf)
 
 # include the backend plugins documentation
 include(../../plugins/ivimedia/doc/qtivimedia_plugins.qdocconf)
@@ -63,9 +63,8 @@ qhp.QtIvi.subprojects.examples.sortPages = true
 
 tagfile                 = qtivi.tags
 
-depends += qtcore qtdbus qtwidgets qtdoc qtquick qtqml qtautomotivesuite qtremoteobjects
+depends += qtcore qtdbus qtwidgets qtdoc qtquick qtqml qtremoteobjects
 
-navigation.homepage = "Qt Automotive Suite"
 navigation.landingpage = "Qt IVI"
 navigation.cppclassespage = "Qt IVI C++ Classes"
 navigation.qmltypespage = "Qt IVI QML Types"
