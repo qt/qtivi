@@ -10,7 +10,7 @@ target_sources(${CURRENT_TARGET}
     {{module.module_name|lower}}roplugin.cpp
 )
 
-qt6_add_repc_replica(${CURRENT_TARGET}
+qt6_add_repc_replicas(${CURRENT_TARGET}
 {% for interface in module.interfaces %}
     ${CMAKE_CURRENT_BINARY_DIR}/{{interface|lower}}.rep
 {% endfor %}

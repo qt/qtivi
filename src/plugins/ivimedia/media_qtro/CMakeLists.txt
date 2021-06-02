@@ -21,7 +21,7 @@ qt_internal_add_plugin(MediaQtROPlugin
         Qt::RemoteObjects
         iviremoteobjects_helper_private
 )
-qt6_add_repc_replica(MediaQtROPlugin
+qt6_add_repc_replicas(MediaQtROPlugin
     ../../../tools/media-simulation-server/qivimediaindexer.rep
     ../../../tools/media-simulation-server/qivimediaplayer.rep
     ../../../tools/media-simulation-server/qivisearchandbrowsemodel.rep

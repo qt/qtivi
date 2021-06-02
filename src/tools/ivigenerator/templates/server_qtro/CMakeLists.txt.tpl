@@ -7,7 +7,7 @@ target_sources(${CURRENT_TARGET}
     core.cpp
 )
 
-qt6_add_repc_source(${CURRENT_TARGET}
+qt6_add_repc_sources(${CURRENT_TARGET}
 {% for interface in module.interfaces %}
     ${CMAKE_CURRENT_BINARY_DIR}/{{interface|lower}}.rep
 {% endfor %}

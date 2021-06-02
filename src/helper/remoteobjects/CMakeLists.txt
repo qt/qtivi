@@ -24,10 +24,10 @@ qt_internal_add_module(IviRemoteObjectsHelper
         Qt::Qml
         Qt::RemoteObjects
 )
-qt6_add_repc_source(IviRemoteObjectsHelper
+qt6_add_repc_sources(IviRemoteObjectsHelper
     qivipagingmodel.rep
 )
-qt6_add_repc_replica(IviRemoteObjectsHelper
+qt6_add_repc_replicas(IviRemoteObjectsHelper
     qivipagingmodel.rep
 )
 

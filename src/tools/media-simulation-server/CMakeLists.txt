@@ -32,7 +32,7 @@ qt_add_tool(${target_name}
         WrapTagLib::WrapTagLib
         iviremoteobjects_helper_private
 )
-qt6_add_repc_source(ivimedia-simulation-server
+qt6_add_repc_sources(ivimedia-simulation-server
     qivimediaindexer.rep
     qivimediaplayer.rep
     qivimediadiscoverymodel.rep
