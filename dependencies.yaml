@@ -1,7 +1,7 @@
 dependencies:
   ../qtdeclarative:
-    ref: 1a5a26bc8404b133635172ee2957ef75a0f02abd
+    ref: 9586d32ec0ad126fc201697a691b1749387c3e33
     required: true
   ../qtremoteobjects:
-    ref: 7241881f2292a4f5ddc193565735b0212e01c8bd
+    ref: 3a1d769b8f5bd8368c3d8184b75d206b61c24dad
     required: true
