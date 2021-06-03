@@ -6,9 +6,14 @@
 
 qt_internal_add_qml_module(qtivimediaplugin
     URI "QtIvi.Media"
-    VERSION "1.0"
-    CLASSNAME QIviMediaPlugin
-    SKIP_TYPE_REGISTRATION
+    VERSION "${PROJECT_VERSION}"
+    PAST_MAJOR_VERSIONS 1
+    CLASS_NAME QIviMediaPlugin
+    PLUGIN_TARGET qtivimediaplugin
+    NO_PLUGIN_OPTIONAL
+    NO_GENERATE_PLUGIN_SOURCE
+    NO_GENERATE_QMLTYPES
+    INSTALL_SOURCE_QMLTYPES "plugins.qmltypes"
     SOURCES
         plugin.cpp
     PUBLIC_LIBRARIES

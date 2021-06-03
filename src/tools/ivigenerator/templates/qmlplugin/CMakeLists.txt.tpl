@@ -36,20 +36,26 @@ if (NOT TARGET ${CURRENT_TARGET})
     qt_add_qml_module(${CURRENT_TARGET}
         URI "{{module|qml_type}}"
         VERSION "{{module.majorVersion}}.{{module.minorVersion}}"
-        SKIP_TYPE_REGISTRATION
+        PLUGIN_TARGET ${CURRENT_TARGET}
+        NO_PLUGIN_OPTIONAL
+        NO_GENERATE_PLUGIN_SOURCE
+        NO_GENERATE_QMLTYPES
+        NO_GENERATE_QMLDIR
         # TODO remove this again
         # This is needed to make the test build work as it would create duplicate qmldir entries
         # in the global qml folder
         OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_PATH}
-        PUBLIC_LIBRARIES
-            Qt::IviCore
         SOURCES
-            plugin.cpp
+            ${CMAKE_CURRENT_BINARY_DIR}/plugin.cpp
+    )
+    target_link_libraries(${CURRENT_TARGET}
+        PUBLIC
+            Qt::IviCore
     )
 else()
     target_sources(${CURRENT_TARGET}
                    PRIVATE
-        plugin.cpp
+        ${CMAKE_CURRENT_BINARY_DIR}/plugin.cpp
     )
 endif()
 
