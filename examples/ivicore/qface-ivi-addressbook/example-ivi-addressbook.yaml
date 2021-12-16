@@ -4,4 +4,4 @@ Example.IVI.AddressBookModule:
 
 Example.IVI.AddressBookModule.AddressBook#contacts:
     config_simulator:
-        default: [[ "John", "Doe", "12345" ], [ "Jane", "Doe", "67890" ]]
+        default: [[ "John", "Doe", 12345 ], [ "Jane", "Doe", 67890 ]]
