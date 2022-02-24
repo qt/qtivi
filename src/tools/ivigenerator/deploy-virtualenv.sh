@@ -117,6 +117,21 @@ if [ "$PLATFORM" == "linux" ]; then
         echo "copying $LIBSSL"
         cp -Lf "$LIBSSL" "$VIRTUALENV/bin"
     fi
+else
+    # Find the linked Python lib and its framework
+    VERSION_STR=`$VIRTUALENV/bin/python -c "import sys; print(\"{0}.{1}\".format(sys.version_info.major, sys.version_info.minor))"`
+    PYTHON_LIB_PATH=`otool -L $VIRTUALENV/bin/python | awk '{print $1}' | grep Python`
+    PYTHON_FRAMEWORK_PATH=`otool -L $VIRTUALENV/bin/python | egrep -o '^.*Python.framework'`
+    # Copy the framework into our virtualenv
+    cp -a $PYTHON_FRAMEWORK_PATH $VIRTUALENV/bin
+    # Delete the python folder from the framework as we already have that in our virtualenv
+    rm -rf $VIRTUALENV/bin/Python.framework/Versions/$VERSION_STR/lib/$PYTHON_VERSION
+    rm -rf $VIRTUALENV/bin/Python.framework/Versions/2*
+    ln -sf $VERSION_STR $VIRTUALENV/bin/Python.framework/Versions/Current
+    # Use the copied framework in the python binary
+    install_name_tool -change $PYTHON_LIB_PATH @executable_path/Python.framework/Versions/Current/Python $VIRTUALENV/bin/python
+    # And fix the reference of the Python.app inside the framework
+    install_name_tool -change $PYTHON_LIB_PATH @loader_path/../../../../Python $VIRTUALENV/bin/Python.framework/Versions/Current/Resources/Python.app/Contents/MacOS/Python
 fi
 
 # some files might have wrong permissions, e.g. readonly
