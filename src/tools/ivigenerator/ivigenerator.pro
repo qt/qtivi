@@ -134,6 +134,7 @@ INSTALLS += generator \
 
 OTHER_FILES += deploy-virtualenv.bat \
     deploy-virtualenv.sh \
+    fix-macos-virtualenv.sh \
     deploy-virtualenv-files.txt \
 
 # Ensure files are installed to qtbase for non-prefixed builds

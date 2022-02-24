@@ -29,10 +29,26 @@ qtivi_qface_virtualenv.commands = \
     @echo "Set up virtualenv for qface, name: qtivi_qface_virtualenv"
 QMAKE_EXTRA_TARGETS += qtivi_qface_virtualenv
 
+# The virtualenv created on new macOS versions doesn't work out of the box when copying the executables
+# because of a broken code signature
+# The signature needs to be recreated ad-hoc, but as we need to use pip3 for the package installation
+# this needs to be done right after the virtualenv is created.
+fix_virtualenv.target = .stamp-fix_virtualenv
+equals(QMAKE_HOST.os, Darwin) {
+    fix_virtualenv.commands = $$PWD/fix-macos-virtualenv.sh qtivi_qface_virtualenv $$escape_expand(\n\t)
+}
+equals(QMAKE_HOST.os, Windows) {
+    fix_virtualenv.commands += @type nul > $$system_path($$OUT_PWD/.stamp-deploy_virtualenv)
+} else {
+    fix_virtualenv.commands += @touch $$OUT_PWD/.stamp-deploy_virtualenv
+}
+fix_virtualenv.depends = $${qtivi_qface_virtualenv.target}
+QMAKE_EXTRA_TARGETS += fix_virtualenv
+
 # This helper adds a target for the qtivi_qface_virtualenv folder
 # This target is needed for any target which has the folder as a dependency but not the python executable
 qtivi_qface_virtualenv_helper.target = qtivi_qface_virtualenv
-qtivi_qface_virtualenv_helper.depends = $${qtivi_qface_virtualenv.target}
+qtivi_qface_virtualenv_helper.depends = $${fix_virtualenv.target}
 QMAKE_EXTRA_TARGETS += qtivi_qface_virtualenv_helper
 
 equals(QMAKE_HOST.os, Windows): VIRTUALENV_ACTIVATION = qtivi_qface_virtualenv\Scripts\activate &&
