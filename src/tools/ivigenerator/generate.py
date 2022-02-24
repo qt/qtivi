@@ -172,16 +172,16 @@ def run(format, moduleConfig, annotations, imports, src, dst):
 @click.option('--format', '-f', multiple=False, help='The format the autogenerator should use for '
     'the generation. This can either be one of the builtin formats or a path to a template folder. '
     'Builtin formats are: \n' + '\n'.join(builtinTemplates))
-@click.option('--module', default=False, help='The name of the Qt module the autogenerator is '
+@click.option('--module', help='The name of the Qt module the autogenerator is '
     'generating. This is automatically used by the qmake integration and passed directly to the '
     'qface templates.')
 @click.option('--force', is_flag=True, default=False, help='Always write all output files')
-@click.option('--annotations', '-A', multiple=True, default=False, help=
+@click.option('--annotations', '-A', multiple=True, help=
     'Merges the given annotation file with annotions already in the qface file and the '
     'implicit annotation file. The annotation files will be merged in the order they are passed '
     'to the generator. Providing a duplicate key in the YAML file will override the previously '
     'set value. This option can be used multiple times.')
-@click.option('--import', '-I', 'imports' , multiple=True, default=False, help=
+@click.option('--import', '-I', 'imports' , multiple=True, help=
     'Adds the given path to the list of import paths. All directories in this list are '
     'scanned recursively for QFace files. The QFace files found are then used to resolve '
     'the information required when importing a module; this is similar to how C++ include '

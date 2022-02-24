@@ -43,9 +43,11 @@ defineTest(qtConfTest_python3_package) {
 
     qtRunLoggedCommand("$$system_quote($$python3_exe) -c \"import pkg_resources; print(pkg_resources.get_distribution('$${package}').version)\"", package_version)|return(false)
     !isEmpty(version) {
-        qtLog("Also checking for the exact version:")
+        qtLog("Also checking for version:")
         qtLog("Expected: $$version")
-        !equals(version, $$package_version): return(false)
+        !versionAtLeast(package_version, $$version) {
+            return(false)
+        }
     }
 
     return(true)
