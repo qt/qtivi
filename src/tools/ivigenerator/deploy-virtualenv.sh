@@ -78,7 +78,13 @@ fi
 
 # Find all the locations used for the system python files
 # They are located in prefix, but we don't know the sub-folder (it is lib on most systems, but lib64 on some others)
-ORIG_LIBS=`$VIRTUALENV/bin/python3 -c "import sys; print ('\n'.join(path for path in sys.path))" | grep $ORIG_PREFIX`
+ORIG_LIBS=`$VIRTUALENV/bin/python3 -c "import sys;
+import os;
+prefix=os.path.realpath('${ORIG_PREFIX}')
+for path in sys.path:
+    if path.startswith(prefix):
+        print (path)
+"`
 
 if [[ ! -e "$SCRIPT/deploy-virtualenv-files.txt" ]] ; then
     echo "$SCRIPT/deploy-virtualenv-files.txt doesn't exist";
