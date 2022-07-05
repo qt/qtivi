@@ -63,10 +63,18 @@ write_file($$OUT_PWD/forceRebuild)
 PYTHON3_SHORT_VERSION_SPLITTED = $$split(QMAKE_PYTHON3_VERSION, .)
 PYTHON3_SHORT_VERSION = $$member(PYTHON3_SHORT_VERSION_SPLITTED, 0).$$member(PYTHON3_SHORT_VERSION_SPLITTED, 1)
 
+# If the upstream python packages introduce a regression this option can be used to install
+# the minimum version for all required python package and produce a working setup
+# Those packages might be outdated and may contain security holes, but they are known to be
+# working.
+qtivi_use_minimal_qface_packages {
+    PIP3_INSTALL_COMMAND = pip3 install --upgrade -r $$system_path($$QFACE_SOURCE_DIR/requirements_minimal.txt) &&
+}
+
 # On the CI we use the special wheel folder when available to not download all packages again on each build
 PYTHON3_WHEEL_CACHE=$$(PYTHON3_WHEEL_CACHE)
-!isEmpty(PYTHON3_WHEEL_CACHE): PIP3_INSTALL_COMMAND = pip3 install --no-index --find-links=$$system_path($$PYTHON3_WHEEL_CACHE) $$system_path($$QFACE_SOURCE_DIR) --verbose
-else: PIP3_INSTALL_COMMAND = pip3 install --upgrade $$system_path($$QFACE_SOURCE_DIR)
+!isEmpty(PYTHON3_WHEEL_CACHE): PIP3_INSTALL_COMMAND += pip3 install --no-index --find-links=$$system_path($$PYTHON3_WHEEL_CACHE) $$system_path($$QFACE_SOURCE_DIR) --verbose
+else: PIP3_INSTALL_COMMAND += pip3 install --upgrade $$system_path($$QFACE_SOURCE_DIR)
 
 # Always run this target
 equals(QMAKE_HOST.os, Windows): qtivi_qface_install.target = qtivi_qface_virtualenv/Lib/site-packages/qface
@@ -94,7 +102,20 @@ equals(QMAKE_HOST.os, Windows) {
 }
 deploy_virtualenv.depends = $${qtivi_qface_install.target}
 QMAKE_EXTRA_TARGETS += deploy_virtualenv
-PRE_TARGETDEPS += $${deploy_virtualenv.target}
+
+# We need to make the virtualenv first deployable
+# Otherwise it still needs some modules from the system
+verify_virtualenv.target = .stamp-verify_virtualenv
+equals(QMAKE_HOST.os, Windows) {
+    verify_virtualenv.commands = $$system_path(qtivi_qface_virtualenv/Scripts/python.exe) $$PWD/verify_generator.py $$escape_expand(\n\t)
+    verify_virtualenv.commands += @type nul > $$system_path($$OUT_PWD/.stamp-verify_virtualenv)
+} else {
+    verify_virtualenv.commands = $$system_path(qtivi_qface_virtualenv/bin/python) $$PWD/verify_generator.py $$escape_expand(\n\t)
+    verify_virtualenv.commands += @touch $$OUT_PWD/.stamp-verify_virtualenv
+}
+verify_virtualenv.depends = $${deploy_virtualenv.target}
+QMAKE_EXTRA_TARGETS += verify_virtualenv
+PRE_TARGETDEPS += $${verify_virtualenv.target}
 
 virtualenv.files = $$OUT_PWD/qtivi_qface_virtualenv
 virtualenv.path = $$[QT_HOST_BINS]/ivigenerator
