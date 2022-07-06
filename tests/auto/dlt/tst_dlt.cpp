@@ -193,6 +193,18 @@ void QDltTest::testLongMessages_data()
     QTest::addColumn<QString>("msg");
     QTest::addColumn<QStringList>("expected_msgs");
 
+    QStringList truncatedDLTMessages;
+    // Since version 2.18.4 DLT truncates long messages instead of storing an empty message.
+    if (QVersionNumber::fromString(_DLT_PACKAGE_VERSION) >= QVersionNumber(2, 18, 4)) {
+        QString longMsg2 = longMsg;
+        QString truncatedLiteral("... <<Message truncated, too long>>");
+        longMsg2.resize(1360);
+        longMsg2.replace(longMsg2.count() - truncatedLiteral.count(), truncatedLiteral.count(), truncatedLiteral);
+        truncatedDLTMessages.append(longMsg2);
+    } else {
+        truncatedDLTMessages.append(QString());
+    }
+
     QTest::addRow("Truncate ASCII") << QDltRegistration::LongMessageBehavior::Truncate
                                     << longMsg + QStringLiteral("ipsum")
                                     << QStringList(longMsg + QStringLiteral("ipsu"));
@@ -213,13 +225,13 @@ void QDltTest::testLongMessages_data()
                                          << QStringList({longMsg +  QStringLiteral("你"),  QStringLiteral("好世界\"")});
     QTest::addRow("Pass ASCII") << QDltRegistration::LongMessageBehavior::Pass
                                 << longMsg + QStringLiteral("ipsum123456789a")
-                                << QStringList(QString());
+                                << truncatedDLTMessages;
     QTest::addRow("Pass UTF-8 2 bytes") << QDltRegistration::LongMessageBehavior::Pass
                                         << longMsg + QStringLiteral("©®¥¶¼")
-                                        << QStringList(QString());
+                                        << truncatedDLTMessages;
     QTest::addRow("Pass UTF-8 3 bytes") << QDltRegistration::LongMessageBehavior::Pass
                                         << longMsg +  QStringLiteral("你好世界")
-                                        << QStringList(QString());
+                                        << truncatedDLTMessages;
 }
 
 void QDltTest::testLongMessages()
@@ -242,7 +254,7 @@ void QDltTest::testLongMessages()
     for (const QString &expected_msg : expected_msgs) {
         QString expectedMsg;
         //The logging category will be added before the splitting, it's only part of the first msg
-        if (i == 0 && behavior != QDltRegistration::LongMessageBehavior::Pass) {
+        if (i == 0 && !expected_msg.isEmpty()) {
             //The closing quotes are part of the message pattern and will be cut as well.
             expectedMsg = QString(QStringLiteral("%1: \"%2")).arg(TEST1().categoryName(), expected_msg);
         } else {
