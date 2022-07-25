@@ -1,6 +1,5 @@
 requires(!integrity) # temporary hack for the Qt CI
 requires(!winrt) # temporary hack for the Qt CI
-requires(!qnx) # temporary hack for the Qt CI
 requires(!wasm)
 
 enable-examples {
