@@ -82,10 +82,10 @@ needs:
                cross-compile inside Yocto.
 \endtable
 
-These command-line options can be passed to qmake using the \c QMAKE_EXTRA_ARGS environment variable:
+These command-line options can be passed to qmake using the \c QMAKE_EXTRA_ARGS qmake variable:
 
 \code
-    QMAKE_EXTRA_ARGS="--host-tools-only" qmake <qtivi-src>/qtivi.pro
+    qmake <qtivi-src>/qtivi.pro QMAKE_EXTRA_ARGS="--host-tools-only"
 \endcode
 
 \section2 Build the Required Features Only
@@ -97,7 +97,7 @@ argument, when you invoke \c qmake.
 
 For example, to disable building QtIvi Media:
 \code
-    QMAKE_EXTRA_ARGS="--no-feature-ivimedia" qmake <qtivi-src>/qtivi.pro
+    qmake <qtivi-src>/qtivi.pro QMAKE_EXTRA_ARGS="--no-feature-ivimedia"
 \endcode
 
 Selecting the required module explicitly has the advantage that you can see any errors, at
